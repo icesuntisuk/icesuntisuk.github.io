@@ -16,7 +16,6 @@ Certification
 * HPE Sales certify
 
 Technical skill
-* Routing and Switching
+* Design and implement network
 * Windows/Linux Server
 * Programming
-* Design and implement network
