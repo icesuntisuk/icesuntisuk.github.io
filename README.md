@@ -19,3 +19,6 @@ Technical skill
 * Design and implement network
 * Windows/Linux Server
 * Programming
+
+Blog
+* https://icesuntisuk.blogspot.com
