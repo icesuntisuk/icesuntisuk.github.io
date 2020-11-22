@@ -8,10 +8,9 @@ Lt. Suntisuk Thepthong joined Office of the Permanent Secretary for Defence in 2
 His hobbies include playing basketball, reading book, hiking and running.
 
 Certification
-
-    *E|CSA
-    *Comptia Security+
-    *CCNP
-    *CCDA
-    *PaloAlto ACE
+*E|CSA
+*Comptia Security+
+*CCNP
+*CCDA
+*PaloAlto ACE
 
