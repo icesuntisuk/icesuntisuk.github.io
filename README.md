@@ -18,5 +18,4 @@ Technical skill
 * Routing and Switching
 * Windows/Linux Server
 * Programming
-* Firewall configuration
 * Design and implement network
