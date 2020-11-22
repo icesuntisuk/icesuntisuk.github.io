@@ -13,6 +13,7 @@ Certification
 * CCNP
 * CCDA
 * PaloAlto ACE
+* HPE Sale certify
 
 Technical skill
 * Routing and Switching
