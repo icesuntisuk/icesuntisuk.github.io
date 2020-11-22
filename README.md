@@ -14,3 +14,10 @@ Certification
 * CCDA
 * PaloAlto ACE
 
+Technical skill
+* Routing and Switching
+* System 
+* Windows Server/Linux Server
+* Programming
+* Firewall configuration
+* Design and implement network
