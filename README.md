@@ -9,9 +9,9 @@ His hobbies include playing basketball, reading book, hiking and running.
 
 Certification
 
-    E|CSA
-    Comptia Security+
-    CCNP
-    CCDA
-    PaloAlto ACE
+    *E|CSA
+    *Comptia Security+
+    *CCNP
+    *CCDA
+    *PaloAlto ACE
 
