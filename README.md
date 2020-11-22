@@ -1,1 +1,6 @@
-# icesuntisuk.github.io NEIS0736
+# icesuntisuk.github.io
+Lt.Suntisuk Thepthong received his B.Eng degree in computer engineering form Mahanakorn University of Technology in 2012. And received in Master of Business Administration from University of the Thai Chamber and Commerce in 2016. 
+
+Lt. Suntisuk Thepthong joined Office of the Permanent Secretary for Deffence in 2018.
+
+His hobbies include playing basketball, reading book, hiking and running.
