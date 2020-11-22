@@ -4,3 +4,12 @@ Lt.Suntisuk Thepthong received his B.Eng degree in computer engineering form Mah
 Lt. Suntisuk Thepthong joined Office of the Permanent Secretary for Deffence in 2018.
 
 His hobbies include playing basketball, reading book, hiking and running.
+
+Certification
+
+    E|CSA
+    Comptia Security+
+    CCNP
+    CCDA
+    PaloAlto ACE
+
