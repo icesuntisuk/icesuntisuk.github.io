@@ -1,6 +1,6 @@
 ![](/img/ice.png){:height="20%" width="20%" style="float: right"}
 
-# Lt.Suntisuk Thepthong
+# Biography of Lt.Suntisuk Thepthong
 
 >Experience & Education
 
