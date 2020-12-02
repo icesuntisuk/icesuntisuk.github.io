@@ -25,7 +25,7 @@
 * Windows/Linux Server
 * Programming
 
->His hobbies include playing basketball, reading book, hiking and running.
+>His hobbies include playing basketball, reading book, hiking, playing game and running.
 
 >Blog
 
