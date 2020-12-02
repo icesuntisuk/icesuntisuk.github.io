@@ -4,8 +4,8 @@
 
 >Experience & Education
 
-* **Working**: Instructor and Security Speciallist at Netprime System.
-* **Working**: Security Officer at Office of the Permanent Secretary for Defence.
+* **Working**: Instructor and Security Speciallist @ Netprime System.
+* **Working**: Security Officer @ Office of the Permanent Secretary for Defence.
 * **Graduated**: Master of Business Administration from University of the Thai Chamber and Commerce in 2016. (GPA: 3.57)
 * **Graduated**: First class honours Bachelor of Computer Engineering form Mahanakorn University of Technology in 2012. (GPA: 3.50)
 * **Studying**: Master Computer Science in Cybersecurity Management at Mahanakorn University. (GPA: 3.90)
