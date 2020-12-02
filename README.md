@@ -10,7 +10,7 @@
 * **Graduated**: First class honours Bachelor of Computer Engineering form Mahanakorn University of Technology in 2012. (GPA: 3.50)
 * **Studying**: Master Computer Science in Cybersecurity Management at Mahanakorn University. (GPA: 3.90)
 
->Certification
+>**Certification**
 
 * ECSA
 * Comptia Security+
@@ -22,7 +22,7 @@
 * HP Sales certify
 * ICSI CNSS Certified Network Security Speciallist
 
->Technical skill
+>**Technical skill**
 
 * Cyber Security
 * Design and implement network
@@ -36,10 +36,10 @@
 
 >His hobbies include playing basketball, reading book, hiking, playing game and running.
 
->Blog
+>**Blog**
 
 * [Icesuntisuk Blogspot](https://icesuntisuk.blogspot.com)
 
->Link2Knowledge:
+>**Link2Knowledge**
 
 * [OWASP ASVS V11 Business Logic Verification Requirements](https://gitlab.com/icesuntisuk/2020.wiki/-/blob/master/requirement/V11%20Business%20Logic%20Verification%20Requirements.md)
