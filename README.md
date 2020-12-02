@@ -4,12 +4,22 @@
 
 I have had the great fortune to be involved with nearly every dimension of cyber security. I have deployed security technologies, designed infrastructure and developed security programs to maturity. 
 
->Experience
+>**Experience**
 
 * **Working**: Instructor and Security Speciallist @ Netprime System.
 * **Working**: Security Officer @ Office of the Permanent Secretary for Defence.
+* **2012 - 2017**": Network Engineer
+    * Worked on the project which is implementing the enterprise network.
+    * Designed the enterprise network.
+    * Implemented the network security/NGFW/UTM/IPS/other.
+    * Migrated network and firewall.
+    * Deployed network mangement software.
+    * Migrated WAN link from MPLS to ADVPN. (Connected branches by ADSL+LTE to HQ)
+    * Worked in a project team which works across the time line.
+    * Responsible for design and implement network security in cooperate.
+* **2011 - 2012**: Business Development Engineer
 
->Education
+>**Education**
 
 * **Studying**: Master Computer Science in Cybersecurity Management at Mahanakorn University. (GPA: 3.90)
 * **Graduated**: Master of Business Administration from University of the Thai Chamber and Commerce in 2016. (GPA: 3.57)
