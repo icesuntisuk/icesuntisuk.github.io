@@ -1,5 +1,5 @@
 # icesuntisuk.github.io
-![](/iceprofile.jpg "Mr. Suntisuk Thepthong")
+![](/img/ice.png "Mr. Suntisuk Thepthong")
 
 Lt.Suntisuk Thepthong received his B.Eng degree in computer engineering form Mahanakorn University of Technology in 2012. And received in Master of Business Administration from University of the Thai Chamber and Commerce in 2016. 
 
