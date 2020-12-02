@@ -34,7 +34,7 @@
 * Cloud Computing
 * Risk Management
 
->His hobbies include playing basketball, reading book, hiking, playing game and running.
+>His **hobbies** include playing basketball, reading book, hiking, playing game and running.
 
 >**Blog**
 
