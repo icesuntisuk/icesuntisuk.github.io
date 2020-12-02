@@ -1,4 +1,4 @@
-![](/img/ice.png){:height="18%" width="18%" style="float: right"}
+![](/img/ice.png){:height="20%" width="20%" style="float: right"}
 
 >Experience & Education
 
