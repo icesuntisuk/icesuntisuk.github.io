@@ -4,6 +4,7 @@
 ##Welcome to Icesuntisuk.github.io
 
 >Experience & Education
+
 * **Working**: Office of the Permanent Secretary for Defence.
 * **Graduated**: Master of Business Administration from University of the Thai Chamber and Commerce in 2016. (GPA: 3.57)
 * **Graduated**: Bachelor of Engineering  B.Eng degree in computer engineering form Mahanakorn University of Technology in 2012. (GPA: 3.50)
