@@ -27,7 +27,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 >**Certification**
 
-* ECSA
+* E\|CSA
 * Comptia Security+
 * CCNP
 * CCDA
@@ -35,7 +35,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * PaloAlto ACE
 * HP Advanced Sales Certified 
 * HP Sales certify
-* ICSI CNSS Certified Network Security Speciallist
+* ICSI\|CNSS Certified Network Security Speciallist
 
 >**Specialties**
 
