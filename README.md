@@ -1,9 +1,8 @@
 
 <table border="0">
  <tr>
-    <td><img src="/img/ice.png" width="220"/></td>
-  <td> <h2><font color=""> Lt.Suntisuk Thepthong</font></h2>
-  </td>
+  <td><img src="/img/ice.png" /></td>
+  <td> <h2> Lt.Suntisuk Thepthong</h2> </td>
  </tr>
 </table>
 
