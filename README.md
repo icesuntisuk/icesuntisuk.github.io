@@ -1,13 +1,8 @@
+![](/img/ice.png){:height="18%" width="18%" style="float: right"}
 
-<table border="0">
- <tr>
-  <td><img src="/img/ice.png" /></td>
-  <td> <h2> Lt.Suntisuk Thepthong</h2> </td>
- </tr>
-</table>
+>Experience & Education
 
 <b>Working:</b> Office of the Permanent Secretary for Defence in 2018.
-
 <b>Graduated:</b> Master of Business Administration from University of the Thai Chamber and Commerce in 2016. 
 <b>Graduated:</b> Bachelor of Engineering  B.Eng degree in computer engineering form Mahanakorn University of Technology in 2012. 
 <b>Studying:</b> Master Computer Science in Cybersecurity Management at Mahanakorn University.  
@@ -15,7 +10,7 @@
 
 His hobbies include playing basketball, reading book, hiking and running.
 
-Certification
+>Certification
 * ECSA
 * Comptia Security+
 * CCNP
@@ -23,10 +18,10 @@ Certification
 * PaloAlto ACE
 * HPE Sales certify
 
-Technical skill
+>Technical skill
 * Design and implement network
 * Windows/Linux Server
 * Programming
 
-Blog
+>Blog
 * https://icesuntisuk.blogspot.com
