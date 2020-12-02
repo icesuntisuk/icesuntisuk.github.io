@@ -25,17 +25,18 @@
 * HP Sales certify
 * ICSI CNSS Certified Network Security Speciallist
 
->**Technical skill**
+>**Specialties**
 
-* Cyber Security
-* Design and implement network
-* Windows/Linux System Administration
-* Python programming language
-* Security Operations Center
-* ISO 27001
-* Virtualization
-* Cloud Computing
-* Risk Management
+* Intrusion Detection & Prevention Systems (IDS/IPS)
+* Unified threat management (UTM) / Next Generation Firewalls (NGFW)
+* Networking
+* Risk assessment 
+* Security event and information management (SIEM)
+* Security analytics
+* Human factors in security
+* Incident response
+* Executive communication & leadership
+
 
 >His **hobbies** include playing basketball, reading book, hiking, playing game and running.
 
