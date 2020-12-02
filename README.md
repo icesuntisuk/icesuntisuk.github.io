@@ -20,7 +20,7 @@
 * PaloAlto ACE
 * HP Advanced Sales Certified 
 * HP Sales certify
-* ICSI|CNSS Certified Network Security Speciallist
+* ICSI CNSS Certified Network Security Speciallist
 
 >Technical skill
 
