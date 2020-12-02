@@ -24,9 +24,15 @@
 
 >Technical skill
 
+* Cyber Security
 * Design and implement network
-* Windows/Linux Server
-* Programming
+* Windows/Linux System Administration
+* Python programming language
+* Security Operations Center
+* ISO 27001
+* Virtualization
+* Cloud Computing
+* Risk Management
 
 >His hobbies include playing basketball, reading book, hiking, playing game and running.
 
