@@ -10,6 +10,7 @@
 | His hobbies include playing basketball, reading book, hiking and running.
 
 >Certification
+
 * ECSA
 * Comptia Security+
 * CCNP
@@ -18,9 +19,11 @@
 * HPE Sales certify
 
 >Technical skill
+
 * Design and implement network
 * Windows/Linux Server
 * Programming
 
 >Blog
+
 * https://icesuntisuk.blogspot.com
