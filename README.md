@@ -7,6 +7,9 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 >**Experience**
 
 * **Working**: Instructor and Security Speciallist @ Netprime System.
+    * Course: Palo Alto firewall workshop
+    * Course: Fortigate firewall workshop
+    * Course: Basic Security Exercise
 * **Working**: Security Officer @ Office of the Permanent Secretary for Defence.
 * **2012 - 2017**": Network Engineer
     * Worked on the project which is implementing the enterprise network.
@@ -18,12 +21,21 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Worked in a project team which works across the time line.
     * Responsible for design and implement network security in cooperate.
 * **2011 - 2012**: Business Development Engineer
+    * Responsible for support computer system and network.
+
 
 >**Education**
 
 * **Studying**: Master Computer Science in Cybersecurity Management at Mahanakorn University. (GPA: 3.90)
+    * Received a scholarship.
+    * Instructor Course:  Paloalto Firewall Essentials 
+    * lecturer in Cyber Security in action 2
+        * Topic: Security exercise in the real world
 * **Graduated**: Master of Business Administration from University of the Thai Chamber and Commerce in 2016. (GPA: 3.57)
 * **Graduated**: First class honours Bachelor of Computer Engineering form Mahanakorn University of Technology in 2012. (GPA: 3.50)
+    * Class president of CPE#5
+    * Teacher assistant of the course.
+    * Received a scholarship.
 
 >**Certification**
 
