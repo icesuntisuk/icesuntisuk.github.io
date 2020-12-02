@@ -3,15 +3,16 @@
  <tr>
     <td><img src="/img/ice.png" width="220"/></td>
   <td> <h2><font color=""> Lt.Suntisuk Thepthong</font></h2>
-    
+  </td>
  </tr>
 </table>
-<b>Graduated:</b> Master of Business Administration from University of the Thai Chamber and Commerce in 2016. <br>
-     <b>Graduated:</b> Bachelor of Engineering  B.Eng degree in computer engineering form Mahanakorn University of Technology in 2012. <br>
-     <b>Studying:</b> Master Computer Science in Cybersecurity Management at Mahanakorn University.  <br>
-     <b>Working:</b> Office of the Permanent Secretary for Defence in 2018. </td>
 
-Lt. Suntisuk Thepthong joined Office of the Permanent Secretary for Defence in 2018.
+<b>Working:</b> Office of the Permanent Secretary for Defence in 2018.
+
+<b>Graduated:</b> Master of Business Administration from University of the Thai Chamber and Commerce in 2016. 
+<b>Graduated:</b> Bachelor of Engineering  B.Eng degree in computer engineering form Mahanakorn University of Technology in 2012. 
+<b>Studying:</b> Master Computer Science in Cybersecurity Management at Mahanakorn University.  
+
 
 His hobbies include playing basketball, reading book, hiking and running.
 
