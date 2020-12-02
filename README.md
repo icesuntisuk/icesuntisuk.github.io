@@ -7,8 +7,6 @@
 <b>Graduated:</b> Bachelor of Engineering  B.Eng degree in computer engineering form Mahanakorn University of Technology in 2012. 
 <b>Studying:</b> Master Computer Science in Cybersecurity Management at Mahanakorn University. 
 
->His hobbies include playing basketball, reading book, hiking and running.
-
 >Certification
 
 * ECSA
@@ -23,6 +21,8 @@
 * Design and implement network
 * Windows/Linux Server
 * Programming
+
+>His hobbies include playing basketball, reading book, hiking and running.
 
 >Blog
 
