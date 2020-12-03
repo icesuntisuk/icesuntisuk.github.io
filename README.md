@@ -73,5 +73,5 @@ To formulate, implement, monitor and be responsible for strategic planning, tele
 * [Icesuntisuk Blogspot](https://icesuntisuk.blogspot.com)
 
 >**Link2KnowledgeBase**
-
+* [Secure Access Service Edge (SASE)](/kb/SASE.md)
 * [OWASP ASVS V11 Business Logic Verification Requirements](https://gitlab.com/NEIS0736/2020/-/wikis/Requirement/V11-Business-Logic-Verification-Requirements)
