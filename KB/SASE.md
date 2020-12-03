@@ -55,4 +55,4 @@ SASE จะช่วยให้ทีมรักษาความปลอด
 - เพิ่มประสิทธิผ ลการทำงานของทีมเครือข่ายและทีมรักษาควา่มปลอดภัยเครือข่าย
 - สามารถจัดทำนโยบายการรักษาความปลอดภัยได้จากส่วนกลาง 
 
-Refference : [https://www.gartner.com/doc/reprints?id=1-1OG9EZYB&ct=190903&st=sb](https://www.gartner.com/doc/reprints?id=1-1OG9EZYB&ct=190903&st=sb)
+Reference : [https://www.gartner.com/doc/reprints?id=1-1OG9EZYB&ct=190903&st=sb](https://www.gartner.com/doc/reprints?id=1-1OG9EZYB&ct=190903&st=sb)
