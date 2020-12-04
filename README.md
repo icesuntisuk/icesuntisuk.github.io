@@ -6,7 +6,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 >**Experience**
 
-* **Working**: Instructor and Security Speciallist @ Netprime System.
+* **Working**: Instructor and Security Specialist @ Netprime System.
     * Course: Palo Alto firewall workshop
     * Course: Fortigate firewall workshop
     * Course: Basic Security Exercise
