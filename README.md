@@ -72,6 +72,6 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 * [Icesuntisuk Blogspot](https://icesuntisuk.blogspot.com)
 
->**Landing to Icesuntisuk Knowledge Storeage**
+>**Landing to Icesuntisuk Knowledge Storage**
 * [Secure Access Service Edge (SASE)](/KB/SASE.md)
 * [OWASP ASVS V11 Business Logic Verification Requirements](https://gitlab.com/NEIS0736/2020/-/wikis/Requirement/V11-Business-Logic-Verification-Requirements)
