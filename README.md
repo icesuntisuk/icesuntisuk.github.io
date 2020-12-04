@@ -51,6 +51,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * HP Advanced Sales Certified 
 * HP Sales certify
 * ICSI\|CNSS Certified Network Security Speciallist
+* Certificate of The Skillfulness as Cyber-Warrior by IXIA Cyber Combat 2018
 
 >**Specialties**
 
