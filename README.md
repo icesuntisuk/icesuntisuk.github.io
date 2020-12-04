@@ -66,7 +66,7 @@ To formulate, implement, monitor and be responsible for strategic planning, tele
 * Executive communication & leadership
 
 
->His **hobbies** include playing basketball, reading book, hiking, playing game and running.
+>My **hobbies** include playing basketball, reading book, hiking, playing game and running.
 
 >**Blog**
 
