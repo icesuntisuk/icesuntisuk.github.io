@@ -13,8 +13,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * **Working**: Security Officer @ Cyber Center.
     * Cyber Center is an office under Defence Information and Space Technology Department (DIST) in the Office of the Permanent Secretary for Defence, Ministry of Defense. ([ref.](http://dist.mod.go.th/Recommend/Responsibility.aspx ))
 
-DIST Mission:
-To formulate, implement, monitor and be responsible for strategic planning, telecommunications, broadcasting, cybersecurity, technology intelligence for the nation’s security and strategic defence policy including the executive development issues assigned and supervised within the framework of the Director of Defence Information and Space Technology Department.
+    * DIST Mission: To formulate, implement, monitor and be responsible for strategic planning, telecommunications, broadcasting, cybersecurity, technology intelligence for the nation’s security and strategic defence policy including the executive development issues assigned and supervised within the framework of the Director of Defence Information and Space Technology Department.
 * **2012 - 2017**": Network Engineer
     * Worked on the project which is implementing the enterprise network.
     * Designed the enterprise network.
