@@ -32,7 +32,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * **Studying**: Master Computer Science in Cybersecurity Management at Mahanakorn University. (GPA: 3.90)
     * Received a scholarship.
     * Instructor Course:  Paloalto Firewall Essentials 
-    * lecturer in Cyber Security in action 2
+    * Lecturer in Cyber Security in action 2
         * Topic: Security exercise in the real world
 * **Graduated**: Master of Business Administration from University of the Thai Chamber and Commerce in 2016. (GPA: 3.57)
 * **Graduated**: First class honours Bachelor of Computer Engineering form Mahanakorn University of Technology in 2012. (GPA: 3.50)
