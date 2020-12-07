@@ -1,4 +1,4 @@
-# Secure Access Service Edge (SASE)
+#  What is SASE (Secure Access Service Edge)
 
 [Gartner](https://www.gartner.com/doc/reprints?id=1-1OG9EZYB&ct=190903&st=sb) ได้ออกรายงานชื่อ "The Furuture of Network Security Is in the Cloud" ซึ่งในเนื้อหามีการบัญญัติศัพท์ของ Secure Access Service Edge ขึ้นมา โดยจะกล่าวถึงการใช้งาน Cloud based application ที่มากยิ่งขึ้น ทำให้การบริหารจัดการผู้ใช้งานและการควบคุมนโยบายการรักษาความปลอดภัยเครือข่าย ภายในหน่วยงานเป็นไปได้ยาก 
 
