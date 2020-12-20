@@ -41,5 +41,6 @@ Step 8.4: ใส่ค่าที่ได้จาก Authenticator แล้�
 Step9: เสร็จเรียบร้อยครับ
 ![](/KB/img/GH-Success.jpg)
 
-Powerby : 
+Powered By : 
 Icesuntisuk and Sakarin
+๒๐ ธ.ค.๖๓
