@@ -59,7 +59,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * Unified threat management (UTM) / Next Generation Firewalls (NGFW)
 * Networking
 * Risk assessment 
-* Security event and information management (SIEM)
+* Security Operations Center (SOC)
 * Security analytics
 * Human factors in security
 * Incident response
