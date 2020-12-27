@@ -78,5 +78,4 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * [How to fix XSS-Reflected (GET)](/KB/xss-reflected-get.md)
 * [Secure Access Service Edge (SASE)](/KB/SASE.md)
 * [2-Factorauthentication on GitHub](/KB/2factorauthGitHub.md)
-
 * [OWASP ASVS V11 Business Logic Verification Requirements](https://gitlab.com/NEIS0736/2020/-/wikis/Requirement/V11-Business-Logic-Verification-Requirements)
