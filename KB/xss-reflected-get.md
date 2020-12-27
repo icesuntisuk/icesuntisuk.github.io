@@ -40,9 +40,19 @@ Step 8: เมื่อ Scan เสร็จเรียบร้อยเรา
 ![](/KB/img/xss-get-08.jpg)
 
 Step 9: จากนั้นทำการแก้ไข Code โดยในที่นี้ให้ใส่ Function เพิ่มเติมไปในส่วนที่โปรแกรม Rips ได้แจ้งให้เราทราบ ในที่นี้เราจะใช้ Function **htmlentities**
+![](/KB/img/xss-get-09.jpg)
 
+Step 10: เข้าไปแก้ไข Code ของเราตาม Help ได้เลยครับ
 
+**ก่อนใส่**
+![](/KB/img/xss-get-10.jpg)
 
-Powered By : 
+**หลังใส่**
+![](/KB/img/xss-get-11.jpg)
+
+Step 11: ลอง Scan ด้วย Rips อีกครั้ง จะเห็นได้ว่าช่องโหว่ของเราได้หายไปแล้ว 
+![](/KB/img/xss-get-12.jpg)
+
+**Powered By** : 
 Icesuntisuk and Sakarin
 ๒๗ ธ.ค.๖๓
