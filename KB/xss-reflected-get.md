@@ -22,7 +22,27 @@ Lastname  = <font size='50' color='#f00'>XXS</font>
 
 Step 5: คราวนี้เราลองใส่ 
 ``` html
-Firstname = <script>alert('hello world')</script>
+Firstname = <script>alert('HACK')</script>
 Lastname  = bar
 ```
+![](/KB/img/xss-get-05.jpg)
+จะเห็นได้ว่าเราสามารถยัด Script อะไรก็ได้เข้าไปในช่องใส่ ซึ่งรวมถึง Shell ด้วย
 
+
+Step 6: ในขั้นตอนนี้เราต้องเข้าไปดูที่ไฟล์ xss_get.php ของเราเพื่อไปดูว่า Code ของเรามีส่วนไหนที่ผิดปกติ โดยเราสามารถใช้ WinSCP เพื่อเข้าไปดู Path ของ Code เรา
+![](/KB/img/xss-get-06.jpg)
+
+
+Step 7: เมื่อได้ Path ของ Code เราก็สามารถตรวจสอบด้วย rips เพื่อหา Vulnerability ภายใน Code จากโปรแกรม rips ซึ่งเป็น Static Web Scan ซึ่งสามารถกด **Scan** ได้เลยเมื่อใส่ข้อมุล Path ถูกต้อง
+![](/KB/img/xss-get-07.jpg)
+
+Step 8: เมื่อ Scan เสร็จเรียบร้อยเราสามารถเห็นได้ว่า Code มีช่องโหว่อะไรบ้าง ซึ่งเราสามารถเลือก Help เพื่อตรวจสอบวิธีการแก้ไข Code
+![](/KB/img/xss-get-08.jpg)
+
+Step 9: จากนั้นทำการแก้ไข Code โดยในที่นี้ให้ใส่ Function เพิ่มเติมไปในส่วนที่โปรแกรม Rips ได้แจ้งให้เราทราบ ในที่นี้เราจะใช้ Function **htmlentities**
+
+
+
+Powered By : 
+Icesuntisuk and Sakarin
+๒๗ ธ.ค.๖๓
