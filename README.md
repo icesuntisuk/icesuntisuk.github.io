@@ -75,6 +75,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 >**Landing to Icesuntisuk Knowledge Storage**
 
+* [How to fix XSS-Reflected (GET)](/KB/xss-reflected-get.md)
 * [Secure Access Service Edge (SASE)](/KB/SASE.md)
 * [2-Factorauthentication on GitHub](/KB/2factorauthGitHub.md)
 
