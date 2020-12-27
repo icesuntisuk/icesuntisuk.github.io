@@ -1,4 +1,4 @@
-# XSS-Reflected(GET)
+# How to fix XSS-Reflected (GET)? 
 
 สำหรับบทความนี้จะเป็นการ POC XSS-Reflected(GET) บน bWAPP 
 
@@ -52,6 +52,9 @@ Step 10: เข้าไปแก้ไข Code ของเราตาม Help
 
 Step 11: ลอง Scan ด้วย Rips อีกครั้ง จะเห็นได้ว่าช่องโหว่ของเราได้หายไปแล้ว 
 ![](/KB/img/xss-get-12.jpg)
+
+Step 12: ลองทดสอบอีกทีบนหน้า Page จะเห็นได้ว่า Script เราไม่ได้ผลแล้ว 
+![](/KB/img/xss-get-13.jpg)
 
 **Powered By** : 
 Icesuntisuk and Sakarin
