@@ -75,7 +75,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 >**Landing to Icesuntisuk Knowledge Storage**
 
-* [การสร้าง UUID บน Python](/KB/ีีuuid_gen_python.md)
+* [การสร้าง UUID บน Python](/KB/uuid_gen_python.md)
 * [Library requests_safe ทำงานอย่างไร](/KB/ีีrequests_sage_python.md)
 * [How to fix XSS-Reflected (GET)](/KB/xss-reflected-get.md)
 * [Secure Access Service Edge (SASE)](/KB/SASE.md)
