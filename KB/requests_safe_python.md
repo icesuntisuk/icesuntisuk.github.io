@@ -26,7 +26,7 @@ with Session() as s:
 
 ## IPv4 unsage network 
 |Name |Network (CIDR)|
-| ------------------------ |-------------|
+| ------------- |:-------------:|
 |RFC1918 (private network) |10.0.0.0/8|
 |RFC1918 |172.16.0.0/12|
 |RFC1918 |192.168.0.0/16|
@@ -46,7 +46,7 @@ with Session() as s:
 
 ## IPv6 unsage network 
 |Name |Network (CIDR)|
-| ------------------------ |-------------|
+| ------------- |:-------------:|
 |Localhost/unspecified address| ::/128|
 |Loopback |::1/128|
 |IPv4 mapped address | ::ffff:0:0/96|
