@@ -82,3 +82,5 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * [Secure Access Service Edge (SASE)](/KB/SASE.md)
 * [2-Factorauthentication on GitHub](/KB/2factorauthGitHub.md)
 * [OWASP ASVS V11 Business Logic Verification Requirements](https://gitlab.com/NEIS0736/2020/-/wikis/Requirement/V11-Business-Logic-Verification-Requirements)
+
+**Created in 2020**
