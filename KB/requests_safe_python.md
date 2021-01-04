@@ -11,7 +11,7 @@ import requests
 
 # การเรียกใช้งานผ่าน : Requests
 x = requests.get('https://icesuntisuk.github.io')
-print("Response from unsafe > Code "+str(x.status_code))
+print("Response from unsafe > Code "+ str(x.status_code))
 
 # การเรียกใช้งานผ่าน : Requests-Safe
 with Session() as s:
