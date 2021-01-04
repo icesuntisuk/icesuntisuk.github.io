@@ -56,3 +56,6 @@ SASE จะช่วยให้ทีมรักษาความปลอด
 - สามารถจัดทำนโยบายการรักษาความปลอดภัยได้จากส่วนกลาง 
 
 Reference : [https://www.gartner.com/doc/reprints?id=1-1OG9EZYB&ct=190903&st=sb](https://www.gartner.com/doc/reprints?id=1-1OG9EZYB&ct=190903&st=sb)
+
+Powered By : Icesuntisuk 
+๖ ธ.ค.๖๓
