@@ -10,11 +10,11 @@ from time import ctime
 from datetime import datetime
 
 now = datetime.now()
-print("Date from machine:", now)
+print("Datetime from machine:", now)
 
 c = ntplib.NTPClient()
 response = c.request('time2.navy.mi.th')
-print("Date from NTP:"+str(ctime(response.tx_time)))
+print("Datetime from NTP:"+ str(ctime(response.tx_time)))
 ```
 **ผลการทดสอบ**
 
