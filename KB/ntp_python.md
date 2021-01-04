@@ -24,4 +24,4 @@ print("Datetime from NTP:"+ str(ctime(response.tx_time)))
 
 **Powered By** : 
 Icesuntisuk 
-๔ ธ.ค.๖๔
+๔ ม.ค.๖๔

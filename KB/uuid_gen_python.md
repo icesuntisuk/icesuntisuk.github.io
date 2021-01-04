@@ -32,4 +32,4 @@ print("UUID Ver 5 : " + str(uuid.uuid5(uuid.NAMESPACE_DNS, 'icesuntisuk.github.i
 
 **Powered By** : 
 Icesuntisuk 
-๓ ธ.ค.๖๔
+๓ ม.ค.๖๔
