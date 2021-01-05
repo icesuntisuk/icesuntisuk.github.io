@@ -75,6 +75,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 >**Landing to Icesuntisuk Knowledge Storage**
 
+* [การทำ Password Policy สำหรับการตั้ง Password ด้วย Python](/KB/passwordpolicy_python.md)
 * [การ Encode/Decode Base64 ด้วย Python](/KB/base64_python.md)
 * [การดึงค่าเวลาจาก NTP Server ด้วย Python](/KB/ntp_python.md)
 * [การสร้าง UUID บน Python](/KB/uuid_gen_python.md)
