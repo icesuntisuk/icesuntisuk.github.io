@@ -20,7 +20,7 @@ policy = PasswordPolicy.from_names(
     nonletters=2,  # need min. 2 non-letter characters (digits, specials, anything)
 )
 print("Bad Password[123456]: " + str(policy.test('123456')))
-print("Good Password[]: " + str(policy.test('Ic3Sunt1suk.github.io')))
+print("Good Password[Ic3Sunt1suk.github.io]: " + str(policy.test('Ic3Sunt1suk.github.io')))
 ```
 
 **ผลการทดสอบ**
