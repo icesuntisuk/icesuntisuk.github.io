@@ -32,3 +32,7 @@ print("Good Password[]: " + str(policy.test('Ic3Sunt1suk.github.io')))
 Reference : 
 * [Password-strength](https://pypi.org/project/password-strength/)
 * [List of the most common passwords@wiki](https://en.wikipedia.org/wiki/List_of_the_most_common_passwords)
+
+**Powered By** : 
+Icesuntisuk 
+๕ ม.ค.๖๔
