@@ -24,4 +24,4 @@ print("Decode text: "+str(base64.b64decode(encodedStr),"utf-8"))
 
 **Powered By** : 
 Icesuntisuk 
-๖ ม.ค.๖๔
+๕ ม.ค.๖๔
