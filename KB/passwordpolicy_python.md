@@ -19,13 +19,13 @@ policy = PasswordPolicy.from_names(
     special=2,  # need min. 2 special characters
     nonletters=2,  # need min. 2 non-letter characters (digits, specials, anything)
 )
-print("Bad Password[123456]: " + str(policy.test('123456')))
+print("Bad Password[123456] : " + str(policy.test('123456')))
 print("Good Password[Ic3Sunt1suk.github.io]: " + str(policy.test('Ic3Sunt1suk.github.io')))
 ```
 
 **ผลการทดสอบ**
 
- ![](/KB/img/passwordpolicy.png)
+ ![](/KB/img/password_policy.png)
 
  จะสังเกตได้ว่าเมื่อเราใส่ค่า Password ที่มีความง่ายตัวของ Library จะคืนค่าที่เป็น List ออกมาให้ตามเงี่อนไขที่เราได้กำหนด แต่หากเรากำหนดรหัสผ่านที่มีความปลอดภัยก็จะส่ง List ที่ไม่มีข้อมูลใดๆ กลับมา ซึ่งผู้พัฒนาสามารถนำไปต่อยอดเพื่อให้โปรแกรมของตนมีความปลอดภัยได้ตามที่ต้องการ
 
