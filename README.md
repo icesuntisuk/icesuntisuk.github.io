@@ -75,6 +75,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 >**Landing to Icesuntisuk Knowledge Storage**
 
+* [สร้าง HTTP Server สำหรับแชร์ไฟล์อย่างง่ายด้วย Python](/KB/http_server.md)
 * [การทำ Thread Timeout ให้กับ Function ใน Python ](/KB/ThreadTimeout_python)
 * [การทำ Password Policy สำหรับการตั้ง Password ด้วย Python](/KB/passwordpolicy_python.md)
 * [การ Encode/Decode Base64 ด้วย Python](/KB/base64_python.md)
