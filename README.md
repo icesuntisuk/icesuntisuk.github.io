@@ -1,6 +1,6 @@
 ![](/img/ice.png){:height="30%" width="30%" style="float: right"}
 
-# Biography of <font color="blue"> Lt.Suntisuk Thepthong </font>
+# Biography of <font color="white"> Lt.Suntisuk Thepthong </font>
 
 I have had the great fortune to be involved with nearly every dimension of cyber security. I have deployed security technologies, designed infrastructure and developed security programs to maturity. 
 
