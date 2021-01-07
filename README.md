@@ -2,9 +2,9 @@
 
 # Biography of <font color="white"> Lt.Suntisuk Thepthong </font>
 
-I have had the great fortune to be involved with nearly every dimension of cyber security. I have deployed security technologies, designed infrastructure and developed security programs to maturity. 
+I have had the great fortune to be involved with nearly every dimension of cyber security. I deployed security technologies, designed infrastructure and developed security programs to maturity. 
 
->**Experience**
+### **Experience**
 
 * **Working**: Instructor and Security Specialist @ Netprime System.
     * Course: Palo Alto firewall workshop
@@ -27,7 +27,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Responsible for support computer system and network.
 
 
->**Education**
+### **Education**
 
 * **Studying**: Master Computer Science in Cybersecurity Management at Mahanakorn University. (GPA: 3.90)
     * Received a scholarship.
@@ -40,7 +40,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Teacher assistant of the course.
     * Received a scholarship.
 
->**Certification**
+### **Certification**
 
 * E\|CSA
 * Comptia Security+
@@ -53,7 +53,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * ICSI\|CNSS Certified Network Security Speciallist
 * Certificate of The Skillfulness as Cyber-Warrior by IXIA Cyber Combat 2018
 
->**Specialties**
+#### **Specialties**
 
 * Intrusion Detection & Prevention Systems (IDS/IPS)
 * Unified threat management (UTM) / Next Generation Firewalls (NGFW)
@@ -66,14 +66,14 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * Executive communication & leadership
 
 
->My **hobbies** include playing basketball, reading book, hiking, playing game and running.
+My **hobbies** include playing basketball, reading book, hiking, playing game and running.
 
->**Blog**
+### **Blog**
 
 * [Icesuntisuk Blogspot](https://icesuntisuk.blogspot.com)
 * [Page: หมู่บ้านไอที](https://www.facebook.com/itvill)
 
->**Landing to Icesuntisuk Knowledge Storage**
+### **Landing to Icesuntisuk Knowledge Storage**
 
 * [สร้าง HTTP Server สำหรับแชร์ไฟล์อย่างง่ายด้วย Python](/KB/http_server.md)
 * [การทำ Thread Timeout ให้กับ Function ใน Python ](/KB/ThreadTimeout_python)
