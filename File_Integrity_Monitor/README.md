@@ -2,8 +2,6 @@
 
 โปรแกรมนี้ใช้สำหรับการตรวจสอบการเปลี่ยนแปลงไฟล์ที่ต้องการ Monitor ใน Path นั้นๆ ที่ Run โปรแกรม โดยจะทำการแจ้งเตือนไปยังผู้ดูแลกรณีมีการเปลี่ยนแปลงค่า Hash ของไฟล์
 
-Powered by Icesuntisuk and Thanakorn
-
 ``` python
 import os, hashlib, time, requests
 def lineNotify(msg):
@@ -27,3 +25,5 @@ while True:
         files[file] = md5
     time.sleep(1)
 ```
+
+Powered by Icesuntisuk and Thanakorn
