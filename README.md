@@ -25,6 +25,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Migrated WAN link from MPLS to ADVPN. (Connected branches by ADSL+LTE to HQ)
     * Worked in a project team which works across the time line.
     * Responsible for design and implement network security in cooperate.
+
 * **2011 - 2012**: Business Development Engineer
     * Responsible for support computer system and network.
 
