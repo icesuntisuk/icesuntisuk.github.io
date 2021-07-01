@@ -10,7 +10,8 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Course: Palo Alto firewall workshop
     * Course: Fortigate firewall workshop
     * Course: Basic Security Exercise
-* **Working**: Plan and Engineering Division
+* **Working**: Plan and Engineering Division @DIST
+
 * **2017 - 2020**: Security Officer @ Cyber Center.
     * Cyber Center is an office under Defence Information and Space Technology Department (DIST) in the Office of the Permanent Secretary for Defence, Ministry of Defense. ([ref.](http://dist.mod.go.th/Recommend/Responsibility.aspx ))
 
