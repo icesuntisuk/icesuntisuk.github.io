@@ -95,5 +95,6 @@ My **hobbies** include playing basketball, reading book, hiking, playing game an
 
 ### **บทเรียนฟรี หัวข้อ เครือข่ายคอมพิวเตอร์ 101**
 * [EP.1 ความรู้พื้นฐานเกี่ยวกับเครือข่ายและการสื่อสาร](https://youtu.be/U3iJ3d8Y-Sw)
+* [EP.2 รูปแบบการเชื่อมต่อเครือข่ายสารสนเทศ](https://youtu.be/0As4MsB7SIQ)
 
 **Created in ๒๐๒๐**
