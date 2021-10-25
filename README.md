@@ -93,4 +93,7 @@ My **hobbies** include playing basketball, reading book, hiking, playing game an
 * [OWASP ASVS V11 Business Logic Verification Requirements](https://gitlab.com/NEIS0736/2020/-/wikis/Requirement/V11-Business-Logic-Verification-Requirements)
 * [FIM to Line notify powered by Thanakorn and Icesuntisuk](/File_Integrity_Monitor/README.md)
 
+### **บทเรียนฟรี หัวข้อ เครือข่ายคอมพิวเตอร์ 101**
+* [EP.1 ความรู้พื้นฐานเกี่ยวกับเครือข่ายและการสื่อสาร](https://youtu.be/U3iJ3d8Y-Sw)
+
 **Created in ๒๐๒๐**
