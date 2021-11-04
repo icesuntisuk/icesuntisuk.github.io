@@ -99,5 +99,6 @@ My **hobbies** include playing basketball, reading book, hiking, playing game an
 * [EP.3 OSI Model](https://youtu.be/wdS62jXABwE)
 * [EP.4 สายนำสัญญาณ](https://youtu.be/PH26CParOn8)
 * [EP.5 การออกแบบเครือข่ายสารสนเทศ](https://youtu.be/FM6pG8839Bg)
+* [EP.6 การออกแบบ IP Address](https://youtu.be/6FoqXt8bA1c)
 
 **Created in ๒๐๒๐**
