@@ -47,6 +47,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 ### **Certification**
 
 * E\|CSA
+* Comptia Network+
 * Comptia Security+
 * CSFPC (Cyber Security Foundation Professional Certificate)
 * CCNP
@@ -100,5 +101,9 @@ My **hobbies** include playing basketball, reading book, hiking, playing game an
 * [EP.4 สายนำสัญญาณ](https://youtu.be/PH26CParOn8)
 * [EP.5 การออกแบบเครือข่ายสารสนเทศ](https://youtu.be/FM6pG8839Bg)
 * [EP.6 การออกแบบ IP Address](https://youtu.be/6FoqXt8bA1c)
+* [EP.7 Network Historical part 1](https://youtu.be/7VWXuvOOljI)
+* [EP.8 Network Historical part 2](https://youtu.be/G1Rdl-K9Vkg)
+* [EP.9 VLAN](https://youtu.be/2mi76Vvn4Oc)
+* [EP.10 Inter VLAN](https://youtu.be/BQ5-TbYECFE)
 
 **Created in ๒๐๒๐**
