@@ -47,8 +47,8 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 ### **Certification**
 
 * E\|CSA
-* Comptia Network+
-* Comptia Security+
+* CompTIA Network+
+* CompTIA Security+
 * CSFPC (Cyber Security Foundation Professional Certificate)
 * CCNP
 * CCDA
