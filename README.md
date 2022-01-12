@@ -46,6 +46,10 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 ### **Certification**
 
+* Fortinet NSE 4 (Network Security Professional)
+* Fortinet NSE 3 (Fortinet Product Awareness)
+* Fortinet NSE 2 (Network Security Associate)
+* Fortinet NSE 1 (Network Security Associate)
 * E\|CSA
 * CompTIA Network+
 * CompTIA Security+
