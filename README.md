@@ -80,8 +80,9 @@ My **hobbies** include playing basketball, reading book, hiking, playing game an
 
 ### **Blog**
 
-* [Icesuntisuk Blogspot](https://icesuntisuk.blogspot.com)
+* [Blog: Icesuntisuk Blogspot](https://icesuntisuk.blogspot.com)
 * [Page: หมู่บ้านไอที](https://www.facebook.com/itvill)
+* [Youtube Channel: Ice Suntisuk](https://www.youtube.com/channel/UCRqn_pcffcnnyG6boG6aZow)
 
 ### **Landing to Icesuntisuk Knowledge Storage**
 
