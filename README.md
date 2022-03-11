@@ -33,7 +33,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 ### **Education**
 
-* **Graduated**: Master Computer Science in Cybersecurity at Mahanakorn University. (GPA: 3.92)
+* **Graduated**: Master Computer Science (Network Engineering and Information Security) Major Cybersecurity at Mahanakorn University. (GPA: 3.92)
     * Received a scholarship.
     * Instructor Course:  Paloalto Firewall Essentials 
     * Lecturer in Cyber Security in action 2
@@ -109,5 +109,8 @@ My **hobbies** include playing basketball, reading book, hiking, playing game an
 * [EP.8 Network Historical part 2](https://youtu.be/G1Rdl-K9Vkg)
 * [EP.9 VLAN](https://youtu.be/2mi76Vvn4Oc)
 * [EP.10 Inter VLAN](https://youtu.be/BQ5-TbYECFE)
+* [EP.11 Inter VLAN + Dot1Q](https://youtu.be/WvYUrsGpklk)
+* [EP.12 Inter VLAN (L3 Switch)](https://youtu.be/dxEkfXSKt8o)
+* [EP.13 CDP Protocol](https://youtu.be/qkgbYK6iKdQ)
 
 **Created in ๒๐๒๐**
