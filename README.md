@@ -76,7 +76,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * Executive communication & leadership
 
 
-My **hobbies** include playing basketball, reading book, hiking, playing game and running.
+My **hobbies** include Playing Basketball, Running, Surf Skating and Reading books.
 
 ### **Blog**
 
