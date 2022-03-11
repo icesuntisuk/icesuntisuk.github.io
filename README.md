@@ -33,7 +33,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 ### **Education**
 
-* **Graduated**: Master Computer Science (Network Engineering and Information Security) Major Cybersecurity at Mahanakorn University. (GPA: 3.92)
+* **Graduated**: Master Computer Science (Network Engineering and Information Security) Major Cybersecurity at Mahanakorn University of Technology in 2021. (GPA: 3.92)
     * Received a scholarship.
     * Instructor Course:  Paloalto Firewall Essentials 
     * Lecturer in Cyber Security in action 2
