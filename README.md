@@ -33,7 +33,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 ### **Education**
 
-* **Graduated**: Master Computer Science (Network Engineering and Information Security) Major Cyber Security at Mahanakorn University of Technology in 2021. (GPA: 3.92)
+* **Graduated**: Master Computer Science (Network Engineering and Information Security) Major Cyber Security from Mahanakorn University of Technology in 2021. (GPA: 3.92)
     * Received a scholarship.
     * Instructor Course:  Paloalto Firewall Essentials 
     * Lecturer in Cyber Security in action 2
@@ -50,13 +50,13 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * Fortinet NSE 3 (Fortinet Product Awareness)
 * Fortinet NSE 2 (Network Security Associate)
 * Fortinet NSE 1 (Network Security Associate)
-* E\|CSA
+* E\|CSA (EC Council Certified Security Analyst)
 * CompTIA Network+
 * CompTIA Security+
 * CSFPC (Cyber Security Foundation Professional Certificate)
-* CCNP
-* CCDA
-* CCNA
+* CCNP (Cisco Certified Network Professional)
+* CCDA (Cisco Certified Design Associate)
+* CCNA (Cisco Certified Network Associate)
 * PaloAlto ACE
 * HP Advanced Sales Certified 
 * HP Sales certify
