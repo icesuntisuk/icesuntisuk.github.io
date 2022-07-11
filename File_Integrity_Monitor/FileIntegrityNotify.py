@@ -16,6 +16,6 @@ while True:
         if file in files and md5 != files[file]:
             msg = str(time.strftime('%Y-%m-%d %H:%M:%S')) + str(file) + "has been changed"
             print(msg)
-            lineNotify(msg)
+            #lineNotify(msg)
         files[file] = md5
     time.sleep(1)
