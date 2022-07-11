@@ -1,3 +1,4 @@
+# v.1 FIM in current directory
 import os, hashlib, time, requests
 def lineNotify(msg):
     url = 'https://notify-api.line.me/api/notify'
