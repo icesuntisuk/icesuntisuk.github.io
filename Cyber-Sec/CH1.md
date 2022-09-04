@@ -35,5 +35,13 @@ Module 2: Risk Management Process
 คำศัพท์ที่เกี่ยวข้องกับการบริหารจัดการความเสี่ยงมีดังต่อไปนี้ 
 * Vulnerability เป็นจุดอ่อนขององค์กรที่อาจเป็นช่องทางที่ทำให้เกิดความเสียหายต่อระบบหรือข้อมูลได้ 
 * Threat เป็นภัยคุกคามจากบุคคลหรือบางสิ่งที่เจาะช่องโหว่ของระบบ เพื่อเพิ่มสิทธิในการเข้าถึง
+    * Therat Actor หรือ Malicious Actor  - ผู้คุกคาม โดยสามารถแบ่งได้ดังนี้
+        * Insiders เกิดจากความไม่ได้ตั้งใจของบุคคลหรือการเกิด Human Error 
+        * Outside individuals หรือ informal groups เช่น กลุ่มผู้ฉวยโอกาส หรือผู้ค้นหาช่องโหว่        
+        * Formal entities that are nonpolitical เช่น คู่แข่งทางธุรกิจ และอาชญากรรมทางไซเบอร์
+        * Formal entities that are political เช่น terrorists, nation-states, และ hacktivists
+        * Intelligence หรือ information gatherers 
+        * Technology เช่ free-running bots หรือระบบ AI 
+    * Threat Vector - เป็นช่องทาง, กระบวนการ หรือเทคนิคที่ใช้สำหรับโจมตีเป้าหมาย 
 * Asset เป็นสินทรัพย์หรือทรัพยสินที่จะต้องได้รับการปกป้อง
 
