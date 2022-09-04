@@ -1,4 +1,5 @@
-Chapter 1: Security Principles 
+Chapter 1: Security Principles
+ 
 **The CIA Triad**
 * C - Confidentiality relates to permitting authorized access to information, while at the same time protecting information from improper disclosure.
     - Personally Identifiable Information (PII) is a term related to the area of confidentiality. It pertains to any data about an individual that could be used to identify them. Other terms related to confidentiality are protected health information (PHI) , which is information regarding one’s health status, and classified or sensitive information, which includes trade secrets, research, business plans and intellectual property.
