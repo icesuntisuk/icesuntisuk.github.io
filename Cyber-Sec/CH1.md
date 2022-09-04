@@ -44,4 +44,5 @@ Module 2: Risk Management Process
         * Technology เช่ free-running bots หรือระบบ AI 
     * Threat Vector - เป็นช่องทาง, กระบวนการ หรือเทคนิคที่ใช้สำหรับโจมตีเป้าหมาย 
 * Asset เป็นสินทรัพย์หรือทรัพยสินที่จะต้องได้รับการปกป้อง
+* Lilelihood 
 
