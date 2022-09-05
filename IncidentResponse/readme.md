@@ -232,8 +232,6 @@ unzip chainsaw_all_platforms+rules+examples.zip
 cd chainsaw
 chmod +x chainsaw_x86_64-apple-darwin
 
-./chainsaw_x86_64-apple-darwin hunt [TARGET FILE] -s ../sigma/ --mapping mappings/sigma-event-logs-all.yml
-
-./chainsaw_x86_64-apple-darwin hunt sysmon_local_account_creation_and_added_admingroup_12_13.evtx -s sigma --mapping mappings/sigma-event-logs-all.yml
+./chainsaw_x86_64-apple-darwin hunt [TARGET FILE] -s ./sigma/ --mapping mappings/sigma-event-logs-all.yml
 ```
 Powered by Icesuntisuk
