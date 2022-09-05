@@ -88,6 +88,10 @@
 - Hash Value
 - IP Addresses
 - Domain Name 
+  - Unicode
+  - Legitimate Domain
+  - Punycode
+  - Malicious Homograph - เป็นการ Rander Domain name ออกมาเป็นตัวอักษร โดยเป็นรูปแบบการหลอกให้ Browser แปลความของข้อความผิดไป ทั้งนี้ บน Browser ใหม่ๆ จะมีการป้องกันข้อมูลดังกล่าวไว้แล้ว
 - Network/Host Artifacets 
   - Network Artifacts 
     - Rare User-Agents String
@@ -110,6 +114,6 @@
   - certutil - สร้าง Certificate และมักถูกใช้สำหรับ Download file ได้ ซึ่งอยู่ภายใต้ระบบปฏิบัติการ Windows 
   - LOLBAS หรือ Living Off The Land Binaries, Scripts and Libraries เป็นตัวอย่างคำสั่งสำหรับใช้ทำ Threat Hunting เพื่อหลบเลี่ยงการตรวจจับ รายละเอียดตาม [link](https://lolbas-project.github.io)
 - TTPs (Tactics, Techniques, Procedure)
-  - [MITRE](https://attack.mitre.org) ได้ทำการแบ่งและขยายความเพิ่มเติมจาก Cyber Kill Chain โดยอ้างอิงตาม Tactic, Technique และ Procedure ขอแต่ละการโจมตี โดยอ้างอิงตาม ID
+  - [MITRE](https://attack.mitre.org) ได้ทำการแบ่งและขยายความเพิ่มเติมจาก Cyber Kill Chain โดยอ้างอิงตาม Tactic, Technique และ Procedure ขอแต่ละการโจมตี โดยอ้างอิงตาม ID ซึ่งจะมีข้อมูลของการทำ Mitigation และ การ Detection ให้สามารถนำไปปรับใช้กับองค์กรได้ 
 
 Powered by Icesuntisuk
