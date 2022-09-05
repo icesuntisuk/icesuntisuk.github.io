@@ -8,7 +8,7 @@
     - System integrity เป็นรูปแบบการจัดทำ Baseline สำหรับระบบ เพื่อให้มั่นใจได้ว่าระบบมีการตั้งค่าไว้อย่างถูกต้องสมบูรณ์โดยที่ไม่ถูกเปลี่ยนแปลงหรือแก้ไขการตั้งค่าแต่อย่างใด 
 * A - ข้อมูลต้องมีความพร้อมใช้งานเมื่อถูกเรียกใช้ กล่าวคือข้อมูลจะต้องสามารถเข้าถึงได้และสามารถใช้งานได้จากผู้ที่มีสิทธิการเข้าถึงข้อมูลดังกล่าวเมื่อมีการร้องขอ
 
-## SOC - Security Operation Center 
+## คำศัพท์ที่เกี่ยวข้องกับ IR
 **Event** - เป็นเหตุการณ์ที่เกิดขึ้น 
 
 **Alert** - เป็นส่วนที่เกิดจากการป้องกันหรือการแจ้งเตือนต่าง ๆ ที่เกิดขึ้นการ Monitor ของระบบ
@@ -16,7 +16,7 @@
 **Incident** - เป็นเหตุการณ์ที่เกิดขึ้น และเกิดผลกระทบต่อ C-I-A ต่อองค์กร 
 
 **Incident Response Team** 
-มีหน้าที่ประสานงานร่วมกับกลุ่มผู้ปฏิบัติทั้งจากภายในและภายนอก โดยมีเป้าหมายให้ระบบสามารถกลับมาทำงานได้ตามปกติเมื่อเกิด Incident กับระบบที่เกี่ยวข้อง และอ้างอิงการดำเนินการจาก NIST Framework ได้แก่ 
+มีหน้าที่ประสานงานร่วมกับกลุ่มผู้ปฏิบัติทั้งจากภายในและภายนอก โดยมีเป้าหมายให้ระบบสามารถกลับมาทำงานได้ตามปกติเมื่อเกิด Incident กับระบบที่เกี่ยวข้อง และอ้างอิงการดำเนินการจาก [NIST Cyber Security Framework](https://www.nist.gov/cyberframework) ดังนี้ 
 - Preparation phase เป็นขั้นตอนในการเตรียมทุกอย่างให้พร้อมสำหรับการรับมือเหตุการณ์ภัยคุกคาม เช่น​ ช่องทางการสื่อสาร,​ Hardware, Software, Baseline เป็นต้น 
 - Detection and Analysis phase เป็นขั้นตอนการตรวจจับการโจมตีที่เกิดขึ้น ได้แก่ 
   - Attack Vectors (Web, Services, USB, People, Email)
@@ -40,4 +40,42 @@
   - Incident Handling Checklist 
   - Recommendations 
   - Law Enforcement 
+
+## SOC - Security Operation Center 
+เป็นสถานที่สำหรับรับมือเหตุการณ์หรือภัยคุกคามทางไซเบอร์ โดยมี SOC Team เป็นผู้ปฏิบัติภายใน SOC โดยประกอบไปด้วย Tier 1, Tier 2 และ Tier 3 โดยมีหน้าที่ดังนี้
+- Tier 1 ทำหน้าที่เป็น Operation Team และตรวจสอบการทำงานต่าง ๆ ให้เป็นไปตาม Playbook ที่ได้กำหนดไว้ 
+  - Notify from SIEM
+  - Analysys in Playbook 
+- Tier 2 ทำหน้าที่วิเคราะห์ข้อมูลหรือ Security Analyst ในเหตุการณ์ใหม่ๆ
+- Tier 3 ทำหน้าที่เป็น Therat Hunter Team 
+
+**Usecase หรือ คู่มือการปฏิบัติ**
+- Login with multiple country
+- Bruteforce Attack - ใน [CIS](https://www.cisecurity.org/cis-benchmarks/) ได้ระบุให้หลีกเลี่ยงการใช้ Default Admin users 
+- Internal Threat - สามารถตรวจจับได้จาก EDR หรือการจัดทำ User Baseline
+- Hacking with VPN
+- Zero-day Attack
+
+Skill, Ability and Knowledge 
+- สามารถดูข้อมูลกว้างๆ ได้จากตัวอย่าง [Link](https://cyberindustry.org/workrole)
+- [Security Certification Roadmap](https://pauljerimy.com/security-certification-roadmap/)
+
+**SOC Measurement** - เป็นการวัดประสิทธิภาพอง SOC สามารถประเมิน โดยอาศัยการวัดจากข้อมูลดังนี้
+- Data Feed Health - การตรวจสอบสถานะภาพของข้อมูลที่เข้ามาในระบบ สามารถนำมาใช้เป็นตัวชี้วัดภายใน SOC ได้ 
+- Coverage - มีความครอบคลุมการตรวจสอบมากแค่ไหน 
+- Moniroring SLAs/SLOs 
+  - SLA: Service Level Agreement
+  - SLO: Service Level Objective
+- Scanning and Sweeping 
+  - เป็นรูปแบบการแสกนของระบบ เพื่อตรวจสอบ Asset ของระบบตามวงรอบ ซึ่งจะสามารถทราบถึงความเสี่ยงและช่องโหว่ที่เกิดขึ้นกับระบบ
+  - สามารถตรวจสอบโดยอาศัยการแสกนช่องโหว่ได้ทั้งจาก On-Prem และ On-Cloud 
+- Analysis Performance - เป็นการเจาะจงไปยังการวัดผลจากการวิเคระห์
+  - % True Positive rate for escalation
+  - % Response rate for customer escalation
+  - Number of escalated case handled in last 30 days 
+  - Mean Time to close a case 
+- Masument with action
+  - Tabletop exercise
+  - Puple team exercise
+  - Surprise exercise 
 
