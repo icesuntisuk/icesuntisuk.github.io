@@ -220,5 +220,9 @@ Mitigation
 - source="/var/log/nginx/access.log' | head 1000 | top 50 uri
 - source="/var/log/nginx/access.log" | head 1000 | top 50 method
 
+**EVTX Analysis Tool**
+- Evtx hunter - จะช่วยให้สามารถตวตสอบข้อมูลของ Events log ใน Windows ในรูปแบบ Timeline
+- Event2Timeline - เป็นเครื่องมือที่แสดงผลออกมาเป็น Timeline
+- Chainsaw - เป็นเครื่องมือใช้สำหรับค้นหาและวิเคราะห์ข้อมูลของ Sigma Rule ซึ่งเป็นมาตรฐานกลางในการค้นหาข้อมูล
 
 Powered by Icesuntisuk
