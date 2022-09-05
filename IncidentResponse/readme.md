@@ -162,7 +162,7 @@ Microsoft-Windows-TerminalServices-LocalSessionManager
 - Event 25: Remote Desktop Services: Session reconnection succeeded
 - Event 39: Session X has been disconnected by session Y
 - Event 40: Session X has been disconnected, reason code Z
-- 
+  
 Mitigation
 - Change admin name to another name
 - Allow RDP only from internal network
