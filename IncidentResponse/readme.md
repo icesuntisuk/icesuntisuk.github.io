@@ -9,7 +9,7 @@
 * A - ข้อมูลต้องมีความพร้อมใช้งานเมื่อถูกเรียกใช้ กล่าวคือข้อมูลจะต้องสามารถเข้าถึงได้และสามารถใช้งานได้จากผู้ที่มีสิทธิการเข้าถึงข้อมูลดังกล่าวเมื่อมีการร้องขอ
 
 ___ 
-## คำศัพท์ที่เกี่ยวข้องกับ IR
+## คำศัพท์ที่เกี่ยวข้องกับ Incident Response
 **Event** - เป็นเหตุการณ์ที่เกิดขึ้น 
 
 **Alert** - เป็นส่วนที่เกิดจากการป้องกันหรือการแจ้งเตือนต่าง ๆ ที่เกิดขึ้นการ Monitor ของระบบ
@@ -221,10 +221,17 @@ Mitigation
 - source="/var/log/nginx/access.log" | head 1000 | top 50 method
 
 **EVTX Analysis Tool**
+- [Windows log Explore](https://www.malwarearchaeology.com/cheat-sheets)
+- Sysmon Configulation Best Practice 
+  - [SwiftOnSecurity](https://github.com/SwiftOnSecurity/sysmon-config) เป็นค่า Config ของ Sysmon โดยสามารถใช้คำสั่งดังนี้
+```powershell
+sysmon.exe -accepteula -i sysmonconfig-export.xml
+```
+
 - Evtx hunter - จะช่วยให้สามารถตวตสอบข้อมูลของ Events log ใน Windows ในรูปแบบ Timeline
 - Event2Timeline - เป็นเครื่องมือที่แสดงผลออกมาเป็น Timeline
 - Chainsaw - เป็นเครื่องมือใช้สำหรับค้นหาและวิเคราะห์ข้อมูลของ Sigma Rule ซึ่งเป็นมาตรฐานกลางในการค้นหาข้อมูล
-``` bash
+``` /bin/bash
 wget https://github.com/WithSecureLabs/chainsaw/releases/download/v2.0.0/chainsaw_all_platforms+rules+examples.zip
 
 unzip chainsaw_all_platforms+rules+examples.zip
@@ -234,4 +241,23 @@ chmod +x chainsaw_x86_64-apple-darwin
 
 ./chainsaw_x86_64-apple-darwin hunt [TARGET FILE] -s ./sigma/ --mapping mappings/sigma-event-logs-all.yml
 ```
+
+
+**Malware Analysis**
+Dynamic Analysis - เป็นเครื่องมือที่มีการจำลองสถานการณ์การรันโปรแกรม (RUN)
+- [Anlyz](https://sandbox.anlyz.io)
+- [Any.run](https://app.any.run)
+- [Comodo Valkyrie](https://valkyrie.comodo.com)
+- [Hybrid Analysis (Falcon Sandbox)](http://www.hybrid-analysis.com/)
+- [Intezer Analyze](https://www.intezer.com)
+- [SecondWrite Malware Deepview](https://www.secondwrite.com)
+- [Cuckoo Online](https://cuckoo.cert.ee/)
+
+Static Analysis - ไม่มีการรันโปรแกรม (NOT RUN) แต่อย่างใด และทำการตรวจสอบจาก Content 
+- [Malware Tacker Cryptam Document Scanner](http://www.malwaretracker.com/doc.php)
+- [ViCheck](https://vicheck.ca/)
+- [XecScan](http://scan.xecure-lab.com/)
+- [MASTIFF Online](https://mastiff-online.korelogic.com)
+- [Malware Tracker PDF Examiner](http://www.malwaretracker.com/pdf.php)
+
 Powered by Icesuntisuk
