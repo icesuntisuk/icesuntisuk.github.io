@@ -8,6 +8,7 @@
     - System integrity เป็นรูปแบบการจัดทำ Baseline สำหรับระบบ เพื่อให้มั่นใจได้ว่าระบบมีการตั้งค่าไว้อย่างถูกต้องสมบูรณ์โดยที่ไม่ถูกเปลี่ยนแปลงหรือแก้ไขการตั้งค่าแต่อย่างใด 
 * A - ข้อมูลต้องมีความพร้อมใช้งานเมื่อถูกเรียกใช้ กล่าวคือข้อมูลจะต้องสามารถเข้าถึงได้และสามารถใช้งานได้จากผู้ที่มีสิทธิการเข้าถึงข้อมูลดังกล่าวเมื่อมีการร้องขอ
 
+___ 
 ## คำศัพท์ที่เกี่ยวข้องกับ IR
 **Event** - เป็นเหตุการณ์ที่เกิดขึ้น 
 
@@ -40,6 +41,8 @@
   - Incident Handling Checklist 
   - Recommendations 
   - Law Enforcement 
+
+___ 
 
 ## SOC - Security Operation Center 
 เป็นสถานที่สำหรับรับมือเหตุการณ์หรือภัยคุกคามทางไซเบอร์ โดยมี SOC Team เป็นผู้ปฏิบัติภายใน SOC โดยประกอบไปด้วย Tier 1, Tier 2 และ Tier 3 โดยมีหน้าที่ดังนี้
@@ -115,5 +118,86 @@
   - LOLBAS หรือ Living Off The Land Binaries, Scripts and Libraries เป็นตัวอย่างคำสั่งสำหรับใช้ทำ Threat Hunting เพื่อหลบเลี่ยงการตรวจจับ รายละเอียดตาม [link](https://lolbas-project.github.io)
 - TTPs (Tactics, Techniques, Procedure)
   - [MITRE](https://attack.mitre.org) ได้ทำการแบ่งและขยายความเพิ่มเติมจาก Cyber Kill Chain โดยอ้างอิงตาม Tactic, Technique และ Procedure ขอแต่ละการโจมตี โดยอ้างอิงตาม ID ซึ่งจะมีข้อมูลของการทำ Mitigation และ การ Detection ให้สามารถนำไปปรับใช้กับองค์กรได้ 
+
+___
+
+## Threat Intelligence Platform
+TI Platform เป็นเครื่องมือที่ใช้สำหรับรวมรวมข้อมูลจากแหล่งข้อมูลข่าวทางไซเบอร์ ประกอบด้วย
+- Opensource Intelligence Feeds
+- Security Vendor Feeds
+- Commercial Threat Feeds/Report
+- Community 
+
+**IOC Checker tools URL**
+- https://otx.alienvault.com/preview
+- https://exchange.xforce.ibmcloud.com
+- https://www.virustotal.com 
+- https://www.hybrid-analysis.com 
+
+**Suspicious Events** สามารถตรวจสอบได้จาก
+- Suspicious activities in PC/Laptop
+- Username/Account was unauthorized used/logged in to the system
+- Username/Account was lockedd
+- System down/ System Change without approval
+- Get/Sent suspicioud email/Phishing 
+- Anomaly behaviors at unusal time
+
+**Log Correlation** เป็นรูปแบบการหาความสัมพันธ์ของข้อมูล Log มาประกอบการพิจารณาเหตุการณ์ที่เกิดขึ้นในระบบ​ เช่น การส่ง Alets จาก Hardware หรือ Application failed หรือ การจัดทำ User-Defined rules สำหรับการจัดทำความสัมพันธ์ที่ต้องการ
+
+___
+
+### ตัวอย่าง UseCases 
+
+**RDP Bruteforce สามารถตรวจสอบได้จาก Log ดังนี้**
+
+Microsoft-Windows-Security-Auditing
+- Event 4624: Success authentication with an account
+- Event 4625: Failed authentication
+  
+Microsoft-Windows-TerminalServices-LocalSessionManager
+- Event 21: Remote Desktop Services: Session logon succeeded
+- Event 22: Remote Desktop Services: Shell start notification received
+- Event 23: Remote Desktop Services: Session logoff succeeded
+- Event 24: Remote Desktop Services: Session has been disconnected
+- Event 25: Remote Desktop Services: Session reconnection succeeded
+- Event 39: Session X has been disconnected by session Y
+- Event 40: Session X has been disconnected, reason code Z
+- 
+Mitigation
+- Change admin name to another name
+- Allow RDP only from internal network
+- Lock account after login fail with threshold 
+
+**Powershell สามารถตรวจสอบได้จาก Log ดังนี้**
+
+Sysmon
+- Event 1: Process Create
+- Event 3: Network Connection detected 
+
+Mitigation
+- Uninstall powershell
+- Monitor powershell usage
+
+**Web Application สามารถตรวจสอบได้จาก Log ดังนี้**
+
+Web Server Log
+- Access.log
+- Error.log
+
+Inspect 
+- Huge number of requests from client
+- User-Agent จากเครื่องมือต่าง ๆ เช่น Nmap, Acunetic, Nikto, ZAP 
+- Attack โดยสามารถตรวจจับได้จาก Sinature based
+
+Mitigation
+- Secure Codeing (Secure Code Development life cycle)
+- Pentration Test 
+- Secure Cod Review
+- WAF
+
+**Linux Command สำหรับการวิเคราะห์ข้อมูล Log**
+- ตัวอย่างคำสั่งจะอยู่ในรูปแบบ Command1 arg1 | Command2 arg2 | ...
+- 
+
 
 Powered by Icesuntisuk
