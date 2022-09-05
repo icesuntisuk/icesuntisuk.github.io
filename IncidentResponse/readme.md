@@ -210,6 +210,7 @@ grep "Failed password" /var/log/auth. log | awk *(print $11) >> ips.txt
 ```
 
 **Splunk Command**
+```
 - host=victim
 - host=victim event id=12
 - source="some.log" | regex _raw=". *Fatal.*"
@@ -221,6 +222,8 @@ grep "Failed password" /var/log/auth. log | awk *(print $11) >> ips.txt
 - source="/var/log/nginx/access.log' | head 1000 | top 50 referrer
 - source="/var/log/nginx/access.log' | head 1000 | top 50 uri
 - source="/var/log/nginx/access.log" | head 1000 | top 50 method
+```
+
 
 **Windows Log or EVTX file Analysis Tool**
 - [Windows log Explore](https://www.malwarearchaeology.com/cheat-sheets)
