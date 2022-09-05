@@ -224,5 +224,16 @@ Mitigation
 - Evtx hunter - จะช่วยให้สามารถตวตสอบข้อมูลของ Events log ใน Windows ในรูปแบบ Timeline
 - Event2Timeline - เป็นเครื่องมือที่แสดงผลออกมาเป็น Timeline
 - Chainsaw - เป็นเครื่องมือใช้สำหรับค้นหาและวิเคราะห์ข้อมูลของ Sigma Rule ซึ่งเป็นมาตรฐานกลางในการค้นหาข้อมูล
+``` bash
+wget https://github.com/WithSecureLabs/chainsaw/releases/download/v2.0.0/chainsaw_all_platforms+rules+examples.zip
 
+unzip chainsaw_all_platforms+rules+examples.zip
+
+cd chainsaw
+chmod +x chainsaw_x86_64-apple-darwin
+
+./chainsaw_x86_64-apple-darwin hunt [TARGET FILE] -s ../sigma/ --mapping mappings/sigma-event-logs-all.yml
+
+./chainsaw_x86_64-apple-darwin hunt sysmon_local_account_creation_and_added_admingroup_12_13.evtx -s sigma --mapping mappings/sigma-event-logs-all.yml
+```
 Powered by Icesuntisuk
