@@ -197,7 +197,28 @@ Mitigation
 
 **Linux Command สำหรับการวิเคราะห์ข้อมูล Log**
 - ตัวอย่างคำสั่งจะอยู่ในรูปแบบ Command1 arg1 | Command2 arg2 | ...
-- 
+- grep "user hoover" /var/log/auth.log
+- grep "4792" /var/log/auth.log
+- grep -P "(?<=portls)4792"/var/log/auth.log
+- grep -E "1921.1681.01.1d1,3/" /var/log/syslog
+- tail -f /var/log/auth.log I grep "Invalid user
+- grep "authentication failure" /var/log/auth. log | cut-d'='-+8 root
+- awk '/sshd.*invalid user/ { print $9 y /var/log/auth.log guest
+- awk "/.*Failed password.*/I { print $8 „"/var/log/auth.log
+- grep "Failed password" /var/log/auth. log | awk *(print $11) >> ips.txt
+
+**Splunk Command**
+- host=victim
+- host=victim event id=12
+- source="some.log" | regex _raw=". *Fatal.*"
+- sourcetype=access _ combined error | top 5 uri | stats sum(<field») as result | eval result=(result/1000)
+- source="/var/log/nginx/access. log" HT TP 500
+- source="/var/log/nginx/access. log" HTTP (200 or 30*)
+- source="/var/log/nginx/access.log" status=404 | sort -uri
+- source="/var/log/nginx/access. log" | head 1000 | top 50 clientip
+- source="/var/log/nginx/access.log' | head 1000 | top 50 referrer
+- source="/var/log/nginx/access.log' | head 1000 | top 50 uri
+- source="/var/log/nginx/access.log" | head 1000 | top 50 method
 
 
 Powered by Icesuntisuk
