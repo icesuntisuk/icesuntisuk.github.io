@@ -79,5 +79,37 @@
   - Puple team exercise
   - Surprise exercise 
 
+**Indicator of Compromise (IOC)**
+- Hash 
+- IP Address
+- Name of exed used 
+
+**Pyramid of Pain** จะถูกเรียงลำดับจากง่ายสุดไปยากสุด (Hash --> TTPs)
+- Hash Value
+- IP Addresses
+- Domain Name 
+- Network/Host Artifacets 
+  - Network Artifacts 
+    - Rare User-Agents String
+    - Traffic on non-traditional Ports 
+  - Host Artifacets 
+    - Specific Registry Key เช่น
+      - SOFTWARE\Microst\Windows\CurrentVersion\Run
+      - SOFTWARE\Microst\Windows\CurrentVersion\RunOne
+      - HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+      - HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce
+    - Process Connected on Port 80 that is not a browser 
+- Tools 
+  - psexec.exe
+  - cmd.exe - exe command 
+  - reg.exe - Create registry file 
+  - wce.exe - Drump password on memory
+  - wmi.exe - query and exe 
+  - minikatz - Dump Credential 
+  - powershell empire - backdoor 
+  - certutil - สร้าง Certificate และมักถูกใช้สำหรับ Download file ได้ ซึ่งอยู่ภายใต้ระบบปฏิบัติการ Windows 
+  - LOLBAS หรือ Living Off The Land Binaries, Scripts and Libraries เป็นตัวอย่างคำสั่งสำหรับใช้ทำ Threat Hunting เพื่อหลบเลี่ยงการตรวจจับ รายละเอียดตาม [link](https://lolbas-project.github.io)
+- TTPs (Tactics, Techniques, Procedure)
+  - [MITRE](https://attack.mitre.org) ได้ทำการแบ่งและขยายความเพิ่มเติมจาก Cyber Kill Chain โดยอ้างอิงตาม Tactic, Technique และ Procedure ขอแต่ละการโจมตี โดยอ้างอิงตาม ID
 
 Powered by Icesuntisuk
