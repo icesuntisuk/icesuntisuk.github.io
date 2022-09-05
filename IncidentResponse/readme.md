@@ -56,7 +56,7 @@
 - Hacking with VPN
 - Zero-day Attack
 
-Skill, Ability and Knowledge 
+**Skill, Ability and Knowledge**
 - สามารถดูข้อมูลกว้างๆ ได้จากตัวอย่าง [Link](https://cyberindustry.org/workrole)
 - [Security Certification Roadmap](https://pauljerimy.com/security-certification-roadmap/)
 
