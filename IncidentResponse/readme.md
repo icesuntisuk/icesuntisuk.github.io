@@ -27,7 +27,7 @@
   - Incident Document (Details of Incident)
   - Incident Prioritization (Functional Impact, Information Impact, Recoverability)
   - Incident Notification (Personal, Channel)
-- Containment, Eradication & Remediation phase
+- Containment, Eradication & Remediation phase - เป็นขั้นตอนสำหรับพิจารณาวิธีการในการควบคุมความเสียหาย การควบคุมความเสียหายมีความจำเป็นอย่างยิ่งที่จะป้องกันไม่ให้ความเสียหายกระจายออกไปเป็นวงกว้าง สร้างผลกระทบต่อทรัพยากรในการดำเนินธุรกิจอื่นๆและยังเป็นการเปิดพื้นที่ เพิ่มระยะเวลาให้ทีมที่รับมือ Incident มีเวลาในการคิดหาสาเหตุ และวิธีการแก้ปัญหาที่ถาวรได้ ข้อสำคัญของการควบคุมความเสียหาย คือการตัดสินใจเลือกใช้วิธีการที่เหมาะสม โดยวิธีการทั่วไปมี
   - Containment Strategy - เป็นรูปแบบการควบคุมความเสียหาย ไม่ให้เกิดการรุกรามไปสู่ระบบอื่น เช่น การทำ Isolate เครื่องออกจากระบบ เป็นต้น
   - Evidence Gathering and Handling - เป็นการเก็บหลักฐานที่มีความน่าสงสัยและตรวจสอบเพื่มเติม
   - Identifying the Attacking Hosts 
