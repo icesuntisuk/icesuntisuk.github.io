@@ -268,6 +268,9 @@ Static Analysis - ไม่มีการรันโปรแกรม (NOT RU
 - [Malware Tracker PDF Examiner](http://www.malwaretracker.com/pdf.php)
 
 ___ 
+
+การตรวจสอบข้อมูลเชิงลึกของ Threat Hunting
+[Windows EventID Detail](https://www.google.com/search?client=safari&rls=en&q=ultimate+windows+security&ie=UTF-8&oe=UTF-8)
 [Investigations into the transient fluctuations of reality in the cybersphere](https://www.eideon.com)
 
 
