@@ -119,6 +119,7 @@ ___
 - TTPs (Tactics, Techniques, Procedure)
   - [MITRE](https://attack.mitre.org) ได้ทำการแบ่งและขยายความเพิ่มเติมจาก Cyber Kill Chain โดยอ้างอิงตาม Tactic, Technique และ Procedure ขอแต่ละการโจมตี โดยอ้างอิงตาม ID ซึ่งจะมีข้อมูลของการทำ Mitigation และ การ Detection ให้สามารถนำไปปรับใช้กับองค์กรได้ 
 
+[ตัวอย่างการจัดทำ Incident Response Policy ของรัฐ Michigan.gov](https://www.michigan.gov/-/media/Project/Websites/msp/cjic/pdfs6/Example_Incident_Response_Policy.pdf?rev=4bf335b6d1344226a92a0947bc8688ec)
 ___
 
 ## Threat Intelligence Platform
