@@ -269,7 +269,19 @@ Static Analysis - ไม่มีการรันโปรแกรม (NOT RU
 
 ___ 
 
-การตรวจสอบข้อมูลเชิงลึกของ Threat Hunting
+## Threat Hunting
+เป็นการตรวจสอบในรูปแบบ Proactive โดยทำการวิเคราะห์รูปแบบการโจมตีใหม่ ๆ ที่เกิดขึ้น โดยมีข้อมูล 3 ส่วนที่สำคัญได้แก่ 
+1. Data - จากอุปกรณ์ Security Devices ต่าง ๆ เช่น Firewall, Switch, Routers, Database, Endpoint เป็นต้น 
+2. Baseline - การจัดทำ Baeline สำหรับระบบเพื่อตรวจสอบสภาวะการทำงานที่เป็นปกติหรือผิดปกติที่เกิดขึ้นภายในระบบหรือผู้ใช้
+3. Threat Intelligences
+
+**ผลลัพธ์จากการทำ Threat Hunting ได้แก่**
+- New Rules of SIEM
+- Update current rules to more effective
+- White paper
+- Signature 
+
+
 [Windows EventID Detail](https://www.google.com/search?client=safari&rls=en&q=ultimate+windows+security&ie=UTF-8&oe=UTF-8)
 [Investigations into the transient fluctuations of reality in the cybersphere](https://www.eideon.com)
 
