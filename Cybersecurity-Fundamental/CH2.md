@@ -20,5 +20,31 @@
 7. Vulnerability - เป็นจุดอ่อนของ ระบบสารสนเทศ, ขั้นตอนการรักษาความมั่นคงปลอดภัย, การควบคุมภายใน หรือการติดตั้งใด ๆ ที่ส่งผลทำให้เกิดช่องโหว่ของระบบและก่อให้เกิดภัยคุกคามต่อองค์กรได้ 
 8. Zero Day - เป็นช่องโหว่ของระบบที่ไม่รู้จัก ซึ่งมีศักยภาพในการแสวงประโยชน์จากช่องโหว่ เพื่อหลีกเลี่ยงการป้องกันที่อยู่ในรูปแบบ Pattern หรือ Signature based ได้
 
+ส่วนประกอบของ Incident Response Plan ประกอบด้วย
+- Preparation phase เป็นขั้นตอนในการเตรียมทุกอย่างให้พร้อมสำหรับการรับมือเหตุการณ์ภัยคุกคาม และหลีกเลี่ยงการเกิด Single Point of Failure เช่น​ ช่องทางการสื่อสาร,​ Hardware, Software, Baseline เป็นต้น 
+- Detection and Analysis phase เป็นขั้นตอนการตรวจจับการโจมตีที่เกิดขึ้น ได้แก่ 
+  - Attack Vectors (Web, Services, USB, People, Email)
+  - Sign of an incident (Know and Unknown)
+  - Source of Precursors and Indicators (IPS/IDS, SIEMs, Antivirus, Firewall, Endpoint Detection, Logs, IOC, People)
+  - Incident Analysis (Profiling, Normal Behaviors, Log Correction, Knownledge Base, Research, Packet Sniffer)
+    - ในการตรวจสอบ Normal Behaviors ของผู้ใช้งานนั้น เป็นเรื่องยากต่อการตรวจสอบของแต่ละองค์กร ฉะนั้น องค์กรจำเป็นจะต้องมี Baseline ของผู้ใช้งานของผู้ใช้งาน
+  - Incident Document (Details of Incident)
+  - Incident Prioritization (Functional Impact, Information Impact, Recoverability)
+  - Incident Notification (Personal, Channel)
+- Containment, Eradication & Remediation phase - เป็นขั้นตอนสำหรับพิจารณาวิธีการในการควบคุมความเสียหาย การควบคุมความเสียหายมีความจำเป็นอย่างยิ่งที่จะป้องกันไม่ให้ความเสียหายกระจายออกไปเป็นวงกว้าง สร้างผลกระทบต่อทรัพยากรในการดำเนินธุรกิจอื่นๆและยังเป็นการเปิดพื้นที่ เพิ่มระยะเวลาให้ทีมที่รับมือ Incident มีเวลาในการคิดหาสาเหตุ และวิธีการแก้ปัญหาที่ถาวรได้ ข้อสำคัญของการควบคุมความเสียหาย คือการตัดสินใจเลือกใช้วิธีการที่เหมาะสม โดยวิธีการทั่วไปมี
+  - Containment Strategy - เป็นรูปแบบการควบคุมความเสียหาย ไม่ให้เกิดการรุกรามไปสู่ระบบอื่น เช่น การทำ Isolate เครื่องออกจากระบบ เป็นต้น
+  - Evidence Gathering and Handling - เป็นการเก็บหลักฐานที่มีความน่าสงสัยและตรวจสอบเพื่มเติม
+  - Identifying the Attacking Hosts 
+  - Eradication - เป็นการกำจัดสาเหตุของภัยคุกคามจาก **Root Course** แล้วทำการแก้ไขปัญหาดังกล่าว
+  - Remediation - เป็นการนำระบบกลับมาให้สามารถใช้งานได้ตามปกติ โดยอยู่บนพื้นฐานของความสมบูรณ์ของระบบหลังจากการแก้ไขและความเร็วในการดำเนินการแก้ไข
+- Post Incident Activities เป็นรูปแบบของการดำเนินการหลังจากเกิดเหตุการณ์ โดยจะต้องนำ Lesson Learn มาศึกษา เพื่อนำข้อมูลไปปรับปรุงในการดำเนินการให้เกิดประสิทธิภาพสูงสุดในครั้งถัดไป 
+  - Lesson Learned 
+  - Stratistic of incident 
+  - Evidece Retention
+  - Incident Handling Checklist 
+  - Recommendations 
+  - Law Enforcement 
 
+**Incident Response Team**
 
+องค์กรควรมีการจัดตั้งศูนย์ปฏิบัติการรักษาความมั่นคงปลอดภัย หรือ **Security Operation Center** เพื่อดำเนินการตอบสนองต่อเหตุการณ์ภัยคุกคามที่เกิดขึ้นภายในองค์กร 
