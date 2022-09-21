@@ -46,7 +46,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 ### **Certification**
 
-* Certified in Cybersecurity | (ISC)²
+* Certified in Cybersecurity (ISC)²
 * Fortinet NSE 4 (Network Security Professional)
 * Fortinet NSE 3 (Fortinet Product Awareness)
 * Fortinet NSE 2 (Network Security Associate)
