@@ -119,9 +119,8 @@ My **hobbies** include Playing Basketball, Running, Surf Skating and Reading boo
 ### Ethical Hacking Cheatsheet
 * [Command so necessary](/PentestCheatsheet/cmd.md)
 * [Reconnaissance](/PentestCheatsheet/recon.md)
-* [Preparation](/PentestCheatsheet/)
 * [Network Pivoting](/PentestCheatsheet/)
-* [Enumeration and Gaining Access](/PentestCheatsheet/)
+* [Enumeration and Gaining Access](/PentestCheatsheet/enum.mb)
 * [Password Hacking](/PentestCheatsheet/)
 * [Web Hacking](/PentestCheatsheet/)
 * [Reverse Shells](/PentestCheatsheet/)
