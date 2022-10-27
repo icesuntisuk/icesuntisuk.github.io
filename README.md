@@ -117,7 +117,7 @@ My **hobbies** include Playing Basketball, Running, Surf Skating and Reading boo
 
 # ข้อมูลด้านล่างนี้อยู่ระหว่างพัฒนา
 ### Ethical Hacking Cheatsheet
-* [Command Cheatsheet](/PentestCheatsheet/cmd.md)
+* [Command so necessary](/PentestCheatsheet/cmd.md)
 * [Reconnaissance](/PentestCheatsheet/recon.md)
 * [Preparation](/PentestCheatsheet/)
 * [Network Pivoting](/PentestCheatsheet/)
