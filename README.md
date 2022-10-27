@@ -120,7 +120,7 @@ My **hobbies** include Playing Basketball, Running, Surf Skating and Reading boo
 * [Command so necessary](/PentestCheatsheet/cmd.md)
 * [Reconnaissance](/PentestCheatsheet/recon.md)
 * [Network Pivoting](/PentestCheatsheet/)
-* [Enumeration and Gaining Access](/PentestCheatsheet/enum.mb)
+* [Enumeration and Gaining Access](/PentestCheatsheet/enum.md)
 * [Password Hacking](/PentestCheatsheet/)
 * [Web Hacking](/PentestCheatsheet/)
 * [Reverse Shells](/PentestCheatsheet/)
