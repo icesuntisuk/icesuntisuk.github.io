@@ -125,8 +125,8 @@ My **hobbies** include Playing Basketball, Running, Surf Skating and Reading boo
 * [Web Hacking](/PentestCheatsheet/)
 * [Reverse Shells](/PentestCheatsheet/)
 * [Spawning Shells](/PentestCheatsheet/)
-* [Linux Privilege Escalation](/PentestCheatsheet/)
-* [Windows Privilege Escalation](/PentestCheatsheet/)
+* [Linux Privilege Escalation](/PentestCheatsheet/linux-pri.md)
+* [Windows Privilege Escalation](/PentestCheatsheet/win-pri.md)
 
 **Created in ๒๐๒๐**
 
