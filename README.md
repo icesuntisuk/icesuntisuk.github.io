@@ -115,6 +115,7 @@ My **hobbies** include Playing Basketball, Running, Surf Skating and Reading boo
 * [EP.12 Inter VLAN (L3 Switch)](https://youtu.be/dxEkfXSKt8o)
 * [EP.13 CDP Protocol](https://youtu.be/qkgbYK6iKdQ)
 
+<!-- 
 # ข้อมูลด้านล่างนี้อยู่ระหว่างพัฒนา
 ### Ethical Hacking Cheatsheet
 * [Command so necessary](/PentestCheatsheet/cmd.md)
@@ -127,6 +128,7 @@ My **hobbies** include Playing Basketball, Running, Surf Skating and Reading boo
 * [Spawning Shells](/PentestCheatsheet/)
 * [Linux Privilege Escalation](/PentestCheatsheet/linux-pri.md)
 * [Windows Privilege Escalation](/PentestCheatsheet/win-pri.md)
+-->
 
 **Created in ๒๐๒๐**
 
