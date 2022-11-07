@@ -12,9 +12,9 @@
    4. Respond
    5. Recover
 
-![](/IncidentResponse/img/NIST.PNG = 250x250)
+![](/IncidentResponse/img/NIST.PNG)
 
-กรอบการบริหารจัดการภัยคุกคามทางไซเบอร์ (หรือ[มาตรการป้องกัน รับมือ ปราบปราม และระงับภัยคุกคามทางไซเบอร์แต่ละระดับ พ.ศ. ๒๕๖๔](http://www.ratchakitcha.soc.go.th/DATA/PDF/2564/E/303/T_0003.PDF)) มี 4 มาตรการ ดังนี้
+กรอบการบริหารจัดการภัยคุกคามทางไซเบอร์ (หรือ [มาตรการป้องกัน รับมือ ปราบปราม และระงับภัยคุกคามทางไซเบอร์แต่ละระดับ พ.ศ. ๒๕๖๔](http://www.ratchakitcha.soc.go.th/DATA/PDF/2564/E/303/T_0003.PDF)) มี 4 มาตรการ ดังนี้
 
 1. การป้องกัน (Preparation)
 2. การตรวจจับ (Detection and Analysis)
