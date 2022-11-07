@@ -96,9 +96,7 @@
 
 # ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์
 
-![](/IncidentResponse/img/NIST.PNG)
-
-## ประมวลแนวทางปฏิบัติ
+## การดำเนินการตามประมวลแนวทางปฏิบัติมีดังนี้ 
 1. แผนการตรวจสอบด้านการรักษาความมั่นคงปลอดภัยไซเบอร์
    - ต้องมีการตรวจสอบด้านความมั่นคงปลอดภัยไซเบอร์ โดยผู้ตรวจสอบภายใน หรือผู้ตรวจสอบอิสระ
    - มีรอบความถี่ในการตรวจอย่างน้อยปีละ ๑ ครั้ง
@@ -130,6 +128,32 @@
    - เอกสารที่เกี่ยวข้อง
      - เอกสารแผนการรับมือภัยคุกคามทางไซเบอร์ (Cybersecurity Incident Response Plan)
      - เอกสารแผนการสื่อสารการรับมือภัยคุกคามทางไซเบอร์
+
+# กรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ 
+
+![](/IncidentResponse/img/NIST.PNG)
+
+1. Identify 
+   - การจัดการทรัพย์สิน (Asset Management)
+   - การประเมินความเสี่ยงและกลยุทธ์ในการจัดการความเสี่ยง (Risk Assessment and Risk Managemtn Strategy)
+   - การประเมินช่องโหว่และการทดสอบเจาะระบบ (Vulnerability Assessment and Pentration Testing)
+   - การจัดการผู้ให้บริการภายนอก (Third Party Management)
+2. Protect 
+   - การควบคุมการเข้าถึง (Access Control Policy & Procedure)
+   - การทำให้ระบบมีความแข็งแกร่ง (System Hardening)
+   - การเชื่อมต่อระยะไกล (Remote Connection Policy & Procedure)
+   - สื่อเก็บข้อมูลแบบถอดได้ (Removable Storage media)
+   - การสร้างความตระหนักรู้ด้านความมั่นคงปลอดภัยไซเบอร์ (Cyber Awareness plan)
+   - การแบ่งปันข้อมูล (Information Sharing Procedure)
+3. Detect 
+   - การตรวจสอบและเฝ้าระวังภัยคุกคามทางไซเบอร์ (Cyber Threat Detection and Monitoring)
+4. Respond
+   - แผนการรับมือภัยคุกคามทางไซเบอร์ (Cybersecurity Incident Respond Plan)
+   - แผนการสื่อสารในภาวะวิกฤติ (Crisis Communication Plan)
+   - การฝึกซ้อมความมั่นคงปลอดภัยไซเบอร์ (Cybersecurity Exercise)
+5. Recover
+   - การรักษาและฟื้นฟูความเสียหายที่เกิดขึ้นจากภัยคุกคามทางไซเบอร์ (Cybersecurity Resilience and Recovery)
+
 
 # กรอบการบริหารจัดการภัยคุกคามทางไซเบอร์ 
 (หรือ [มาตรการป้องกัน รับมือ ปราบปราม และระงับภัยคุกคามทางไซเบอร์แต่ละระดับ พ.ศ. ๒๕๖๔](http://www.ratchakitcha.soc.go.th/DATA/PDF/2564/E/303/T_0003.PDF)) มี 4 มาตรการ ดังนี้
