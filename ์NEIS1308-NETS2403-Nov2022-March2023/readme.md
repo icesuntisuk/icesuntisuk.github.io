@@ -11,7 +11,31 @@
 คาบ SAT3: 1330 - 1600
 
 --- 
+## Course Syllabus
 
+- General Course Information
+- Kali Linux
+- Linux Command Line have fun
+- Essential Tools in Kali
+- Getting Started with Bash Scripting
+- Passive Reconnaissance
+- Active Reconnaissance
+- Vulnerability Scanning
+- Web Application Attacks
+- Windows/Linux Buffer Overflows
+- Client-Side Attacks
+- Working with Public Exploits
+- File Transfer
+- Antivirus Bypassing
+- Privilege Escalation
+- Password Attacks
+- Tunnelling/Pivoting
+- Active Directory Attacks
+- Introduction to the Metasploit Framework
+- PowerShell Empire
+
+
+---
 ## Week 1@26 Nov 2022
 ### Lec
 ### Lab
