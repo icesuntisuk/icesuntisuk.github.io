@@ -37,9 +37,9 @@
 
 ---
 ## Week 1@26 Nov 2022
-### Lec --[LINK](/%E0%B9%8CNEIS1308-NETS2403-Nov2022-March2023/Week1/w1-lec.md)
+### Lec 
 - General Course Information
-### Lab --[LINK](/%E0%B9%8CNEIS1308-NETS2403-Nov2022-March2023/Week1/w1-lab.md)
+### Lab 
 - Install Kali linux 
 - Update Image 
 - Basic command in Kali linux 
