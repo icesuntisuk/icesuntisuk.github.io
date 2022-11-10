@@ -39,6 +39,9 @@
 ## Week 1@26 Nov 2022
 ### Lec
 ### Lab
+- Install Kali linux 
+- Update Image 
+- Basic command in Kali 
 --- 
 ## Week 2@3 Dec 2022
 ### Lec
