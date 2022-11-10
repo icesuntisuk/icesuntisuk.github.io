@@ -41,7 +41,7 @@
 ### Lab
 - Install Kali linux 
 - Update Image 
-- Basic command in Kali 
+- Basic command in Kali linux 
 --- 
 ## Week 2@3 Dec 2022
 ### Lec
