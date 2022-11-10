@@ -37,15 +37,18 @@
 
 ---
 ## Week 1@26 Nov 2022
-### Lec
-### Lab
+### Lec --[LINK](/%E0%B9%8CNEIS1308-NETS2403-Nov2022-March2023/Week1/w1-lec.md)
+- General Course Information
+### Lab --[LINK](/%E0%B9%8CNEIS1308-NETS2403-Nov2022-March2023/Week1/w1-lab.md)
 - Install Kali linux 
 - Update Image 
 - Basic command in Kali linux 
 --- 
 ## Week 2@3 Dec 2022
 ### Lec
+- 
 ### Lab
+- Linux Command Line have fun
 --- 
 ## Week 3@10 Dec 2022
 หยุดรัฐธรรมนูญ
