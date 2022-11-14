@@ -119,7 +119,6 @@
 ### Lec
 - Exploit Development (Buffer Overflows)
 - Buffer Overflows 
-### Lab
 - Spiking 
 - Fuzzing 
 - Find the Offset 
@@ -128,7 +127,13 @@
 - Finding the Right Mudule
 - Generating Shellcode and Gaining Root
 - Exploit Development
-
+### Labฃ
+- LAB Preparation 
+  - Windows 10 or 7
+    - Vulnserver (https://github.com/stephenbradshaw/vulnserver)
+    - Immunity Debugger
+  - Kali Linux
+  
 --- 
 
 ## Week 11@21 Jan 2023
