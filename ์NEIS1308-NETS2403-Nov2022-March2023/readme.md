@@ -25,7 +25,8 @@
 ---
 ## Week 1@26 Nov 2022
 ### Lec 
-
+- Course Introduction
+- Ethical Hacking Overview
 ### Lab 
 - Setup environment
 - Install VMWare/VirtualBox
@@ -139,7 +140,7 @@
 
 ## Week 12@28 Jan 2023
 ### Lec
-### Lab
+### Lab/-
 
   
 --- 
@@ -153,7 +154,7 @@
 ## Week 13@11 Feb 2023
 ### Lec
 ### Lab
-
+- นักศึกษารายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด
 --- 
 
 ## Week 14@18 Feb 2023
