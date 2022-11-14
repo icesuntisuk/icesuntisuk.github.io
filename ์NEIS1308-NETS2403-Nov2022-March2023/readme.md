@@ -30,7 +30,7 @@
 ### Lab 
 - Setup environment
 - Install VMWare/VirtualBox
-- Comfig Hypervisor 
+- Config netowrk for Hypervisor 
 - Install Kali linux
 --- 
 ## Week 2@3 Dec 2022
@@ -127,7 +127,7 @@
 - Finding the Right Mudule
 - Generating Shellcode and Gaining Root
 - Exploit Development
-### Labฃ
+### Lab
 - LAB Preparation 
   - Windows 10 or 7
     - Vulnserver (https://github.com/stephenbradshaw/vulnserver)
