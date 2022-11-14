@@ -12,43 +12,46 @@
 
 --- 
 ## Course Syllabus
-
-- General Course Information
-- Kali Linux
-- Linux Command Line have fun
-- Essential Tools in Kali
-- Getting Started with Bash Scripting
-- Passive Reconnaissance
-- Active Reconnaissance
-- Vulnerability Scanning
-- Web Application Attacks
-- Windows/Linux Buffer Overflows
-- Client-Side Attacks
-- Working with Public Exploits
-- File Transfer
-- Antivirus Bypassing
-- Privilege Escalation
-- Password Attacks
-- Tunnelling/Pivoting
-- Active Directory Attacks
-- Introduction to the Metasploit Framework
-- PowerShell Empire
-
+- Course Introduction
+- Network Refresher
+- Ethical Hacking Methodology
+- Information Gathering
+- Scanning & Enumeration
+- Vulnerability Scan
+- Cryptography
+- Exploitation
+- Exploit Development (Buffer Overflows) 
 
 ---
 ## Week 1@26 Nov 2022
 ### Lec 
-- General Course Information
+
 ### Lab 
-- Install Kali linux 
-- Update Image 
-- Basic command in Kali linux 
+- Setup environment
+- Install VMWare/VirtualBox
+- Comfig Hypervisor 
+- Install Kali linux
 --- 
 ## Week 2@3 Dec 2022
 ### Lec
-- 
+- Network Refresher
+  - Introduction
+  - OSI Model
+  - Layer 2
+  - Layer 3
+  - Layer 4
+  - Common port and Protocols
+  - Subnetting
 ### Lab
-- Linux Command Line have fun
+- Exploring Kali Linux 
+- Sudo Overview 
+- Navigating the File System
+- Users and Privileges
+- Common Network Commands 
+- Viewing, Creating and Editing
+- Install and Update tools
+- Script with Bash
+- Know about GIT
 --- 
 ## Week 3@10 Dec 2022
 หยุดรัฐธรรมนูญ
@@ -56,12 +59,29 @@
 --- 
 ## Week 4@17 Dec 2022
 ### Lec
+- Ethical Hacking Methodology
+- Information Gathering (Reconnaissance) 
 ### Lab
+- Passive Recon
+- OSINT Framework
+  - Identifying target
+  - Discovering Email Address
+  - Meltego 
+  - Hunting Subdomains 
+  - Hunting Webtechnology 
+  - GHDB 
+- Brupsuit
 --- 
 
 ## Week 5@24 Dec 2022
 ### Lec
+- Scanning & Enumeration
 ### Lab
+- Scanning with Nmap
+- Enumeratimg HTTP
+- Enumerating SMB
+- Enumeration SSH
+- Research Potential Vulnerability 
 --- 
 ## Week 6@31 Dec 2022
 หยุดวันสิ้นปีใหม่
@@ -69,51 +89,70 @@
 --- 
 ## Week 7@7 Jan 2023
 ### Lec
+- VA Scan
 ### Lab
+- Nessus 
+- OpenVAS
+- Nakivo
 
 --- 
 ## Week 8@14 Jan 2023
 ### Lec
+- Cryptography 
+- Password Attack
 ### Lab
+- Cyberchef
+- Bruteforce Attack
 --- 
 
 ## Week 9@21 Jan 2023
 ### Lec
+- Exploitation
+- Bind Shells and Reverse Shell
 ### Lab
+- Bind Shells and Reverse Shell
+- MSF 
 --- 
 
 ## Week 10@28 Jan 2023
 ### Lec
+- Exploit Development (Buffer Overflows)
+- Buffer Overflows 
 ### Lab
-- นักศึกษารายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด
-  
+- Spiking 
+- Fuzzing 
+- Find the Offset 
+- Overwriting the EIP 
+- Finding Bad Characters 
+- Finding the Right Mudule
+- Generating Shellcode and Gaining Root
+- Exploit Development
+
 --- 
 
 ## Week 11@21 Jan 2023
 ### Lec
 ### Lab
-- นักศึกษารายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด
+
   
 --- 
 
 ## Week 12@28 Jan 2023
 ### Lec
 ### Lab
-- นักศึกษารายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด
+
   
 --- 
 
 ## Week 13@4 Feb 2023
 ### Lec
 ### Lab
-- นักศึกษารายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด
 
 --- 
 
 ## Week 13@11 Feb 2023
 ### Lec
 ### Lab
-- นักศึกษารายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด
 
 --- 
 
