@@ -126,6 +126,7 @@
     - Vulnserver (https://github.com/stephenbradshaw/vulnserver)
     - Immunity Debugger
   - Kali Linux
+---
 - Spiking 
   - Kali Linux
   - Make Spike script (nano or vim)
@@ -140,10 +141,10 @@ s_string_variable("0");
 ```
 
 ```bash
-# TRY to RUN script
+# TRY to RUN script for each command
 generic_send_tcp 192.168.x.x 9999 stats.spk 0 0
 ```
-
+----
 - Fuzzing 
   - Python Script for FUZZ
 ```python
