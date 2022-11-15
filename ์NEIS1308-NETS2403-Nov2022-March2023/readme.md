@@ -128,8 +128,8 @@
   - Kali Linux
 - Spiking 
   - Kali Linux
-  - Make Spike script
-  - FIND Vulerable Command 
+  - Make Spike script (nano or vim)
+  - FIND Vulerable Command by Immunity goto **PAUSED state**
 
 ```bash
 # Spike script 
