@@ -22,10 +22,14 @@
 - Exploitation
 - Exploit Development (Buffer Overflows) 
 - Privilege Escalation
+- Wireless attack
+- Web Attack
 
 ---
 ## Week 1@26 Nov 2022
 ## Lec 
+
+### Group Line Prepare and channel for communicate
 
 ### Ethical Hacking คืออะไร (Q&A ทีละคน)
   
