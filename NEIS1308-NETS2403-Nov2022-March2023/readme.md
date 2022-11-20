@@ -95,9 +95,13 @@ A - Availability ข้อมูลต้องมีความพร้อม
 
 ## Lab 
 - Setup environment
-- Install VMWare/VirtualBox
+- Install [VMWare](https://www.vmware.com/latam/products/workstation-pro/workstation-pro-evaluation.html)/[VirtualBox](https://www.virtualbox.org/)
 - Config netowrk for Hypervisor 
-- Install Kali linux
+  - Host Only
+  - NAT
+  - NAT Network
+  - Bridge Network
+- Install [Kali linux](https://www.kali.org/)
 --- 
 ## Week 2@3 Dec 2022
 ## Lec
@@ -107,18 +111,106 @@ A - Availability ข้อมูลต้องมีความพร้อม
   - Layer 2
   - Layer 3
   - Layer 4
-  - Common port and Protocols
+  - Wellknown Protocols
   - Subnetting
 ## Lab
 - Exploring Kali Linux 
 - Sudo Overview 
 - Navigating the File System
 - Users and Privileges
+  ```bash
+  useradd test1
+  passwd test1
+  ```
 - Common Network Commands 
+  ```bash
+  ip a
+  ifconfig
+  netstat -ant 
+  nslookup www.google.com
+  ```
 - Viewing, Creating and Editing
+  ```bash
+  nano file1
+  cat file1
+  tail file1
+  head file1
+  less file1
+  ```
 - Install and Update tools
-- Script with Bash
-- Know about GIT
+  ```bash
+  sudo apt update
+  sudo apt upgrade -y
+  ```
+- Envionmane Variables
+  ```bash 
+  echo $PATH
+  echo $USER
+  echo $PWD
+  echo $HOME
+  # Environment variable can be defined with the export command
+  export b=8.8.8.8
+  ping -c 2 $b
+  # Other environment variables defined by default in Kali Linux
+  env
+  ```
+- Basic History Tricks 
+  ```bash
+  history
+  # Rather than re-typing a long command from our history, we can make use of the history expansion facility. For example, looking back at Listing 34, there are three commands in our history with a line number preceding each one. To re-run the first command, we simply type the ! character followed by the line number, in this case 1, to execute the cat /etc/lsb-release command
+  !1
+  
+  # history shortcut is !!, which repeats the last command that was executed during our terminal session:
+  !!
+  # By default, the command history is saved to the .bash_history file in the user home directory. 
+  cat ~/.bash_history
+  ```
+  - Redirecting to a new file
+  ```bash
+  ls 
+  echo "test"
+  echo "test" > redirection_test.txt
+  ls 
+  cat redirection_test.txt
+  echo "Kali linux" > redirection_test.txt
+  cat redirection_test.txt
+  echo "IS FUN" >> redirection_test.txt
+  cat redirection_test.txt
+  # As you may have guessed, we can use the < operator to send data the “other way”. In the following example, we redirect the wc command’s STDIN with data originating directly from the file we generated in the previous section. Let’s try this with wc -m which counts characters in the file
+  wc -m < redirection_test.txt
+  # Redirecting STDERR
+  ls .
+  ls ./test
+  ls ./test 2>error.txt
+  cat error.txt
+  ```
+  - Pipe
+  ```bash
+  cat error.txt
+  cat error.txt | wc -m
+  cat error.txt | wc - m > count.txt
+  cat count.txt
+  ```
+  - Grep
+  ```bash
+  ls -la /usr/bin | grep zip
+  ```
+  - sed 
+  ```bash 
+  echo "I need to try hard" | sed 's/hard/harder /'
+  ```
+  - cut 
+  ```bash
+  echo "I Hack binaries, web apps, mobile apps, and just about anythong else" | cut -f 2 -d ","
+
+  cut -d ":" -f 1 /etc/passwd
+  ``` 
+  - awk 
+  ```bash
+  echo "hello::there::friend" | awk -F "::" '{print $1, $3}'
+  ```
+  - nano
+  - vi/vim
 --- 
 ## Week 3@10 Dec 2022
 หยุดรัฐธรรมนูญ
