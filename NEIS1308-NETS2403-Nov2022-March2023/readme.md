@@ -215,6 +215,23 @@ A - Availability ข้อมูลต้องมีความพร้อม
   ```
   - nano
   - vi/vim
+  - Download File
+  ```bash
+  # The wget command, which we will use extensively, downloads files using the HTTP/HTTPS and FTP protocols. Listing 67 shows the use of wget along with the -O switch to save the destination file with a different name on the local machine
+  wget -o filename https://test.test.com
+  # curl is a tool to transfer data to or from a server using a host of protocols including IMAP/S, POP3/S, SCP, SFTP, SMB/S, SMTP/S, TELNET, TFTP, and others. A penetration tester can use this to download or upload files and build complex requests. 
+  curl -o filename https://test.test.com
+  # axel is a download accelerator that transfers a file from a FTP or HTTP server through multiple connections. This tool has a vast array of features, but the most common is -n, which is used to specify the number of multiple connections to use. In the following example, we are also using the -a option for a more concise progress indicator and -o to specify a different file name for the downloaded file.
+  axel -a -n 20 -o filename https://test.test.com
+   ```
+  - Alias
+  ```bash 
+  alias lsa='ls -la'
+  lsa
+  alias mkdir='ping -c 1 localhost'
+  unalias mkdir
+  mkdir
+  ```
 --- 
 ## Week 3@10 Dec 2022
 หยุดรัฐธรรมนูญ
