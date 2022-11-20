@@ -21,20 +21,86 @@
 - Cryptography
 - Exploitation
 - Exploit Development (Buffer Overflows) 
+- Privilege Escalation
 
 ---
 ## Week 1@26 Nov 2022
-### Lec 
-- Course Introduction
-- Ethical Hacking Overview
-### Lab 
+## Lec 
+
+### Ethical Hacking คืออะไร (Q&A ทีละคน)
+  
+### Security Concepts 
+
+### The CIA Triad
+
+C - Confidentiality การรักษาไว้ซึ่งความลับของข้อมูล โดยเป็นการปกป้องข้อมูลและไม่เปิดเผยข้อมูลไปยังผู้ที่ไม่ได้รับอนุญาต 
+    
+    - Personally Identifiable Information (PII) อยู่ภายใต้ขอบเขตของ confidentiality ซึ่งกล่าวถึงข้อมูลของแต่ละบุคคลที่จะต้องมีการรักษาไว้ซึ่งความลับและไม่ถูกเปิดเผยให้กับผู้ที่ไม่ได้รับอนุญาต ยกตัวอย่างเช่น protected health information (PHI) เป็นการป้องกันข้อมูลทางการแพทย์ของผู้ป่วย จะต้องได้รับการปกป้องให้สามารถเข้าถึงได้เฉพาะบุคคลที่มีได้รับอนุญาตเข้าถึงข้อมูลดังกล่าว เป็นต้น 
+
+I - Integrity ข้อมูลต้องมีความถูกต้องครบถ้วนสมบูรณ์ไม่มีการเปลี่ยนแปลง ดัดแปลง หรือแก้ไขใด ๆ โดยไม่ได้รับอนุญาต
+    
+    - Data integrity เป็นการบ่งบอกว่าข้อมูลดังกล่าวจะต้องไม่ถูกเปลี่ยนแปลงใดๆ จากผู้ที่ไม่มีสิทธิ โดยจะต้องมีการป้องกันข้อมูลภายในระบบ เพื่อให้สามารถมั่นใจได้ว่าข้อมูลต่าง ๆ จะไม่ถูกเปลี่ยนแปลงไปในขั้นตอน เช่น ระหว่างจัดเก็บข้อมูล, ระหว่างการประมวลผลข้อมูล และระหว่างการส่งต่อข้อมูลได้ 
+    
+    - System integrity เป็นรูปแบบการจัดทำ Baseline สำหรับระบบ เพื่อให้มั่นใจได้ว่าระบบมีการตั้งค่าไว้อย่างถูกต้องสมบูรณ์โดยที่ไม่ถูกเปลี่ยนแปลงหรือแก้ไขการตั้งค่าแต่อย่างใด 
+
+A - Availability ข้อมูลต้องมีความพร้อมใช้งานเมื่อถูกเรียกใช้ กล่าวคือข้อมูลจะต้องสามารถเข้าถึงได้และสามารถใช้งานได้จากผู้ที่มีสิทธิการเข้าถึงข้อมูลดังกล่าวเมื่อมีการร้องขอ
+
+### Risk 
+  - ผลกระทบ (Impact) x แนวโน้มที่จะเกิดเหตุ (Likehood)
+### Control
+  - Physical Control - การควบคุมทางกายภาพ
+  - Technique Control - การควบคุมด้วยเทคเนิค
+  - Administrative Control - การควบคุมเชิงนโยบาย
+
+### Penetration Testing Process
+- Pre-Exploitation
+  - Information Gathering
+  - Scanning
+  - Enumeration
+- Exploitation
+  - Remote Exploitation
+    - Gain System Access
+    - Gain Information
+    - Denial of services
+    - Privilege Escalation
+  - Local Exploitation
+    - Bypass Restriction
+    - Privilege Escalation
+- Post-Exploitation
+  - Gathering Sensitive information
+  - Manage System/Services
+  - Pivoting
+
+### Stages of Hacking Cycles 
+- Reconnaissance
+  - Passive Reconnaissance
+  - Active Reconnaissance 
+- Scanning 
+- Gaining Access
+- Maintain Access
+- Clearing Tracks
+
+### Technical Skill
+- Operation System (Windows, Linux, MacOS, etc.)
+- Network concept
+- Protocol
+- Command over security areas
+
+### Non-Technical Skills
+- Learining ability 
+- Pproblem-Solving skills
+- Communication skiills
+- Coommmited to security policies 
+- Awareness of law, standards and Regulations 
+
+## Lab 
 - Setup environment
 - Install VMWare/VirtualBox
 - Config netowrk for Hypervisor 
 - Install Kali linux
 --- 
 ## Week 2@3 Dec 2022
-### Lec
+## Lec
 - Network Refresher
   - Introduction
   - OSI Model
@@ -43,7 +109,7 @@
   - Layer 4
   - Common port and Protocols
   - Subnetting
-### Lab
+## Lab
 - Exploring Kali Linux 
 - Sudo Overview 
 - Navigating the File System
@@ -59,10 +125,10 @@
 
 --- 
 ## Week 4@17 Dec 2022
-### Lec
+## Lec
 - Ethical Hacking Methodology
 - Information Gathering (Reconnaissance) 
-### Lab
+## Lab
 - Passive Recon
 - OSINT Framework
   - Identifying target
@@ -75,9 +141,9 @@
 --- 
 
 ## Week 5@24 Dec 2022
-### Lec
+## Lec
 - Scanning & Enumeration
-### Lab
+## Lab
 - Scanning with Nmap
 - Enumeratimg HTTP
 - Enumerating SMB
@@ -89,38 +155,38 @@
 
 --- 
 ## Week 7@7 Jan 2023
-### Lec
+## Lec
 - VA Scan
-### Lab
+## Lab
 - Nessus 
 - OpenVAS
 - Nakivo
 
 --- 
 ## Week 8@14 Jan 2023
-### Lec
+## Lec
 - Cryptography 
 - Password Attack
-### Lab
+## Lab
 - Cyberchef
 - Bruteforce Attack
 --- 
 
 ## Week 9@21 Jan 2023
-### Lec
+## Lec
 - Exploitation
 - Bind Shells and Reverse Shell
-### Lab
+## Lab
 - Bind Shells and Reverse Shell
 - MSF 
 --- 
 
 ## Week 10@28 Jan 2023
-### Lec
+## Lec
 - Exploit Development (Buffer Overflows)
 - Buffer Overflows 
 
-### Lab
+## Lab
 - LAB Preparation 
   - Windows 10 or 7
     - Vulnserver (https://github.com/stephenbradshaw/vulnserver)
@@ -210,8 +276,6 @@ FIND Offfset by copy EIP HEX number to find Offset index
 /usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -l 3000 -q <EIP-HEX-NUMBER>
 ```
 
-
-
 ---
 - Overwriting the EIP 
 - Finding Bad Characters 
@@ -223,50 +287,51 @@ FIND Offfset by copy EIP HEX number to find Offset index
 --- 
 
 ## Week 11@21 Jan 2023
-### Lec
-### Lab
-
+## Lec
+Privilege Escalation
+## Lab
+Linux Privilege Escalation
   
 --- 
 
 ## Week 12@28 Jan 2023
-### Lec
-### Lab/-
-
+## Lec
+## Lab
+- นักศึกษากลุ่มที่ 1 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
   
 --- 
 
 ## Week 13@4 Feb 2023
-### Lec
-### Lab
-
+## Lec
+## Lab
+- นักศึกษากลุ่มที่ 2 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 --- 
 
 ## Week 13@11 Feb 2023
-### Lec
-### Lab
-- นักศึกษารายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด
+## Lec
+## Lab
+- นักศึกษากลุ่มที่ 3 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 --- 
 
 ## Week 14@18 Feb 2023
-### Lec
-### Lab
-- นักศึกษารายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด
+## Lec
+## Lab
+- นักศึกษากลุ่มที่ 4 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 
 --- 
 
 
 ## Week 15@25 Feb 2023
-### Lec
-### Lab
-- นักศึกษารายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด
+## Lec
+## Lab
+- นักศึกษากลุ่มที่ 5 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 
 --- 
 
 ## Week 16@4 March 2023
-### Lec
+## Lec
 
-### Lab 
+## Lab 
 รายละเอียด LAB Final exam
 - สุ่ม Vulhub Image จากรายงานนักศึกษา จำนวน 2 Images เพื่อนำมาทำการทดสอบระบบ
 - รายงานผลการเจาะระบบอย่างละเอียด
