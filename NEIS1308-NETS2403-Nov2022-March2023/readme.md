@@ -24,6 +24,7 @@
 - Privilege Escalation
 - Wireless attack
 - Web Attack
+- พ.ร.บ.ไซเบอร์
 
 ---
 ## Week 1@26 Nov 2022
