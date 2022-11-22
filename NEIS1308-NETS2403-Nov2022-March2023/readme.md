@@ -42,6 +42,20 @@
   
 ### What Happens in an Internet Minute in 2022
 - [1 min happen](https://localiq.com/blog/what-happens-in-an-internet-minute/)
+
+### Technical Skill 
+- Operation System (Windows, Linux, MacOS, etc.)
+- Network concept
+- Protocol
+- Command over security areas
+
+### Non-Technical Skills
+- Learining ability 
+- Pproblem-Solving skills
+- Communication skiills
+- Coommmited to security policies 
+- Awareness of law, standards and Regulations 
+  
 ### Security Concepts 
 
 ### The CIA Triad
@@ -92,19 +106,6 @@ A - Availability ข้อมูลต้องมีความพร้อม
 - Gaining Access
 - Maintain Access
 - Clearing Tracks
-
-### Technical Skill
-- Operation System (Windows, Linux, MacOS, etc.)
-- Network concept
-- Protocol
-- Command over security areas
-
-### Non-Technical Skills
-- Learining ability 
-- Pproblem-Solving skills
-- Communication skiills
-- Coommmited to security policies 
-- Awareness of law, standards and Regulations 
 
 ## Lab 
 - Setup environment
