@@ -32,7 +32,16 @@
 ### Group Line Prepare and channel for communicate
 
 ### Ethical Hacking คืออะไร (Q&A ทีละคน)
+
+### Cybersecurity LIVE attack
+- [Cisco Talos intelligence](https://talosintelligence.com/ebc_spam)
+- [Digital Attack Map](https://www.digitalattackmap.com/)
+- [FireEye Cybermap](https://www.fireeye.com/cyber-map/threat-map.html)
+- [Fortinet Threatmap](https://threatmap.fortiguard.com/)
+- [Raadware livethreatmap](https://livethreatmap.radware.com/)
   
+### What Happens in an Internet Minute in 2022
+- [1 min happen](https://localiq.com/blog/what-happens-in-an-internet-minute/)
 ### Security Concepts 
 
 ### The CIA Triad
