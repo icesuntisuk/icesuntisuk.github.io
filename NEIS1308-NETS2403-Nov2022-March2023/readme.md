@@ -463,6 +463,6 @@ Linux Privilege Escalation
 ## Week 17@11-26 March 2023
 อาจารย์ต้องส่งข้อสอบ Final ก่อนวันที่ 22 Feb 2023
 
-Final Exam Good luch everybody.
+Final Exam Good luck everybody.
 
 --- 
