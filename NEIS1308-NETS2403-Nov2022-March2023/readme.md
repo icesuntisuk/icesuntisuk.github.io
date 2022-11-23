@@ -139,10 +139,38 @@ A - Availability ข้อมูลต้องมีความพร้อม
   ```
 - Common Network Commands 
   ```bash
+  ip link show
   ip a
+  ip address show dev <INTERFACE>
+  ip route show
   ifconfig
+  ifconfig -a 
+  # Enable Interface
+  ifconfig <INTERFACE> up 
+  # Disable Interface 
+  ifconfig <INTERFACE> down
+  # Set static IP on Interface
+  ifconfig <INTERFACE> <IPADDRESS> netmask <NETMASK> broadcast <BROADCAST>
+  # Route 
+  route
+  route -n 
+  route add default gw 192.168.1.1
+  route add -net <Network> netmask <Netmask> gw <Gateway>
+  # List routing cache info
+  route -Cn
+  # Port Checking
   netstat -ant 
   nslookup www.google.com
+  # Ping Test 
+  ping -c 3 google.com
+  # Traceroute 
+  traceroute 8.8.8.8
+  # iPerf 
+  sudo apt install iperf -y
+  # Server Side
+  iperf -s
+  # Client Side
+  iperf -c <SERVER IP>
   ```
 - Viewing, Creating and Editing
   ```bash
@@ -229,9 +257,26 @@ A - Availability ข้อมูลต้องมีความพร้อม
   - Download File
   ```bash
   # The wget command, which we will use extensively, downloads files using the HTTP/HTTPS and FTP protocols. Listing 67 shows the use of wget along with the -O switch to save the destination file with a different name on the local machine
-  wget -o filename https://test.test.com
+  wget -o filename https://test.com/file
+  wget -P <PATH> https:/test.com/file.tar.xz
+  # Limit speed wget
+  wget --limit-rate=1m https:/test.com/file.tar.xz
+  # Download by use another User-Agent
+  wget --user-agent="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0" https:/test.com/file.tar.xz
   # curl is a tool to transfer data to or from a server using a host of protocols including IMAP/S, POP3/S, SCP, SFTP, SMB/S, SMTP/S, TELNET, TFTP, and others. A penetration tester can use this to download or upload files and build complex requests. 
-  curl -o filename https://test.test.com
+  curl -o filename https://test.com
+  # Get Request
+  curl --request GET https://test.com
+  curl -X GET https://test.com
+  # Post Request
+  curl --request POST
+  curl -X POST
+  curl --request POST https://test.com  -d 'username=admin&password=P@ssw0rd'
+  # Request spec header
+  curl -H "X-Header: value" https://test.com
+  curl -H "X-Forwarded-For: 127.0.0.1" https://test.com
+
+
   # axel is a download accelerator that transfers a file from a FTP or HTTP server through multiple connections. This tool has a vast array of features, but the most common is -n, which is used to specify the number of multiple connections to use. In the following example, we are also using the -a option for a more concise progress indicator and -o to specify a different file name for the downloaded file.
   axel -a -n 20 -o filename https://test.test.com
    ```
