@@ -151,6 +151,9 @@ A - Availability ข้อมูลต้องมีความพร้อม
   ifconfig <INTERFACE> down
   # Set static IP on Interface
   ifconfig <INTERFACE> <IPADDRESS> netmask <NETMASK> broadcast <BROADCAST>
+  # Enable Promiscuous mode for sniff data
+  ifconfig <INTERFACE> promisc
+
   # Route 
   route
   route -n 
@@ -160,7 +163,10 @@ A - Availability ข้อมูลต้องมีความพร้อม
   route -Cn
   # Port Checking
   netstat -ant 
+
+  # DNS Checking
   nslookup www.google.com
+
   # Ping Test 
   ping -c 3 google.com
   # Traceroute 
@@ -263,6 +269,8 @@ A - Availability ข้อมูลต้องมีความพร้อม
   wget --limit-rate=1m https:/test.com/file.tar.xz
   # Download by use another User-Agent
   wget --user-agent="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0" https:/test.com/file.tar.xz
+  # Nocheck Certificate 
+  wget --no-check-certificate https://test.com
   # curl is a tool to transfer data to or from a server using a host of protocols including IMAP/S, POP3/S, SCP, SFTP, SMB/S, SMTP/S, TELNET, TFTP, and others. A penetration tester can use this to download or upload files and build complex requests. 
   curl -o filename https://test.com
   # Get Request
