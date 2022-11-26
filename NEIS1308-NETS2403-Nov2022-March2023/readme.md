@@ -51,8 +51,8 @@
 - Command over security areas
 
 ### Non-Technical Skills
-- Learining ability 
-- Pproblem-Solving skills
+- Learning ability 
+- Problem-Solving skills
 - Communication skiills
 - Coommmited to security policies 
 - Awareness of law, standards and Regulations 
@@ -80,6 +80,18 @@ A - Availability ข้อมูลต้องมีความพร้อม
   - Technique Control - การควบคุมด้วยเทคเนิค
   - Administrative Control - การควบคุมเชิงนโยบาย
 
+## Lab 
+- Setup environment
+- Install [VMWare](https://www.vmware.com/latam/products/workstation-pro/workstation-pro-evaluation.html)/[VirtualBox](https://www.virtualbox.org/)
+- Config netowrk for Hypervisor 
+  - Host Only
+  - NAT
+  - NAT Network
+  - Bridge Network
+- Install [Kali linux](https://www.kali.org/)
+--- 
+## Week 2@3 Dec 2022
+## Lec
 ### Penetration Testing Process
 - Pre-Exploitation
   - Information Gathering
@@ -107,19 +119,6 @@ A - Availability ข้อมูลต้องมีความพร้อม
 - Gaining Access
 - Maintain Access
 - Clearing Tracks
-
-## Lab 
-- Setup environment
-- Install [VMWare](https://www.vmware.com/latam/products/workstation-pro/workstation-pro-evaluation.html)/[VirtualBox](https://www.virtualbox.org/)
-- Config netowrk for Hypervisor 
-  - Host Only
-  - NAT
-  - NAT Network
-  - Bridge Network
-- Install [Kali linux](https://www.kali.org/)
---- 
-## Week 2@3 Dec 2022
-## Lec
 - Network Refresher
   - Introduction
   - OSI Model
