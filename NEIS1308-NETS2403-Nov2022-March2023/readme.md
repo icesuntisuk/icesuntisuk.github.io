@@ -364,7 +364,7 @@ A - Availability ข้อมูลต้องมีความพร้อม
 
 ## Lab
 - LAB Preparation 
-  - Windows 10 or 7
+  - Windows 7x86 (32bits)
     - Vulnserver (https://github.com/stephenbradshaw/vulnserver)
     - Immunity Debugger
   - Kali Linux
