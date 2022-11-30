@@ -138,8 +138,61 @@ A - Availability ข้อมูลต้องมีความพร้อม
   ```
 - Common Network Commands 
   ```bash
+  #SSH Command 
+  ssh root@<ipaddr>
+  ssh -i <certificate> root@<ipaddr>
+  # list 
+  ls 
+  ls -la 
+  # Print working directory
+  pwd 
+  # Change Directory 
+  cd /
+  cd ..
+  cd 
+  # Create empty file
+  touch file.txt
+  touch file{1..10}
+  # write file
+  echo "Hello" > file.txt
+  echo "world" >> file.txt
+  # show file 
+  cat file.txt
+  # Create directory
+  mkdir mydir
+  # copy and move file 
+  cp file1 /tmp/.
+  mv file1 file2 
+  # remove file 
+  rm -r file.txt
+  rm -rf file.txt
+  # Create symbollink or shortcut
+  ln -s file.txt linkfile
+  #Clear Screen
+  clear 
+  # Check username 
+  whoami
+  # install/update/upgrade software (Kali linux)
+  sudo apt install vim
+  sudo apt update 
+  sudo apt upgrade -y 
+  # manual of software
+  man cat
+  # Compare the file
+  diff file1 file1.xx
+  # Find file
+  sudo find / -name "file.txt"
+  # Find hidden file
+  sudo find / -type f -name "."
+  # find empty directory
+  find . -type f -empty
+  # find excutable files
+  find /  -perm /a=x 
+
+  # Network Check
   ip link show
   ip a
+  ip a | grep eth0
   ip address show dev <INTERFACE>
   ip route show
   ifconfig
