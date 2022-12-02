@@ -372,6 +372,7 @@ A - Availability ข้อมูลต้องมีความพร้อม
 ## Week 5@24 Dec 2022
 ## Lec
 - Scanning & Enumeration
+
 ## Lab
 - Scanning with Nmap
 - Enumeratimg HTTP
