@@ -357,6 +357,49 @@ A - Availability ข้อมูลต้องมีความพร้อม
 ## Lec
 - Ethical Hacking Methodology
 - Information Gathering (Reconnaissance) 
+- Passive information gathering
+  - [WHOIS Analysis](https://who.is/)
+  - DNS Enumeration 
+    - Standard Record Enumeration (A, AAAA, NS, SOA, MX, TXT, etc.)
+      - NS: Nameserver record, which indicates the name servers associated 
+with a given domain.
+      - A: Address IPv.4 Record
+      - AAAA: Address IPv.6 record
+      - MX: Mail Exchange record, which identifies the mail servers for the 
+given domain.
+      - TXT: Text record, which includes an arbitrary text string for the domain. 
+      - HINFO: Host Information record, which associates an arbitrary set of 
+information with a domain name, formerly used to indicate system types.
+      - CNAME: Canonical Name record, which indicates aliases and alternative 
+names for a given host 
+      - SOA: Start of Authority record, which indicates that a server is authoritative for 
+that DNS zone 
+      - RP: Responsible Person records, which are informational, not functional (that is, 
+they have no impact on DNS functionality) and indicate the human responsible 
+for a given domain. 
+      - PTR: Pointer for inverse lookups records, also called a reverse record, 
+indicating an IP address to domain name mapping. 
+      - SRV: Service location records, which provides information about available services, including port and hostname. 
+    - Zone Transfer
+    - Reverse lookup
+    - Subdomain Brute-force
+    - SSL Certificates 
+    - Search engines 
+    - Online DNS tools
+    - dig tool
+  ```bash
+  dig {a|txt|ns|mx} domain.com
+  dig {a|txt|ns|mx} domain.com @ns1.domain.com
+  dig domain.com ANY
+  # Zone Tranfer
+  dig axfr example.com @ns1.example.com
+  ```
+    - dnsenum
+  ```bash
+  dnsenum --noreverse -o mydomain.xml example.com
+  ```
+    - dnsrecon tool
+    - amass tool
 ## Lab
 - Passive Recon
 - OSINT Framework
