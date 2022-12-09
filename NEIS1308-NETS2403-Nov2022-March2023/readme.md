@@ -399,6 +399,10 @@ indicating an IP address to domain name mapping.
   dnsenum --noreverse -o mydomain.xml example.com
   ```
     - dnsrecon tool
+  ```bash
+  dnsrecon -d target.com -D wordlist -t brt 
+  dnsrecon -t snoop -D wordlist -n 2.2.2.2
+  ```
     - amass tool
 ## Lab
 - Passive Recon
