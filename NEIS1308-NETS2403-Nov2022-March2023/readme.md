@@ -357,7 +357,7 @@ A - Availability ข้อมูลต้องมีความพร้อม
 ## Lec
 - Ethical Hacking Methodology
 - Information Gathering (Reconnaissance) 
-- Passive information gathering
+- **Passive** information gathering
   - [WHOIS Analysis](https://who.is/)
   - DNS Enumeration 
     - Standard Record Enumeration (A, AAAA, NS, SOA, MX, TXT, etc.)
@@ -401,24 +401,137 @@ indicating an IP address to domain name mapping.
     - dnsrecon tool
   ```bash
   dnsrecon -d target.com -D wordlist -t brt 
-  dnsrecon -t snoop -D wordlist -n 2.2.2.2
+  dnsrecon -t snoop -D wordlist -n ns-server.com
+  dnsrecon -d target.com -D wordlist -t std --xml dnsrecon.xml
   ```
     - amass tool
-## Lab
-- Passive Recon
-- OSINT Framework
-  - Identifying target
-  - Discovering Email Address
-  - Meltego 
-  - Hunting Subdomains 
-  - Hunting Webtechnology 
-  - GHDB 
-- Brupsuit
+  ```bash
+  amass enum -d domain.com
+  amass itel -d domain.com
+  ```
+    - [shodan](https://www.shodan.io)
+    - [Censys](https://search.censys.io/)
+    - [Dnsdumpster](https://dnsdumpster.com/)
+  
+
+- **Active** information gathering
+  - [nmap](https://www.stationx.net/nmap-cheat-sheet/)
+  - masscan
+  ```bash
+  masscan -p80,8000-8100 10.0.0.0/8 --rate=10000
+  masscan -p80 10.0.0.0/8 --banners -oB <filename>
+  masscan --open --banners --readscan <filename> -oX <savefile>
+  ```
+  - enum4linux
+  ```bash
+  enum4linux -U -o <ip>
+  enum4linux -a -v <ip>
+  ```
+  - smbclient: smbclient is a client that can ‘talk’ to an SMB/CIFS server. It 
+offers an interface similar to that of the FTP program. Operations 
+include things like getting files from the server to the local 
+machine, putting files from the local machine to the server, 
+retrieving directory information from the server and so on.
+  ```bash
+  smbclient -L <ip> 
+  smbclient //<ip>/share
+  ```
+  - dirb
+  ```bash
+  dirb http://target.com/
+  ```
+  - gobuster
+  ```bash
+  gobuster dir -u http://target.com -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x .html,.php,.txt
+  ```
+  - Wfuzz
+  ```bash
+  wfuzz dir -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://target.com/~FUZZ
+  ```
+  - FFUF
+  ```bash
+  ffuf -c -w /usr/share/SecLists/Discovery/Web-Content/directory-list-2.3-big.txt -u 'http://target.com/FUZZ' -fc 403 
+  ```
+  - Metagofil ค้นหาไฟล์ต่างๆที่อยู่บนเว็บไซด์ของเป้าหมาย
+  ```bash
+  metagoofil -d target.com -t doc,pdf -l 200 -n 50 -o test -f
+  # Option ที่ใช้คือ
+  # -d ระบุเว็บไซด์ที่ต้องการค้นหา
+  # -t ระบุประเภทไฟล์ที่ต้องการค้นหา
+  # -n ระบุจำนวนไฟล์สูงสุดที่ต้องการ download
+  # -l ระบุจำกัดผลที่รับกลับมาจากการค้นหาด้วย Google(โดยปกติคือ 200)
+  # -o ระบุ path ที่เก็บไฟล์ต่างๆจากการ download file
+  # -f ระบุถึงการบันทึกผลการ search
+  ```
+- OSINT (Opensource Intelligence)
+  - [Map of OSINT](https://osintframework.com) 
+  - [Sherlock](https://github.com/sherlock-project/sherlock) 
+  - [Yandex](https://yandex.com/images) ค้นหารูปภาพได้ดีกว่า Google 
+  - [ค้นหาข้อมูลเบอร์โทร](https://www.truecaller.com) 
+  - [ค้นหา Location](https://tool.geoimgr.com) 
+  - [ตรวจอสอบ Hotspot](https://www.wigle.net)
+  - [ตรวจสอบเส้นทางการบิน](https://www.flightradar24.com) 
+  - [ตรวจสอบเส้นทางเดินเรือ](https://www.marinetraffic.com/en/ais/home/centerx:-12.0/centery:24.9/zoom:4) 
+  - [Google Hacking Database](https://www.exploit-db.com/google-hacking-database) 
+  - [SSL or TLS certificates](https://crt.sh) 
+  - [Wayback Machine](https://archive.org/web/)
+  - [Check Beach information](https://haveibeenpwned.com) และ (https://www.dehashed.com) 
+  - [Spiderfoor](https://www.spiderfoot.net) SpiderFoot is a reconnaissance tool that automatically queries over 100 public data sources (OSINT) to gather intelligence on IP addresses, domain names, e-mail addresses, names and more. 
+  - [Robtex](https://www.robtex.com/dashboard/)
+  - [เว็บสำหรับตรวจสอบเว็บที่โดน Web Defacement](http://zone-h.org)
+  - AI Face Generator (https://thispersondoesnotexist.com และ https://generated.photos/faces)
+  - IOC Checker
+    - https://otx.alienvault.com/preview
+    - https://exchange.xforce.ibmcloud.com
+    - https://www.virustotal.com 
+    - https://www.hybrid-analysis.com 
+  - Threat intelligent feed source 
+    - https://www.circl.lu/doc/misp/feed-osint
+    - http://www.botvrij.eu/data/feed-osint
+    - https://zeustracker.abuse.ch/blocklist.php?download=compromised
+    - http://rules.emergingthreats.net/blockrules/compromised-ips.txt
+    - https://panwdbl.appspot.com/lists/mdl.txt
+    - https://www.dan.me.uk/torlist
+    - http://cybercrime-tracker.net/all.php
+    - http://data.phishtank.com/data/online-valid.csv
+    - http://labs.snort.org/feeds/ip-filter.blf
+    - https://ransomwaretracker.abuse.ch/feeds/csv/
+- [TOR Network](https://www.torproject.org)
+  - Search engine in TOR 
+    - https://ahmia.fi/ 
+    - ahmia
+    - darksearchio
+    - onionland
+    - notevil
+    - darksearchenginer
+    - phobos
+    - onionsearchserver
+    - torgle
+    - onionsearchengine
+    - tordex
+    - tor66
+    - tormax
+    - haystack
+    - multivac
+    - evosearch
+    - deeplink
+  - กรณีต้องการเข้าใช้ .onion สามารถใช้ .ly ต่อท้าย เพื่อเข้าไปยัง Site ดังกล่าวได้โดยไม่ผ่าน Browser TOR ได้ เช่น .onion.ly เป็นต้น
+  - Check TOR Exit Nodes 
+    - https://www.dan.me.uk/tornodes 
+    - https://udger.com/resources 
+  - Mail on TOR 
+    - http://mail2tor2zyjdctd.onion 
+    - http://secmailw453j7piv.onion 
+    - https://ctemplar.com 
+  - BTC followup 
+    - https://etherscan.io
+    - https://www.bitcoinwhoswho.com
+    - https://www.blockchain.com/explorer 
 --- 
 
 ## Week 5@24 Dec 2022
 ## Lec
-- Scanning & Enumeration
+- Scanning & Enumeration (ต่อ)
 
 ## Lab
 - Scanning with Nmap
