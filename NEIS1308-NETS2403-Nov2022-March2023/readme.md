@@ -531,14 +531,18 @@ retrieving directory information from the server and so on.
 
 ## Week 5@24 Dec 2022
 ## Lec
-- Scanning & Enumeration (ต่อ)
-
-## Lab
-- Scanning with Nmap
-- Enumeratimg HTTP
-- Enumerating SMB
-- Enumeration SSH
-- Research Potential Vulnerability 
+- Enumeration
+  - Email ID
+  - Default Password
+  - SNMP
+  - Bruteforce Attack on Active Directory
+  - Enumeration through DNS Zone Transfer 
+  - Services and Ports to Enumerate
+  - Research Potential Vulnerability 
+    - [Exploit DB](https://www.exploit-db.com/)
+  ```bash
+  searchspoit smb
+  ```
 --- 
 ## Week 6@31 Dec 2022
 หยุดวันสิ้นปีใหม่
