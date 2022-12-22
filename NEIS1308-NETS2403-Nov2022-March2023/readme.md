@@ -620,6 +620,7 @@ retrieving directory information from the server and so on.
 ## Lec
 
 - Nessus
+  - [Activate Code](https://www.tenable.com/products/nessus/activation-code)
 - OpenVA
   
 --- 
