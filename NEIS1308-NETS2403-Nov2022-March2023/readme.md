@@ -621,7 +621,7 @@ retrieving directory information from the server and so on.
 
 - Nessus
 - OpenVA
-
+  
 --- 
 ## Week 8@14 Jan 2023
 ## Lec
