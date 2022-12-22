@@ -7,13 +7,13 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 ### **Experience**
 
 * **Working**: Technical officer @ Cyber Center.
-* **Working**: Special Teacher @ Mahanakorn Institute of Innovation in Mahanakorn University of Technology
+* **Working**: Special Teacher @ Mahanakorn Institute of Innovation in Mahanakorn University of Technology.
     * Course: Ethical Hacking
 * **Working**: Instructor and Security Specialist @ Netprime System.
     * Course: Palo Alto firewall workshop
     * Course: Fortigate firewall workshop
     * Course: Basic Security Exercise
-* **2020 - 2022**: Plan and Engineering Division @DIST
+* **2020 - 2022**: Plan and Engineering Division @DIST.
 
 * **2017 - 2020**: Security Officer @ Cyber Center.
     * Cyber Center is an office under Defence Information and Space Technology Department (DIST) in the Office of the Permanent Secretary for Defence, Ministry of Defense. ([ref.](http://dist.mod.go.th/Recommend/Responsibility.aspx ))
