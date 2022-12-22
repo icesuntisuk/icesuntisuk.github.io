@@ -631,6 +631,13 @@ retrieving directory information from the server and so on.
 ## Lab
 - Cyberchef
 - Bruteforce Attack
+
+--- 
+## Week 8@15 Jan 2023
+## Lec
+
+## Lab
+
 --- 
 
 ## Week 9@21 Jan 2023
@@ -640,6 +647,12 @@ retrieving directory information from the server and so on.
 ## Lab
 - Bind Shells and Reverse Shell
 - MSF 
+--- 
+## Week 9@22 Jan 2023
+## Lec
+
+## Lab
+
 --- 
 
 ## Week 10@28 Jan 2023
