@@ -1,4 +1,4 @@
-![](/img/ice2.png){:height="50%" width="50%" style="float: right"}
+![](/img/ice2.png){:height="40%" width="40%" style="float: right"}
 
 # Biography of <font color="white"> Capt.Suntisuk Thepthong </font>
 
