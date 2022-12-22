@@ -531,6 +531,7 @@ retrieving directory information from the server and so on.
 
 ## Week 5@24 Dec 2022
 ## Lec & LAB
+- [Download Windows 7](https://drive.google.com/file/d/1-5mODkxntoAZwID137bdZohXanrtBWnh/view?usp=sharing)
 - Enumeration
   - Email ID
   - Default Password
@@ -609,6 +610,9 @@ retrieving directory information from the server and so on.
       python3 -m http.server   [port]        #Version 3 
       ```
     - [Shell Generator](https://www.revshells.com/)
+    - Try DVWA SQLinjection and reverse shell to kali
+      - [LAB Guide](https://drive.google.com/file/d/1-TMcU-b5_PyxAYoojZr876ByjT1yQVnm/view?usp=share_link)
+      - [Metasploitable](https://drive.google.com/file/d/1-4Are7QBCnwRZ9_b3g3ncKNAWTAh2jun/view?usp=sharing)
 
 --- 
 ## Week 6@31 Dec 2022
