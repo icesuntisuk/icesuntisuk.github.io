@@ -627,6 +627,7 @@ retrieving directory information from the server and so on.
   - [Email Temp](https://tempail.com/en/)
   - [Activate Code](https://www.tenable.com/products/nessus/activation-code)
 - OpenVA
+- นักศึกษากลุ่มที่ 1 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
   
 --- 
 ## Week 8@14 Jan 2023
@@ -636,28 +637,33 @@ retrieving directory information from the server and so on.
 ## Lab
 - Cyberchef
 - Bruteforce Attack
+- นักศึกษากลุ่มที่ 2 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 
 --- 
 ## Week 8@15 Jan 2023
 ## Lec
 
 ## Lab
-
+- นักศึกษากลุ่มที่ 3 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 --- 
 
 ## Week 9@21 Jan 2023
 ## Lec
+
 - Exploitation
-- Bind Shells and Reverse Shell
+  
 ## Lab
-- Bind Shells and Reverse Shell
+
 - MSF 
+- นักศึกษากลุ่มที่ 4 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 --- 
 ## Week 9@22 Jan 2023
 ## Lec
 
 ## Lab
 
+- นักศึกษากลุ่มที่ 5 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
+  
 --- 
 
 ## Week 10@28 Jan 2023
@@ -665,7 +671,6 @@ retrieving directory information from the server and so on.
 - Exploit Development (Buffer Overflows)
 - Buffer Overflows 
 
-## Lab
 - LAB Preparation 
   - Windows 7x86 (32bits)
     - Vulnserver (https://github.com/stephenbradshaw/vulnserver)
@@ -762,40 +767,43 @@ FIND Offfset by copy EIP HEX number to find Offset index
 - Generating Shellcode and Gaining Root
 - Exploit Development
 
+- นักศึกษากลุ่มที่ 6 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 
 --- 
 
 ## Week 11@21 Jan 2023
 ## Lec
-Privilege Escalation
-## Lab
-Linux Privilege Escalation
+- Privilege Escalation
+- Linux Privilege Escalation
+- นักศึกษากลุ่มที่ 7 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
   
 --- 
 
 ## Week 12@28 Jan 2023
 ## Lec
 ## Lab
-- นักศึกษากลุ่มที่ 1 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
+
+- นักศึกษากลุ่มที่ 8 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
+
   
 --- 
 
 ## Week 13@4 Feb 2023
 ## Lec
 ## Lab
-- นักศึกษากลุ่มที่ 2 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
+
 --- 
 
 ## Week 13@11 Feb 2023
 ## Lec
 ## Lab
-- นักศึกษากลุ่มที่ 3 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
+
 --- 
 
 ## Week 14@18 Feb 2023
 ## Lec
 ## Lab
-- นักศึกษากลุ่มที่ 4 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
+
 
 --- 
 
@@ -803,7 +811,7 @@ Linux Privilege Escalation
 ## Week 15@25 Feb 2023
 ## Lec
 ## Lab
-- นักศึกษากลุ่มที่ 5 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
+
 
 --- 
 
