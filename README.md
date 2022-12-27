@@ -7,7 +7,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 ### **Experience**
 
 * **Working**: Technical officer @ Cyber Center.
-* **Working**: Special Teacher @ Mahanakorn Institute of Innovation in Mahanakorn University of Technology.
+* **Working**: Special instructor @ Mahanakorn Institute of Innovation in Mahanakorn University of Technology.
     * Course: Ethical Hacking
 * **Working**: Instructor and Security Specialist @ Netprime System.
     * Course: Palo Alto firewall workshop
