@@ -624,9 +624,44 @@ retrieving directory information from the server and so on.
 Enumeration Cheatsheet 
 - [Hacktricks](https://book.hacktricks.xyz/welcome/readme)
 - Nessus
-  - [Email Temp](https://tempail.com/en/)
-  - [Activate Code](https://www.tenable.com/products/nessus/activation-code)
+  - Install Guide 
+    - Step 1: Download Nessus .deb file form [Tenable site](https://www.tenable.com/downloads/nessus).
+    - Step 2: Install packet via apt command 
+      ```bash
+      sudo apt install ./Nessus-x.x.x.deb 
+      ```
+    - Step 3: Start nessusd service
+      ```bash
+      sudo /etc/init.d/nessusd start 
+      ```
+    - Step 4: Navigate to [https://localhost:8834](https://localhost:8834)
+    - Step 5: Install Nessus **Essential** Version
+    - Step 6: Register and get Activate Code 
+      - [Email Temp](https://tempail.com/en/)
+      - [Activate Code](https://www.tenable.com/products/nessus/activation-code)
+      - Step 7: Wait for download component 
+      - Step 8: Let's Scan via New Scan
 - OpenVA
+  - Install Guide 
+  - Step 1: POSTGRESQL. Start the service for the gvm module (Greenbone Vulnerability Management)
+    ```bash
+    sudo /etc/init.d/postgresql start
+    ```
+  - Step 2: INSTALLATION OF GVM.
+    ```bash
+    sudo apt install --install-recommends gvm -y
+    sudo gvm-check-setup
+    ```
+  - Step 3: Start service
+    ```bash
+    sudo systemctl start redis-server@openvas.service
+    sudo systemctl enable redis-server@openvas.service
+    ```
+  - Step 4: add a "kali" user and his password: (by default but both need to be changed)
+    ```bash
+    sudo runuser -u _gvm -- gvmd --create-user=kali --password=kali
+    ```
+  - Step 5: Navigate to [https://127.0.0.1:9392/login](https://127.0.0.1:9392/login)
 - นักศึกษากลุ่มที่ 1 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
   
 --- 
@@ -654,7 +689,7 @@ Enumeration Cheatsheet
   
 ## Lab
 
-
+- MSF 
 - นักศึกษากลุ่มที่ 4 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 --- 
 ## Week 9@22 Jan 2023
