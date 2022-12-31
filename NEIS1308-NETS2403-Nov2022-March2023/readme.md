@@ -621,8 +621,8 @@ retrieving directory information from the server and so on.
 
 --- 
 ## Week 7@7 Jan 2023
-## Lec
-
+Enumeration Cheatsheet 
+- [Hacktricks](https://book.hacktricks.xyz/welcome/readme)
 - Nessus
   - [Email Temp](https://tempail.com/en/)
   - [Activate Code](https://www.tenable.com/products/nessus/activation-code)
@@ -642,7 +642,7 @@ retrieving directory information from the server and so on.
 --- 
 ## Week 8@15 Jan 2023
 ## Lec
-
+- Metasploit Framework
 ## Lab
 - นักศึกษากลุ่มที่ 3 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 --- 
@@ -654,7 +654,7 @@ retrieving directory information from the server and so on.
   
 ## Lab
 
-- MSF 
+
 - นักศึกษากลุ่มที่ 4 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 --- 
 ## Week 9@22 Jan 2023
@@ -774,7 +774,10 @@ FIND Offfset by copy EIP HEX number to find Offset index
 ## Week 11@21 Jan 2023
 ## Lec
 - Privilege Escalation
-- Linux Privilege Escalation
+  - Linux: Capabilities, SUIDs/GUIDs, cronjobs, modifiable binaries running as root, out-of-date binaries, known-binary exploits, history files.
+    - [GTFOBins for Linux](https://gtfobins.github.io/)
+  - Windows: Weak service permissions, Unquoted service paths, outdated binaries, scheduled tasks, custom functionality implemented through binaries, known-binary exploits, stored passwords, pass-the-hash.
+    - [LOLBAS for Windows](https://lolbas-project.github.io/)
 - นักศึกษากลุ่มที่ 7 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
   
 --- 
