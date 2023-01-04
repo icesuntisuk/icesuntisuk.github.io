@@ -621,6 +621,8 @@ retrieving directory information from the server and so on.
 
 --- 
 ## Week 7@7 Jan 2023
+Social Engineering Attacks 
+- [setoolkit](https://linuxhint.com/kali-linux-set/)
 Enumeration Cheatsheet 
 - [Hacktricks](https://book.hacktricks.xyz/welcome/readme)
 - Nessus
