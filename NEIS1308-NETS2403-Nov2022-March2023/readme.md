@@ -643,7 +643,7 @@ Enumeration Cheatsheet
       - [Activate Code](https://www.tenable.com/products/nessus/activation-code)
       - Step 7: Wait for download component 
       - Step 8: Let's Scan via New Scan
-
+- [https://explainshell.com/](https://explainshell.com/)
 - นักศึกษากลุ่มที่ 1 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
   
 --- 
