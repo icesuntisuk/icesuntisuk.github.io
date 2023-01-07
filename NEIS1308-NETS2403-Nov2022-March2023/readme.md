@@ -634,7 +634,7 @@ Enumeration Cheatsheet
       ```
     - Step 3: Start nessusd service
       ```bash
-      sudo /etc/init.d/nessusd start 
+      sudo systemctl start nessusd
       ```
     - Step 4: Navigate to [https://localhost:8834](https://localhost:8834)
     - Step 5: Install Nessus **Essential** Version
