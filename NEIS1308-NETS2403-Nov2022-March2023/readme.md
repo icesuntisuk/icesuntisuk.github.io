@@ -648,17 +648,7 @@ Enumeration Cheatsheet
   
 --- 
 ## Week 8@14 Jan 2023
-## Lec
-- Cryptography 
-- Password Attack
-## Lab
-- Cyberchef
-- Bruteforce Attack
-- นักศึกษากลุ่มที่ 2 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
-
---- 
-## Week 8@15 Jan 2023
-## Lec
+# Lec
 - OpenVA
   - Install Guide 
     - Step 1: POSTGRESQL. Start the service for the gvm module (Greenbone Vulnerability Management)
@@ -680,16 +670,112 @@ Enumeration Cheatsheet
     sudo runuser -u _gvm -- gvmd --create-user=kali --password=kali
     ```
     - Step 5: Navigate to [https://127.0.0.1:9392/login](https://127.0.0.1:9392/login
-- Metasploit Framework
-  
+- TRY to SCAN Win7 via Nessus and OpenVA
+
+- นักศึกษากลุ่มที่ 2 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
+
+--- 
+## Week 8@15 Jan 2023
+## Lec
+- Cryptography เป็นเทคโนโลยีการเข้ารหัสและถอดรหัสข้อมูลเพื่อป้องกันการถูกโจมตีหรือเข้าถึงโดยไม่มีสิทธิ์ มักใช้ในการเข้ารหัสข้อมูลส่วนตัว, ข้อมูลทางธุรกิจ และการสื่อสารในเครือข่าย
+  - กระบวนการเข้ารหัสหรือ Encryption Process
+    - Paintext > Encryption > Ciphertext > Decryption > Paintext 
+  - Tools 
+    - [Cyberchef](https://gchq.github.io/CyberChef/)
+    - [dcode.fr](https://www.dcode.fr/)
+  - Encoding and Decoding 
+    - Binary A data encoding by using a two-symbol system "0" and
+"1" from the binary number system
+    - Base-8 A data encoding by using the base-8 number system,
+and uses the digits 0 to 7
+    - Hex/Hexadecimal A data encoding by using Base16, each byte of the plaintext is broken into two 4-bit values and represented by two hexadecimal digits "0"–"9" to, and "A"–"F"
+    - Base32 One of several base 32 transfer encodings by using a 32-
+character set comprising the twenty-six upper-case letters A–Z, and the digits 2–7
+    - Base58 A binary-to-text encoding schemes that used to represent large integers as alphanumeric text, introduced by Satoshi Nakamoto for use with Bitcoin
+    - Base62 A data encoding is usually used in URL Shortening, which is a conversion between a Base 10 integer and its Base62 encoding
+    - Base64 A binary-to-text encoding schemes that represent binary data in an ASCII string by using radix-64 representation
+    - Base85 A binary-to-text encoding by using five ASCII characters to represent four bytes of binary data
+    - ROT13 A simple letter substitution cipher that replaces a letterwith the 13th letter after it. ROT13 is a special case of the Caesar cipher that developed in ancient Rome
+    - ROT47 A shift cipher that improves the Rot13 by allowing it to encode almost all visible ASCII characters (where Rot13 could only encode letters)
+    - Atbash A monoalphabetic substitution cipher originally used to encrypt the Hebrew alphabet, which mapping the first letter becomes the last letter
+    - URL Encode/Decode The converted and reversed URI/URL percent-encoded characters, a format supported by URIs/URLs
+    - Morse Code A method that encode text characters as standardized sequences of two different signal durations, called dots and dashes or dits and dahs
+    - Braille A rectangular block called cells that have tiny bumps with the raise of six-dot symbols for visually impaired
+    - [Brainfuck](https://www.dcode.fr/langage-brainfuck)
+    - [Affine Cipher](https://www.dcode.fr/affine-cipher)
+    - [Malbolge](http://malbolge.doleczek.pl/)
+
 ## Lab
 - นักศึกษากลุ่มที่ 3 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 --- 
 
 ## Week 9@21 Jan 2023
 ## Lec
+- Symmetric Key Cryptography
+    - Process
+      - Paintext + KEY > Ciphertext 
+      - Ciphertext + KEY = Paintext
+    - RC2 A symmetric-key block cipher designed by Ron Rivest. "RC" stands for "Ron's Code" or "Rivest Cipher"; other ciphers designed by Rivest include RC4, RC5, and RC6
+    - RC4 A stream cipher that have the encryption by combining the plaintext using bit-wise exclusive-or and the decryption is performed the same way
+    - XOR An encryption data by logical operation with the given key that outputs true only when inputs differ (one is true, the other is false)
+    - Blowfish A symmetric-key block cipher included in many encryption products that provides a good encryption rate in software
+    - Data Encryption Standard (DES) A symmetric-key algorithm for data encryption with a short key length of 56 bits (short 56-bit key size)
+    - Advanced Encryption Standard (AES) A U.S. Federal Information Processing Standard (FIPS) algorithm with a block size of 128 bits, but three different key lengths: 128, 192 and 256 bits
 
-- Exploitation
+- OpenSSL Toolkit
+  ```bash
+  # BASE64 Encode and Decode via OpenSSL
+  echo 'Cryptography' | openssl enc -base64
+  echo 'Cryptography' | openssl enc -e -base64
+  echo 'Q3J5cHRvZ3JhcGh5Cg==' | openssl enc -d -base64
+
+  # DES Encrypt/Decrypt
+  # DES Ex 1 
+  echo 'Cryptography' | openssl enc -des -base64 -K e0e0e0e0f1f1f1f1 -iv e0e0e0e0abababab
+  echo 'NYC/82QHAy44n5n3ti9WBA==' | openssl enc -d -des -base64 -K e0e0e0e0f1f1f1f1 -iv e0e0e0e0abababab
+  
+  # DES Ex 2
+  echo 'Cryptography' | openssl enc -des -base64 -k 'testdata'
+  echo 'U2FsdGVkX1+lv7qNt+e+McLc0iNsKwfNWwc1A+LzSoo=' | openssl enc -d -des -base64 -k 'testdata'
+
+  # DES Ex 3 
+  echo 'Cryptography' | openssl enc -des -base64 -k 'testdata' -nosalt
+  echo 'TnIGcH/Cob11I37QAe6RAQ==' | openssl enc -d -des -base64 -k 'testdata' -nosalt
+
+  # DES Ex 4
+  echo 'Cryptography' | openssl enc -des -base64 -k 'testdata' -pbkdf2
+  echo 'U2FsdGVkX1/UOh4++KJcbhnQN/FYYiqbWQjQaBuSJNI=' | openssl enc -d -des -base64 -k 'testdata' -pbkdf2
+
+  # AES-128 Encrypt/Decrypt
+  echo 'Cryptography' | openssl enc -aes128 -base64 -k 'testdata' -pbkdf2
+  echo 'U2FsdGVkX1/8sGvTYMz/lK8XPLJ4lw3rLDTrmT2U/fI=' | openssl enc -d -aes128 -base64 -k 'testdata' -pbkdf2
+
+  # Blowfish Encrypt/Decrypt
+  echo 'Cryptography' | openssl enc -bf -base64 -k 'testdata' -pbkdf2
+  echo 'U2FsdGVkX1+QEJWo8tFlPlmihsslP2HduPHTbLRMyYo=' | openssl enc -d -bf -base64 -k 'testdata' -pbkdf2
+
+  # RC4 Encrypt/Decrypt
+  echo 'Cryptography' | openssl enc -rc4 -base64 -k 'pass' -pbkdf2 -nosalt
+  echo 'K2zGLxryS/cNaSuaXg==' | openssl enc -d -rc4 -base64 -k 'pass' -pbkdf2 -nosalt
+
+  # CAST Encrypt/Decrypt
+  echo 'Cryptography' | openssl enc -cast -base64 -k 'hello' -pbkdf2
+  echo 'U2FsdGVkX1/6nzZM4IEoiSX0rZz0neI43r5lbb9rBs4=' | openssl enc -d -cast -base64 -k 'hello' -pbkdf2
+  ```
+
+- Asymmetric Key Cryptography Public-key cryptography, or asymmetric-key
+cryptography, is a cryptographic system that uses pairs of keys: (Use two keys and
+Two-way methods)
+  - public keys, which may be disseminated widely
+  - private keys, which are known only to the owner
+  - Process
+    - Plaintext + Public Key = Ciphertext
+    - Ciphertext + Private key = Plaintext
+  - Asymmetric Key Algorithms
+    - ElGamal is an asymmetric key encryption algorithm which is based on the Diffie–Hellman key exchange
+    - RSA (Rivest–Shamir–Adleman) is the first public-key cryptosystems and is widely used for secure data transmission, the encryption key is public and distinct from the decryption key which is kept secret (private)
+    - Elliptic Curve Cryptography (ECC) provides similar functionality to RSA and implements in smaller devices like cell phones
+    - Digital Signature Algorithm (DSA) was developed by the United States government for digital signatures
   
 ## Lab
 
