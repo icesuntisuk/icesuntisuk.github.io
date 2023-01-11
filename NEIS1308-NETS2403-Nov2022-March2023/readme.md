@@ -773,7 +773,7 @@ Two-way methods)
     - Ciphertext + Private key = Plaintext
   - Asymmetric Key Algorithms
     - ElGamal is an asymmetric key encryption algorithm which is based on the Diffie–Hellman key exchange
-    - RSA (Rivest–Shamir–Adleman) is the first public-key cryptosystems and is widely used for secure data transmission, the encryption key is public and distinct from the decryption key which is kept secret (private)
+    - [RSA](https://th.wikipedia.org/wiki/%E0%B8%AD%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B9%80%E0%B8%AD%E0%B8%AA%E0%B9%80%E0%B8%AD) (Rivest–Shamir–Adleman) is the first public-key cryptosystems and is widely used for secure data transmission, the encryption key is public and distinct from the decryption key which is kept secret (private)
     - Elliptic Curve Cryptography (ECC) provides similar functionality to RSA and implements in smaller devices like cell phones
     - Digital Signature Algorithm (DSA) was developed by the United States government for digital signatures
   
