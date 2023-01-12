@@ -692,13 +692,13 @@ Enumeration Cheatsheet
     - Base58 Base58 เป็นระบบการเข้ารหัสตัวเลข ซึ่งจะแปลงข้อมูลเป็นตัวเลข 58 หลัก โดยใช้ตัวเลขจาก 0-9 และตัวอักษร A-Z และ a-z (ยกเว้นตัว l, I, O เพื่อไม่ให้เกิดความสับสน) ซึ่งมักใช้ในการเข้ารหัสข้อมูลส่วนตัว เช่น Bitcoin Address
     - Base62 เป็นระบบการเข้ารหัสตัวเลข ซึ่งจะแปลงข้อมูลเป็นตัวเลข 62 หลัก โดยใช้ตัวเลข 0-9 และตัวอักษร A-Z และ a-z ซึ่งจะเป็นรูปแบบข้อมูลที่มีขนาดเล็กกว่า Base64
     - Base64 เป็นระบบการเข้ารหัสข้อมูลโดยใช้ 64 ตัวอักษร โดยจะใช้เลข 0-9 และตัวอักษร A-Z, a-z และ + / (ยกเว้น = ) ซึ่งจะแปลงข้อมูลเป็นตัวเลข 6 หลัก
-    - Base85 A binary-to-text encoding by using five ASCII characters to represent four bytes of binary data
-    - ROT13 A simple letter substitution cipher that replaces a letterwith the 13th letter after it. ROT13 is a special case of the Caesar cipher that developed in ancient Rome
-    - ROT47 A shift cipher that improves the Rot13 by allowing it to encode almost all visible ASCII characters (where Rot13 could only encode letters)
-    - Atbash A monoalphabetic substitution cipher originally used to encrypt the Hebrew alphabet, which mapping the first letter becomes the last letter
-    - URL Encode/Decode The converted and reversed URI/URL percent-encoded characters, a format supported by URIs/URLs
-    - Morse Code A method that encode text characters as standardized sequences of two different signal durations, called dots and dashes or dits and dahs
-    - Braille A rectangular block called cells that have tiny bumps with the raise of six-dot symbols for visually impaired
+    - Base85 Base85 เป็นวิธีการเข้ารหัสข้อมูลโดยใช้ 85 ตัวอักษร โดยแต่ละตัวอักษรจะแทนค่าของ 5 บิต ซึ่งจะทำให้การเข้ารหัสและถอดรหัสข้อมูลเป็นไปได้ง่ายขึ้นเปรียบเทียบกับ Base64 ซึ่งใช้ 64 ตัวอักษรเท่านั้น
+    - ROT13 เป็นวิธีการเข้ารหัสข้อมูลที่ใช้การเลื่อนตัวอักษรที่เป็นตัวอักษรภาษาอังกฤษ 13 ตำแหน่ง นั่นคือ ตัวอักษร A จะเปลี่ยนเป็น N, B จะเปลี่ยนเป็น O และต่อไปจนถึง Z จะเปลี่ยนเป็น M และเหมือนกันสำหรับตัวอักษร a-z ใช้กันโดยการแปลงข้อความสำหรับความปลอดภัยเบื้องต้น
+    - ROT47 เป็นวิธีการเข้ารหัสข้อมูลที่ใช้การเลื่อนตัวอักษร 47 ตำแหน่ง ในภาษา ASCII ซึ่งจะเปลี่ยนตัวอักษรต่างๆ ในรูปแบบต่างๆ ตั้งแต่ ตัวอักษร ตัวเลข และสัญลักษณ์ โดยใช้สำหรับความปลอดภัยเบื้องต้น
+    - Atbash เป็นวิธีการเข้ารหัสข้อมูลที่ใช้การเปลี่ยนตัวอักษรตามลำดับตัวอักษรของตัวอักษรตัวสุดท้ายของภาษาอังกฤษ เช่น A เปลี่ยนเป็น Z, B เปลี่ยนเป็น Y และต่อไปจนถึง Z เปลี่ยนเป็น A โดยใช้ในการเข้ารหัสข้อความสำหรับความปลอดภัยเบื้องต้นในยุคโบราณ
+    - URL Encode/Decode เป็นวิธีการแปลงข้อมูลให้สามารถใช้งานได้บนอินเทอร์เน็ต โดยการเข้ารหัส URL Encode จะแปลงตัวอักษรที่ไม่สามารถใช้ใน URL ได้ เช่น ช่องว่าง อักขระพิเศษ ให้เป็นรหัส %่่ โดยส่วนของ URL Decode จะเป็นการแปลงกลับมาเป็นตัวอักษรปกติ
+    - Morse Code เป็นรหัสสัญลักษณ์ที่ใช้ในการแปลงข้อความเป็นเสียงหรือสัญลักษณ์ ซึ่งแต่ละตัวอักษรหรือตัวเลข จะมีสัญลักษณ์ของตัวเอง เช่นตัวอักษร 'A' จะเป็น ".-" และ 'Z' จะเป็น "--.." ซึ่งใช้กันในการส่งข้อความผ่านเสียงในยุคก่อนปัจจุบัน
+    - Braille เป็นรหัสสัญลักษณ์ที่ใช้ในการแปลงข้อความสำหรับคนตาบอด โดยจะใช้สัญลักษณ์ของ 6 จุดที่ตั้งอยู่บนกระดาษ แต่ละตัวอักษรหรือตัวเลข จะมีสัญลักษณ์ของตัวเอง เช่น ตัว "A" จะเป็น "⠁" และ "Z" จะเป็น "⠻" ใช้สำหรับการเขียนอ่านและการเรียนรู้สำหรับคนตาบอด
     - [Brainfuck](https://www.dcode.fr/langage-brainfuck)
     - [Affine Cipher](https://www.dcode.fr/affine-cipher)
     - [Malbolge](http://malbolge.doleczek.pl/)
@@ -709,7 +709,7 @@ Enumeration Cheatsheet
 
 ## Week 9@21 Jan 2023
 ## Lec
-- Symmetric Key Cryptography
+- Symmetric Key Cryptography หรือการเข้ารหัสด้วยกุญแจคู่ เป็นวิธีการเข้ารหัสข้อมูลโดยใช้กุญแจเดียวกันสำหรับการเข้ารหัสและถอดรหัส ซึ่งกุญแจนี้ต้องแชร์ให้กับผู้ที่ต้องการใช้ข้อมูลที่เข้ารหัสไว้ ซึ่งจะมีปัญหาในการควบคุมการแชร์และการเข้าถึงของข้อมูล แต่จะมีประสิทธิภาพในการเข้ารหัสและถอดรหัสเป็นอย่างดี
     - Process
       - Paintext + KEY > Ciphertext 
       - Ciphertext + KEY = Paintext
