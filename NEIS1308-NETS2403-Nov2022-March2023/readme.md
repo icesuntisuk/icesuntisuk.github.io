@@ -684,16 +684,14 @@ Enumeration Cheatsheet
     - [Cyberchef](https://gchq.github.io/CyberChef/)
     - [dcode.fr](https://www.dcode.fr/)
   - Encoding and Decoding 
-    - Binary A data encoding by using a two-symbol system "0" and
-"1" from the binary number system
-    - Base-8 A data encoding by using the base-8 number system,
-and uses the digits 0 to 7
-    - Hex/Hexadecimal A data encoding by using Base16, each byte of the plaintext is broken into two 4-bit values and represented by two hexadecimal digits "0"–"9" to, and "A"–"F"
-    - Base32 One of several base 32 transfer encodings by using a 32-
-character set comprising the twenty-six upper-case letters A–Z, and the digits 2–7
-    - Base58 A binary-to-text encoding schemes that used to represent large integers as alphanumeric text, introduced by Satoshi Nakamoto for use with Bitcoin
-    - Base62 A data encoding is usually used in URL Shortening, which is a conversion between a Base 10 integer and its Base62 encoding
-    - Base64 A binary-to-text encoding schemes that represent binary data in an ASCII string by using radix-64 representation
+    - Encoding คือการแปลงข้อมูลให้อยู่ในรูปแบบที่ใช้ได้ในระบบหรือเครื่องมือที่เฉพาะ เช่น แปลงข้อมูลตัวอักษรให้เป็นเลขฐาน 2 (binary) หรือ แปลงข้อมูลภาพให้เป็นไฟล์ JPEG
+    - Decoding คือการแปลงข้อมูลกลับมาในรูปแบบต้นฉบับ หรือรูปแบบที่ใช้ได้ในการเข้าถึง เช่น แปลงเลขฐาน 2 เป็นตัวอักษร หรือ แปลงไฟล์ JPEG เป็นภาพ
+    - Binary เป็นรูปแบบการแปลงข้อมูลในรูปแบบต้นฉบับเป็นข้อมูลในรูปแบบฐาน 2 (binary) ซึ่งเป็นรูปแบบข้อมูลที่ใช้ในคอมพิวเตอร์ โดยใช้ 0 และ 1 เพื่อแทนค่าต่างๆ เช่น ตัวอักษร A จะแปลงเป็น 01000001 , ตัวเลข 10 เป็น 00001010
+    - Base-8, หรือ Octal, เป็นระบบการเข้ารหัสตัวเลขที่ใช้ 8 หลัก ซึ่งมีตัวเลข 0-7 เป็นตัวหลัก โดยเลขใดเลขหนึ่งจะแทนค่า 8^n เมื่อ n เป็นตำแหน่งของหลัก ซึ่งจะแปลงข้อมูลเป็นตัวเลข 8 หลัก
+    - Hex/Hexadecimal Hex encoding (Hexadecimal encoding) คือการแปลงข้อมูลในรูปแบบต้นฉบับเป็นข้อมูลในรูปแบบฐาน 16 (Hexadecimal) ซึ่งเป็นรูปแบบข้อมูลที่ใช้ในคอมพิวเตอร์ โดยใช้ตัวเลข 0-9 และ A-F เพื่อแทนค่าต่าง ๆ เช่น ตัวอักษร A จะแปลงเป็น 41 , ตัวเลข 10 เป็น A
+    - Base58 Base58 เป็นระบบการเข้ารหัสตัวเลข ซึ่งจะแปลงข้อมูลเป็นตัวเลข 58 หลัก โดยใช้ตัวเลขจาก 0-9 และตัวอักษร A-Z และ a-z (ยกเว้นตัว l, I, O เพื่อไม่ให้เกิดความสับสน) ซึ่งมักใช้ในการเข้ารหัสข้อมูลส่วนตัว เช่น Bitcoin Address
+    - Base62 เป็นระบบการเข้ารหัสตัวเลข ซึ่งจะแปลงข้อมูลเป็นตัวเลข 62 หลัก โดยใช้ตัวเลข 0-9 และตัวอักษร A-Z และ a-z ซึ่งจะเป็นรูปแบบข้อมูลที่มีขนาดเล็กกว่า Base64
+    - Base64 เป็นระบบการเข้ารหัสข้อมูลโดยใช้ 64 ตัวอักษร โดยจะใช้เลข 0-9 และตัวอักษร A-Z, a-z และ + / (ยกเว้น = ) ซึ่งจะแปลงข้อมูลเป็นตัวเลข 6 หลัก
     - Base85 A binary-to-text encoding by using five ASCII characters to represent four bytes of binary data
     - ROT13 A simple letter substitution cipher that replaces a letterwith the 13th letter after it. ROT13 is a special case of the Caesar cipher that developed in ancient Rome
     - ROT47 A shift cipher that improves the Rot13 by allowing it to encode almost all visible ASCII characters (where Rot13 could only encode letters)
