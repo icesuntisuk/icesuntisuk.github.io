@@ -772,7 +772,43 @@ Two-way methods)
 ## Week 9@22 Jan 2023
 
 - Metasploit Framework เป็นโปรแกรม open source ที่ใช้ในการสำรวจและโจมตีเครื่องคอมพิวเตอร์ โดยมีคุณสมบัติต่างๆ รวมถึงการเข้ารหัสและการโจมตีแบบอัตโนมัติ ซึ่งสามารถใช้ในการตรวจสอบความแข็งแกร่งของระบบและการแก้ปัญหาเรื่องความปลอดภัยได้ เป็นโปรแกรมที่สามารถทำงานในรูปแบบ command-line และ graphical user interface (GUI) ซึ่งสามารถใช้ในการตรวจสอบความแข็งแกร่งของระบบเครือข่ายและเครื่องคอมพิวเตอร์ โดยใช้ข้อมูลจากเครื่องตัวเองและฐานข้อมูลของระบบอื่น ๆ อีกด้วย อีกทั้ง Metasploit Framework มีโมดูลหลายตัวที่ใช้ในการโจมตีแบบอัตโนมัติ โดยจะใช้ข้อมูลจากการสำรวจเพื่อเป็นพื้นฐานในการโจมตี ซึ่งสามารถใช้งานได้หลากหลายรูปแบบ เช่น การโจมตีตามโปรโตคอล การโจมตีตามช่องโหว่ และการโจมตีโดยใช้ payload ต่าง ๆ
- 
+- สำหรับกาติดตั้ง Metasploit Framework นั้นจำเป็นจะต้องเปิดใช้งาน Services ของ Postgresql และมีวิธีการติดตั้งดังต่อไปนี้ 
+
+```bash
+sudo systemctl start postgresql 
+sudo systemctl enable postgresql 
+
+sudo msfdb init 
+sudo apt update 
+sudo apt install metasploit-framework
+sudo msfconsole 
+# หรือสามารถใช้ Options -q เพื่อยกเลิกการแสดง Banner ได้ ดังนี้
+sudo msfconsole -q 
+```
+สำหรับ Promp "msf6>" นั้นเป็น Console อยู่ภายใต้ Metasploit framework โดยมีคำสั่งที่สามารถนำไปใช้ได้ดังนี้
+
+```bash
+# all command is under promp "msf6 >" 
+
+# MSF สามารถตรวจสอบข้อมูลต่าง ๆ ได้ด้วยคำสั่ง "Show"
+show -h 
+# บน MSF นั้นจะใช้ Command "Use" สำหรับเรียกใช้งาน Module ที่สนใจ
+use auxiliary/sanner/portscan/tcp
+back 
+
+# เราสามารถใช้ Command "back" หรือ "Previous" สำหรับย้อนกลับไป Modules ก่อนหน้า
+use auxiliary/scanner/portscan/tcp
+useauxiliary/scanner/portscan/syn
+previous
+
+# เราสามารถใช้คำสั่ง "show options" สำหรับตรวจสอบพารามิเตอร์ ภายในโมดูลที่เราจะใช้ได้
+show options 
+
+# เมื่อเราตรวจสอบพารามิเตอร์ต่าง ๆ แล้ว เราสามารถใช้คำสั่ง "set" หรือ "unset" สำหรับการแก้ไขข้อมูลพารามิเตอร์ภายใต้โมดูลที่เรากำลังทำงานหรือสามารถใช้ "setg" หรือ "unsetg" สำหรับตั้งค่าตัวแปรในรูปแบบ Global Variable 
+set RHOSTS 192.168.10.10
+run
+```
+
 
 - นักศึกษากลุ่มที่ 5 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
   
