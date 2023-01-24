@@ -715,7 +715,7 @@ Enumeration Cheatsheet
   
   # DES Ex 2
   echo 'Cryptography' | openssl enc -des -base64 -k 'testdata'
-  echo 'U2FsdGVkX1+lv7qNt+e+McLc0iNsKwfNWwc1A+LzSoo=' | openssl enc -d -des -base64 -k 'testdata'
+  echo 'U2FsdGVkX1+OK9Bo/SqWGgy+BZG6gfU4enKJCL6HqHQ=' | openssl enc -d -des -base64 -k 'testdata'
 
   # DES Ex 3 
   echo 'Cryptography' | openssl enc -des -base64 -k 'testdata' -nosalt
