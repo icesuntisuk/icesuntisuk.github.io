@@ -9,6 +9,9 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * **Working**: Technical officer @ Cyber Center.
 * **Working**: Special lecturers @ Mahanakorn Institute of Innovation in Mahanakorn University of Technology.
     * Course: Ethical Hacking
+* **Working**: Instructor and Security Specialist @ DE2Solution Co.,ltd. 
+    * Course: Comptia Network+
+    * Course: Palo Alto & Fortigate Next-generation Firewall
 * **Working**: Instructor and Security Specialist @ Netprime System.
     * Course: Palo Alto firewall workshop
     * Course: Fortigate firewall workshop
