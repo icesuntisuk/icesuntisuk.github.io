@@ -1032,7 +1032,7 @@ run
 
 --- 
 
-## Week 11@21 Jan 2023
+## Week 11@4 Feb 2023
 ## Lec
 - Privilege Escalation
   - Manual Enumeration command
@@ -1378,16 +1378,7 @@ run
   
 --- 
 
-## Week 12@28 Jan 2023
-## Lec
-## Lab
-
-- นักศึกษากลุ่มที่ 8 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
-
-  
---- 
-
-## Week 13@4 Feb 2023
+## Week 12@11 Feb 2023
 ## Lec
 - Exploit Development (Buffer Overflows)
 - Buffer Overflows 
@@ -1490,13 +1481,7 @@ FIND Offfset by copy EIP HEX number to find Offset index
 
 --- 
 
-## Week 13@11 Feb 2023
-## Lec
-## Lab
-
---- 
-
-## Week 14@18 Feb 2023
+## Week 13@18 Feb 2023
 ## Lec
 ## Lab
 
@@ -1504,20 +1489,20 @@ FIND Offfset by copy EIP HEX number to find Offset index
 --- 
 
 
-## Week 15@25 Feb 2023
+## Week 14@25 Feb 2023
 กฎหมายที่เกี่ยวข้อง
 
 
 --- 
 
-## Week 16@4 March 2023
+## Week 15@4 March 2023
 - รายละเอียด LAB Final exam
   - สุ่ม Vulhub Image จากรายงานนักศึกษา จำนวน 2 Images เพื่อนำมาทำการทดสอบระบบ
   - รายงานผลการเจาะระบบอย่างละเอียด
   - A4 1 แผ่น จดอะไรเข้าไปก็ได้ 
 --- 
 
-## Week 17@11-26 March 2023
+## Week 16@11-26 March 2023
 อาจารย์ต้องส่งข้อสอบ Final ก่อนวันที่ 22 Feb 2023
 
 Final Exam Good luck everybody.
