@@ -775,6 +775,8 @@ Two-way methods)
 sudo gunzip /usr/share/wordlists/rockyou.txt.gz
 
 # medusa attack httpaccess-protected URL (-m DIR:/admin)
+# Medusa, initiated against an htaccess protected web directory
+medusa -h $ip -u admin -P password-file.txt -M http -m DIR:/admin -T 10
 medusa -h 192.168.10.10 -u admin -P /usr/share/wordlists/rockyou.txt -M http -m DIR:/admin
 
 # Crowbar is a bruteforce tool which support OpenVPN, RDP, SSH and VNC
