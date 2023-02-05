@@ -1398,6 +1398,20 @@ Network Diagram
 
 ![](./img/NetworkDiagram.jpg)
 
+Anatomy of Memory 
+
+![](./img/AnatomyOfMem.jpg)
+
+- Kernel อยู่ด้านบนสุด (TOP) และ Text อยู่ด้านล่างสุด (BOTTOM)
+- ทั้งนี้ เราสามารถขยายส่วนเก็บข้อมูล Stack ได้เป็นภาพด้านขวามือ โดยมี ESP หรือ Extended Stack Pointer อยู่ด้านบน (TOP) ปัญหาการเกิด Buffer Overflow เกิดขึ้นภายใต้ Buffer Space ที่สามารถใส่ข้อมูลจาก TOP ไปยัง BOTTOM ไปชนกับ EBP (Extended Base Pointer) 
+
+
+- Buffer Overflow Problem 
+  
+![](./img/StackMem.jpg)
+
+- เมื่อโปรแกรมทำงานจะมีการเก็บตัวแปรต่างๆ ไว้ภายใต้ Buffer Spaces และมักจะไม่เกินพื้นที่ภายใต้ Buffer Space ซึ่งก็จะทำให้โปรแกรมสามารถทำงานได้ตามปกติ แต่การทำให้เกิด Buffer Overflow เป็นการใส่ข้อมูลตัวแปรให้เกินพื้นที่ภายใต้ Buffer Spaces แล้วกินพื้นที่ไปยัง EBP และ EIP จนทำให้โปรแกรมไม่สามารถทำงานต่อได้
+
 
 - Spiking 
   - Kali Linux
