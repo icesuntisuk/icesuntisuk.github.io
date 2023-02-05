@@ -1388,11 +1388,16 @@ run
 - Buffer Overflows 
 
 - LAB Preparation 
-  - Windows 
+  - Windows insta
     - [Vulnserver](https://thegreycorner.com/vulnserver.html)
     - [Immunity Debugger](https://www.immunityinc.com/products/debugger/)
   - Kali Linux
 ---
+Network Diagram 
+
+
+
+
 - Spiking 
   - Kali Linux
   - Make Spike script (nano or vim)
@@ -1485,6 +1490,7 @@ FIND Offfset by copy EIP HEX number to find Offset index
 
 --- 
 
+--- 
 
 
 ## Week 14@25 Feb 2023
