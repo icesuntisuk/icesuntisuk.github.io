@@ -1389,8 +1389,11 @@ run
 
 - LAB Preparation 
   - Windows insta
-    - [Vulnserver](https://thegreycorner.com/vulnserver.html)
-    - [Immunity Debugger](https://www.immunityinc.com/products/debugger/)
+    - [Vulnserver](https://thegreycorner.com/vulnserver.html) เป็นโปรแกรมภาษา C ที่เขียนมาจงใจให้มีช่องโหว่ เพื่อการศึกษา exploit development สำหรับผู้เริ่มต้นมือใหม่ โดยจะทำตัวเป็น network service อยู่บน TCP พอร์ต 9999 ให้เราใช้ TCP client ต่อเข้าไปใช้งานได้ โดยเราสามารถใช้โปรแกรม Netcat เชื่อต่อผ่านพอร์ต 9999 และทดสอบใช้คำสั่ง HELP ได้ดังต่อไปนี้ 
+    ![](./img/vulnserver.jpg)
+
+    - [Immunity Debugger](https://www.immunityinc.com/products/debugger/)  เป็นโปรแกรมที่สามารถทำการ diassembly โปรแกรมได้ กล่าวคือสามารถแปลงโปรแกรมในที่นี้เราจะใช้ vulnserver.exe ให้อยู่ในรูปแบบของ instruction code ภาษา Assembly ซึ่งจะอยู่บนหน้าต่างด้านบนซ้ายของโปรแกรม แล้วถ้ารันโปรแกรมอยู่มันก็จะแสดงค่าใน stack memory ในหน้าต่างขวาล่าง และค่าของ CPU Register ในหน้าต่างด้านขวาบน
+  
   - Kali Linux
 ---
 
@@ -1403,7 +1406,8 @@ Anatomy of Memory
 ![](./img/AnatomyOfMem.jpg)
 
 - Kernel อยู่ด้านบนสุด (TOP) และ Text อยู่ด้านล่างสุด (BOTTOM)
-- ทั้งนี้ เราสามารถขยายส่วนเก็บข้อมูล Stack ได้เป็นภาพด้านขวามือ โดยมี ESP หรือ Extended Stack Pointer อยู่ด้านบน (TOP) ปัญหาการเกิด Buffer Overflow เกิดขึ้นภายใต้ Buffer Space ที่สามารถใส่ข้อมูลจาก TOP ไปยัง BOTTOM ไปชนกับ EBP (Extended Base Pointer) 
+- ทั้งนี้ เราสามารถขยายส่วนเก็บข้อมูล Stack ได้เป็นภาพด้านขวามือ โดยมี ESP หรือ Extended Stack Pointer อยู่ด้านบน (TOP)  กล่าวคือ stack ใน x86 ขยายจาก High Address ไป Low Address 
+- ปัญหาการเกิด Buffer Overflow เกิดขึ้นภายใต้ Buffer Space ที่สามารถใส่ข้อมูลจาก TOP ไปยัง BOTTOM ไปชนกับ EBP (Extended Base Pointer) 
 
 
 - Buffer Overflow Problem 
@@ -1411,9 +1415,25 @@ Anatomy of Memory
 ![](./img/StackMem.jpg)
 
 - เมื่อโปรแกรมทำงานจะมีการเก็บตัวแปรต่างๆ ไว้ภายใต้ Buffer Spaces และมักจะไม่เกินพื้นที่ภายใต้ Buffer Space ซึ่งก็จะทำให้โปรแกรมสามารถทำงานได้ตามปกติ แต่การทำให้เกิด Buffer Overflow เป็นการใส่ข้อมูลตัวแปรให้เกินพื้นที่ภายใต้ Buffer Spaces แล้วกินพื้นที่ไปยัง EBP และ EIP จนทำให้โปรแกรมไม่สามารถทำงานต่อได้
+- ESP เป็น Pointer ที่จะชี้ไปที่ top of stack เสมอ
+- Buffer Space ทำหน้าที่สำหรับจัดเก็บตัวแปรต่างๆ ของโปรแกรม
+- EBP เป็นจุด Base Point ของ Stack กล่าวคือเป็นจุดที่อยู่ด้านล่างของ Stack หรือเป็น Buttom of stack
+- EIP (Extended Instruction Pointer)
+  - โดยปกติโปรแกรมจะทำงานเป็นลำดับจากบนลงล่าง โดยมี EIP ชี้ไปยังคำสั่งถัดไป ที่จะถูกประมวลผล แต่เมื่อมีการ call function ใหม่เกิดขึ้น EIP จะกระโดดไปทำงานใน function ใหม่ และเมื่อทำงานใน function ใหม่จบแล้ว EIP ก็จะต้องกระโดดกลับมาทำงานที่ function เดิมต่อ ทั้งนี้ เพื่อให้ EIP ชี้ไปที่คำสั่งถัดไปหลังจากกลับมาจาก function ที่เรียก คำสั่งที่ใช้ในการ call function คือ "call" (เช่น "call printf") จะทำการ "push eip" ลงไปใน stack ก่อน แล้วค่อยกระโดดไปทำงานที่ function ใหม่ และที่จบ function ก็จะมีคำสั่ง "ret" ซึ่งจะเท่ากับ "pop eip" ทำให้โปรแกรมสามารถกลับไปทำงานตามปกติได้ ซึ่งเป็นจุดของ EIP นั้นเป็นจุดที่เราสามารถใช้เป็น Pointer สำหรับชี้ไปยัง Malicious Code หรือชุด Payload สำหรับ Reverse Shell เพื่อนำไปโจมตีต่อไปได้
 
+ขั้นตอนการทำ Buffer Overflow สามารถดำเนินการได้ดังต่อไปนี้
+1. Spiking – ทำการค้นหาช่องโหว่ของโปรแกรมที่คาดว่าจะมีช่องโหว่ของ Buffer Overflow 
+2. Fuzzing – ส่ง Fuzz Characters ไปยังโปรแกรม จนกระทั่งโปรแกรม Break หรือไม่สามารถทำงานได้ 
+3. Finding the Offset – หาจุด (Point) ที่สามารถ Break Program ได้ เพื่อหาค่า Offset
+4. Overwriting the EIP – ใช้ค่า Offset ที่ได้ไป Overwrite EIP หรือ (Extended Instruction Pointer) ซึ่งเป็นจุดที่ใช้สำหรับ Return Address กลับไปยังโปรแกรม
+5. Finding Bad Characters – เมื่อเราสามารถสามารถควบคุม EIP ได้ จะต้องค้นหา Bad Characters ที่เป็น
+6. Finding the Right Module 
+7. Generate Shellcode เพื่อทำ Reverse Shell
+8. GAIN ROOT
 
-- Spiking 
+--- 
+
+- Spiking   
   - Kali Linux
   - Make Spike script (nano or vim)
   - FIND Vulerable Command by Immunity goto **PAUSED state**
