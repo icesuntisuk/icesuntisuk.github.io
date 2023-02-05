@@ -1784,13 +1784,14 @@ while True:
 ```
 After run 
 
-![](./imag/../img/Findmodulemona6.jpg)
+![](./img/Findmodulemona6.jpg)
 
 <<<<<<<<<< RESULT >>>>>>>>>>
 
 **FIND Modules and ESP Point is 625011af and now we can controled EIP** 
   
 <<<<<<<<<< RESULT >>>>>>>>>>
+
 ---
 ## Generating Shellcode and Gaining Root
 ## Exploit Development
