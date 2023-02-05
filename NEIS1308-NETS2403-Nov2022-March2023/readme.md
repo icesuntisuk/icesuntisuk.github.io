@@ -1393,9 +1393,10 @@ run
     - [Immunity Debugger](https://www.immunityinc.com/products/debugger/)
   - Kali Linux
 ---
-Network Diagram 
-![](/img/NetworkDiagram.jpg)
 
+Network Diagram 
+
+![](./img/NetworkDiagram.jpg)
 
 
 - Spiking 
