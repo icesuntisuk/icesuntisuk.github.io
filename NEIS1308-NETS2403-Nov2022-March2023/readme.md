@@ -955,7 +955,15 @@ show options
 set rhosts 192.168.10.10
 run
 ```
- - Exploit Modules เป็นโมดูลที่ใช้ในการเข้าถึงช่องโหว่ต่างๆ ในเครื่องเป้าหมาย ซึ่งประกอบด้วยโค้ดและวิธีการเข้าถึงช่องโหว่ต่างๆ ซึ่งจะส่ง payload ไปยังเครื่องเป้าหมาย โดยส่วนใหญ่ exploit module จะถูกใช้ร่วมกับ payload module เพื่อส่ง payload ไปยังเป้าหมาย เพื่อดำเนินการควบคุมต่อไป
+ 
+
+- นักศึกษากลุ่มที่ 6 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
+
+--- 
+
+## Week 11@4 Feb 2023
+
+- Exploit Modules เป็นโมดูลที่ใช้ในการเข้าถึงช่องโหว่ต่างๆ ในเครื่องเป้าหมาย ซึ่งประกอบด้วยโค้ดและวิธีการเข้าถึงช่องโหว่ต่างๆ ซึ่งจะส่ง payload ไปยังเครื่องเป้าหมาย โดยส่วนใหญ่ exploit module จะถูกใช้ร่วมกับ payload module เพื่อส่ง payload ไปยังเป้าหมาย เพื่อดำเนินการควบคุมต่อไป
 ```bash
 # ค้นหาช่องโหว่ที่จะโจมตี 
 search synbreeze
@@ -1028,11 +1036,11 @@ set payload windows/meterpreter/reverse_https
 run 
 ```
 
-- นักศึกษากลุ่มที่ 6 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
-
+- นักศึกษากลุ่มที่ 8 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag (กลุ่ม 7 ไม่มารายงาน)
+  
 --- 
 
-## Week 11@4 Feb 2023
+## Week 12@11 Feb 2023
 ## Lec
 - Privilege Escalation
   - Manual Enumeration command
@@ -1374,19 +1382,15 @@ run
       www-data ALL=(ALL:ALL) NOPASSWD:ALL        
       ```   
 
-- นักศึกษากลุ่มที่ 7 รายงานผลการ Pentest พร้อมอธิบาย Command อย่างละเอียด กลุ่มอื่น ๆ ทำตามและส่ง Flag 
-  
---- 
-
-## Week 12@11 Feb 2023
+## Week 13@18 Feb 2023
 ## Lec
 - Exploit Development (Buffer Overflows)
 - Buffer Overflows 
 
 - LAB Preparation 
-  - Windows 7x86 (32bits)
-    - Vulnserver (https://github.com/stephenbradshaw/vulnserver)
-    - Immunity Debugger
+  - Windows 
+    - [Vulnserver](https://thegreycorner.com/vulnserver.html)
+    - [Immunity Debugger](https://www.immunityinc.com/products/debugger/)
   - Kali Linux
 ---
 - Spiking 
@@ -1481,12 +1485,6 @@ FIND Offfset by copy EIP HEX number to find Offset index
 
 --- 
 
-## Week 13@18 Feb 2023
-## Lec
-## Lab
-
-
---- 
 
 
 ## Week 14@25 Feb 2023
