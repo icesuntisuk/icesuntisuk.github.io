@@ -1394,7 +1394,7 @@ run
   - Kali Linux
 ---
 Network Diagram 
-
+![](/img/NetworkDiagram.jpg)
 
 
 
