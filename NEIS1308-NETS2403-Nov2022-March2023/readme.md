@@ -1415,9 +1415,9 @@ Anatomy of Memory
 ![](./img/StackMem.jpg)
 
 - เมื่อโปรแกรมทำงานจะมีการเก็บตัวแปรต่างๆ ไว้ภายใต้ Buffer Spaces และมักจะไม่เกินพื้นที่ภายใต้ Buffer Space ซึ่งก็จะทำให้โปรแกรมสามารถทำงานได้ตามปกติ แต่การทำให้เกิด Buffer Overflow เป็นการใส่ข้อมูลตัวแปรให้เกินพื้นที่ภายใต้ Buffer Spaces แล้วกินพื้นที่ไปยัง EBP และ EIP จนทำให้โปรแกรมไม่สามารถทำงานต่อได้
-- ESP เป็น Pointer ที่จะชี้ไปที่ top of stack เสมอ
+- ESP เป็น Pointer ที่จะชี้ไปที่ Top of Stack เสมอ
 - Buffer Space ทำหน้าที่สำหรับจัดเก็บตัวแปรต่างๆ ของโปรแกรม
-- EBP เป็นจุด Base Point ของ Stack กล่าวคือเป็นจุดที่อยู่ด้านล่างของ Stack หรือเป็น Buttom of stack
+- EBP เป็นจุด Base Point ของ Stack กล่าวคือเป็นจุดที่อยู่ด้านล่างของ Stack หรือเป็น Bottom of Stack
 - EIP (Extended Instruction Pointer)
   - โดยปกติโปรแกรมจะทำงานเป็นลำดับจากบนลงล่าง โดยมี EIP ชี้ไปยังคำสั่งถัดไป ที่จะถูกประมวลผล แต่เมื่อมีการ call function ใหม่เกิดขึ้น EIP จะกระโดดไปทำงานใน function ใหม่ และเมื่อทำงานใน function ใหม่จบแล้ว EIP ก็จะต้องกระโดดกลับมาทำงานที่ function เดิมต่อ ทั้งนี้ เพื่อให้ EIP ชี้ไปที่คำสั่งถัดไปหลังจากกลับมาจาก function ที่เรียก คำสั่งที่ใช้ในการ call function คือ "call" (เช่น "call printf") จะทำการ "push eip" ลงไปใน stack ก่อน แล้วค่อยกระโดดไปทำงานที่ function ใหม่ และที่จบ function ก็จะมีคำสั่ง "ret" ซึ่งจะเท่ากับ "pop eip" ทำให้โปรแกรมสามารถกลับไปทำงานตามปกติได้ ซึ่งเป็นจุดของ EIP นั้นเป็นจุดที่เราสามารถใช้เป็น Pointer สำหรับชี้ไปยัง Malicious Code หรือชุด Payload สำหรับ Reverse Shell เพื่อนำไปโจมตีต่อไปได้
 
@@ -1434,8 +1434,23 @@ Anatomy of Memory
 --- 
 Step by Step Buffer Overflow
 
-- Spiking   
-  - Kali Linux
+- Preparing you env
+  - Run Vulnserver as ADMIN (on Windows)
+  
+    ![](.\img\VulnServerOnWin.jpg)
+  
+  - Run Immunity Debugger as ADMIN (on Windows)
+    - Attatch vulnserver and run 
+  
+    ![](.\img\IDebug.jpg)
+
+  - Try Netcat (on Kali linux)
+
+    ![](./img/vulnserver.jpg)
+
+---
+
+## Spiking   
   - Make Spike script (nano or vim)
   - FIND Vulerable Command by Immunity goto **PAUSED state**
 
