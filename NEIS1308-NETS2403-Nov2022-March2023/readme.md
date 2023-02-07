@@ -1908,7 +1908,7 @@ python2 ./shell.py
 Wireless 
 - Wireless LAN นั้นได้ถูกเริ่มพัฒนาและทดลองใช้งานในปี 1980 โดยใช้ความถี่ 900 MHz ต่อมาในปี 1992 ทาง IEEE(Institude of Electrical and Electronics Engineers) ได้มีการแบ่งการใช้งาน Wireless LAN ออกมา 3 กลุ่ม ได้แก่ กลุ่มที่ใช้ความถี่ 2.4 GHz , กลุ่มที่ใช้ความถี่ 5 GHz และกลุ่มที่ใช้ความถี่ย่านอินฟราเรด(infrared)  ซึ่งความถี่ที่นิยมใช้มากที่สุดคือ ย่านความถี่ 2.4 GHz
 - รูปแบบการเข้ารหัส การใช้งาน Wireless LAN นั้นสามารถถูกดักจับข้อมูลได้อย่างง่ายดาย ดังนั้นการเข้ารหัสจึงเป็นทางออกที่ดีที่สุดในการป้องกันการถูกดักจับข้อมูลและการป้องกันการเข้าใช้งานระบบ Wireless LAN ซึ่งมีการเข้ารหัสตามมาตรฐานดังนี้คือ WEP, WPA และ WPA-2
-1. WEP(Wired Equivalent Privacy) มีการเข้ารหัสโดยใช้ Algorithm RC4 ซึ่งเป็นการเข้ารหัสแบบ Symmetric Key Stream โดยจะมีขั้นตอนการใ้ช้งานระหว่าง Client และ Access Point ดังนี้
+1. WEP (Wired Equivalent Privacy) มีการเข้ารหัสโดยใช้ Algorithm RC4 ซึ่งเป็นการเข้ารหัสแบบ Symmetric Key Stream โดยจะมีขั้นตอนการใ้ช้งานระหว่าง Client และ Access Point ดังนี้
   - Client ทำการร้องขอไป Access Point เพื่อทำการเข้าใช้ระบบ Network
   - Access Point ตอบกลับและส่ง Challenge Text ซึ่งเป็นข้อความแบบสุ่มไปให้
   - Client ได้รับ Challenge Text แล้วทำการเข้ารหัสด้วย WEP Key ที่กำหนดไว้ตั้งแต่เริ่มสร้างระบบ  แล้วส่งกลับไปให้ Access Point
