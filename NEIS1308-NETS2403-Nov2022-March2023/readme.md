@@ -435,6 +435,7 @@ retrieving directory information from the server and so on.
   ```bash
   smbclient -L <ip> 
   smbclient //<ip>/share
+
   ```
   - dirb
   ```bash
