@@ -5,20 +5,60 @@ Ethical Hecking เป็นหลักสูตรพิเศษสำหร�
 
 
 ## Course Outline
-- Course Introduction
-- Ethical Hacking Methodology
-- Information Gathering
-- Scanning & Enumeration
-- Vulnerability Scan
-- Cryptography
-- Exploitation
-- Privilege Escalation
-- Post-Exploitation
-- Port Redirection and Tunneling
-- Law and Cybersecurity Framework
+
+- [Ethical Hacking Methodology](#ethical-hacking-methodology)
+- [Information Gathering](#information-gathering)
+- [Scanning & Enumeration](#scanning--enumeration)
+- [Vulnerability Scan](#vulnerability-scan)
+- [Cryptography](#cryptography)
+- [Exploitation](#exploitation)
+- [Privilege Escalation](#privilege-escalation)
+- [Post-Exploitation](#post-exploitation)
+- [Port Redirection and Tunneling](#port-redirection-and-tunneling)
+- [Law and Cybersecurity Framework](#law-and-cybersecurity-framework)
 
 ## Prerequisites Download 
 - Virtual box
 - Metasploitable 2
 - Metasploitable 3
 - Kali linux 
+
+## Course Objectives
+- มีความรู้ความเข้าใจเกี่ยวกับพื้นฐานของการรักษาความมั่นคงปลอดภัยไซเบอร์
+- เข้าใจถึงแนวทางการรับมือภัยคุกคามทางไซเบอร์ 
+- มีความรู้ความเข้าใจในการหาช่องโหว่ของระบบ 
+- เข้าใจถึงเทคนิคเชิงลึกในการเจาะช่องโหว่ของระบบ 
+- สามารถหาจุดบกพร่องของซอฟต์แวร์หรือบริการ
+
+---
+
+## Ethical Hacking Methodology
+
+---
+## Information Gathering
+
+---
+## Scanning & Enumeration
+
+---
+## Vulnerability Scan
+
+---
+## Cryptography
+
+---
+## Exploitation
+
+---
+## Privilege Escalation
+
+---
+## Post-Exploitation
+
+---
+## Port Redirection and Tunneling
+
+---
+## Law and Cybersecurity Framework
+
+---
