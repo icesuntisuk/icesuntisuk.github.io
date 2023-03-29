@@ -659,10 +659,10 @@ SSH Tunneling
 ```bash
 ssh -L [local_addr:]local_port:remote_addr:remote_port [user@]sshd_addr
 
-# example 
+# Example
 ssh -L localhost:8080:localhost:80 user@server
 
-# Testing 
+# Testing
 curl http://localhost:8080
 
 ```
