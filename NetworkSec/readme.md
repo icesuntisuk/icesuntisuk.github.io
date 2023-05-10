@@ -57,3 +57,24 @@ Week 14:
 Week 15:
 - Review and Exam Preparation (3 hours)
 - Lab: Final Project and Presentation (2 hours)
+
+
+homework assignment for a student learning about Network Security:
+
+- Research and write a brief summary (1-2 pages) on a recent network security breach that has made headlines. Include information such as the nature of the breach, how it was discovered, the impact it had, and the steps taken to mitigate the breach.
+
+- Conduct a vulnerability assessment of your home network. Identify potential security threats and weaknesses and make recommendations for improving your network's security.
+
+- Install and configure a firewall on your home network. Test the firewall's effectiveness by attempting to access your network from a remote location.
+
+- Research and compare two different types of encryption algorithms. Write a brief report (1-2 pages) on their strengths and weaknesses, and how they are used in network security.
+
+- Develop a network security policy for a small business. Include policies for password management, user access control, network monitoring, and incident response.
+
+- Conduct a penetration testing exercise on a target network. Write a report detailing the methods used, the vulnerabilities discovered, and recommendations for improving the network's security.
+
+- Attend a network security conference or webinar and write a summary (1-2 pages) of the presentations and discussions. Identify key takeaways and how you plan to apply what you learned.
+
+- Research and write a brief report (1-2 pages) on a current or emerging network security technology, such as blockchain-based security, artificial intelligence-driven security, or zero trust security.
+
+- Prepare a presentation on network security best practices and present it to a small group of colleagues, friends, or family members. Include information on topics such as password management, phishing, social engineering, and secure browsing habits.
