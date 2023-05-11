@@ -76,6 +76,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 #### **Specialties**
 
+* Cybersecurity
 * Next Generation Firewalls (NGFW)
 * Intrusion Detection & Prevention Systems (IDS/IPS)
 * Networking
