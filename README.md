@@ -20,6 +20,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Course: Palo Alto firewall workshop
     * Course: Fortigate firewall workshop
     * Course: Ethical Hacking
+    * Course: OWASP Top 10 2021
 * **2020 - 2022**: Plan and Engineering Division @ DIST.
 
 * **2017 - 2020**: Security Officer @ Cyber Center.
