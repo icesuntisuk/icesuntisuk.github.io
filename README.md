@@ -1,6 +1,6 @@
 ![](/img/ice2.png){:height="35%" width="35%" style="float: right"}
 
-# Biography of <font color="white"> </br>Capt.Suntisuk Thepthong (Ice) </font>
+# Biography of <font color="white"> Capt.Suntisuk Thepthong (Ice) </font>
 
 I have had the great fortune to be involved with nearly every dimension of cyber security. I deployed security technologies, designed infrastructure and developed security programs to maturity. 
 
