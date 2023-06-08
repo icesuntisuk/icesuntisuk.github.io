@@ -66,6 +66,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * CompTIA Network+
 * CompTIA Security+
 * CompTIA Pentest+
+* CompTIA Network Vulnerability Assessment Professional (CNVP)
 * E\|CSA (EC Council Certified Security Analyst)
 * CSFPC (Cyber Security Foundation Professional Certificate)
 * CCNP (Cisco Certified Network Professional)
