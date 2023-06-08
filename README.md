@@ -62,10 +62,11 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * Fortinet NSE 4 (Network Security Professional)
 * Fortinet NSE 3 (Fortinet Product Awareness)
 * Fortinet NSE 2 (Network Security Associate)
-* Fortinet NSE 1 (Network Security Associate)
-* E\|CSA (EC Council Certified Security Analyst)
+* Fortinet NSE 1 (Network Security Associate) 
 * CompTIA Network+
 * CompTIA Security+
+* CompTIA Pentest+
+* E\|CSA (EC Council Certified Security Analyst)
 * CSFPC (Cyber Security Foundation Professional Certificate)
 * CCNP (Cisco Certified Network Professional)
 * CCDA (Cisco Certified Design Associate)
