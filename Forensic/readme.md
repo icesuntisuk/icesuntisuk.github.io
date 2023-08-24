@@ -19,3 +19,5 @@ foremost file.zip
 cd ./output
 ls -la 
 ```
+
+- [PNG resize](https://entropymine.com/jason/tweakpng/)
