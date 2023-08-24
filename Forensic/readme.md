@@ -19,5 +19,5 @@ foremost file.zip
 cd ./output
 ls -la 
 ```
-
+- [Audio Steganographic Decoder](https://futureboy.us/stegano/decinput.html)
 - [PNG resize](https://entropymine.com/jason/tweakpng/)
