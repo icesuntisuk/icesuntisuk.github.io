@@ -40,3 +40,4 @@ fcrackzip -v -u -D -p /usr/share/wordlist/rockyou.txt ./file.zip
 pdfcrack test.pdf -w /usr/share/wordlist/rockyou.txt
 ```
 
+- [Check Geo location on Image](https://tool.geoimgr.com/)
