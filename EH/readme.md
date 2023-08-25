@@ -6,14 +6,18 @@ Ethical Hecking เป็นหลักสูตรพิเศษสำหร�
 
 ## Course Outline
 
-- [Ethical Hacking Methodology](#ethical-hacking-methodology)
-- [Information Gathering](#information-gathering)
-- [Scanning & Enumeration](#scanning--enumeration)
-- [Vulnerability Scan](#vulnerability-scan)
-- [Cryptography](#cryptography)
-- [Exploitation](#exploitation)
-- [Post-Exploitation](#post-exploitation)
-- [Port Redirection and Tunneling](#port-redirection-and-tunneling)
+- [Ethical Hacking](#ethical-hacking)
+  - [Course Outline](#course-outline)
+  - [Prerequisites Download](#prerequisites-download)
+  - [Course Objectives](#course-objectives)
+  - [Ethical Hacking Methodology](#ethical-hacking-methodology)
+  - [Information Gathering](#information-gathering)
+  - [Scanning \& Enumeration](#scanning--enumeration)
+  - [Vulnerability Scan](#vulnerability-scan)
+  - [Cryptography](#cryptography)
+  - [Exploitation](#exploitation)
+  - [Post-Exploitation](#post-exploitation)
+  - [Port Redirection and Tunneling](#port-redirection-and-tunneling)
 
 
 ## Prerequisites Download 
@@ -670,5 +674,7 @@ ssh -L localhost:8080:localhost:80 user@server
 curl http://localhost:8080
 
 ```
-
+Reverse binary tools 
+- [Cutter](https://cutter.re/) 
+- IDAPro 
 ---
