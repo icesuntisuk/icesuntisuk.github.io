@@ -32,7 +32,7 @@ ls /boot/
 # Step 6: Reboot
 init 0
 
-# Step 7: โดยให้เข้าไปยัง Boot Manager โดยการกด Del 
+# Step 7: โดยให้เข้าไปยัง Boot Manager โดยการกด Shift 
 
 # Step 8:  จากนั้นเลือก Version Kernel 5.15.0-75 เพื่อให้ Boot ด้วย Kernel ตามที่เราต้องการ Downgrade 
 
