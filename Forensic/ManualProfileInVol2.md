@@ -74,5 +74,6 @@ python2 vol.py --info
 
 # Step 5: นำ Profile ไปใช้ได้ปกติ
 .\vol.exe -f .\imagefile profile=Ubuntu_20.04-Linux5.15 -h 
+.\vol.exe -f .\imagefile profile=Ubuntu_20.04-Linux5.15 linux_pslist 
 
 ```
