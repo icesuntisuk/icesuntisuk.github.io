@@ -183,3 +183,4 @@ pdfcrack test.pdf -w /usr/share/wordlist/rockyou.txt
 # กรณีเป็น Windows 10 แนะนำให้ใช้ --profile=Win10x64_14393 
 
 ฝึกการ Forensic Memory ได้จาก [memLabs](https://github.com/stuxnet999/MemLabs) ซึ่งส่วนใหญ่จะเป็น Windows 
+ตัวอย่างอื่นๆ [https://heisenberk.github.io/](https://heisenberk.github.io/)
