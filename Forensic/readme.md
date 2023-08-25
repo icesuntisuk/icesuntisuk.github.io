@@ -48,7 +48,7 @@ pdfcrack test.pdf -w /usr/share/wordlist/rockyou.txt
 - Autopsy (อ่านว่า อา-ท็อป-ซี่) is opensource for analyze major file systems (NTFS, FAT, HFS+, Etx DD, E01)
 ---
 ## Memory Forensic 
-- Volatility version 2 and 3 
+- Volatility version 2  
 
 ```bash
 # Step 1 check image profile 
@@ -180,3 +180,4 @@ pdfcrack test.pdf -w /usr/share/wordlist/rockyou.txt
 ###########################################################################
 ```
 
+# กรณีเป็น Windows 10 แนะนำให้ใช้ --profile=Win10x64_14393 
