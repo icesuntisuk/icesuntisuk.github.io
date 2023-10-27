@@ -59,14 +59,15 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 ### **Certification**
 
 * Certified in Cybersecurity (ISC)²
-* Fortinet NSE 4 (Network Security Professional)
-* Fortinet NSE 3 (Fortinet Product Awareness)
-* Fortinet NSE 2 (Network Security Associate)
-* Fortinet NSE 1 (Network Security Associate) 
 * CompTIA Network+
 * CompTIA Security+
 * CompTIA Pentest+
 * CompTIA Network Vulnerability Assessment Professional (CNVP)
+* Fortinet Certified Fundamentals in Cybersecurity
+* Fortinet NSE 4 (Network Security Professional)
+* Fortinet NSE 3 (Fortinet Product Awareness)
+* Fortinet NSE 2 (Network Security Associate)
+* Fortinet NSE 1 (Network Security Associate) 
 * E\|CSA (EC Council Certified Security Analyst)
 * CSFPC (Cyber Security Foundation Professional Certificate)
 * CCNP (Cisco Certified Network Professional)
