@@ -82,14 +82,15 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 #### **Specialties**
 
 * Cybersecurity
+* Incident response
+* Security Operations Center (SOC)
+* Security analytics
+* Governance
 * Next Generation Firewalls (NGFW)
 * Intrusion Detection & Prevention Systems (IDS/IPS)
 * Networking
 * Risk assessment 
-* Security Operations Center (SOC)
-* Security analytics
 * Human factors in security
-* Incident response
 * Executive communication & leadership
 
 
