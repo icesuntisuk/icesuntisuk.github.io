@@ -13,7 +13,8 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Course: Cybersecurity Fundamental
     * Course: Network Security
     * Course: Information System Security
-    * Course: Software Security
+    * Course: Software Security & Secure Coding
+    * Course: Windows Enterprise and Services Management
 * **Working**: Instructor and Security Specialist @ DE2Solution Co.,ltd. 
     * Course: Comptia Network+
     * Course: Palo Alto & Fortigate Next-generation Firewall
@@ -46,7 +47,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 ### **Education**
 
 * **Graduated**: Master Computer Science (Network Engineering and Information Security) Major Cyber Security from Mahanakorn University of Technology in 2021. (GPA: 3.92)
-    * Received 1 year scholarship.
+    * 1 year scholarship.
     * Instructor Course:  Paloalto Firewall Essentials 
     * Lecturer in Cyber Security in action 2
         * Topic: Security exercise in the real world
@@ -54,7 +55,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * **Graduated**: First class honours Bachelor of Computer Engineering form Mahanakorn University of Technology in 2012. (GPA: 3.50)
     * Class president of CPE#5
     * Teacher assistant of the course.
-    * Received full scholarship.
+    * Full scholarship.
 
 ### **Certification**
 
