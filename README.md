@@ -7,7 +7,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 ### **Experience**
 
-* **Working**: Technical Officer @ Cyber Center.
+* **Working**: Technical Officer @ Cyber Center (MOD).
 * **Working**: Special Lecturers @ Mahanakorn Institute of Innovation in Mahanakorn University of Technology.
     * Course: Ethical Hacking
     * Course: Cybersecurity Fundamental
@@ -25,7 +25,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Course: OWASP Top 10 2021
 * **2020 - 2022**: Plan and Engineering Division @ DIST.
 
-* **2017 - 2020**: Security Officer @ Cyber Center.
+* **2017 - 2020**: Security Officer @ Cyber Center (MOD).
     * Cyber Center is an office under Defence Information and Space Technology Department (DIST) in the Office of the Permanent Secretary for Defence, Ministry of Defense. ([ref.](http://dist.mod.go.th/Recommend/Responsibility.aspx ))
 
     * DIST Mission: To formulate, implement, monitor and be responsible for strategic planning, telecommunications, broadcasting, cybersecurity, technology intelligence for the nation’s security and strategic defence policy including the executive development issues assigned and supervised within the framework of the Director of Defence Information and Space Technology Department.
