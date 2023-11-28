@@ -1,4 +1,4 @@
-from scapy.all import *
+from scapy import *
 
 # Set the destination IP address
 dest_ip = "10.0.0.1"
