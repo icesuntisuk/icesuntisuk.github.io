@@ -10,7 +10,7 @@ Step 2: จากนั้นเข้าไป Download ไฟล์ Minikatz.e
 [Link Download Minikaz](https://github.com/ParrotSec/mimikatz/tree/master/x64) ได้เลย
 
 Step 3: Run Minikatz ด้วยสิทธิ Admin (ไม่ต้องตกใจหากมีการเตือนจาก Windows)
-![](/KB/img/minikaz1.png)
+![](/KB/img/Minikaz1.png)
 
 Step 4: รันคำสั่ง
 
@@ -34,11 +34,11 @@ hashcat -m 1000 <hash> rockyou.txt --show
 #hashcat -m 1000 7ce21f17c0aee7fb9ceba532d0546ad6 rockyou.txt --show
 ```
 
-![](/KB/img/minikaz2.png)
+![](/KB/img/Minikaz2.png)
 
 Step 6: ถ้า Crack สำเร็จเราจะได้รหัสผ่านกลับมาตามภาพ ซึ่งความเร็วจะขึ้นอยู่กับประสิทธิภาพของเครื่องที่ใช้ Crack และสามารถใช้ Graphic Card ประมวลผลได้ 
 
-![](/KB/img/minikaz3.png)
+![](/KB/img/Minikaz3.png)
 
 
 **Powered By** : 
