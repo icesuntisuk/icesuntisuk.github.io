@@ -36,7 +36,7 @@ hashcat -m 1000 <hash> rockyou.txt --show
 
 ![](/KB/img/minikaz2.png)
 
-Step 6: ถ้า Crack สำเร็จเราจะได้รหัสผ่านกลับมาตามภาพ 
+Step 6: ถ้า Crack สำเร็จเราจะได้รหัสผ่านกลับมาตามภาพ ซึ่งความเร็วจะขึ้นอยู่กับประสิทธิภาพของเครื่องที่ใช้ Crack และสามารถใช้ Graphic Card ประมวลผลได้ 
 
 ![](/KB/img/minikaz3.png)
 
