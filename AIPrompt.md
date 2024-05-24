@@ -20,7 +20,7 @@ numbered list, use a number followed by a period and space. like
 
 ```  
 
-### Create Analysis Report 
+### Create Analysis Report (Bullet Points)
 ```
 Create an analysis report of the Lockbit  Ransomware Attack as it relates to the cyber kill chain, using the following format:
 
@@ -45,4 +45,8 @@ Create an analysis report of the Lockbit  Ransomware Attack as it relates to the
 - *Mitigation recommendation 1*
 - *Mitigation recommendation 2*
 …
+```
+### Create table format 
+```
+Create a table comparing 5 different security controls. The table should have the folling columns: Control Name, Description, Implementation Cost, Maintenance Cost, Effectiveness, and Ease of Implementation.
 ```
