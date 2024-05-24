@@ -4,10 +4,15 @@
 
 ```
 Main Header (#)
+
 Sub Header (##)
+
 Bullet points (-) or (*)
+
 Bold txt (**) or (__)
+
 Italicize txt (*) or (_)
+
 numbered list, use a number followed by a period and space. like
 1. **Step 1**
 2. **Step 2**
