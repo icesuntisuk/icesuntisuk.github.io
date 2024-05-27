@@ -68,7 +68,7 @@ Compliance Requirements: {NIST CSF}
 Business Critical Assets: {Identity Data, Financial data, Personal health information}
 Data Classification: {Highly confidential}
 Goals and objectives of the vulnerability assessment: {To identify and prioritize potential vulnerabilities in the network and provide recommendations for remediation and risk mitigation.}
-Timeline for the vulnerability assessment: {4 weeks{
+Timeline for the vulnerability assessment: {4 weeks}
 Team: {3 cybersecurity professionals, including a vulnerability assessment lead and two security analysts}
 Expected deliverables of the assessment: {A detailed report outlining the results of the vulnerability assessment, including identified vulnerabilities, their criticality, potential impact on the network, and recommendations for remediation and risk mitigation.}
 Audience: {The organization's IT department, senior management, and any external auditors or regulators.}
@@ -82,4 +82,18 @@ Description and Outline of the process/Methodology
 List of required tools and applications, with their descriptions and reasons needed
 ##Assessment Steps
 Detailed, multi-layered outline of the assessment steps
+```
+
+Threat Summary
+```
+Provide a detailed report about {threat_name}, using the following template (and proper markdown language formatting, headings, bold keywords, tables, etc.):
+Threat Name (Heading 1)
+Summary (Heading 2)
+Short executive summary
+Details (Heading 2)
+Description and details including history/background, discovery, characteristics and TTPs, known incidents
+MITRE ATT&CK TTPs (Heading 2)
+Table containing all of the known MITRE ATT&CK TTPs that the {threat_name} attack uses. Include the following columns: Tactic, Technique ID, Technique Name, Procedure (How WannaCry uses it)
+Indicators of Compromise (Heading 2)
+Table containing all of the known indicators of compromise. Include the following columns: Type, Value, Description
 ```
