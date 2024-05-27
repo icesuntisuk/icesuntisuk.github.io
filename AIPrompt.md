@@ -51,7 +51,7 @@ Create an analysis report of the Lockbit  Ransomware Attack as it relates to the
 Create a table comparing 5 different security controls. The table should have the folling columns: Control Name, Description, Implementation Cost, Maintenance Cost, Effectiveness, and Ease of Implementation.
 ```
 
-VA Planning Prompt 
+### VA Planning Prompt 
 
 ```
 Using cybersecurity industry standards and best practices, create a complete and detailed assessment plan (not a penetration test) that includes: Introduction, outline of the process/methodology, tools needed, and a very detailed multi-layered outline of the steps. Provide a thorough and descriptive introduction and as much detail and description as possible throughout the plan. The plan should not be the only assessment of technical vulnerabilities on systems but also policies, procedures, and compliance. It should include the use of scanning tools as well as configuration review, staff interviews, and site walk-around. All recommendations should follow industry standard best practices and methods. The plan should be a minimum of 1500 words.
@@ -84,7 +84,7 @@ List of required tools and applications, with their descriptions and reasons nee
 Detailed, multi-layered outline of the assessment steps
 ```
 
-Threat Summary
+### Threat Summary
 ```
 Provide a detailed report about {threat_name}, using the following template (and proper markdown language formatting, headings, bold keywords, tables, etc.):
 Threat Name (Heading 1)
@@ -99,7 +99,7 @@ Table containing all of the known indicators of compromise. Include the followin
 ```
 
 
-Command Generation for VA
+### Command Generation for VA
 ```
 You are a professional cybersecurity red team specialist and an expert in penetration testing as well as vulnerability scanning tools such as NMap, OpenVAS, Nessus, Burpsuite, Metasploit, and more.
 
@@ -120,4 +120,36 @@ Provide me with the Linux command necessary to complete the following request:
 Assume I have all the necessary apps, tools, and commands necessary to complete the request. Provide me with the command only and do not generate anything further. Do not provide any explanation. Provide the simplest form of the command possible unless I ask for special options, considerations, output, etc. If the request does require a compound command provide all necessary operators, pipes, etc. as a single one-line command. Do not provide me with more than one variation or more than one line.
 
 #####################################################################################################
+```
+
+### SDLC Development Lifecycle (SSDLC) Planning (Planning Phase)
+
+
+```
+#system role
+You are an experienced software development manager with expertise in secure software development and the Secure Software Development Lifecycle (SSDLC).
+
+#overview of the SSDLC
+Provide a detailed overview of the Secure Software Development Lifecycle (SSDLC), highlighting the main phases and their significance.
+
+#Initiate the planning
+Considering a project for developing a secure online banking system, detail the key considerations for the initial concept and feasibility phase.
+
+#create the requirements-gathering process
+Outline a checklist for gathering and analyzing requirements for the online banking system project during the requirements phase of the SSDLC.
+
+#Learn about the design considerations and step
+Highlight important considerations when designing a secure online banking system during the system design phase of the SSDLC.
+
+#delve into the secure coding practices
+Discuss secure coding best practices to follow when developing an online banking system during the development phase of the SSDLC.
+
+#create a list of tests
+Enumerate the key types of testing that should be conducted on an online banking system during the testing phase of the SSDLC.
+
+#Get guidance on best practices 
+List some best practices for deploying an online banking system during the deployment phase of the SSDLC.
+
+#understanding the activities during the maintenance phase 
+Describe the main activities during the maintenance phase of an online banking system and how they can be managed effectively.
 ```
