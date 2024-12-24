@@ -15,8 +15,10 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Course: Cybersecurity Fundamental
     * Course: Network Security
     * Course: Information System Security
+    * Course: Computer System Security
     * Course: Software Security & Secure Coding
     * Course: Windows Enterprise and Services Management
+    * Course: Professional Prepation for Network Engineer and Cybersecurity
 * **Working**: Instructor and Security Specialist @ DE2Solution Co.,ltd. 
     * Course: Comptia Network+
     * Course: Palo Alto & Fortigate Next-generation Firewall
@@ -25,6 +27,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Course: Fortigate firewall workshop
     * Course: Ethical Hacking
     * Course: OWASP Top 10 2021
+    * Course: CompTIA Security+
 * **2020 - 2022**: Plan and Engineering Division @ DIST.
 
 * **2017 - 2020**: Security Officer @ Cyber Center (MOD).
