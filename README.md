@@ -61,11 +61,16 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 ### **Certification**
 
+* CompTIA Security Infrastructure Expert (CSIE)
+* CompTIA Security Analytics Expert (CSAE)
+* CompTIA Security Analytics Professional (CSAP)
+* CompTIA Network Vulnerability Assessment Professional (CNVP)
 * Certified in Cybersecurity (ISC)²
 * CompTIA Network+
 * CompTIA Security+
 * CompTIA Pentest+
-* CompTIA Network Vulnerability Assessment Professional (CNVP)
+* CompTIA CySA+
+* CompTIA SecurityX (CASP+)
 * Fortinet Certified Fundamentals in Cybersecurity
 * Fortinet NSE 4 (Network Security Professional)
 * Fortinet NSE 3 (Fortinet Product Awareness)
@@ -155,4 +160,4 @@ My **hobbies** include Playing Basketball, Running, Surf Skating and Reading boo
 
 **Created in ๒๐๒๐**
 
-**Updated on ๙ ก.ค.๖๗**
+**Updated on ๒๔ ธ.ค.๖๗**
