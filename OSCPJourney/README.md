@@ -100,8 +100,10 @@ flowchart TD;
     V -- no --> X[Find all installed software version. few of them might be vulnerable]
     X -- yes --> Y[Find the exploit from Internet]
     X -- no --> Z[uname -a or you can upload linux exploit suggester, it must be core exploit]
-    Z -- yes --> AA[Find the exploit and abuse the vulnerable]
-    Z -- no --> AB[Use linpease to make sure we didn't miss anything]
+   
 
 
 ```
+
+Z -- yes --> AA[Find the exploit and abuse the vulnerable]
+Z -- no --> AB[Use linpease to make sure we didn't miss anything]
