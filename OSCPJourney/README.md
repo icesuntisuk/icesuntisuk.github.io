@@ -3,6 +3,7 @@
 # Indexing 
 - [บทบันทึก](#บทบันทึด)
 - [OSCP Overview](#oscp-overview)
+- [Linux Priv](#linux-privilege-escalation)
 
 # บทบันทึก
 Day 1 @ 13 Jan 2025 
@@ -64,4 +65,14 @@ Day 1 @ 13 Jan 2025
 # macos install cherrytree
 brew install cherrytree
 
+```
+
+
+# Linux Privilege escalation
+```mermaid
+graph TD;
+    sudo -l --> Go GToBin;
+    A-->C;
+    B-->D;
+    C-->D;
 ```
