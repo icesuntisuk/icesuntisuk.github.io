@@ -53,3 +53,5 @@ Day 1 @ 13 Jan 2025
     - Crypto Application: SSH, VPN, NTLM 
 
 --- 
+
+เนื่องจากว่าความรู้ที่มีเกี่ยวกับ Windows Hacking เรามีน้อยมากจึงไปหาช่องทางธรรมชาติที่เหมาะสมกับการเรียนรู้มาดู ได้ช่อง Youtube ของ [IppSec](https://youtu.be/2DqdPcbYcy8?si=K7W00jVowK47y5IW) มาก็ลองลุยเพิ่มเติมดู​ โดยต่อจากนี้จะอิงจาก methodology การโจมตีและค่อยๆ ใส่ข้อมูลลงไปในแต่ละหัวข้อ 
