@@ -97,14 +97,10 @@ flowchart TD;
     V -- yes --> W[Is Tunneling necessary?]
     W -- yes --> X[tunnel that port to your attacker machine, do the red teaming]
     W -- no --> Y[Reach the port, find out what's going on there]
-    
-
+    V -- no --> Z[Find all installed software version. few of them might be vulnerable]
+    Z -- yes --> AA[Find the exploit from Internet]
+    Z -- no --> AB[uname -a or you can upload linux exploit suggester, it must be core exploit]
+    AB -- yes --> AC[Find the exploit and abuse the vulnerable]
+    AB -- no --> AD[Use linpease to make sure we didn't miss anything]   
 
 ```
-
-    V -- no --> Z[Find all installed software version. few of them might be vulnerable]
-    X -- yes --> AA[Find the exploit from Internet]
-    X -- no --> Z[uname -a or you can upload linux exploit suggester, it must be core exploit]
-    Z -- yes --> AA[Find the exploit and abuse the vulnerable]
-    Z -- no --> AB[Use linpease to make sure we didn't miss anything]   
-   
