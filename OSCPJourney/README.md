@@ -89,7 +89,7 @@ flowchart TD;
     M -- yes --> O[Add your own credential]
     M -- no --> P[Search for config file]
     P -- yes --> Q[Get the credential]
-    P -- no --> R[R we in Docker? {ifconfig}]
+    P -- no --> R[R we in Docker?]
     R -- yes --> S[Hacktrick & Obsidian]
     R -- no --> T[ps aux 2>/dev/null]
     T -- yes --> U[Hijack software and service]
