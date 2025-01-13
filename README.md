@@ -130,6 +130,7 @@ My **hobbies** include Playing Basketball, Running, Surf Skating and Reading boo
 * [FIM to Line notify powered by Thanakorn and Icesuntisuk](/File_Integrity_Monitor/README.md)
 * [Thai Wordlist Generator](/KB/TH-WLGen/README.md)
 * [How to dump password on WindowsOS via Minikaz](/KB/minikaz.md)
+* [My OSCP Journey](/OSCPJourney/README.md)
 
 ### **บทเรียนฟรี หัวข้อ เครือข่ายคอมพิวเตอร์ 101**
 * [EP.1 ความรู้พื้นฐานเกี่ยวกับเครือข่ายและการสื่อสาร](https://youtu.be/U3iJ3d8Y-Sw)
