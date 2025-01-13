@@ -59,3 +59,9 @@ Day 1 @ 13 Jan 2025
 # เตรียมเครื่องมือให้พร้อม 
 
 - CherryTree ใช้สำหรับจดบันทึกการโจมตีต่างๆ ที่เราได้ดำเนินการไป 
+
+```bash
+# macos install cherrytree
+brew install cherrytree
+
+```
