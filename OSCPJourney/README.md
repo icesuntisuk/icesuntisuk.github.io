@@ -70,9 +70,8 @@ brew install cherrytree
 
 # Linux Privilege escalation
 ```mermaid
-graph TD;
-    sudo -l --> Go GToBin;
-    A-->C;
-    B-->D;
-    C-->D;
+flowchart TD;
+    A[PE methodology] --> B[sudo -l];
+    B -- yes --> C[GTFobin]
+    B -- no --> D[cat /etc/crontab]
 ```
