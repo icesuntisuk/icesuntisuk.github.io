@@ -74,4 +74,12 @@ flowchart TD;
     A[PE methodology] --> B[sudo -l];
     B -- yes --> C[GTFobin]
     B -- no --> D[cat /etc/crontab]
+    D -- yes --> E[Hijack the binary]
+    D -- no --> F[Can collect /etc/passwd and /etc/shadow]
+    F -- yes --> G[Save passwd and shadow and unshadow it then go john]
+    F -- no --> H[find / -user root -perm -u=s 2>/dev/null]
+    H -- yes --> C[GTFobin]
+    H -- no --> I[cat /home/.bash_history]
+    I -- yes --> J[Abuse it]
+    I -- no --> K[whoami -groups]
 ```
