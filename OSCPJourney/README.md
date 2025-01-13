@@ -77,7 +77,7 @@ flowchart TD;
     D -- yes --> E[Hijack the binary]
     D -- no --> F[Can collect /etc/passwd and /etc/shadow]
     F -- yes --> G[Save passwd and shadow and unshadow it then go john]
-    F -- no --> H[find / -perm /u=s,g=s -exec ls -l {} \;]
+    F -- no --> H[find / -perm -4000 -type f 2>/dev/null]
     H -- yes --> C[GTFobin]
     H -- no --> I[cat /home/.bash_history]
     I -- yes --> J[Abuse it]
@@ -100,10 +100,10 @@ flowchart TD;
     V -- no --> X[Find all installed software version. few of them might be vulnerable]
     X -- yes --> Y[Find the exploit from Internet]
     X -- no --> Z[uname -a or you can upload linux exploit suggester, it must be core exploit]
+    Z -- yes --> AA[Find the exploit and abuse the vulnerable]
+    Z -- no --> AB[Use linpease to make sure we didn't miss anything]   
    
 
 
 ```
 
-Z -- yes --> AA[Find the exploit and abuse the vulnerable]
-Z -- no --> AB[Use linpease to make sure we didn't miss anything]
