@@ -93,10 +93,10 @@ flowchart TD;
     R -- yes --> S[Hacktrick & Obsidian]
     R -- no --> T[ps aux 2>/dev/null]
     T -- yes --> U[Hijack software and service]
-    T -- no --> V[Upload nmap ,and do a localhost port scan]
-    V -- yes --> U[Is Tunneling necessary?]
-    U -- yes --> V[tunnel that port to your attacker machine, do the red teaming]
-    U -- no --> W[Reach the port, find out what's going on there]
+    T -- no --> U[Upload nmap ,and do a localhost port scan]
+    U -- yes --> V[Is Tunneling necessary?]
+    V -- yes --> W[tunnel that port to your attacker machine, do the red teaming]
+    V -- no --> X[Reach the port, find out what's going on there]
     
 
 
