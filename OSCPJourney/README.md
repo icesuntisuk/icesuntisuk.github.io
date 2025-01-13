@@ -93,12 +93,18 @@ flowchart TD;
     R -- yes --> S[Hacktrick & Obsidian]
     R -- no --> T[ps aux 2>/dev/null]
     T -- yes --> U[Hijack software and service]
-    T -- no --> U[Upload nmap ,and do a localhost port scan]
-    U -- yes --> V[Is Tunneling necessary?]
-    V -- yes --> W[tunnel that port to your attacker machine, do the red teaming]
-    V -- no --> X[Reach the port, find out what's going on there]
+    T -- no --> V[Upload nmap ,and do a localhost port scan]
+    V -- yes --> W[Is Tunneling necessary?]
+    W -- yes --> X[tunnel that port to your attacker machine, do the red teaming]
+    W -- no --> Y[Reach the port, find out what's going on there]
     
 
 
 ```
 
+    V -- no --> Z[Find all installed software version. few of them might be vulnerable]
+    X -- yes --> AA[Find the exploit from Internet]
+    X -- no --> Z[uname -a or you can upload linux exploit suggester, it must be core exploit]
+    Z -- yes --> AA[Find the exploit and abuse the vulnerable]
+    Z -- no --> AB[Use linpease to make sure we didn't miss anything]   
+   
