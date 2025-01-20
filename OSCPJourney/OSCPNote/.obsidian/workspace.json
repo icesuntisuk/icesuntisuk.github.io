@@ -20,8 +20,19 @@
               "icon": "lucide-file",
               "title": "Passive Information Gathering"
             }
+          },
+          {
+            "id": "89a3fcecd8bba684",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -93,7 +104,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Hack Note/Passive Information Gathering.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +113,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Passive Information Gathering"
+              "title": "Backlinks"
             }
           },
           {
@@ -112,12 +122,11 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Hack Note/Passive Information Gathering.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Passive Information Gathering"
+              "title": "Outgoing links"
             }
           },
           {
@@ -138,11 +147,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "Hack Note/Passive Information Gathering.md"
-              },
+              "state": {},
               "icon": "lucide-list",
-              "title": "Outline of Passive Information Gathering"
+              "title": "Outline"
             }
           }
         ]
@@ -162,11 +169,12 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "67fce3c8610745e1",
+  "active": "89a3fcecd8bba684",
   "lastOpenFiles": [
+    "Hack Note/Active Information Gathering.md",
+    "Hack Note/Passive Information Gathering.md",
     "IMG/Netcraft1.png",
     "GHDB.md",
-    "Hack Note/Passive Information Gathering.md",
     "IMG/GHDB2.3.png",
     "IMG/GHDB2.2.png",
     "IMG/GHDB2.1.png",
