@@ -162,13 +162,14 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "67fce3c8610745e1",
+  "active": "1803d3235c260c1b",
   "lastOpenFiles": [
+    "Hack Note/Privilege Escalation.md",
+    "IMG/windllinjectwithprocmon.png",
     "IMG/PowerUp-2.png",
     "IMG/Powerup-1.png",
     "xfreerdp.md",
     "evil-winrm.md",
-    "Hack Note/Privilege Escalation.md",
     "EVENTID4104-2.png",
     "EventID4104.png",
     "Hack Note/Active Information Gathering.md",
@@ -189,7 +190,6 @@
     "IMG/GHDB2.3.png",
     "IMG/GHDB2.2.png",
     "IMG/GHDB2.1.png",
-    "IMG/GHDB1.png",
     "IMG",
     "Hack Note/GHDB.md",
     "Hack Note",

