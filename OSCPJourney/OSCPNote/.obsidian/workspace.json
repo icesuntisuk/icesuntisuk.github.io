@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Hack Note/Privilege Escalation.md",
+                "file": "Hack Note/WIN Privilege Escalation.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Privilege Escalation"
+              "title": "WIN Privilege Escalation"
             }
           }
         ]
@@ -93,7 +93,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Hack Note/Privilege Escalation.md",
+                "file": "Hack Note/WIN Privilege Escalation.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +103,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Privilege Escalation"
+              "title": "Backlinks for WIN Privilege Escalation"
             }
           },
           {
@@ -112,12 +112,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Hack Note/Privilege Escalation.md",
+                "file": "Hack Note/WIN Privilege Escalation.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Privilege Escalation"
+              "title": "Outgoing links from WIN Privilege Escalation"
             }
           },
           {
@@ -139,10 +139,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Hack Note/Privilege Escalation.md"
+                "file": "Hack Note/WIN Privilege Escalation.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of Privilege Escalation"
+              "title": "Outline of WIN Privilege Escalation"
             }
           }
         ]
@@ -164,9 +164,11 @@
   },
   "active": "1803d3235c260c1b",
   "lastOpenFiles": [
-    "evil-winrm.md",
-    "Hack Note/Privilege Escalation.md",
+    "Hack Note/WIN Privilege Escalation.md",
+    "IMG/Stask-1.png",
     "xfreerdp.md",
+    "Hack Note/Passive Information Gathering.md",
+    "evil-winrm.md",
     "IMG/windllinjectwithprocmon.png",
     "IMG/PowerUp-2.png",
     "IMG/Powerup-1.png",
@@ -175,7 +177,6 @@
     "Hack Note/Active Information Gathering.md",
     "SMB.md",
     "whois.md",
-    "Hack Note/Passive Information Gathering.md",
     "mimikatz.md",
     "Running x86 code on ARM devices.md",
     "CVE-2021-43798.md",
@@ -189,7 +190,6 @@
     "GHDB.md",
     "IMG/GHDB2.3.png",
     "IMG/GHDB2.2.png",
-    "IMG/GHDB2.1.png",
     "IMG",
     "Hack Note/GHDB.md",
     "Hack Note",
