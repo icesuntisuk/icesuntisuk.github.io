@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "d0115dd132ea6a8c",
+        "id": "f8c14f6977d2a690",
         "type": "tabs",
         "children": [
           {
-            "id": "1803d3235c260c1b",
+            "id": "28e512cfd87a665c",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -162,12 +162,16 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "1803d3235c260c1b",
+  "active": "67fce3c8610745e1",
   "lastOpenFiles": [
+    "IMG/winexploit-0.png",
+    "IMG/winexploit-2.png",
+    "IMG/Winexploit-1.png",
+    "Hack Note/Passive Information Gathering.md",
+    "SeImpersonatePrivilege=SigmaPotato.md",
     "Hack Note/WIN Privilege Escalation.md",
     "IMG/Stask-1.png",
     "xfreerdp.md",
-    "Hack Note/Passive Information Gathering.md",
     "evil-winrm.md",
     "IMG/windllinjectwithprocmon.png",
     "IMG/PowerUp-2.png",
@@ -188,8 +192,6 @@
     "IMG/ncportscan1.png",
     "IMG/Netcraft1.png",
     "GHDB.md",
-    "IMG/GHDB2.3.png",
-    "IMG/GHDB2.2.png",
     "IMG",
     "Hack Note/GHDB.md",
     "Hack Note",

