@@ -43,7 +43,7 @@ Get-Process -Name "NonStandardProcess"| format-list *
 
 
 # ค้นหาไฟล์ตาม File type ที่สนใจ
-Get-ChildItem -Path C:\XAMPP -Include *.txt,*.pdf,*.xls,*.xlsx,*.doc,*.docx,*.ini -File -Recurse -ErrorAction SilentlyContinue 
+Get-ChildItem -Path C:\XAMPP -Include *.txt,*.pdf,*.xls,*.xlsx,*.doc,*.docx,*.ini,*.kdbx -File -Recurse -ErrorAction SilentlyContinue 
 
 # คำสั่ง su หรือ Switch Users บน Windows 
 runas /user:backupadmin cmd
