@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "68ebb2fa4ff69faa",
+        "id": "da44187308505249",
         "type": "tabs",
         "children": [
           {
-            "id": "a7d8101d6f62eb5b",
+            "id": "6a1d8dd954b12791",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "OSCP/Hack Note/LINPEAS.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "LINPEAS"
             }
           }
         ]
@@ -158,18 +162,23 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "a7d8101d6f62eb5b",
+  "active": "6a1d8dd954b12791",
   "lastOpenFiles": [
+    "OSCP/IMG/linpeas-1.png",
+    "OSCP/Hack Note/Password Attack.md",
+    "OSCP/Hack Note/LINPEAS.md",
+    "OSCP/Hack Note/Passive Information Gathering.md",
     "OSCP/Hack Note/Active Directory.md",
+    "OSCP/Hack Note/Active Information Gathering.md",
+    "OSCP/tools/gobuster.md",
+    "OSCP/tools/evil-winrm.md",
+    "OSCP/Hack Note/WIN Privilege Escalation.md",
+    "OSCP/tools/xfreerdp.md",
     "WindowsAttack",
     "OSCP",
-    "OSCP/tools/xfreerdp.md",
     "Untitled.canvas",
     "OSCP/tools",
-    "OSCP/Hack Note/WIN Privilege Escalation.md",
     "OSCP/Hack Note/Port Redirect.md",
-    "OSCP/Hack Note/Passive Information Gathering.md",
-    "OSCP/Hack Note/Active Information Gathering.md",
     "OSCP/tools/WMIandWinRM.md",
     "OSCP/tools/Lateral Movement.md",
     "OSCP/IMG/passSplay.png",
@@ -178,7 +187,6 @@
     "OSCP/IMG/shapehound_collectionGP.png",
     "OSCP/IMG/ACLandACE.png",
     "OSCP/tools/Network Bruteforce.md",
-    "OSCP/Hack Note/Password Attack.md",
     "OSCP/IMG/HTTPOSTBRUTE-2.png",
     "OSCP/IMG/HTTPOSTBRUTE-1.png",
     "OSCP/tools/SSH.md",
@@ -186,7 +194,6 @@
     "OSCP/IMG/winexploit-2.png",
     "OSCP/IMG/Winexploit-1.png",
     "OSCP/tools/SeImpersonatePrivilege=SigmaPotato.md",
-    "OSCP/tools/evil-winrm.md",
     "OSCP/tools/SMB.md",
     "OSCP/tools/whois.md",
     "OSCP/tools/mimikatz.md",
@@ -198,8 +205,6 @@
     "OSCP/tools/host.md",
     "GHDB.md",
     "OSCP/IMG",
-    "Hack Note/GHDB.md",
-    "OSCP/Hack Note",
-    "Welcome.md"
+    "OSCP/Hack Note"
   ]
 }
