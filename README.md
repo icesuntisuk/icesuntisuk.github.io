@@ -68,12 +68,13 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 * CompTIA Security Analytics Expert (CSAE)
 * CompTIA Security Analytics Professional (CSAP)
 * CompTIA Network Vulnerability Assessment Professional (CNVP)
-* Certified in Cybersecurity (ISC)²
+* Certified in Cybersecurity (ISC)² (CC)
 * CompTIA Network+
 * CompTIA Security+
 * CompTIA Pentest+
 * CompTIA CySA+
 * CompTIA SecurityX (CASP+)
+* Certified Ethical Hacker (CEH) 
 * Fortinet Certified Fundamentals in Cybersecurity
 * Fortinet NSE 4 (Network Security Professional)
 * Fortinet NSE 3 (Fortinet Product Awareness)
