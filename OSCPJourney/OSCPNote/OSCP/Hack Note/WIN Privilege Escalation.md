@@ -149,7 +149,7 @@ int main ()
 
 จากนั้น ก็นำโปรแกรมไป Compire บน Kali 
 
-```
+```powershell
 # Compile adduser.c > .exe 
 x86_64-w64-mingw32-gcc adduser.c -o adduser.exe 
 
