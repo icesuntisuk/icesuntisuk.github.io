@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}แก้ไขผู้ใช้{% endblock %}
+{% block content %}
+<h3>แก้ไขข้อมูลผู้ใช้: {{ user.username }}</h3>
+<form method="POST" class="row g-3">
+  <div class="col-md-4">
+    <label class="form-label">เปลี่ยนรหัสผ่าน (ถ้าต้องการ)</label>
+    <input type="password" name="password" class="form-control" placeholder="รหัสผ่านใหม่ (เว้นว่างถ้าไม่เปลี่ยน)">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">บทบาท</label>
+    <select name="role" class="form-select">
+      <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
+      <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+    </select>
+  </div>
+  <div class="col-md-4 mt-4">
+    <button class="btn btn-success" type="submit">บันทึก</button>
+    <a href="{{ url_for('manage_users') }}" class="btn btn-secondary">กลับ</a>
+  </div>
+</form>
+{% endblock %}
