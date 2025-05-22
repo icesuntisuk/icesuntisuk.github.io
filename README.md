@@ -3,7 +3,7 @@
 # Biography of 
 # <font color="white"> Capt.Suntisuk Thepthong (Ice) </font>
 
-Contact to me (LineID): coolangel
+Contact to me (Line ID): coolangel
 
 I have had the great fortune to be involved with nearly every dimension of cyber security. I deployed security technologies, designed infrastructure and developed security programs to maturity. 
 
