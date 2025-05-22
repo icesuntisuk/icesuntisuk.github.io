@@ -28,7 +28,11 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Course: Ethical Hacking
     * Course: OWASP Top 10 2021
     * Course: CompTIA Security+
-* **2020 - 2022**: Plan and Engineering Division @ DIST.
+* **Working**: Instructor and Security Specialist @ Albatross CyberSec.
+    * Course: Cybersecurity Awareness Training
+    * Course: OWASP Top 10
+    * Course: Secure Coding 
+* **2020 - 2022**: Plan and Engineering Division @ Defence Information And Space Technology Department.
 
 * **2017 - 2020**: Security Officer @ Cyber Center (MOD).
     * Cyber Center is an office under Defence Information and Space Technology Department (DIST) in the Office of the Permanent Secretary for Defence, Ministry of Defense. ([ref.](http://dist.mod.go.th/Recommend/Responsibility.aspx ))
@@ -62,6 +66,13 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Teacher assistant of the course.
     * Full scholarship.
 
+### **Training**
+
+* **Course**: 2nd Cybersecurity Course on Cyber Incident Response & Threat Analysis: 2nd CIRTA @ ADMM Cybersecurity and Information Centre of Excellence: ACICE (Singapore)
+* **Course**: OSCP Bootcamp
+* **Course**: CCIE Bootcamp 
+
+
 ### **Certification**
 
 * CompTIA Security Infrastructure Expert (CSIE)
@@ -93,6 +104,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 #### **Specialties**
 
+* AI Agent
 * Cybersecurity
 * Incident response
 * Security Operations Center (SOC)
