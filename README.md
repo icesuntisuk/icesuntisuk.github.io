@@ -143,7 +143,7 @@ My **hobbies** include Playing Basketball, Running, Surf Skating and Reading boo
 * [FIM to Line notify powered by Thanakorn and Icesuntisuk](/File_Integrity_Monitor/README.md)
 * [Thai Wordlist Generator](/KB/TH-WLGen/README.md)
 * [How to dump password on WindowsOS via Minikaz](/KB/minikaz.md)
-* [My OSCP Journey](/OSCPJourney/README.md)
+
 
 ### **บทเรียนฟรี หัวข้อ เครือข่ายคอมพิวเตอร์ 101**
 * [EP.1 ความรู้พื้นฐานเกี่ยวกับเครือข่ายและการสื่อสาร](https://youtu.be/U3iJ3d8Y-Sw)
@@ -160,21 +160,8 @@ My **hobbies** include Playing Basketball, Running, Surf Skating and Reading boo
 * [EP.12 Inter VLAN (L3 Switch)](https://youtu.be/dxEkfXSKt8o)
 * [EP.13 CDP Protocol](https://youtu.be/qkgbYK6iKdQ)
 
-<!-- 
-# ข้อมูลด้านล่างนี้อยู่ระหว่างพัฒนา
-### Ethical Hacking Cheatsheet
-* [Command so necessary](/PentestCheatsheet/cmd.md)
-* [Reconnaissance](/PentestCheatsheet/recon.md)
-* [Network Pivoting](/PentestCheatsheet/)
-* [Enumeration and Gaining Access](/PentestCheatsheet/enum.md)
-* [Password Hacking](/PentestCheatsheet/)
-* [Web Hacking](/PentestCheatsheet/)
-* [Reverse Shells](/PentestCheatsheet/)
-* [Spawning Shells](/PentestCheatsheet/)
-* [Linux Privilege Escalation](/PentestCheatsheet/linux-pri.md)
-* [Windows Privilege Escalation](/PentestCheatsheet/win-pri.md)
--->
 
-**Created in ๒๐๒๐**
 
-**Updated on ๗ ม.ค.๖๘**
+**Created in ๒๐๒๔**
+
+**Updated on ๒๒ พ.ค.๖๘**
