@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ภารกิจตามล่าภัยไซเบอร์ (v3.5 - Case-Sensitive)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-light: #1e293b;
+            --primary-cyan: #06b6d4;
+            --primary-blue: #3b82f6;
+            --primary-purple: #8b5cf6;
+            --text-light: #e2e8f0;
+        }
+        * { font-family: 'Sarabun', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        body {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 50%, var(--bg-dark) 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+        .main-container {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+        .mission-page {
+            display: none;
+            animation: fadeIn 0.7s ease-out;
+        }
+        .mission-page.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .cyber-input {
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(6, 182, 212, 0.3);
+            transition: all 0.3s;
+        }
+        .cyber-input:focus {
+            border-color: var(--primary-cyan);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+            outline: none;
+        }
+        .cyber-button {
+            background: linear-gradient(135deg, var(--primary-cyan), #0891b2);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+            transition: all 0.3s ease;
+        }
+        .cyber-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.6);
+        }
+        .cyber-button:disabled {
+            cursor: not-allowed;
+            background: #334155;
+            box-shadow: none;
+        }
+        .progress-fill {
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mission-card {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        .phishing-warning-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+        .phishing-warning-modal.active {
+            display: flex;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translateX(-1px); }
+            20%, 80% { transform: translateX(2px); }
+            30%, 50%, 70% { transform: translateX(-4px); }
+            40%, 60% { transform: translateX(4px); }
+        }
+        .shake-error {
+            animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        #confetti-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10; pointer-events: none;
+        }
+        .hidden-code {
+            color: #CFD5DB !important; /* Fainter color for more challenge */
+            font-size: 1.75rem;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-4xl mx-auto main-container rounded-3xl shadow-2xl p-6 md:p-10 relative">
+
+        <!-- Progress Bar -->
+        <div class="progress-bar bg-slate-800 rounded-full h-2.5 mb-8">
+            <div id="progress-fill" class="progress-fill bg-gradient-to-r from-cyan-400 to-blue-500 h-2.5 rounded-full" style="width: 0%;"></div>
+        </div>
+
+        <!-- Mission 1: Phishing -->
+        <div id="mission-1" class="mission-page">
+            <div class="mission-card rounded-2xl p-8">
+                <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center text-2xl mr-4">📧</div><div><h2 class="text-3xl font-bold text-yellow-300">ภารกิจที่ 1: อีเมลหลอกลวง</h2><p class="text-gray-400">Phishing Email Analysis</p></div></div>
+                <p class="text-gray-300 mb-8 text-lg">🎯 ในอีเมลฉบับนี้ มีข้อมูลสำคัญเกี่ยวกับบัญชีที่ถูกโจมตีซ่อนอยู่... ข้อมูลนั้นคืออะไร? <br><span class="text-sm text-gray-400">(โปรดทราบว่าคำตอบต้องตรงตามตัวพิมพ์ใหญ่-เล็ก)</span></p>
+                <div class="bg-white/95 rounded-xl p-6 mb-8 text-gray-800 shadow-lg">
+                    <p><span class="font-bold">From:</span> IT Support <span class="font-bold text-red-600">&lt;support@company-th.co&gt;</span></p><p><span class="font-bold">Subject:</span> <span class="font-bold text-red-600 animate-pulse">⚠️ ACTION REQUIRED</span></p><hr class="my-2"><p class="my-3">เรียน พนักงาน, จากการตรวจสอบความปลอดภัยล่าสุด เราพบกิจกรรมที่น่าสงสัยในบัญชีของคุณ <strong class="font-semibold">Somchai.M</strong> กรุณายืนยันตัวตนโดยด่วนผ่านลิงก์ด้านล่าง</p>
+                    <a href="#" onclick="event.preventDefault(); showPhishingWarning();" class="text-blue-600 underline font-medium">hxxp://company-th.co-login.net/update</a>
+                </div>
+                <div class="space-y-4"><input type="text" id="answer-1" class="w-full p-4 cyber-input rounded-xl placeholder-gray-400" placeholder="🔑 กรอกข้อมูลสำคัญที่พบ"><button onclick="submitAnswer(1)" class="w-full cyber-button font-bold py-4 rounded-xl text-lg">ส่งคำตอบ</button><p id="error-1" class="text-red-400 text-center font-medium h-6"></p></div>
+            </div>
+        </div>
+
+        <!-- Mission 2: Social Engineering -->
+        <div id="mission-2" class="mission-page">
+             <div class="mission-card rounded-2xl p-8">
+                <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-xl flex items-center justify-center text-2xl mr-4">👥</div><div><h2 class="text-3xl font-bold text-blue-300">ภารกิจที่ 2: วิศวกรรมสังคม</h2><p class="text-gray-400">Social Engineering</p></div></div>
+                <p class="text-gray-300 mb-8 text-lg">🔍 แฮกเกอร์มักใช้ข้อมูลส่วนตัวจากโซเชียลมีเดีย... อะไรคือคำใบ้สำคัญที่พบในโพสต์นี้?</p>
+                <div class="bg-white rounded-2xl p-6 max-w-md mx-auto text-black mb-8 shadow-xl">
+                    <div class="flex items-center mb-4"><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=50&h=50&q=80" class="rounded-full w-12 h-12 mr-3 border-2" alt="Profile"><p class="font-bold">Somchai M.</p></div>
+                    <p class="mb-4 text-gray-800">วันนี้พานายท่านไปเดินเล่น อากาศดีสุดๆ! 🐕‍🦺💨</p><img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80" class="rounded-xl w-full mb-4" alt="Dog">
+                    <p class="text-sm"><strong class="text-gray-800">Jane Doe:</strong> น่ารักจังเลยเจ้า <strong class="font-semibold">Lucky</strong>! 🥰</p>
+                </div>
+                <div class="space-y-4"><input type="text" id="answer-2" class="w-full p-4 cyber-input rounded-xl placeholder-gray-400" placeholder="🐕 กรอกคำใบ้ที่พบ"><button onclick="submitAnswer(2)" class="w-full cyber-button font-bold py-4 rounded-xl text-lg">ส่งคำตอบ</button><p id="error-2" class="text-red-400 text-center font-medium h-6"></p></div>
+            </div>
+        </div>
+
+        <!-- Mission 3: Steganography -->
+        <div id="mission-3" class="mission-page">
+            <div class="mission-card rounded-2xl p-8">
+                <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-green-400 to-cyan-500 rounded-xl flex items-center justify-center text-2xl mr-4">🖼️</div><div><h2 class="text-3xl font-bold text-green-300">ภารกิจที่ 3: ข้อความที่ซ่อนอยู่</h2><p class="text-gray-400">Steganography</p></div></div>
+                <p class="text-gray-300 mb-8 text-lg">🔍 ค้นหาโค้ดลับที่ซ่อนอยู่ในภาพนี้</p>
+                <div class="relative mb-8 select-none"><div class="bg-gray-200 w-full h-64 rounded-2xl flex items-center justify-center relative shadow-lg"><p class="text-8xl font-bold text-gray-400">CITY</p><p class="absolute bottom-4 right-6 mono font-bold hidden-code">DELTA7</p></div></div>
+                <div class="space-y-4"><input type="text" id="answer-3" class="w-full p-4 cyber-input rounded-xl placeholder-gray-400" placeholder="🔐 กรอกโค้ดลับ"><button onclick="submitAnswer(3)" class="w-full cyber-button font-bold py-4 rounded-xl text-lg">ส่งคำตอบ</button><p id="error-3" class="text-red-400 text-center font-medium h-6"></p></div>
+            </div>
+        </div>
+
+        <!-- Mission 4: Ransomware -->
+        <div id="mission-4" class="mission-page">
+            <div class="mission-card rounded-2xl p-8">
+                <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl flex items-center justify-center text-2xl mr-4">🚨</div><div><h2 class="text-3xl font-bold text-red-300">ภารกิจที่ 4: มัลแวร์เรียกค่าไถ่</h2><p class="text-gray-400">Ransomware</p></div></div>
+                <p class="text-gray-300 mb-8 text-lg">⚠️ คอมพิวเตอร์ถูกเข้ารหัส! ชื่อของมัลแวร์ที่ใช้โจมตีคืออะไร?</p>
+                <div class="bg-red-900 border-2 border-red-500 text-white p-8 rounded-2xl mono mb-8"><h3 class="text-3xl font-bold text-center text-yellow-300 animate-pulse mb-6">YOUR FILES ARE ENCRYPTED</h3><p class="text-center">All data has been locked by the <strong class="font-semibold">CryLocker</strong> algorithm.</p></div>
+                <div class="space-y-4"><input type="text" id="answer-4" class="w-full p-4 cyber-input rounded-xl placeholder-gray-400" placeholder="🦠 กรอกชื่อ Ransomware"><button onclick="submitAnswer(4)" class="w-full cyber-button font-bold py-4 rounded-xl text-lg">ส่งคำตอบ</button><p id="error-4" class="text-red-400 text-center font-medium h-6"></p></div>
+            </div>
+        </div>
+
+        <!-- Mission 5: Password Leak -->
+        <div id="mission-5" class="mission-page">
+            <div class="mission-card rounded-2xl p-8">
+                <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center text-2xl mr-4">🔑</div><div><h2 class="text-3xl font-bold text-purple-300">ภารกิจที่ 5: รหัสผ่านที่รั่วไหล</h2><p class="text-gray-400">Password Leak</p></div></div>
+                <p class="text-gray-300 mb-8 text-lg">💥 จากข้อมูลที่รั่วไหล รหัสผ่านที่อ่อนแอที่สุดมีความยาวเท่าไหร่? (ตอบเป็นตัวเลข)</p>
+                <div class="bg-slate-800/50 rounded-lg overflow-hidden mb-8"><table class="w-full text-left text-sm">
+                    <thead class="bg-slate-900/80"><tr><th class="p-3">Username</th><th class="p-3">Password</th><th class="p-3">Strength</th></tr></thead>
+                    <tbody>
+                        <tr class="border-b border-slate-700"><td class="p-3">mana.c</td><td class="p-3 mono text-green-400">P@ssw0rd2024!</td><td class="p-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded-full">Strong</span></td></tr>
+                        <tr class="border-b border-slate-700"><td class="p-3">wiroj.s</td><td class="p-3 mono text-yellow-400">MySup3rSecr3t</td><td class="p-3"><span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded-full">Medium</span></td></tr>
+                        <tr><td class="p-3">suda.p</td><td class="p-3 mono text-red-400 bg-red-900/30">password</td><td class="p-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded-full animate-pulse">Critical (8)</span></td></tr>
+                    </tbody>
+                </table></div>
+                <div class="space-y-4"><input type="number" id="answer-5" class="w-full p-4 cyber-input rounded-xl placeholder-gray-400" placeholder="🔢 กรอกจำนวนตัวอักษร"><button onclick="submitAnswer(5)" class="w-full cyber-button font-bold py-4 rounded-xl text-lg">ส่งคำตอบสุดท้าย</button><p id="error-5" class="text-red-400 text-center font-medium h-6"></p></div>
+            </div>
+        </div>
+
+        <!-- Finish Line -->
+        <div id="mission-end" class="mission-page text-center">
+            <div class="mission-card rounded-2xl p-8">
+                <div class="w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 animate-bounce">✅</div>
+                <h2 class="text-4xl font-bold text-green-400 mb-4">ภารกิจทั้งหมดสำเร็จ!</h2>
+                <p class="text-gray-300 text-xl mb-8">คุณคือสุดยอดนักล่าภัยไซเบอร์! กรอกชื่อของคุณเพื่อบันทึกสถิติ</p>
+                <div class="space-y-4">
+                    <input type="text" id="winner-name" class="w-full p-4 cyber-input rounded-xl text-center text-lg" placeholder="👤 กรอกชื่อของคุณที่นี่">
+                    <button onclick="showFinalResults()" class="w-full cyber-button bg-gradient-to-r from-green-500 to-emerald-600 font-bold py-4 rounded-xl text-lg">🏆 ดูผลลัพธ์และรับรางวัล! 🏆</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Winner Screen -->
+        <div id="winner-screen" class="mission-page text-center">
+            <canvas id="confetti-canvas"></canvas>
+            <div class="mission-card rounded-2xl p-8">
+                <h2 class="text-5xl font-bold text-yellow-400 mb-6" style="text-shadow: 0 0 20px rgba(234, 179, 8, 0.6);">🎊 ขอแสดงความยินดี! 🎊</h2>
+                <div class="bg-slate-800/50 rounded-xl p-6 text-left space-y-4">
+                    <div>
+                        <p class="text-lg font-bold gradient-text">ผู้พิชิตภารกิจ:</p>
+                        <p id="results-name" class="text-2xl font-semibold text-white"></p>
+                    </div>
+                    <hr class="border-slate-600">
+                    <div>
+                        <p class="text-sm text-gray-400">เวลาที่เริ่ม:</p>
+                        <p id="results-start-time" class="text-lg mono"></p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400">เวลาที่จบ:</p>
+                        <p id="results-end-time" class="text-lg mono"></p>
+                    </div>
+                     <div>
+                        <p class="text-sm text-gray-400">เวลาที่ใช้ไปทั้งหมด:</p>
+                        <p id="results-total-time" class="text-2xl font-bold mono text-green-400"></p>
+                    </div>
+                </div>
+                <button onclick="window.location.reload()" class="w-full cyber-button font-bold py-4 rounded-xl text-lg mt-8">เล่นอีกครั้ง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phishing Warning Modal -->
+    <div id="phishing-modal" class="phishing-warning-modal">
+        <div class="bg-white text-black rounded-lg p-8 max-w-md text-center shadow-2xl border-4 border-yellow-400">
+            <h2 class="text-3xl font-bold text-red-600 mb-4">⚠️ คำเตือน!</h2>
+            <p class="text-lg mb-6">ลิงก์นี้เป็นเว็บไซต์อันตรายที่สร้างขึ้นเพื่อขโมยข้อมูล (Phishing) <br><strong>อย่ากรอกข้อมูลใดๆ เด็ดขาด!</strong></p>
+            <button onclick="closePhishingWarning()" class="bg-yellow-400 text-black font-bold py-2 px-6 rounded-lg hover:bg-yellow-500">ฉันเข้าใจแล้ว</button>
+        </div>
+    </div>
+
+<script>
+    const GAME_STATE = {
+        currentMission: 1,
+        totalMissions: 5,
+        startTime: null,
+        answers: {
+            1: "Somchai.M",
+            2: "Lucky",
+            3: "DELTA7",
+            4: "CryLocker",
+            5: "8"
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        GAME_STATE.startTime = new Date();
+        document.getElementById('mission-1').classList.add('active');
+        updateProgressBar();
+    });
+
+    function updateProgressBar() {
+        const progress = ((GAME_STATE.currentMission - 1) / GAME_STATE.totalMissions) * 100;
+        document.getElementById('progress-fill').style.width = `${progress}%`;
+    }
+
+    function transitionToMission(pageId) {
+        const currentActive = document.querySelector('.mission-page.active');
+        if (currentActive) {
+            currentActive.classList.remove('active');
+        }
+        
+        let nextMissionElement;
+        if (typeof pageId === 'number') {
+            nextMissionElement = document.getElementById(`mission-${pageId}`);
+        } else {
+            // Handle string IDs like 'mission-end', 'winner-screen'
+            nextMissionElement = document.getElementById(pageId);
+        }
+
+        if (nextMissionElement) {
+            nextMissionElement.classList.add('active');
+        }
+    }
+
+    function submitAnswer(missionId) {
+        const input = document.getElementById(`answer-${missionId}`);
+        const errorEl = document.getElementById(`error-${missionId}`);
+        const button = input.nextElementSibling;
+
+        const userAnswer = input.value.trim(); // Don't convert to lower case
+        const correctAnswer = GAME_STATE.answers[missionId];
+
+        errorEl.textContent = '';
+        input.classList.remove('shake-error');
+        input.disabled = true;
+        button.disabled = true;
+        button.textContent = 'กำลังตรวจสอบ...';
+
+        setTimeout(() => {
+            // Check for case-sensitive match
+            if (userAnswer === correctAnswer) {
+                button.textContent = 'ถูกต้อง!';
+                button.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                GAME_STATE.currentMission++;
+                updateProgressBar();
+                setTimeout(() => {
+                    if (GAME_STATE.currentMission > GAME_STATE.totalMissions) {
+                        transitionToMission('mission-end');
+                    } else {
+                        transitionToMission(GAME_STATE.currentMission);
+                    }
+                }, 1500);
+            } else {
+                errorEl.textContent = 'คำตอบไม่ถูกต้อง (โปรดตรวจสอบตัวพิมพ์ใหญ่-เล็ก)';
+                input.classList.add('shake-error');
+                input.disabled = false;
+                button.disabled = false;
+                button.textContent = missionId === 5 ? 'ส่งคำตอบสุดท้าย' : 'ส่งคำตอบ';
+                input.focus();
+            }
+        }, 1000);
+    }
+
+    function showFinalResults() {
+        const winnerName = document.getElementById('winner-name').value.trim();
+        if (!winnerName) {
+            alert('กรุณากรอกชื่อของคุณ!');
+            return;
+        }
+
+        const endTime = new Date();
+        const timeDiff = Math.floor((endTime - GAME_STATE.startTime) / 1000);
+        const minutes = Math.floor(timeDiff / 60);
+        const seconds = timeDiff % 60;
+        
+        const timestampOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        
+        document.getElementById('results-name').textContent = winnerName.toUpperCase();
+        document.getElementById('results-start-time').textContent = GAME_STATE.startTime.toLocaleString('th-TH', timestampOptions);
+        document.getElementById('results-end-time').textContent = endTime.toLocaleString('th-TH', timestampOptions);
+        document.getElementById('results-total-time').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} นาที`;
+        
+        transitionToMission('winner-screen');
+        launchConfetti();
+    }
+
+    function showPhishingWarning() {
+        document.getElementById('phishing-modal').classList.add('active');
+    }
+
+    function closePhishingWarning() {
+        document.getElementById('phishing-modal').classList.remove('active');
+    }
+
+    function launchConfetti() {
+        const canvas = document.getElementById('confetti-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        let confetti = [];
+        const confettiCount = 200;
+        const colors = ['#06b6d4', '#3b82f6', '#8b5cf6', '#fde047', '#10b981'];
+
+        for (let i = 0; i < confettiCount; i++) {
+            confetti.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                r: Math.random() * 4 + 2,
+                d: Math.random() * confettiCount,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                tilt: Math.floor(Math.random() * 10) - 10,
+            });
+        }
+
+        let animationFrameId;
+        function drawConfetti() {
+            if(!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < confetti.length; i++) {
+                const c = confetti[i];
+                ctx.beginPath();
+                ctx.lineWidth = c.r;
+                ctx.strokeStyle = c.color;
+                ctx.moveTo(c.x + c.tilt, c.y);
+                ctx.lineTo(c.x, c.y + c.tilt + c.r);
+                ctx.stroke();
+            }
+            updateConfetti();
+        }
+        
+        function updateConfetti() {
+            for (let i = 0; i < confetti.length; i++) {
+                const c = confetti[i];
+                c.y += (Math.cos(c.d) + 3 + c.r / 2) / 1.5;
+                if (c.y > canvas.height) {
+                    confetti[i] = { ...c, x: Math.random() * canvas.width, y: -20 };
+                }
+            }
+           animationFrameId = requestAnimationFrame(drawConfetti);
+        }
+        drawConfetti();
+        setTimeout(() => cancelAnimationFrame(animationFrameId), 6000);
+    }
+</script>
+</body>
+</html>
