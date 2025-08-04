@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ภารกิจตามล่าภัยไซเบอร์ (v3.5 - Case-Sensitive)</title>
+    <title>ภารกิจตามล่าภัยไซเบอร์ (v5.1 - Final)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,15 +47,24 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        .cyber-input {
+        .cyber-choice-button {
             background: rgba(15, 23, 42, 0.8);
             border: 2px solid rgba(6, 182, 212, 0.3);
             transition: all 0.3s;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            font-weight: 600;
+            height: 100%;
         }
-        .cyber-input:focus {
+        .cyber-choice-button:hover:not(:disabled) {
             border-color: var(--primary-cyan);
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
-            outline: none;
+            background: rgba(6, 182, 212, 0.1);
+            transform: translateY(-2px);
+        }
+        .cyber-choice-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
         }
         .cyber-button {
             background: linear-gradient(135deg, var(--primary-cyan), #0891b2);
@@ -65,11 +74,6 @@
         .cyber-button:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(6, 182, 212, 0.6);
-        }
-        .cyber-button:disabled {
-            cursor: not-allowed;
-            background: #334155;
-            box-shadow: none;
         }
         .progress-fill {
             transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -101,13 +105,14 @@
         }
         .shake-error {
             animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+            border-color: #f87171 !important;
         }
         #confetti-canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 10; pointer-events: none;
         }
         .hidden-code {
-            color: #CFD5DB !important; /* Fainter color for more challenge */
+            color: #CFD5DB !important;
             font-size: 1.75rem;
         }
     </style>
@@ -125,12 +130,18 @@
         <div id="mission-1" class="mission-page">
             <div class="mission-card rounded-2xl p-8">
                 <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center text-2xl mr-4">📧</div><div><h2 class="text-3xl font-bold text-yellow-300">ภารกิจที่ 1: อีเมลหลอกลวง</h2><p class="text-gray-400">Phishing Email Analysis</p></div></div>
-                <p class="text-gray-300 mb-8 text-lg">🎯 ในอีเมลฉบับนี้ มีข้อมูลสำคัญเกี่ยวกับบัญชีที่ถูกโจมตีซ่อนอยู่... ข้อมูลนั้นคืออะไร? <br><span class="text-sm text-gray-400">(โปรดทราบว่าคำตอบต้องตรงตามตัวพิมพ์ใหญ่-เล็ก)</span></p>
+                <p class="text-gray-300 mb-8 text-lg">🎯 ในอีเมลฉบับนี้ ชื่อบัญชีของผู้ที่ถูกโจมตีคืออะไร?</p>
                 <div class="bg-white/95 rounded-xl p-6 mb-8 text-gray-800 shadow-lg">
                     <p><span class="font-bold">From:</span> IT Support <span class="font-bold text-red-600">&lt;support@company-th.co&gt;</span></p><p><span class="font-bold">Subject:</span> <span class="font-bold text-red-600 animate-pulse">⚠️ ACTION REQUIRED</span></p><hr class="my-2"><p class="my-3">เรียน พนักงาน, จากการตรวจสอบความปลอดภัยล่าสุด เราพบกิจกรรมที่น่าสงสัยในบัญชีของคุณ <strong class="font-semibold">Somchai.M</strong> กรุณายืนยันตัวตนโดยด่วนผ่านลิงก์ด้านล่าง</p>
                     <a href="#" onclick="event.preventDefault(); showPhishingWarning();" class="text-blue-600 underline font-medium">hxxp://company-th.co-login.net/update</a>
                 </div>
-                <div class="space-y-4"><input type="text" id="answer-1" class="w-full p-4 cyber-input rounded-xl placeholder-gray-400" placeholder="🔑 กรอกข้อมูลสำคัญที่พบ"><button onclick="submitAnswer(1)" class="w-full cyber-button font-bold py-4 rounded-xl text-lg">ส่งคำตอบ</button><p id="error-1" class="text-red-400 text-center font-medium h-6"></p></div>
+                <div id="choices-1" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="submitAnswer(1, 'IT Support')" class="cyber-choice-button">IT Support</button>
+                    <button onclick="submitAnswer(1, 'Somchai.M')" class="cyber-choice-button">Somchai.M</button>
+                    <button onclick="submitAnswer(1, 'support@company-th.co')" class="cyber-choice-button">support@company-th.co</button>
+                    <button onclick="submitAnswer(1, 'ACTION REQUIRED')" class="cyber-choice-button">ACTION REQUIRED</button>
+                </div>
+                <p id="error-1" class="text-red-400 text-center font-medium h-6 mt-4"></p>
             </div>
         </div>
 
@@ -138,13 +149,19 @@
         <div id="mission-2" class="mission-page">
              <div class="mission-card rounded-2xl p-8">
                 <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-xl flex items-center justify-center text-2xl mr-4">👥</div><div><h2 class="text-3xl font-bold text-blue-300">ภารกิจที่ 2: วิศวกรรมสังคม</h2><p class="text-gray-400">Social Engineering</p></div></div>
-                <p class="text-gray-300 mb-8 text-lg">🔍 แฮกเกอร์มักใช้ข้อมูลส่วนตัวจากโซเชียลมีเดีย... อะไรคือคำใบ้สำคัญที่พบในโพสต์นี้?</p>
+                <p class="text-gray-300 mb-8 text-lg">🔍 จากโพสต์ในโซเชียลมีเดีย สัตว์เลี้ยงของเป้าหมายชื่ออะไร?</p>
                 <div class="bg-white rounded-2xl p-6 max-w-md mx-auto text-black mb-8 shadow-xl">
                     <div class="flex items-center mb-4"><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=50&h=50&q=80" class="rounded-full w-12 h-12 mr-3 border-2" alt="Profile"><p class="font-bold">Somchai M.</p></div>
                     <p class="mb-4 text-gray-800">วันนี้พานายท่านไปเดินเล่น อากาศดีสุดๆ! 🐕‍🦺💨</p><img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80" class="rounded-xl w-full mb-4" alt="Dog">
                     <p class="text-sm"><strong class="text-gray-800">Jane Doe:</strong> น่ารักจังเลยเจ้า <strong class="font-semibold">Lucky</strong>! 🥰</p>
                 </div>
-                <div class="space-y-4"><input type="text" id="answer-2" class="w-full p-4 cyber-input rounded-xl placeholder-gray-400" placeholder="🐕 กรอกคำใบ้ที่พบ"><button onclick="submitAnswer(2)" class="w-full cyber-button font-bold py-4 rounded-xl text-lg">ส่งคำตอบ</button><p id="error-2" class="text-red-400 text-center font-medium h-6"></p></div>
+                <div id="choices-2" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="submitAnswer(2, 'Somchai')" class="cyber-choice-button">Somchai</button>
+                    <button onclick="submitAnswer(2, 'Jane Doe')" class="cyber-choice-button">Jane Doe</button>
+                    <button onclick="submitAnswer(2, 'Lucky')" class="cyber-choice-button">Lucky</button>
+                    <button onclick="submitAnswer(2, 'นายท่าน')" class="cyber-choice-button">นายท่าน</button>
+                </div>
+                <p id="error-2" class="text-red-400 text-center font-medium h-6 mt-4"></p>
             </div>
         </div>
 
@@ -154,7 +171,13 @@
                 <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-green-400 to-cyan-500 rounded-xl flex items-center justify-center text-2xl mr-4">🖼️</div><div><h2 class="text-3xl font-bold text-green-300">ภารกิจที่ 3: ข้อความที่ซ่อนอยู่</h2><p class="text-gray-400">Steganography</p></div></div>
                 <p class="text-gray-300 mb-8 text-lg">🔍 ค้นหาโค้ดลับที่ซ่อนอยู่ในภาพนี้</p>
                 <div class="relative mb-8 select-none"><div class="bg-gray-200 w-full h-64 rounded-2xl flex items-center justify-center relative shadow-lg"><p class="text-8xl font-bold text-gray-400">CITY</p><p class="absolute bottom-4 right-6 mono font-bold hidden-code">DELTA7</p></div></div>
-                <div class="space-y-4"><input type="text" id="answer-3" class="w-full p-4 cyber-input rounded-xl placeholder-gray-400" placeholder="🔐 กรอกโค้ดลับ"><button onclick="submitAnswer(3)" class="w-full cyber-button font-bold py-4 rounded-xl text-lg">ส่งคำตอบ</button><p id="error-3" class="text-red-400 text-center font-medium h-6"></p></div>
+                <div id="choices-3" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="submitAnswer(3, 'CITY')" class="cyber-choice-button">CITY</button>
+                    <button onclick="submitAnswer(3, '7')" class="cyber-choice-button">7</button>
+                    <button onclick="submitAnswer(3, 'DELTA7')" class="cyber-choice-button">DELTA7</button>
+                    <button onclick="submitAnswer(3, 'CODE')" class="cyber-choice-button">CODE</button>
+                </div>
+                <p id="error-3" class="text-red-400 text-center font-medium h-6 mt-4"></p>
             </div>
         </div>
 
@@ -164,7 +187,13 @@
                 <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl flex items-center justify-center text-2xl mr-4">🚨</div><div><h2 class="text-3xl font-bold text-red-300">ภารกิจที่ 4: มัลแวร์เรียกค่าไถ่</h2><p class="text-gray-400">Ransomware</p></div></div>
                 <p class="text-gray-300 mb-8 text-lg">⚠️ คอมพิวเตอร์ถูกเข้ารหัส! ชื่อของมัลแวร์ที่ใช้โจมตีคืออะไร?</p>
                 <div class="bg-red-900 border-2 border-red-500 text-white p-8 rounded-2xl mono mb-8"><h3 class="text-3xl font-bold text-center text-yellow-300 animate-pulse mb-6">YOUR FILES ARE ENCRYPTED</h3><p class="text-center">All data has been locked by the <strong class="font-semibold">CryLocker</strong> algorithm.</p></div>
-                <div class="space-y-4"><input type="text" id="answer-4" class="w-full p-4 cyber-input rounded-xl placeholder-gray-400" placeholder="🦠 กรอกชื่อ Ransomware"><button onclick="submitAnswer(4)" class="w-full cyber-button font-bold py-4 rounded-xl text-lg">ส่งคำตอบ</button><p id="error-4" class="text-red-400 text-center font-medium h-6"></p></div>
+                <div id="choices-4" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="submitAnswer(4, 'ENCRYPTED')" class="cyber-choice-button">ENCRYPTED</button>
+                    <button onclick="submitAnswer(4, 'Algorithm')" class="cyber-choice-button">Algorithm</button>
+                    <button onclick="submitAnswer(4, 'YOUR FILES')" class="cyber-choice-button">YOUR FILES</button>
+                    <button onclick="submitAnswer(4, 'CryLocker')" class="cyber-choice-button">CryLocker</button>
+                </div>
+                <p id="error-4" class="text-red-400 text-center font-medium h-6 mt-4"></p>
             </div>
         </div>
 
@@ -172,7 +201,7 @@
         <div id="mission-5" class="mission-page">
             <div class="mission-card rounded-2xl p-8">
                 <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center text-2xl mr-4">🔑</div><div><h2 class="text-3xl font-bold text-purple-300">ภารกิจที่ 5: รหัสผ่านที่รั่วไหล</h2><p class="text-gray-400">Password Leak</p></div></div>
-                <p class="text-gray-300 mb-8 text-lg">💥 จากข้อมูลที่รั่วไหล รหัสผ่านที่อ่อนแอที่สุดมีความยาวเท่าไหร่? (ตอบเป็นตัวเลข)</p>
+                <p class="text-gray-300 mb-8 text-lg">💥 จากข้อมูลที่รั่วไหล รหัสผ่านที่อ่อนแอที่สุดมีความยาวกี่ตัวอักษร?</p>
                 <div class="bg-slate-800/50 rounded-lg overflow-hidden mb-8"><table class="w-full text-left text-sm">
                     <thead class="bg-slate-900/80"><tr><th class="p-3">Username</th><th class="p-3">Password</th><th class="p-3">Strength</th></tr></thead>
                     <tbody>
@@ -181,7 +210,121 @@
                         <tr><td class="p-3">suda.p</td><td class="p-3 mono text-red-400 bg-red-900/30">password</td><td class="p-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded-full animate-pulse">Critical</span></td></tr>
                     </tbody>
                 </table></div>
-                <div class="space-y-4"><input type="number" id="answer-5" class="w-full p-4 cyber-input rounded-xl placeholder-gray-400" placeholder="🔢 กรอกจำนวนตัวอักษร"><button onclick="submitAnswer(5)" class="w-full cyber-button font-bold py-4 rounded-xl text-lg">ส่งคำตอบสุดท้าย</button><p id="error-5" class="text-red-400 text-center font-medium h-6"></p></div>
+                <div id="choices-5" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="submitAnswer(5, '13')" class="cyber-choice-button">13</button>
+                    <button onclick="submitAnswer(5, '14')" class="cyber-choice-button">14</button>
+                    <button onclick="submitAnswer(5, '8')" class="cyber-choice-button">8</button>
+                    <button onclick="submitAnswer(5, '10')" class="cyber-choice-button">10</button>
+                </div>
+                <p id="error-5" class="text-red-400 text-center font-medium h-6 mt-4"></p>
+            </div>
+        </div>
+
+        <!-- Mission 6: Wi-Fi Security -->
+        <div id="mission-6" class="mission-page">
+            <div class="mission-card rounded-2xl p-8">
+                <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-sky-400 to-blue-500 rounded-xl flex items-center justify-center text-2xl mr-4">📶</div><div><h2 class="text-3xl font-bold text-sky-300">ภารกิจที่ 6: Wi-Fi สาธารณะ</h2><p class="text-gray-400">Insecure Wi-Fi</p></div></div>
+                <p class="text-gray-300 mb-8 text-lg">📡 เครือข่าย Wi-Fi ใดมีความเสี่ยงในการใช้งานมากที่สุด?</p>
+                <div class="bg-slate-800/50 rounded-lg p-6 space-y-3 mb-8">
+                    <div class="flex justify-between items-center"><span class="mono">HOME-WIFI-5G</span><span class="text-green-400">🔒 Secured</span></div>
+                    <div class="flex justify-between items-center"><span class="mono text-yellow-400">CoffeeShop_Free_WiFi</span><span class="text-yellow-400">🔓 Open</span></div>
+                    <div class="flex justify-between items-center"><span class="mono">MyPhone_Hotspot</span><span class="text-green-400">🔒 Secured</span></div>
+                </div>
+                <div id="choices-6" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="submitAnswer(6, 'HOME-WIFI-5G')" class="cyber-choice-button">HOME-WIFI-5G</button>
+                    <button onclick="submitAnswer(6, 'CoffeeShop_Free_WiFi')" class="cyber-choice-button">CoffeeShop_Free_WiFi</button>
+                    <button onclick="submitAnswer(6, 'MyPhone_Hotspot')" class="cyber-choice-button">MyPhone_Hotspot</button>
+                    <button onclick="submitAnswer(6, 'ทุกเครือข่ายปลอดภัย')" class="cyber-choice-button">ทุกเครือข่ายปลอดภัย</button>
+                </div>
+                <p id="error-6" class="text-red-400 text-center font-medium h-6 mt-4"></p>
+            </div>
+        </div>
+
+        <!-- Mission 7: Suspicious USB -->
+        <div id="mission-7" class="mission-page">
+            <div class="mission-card rounded-2xl p-8">
+                <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-rose-400 to-red-500 rounded-xl flex items-center justify-center text-2xl mr-4">💾</div><div><h2 class="text-3xl font-bold text-rose-300">ภารกิจที่ 7: USB ปริศนา</h2><p class="text-gray-400">Malicious USB</p></div></div>
+                <p class="text-gray-300 mb-8 text-lg">🤔 คุณเจอ USB ตกอยู่ในลานจอดรถ การกระทำใดปลอดภัยที่สุด?</p>
+                <div class="text-center mb-8">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7v8a2 2 0 002 2h4a2 2 0 002-2V7M2 7h14a2 2 0 012 2v10a2 2 0 01-2 2H2a2 2 0 01-2-2V9a2 2 0 012-2z" /></svg>
+                </div>
+                <div id="choices-7" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="submitAnswer(7, 'เสียบเข้าคอมเพื่อดูว่าของใคร')" class="cyber-choice-button">เสียบเข้าคอมเพื่อดูว่าของใคร</button>
+                    <button onclick="submitAnswer(7, 'นำไปให้ฝ่าย IT ตรวจสอบ')" class="cyber-choice-button">นำไปให้ฝ่าย IT ตรวจสอบ</button>
+                    <button onclick="submitAnswer(7, 'ลองใช้กับคอมเครื่องเก่า')" class="cyber-choice-button">ลองใช้กับคอมเครื่องเก่า</button>
+                    <button onclick="submitAnswer(7, 'เก็บไว้ใช้เอง')" class="cyber-choice-button">เก็บไว้ใช้เอง</button>
+                </div>
+                <p id="error-7" class="text-red-400 text-center font-medium h-6 mt-4"></p>
+            </div>
+        </div>
+
+        <!-- Mission 8: Fake Software Update -->
+        <div id="mission-8" class="mission-page">
+            <div class="mission-card rounded-2xl p-8">
+                <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-amber-400 to-orange-500 rounded-xl flex items-center justify-center text-2xl mr-4">🔄</div><div><h2 class="text-3xl font-bold text-amber-300">ภารกิจที่ 8: อัปเดตซอฟต์แวร์ปลอม</h2><p class="text-gray-400">Fake Update Scam</p></div></div>
+                <p class="text-gray-300 mb-8 text-lg">🚨 มีหน้าต่างแจ้งเตือนให้อัปเดตเบราว์เซอร์เด้งขึ้นมา คุณควรทำอย่างไร?</p>
+                <div class="border-2 border-slate-600 rounded-lg p-4 mb-8">
+                    <div class="flex items-center mb-3"><div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div><div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div><div class="w-3 h-3 bg-green-500 rounded-full"></div></div>
+                    <div class="bg-slate-800 rounded-md p-6 text-center">
+                        <p class="text-2xl font-bold text-yellow-400 mb-2">คำเตือน! เบราว์เซอร์ของคุณล้าสมัย</p>
+                        <p class="text-slate-300 mb-4">เพื่อความปลอดภัยสูงสุด กรุณาอัปเดตทันที</p>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">อัปเดตเดี๋ยวนี้ (update-browser.xyz)</button>
+                    </div>
+                </div>
+                <div id="choices-8" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="submitAnswer(8, 'คลิกอัปเดตจากหน้าต่างที่เด้งขึ้นมา')" class="cyber-choice-button">คลิกอัปเดตจากหน้าต่างที่เด้งขึ้นมา</button>
+                    <button onclick="submitAnswer(8, 'ปิดแล้วไปอัปเดตจากเว็บไซต์ทางการ')" class="cyber-choice-button">ปิดแล้วไปอัปเดตจากเว็บไซต์ทางการ</button>
+                    <button onclick="submitAnswer(8, 'ดาวน์โหลดไฟล์เก็บไว้ก่อน')" class="cyber-choice-button">ดาวน์โหลดไฟล์เก็บไว้ก่อน</button>
+                    <button onclick="submitAnswer(8, 'รีสตาร์ทคอมพิวเตอร์')" class="cyber-choice-button">รีสตาร์ทคอมพิวเตอร์</button>
+                </div>
+                <p id="error-8" class="text-red-400 text-center font-medium h-6 mt-4"></p>
+            </div>
+        </div>
+
+        <!-- Mission 9: Two-Factor Authentication (2FA) -->
+        <div id="mission-9" class="mission-page">
+            <div class="mission-card rounded-2xl p-8">
+                <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-teal-400 to-emerald-500 rounded-xl flex items-center justify-center text-2xl mr-4">📱</div><div><h2 class="text-3xl font-bold text-teal-300">ภารกิจที่ 9: การยืนยันตัวตนสองชั้น</h2><p class="text-gray-400">Two-Factor Authentication</p></div></div>
+                <p class="text-gray-300 mb-8 text-lg">🔐 หลังจากกรอกรหัสผ่าน ระบบได้ส่งรหัส 6 หลักไปที่มือถือของคุณเพื่อยืนยันอีกครั้ง กระบวนการนี้เรียกว่าอะไร?</p>
+                <div class="bg-slate-800/50 rounded-lg p-6 text-center mb-8">
+                    <p class="text-slate-300">กรุณากรอกรหัส 6 หลักที่ส่งไปยังหมายเลข <span class="mono">xxx-xxx-1234</span></p>
+                    <div class="flex justify-center gap-2 mt-4">
+                        <div class="w-12 h-14 bg-slate-700 rounded-md"></div>
+                        <div class="w-12 h-14 bg-slate-700 rounded-md"></div>
+                        <div class="w-12 h-14 bg-slate-700 rounded-md"></div>
+                        <div class="w-12 h-14 bg-slate-700 rounded-md"></div>
+                        <div class="w-12 h-14 bg-slate-700 rounded-md"></div>
+                        <div class="w-12 h-14 bg-slate-700 rounded-md"></div>
+                    </div>
+                </div>
+                <div id="choices-9" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="submitAnswer(9, 'Encryption')" class="cyber-choice-button">Encryption</button>
+                    <button onclick="submitAnswer(9, 'Firewall')" class="cyber-choice-button">Firewall</button>
+                    <button onclick="submitAnswer(9, 'Two-Factor Authentication (2FA)')" class="cyber-choice-button">Two-Factor Authentication (2FA)</button>
+                    <button onclick="submitAnswer(9, 'Virus Scan')" class="cyber-choice-button">Virus Scan</button>
+                </div>
+                <p id="error-9" class="text-red-400 text-center font-medium h-6 mt-4"></p>
+            </div>
+        </div>
+
+        <!-- Mission 10: Smishing (SMS Phishing) -->
+        <div id="mission-10" class="mission-page">
+            <div class="mission-card rounded-2xl p-8">
+                <div class="flex items-center mb-6"><div class="w-12 h-12 bg-gradient-to-r from-fuchsia-500 to-purple-600 rounded-xl flex items-center justify-center text-2xl mr-4">💬</div><div><h2 class="text-3xl font-bold text-fuchsia-300">ภารกิจที่ 10: ข้อความหลอกลวง</h2><p class="text-gray-400">Smishing (SMS Phishing)</p></div></div>
+                <p class="text-gray-300 mb-8 text-lg">📱 คุณได้รับ SMS แจ้งว่ามีพัสดุส่งไม่สำเร็จ ส่วนใดของข้อความที่น่าสงสัยที่สุด?</p>
+                <div class="bg-slate-800/50 rounded-xl p-4 max-w-sm mx-auto mb-8">
+                    <div class="bg-blue-600 rounded-lg p-3 text-white">
+                        <p class="font-bold">[บริการส่งพัสดุ]</p>
+                        <p>พัสดุ #TH8812B ของท่านจัดส่งไม่สำเร็จเนื่องจากที่อยู่ไม่ถูกต้อง กรุณาอัปเดตข้อมูลที่: short.ly/th-post-update</p>
+                    </div>
+                </div>
+                <div id="choices-10" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="submitAnswer(10, 'หมายเลขพัสดุ')" class="cyber-choice-button">หมายเลขพัสดุ</button>
+                    <button onclick="submitAnswer(10, 'ที่อยู่ไม่ถูกต้อง')" class="cyber-choice-button">ที่อยู่ไม่ถูกต้อง</button>
+                    <button onclick="submitAnswer(10, 'ลิงก์ย่อ (short.ly)')" class="cyber-choice-button">ลิงก์ย่อ (short.ly)</button>
+                    <button onclick="submitAnswer(10, 'ชื่อผู้ส่ง')" class="cyber-choice-button">ชื่อผู้ส่ง</button>
+                </div>
+                <p id="error-10" class="text-red-400 text-center font-medium h-6 mt-4"></p>
             </div>
         </div>
 
@@ -192,7 +335,7 @@
                 <h2 class="text-4xl font-bold text-green-400 mb-4">ภารกิจทั้งหมดสำเร็จ!</h2>
                 <p class="text-gray-300 text-xl mb-8">คุณคือสุดยอดนักล่าภัยไซเบอร์! กรอกชื่อของคุณเพื่อบันทึกสถิติ</p>
                 <div class="space-y-4">
-                    <input type="text" id="winner-name" class="w-full p-4 cyber-input rounded-xl text-center text-lg" placeholder="👤 กรอกชื่อของคุณที่นี่">
+                    <input type="text" id="winner-name" class="w-full p-4 bg-slate-800 border-2 border-slate-600 rounded-xl text-center text-lg placeholder-gray-400 focus:border-cyan-400 outline-none" placeholder="👤 กรอกชื่อของคุณที่นี่">
                     <button onclick="showFinalResults()" class="w-full cyber-button bg-gradient-to-r from-green-500 to-emerald-600 font-bold py-4 rounded-xl text-lg">🏆 ดูผลลัพธ์และรับรางวัล! 🏆</button>
                 </div>
             </div>
@@ -231,7 +374,7 @@
     <div id="phishing-modal" class="phishing-warning-modal">
         <div class="bg-white text-black rounded-lg p-8 max-w-md text-center shadow-2xl border-4 border-yellow-400">
             <h2 class="text-3xl font-bold text-red-600 mb-4">⚠️ คำเตือน!</h2>
-            <p class="text-lg mb-6">ลิงก์นี้เป็นเว็บไซต์อันตรายที่สร้างขึ้นเพื่อขโมยข้อมูล (Phishing) <br><strong>อย่ากรอกข้อมูลใดๆ เด็ดขาด!</strong></p>
+            <p class="text-lg mb-6">ลิงก์นี้เป็นเว็บไซต์อันตรายที่สร้างขึ้นเพื่อขโมยข้อมูล (Phishing) <br><strong>อย่าคลิกลิงก์ที่ไม่น่าเชื่อถือ!</strong></p>
             <button onclick="closePhishingWarning()" class="bg-yellow-400 text-black font-bold py-2 px-6 rounded-lg hover:bg-yellow-500">ฉันเข้าใจแล้ว</button>
         </div>
     </div>
@@ -239,14 +382,19 @@
 <script>
     const GAME_STATE = {
         currentMission: 1,
-        totalMissions: 5,
+        totalMissions: 10,
         startTime: null,
         answers: {
             1: "Somchai.M",
             2: "Lucky",
             3: "DELTA7",
             4: "CryLocker",
-            5: "8"
+            5: "8",
+            6: "CoffeeShop_Free_WiFi",
+            7: "นำไปให้ฝ่าย IT ตรวจสอบ",
+            8: "ปิดแล้วไปอัปเดตจากเว็บไซต์ทางการ",
+            9: "Two-Factor Authentication (2FA)",
+            10: "ลิงก์ย่อ (short.ly)"
         }
     };
 
@@ -267,12 +415,9 @@
             currentActive.classList.remove('active');
         }
         
-        let nextMissionElement;
+        let nextMissionElement = document.getElementById(pageId);
         if (typeof pageId === 'number') {
             nextMissionElement = document.getElementById(`mission-${pageId}`);
-        } else {
-            // Handle string IDs like 'mission-end', 'winner-screen'
-            nextMissionElement = document.getElementById(pageId);
         }
 
         if (nextMissionElement) {
@@ -280,25 +425,23 @@
         }
     }
 
-    function submitAnswer(missionId) {
-        const input = document.getElementById(`answer-${missionId}`);
+    function submitAnswer(missionId, userAnswer) {
+        const choicesContainer = document.getElementById(`choices-${missionId}`);
         const errorEl = document.getElementById(`error-${missionId}`);
-        const button = input.nextElementSibling;
-
-        const userAnswer = input.value.trim(); // Don't convert to lower case
+        const buttons = choicesContainer.querySelectorAll('button');
         const correctAnswer = GAME_STATE.answers[missionId];
 
         errorEl.textContent = '';
-        input.classList.remove('shake-error');
-        input.disabled = true;
-        button.disabled = true;
-        button.textContent = 'กำลังตรวจสอบ...';
+        buttons.forEach(b => b.disabled = true);
+
+        const selectedButton = Array.from(buttons).find(b => b.textContent === userAnswer);
 
         setTimeout(() => {
-            // Check for case-sensitive match
             if (userAnswer === correctAnswer) {
-                button.textContent = 'ถูกต้อง!';
-                button.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                if (selectedButton) {
+                    selectedButton.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    selectedButton.textContent = 'ถูกต้อง!';
+                }
                 GAME_STATE.currentMission++;
                 updateProgressBar();
                 setTimeout(() => {
@@ -309,14 +452,19 @@
                     }
                 }, 1500);
             } else {
-                errorEl.textContent = 'คำตอบไม่ถูกต้อง (โปรดตรวจสอบตัวพิมพ์ใหญ่-เล็ก)';
-                input.classList.add('shake-error');
-                input.disabled = false;
-                button.disabled = false;
-                button.textContent = missionId === 5 ? 'ส่งคำตอบสุดท้าย' : 'ส่งคำตอบ';
-                input.focus();
+                if (selectedButton) {
+                    selectedButton.classList.add('shake-error');
+                }
+                errorEl.textContent = 'คำตอบไม่ถูกต้อง ลองอีกครั้ง';
+                setTimeout(() => {
+                    buttons.forEach(b => b.disabled = false);
+                    if (selectedButton) {
+                        selectedButton.classList.remove('shake-error');
+                    }
+                    errorEl.textContent = '';
+                }, 1200);
             }
-        }, 1000);
+        }, 500);
     }
 
     function showFinalResults() {
