@@ -214,10 +214,6 @@
 
 <div align="center">
 
-**📧 ติดต่อได้ที่:** [Your Email]  
-**🐙 GitHub:** [Your GitHub Profile]  
-**💼 LinkedIn:** [Your LinkedIn Profile]
-
 *สร้างด้วย ❤️ และจิตวิญญาณ "Try Harder"*
 
 </div>
