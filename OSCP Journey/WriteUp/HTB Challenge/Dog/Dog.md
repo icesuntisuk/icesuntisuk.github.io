@@ -36,8 +36,8 @@ Nmap done: 1 IP address (1 host up) scanned in 9.69 seconds
 
 หา Dirb จะพบกับ .git 
 
-![[Challenge/HTB Challenge/Dog/IMG/002.png]]
-![[Challenge/HTB Challenge/Dog/IMG/001.png]]
+![](./IMG/002.png)
+![](./IMG/001.png)
 
 ## Git Dump 
 
@@ -55,7 +55,7 @@ files/config_83dddd18e1ec67fd8ff5bba2453c7fb3/active/update.settings.json:      
 ```
 ตรวจสอบไฟล์ settings.php  จะพบว่ามีรหัสผ่านอยู่ 
 
-![[Challenge/HTB Challenge/Dog/IMG/003.png]]
+![](./IMG/003.png)
 
 ## Credential FOUND 
 ```credential
@@ -64,17 +64,17 @@ tiffany@dog.htb:BackDropJ2024DS2024
 
 ซึ่งหากเรานำข้อมูลดังกล่าวไป Login หน้าเว็บจะสามารถเข้าถึงได้
 
-![[Challenge/HTB Challenge/Dog/IMG/005.png]]
+![](./IMG/005.png)
 
-![[Challenge/HTB Challenge/Dog/IMG/004.png]]
+![](./IMG/004.png)
 
 ในเว็บเป้าหมายมีเมนูให้เราสามารถ upload modules ได้ โดยผมจะทำการดาวโหลด module มาจากเว็บ  https://backdropcms.org/modules 
-![[Challenge/HTB Challenge/Dog/IMG/007.png]]
+![](./IMG/007.png)
 
 จากนั้นทำการแก้ไข เพิ่มส่วนของ web shell ลงไป 
-![[Challenge/HTB Challenge/Dog/IMG/008.png]]
+![](./IMG/008.png)
 
-![[Challenge/HTB Challenge/Dog/IMG/006.png]]
+![](./IMG/006.png)
 
 จากนั้นจับทุกอย่างบีบอัดไฟล์เป็น .tar.gz อีกครั้ง 
 ```bash

