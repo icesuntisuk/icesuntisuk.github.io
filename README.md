@@ -75,7 +75,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 ### **Certification**
 
-* OffSec Certified Professional (OSCP and OSCP+)
+* OffSec Certified Professional (OSCP and OSCP+) [My OSCP Journey](./OSCP%20Journey/IceSuntisukJourney.md)
 * CompTIA Security Infrastructure Expert (CSIE)
 * CompTIA Security Analytics Expert (CSAE)
 * CompTIA Security Analytics Professional (CSAP)
