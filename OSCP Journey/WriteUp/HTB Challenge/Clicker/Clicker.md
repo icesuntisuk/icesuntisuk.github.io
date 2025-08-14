@@ -34,8 +34,10 @@ PORT      STATE SERVICE  VERSION
 50517/tcp open  status   1 (RPC #100024)
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 14.49 seconds
+
+```
 
 
 ## HTTP - TCP/80
@@ -85,8 +87,7 @@ session_start();
 include_once("db_utils.php");
 
 if ($_SESSION["ROLE"] != "Admin") {
-  header('Location: /index.php
-');
+  header('Location: /index.php');
   die;
 }
 ?>
@@ -118,7 +119,7 @@ $pdo = new PDO("mysql:dbname=$db_name;host=$db_server", $db_username, $db_passwo
 session_start();
 include_once("db_utils.php");
 
-if (isset($_SESSION["PLAYER"]) && $_SESSION["PLAYER"] != "") {
+if (isset($_SESSION['PLAYER']) && $_SESSION['PLAYER'] != "") {
 	$args = [];
 	foreach($_GET as $key=>$value) {
 		if (strtolower($key) === 'role') {
@@ -128,7 +129,7 @@ if (isset($_SESSION["PLAYER"]) && $_SESSION["PLAYER"] != "") {
 		}
 		$args[$key] = $value;
 	}
-	save_profile($_SESSION["PLAYER"], $_GET);
+	save_profile($_SESSION['PLAYER'], $_GET);
 	// update session info
 	$_SESSION['CLICKS'] = $_GET['clicks'];
 	$_SESSION['LEVEL'] = $_GET['level'];
@@ -365,8 +366,7 @@ switch(iVar1) {
 
 ## SSH to jack 
 
-และเนื่องจากว่าในโปรแกรมมีการเรียกใช้จาก path :  builtin_strncpy(local_98,"/home/jack/queries/",0x14);
- ซึ่งเราสามารถหาข้อมูลของ id_rsa ได้ 
+และเนื่องจากว่าในโปรแกรมมีการเรียกใช้จาก path :  builtin_strncpy(local_98,"/home/jack/queries/",0x14); ซึ่งเราสามารถหาข้อมูลของ id_rsa ได้ 
 
 ![](./IMG/020.png)
 
@@ -392,13 +392,12 @@ unset PERLLIB;
 
 data=$(/usr/bin/curl -s http://clicker.htb/diagnostic.php?token=secret_diagnostic_token);
 /usr/bin/xml_pp <<< $data;
-if [[ $NOSAVE == "true" ]]; then
+if [[ $NOSAVE == "true" ); then
     exit;
 else
     timestamp=$(/usr/bin/date +%s)
     /usr/bin/echo $data > /root/diagnostic_files/diagnostic_${timestamp}.xml
 fi
-
 
 ```
 
@@ -498,11 +497,10 @@ root
 ice-5.1# cd /root
 ice-5.1# ls 
 diagnostic_files  restore  root.txt
-nice-5.1# cat root.txt
+ice-5.1# cat root.txt
 54b9eb675fb5c1b780da2c3c71c007f5
-nice-5.1# 
+ice-5.1# 
 ```
 
 
 # PWNED
-```

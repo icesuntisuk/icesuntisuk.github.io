@@ -28,7 +28,7 @@ Nmap done: 1 IP address (1 host up) scanned in 7.99 seconds
 
 ## TCP 80 
 
-![[Challenge/HTB Challenge/UpDown/IMG/001.png]]
+![](./IMG/001.png)
 
 ทดสอบโดยนการสร้างไฟล์และเปิด http ให้ดาวโหลดได้ 
 
@@ -37,7 +37,7 @@ echo "icesuntisuk" > ice
 updog -p 80 
 ```
 
-![[Challenge/HTB Challenge/UpDown/IMG/002.png]]
+![](./IMG/002.png)
 
 จากภาพเราจะพบว่ามี connection ไปเครื่องผู้โจมตีได้ อีกทั้งยังสามารถส่งข้อความดังกล่าวไปยังเครื่องเป้าหมายได้เช่นกัน แต่เราก็ยังไม่ได้ข้อมูลที่มีความสำคัญมากนัก 
 
@@ -47,7 +47,7 @@ updog -p 80
 feroxbuster -u http://siteisup.htb -x php
 ```
 
-![[Challenge/HTB Challenge/UpDown/IMG/003.png]]
+![](./IMG/003.png)
 
 จากการทำ Directory Brute force จะพบว่ามี /dev ซึ่งพอเปิดเข้าไปก็ไม่มีอะไร 
 
@@ -61,7 +61,7 @@ wfuzz -u http://siteisup.htb -H "Host: FUZZ.siteisup.htb" -w /usr/share/seclists
 wfuzz -u http://siteisup.htb -H "Host: FUZZ.siteisup.htb" -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt --hh 1131 
 ```
 
-![[Challenge/HTB Challenge/UpDown/IMG/004.png]]
+![](./IMG/004.png)
 ก่อนอื่น wfuzz โดยไม่มีตัวกรองใดๆ และเราจะพบว่า reponse มีขนาด 1131 ตัวอักษรจำนวนมาก จึงดำเนินการ ctrl-c เพื่อล้างสิ่งที่ไม่สนใจ และเพิ่ม --hh 1131 และเรียกใช้อีกครั้งจะพบว่ามี dev อยู่และเราสามารถเพิ่ม dev.siteisup.htb เข้าไปในไฟล์ /etc/hosts 
 
 # Get Source Code

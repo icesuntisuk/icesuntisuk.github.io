@@ -90,7 +90,7 @@ Host script results:
 |_    Message signing enabled and required
 |_clock-skew: mean: 6h38m36s, deviation: 0s, median: 6h38m35s
 
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 98.49 seconds
 
 ```
@@ -104,7 +104,7 @@ Nmap done: 1 IP address (1 host up) scanned in 98.49 seconds
 ทำการตรวจสอบ SMB จะพบว่ามีข้อมูลไฟล์แชร์อยู่ ซึ่งจะเห็นได้ว่าไม่มีไฟล์หรือโฟลเดอร์ที่ไปต่อได้
 ```bash
 ┌──(kali㉿kali)-[~/Desktop]
-└─$ smbclient -L \\10.10.11.236\ -N
+└─$ smbclient -L \\\\10.10.11.236\\ -N
 
         Sharename       Type      Comment
         ---------       ----      -------

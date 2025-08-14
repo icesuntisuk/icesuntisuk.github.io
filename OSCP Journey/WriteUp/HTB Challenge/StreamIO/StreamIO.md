@@ -62,17 +62,17 @@ Nmap done: 1 IP address (1 host up) scanned in 98.48 seconds
 
 ## TCP 80 
 
-![[Challenge/HTB Challenge/StreamIO/IMG/001.png]]
+![](./IMG/001.png)
 
 # TCP 443
-![[Challenge/HTB Challenge/StreamIO/IMG/003.png]]
+![](./IMG/003.png)
 
 ### Sub Domain FUZZ
 ```bash
 wfuzz -u https://streamio.htb -H "Host: FUZZ.streamio.htb" -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt --hh 315
 ```
 
-![[Challenge/HTB Challenge/StreamIO/IMG/002.png]]
+![](./IMG/002.png)
 
 จะพบว่ามี sub domain https://watch.streamio.htb  
 

