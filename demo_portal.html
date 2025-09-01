@@ -92,7 +92,7 @@
                             <span id="weatherDescSmall">แจ่มใส</span>
                         </div>
                         <div class="text-xs opacity-80 mt-1">
-                            ปากเกร็ด นนทบุรี
+                            กรุงเทพมหานคร
                         </div>
                     </div>
                 </div>
@@ -559,36 +559,89 @@
             }
         }
 
-        // Weather data simulation
-        const weatherConditions = [
-            { icon: '☀️', temp: '32°C', desc: 'แจ่มใส', humidity: '65%', visibility: '10 กม.' },
-            { icon: '⛅', temp: '28°C', desc: 'มีเมฆบางส่วน', humidity: '70%', visibility: '8 กม.' },
-            { icon: '🌧️', temp: '25°C', desc: 'ฝนตก', humidity: '85%', visibility: '5 กม.' },
-            { icon: '⛈️', temp: '24°C', desc: 'พายุฝนฟ้าคะนง', humidity: '90%', visibility: '3 กม.' },
-            { icon: '🌤️', temp: '30°C', desc: 'แสงแดดอ่อน', humidity: '60%', visibility: '12 กม.' }
-        ];
-
-        // Update weather function
-        function updateWeather() {
-            const randomWeather = weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
-            
-            document.getElementById('weatherIconSmall').textContent = randomWeather.icon;
-            document.getElementById('temperatureSmall').textContent = randomWeather.temp;
-            document.getElementById('weatherDescSmall').textContent = randomWeather.desc;
+        // Real weather data from free API (wttr.in)
+        async function fetchWeatherData() {
+            try {
+                // Using wttr.in - free weather API, no key required
+                const response = await fetch('https://wttr.in/Bangkok?format=j1');
+                const data = await response.json();
+                
+                const current = data.current_condition[0];
+                const temp = Math.round(current.temp_C);
+                const desc = translateWeatherDesc(current.weatherDesc[0].value);
+                const icon = getWeatherIcon(current.weatherCode);
+                
+                document.getElementById('weatherIconSmall').textContent = icon;
+                document.getElementById('temperatureSmall').textContent = `${temp}°C`;
+                document.getElementById('weatherDescSmall').textContent = desc;
+                
+                console.log('✅ อัปเดตข้อมูลสภาพอากาศจริงแล้ว - กรุงเทพฯ');
+            } catch (error) {
+                console.log('⚠️ ไม่สามารถดึงข้อมูลสภาพอากาศได้, ใช้ข้อมูลสำรอง');
+                // Fallback to default data
+                document.getElementById('weatherIconSmall').textContent = '☀️';
+                document.getElementById('temperatureSmall').textContent = '32°C';
+                document.getElementById('weatherDescSmall').textContent = 'แจ่มใส';
+            }
+        }
+        
+        // Translate weather descriptions to Thai
+        function translateWeatherDesc(desc) {
+            const translations = {
+                'Sunny': 'แจ่มใส',
+                'Clear': 'ท้องฟ้าใส',
+                'Partly cloudy': 'มีเมฆบางส่วน',
+                'Cloudy': 'มีเมฆมาก',
+                'Overcast': 'ครึ้ม',
+                'Mist': 'หมอก',
+                'Patchy rain possible': 'อาจมีฝนเล็กน้อย',
+                'Light rain': 'ฝนเล็กน้อย',
+                'Moderate rain': 'ฝนปานกลาง',
+                'Heavy rain': 'ฝนหนัก',
+                'Light rain shower': 'ฝนฟ้าคะนองเล็กน้อย',
+                'Thundery outbreaks possible': 'อาจมีฟ้าร้องฟ้าผา',
+                'Patchy light drizzle': 'ฝนปรอยๆ',
+                'Light drizzle': 'ฝนละออง'
+            };
+            return translations[desc] || desc;
+        }
+        
+        // Get weather icon based on weather code
+        function getWeatherIcon(code) {
+            const iconMap = {
+                '113': '☀️', // Sunny
+                '116': '⛅', // Partly cloudy
+                '119': '☁️', // Cloudy
+                '122': '☁️', // Overcast
+                '143': '🌫️', // Mist
+                '176': '🌦️', // Patchy rain possible
+                '200': '⛈️', // Thundery outbreaks possible
+                '248': '🌫️', // Fog
+                '263': '🌦️', // Patchy light drizzle
+                '266': '🌧️', // Light drizzle
+                '293': '🌦️', // Patchy light rain
+                '296': '🌧️', // Light rain
+                '302': '🌧️', // Moderate rain
+                '308': '🌧️', // Heavy rain
+                '353': '🌦️', // Light rain shower
+                '356': '🌧️', // Moderate or heavy rain shower
+                '386': '⛈️', // Patchy light rain with thunder
+                '389': '⛈️'  // Moderate or heavy rain with thunder
+            };
+            return iconMap[code] || '☀️';
         }
 
-        // Auto-update weather every 10 minutes
-        setInterval(updateWeather, 600000);
+        // Initial weather fetch
+        fetchWeatherData();
+        
+        // Update weather every 30 minutes
+        setInterval(fetchWeatherData, 1800000);
 
         // Add new notification to scrolling text
         function addNotification(message) {
             const scrollingText = document.getElementById('scrollingNotifications');
             scrollingText.textContent += ` &nbsp;&nbsp;&nbsp; ${message}`;
         }
-
-
-
-
 
         // Add some interactive feedback
         document.querySelectorAll('.card-hover').forEach(card => {
@@ -601,5 +654,5 @@
             });
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9783af8ec48745c3',t:'MTc1NjcxODM2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9783c3d1f1b045bd',t:'MTc1NjcxOTE5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
