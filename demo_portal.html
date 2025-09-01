@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Internal Portal - Secure Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Kanit', sans-serif; }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+        }
+        .category-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .category-card.hr {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+        }
+        .category-card.it {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .category-card.finance {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        .category-card.operations {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+        .category-card.management {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-marquee {
+            animation: marquee 30s linear infinite;
+        }
+        .security-overlay {
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.8);
+        }
+        .login-form {
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .security-badge {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+
+
+
+
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white bg-opacity-20 p-3 rounded-full">
+                        <i class="fas fa-building text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold">Company Portal</h1>
+                        <p class="text-blue-100">ระบบเข้าถึงลิงก์ภายในบริษัท</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-blue-100">ยินดีต้อนรับ</p>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-3 mt-2">
+                        <div class="font-semibold" id="currentTime"></div>
+                        <div class="flex items-center justify-end space-x-2 mt-2 text-sm">
+                            <span id="weatherIconSmall">☀️</span>
+                            <span id="temperatureSmall">32°C</span>
+                            <span id="weatherDescSmall">แจ่มใส</span>
+                        </div>
+                        <div class="text-xs opacity-80 mt-1">
+                            ปากเกร็ด นนทบุรี
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search Bar -->
+    <div class="container mx-auto px-6 py-6">
+        <div class="max-w-2xl mx-auto">
+            <div class="relative">
+                <input type="text" id="searchInput" placeholder="ค้นหาระบบหรือลิงก์ที่ต้องการ..." 
+                       class="w-full px-6 py-4 text-lg border-2 border-gray-200 rounded-full focus:border-blue-500 focus:outline-none shadow-lg">
+                <i class="fas fa-search absolute right-6 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scrolling Notifications -->
+    <div class="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 mb-6 overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="flex items-center">
+                <div class="flex items-center mr-4 flex-shrink-0">
+                    <i class="fas fa-bell text-yellow-300 mr-2"></i>
+                    <span class="font-semibold">ประชาสัมพันธ์:</span>
+                </div>
+                <div class="overflow-hidden flex-1">
+                    <div class="animate-marquee whitespace-nowrap" id="scrollingNotifications">
+                        🚨 ปรับปรุงระบบ IT วันเสาร์ที่ 15 ธ.ค. 2024 เวลา 02:00-06:00 น. &nbsp;&nbsp;&nbsp; 📚 อบรมใหม่ "Digital Transformation" วันจันทร์ที่ 18 ธ.ค. 2024 เวลา 14:00 น. &nbsp;&nbsp;&nbsp; 🎉 ปาร์ตี้ปีใหม่บริษัท วันศุกร์ที่ 29 ธ.ค. 2024 เวลา 18:00 น. &nbsp;&nbsp;&nbsp; 📊 ส่งรายงานประจำเดือนภายในวันที่ 25 ของทุกเดือน &nbsp;&nbsp;&nbsp; 💡 ข้อเสนอแนะการปรับปรุงระบบ ส่งได้ที่ suggestion@company.com &nbsp;&nbsp;&nbsp; 🏆 ยินดีกับทีม Sales ที่ทำยอดขายเกินเป้า 120% ในเดือนนี้!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Quick Access -->
+    <div class="container mx-auto px-6 mb-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">🚀 เข้าถึงด่วน</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover cursor-pointer" onclick="openLink('https://mail.company.com')">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-gradient-to-br from-blue-500 to-cyan-500 p-3 rounded-full">
+                        <i class="fas fa-envelope text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">อีเมล</h3>
+                        <p class="text-sm text-gray-600">Company Mail</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover cursor-pointer" onclick="openLink('https://calendar.company.com')">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-gradient-to-br from-indigo-500 to-purple-500 p-3 rounded-full">
+                        <i class="fas fa-calendar text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">ปฏิทิน</h3>
+                        <p class="text-sm text-gray-600">Company Calendar</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover cursor-pointer" onclick="openLink('https://drive.company.com')">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-gradient-to-br from-emerald-500 to-teal-500 p-3 rounded-full">
+                        <i class="fas fa-cloud text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">ไฟล์แชร์</h3>
+                        <p class="text-sm text-gray-600">Shared Drive</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover cursor-pointer" onclick="openLink('https://helpdesk.company.com')">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-gradient-to-br from-violet-500 to-purple-500 p-3 rounded-full">
+                        <i class="fas fa-headset text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">Help Desk</h3>
+                        <p class="text-sm text-gray-600">IT Support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="container mx-auto px-6 mb-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">📂 หมวดหมู่ระบบ</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- HR Category -->
+            <div class="category-card hr rounded-xl p-6 text-white card-hover cursor-pointer" onclick="toggleCategory('hr')">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">👥 ทรัพยากรบุคคล</h3>
+                        <p class="text-sm opacity-90">HR Systems</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-xl" id="hr-arrow"></i>
+                </div>
+            </div>
+
+            <!-- IT Category -->
+            <div class="category-card it rounded-xl p-6 text-white card-hover cursor-pointer" onclick="toggleCategory('it')">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">💻 เทคโนโลยี</h3>
+                        <p class="text-sm opacity-90">IT Systems</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-xl" id="it-arrow"></i>
+                </div>
+            </div>
+
+            <!-- Finance Category -->
+            <div class="category-card finance rounded-xl p-6 text-white card-hover cursor-pointer" onclick="toggleCategory('finance')">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">💰 การเงิน</h3>
+                        <p class="text-sm opacity-90">Finance Systems</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-xl" id="finance-arrow"></i>
+                </div>
+            </div>
+
+            <!-- Operations Category -->
+            <div class="category-card operations rounded-xl p-6 text-white card-hover cursor-pointer" onclick="toggleCategory('operations')">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">⚙️ การดำเนินงาน</h3>
+                        <p class="text-sm opacity-90">Operations</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-xl" id="operations-arrow"></i>
+                </div>
+            </div>
+
+            <!-- Management Category -->
+            <div class="category-card management rounded-xl p-6 text-white card-hover cursor-pointer" onclick="toggleCategory('management')">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">📊 ผู้บริหาร</h3>
+                        <p class="text-sm opacity-90">Management</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-xl" id="management-arrow"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Details -->
+    <div class="container mx-auto px-6 mb-8">
+        <!-- HR Links -->
+        <div id="hr-links" class="hidden mb-6">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">👥 ระบบทรัพยากรบุคคล</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-cyan-50 hover:to-blue-50 cursor-pointer transition-all" onclick="openLink('https://hr.company.com/payroll')">
+                        <i class="fas fa-money-bill-wave text-emerald-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">ระบบเงินเดือน</h4>
+                        <p class="text-sm text-gray-600">Payroll System</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-cyan-50 hover:to-blue-50 cursor-pointer transition-all" onclick="openLink('https://hr.company.com/leave')">
+                        <i class="fas fa-calendar-times text-amber-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">ระบบลาป่วย/ลากิจ</h4>
+                        <p class="text-sm text-gray-600">Leave Management</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-cyan-50 hover:to-blue-50 cursor-pointer transition-all" onclick="openLink('https://hr.company.com/training')">
+                        <i class="fas fa-graduation-cap text-indigo-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">ระบบอบรม</h4>
+                        <p class="text-sm text-gray-600">Training System</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- IT Links -->
+        <div id="it-links" class="hidden mb-6">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">💻 ระบบเทคโนโลยี</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-emerald-50 hover:to-teal-50 cursor-pointer transition-all" onclick="openLink('https://it.company.com/helpdesk')">
+                        <i class="fas fa-tools text-rose-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">IT Help Desk</h4>
+                        <p class="text-sm text-gray-600">Technical Support</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-emerald-50 hover:to-teal-50 cursor-pointer transition-all" onclick="openLink('https://it.company.com/inventory')">
+                        <i class="fas fa-laptop text-violet-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">ระบบครุภัณฑ์</h4>
+                        <p class="text-sm text-gray-600">Asset Management</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-emerald-50 hover:to-teal-50 cursor-pointer transition-all" onclick="openLink('https://it.company.com/network')">
+                        <i class="fas fa-network-wired text-emerald-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">ระบบเครือข่าย</h4>
+                        <p class="text-sm text-gray-600">Network Monitor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Finance Links -->
+        <div id="finance-links" class="hidden mb-6">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">💰 ระบบการเงิน</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-amber-50 hover:to-orange-50 cursor-pointer transition-all" onclick="openLink('https://finance.company.com/accounting')">
+                        <i class="fas fa-calculator text-blue-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">ระบบบัญชี</h4>
+                        <p class="text-sm text-gray-600">Accounting System</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-amber-50 hover:to-orange-50 cursor-pointer transition-all" onclick="openLink('https://finance.company.com/budget')">
+                        <i class="fas fa-chart-pie text-emerald-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">ระบบงบประมาณ</h4>
+                        <p class="text-sm text-gray-600">Budget Planning</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-amber-50 hover:to-orange-50 cursor-pointer transition-all" onclick="openLink('https://finance.company.com/expense')">
+                        <i class="fas fa-receipt text-amber-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">ระบบเบิกจ่าย</h4>
+                        <p class="text-sm text-gray-600">Expense Management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Operations Links -->
+        <div id="operations-links" class="hidden mb-6">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">⚙️ ระบบการดำเนินงาน</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-violet-50 hover:to-purple-50 cursor-pointer transition-all" onclick="openLink('https://ops.company.com/crm')">
+                        <i class="fas fa-users text-blue-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">ระบบลูกค้า</h4>
+                        <p class="text-sm text-gray-600">CRM System</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-violet-50 hover:to-purple-50 cursor-pointer transition-all" onclick="openLink('https://ops.company.com/inventory')">
+                        <i class="fas fa-boxes text-emerald-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">ระบบคลังสินค้า</h4>
+                        <p class="text-sm text-gray-600">Inventory System</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-violet-50 hover:to-purple-50 cursor-pointer transition-all" onclick="openLink('https://ops.company.com/quality')">
+                        <i class="fas fa-award text-violet-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">ระบบคุณภาพ</h4>
+                        <p class="text-sm text-gray-600">Quality Control</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management Links -->
+        <div id="management-links" class="hidden mb-6">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">📊 ระบบผู้บริหาร</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-red-50 hover:to-rose-50 cursor-pointer transition-all" onclick="openLink('https://mgmt.company.com/dashboard')">
+                        <i class="fas fa-chart-line text-blue-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">Dashboard ผู้บริหาร</h4>
+                        <p class="text-sm text-gray-600">Executive Dashboard</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-red-50 hover:to-rose-50 cursor-pointer transition-all" onclick="openLink('https://mgmt.company.com/reports')">
+                        <i class="fas fa-file-alt text-emerald-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">รายงานสรุป</h4>
+                        <p class="text-sm text-gray-600">Management Reports</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gradient-to-br hover:from-red-50 hover:to-rose-50 cursor-pointer transition-all" onclick="openLink('https://mgmt.company.com/kpi')">
+                        <i class="fas fa-target text-rose-600 mb-2 text-xl"></i>
+                        <h4 class="font-semibold">ระบบ KPI</h4>
+                        <p class="text-sm text-gray-600">Performance Metrics</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">© 2024 Company Internal Portal. All rights reserved.</p>
+            <p class="text-sm text-gray-500 mt-2">สำหรับการใช้งานภายในบริษัทเท่านั้น</p>
+        </div>
+    </footer>
+
+    <script>
+
+        
+        // Link opening function
+        function openLink(url) {
+            // In a real implementation, this would open the internal company links
+            alert('🔗 เปิดลิงก์: ' + url + '\n\nในการใช้งานจริง ลิงก์นี้จะเปิดไปยังระบบภายในบริษัท');
+            
+            // Uncomment the line below for actual link opening
+            // window.open(url, '_blank');
+        }
+
+        // Update current time with seconds
+        function updateTime() {
+            const now = new Date();
+            const dateOptions = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric'
+            };
+            const timeOptions = {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+            
+            const dateStr = now.toLocaleDateString('th-TH', dateOptions);
+            const timeStr = now.toLocaleTimeString('th-TH', timeOptions);
+            
+            document.getElementById('currentTime').innerHTML = `
+                <div class="text-right">
+                    <div class="text-sm">${dateStr}</div>
+                    <div class="text-lg font-mono">${timeStr}</div>
+                </div>
+            `;
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000); // Update every second
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                // Hide search results and show normal categories
+                hideSearchResults();
+                return;
+            }
+            
+            // Show search results
+            showSearchResults(searchTerm);
+        });
+
+        function showSearchResults(searchTerm) {
+            // Hide all category sections
+            const allCategories = ['hr', 'it', 'finance', 'operations', 'management'];
+            allCategories.forEach(cat => {
+                document.getElementById(cat + '-links').classList.add('hidden');
+                document.getElementById(cat + '-arrow').classList.remove('fa-chevron-up');
+                document.getElementById(cat + '-arrow').classList.add('fa-chevron-down');
+            });
+
+            // Create or show search results section
+            let searchSection = document.getElementById('search-results');
+            if (!searchSection) {
+                searchSection = document.createElement('div');
+                searchSection.id = 'search-results';
+                searchSection.className = 'mb-6';
+                document.querySelector('.container.mx-auto.px-6.mb-8:last-of-type').appendChild(searchSection);
+            }
+
+            // Define all searchable items
+            const allLinks = [
+                // Quick Access
+                { name: 'อีเมล', description: 'Company Mail', category: 'Quick Access', url: 'https://mail.company.com', icon: 'fas fa-envelope', color: 'red' },
+                { name: 'ปฏิทิน', description: 'Company Calendar', category: 'Quick Access', url: 'https://calendar.company.com', icon: 'fas fa-calendar', color: 'blue' },
+                { name: 'ไฟล์แชร์', description: 'Shared Drive', category: 'Quick Access', url: 'https://drive.company.com', icon: 'fas fa-cloud', color: 'green' },
+                { name: 'Help Desk', description: 'IT Support', category: 'Quick Access', url: 'https://helpdesk.company.com', icon: 'fas fa-headset', color: 'purple' },
+                
+                // HR Systems
+                { name: 'ระบบเงินเดือน', description: 'Payroll System', category: 'ทรัพยากรบุคคล', url: 'https://hr.company.com/payroll', icon: 'fas fa-money-bill-wave', color: 'green' },
+                { name: 'ระบบลาป่วย/ลากิจ', description: 'Leave Management', category: 'ทรัพยากรบุคคล', url: 'https://hr.company.com/leave', icon: 'fas fa-calendar-times', color: 'orange' },
+                { name: 'ระบบอบรม', description: 'Training System', category: 'ทรัพยากรบุคคล', url: 'https://hr.company.com/training', icon: 'fas fa-graduation-cap', color: 'blue' },
+                
+                // IT Systems
+                { name: 'IT Help Desk', description: 'Technical Support', category: 'เทคโนโลยี', url: 'https://it.company.com/helpdesk', icon: 'fas fa-tools', color: 'red' },
+                { name: 'ระบบครุภัณฑ์', description: 'Asset Management', category: 'เทคโนโลยี', url: 'https://it.company.com/inventory', icon: 'fas fa-laptop', color: 'purple' },
+                { name: 'ระบบเครือข่าย', description: 'Network Monitor', category: 'เทคโนโลยี', url: 'https://it.company.com/network', icon: 'fas fa-network-wired', color: 'green' },
+                
+                // Finance Systems
+                { name: 'ระบบบัญชี', description: 'Accounting System', category: 'การเงิน', url: 'https://finance.company.com/accounting', icon: 'fas fa-calculator', color: 'blue' },
+                { name: 'ระบบงบประมาณ', description: 'Budget Planning', category: 'การเงิน', url: 'https://finance.company.com/budget', icon: 'fas fa-chart-pie', color: 'green' },
+                { name: 'ระบบเบิกจ่าย', description: 'Expense Management', category: 'การเงิน', url: 'https://finance.company.com/expense', icon: 'fas fa-receipt', color: 'orange' },
+                
+                // Operations Systems
+                { name: 'ระบบลูกค้า', description: 'CRM System', category: 'การดำเนินงาน', url: 'https://ops.company.com/crm', icon: 'fas fa-users', color: 'blue' },
+                { name: 'ระบบคลังสินค้า', description: 'Inventory System', category: 'การดำเนินงาน', url: 'https://ops.company.com/inventory', icon: 'fas fa-boxes', color: 'green' },
+                { name: 'ระบบคุณภาพ', description: 'Quality Control', category: 'การดำเนินงาน', url: 'https://ops.company.com/quality', icon: 'fas fa-award', color: 'purple' },
+                
+                // Management Systems
+                { name: 'Dashboard ผู้บริหาร', description: 'Executive Dashboard', category: 'ผู้บริหาร', url: 'https://mgmt.company.com/dashboard', icon: 'fas fa-chart-line', color: 'blue' },
+                { name: 'รายงานสรุป', description: 'Management Reports', category: 'ผู้บริหาร', url: 'https://mgmt.company.com/reports', icon: 'fas fa-file-alt', color: 'green' },
+                { name: 'ระบบ KPI', description: 'Performance Metrics', category: 'ผู้บริหาร', url: 'https://mgmt.company.com/kpi', icon: 'fas fa-target', color: 'red' }
+            ];
+
+            // Filter results based on search term
+            const filteredLinks = allLinks.filter(link => 
+                link.name.toLowerCase().includes(searchTerm) ||
+                link.description.toLowerCase().includes(searchTerm) ||
+                link.category.toLowerCase().includes(searchTerm)
+            );
+
+            // Display search results
+            if (filteredLinks.length > 0) {
+                searchSection.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">🔍 ผลการค้นหา "${searchTerm}" (${filteredLinks.length} รายการ)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            ${filteredLinks.map(link => `
+                                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors" onclick="openLink('${link.url}')">
+                                    <div class="flex items-start space-x-3">
+                                        <i class="${link.icon} text-${link.color}-600 text-lg mt-1"></i>
+                                        <div class="flex-1">
+                                            <h4 class="font-semibold text-gray-800">${link.name}</h4>
+                                            <p class="text-sm text-gray-600">${link.description}</p>
+                                            <span class="inline-block mt-1 px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded-full">${link.category}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                searchSection.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                        <i class="fas fa-search text-gray-400 text-4xl mb-4"></i>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">ไม่พบผลการค้นหา</h3>
+                        <p class="text-gray-600">ไม่พบระบบที่ตรงกับ "${searchTerm}" ลองใช้คำค้นหาอื่น</p>
+                    </div>
+                `;
+            }
+
+            searchSection.classList.remove('hidden');
+        }
+
+        function hideSearchResults() {
+            const searchSection = document.getElementById('search-results');
+            if (searchSection) {
+                searchSection.classList.add('hidden');
+            }
+        }
+
+        // Toggle category visibility
+        function toggleCategory(category) {
+            const links = document.getElementById(category + '-links');
+            const arrow = document.getElementById(category + '-arrow');
+            
+            if (links.classList.contains('hidden')) {
+                // Hide all other categories first
+                const allCategories = ['hr', 'it', 'finance', 'operations', 'management'];
+                allCategories.forEach(cat => {
+                    if (cat !== category) {
+                        document.getElementById(cat + '-links').classList.add('hidden');
+                        document.getElementById(cat + '-arrow').classList.remove('fa-chevron-up');
+                        document.getElementById(cat + '-arrow').classList.add('fa-chevron-down');
+                    }
+                });
+                
+                // Show selected category
+                links.classList.remove('hidden');
+                arrow.classList.remove('fa-chevron-down');
+                arrow.classList.add('fa-chevron-up');
+            } else {
+                // Hide selected category
+                links.classList.add('hidden');
+                arrow.classList.remove('fa-chevron-up');
+                arrow.classList.add('fa-chevron-down');
+            }
+        }
+
+        // Weather data simulation
+        const weatherConditions = [
+            { icon: '☀️', temp: '32°C', desc: 'แจ่มใส', humidity: '65%', visibility: '10 กม.' },
+            { icon: '⛅', temp: '28°C', desc: 'มีเมฆบางส่วน', humidity: '70%', visibility: '8 กม.' },
+            { icon: '🌧️', temp: '25°C', desc: 'ฝนตก', humidity: '85%', visibility: '5 กม.' },
+            { icon: '⛈️', temp: '24°C', desc: 'พายุฝนฟ้าคะนง', humidity: '90%', visibility: '3 กม.' },
+            { icon: '🌤️', temp: '30°C', desc: 'แสงแดดอ่อน', humidity: '60%', visibility: '12 กม.' }
+        ];
+
+        // Update weather function
+        function updateWeather() {
+            const randomWeather = weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
+            
+            document.getElementById('weatherIconSmall').textContent = randomWeather.icon;
+            document.getElementById('temperatureSmall').textContent = randomWeather.temp;
+            document.getElementById('weatherDescSmall').textContent = randomWeather.desc;
+        }
+
+        // Auto-update weather every 10 minutes
+        setInterval(updateWeather, 600000);
+
+        // Add new notification to scrolling text
+        function addNotification(message) {
+            const scrollingText = document.getElementById('scrollingNotifications');
+            scrollingText.textContent += ` &nbsp;&nbsp;&nbsp; ${message}`;
+        }
+
+
+
+
+
+        // Add some interactive feedback
+        document.querySelectorAll('.card-hover').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9783af8ec48745c3',t:'MTc1NjcxODM2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
