@@ -1,7 +1,7 @@
 ![](/img/ice2.png){:height="35%" width="35%" style="float: right"}
 
 # Biography of 
-# <font color="white"> Capt.Suntisuk Thepthong (Ice) </font>
+# <font color="white"> Maj.Suntisuk Thepthong (Ice) </font>
 
 Contact to me (Line ID): coolangel
 
