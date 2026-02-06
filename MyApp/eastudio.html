@@ -1,0 +1,828 @@
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import {
+Plus, Trash2, FileImage, Settings,
+Layout, X, Check, AlertTriangle,
+Palette, Type, ZoomIn, ZoomOut, RotateCcw,
+Square, Circle, Database, FileText as FileIcon
+} from 'lucide-react';
+
+// --- Helper: Text Wrapping for Export Only ---
+const getWrappedTextLines = (text, maxWidth, fontSize = 12, fontFamily = 'sans-serif', fontWeight = 'normal') => {
+if (!text) return [];
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+
+const words = [];
+if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+const segmenter = new Intl.Segmenter('th', { granularity: 'word' });
+const segments = segmenter.segment(text);
+for (const { segment } of segments) {
+words.push(segment);
+}
+} else {
+words.push(...text.split(''));
+}
+
+const lines = [];
+let currentLine = words[0] || '';
+
+for (let i = 1; i < words.length; i++) { const word=words[i]; const width=ctx.measureText(currentLine + word).width; if
+    (width < maxWidth) { currentLine +=word; } else { lines.push(currentLine); currentLine=word; } }
+    lines.push(currentLine); return lines; }; // --- Helper: Export Image Logic --- const downloadImage=(svgRef, width,
+    height, dataMap)=> {
+    if (!svgRef.current) return;
+
+    try {
+    const clone = svgRef.current.cloneNode(true);
+
+    clone.setAttribute("width", width);
+    clone.setAttribute("height", height);
+    clone.style.backgroundColor = "white";
+    clone.style.transform = "none";
+
+    const foreignObjects = clone.querySelectorAll('foreignObject');
+    foreignObjects.forEach(fo => {
+    const itemWidth = parseFloat(fo.getAttribute('width'));
+    const itemHeight = parseFloat(fo.getAttribute('height'));
+    const x = parseFloat(fo.getAttribute('x'));
+    const y = parseFloat(fo.getAttribute('y'));
+
+    const align = fo.getAttribute('data-export-align') || 'center';
+    const weight = fo.getAttribute('data-export-weight') || '500';
+    const fSize = fo.getAttribute('data-export-size') || '12';
+    const paddingLeft = parseFloat(fo.getAttribute('data-export-padding') || '0');
+
+    const div = fo.querySelector('div');
+    const textContent = div ? div.innerText : "";
+    const textColor = div ? div.style.color : "#000";
+
+    const textEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+
+    if (align === 'left') {
+    textEl.setAttribute("x", x + paddingLeft);
+    textEl.setAttribute("text-anchor", "start");
+    } else {
+    textEl.setAttribute("x", x + itemWidth / 2);
+    textEl.setAttribute("text-anchor", "middle");
+    }
+
+    textEl.setAttribute("y", y + itemHeight / 2);
+    textEl.setAttribute("fill", textColor);
+    textEl.setAttribute("font-family", "sans-serif");
+    textEl.setAttribute("font-size", fSize);
+    textEl.setAttribute("font-weight", weight);
+
+    const maxWidth = align === 'left' ? (itemWidth - paddingLeft - 10) : (itemWidth - 16);
+    const lines = getWrappedTextLines(textContent, maxWidth, parseInt(fSize), 'sans-serif', weight);
+    const lineHeight = parseInt(fSize) * 1.4;
+
+    const startY = y + (itemHeight/2) - ((lines.length - 1) * lineHeight / 2) + (lineHeight * 0.3);
+
+    lines.forEach((line, i) => {
+    const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+    if (align === 'left') {
+    tspan.setAttribute("x", x + paddingLeft);
+    } else {
+    tspan.setAttribute("x", x + itemWidth / 2);
+    }
+    tspan.setAttribute("dy", i === 0 ? 0 : lineHeight);
+    tspan.textContent = line;
+    if(i === 0) textEl.setAttribute("y", startY);
+    textEl.appendChild(tspan);
+    });
+
+    fo.parentNode.replaceChild(textEl, fo);
+    });
+
+    const svgData = new XMLSerializer().serializeToString(clone);
+    const canvas = document.createElement("canvas");
+    const scale = 2;
+    const padding = 60; // More whitespace
+    canvas.width = (width + padding * 2) * scale;
+    canvas.height = (height + padding * 2) * scale;
+    const ctx = canvas.getContext("2d");
+    ctx.scale(scale, scale);
+
+    const img = new Image();
+    const base64Svg = btoa(unescape(encodeURIComponent(svgData)));
+    const imgSrc = `data:image/svg+xml;base64,${base64Svg}`;
+
+    img.onload = () => {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
+    ctx.drawImage(img, padding, padding);
+
+    ctx.font = "12px sans-serif";
+    ctx.fillStyle = "#cbd5e1";
+    ctx.textAlign = "right";
+    ctx.fillText("Designed with EA Diagram Studio", width + padding, height + padding + 30);
+
+    const pngUrl = canvas.toDataURL("image/png");
+    const downloadLink = document.createElement("a");
+    downloadLink.href = pngUrl;
+    downloadLink.download = `EA-Minimal-${new Date().toISOString().slice(0,10)}.png`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(imgSrc);
+    };
+
+    img.onerror = (e) => {
+    console.error(e);
+    alert("Export failed. Please try again.");
+    };
+
+    img.src = imgSrc;
+
+    } catch (err) {
+    console.error("Export Critical Error:", err);
+    alert("เกิดข้อผิดพลาดร้ายแรงในการ Export");
+    }
+    };
+
+    // --- Constants ---
+    const CONFIG = {
+    colGap: 32,
+    groupGap: 32,
+    itemGap: 16,
+    headerHeight: 56,
+    padding: 24,
+    baseItemHeight: 52,
+    colWidths: {
+    left: 280,
+    center: 760,
+    right: 280
+    }
+    };
+
+    // --- Vibrant & Professional Color Palette ---
+    const THEMES = {
+    business: {
+    id: 'business', name: 'Business', label: 'Business Layer',
+    bg: '#e0f2fe', // Vibrant Light Blue
+    border: '#0ea5e9', // Sky 500
+    headerText: '#0369a1', // Sky 700
+    itemBg: '#ffffff',
+    itemBorder: '#7dd3fc', // Sky 300
+    text: '#0c4a6e'
+    },
+    strategy: {
+    id: 'strategy', name: 'Strategy', label: 'Strategy Layer',
+    bg: '#fef3c7', // Vibrant Amber
+    border: '#f59e0b', // Amber 500
+    headerText: '#b45309',
+    itemBg: '#ffffff',
+    itemBorder: '#fcd34d',
+    text: '#78350f'
+    },
+    tech: {
+    id: 'tech', name: 'Technology', label: 'Technology Layer',
+    bg: '#dcfce7', // Vibrant Green
+    border: '#22c55e', // Green 500
+    headerText: '#15803d',
+    itemBg: '#ffffff',
+    itemBorder: '#86efac',
+    text: '#14532d'
+    },
+    security: {
+    id: 'security', name: 'Security', label: 'Security Layer',
+    bg: '#fee2e2', // Vibrant Red
+    border: '#ef4444', // Red 500
+    headerText: '#b91c1c',
+    itemBg: '#ffffff',
+    itemBorder: '#fca5a5',
+    text: '#7f1d1d'
+    },
+    core: {
+    id: 'core', name: 'Core/Data', label: 'Core Elements',
+    bg: '#f1f5f9', // Slate 100
+    border: '#64748b', // Slate 500
+    headerText: '#334155',
+    itemBg: '#ffffff',
+    itemBorder: '#cbd5e1',
+    text: '#0f172a'
+    }
+    };
+
+    // --- Shape Options ---
+    const SHAPES = [
+    { id: 'rect', label: 'Rectangle', icon:
+    <Square className="w-4 h-4" /> },
+    { id: 'rounded', label: 'Rounded', icon:
+    <div className="w-4 h-3 border-2 border-current rounded-md" /> },
+    { id: 'pill', label: 'Pill', icon:
+    <div className="w-4 h-3 border-2 border-current rounded-full" /> },
+    { id: 'database', label: 'Data', icon:
+    <Database className="w-4 h-4" /> },
+    ];
+
+    // --- Initial Data (Restored Full Dragon1 Structure) ---
+    const INITIAL_DATA = {
+    left: [
+    {
+    id: 'hc_group', title: 'Human Capital Architecture', type: 'business',
+    items: [
+    { id: 'hc_1', text: 'Objects', color: 'core', shape: 'rect' },
+    { id: 'hc_2', text: 'Building Blocks', color: 'tech', shape: 'rect' },
+    { id: 'hc_3', text: 'Components', color: 'tech', shape: 'rect' },
+    { id: 'hc_4', text: 'Domains', color: 'tech', shape: 'rect' },
+    { id: 'hc_5', text: 'Elements', color: 'security', shape: 'rect' },
+    { id: 'hc_6', text: 'Rules', color: 'security', shape: 'rect' }
+    ]
+    }
+    ],
+    center: [
+    {
+    id: 'gov_group', title: 'Governance Architecture', type: 'strategy',
+    items: [
+    { id: 'gov_1', text: 'Concepts', color: 'strategy', shape: 'rounded' },
+    { id: 'gov_2', text: 'Elements', color: 'tech', shape: 'rounded' },
+    { id: 'gov_3', text: 'Components', color: 'strategy', shape: 'rounded' },
+    { id: 'gov_4', text: 'Objects', color: 'tech', shape: 'rounded' },
+    { id: 'gov_5', text: 'Patterns', color: 'core', shape: 'rounded' },
+    { id: 'gov_6', text: 'Rules & Stds', color: 'strategy', shape: 'rounded' },
+    { id: 'gov_7', text: 'Domains', color: 'tech', shape: 'rounded' },
+    { id: 'gov_8', text: 'Building Blocks', color: 'strategy', shape: 'rounded' }
+    ]
+    },
+    {
+    id: 'biz_group', title: 'Business Architecture', type: 'business',
+    items: [
+    { id: 'biz_1', text: 'Process Concepts', color: 'tech', shape: 'rect' },
+    { id: 'biz_2', text: 'Service Concepts', color: 'tech', shape: 'rect' },
+    { id: 'biz_3', text: 'Process Elements', color: 'security', shape: 'rect' },
+    { id: 'biz_4', text: 'Service Elements', color: 'security', shape: 'rect' },
+    { id: 'biz_5', text: 'Process Patterns', color: 'core', shape: 'rect' },
+    { id: 'biz_6', text: 'Service Rules', color: 'strategy', shape: 'rect' }
+    ]
+    },
+    {
+    id: 'info_group', title: 'Information Architecture', type: 'business',
+    items: [
+    { id: 'info_1', text: 'Data Concepts', color: 'security', shape: 'database' },
+    { id: 'info_2', text: 'App Elements', color: 'tech', shape: 'rounded' },
+    { id: 'info_3', text: 'Data Patterns', color: 'core', shape: 'database' },
+    { id: 'info_4', text: 'App Rules', color: 'tech', shape: 'rounded' }
+    ]
+    },
+    {
+    id: 'tech_group', title: 'Technical Architecture', type: 'tech',
+    items: [
+    { id: 'tech_1', text: 'Concepts', color: 'tech', shape: 'rect' },
+    { id: 'tech_2', text: 'Elements', color: 'security', shape: 'rect' },
+    { id: 'tech_3', text: 'Components', color: 'core', shape: 'rect' },
+    { id: 'tech_4', text: 'Objects', color: 'tech', shape: 'rect' },
+    { id: 'tech_5', text: 'Patterns', color: 'tech', shape: 'rect' },
+    { id: 'tech_6', text: 'Rules & Stds', color: 'security', shape: 'rect' },
+    { id: 'tech_7', text: 'Domains', color: 'tech', shape: 'rect' },
+    { id: 'tech_8', text: 'Building Blocks', color: 'core', shape: 'rect' }
+    ]
+    }
+    ],
+    right: [
+    {
+    id: 'sec_group', title: 'Security Architecture', type: 'security',
+    items: [
+    { id: 'sec_1', text: 'Objects', color: 'security', shape: 'pill' },
+    { id: 'sec_2', text: 'Building Blocks', color: 'core', shape: 'pill' },
+    { id: 'sec_3', text: 'Components', color: 'security', shape: 'pill' },
+    { id: 'sec_4', text: 'Domains', color: 'tech', shape: 'pill' },
+    { id: 'sec_5', text: 'Elements', color: 'security', shape: 'pill' },
+    { id: 'sec_6', text: 'Patterns', color: 'security', shape: 'pill' }
+    ]
+    }
+    ]
+    };
+
+    // --- Shape Renderer Component ---
+    const ItemShape = ({ shape, x, y, w, h, fill, stroke, strokeWidth }) => {
+    switch(shape) {
+    case 'rounded':
+    return
+    <rect x={x} y={y} width={w} height={h} rx="8" fill={fill} stroke={stroke} strokeWidth={strokeWidth} />;
+    case 'pill':
+    return
+    <rect x={x} y={y} width={w} height={h} rx={h/2} fill={fill} stroke={stroke} strokeWidth={strokeWidth} />;
+    case 'database':
+    const ry = h * 0.15;
+    return (
+    <g>
+        {/* Main body */}
+        <path d={`M${x},${y+ry} v${h-2*ry} a${w/2},${ry} 0 0 0 ${w},0 v-${h-2*ry} a${w/2},${ry} 0 0 0 -${w},0 z`}
+            fill={fill} stroke={stroke} strokeWidth={strokeWidth} />
+        {/* Top ellipse */}
+        <ellipse cx={x + w/2} cy={y + ry} rx={w/2} ry={ry} fill={fill} stroke={stroke} strokeWidth={strokeWidth} />
+        {/* Bottom arc (visual only, covered by path usually but adding distinct line helps) */}
+        <path d={`M${x},${y+h-ry} a${w/2},${ry} 0 0 0 ${w},0`} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
+    </g>
+    );
+    case 'rect':
+    default:
+    return
+    <rect x={x} y={y} width={w} height={h} rx="2" fill={fill} stroke={stroke} strokeWidth={strokeWidth} />;
+    }
+    };
+
+    export default function EAStructuredBuilder() {
+    const [data, setData] = useState(INITIAL_DATA);
+    const [selected, setSelected] = useState(null);
+    const [canvasSize, setCanvasSize] = useState({ w: 1200, h: 800 });
+    const [zoom, setZoom] = useState(1);
+    const [confirmModal, setConfirmModal] = useState({ show: false, action: null, message: '' });
+    const svgRef = useRef(null);
+
+    // --- Load/Save LocalStorage ---
+    useEffect(() => {
+    const saved = localStorage.getItem('ea_vibrant_full_v1');
+    if (saved) {
+    try {
+    setData(JSON.parse(saved));
+    } catch (e) {
+    console.error("Failed to load saved data");
+    }
+    }
+    }, []);
+
+    useEffect(() => {
+    localStorage.setItem('ea_vibrant_full_v1', JSON.stringify(data));
+    }, [data]);
+
+    // --- Actions ---
+    const updateData = (updater) => {
+    setData(prev => {
+    const next = JSON.parse(JSON.stringify(prev));
+    updater(next);
+    return next;
+    });
+    };
+
+    const addItem = (colId, groupId) => {
+    updateData(draft => {
+    const group = draft[colId].find(g => g.id === groupId);
+    if (group) {
+    const newItemId = Date.now().toString();
+    // Default shape
+    group.items.push({ id: newItemId, text: 'New Node', color: group.type, shape: 'rect' });
+    setTimeout(() => setSelected({ type: 'item', colId, groupId, itemId: newItemId }), 50);
+    }
+    });
+    };
+
+    const addGroup = (colId) => {
+    updateData(draft => {
+    const newId = Date.now().toString();
+    draft[colId].push({
+    id: newId,
+    title: 'New Group',
+    type: 'business',
+    items: []
+    });
+    setTimeout(() => setSelected({ type: 'group', colId, groupId: newId }), 50);
+    });
+    };
+
+    const requestDelete = () => {
+    if (!selected) return;
+    setConfirmModal({
+    show: true,
+    message: `ยืนยันการลบ "${selected.type === 'group' ? 'กลุ่มข้อมูล' : 'รายการ'}" นี้?`,
+    action: performDelete
+    });
+    };
+
+    const performDelete = () => {
+    if (!selected) return;
+    updateData(draft => {
+    if (selected.type === 'group') {
+    draft[selected.colId] = draft[selected.colId].filter(g => g.id !== selected.groupId);
+    } else {
+    const group = draft[selected.colId].find(g => g.id === selected.groupId);
+    if (group) {
+    group.items = group.items.filter(i => i.id !== selected.itemId);
+    }
+    }
+    });
+    setSelected(null);
+    setConfirmModal({ show: false, action: null, message: '' });
+    };
+
+    const requestReset = () => {
+    setConfirmModal({
+    show: true,
+    message: 'ต้องการรีเซ็ตกลับเป็นค่าเริ่มต้น (Template เดิม) หรือไม่? การกระทำนี้จะลบงานปัจจุบันของคุณ',
+    action: performReset
+    });
+    };
+
+    const performReset = () => {
+    localStorage.removeItem('ea_vibrant_full_v1');
+    setData(JSON.parse(JSON.stringify(INITIAL_DATA)));
+    setZoom(1);
+    setSelected(null);
+    setConfirmModal({ show: false, action: null, message: '' });
+    };
+
+    const updateProperty = (key, value) => {
+    if (!selected) return;
+    updateData(draft => {
+    const group = draft[selected.colId].find(g => g.id === selected.groupId);
+    if (!group) return;
+
+    if (selected.type === 'group') {
+    group[key] = value;
+    } else {
+    const item = group.items.find(i => i.id === selected.itemId);
+    if (item) item[key] = value;
+    }
+    });
+    };
+
+    // --- Layout Engine (Improved for Thai text height) ---
+    const layout = useMemo(() => {
+    const calculated = { left: [], center: [], right: [] };
+    const startX = {
+    left: 30,
+    center: 30 + CONFIG.colWidths.left + CONFIG.colGap,
+    right: 30 + CONFIG.colWidths.left + CONFIG.colGap + CONFIG.colWidths.center + CONFIG.colGap
+    };
+    const currentY = { left: 80, center: 80, right: 80 };
+    let maxY = 0;
+
+    ['left', 'center', 'right'].forEach(col => {
+    data[col].forEach(group => {
+    const itemsWithPos = [];
+    const colWidth = CONFIG.colWidths[col];
+    const innerWidth = colWidth - (CONFIG.padding * 2);
+
+    const itemsPerRow = col === 'center' ? 4 : 2;
+    const itemWidth = (innerWidth - (CONFIG.itemGap * (itemsPerRow - 1))) / itemsPerRow;
+
+    let rowY = currentY[col] + CONFIG.headerHeight + CONFIG.padding;
+    let colIndex = 0;
+    let maxRowH = 0;
+
+    group.items.forEach((item, idx) => {
+    const text = item.text || "";
+    const charWidth = 6.5;
+    const maxCharsPerLine = Math.floor(itemWidth / charWidth);
+    const estimatedLines = Math.ceil(text.length / maxCharsPerLine);
+
+    const lineHeight = 20;
+    // Add extra padding for specific shapes
+    const shapePadding = item.shape === 'database' ? 20 : 0;
+    const itemHeight = Math.max(CONFIG.baseItemHeight, (estimatedLines * lineHeight) + 24 + shapePadding);
+
+    if (colIndex === 0 && idx > 0) {
+    rowY += maxRowH + CONFIG.itemGap;
+    maxRowH = 0;
+    }
+
+    itemsWithPos.push({
+    ...item,
+    x: startX[col] + CONFIG.padding + (colIndex * (itemWidth + CONFIG.itemGap)),
+    y: rowY,
+    w: itemWidth,
+    h: itemHeight
+    });
+
+    if (itemHeight > maxRowH) maxRowH = itemHeight;
+
+    colIndex++;
+    if (colIndex >= itemsPerRow) colIndex = 0;
+    });
+
+    const contentBottom = itemsWithPos.length > 0 ? (rowY + maxRowH + CONFIG.padding) : (currentY[col] +
+    CONFIG.headerHeight + CONFIG.padding + 20);
+    const groupHeight = contentBottom - currentY[col];
+
+    calculated[col].push({
+    ...group,
+    x: startX[col],
+    y: currentY[col],
+    w: colWidth,
+    h: groupHeight,
+    calculatedItems: itemsWithPos
+    });
+
+    currentY[col] += groupHeight + CONFIG.groupGap;
+    });
+    if (currentY[col] > maxY) maxY = currentY[col];
+    });
+
+    setCanvasSize({
+    w: startX.right + CONFIG.colWidths.right + 30,
+    h: Math.max(900, maxY + 120)
+    });
+
+    return calculated;
+    }, [data]);
+
+    const selectedObject = useMemo(() => {
+    if (!selected) return null;
+    const group = data[selected.colId]?.find(g => g.id === selected.groupId);
+    if (!group) return null;
+    if (selected.type === 'group') return { ...group, _formType: 'group' };
+    const item = group.items.find(i => i.id === selected.itemId);
+    return item ? { ...item, _formType: 'item' } : null;
+    }, [selected, data]);
+
+    return (
+    <div className="flex h-screen bg-white font-sans overflow-hidden relative text-slate-700">
+
+        {/* --- Main Canvas --- */}
+        <div className="flex-1 flex flex-col min-w-0 h-full">
+            <div className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 z-20">
+                <h1 className="text-lg font-bold text-slate-800 flex items-center gap-3">
+                    <div className="p-2 bg-slate-100 rounded-lg text-slate-600">
+                        <Layout className="w-5 h-5" />
+                    </div>
+                    <span>EA Diagram Studio</span>
+                </h1>
+                <div className="flex gap-2 items-center">
+                    {/* Zoom Controls */}
+                    <div className="flex items-center gap-1 bg-slate-50 rounded-lg p-1 mr-2 border border-slate-100">
+                        <button onClick={()=> setZoom(Math.max(0.5, zoom - 0.1))} className="p-1.5 hover:bg-white
+                            rounded shadow-sm text-slate-500 hover:text-slate-800 transition">
+                            <ZoomOut className="w-4 h-4" />
+                        </button>
+                        <span className="text-xs font-mono w-12 text-center text-slate-500 font-medium">{Math.round(zoom
+                            * 100)}%</span>
+                        <button onClick={()=> setZoom(Math.min(2, zoom + 0.1))} className="p-1.5 hover:bg-white rounded
+                            shadow-sm text-slate-500 hover:text-slate-800 transition">
+                            <ZoomIn className="w-4 h-4" />
+                        </button>
+                    </div>
+
+                    <button onClick={requestReset}
+                        className="flex items-center gap-2 px-3 py-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition text-sm font-medium">
+                        <RotateCcw className="w-4 h-4" />
+                    </button>
+                    <div className="w-px h-8 bg-slate-100 mx-1"></div>
+                    <button onClick={()=> downloadImage(svgRef, canvasSize.w, canvasSize.h, data)}
+                        className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg
+                        hover:bg-slate-900 transition font-medium shadow-sm active:scale-95"
+                        >
+                        <FileImage className="w-4 h-4" /> Export PNG
+                    </button>
+                </div>
+            </div>
+
+            <div className="flex-1 overflow-auto bg-slate-50 relative cursor-default" onClick={()=> setSelected(null)}>
+
+                <div className="flex justify-center items-start p-12 origin-top-left" style={{ minWidth: '100%' ,
+                    minHeight: '100%' , width: Math.max(window.innerWidth, (canvasSize.w * zoom) + 100), height:
+                    Math.max(window.innerHeight, (canvasSize.h * zoom) + 100), }}>
+                    <div className="bg-white shadow-xl shadow-slate-200/50 rounded-lg transition-transform duration-200 ease-out"
+                        style={{ width: canvasSize.w, height: canvasSize.h, transform: `scale(${zoom})`,
+                        transformOrigin: 'top center' }}>
+                        <svg ref={svgRef} width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <pattern id="dotPattern" x="0" y="0" width="24" height="24"
+                                    patternUnits="userSpaceOnUse">
+                                    <circle cx="2" cy="2" r="1.5" fill="#f1f5f9" />
+                                </pattern>
+                            </defs>
+
+                            <rect width="100%" height="100%" fill="white" />
+                            <rect width="100%" height="100%" fill="url(#dotPattern)" />
+
+                            <text x="30" y="50" fontSize="24" fontWeight="700" fill="#334155"
+                                fontFamily="sans-serif">Enterprise Architecture Framework</text>
+
+                            {['left', 'center', 'right'].map(col => (
+                            <g key={col}>
+                                {layout[col].map(group => {
+                                const theme = THEMES[group.type] || THEMES.business;
+                                const isSelected = selected?.groupId === group.id && selected?.type === 'group';
+
+                                return (
+                                <g key={group.id}>
+                                    <rect x={group.x} y={group.y} width={group.w} height={group.h} fill={theme.bg}
+                                        stroke={isSelected ? '#3b82f6' : theme.border} strokeWidth={isSelected ? 2 : 1}
+                                        rx="12" className="transition-colors cursor-pointer" onClick={(e)=> {
+                                        e.stopPropagation(); setSelected({ type: 'group', colId: col, groupId: group.id
+                                        }); }}
+                                        />
+
+                                        {/* Header Line */}
+                                        <path d={`M${group.x + 20} ${group.y+CONFIG.headerHeight} L${group.x+group.w -
+                                            20} ${group.y+CONFIG.headerHeight}`} stroke={theme.border} strokeWidth="1"
+                                            strokeOpacity="0.3" strokeDasharray="4,4" />
+
+                                        {/* GROUP TITLE */}
+                                        <foreignObject x={group.x} y={group.y} width={group.w}
+                                            height={CONFIG.headerHeight} style={{ pointerEvents: 'none' }}
+                                            data-export-align="left" data-export-weight="700" data-export-size="14"
+                                            data-export-padding="24">
+                                            <div style={{ width: '100%' , height: '100%' , display: 'flex' ,
+                                                alignItems: 'center' , justifyContent: 'flex-start' ,
+                                                paddingLeft: '24px' , paddingRight: '40px' , boxSizing: 'border-box' ,
+                                                color: theme.headerText, fontSize: '14px' , fontWeight: '700' ,
+                                                fontFamily: 'sans-serif' , letterSpacing: '0.05em' , lineHeight: 1.2,
+                                                overflow: 'hidden' , textTransform: 'uppercase' }}>
+                                                {group.title}
+                                            </div>
+                                        </foreignObject>
+
+                                        <g className="cursor-pointer hover:opacity-100 opacity-40 transition-opacity"
+                                            onClick={(e)=> { e.stopPropagation(); addItem(col, group.id); }}
+                                            transform={`translate(${group.x + group.w - 36}, ${group.y + 14})`}
+                                            >
+                                            <rect width="24" height="24" rx="6" fill="white" stroke={theme.border}
+                                                strokeOpacity="0.8" />
+                                            <Plus x="4" y="4" width="16" height="16" stroke={theme.border}
+                                                strokeWidth="2.5" />
+                                        </g>
+
+                                        {group.calculatedItems.map(item => {
+                                        const itemTheme = THEMES[item.color] || THEMES.business;
+                                        const isItemSelected = selected?.itemId === item.id;
+                                        const textColor = itemTheme.text;
+                                        const shape = item.shape || 'rect';
+
+                                        return (
+                                        <g key={item.id} onClick={(e)=> { e.stopPropagation(); setSelected({ type:
+                                            'item', colId: col, groupId: group.id, itemId: item.id }); }}
+                                            className="cursor-pointer hover:opacity-90"
+                                            >
+                                            <ItemShape shape={shape} x={item.x} y={item.y} w={item.w} h={item.h}
+                                                fill={itemTheme.itemBg} stroke={isItemSelected ? '#3b82f6' :
+                                                itemTheme.itemBorder} strokeWidth={isItemSelected ? 2 : 1} />
+
+                                            <foreignObject x={item.x} y={item.y + (shape==='database' ? item.h * 0.1 :
+                                                0)} width={item.w} height={item.h} style={{ pointerEvents: 'none' }}
+                                                data-export-align="center" data-export-weight="500"
+                                                data-export-size="12">
+                                                <div style={{ width: '100%' , height: '100%' , display: 'flex' ,
+                                                    alignItems: 'center' , justifyContent: 'center' ,
+                                                    textAlign: 'center' , padding: '8px' , boxSizing: 'border-box' ,
+                                                    color: textColor, fontSize: '12px' , fontWeight: 500,
+                                                    fontFamily: 'sans-serif' , overflowWrap: 'break-word' ,
+                                                    wordBreak: 'break-word' , lineHeight: 1.3 }}>
+                                                    {item.text}
+                                                </div>
+                                            </foreignObject>
+                                        </g>
+                                        );
+                                        })}
+                                </g>
+                                );
+                                })}
+
+                                <g transform={`translate(${layout[col][0]?.x || 20}, ${layout[col].length> 0 ?
+                                    (layout[col][layout[col].length-1].y + layout[col][layout[col].length-1].h + 20) :
+                                    80})`}
+                                    onClick={(e) => { e.stopPropagation(); addGroup(col); }}
+                                    className="cursor-pointer group opacity-60 hover:opacity-100 transition-opacity"
+                                    >
+                                    <rect width={CONFIG.colWidths[col]} height="40" rx="8" stroke="#cbd5e1"
+                                        strokeWidth="2" strokeDasharray="6,6" fill="white"
+                                        className="group-hover:stroke-indigo-400 group-hover:fill-indigo-50 transition-colors" />
+                                    <text x={CONFIG.colWidths[col]/2} y="25" textAnchor="middle" fill="#94a3b8"
+                                        fontSize="13" fontWeight="600" fontFamily="sans-serif"
+                                        className="group-hover:fill-indigo-600">Add Group</text>
+                                </g>
+                            </g>
+                            ))}
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div className={`fixed top-0 right-0 h-full w-80 bg-white shadow-2xl z-40 transform transition-transform
+            duration-300 ease-in-out border-l border-slate-100 flex flex-col ${selected ? 'translate-x-0'
+            : 'translate-x-full' }`}>
+            <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white">
+                <div className="flex items-center gap-3">
+                    <div className="p-1.5 bg-slate-100 rounded-md text-slate-600">
+                        <Settings className="w-5 h-5" />
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-slate-800 text-sm">Properties</h3>
+                        <p className="text-xs text-slate-400">Edit selected element</p>
+                    </div>
+                </div>
+                <button onClick={()=> setSelected(null)} className="p-2 hover:bg-slate-100 rounded-full text-slate-400
+                    transition-colors">
+                    <X className="w-5 h-5" />
+                </button>
+            </div>
+
+            <div className="p-6 flex-1 overflow-y-auto bg-white">
+                {selected && (
+                <div className="space-y-8 animate-fadeIn">
+
+                    <div className="space-y-3">
+                        <div
+                            className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                            <Type className="w-3.5 h-3.5" />
+                            {selectedObject?._formType === 'group' ? 'Title' : 'Content'}
+                        </div>
+                        <textarea key={selectedObject?.id}
+                            className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-shadow min-h-[100px] shadow-sm bg-slate-50 text-slate-700 resize-none"
+                            defaultValue={selectedObject?._formType==='group' ? selectedObject.title :
+                            selectedObject.text} onChange={(e)=> updateProperty(selectedObject._formType === 'group' ? 'title' : 'text', e.target.value)}
+                         placeholder="Type content here..."
+                      />
+                   </div>
+
+                   {/* Shape Selector (Only for Items) */}
+                   {selectedObject?._formType === 'item' && (
+                       <div className="space-y-3">
+                          <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                             <Layout className="w-3.5 h-3.5" />
+                             Shape
+                          </div>
+                          <div className="grid grid-cols-4 gap-2">
+                             {SHAPES.map((shape) => {
+                                 const isActive = (selectedObject.shape || 'rect') === shape.id;
+                                 return (
+                                    <button
+                                       key={shape.id}
+                                       onClick={() => updateProperty('shape', shape.id)}
+                                       className={`flex flex-col items-center justify-center gap-1 p-2 rounded-lg border transition-all ${isActive ? 'bg-indigo-50 border-indigo-500 text-indigo-600' : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-500'}`}
+                                       title={shape.label}
+                                    >
+                                       {shape.icon}
+                                       <span className="text-[10px] font-medium">{shape.label}</span>
+                                    </button>
+                                 )
+                             })}
+                          </div>
+                       </div>
+                   )}
+
+                   <div className="space-y-3">
+                      <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                         <Palette className="w-3.5 h-3.5" />
+                         Layer Theme
+                      </div>
+                      <div className="grid grid-cols-1 gap-2.5">
+                         {Object.entries(THEMES).map(([key, theme]) => {
+                             const currentType = selectedObject?._formType === 'group' ? selectedObject.type : selectedObject.color;
+                             const isActive = currentType === key;
+                             return (
+                                <button
+                                   key={key}
+                                   onClick={() => updateProperty(selectedObject._formType === 'group' ? 'type' : 'color', key)}
+                                   className={`relative flex items-center gap-4 p-3 rounded-xl border transition-all text-left group ${isActive ? 'bg-white border-indigo-500 ring-1 ring-indigo-500 shadow-sm' : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'}`}
+                                >
+                                   <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: theme.bg, border: `1px solid ${theme.border}` }}>
+                                   </div>
+                                   <div>
+                                       <span className="block text-sm font-bold text-slate-700">{theme.name}</span>
+                                       <span className="block text-[10px] text-slate-400 uppercase">{theme.label}</span>
+                                   </div>
+                                   {isActive && <div className="absolute top-3 right-3"><Check className="w-4 h-4 text-indigo-600" /></div>}
+                                </button>
+                             )
+                         })}
+                      </div>
+                   </div>
+
+                   <div className="pt-8 mt-auto">
+                      <button 
+                         onClick={requestDelete}
+                         className="w-full flex items-center justify-center gap-2 p-3.5 bg-white border border-red-100 text-red-600 rounded-xl hover:bg-red-50 hover:border-red-200 transition-all text-sm font-semibold shadow-sm hover:shadow"
+                      >
+                         <Trash2 className="w-4 h-4" />
+                         Delete Element
+                      </button>
+                   </div>
+                </div>
+             )}
+          </div>
+      </div>
+
+      {confirmModal.show && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fadeIn">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden transform transition-all scale-100 p-6">
+                <div className="w-12 h-12 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <AlertTriangle className="w-6 h-6" />
+                </div>
+                <div className="text-center mb-6">
+                    <h3 className="text-lg font-bold text-slate-800 mb-2">ยืนยันการทำรายการ?</h3>
+                    <p className="text-slate-500 text-sm">{confirmModal.message}</p>
+                </div>
+                <div className="flex gap-3">
+                    <button 
+                        onClick={() => setConfirmModal({ show: false, action: null, message: '' })}
+                        className="flex-1 px-4 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 font-semibold transition"
+                    >
+                        ยกเลิก
+                    </button>
+                    <button 
+                        onClick={confirmModal.action}
+                        className="flex-1 px-4 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 font-semibold transition shadow-lg shadow-slate-200"
+                    >
+                        ยืนยัน
+                    </button>
+                </div>
+            </div>
+        </div>
+      )}
+    </div>
+  );
+}
