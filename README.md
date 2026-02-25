@@ -161,12 +161,4 @@ My **hobbies** include Playing Basketball, Running, Surf Skating and Reading boo
 * [EP.12 Inter VLAN (L3 Switch)](https://youtu.be/dxEkfXSKt8o)
 * [EP.13 CDP Protocol](https://youtu.be/qkgbYK6iKdQ)
 
-
-
-<<<<<<< HEAD
 **Updated on ๒๕ ก.พ.๖๙**
-=======
-**Created in ๒๐๒๕**
-
-**Updated on ๒๒ พ.ค.๖๘**
->>>>>>> 93a1fcf1bc6ff28a4f841087b8ccd4633050c6b9
