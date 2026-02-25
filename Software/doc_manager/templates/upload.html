@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+{% block title %}เพิ่มเอกสารใหม่{% endblock %}
+{% block content %}
+
+<h2 class="mb-4">เพิ่มเอกสารใหม่</h2>
+
+<form method="post" enctype="multipart/form-data" class="row g-3">
+  <div class="col-md-6">
+    <label for="file" class="form-label">ไฟล์ PDF</label>
+    <input class="form-control" type="file" name="file" id="file" required>
+  </div>
+
+  <div class="col-md-6">
+    <label for="number_received" class="form-label">เลขรับ</label>
+    <input class="form-control" type="text" name="number_received" id="number_received">
+  </div>
+
+  <div class="col-md-6">
+    <label for="book_number" class="form-label">ที่หนังสือ</label>
+    <input class="form-control" type="text" name="book_number" id="book_number">
+  </div>
+
+  <div class="col-md-6">
+    <label for="date_book" class="form-label">วันที่หนังสือ</label>
+    <input class="form-control" type="text" name="date_book" id="date_book" placeholder="เช่น 11 เม.ย. 68">
+  </div>
+
+  <div class="col-md-6">
+    <label for="date_received" class="form-label">วันที่เข้า</label>
+    <input class="form-control" type="text" name="date_received" id="date_received">
+  </div>
+
+  <div class="col-md-6">
+    <label for="from_department" class="form-label">จากหน่วยงาน</label>
+    <input class="form-control" type="text" name="from_department" id="from_department">
+  </div>
+
+  <div class="col-md-12">
+    <label for="subject" class="form-label">เรื่อง</label>
+    <input class="form-control" type="text" name="subject" id="subject">
+  </div>
+
+  <div class="col-md-6">
+    <label for="responsible_group" class="form-label">กองงานรับผิดชอบ</label>
+    <input class="form-control" type="text" name="responsible_group" id="responsible_group">
+  </div>
+
+  <div class="col-md-6">
+    <label for="status" class="form-label">สถานะ</label>
+    <select class="form-select" name="status" id="status">
+      <option value="">-- เลือกสถานะ --</option>
+      <option value="อยู่ระหว่างดำเนินการ">อยู่ระหว่างดำเนินการ</option>
+      <option value="ดำเนินการเรียบร้อย">ดำเนินการเรียบร้อย</option>
+      <option value="รอดำเนินการ">รอดำเนินการ</option>
+    </select>
+  </div>
+
+  <div class="col-md-12">
+    <label for="remark" class="form-label">หมายเหตุ</label>
+    <input class="form-control" type="text" name="remark" id="remark">
+  </div>
+
+  <div class="col-12 mt-4">
+    <button type="submit" class="btn btn-success">บันทึกเอกสาร</button>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">ยกเลิก</a>
+  </div>
+</form>
+
+{% endblock %}

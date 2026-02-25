@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Monopoly - The Incident Response Challenge</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans Thai', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px; gap: 20px; }
+        .game-wrapper { background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2); padding: clamp(15px, 2vw, 30px); width: 100%; max-width: 950px; }
+        .game-title { text-align: center; color: #2c3e50; font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: bold; margin-bottom: clamp(15px, 2vw, 20px); background: linear-gradient(45deg, #3498db, #e74c3c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .board-container { position: relative; width: 100%; max-width: 900px; margin: 0 auto; aspect-ratio: 1; background: #f8f9fa; border: clamp(4px, 1vw, 8px) solid #2c3e50; border-radius: 15px; }
+        .board { position: relative; width: 100%; height: 100%; display: grid; grid-template-columns: repeat(11, 1fr); grid-template-rows: repeat(11, 1fr); }
+        .center-area { grid-column: 2 / 11; grid-row: 2 / 11; background: linear-gradient(135deg, #74b9ff, #0984e3); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .center-title { font-size: clamp(1.2rem, 3vw, 2.5rem); font-weight: bold; color: white; text-align: center; }
+        .space { border: 1px solid #34495e; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: clamp(0.5rem, 1vw, 0.75rem); font-weight: bold; position: relative; padding: 2px; overflow: hidden; }
+        .space-name { font-size: clamp(0.45rem, 0.8vw, 0.7rem); line-height: 1.1; font-weight: bold; }
+        .space-type { font-size: clamp(0.4rem, 0.7vw, 0.6rem); font-style: italic; opacity: 0.9; }
+        .space-cost { font-size: clamp(0.4rem, 0.7vw, 0.6rem); margin-top: 2px; }
+        .investment { background: #a9cce3; }
+        .event { background: #f5b7b1; }
+        .knowledge { background: #fdebd0; }
+        .corner-go { background: #a3e4d7; }
+        .corner-alert { background: #f5b041; }
+        .corner-safe { background: #d2b4de; }
+        .corner-quarantine { background: #abb2b9; }
+        .ui-container { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 15px; }
+        .players-panel, .controls-panel, .log-panel { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 20px; }
+        .panel-title { font-size: 1.4rem; font-weight: 700; color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .player-info { padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid transparent; transition: all 0.3s ease; }
+        .player-info.active { background-color: #e9f5ff; transform: scale(1.02); }
+        .player-name { font-weight: bold; font-size: 1.1rem; }
+        .player-stats { font-size: 0.9rem; color: #34495e; display: flex; flex-wrap: wrap; gap: 5px 15px; }
+        .player-score { font-size: 1rem; font-weight: bold; color: #27ae60; }
+        .btn { padding: 10px 15px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; background: #3498db; color: white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+        .btn:disabled { background: #bdc3c7; cursor: not-allowed; }
+        .dice-area { display: flex; gap: 10px; align-items: center; margin-bottom: 15px; }
+        #dice-input { width: 80px; padding: 10px; border-radius: 8px; border: 2px solid #bdc3c7; font-size: 1rem; text-align: center; }
+        #dice-result { font-size: 1.5rem; font-weight: bold; color: #e74c3c; margin-left: auto; }
+        #log-box { height: 150px; background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 10px; overflow-y: auto; font-size: 0.85rem; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; text-align: center; }
+        .card-back { border-radius: 15px; padding: 20px; color: white; }
+        .green-card .card-back { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .red-card .card-back { background: linear-gradient(135deg, #ff5858, #f09819); }
+        .quiz-card .card-back { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .card-title { font-size: 1.2rem; margin-bottom: 12px; font-weight: 700; }
+        .card-description { font-size: 0.9rem; line-height: 1.4; margin-bottom: 15px; }
+        .card-result { font-size: 1rem; font-weight: 700; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 15px; margin-top: 10px; }
+        .card-choices .choice { margin: 8px 0; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); text-align: left; cursor: pointer; }
+        .card-choices .choice:hover { background: rgba(255,255,255,0.3); }
+        .shield-btn { margin-top: 10px; background: #8e44ad; }
+
+        /* --- Gemini Additions --- */
+        /* Dice Animation */
+        @keyframes dice-flash {
+            0% { transform: scale(1); color: #e74c3c; }
+            50% { transform: scale(1.5); color: #ff9800; }
+            100% { transform: scale(1); color: #e74c3c; }
+        }
+        .dice-flash {
+            animation: dice-flash 0.4s ease-in-out;
+        }
+
+        /* Player Tokens */
+        .player-piece {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            transition: all 0.5s ease-in-out;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .player-piece svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.7));
+        }
+
+        /* Ownership Marker */
+        .owner-marker {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1px solid white;
+            box-shadow: 0 0 3px black;
+        }
+
+        .action-summary-content {
+            background: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            border: 2px solid #3498db;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            animation: fadeInOut 3s ease-in-out forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-20px); }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+
+        .action-summary-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+
+        .action-summary-message {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="setup-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h2>ตั้งค่าเกม</h2>
+            <label for="player-count">เลือกจำนวนผู้เล่น:</label>
+            <select id="player-count"><option value="2">2 คน</option><option value="3">3 คน</option><option value="4">4 คน</option></select>
+            <br><br><button id="start-game-btn" class="btn">เริ่มเกม</button>
+        </div>
+    </div>
+
+    <div id="purchase-modal" class="modal-overlay"></div>
+    <div id="card-modal" class="modal-overlay"></div>
+    <div id="event-roll-modal" class="modal-overlay"></div>
+    <div id="alert-modal" class_="modal-overlay"></div>
+    <div id="action-summary-modal" class="modal-overlay" style="pointer-events: none;"></div>
+
+    <div class="game-wrapper">
+        <h1 class="game-title">🛡️ Cyber Monopoly 🛡️</h1>
+        <div class="board-container">
+            <div id="board" class="board">
+                <div class="center-area"><div class="center-title">CYBER<br>SECURITY</div></div>
+                <div class="space corner-go" data-id="1" style="grid-area: 11 / 11 / 12 / 12;"></div>
+                <div class="space investment" data-id="2" style="grid-area: 11 / 10 / 12 / 11;"></div>
+                <div class="space event" data-id="3" style="grid-area: 11 / 9 / 12 / 10;"></div>
+                <div class="space knowledge" data-id="4" style="grid-area: 11 / 8 / 12 / 9;"></div>
+                <div class="space investment" data-id="5" style="grid-area: 11 / 7 / 12 / 8;"></div>
+                <div class="space investment" data-id="6" style="grid-area: 11 / 6 / 12 / 7;"></div>
+                <div class="space event" data-id="7" style="grid-area: 11 / 5 / 12 / 6;"></div>
+                <div class="space knowledge" data-id="8" style="grid-area: 11 / 4 / 12 / 5;"></div>
+                <div class="space investment" data-id="9" style="grid-area: 11 / 3 / 12 / 4;"></div>
+                <div class="space corner-alert" data-id="10" style="grid-area: 11 / 2 / 12 / 3;"></div>
+                <div class="space corner-safe" data-id="20" style="grid-area: 1 / 1 / 2 / 2;"></div>
+                <div class="space investment" data-id="19" style="grid-area: 2 / 1 / 3 / 2;"></div>
+                <div class="space event" data-id="18" style="grid-area: 3 / 1 / 4 / 2;"></div>
+                <div class="space knowledge" data-id="17" style="grid-area: 4 / 1 / 5 / 2;"></div>
+                <div class="space investment" data-id="16" style="grid-area: 5 / 1 / 6 / 2;"></div>
+                <div class="space event" data-id="15" style="grid-area: 6 / 1 / 7 / 2;"></div>
+                <div class="space investment" data-id="14" style="grid-area: 7 / 1 / 8 / 2;"></div>
+                <div class="space knowledge" data-id="13" style="grid-area: 8 / 1 / 9 / 2;"></div>
+                <div class="space event" data-id="12" style="grid-area: 9 / 1 / 10 / 2;"></div>
+                <div class="space investment" data-id="11" style="grid-area: 10 / 1 / 11 / 2;"></div>
+                <div class="space corner-quarantine" data-id="30" style="grid-area: 1 / 11 / 2 / 12;"></div>
+                <div class="space investment" data-id="29" style="grid-area: 1 / 10 / 2 / 11;"></div>
+                <div class="space event" data-id="28" style="grid-area: 1 / 9 / 2 / 10;"></div>
+                <div class="space knowledge" data-id="27" style="grid-area: 1 / 8 / 2 / 9;"></div>
+                <div class="space investment" data-id="26" style="grid-area: 1 / 7 / 2 / 8;"></div>
+                <div class="space event" data-id="25" style="grid-area: 1 / 6 / 2 / 7;"></div>
+                <div class="space investment" data-id="24" style="grid-area: 1 / 5 / 2 / 6;"></div>
+                <div class="space knowledge" data-id="23" style="grid-area: 1 / 4 / 2 / 5;"></div>
+                <div class="space event" data-id="22" style="grid-area: 1 / 3 / 2 / 4;"></div>
+                <div class="space investment" data-id="21" style="grid-area: 1 / 2 / 2 / 3;"></div>
+                <div class="space corner-quarantine" data-id="40" style="grid-area: 11 / 1 / 12 / 2;"></div>
+                <div class="space investment" data-id="39" style="grid-area: 10 / 11 / 11 / 12;"></div>
+                <div class="space event" data-id="38" style="grid-area: 9 / 11 / 10 / 12;"></div>
+                <div class="space knowledge" data-id="37" style="grid-area: 8 / 11 / 9 / 12;"></div>
+                <div class="space investment" data-id="36" style="grid-area: 7 / 11 / 8 / 12;"></div>
+                <div class="space event" data-id="35" style="grid-area: 6 / 11 / 7 / 12;"></div>
+                <div class="space investment" data-id="34" style="grid-area: 5 / 11 / 6 / 12;"></div>
+                <div class="space knowledge" data-id="33" style="grid-area: 4 / 11 / 5 / 12;"></div>
+                <div class="space event" data-id="32" style="grid-area: 3 / 11 / 4 / 12;"></div>
+                <div class="space investment" data-id="31" style="grid-area: 2 / 11 / 3 / 12;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui-container">
+        <div class="players-panel">
+            <h3 class="panel-title">ผู้เล่น</h3>
+            <div id="players-info-container"></div>
+        </div>
+        <div class="controls-panel">
+            <h3 class="panel-title">ตาของ: <span id="current-player-name"></span></h3>
+            <div id="round-counter" style="text-align: center; margin-bottom: 10px; font-weight: bold;"></div>
+            <div class="dice-area">
+                <button id="roll-dice-btn" class="btn">ทอยเต๋า</button>
+                <input type="number" id="dice-input" min="2" max="12" placeholder="เลข">
+                <button id="manual-roll-btn" class="btn">เดิน</button>
+                <div id="dice-result"></div>
+            </div>
+             <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button id="end-turn-btn" class="btn" disabled style="flex-grow: 1;">จบตา</button>
+                <button id="save-game-btn" class="btn" style="background: #27ae60;">บันทึก</button>
+                <button id="reset-game-btn" class="btn" style="background: #c0392b;">เริ่มใหม่</button>
+            </div>
+        </div>
+        <div class="log-panel">
+            <h3 class="panel-title">เหตุการณ์</h3>
+            <div id="log-box"></div>
+        </div>
+    </div>
+
+<script>
+const spaceData = [
+    { id: 1, name: "Resource Allocation", type: "corner-go", costText: "ผ่าน: +$15K, +1🛡️" },
+    { id: 2, name: "Firewall Upgrade", type: "investment", cost: 6000, reward: 1, rent: 1000, costText: "$6K → +1🛡️", owner: null },
+    { id: 3, name: "Draw Event Card", type: "event", costText: "จั่วการ์ด" },
+    { id: 4, name: "Cyber Quiz", type: "knowledge", reward: { shields: 1 }, costText: "ถูก: +1🛡️" },
+    { id: 5, name: "Antivirus Subscription", type: "investment", cost: 8000, reward: 1, rent: 1200, costText: "$8K → +1🛡️", owner: null },
+    { id: 6, name: "Patch Management", type: "investment", cost: 10000, reward: 2, rent: 1500, costText: "$10K → +2🛡️", owner: null },
+    { id: 7, name: "Draw Event Card", type: "event", costText: "จั่วการ์ด" },
+    { id: 8, name: "Cyber Quiz", type: "knowledge", reward: { money: 2500 }, costText: "ถูก: +$2.5K" },
+    { id: 9, name: "Secure Password Policy", type: "investment", cost: 5000, reward: 1, rent: 800, costText: "$5K → +1🛡️", owner: null },
+    { id: 10, name: "System Alert", type: "corner-alert", costText: "จ่าย $5K หรือ -5 Ops" },
+    { id: 11, name: "Phishing Simulation", type: "investment", cost: 12000, reward: 2, rent: 1800, costText: "$12K → +2🛡️", owner: null },
+    { id: 12, name: "Draw Event Card", type: "event", costText: "จั่วการ์ด" },
+    { id: 13, name: "Cyber Quiz", type: "knowledge", reward: { shields: 1 }, costText: "ถูก: +1🛡️" },
+    { id: 14, name: "Insider Threat Training", type: "investment", cost: 12000, reward: 2, rent: 1800, costText: "$12K → +2🛡️", owner: null },
+    { id: 15, name: "Draw Event Card", type: "event", costText: "จั่วการ์ด" },
+    { id: 16, name: "IT Support Team", type: "investment", cost: 18000, reward: 3, rent: 2500, costText: "$18K → +3🛡️", owner: null },
+    { id: 17, name: "Cyber Quiz", type: "knowledge", reward: { money: 2500 }, costText: "ถูก: +$2.5K" },
+    { id: 18, name: "Draw Event Card", type: "event", costText: "จั่วการ์ด" },
+    { id: 19, name: "Clean Desk Policy", type: "investment", cost: 5000, reward: 1, rent: 800, costText: "$5K → +1🛡️", owner: null },
+    { id: 20, name: "Safe Zone", type: "corner-safe", costText: "พักฟรี" },
+    { id: 21, name: "EDR Solution", type: "investment", cost: 22000, reward: 4, rent: 3000, costText: "$22K → +4🛡️", owner: null },
+    { id: 22, name: "Draw Event Card", type: "event", costText: "จั่วการ์ด" },
+    { id: 23, name: "Cyber Quiz", type: "knowledge", reward: { shields: 2 }, costText: "ถูก: +2🛡️" },
+    { id: 24, name: "Data Backup System", type: "investment", cost: 20000, reward: 3, rent: 2800, costText: "$20K → +3🛡️", owner: null },
+    { id: 25, name: "Draw Event Card", type: "event", costText: "จั่วการ์ด" },
+    { id: 26, name: "SIEM Monitoring", type: "investment", cost: 28000, reward: 5, rent: 4000, costText: "$28K → +5🛡️", owner: null },
+    { id: 27, name: "Cyber Quiz", type: "knowledge", reward: { money: 5000 }, costText: "ถูก: +$5K" },
+    { id: 28, name: "Draw Event Card", type: "event", costText: "จั่วการ์ด" },
+    { id: 29, name: "Network Segmentation", type: "investment", cost: 16000, reward: 3, rent: 2200, costText: "$16K → +3🛡️", owner: null },
+    { id: 30, name: "Go to Quarantine", type: "corner-quarantine", costText: "ไปช่อง 40" },
+    { id: 31, name: "Incident Response Plan", type: "investment", cost: 15000, reward: 3, rent: 2000, costText: "$15K → +3🛡️", owner: null },
+    { id: 32, name: "Draw Event Card", type: "event", costText: "จั่วการ์ด" },
+    { id: 33, name: "Cyber Quiz", type: "knowledge", reward: { shields: 2 }, costText: "ถูก: +2🛡️" },
+    { id: 34, name: "Legal Counsel Retainer", type: "investment", cost: 10000, reward: 2, rent: 1500, costText: "$10K → +2🛡️", owner: null },
+    { id: 35, name: "Draw Event Card", type: "event", costText: "จั่วการ์ด" },
+    { id: 36, name: "Cyber Insurance", type: "investment", cost: 25000, reward: 4, rent: 3500, costText: "$25K → +4🛡️", owner: null },
+    { id: 37, name: "Cyber Quiz", type: "knowledge", reward: { money: 5000 }, costText: "ถูก: +$5K" },
+    { id: 38, name: "Draw Event Card", type: "event", costText: "จั่วการ์ด" },
+    { id: 39, name: "PR Agency Contract", type: "investment", cost: 10000, reward: 2, rent: 1500, costText: "$10K → +2🛡️", owner: null },
+    { id: 40, name: "Quarantine", type: "corner-quarantine", costText: "หยุด 1 ตา" }
+];
+const greenCards = [
+    { id: "G01", title: "พนักงานดีเด่น", description: "พนักงานตรวจพบอีเมล Phishing", effect: { reputation: 10, shields: 1 } },
+    { id: "G02", title: "ผ่าน Audit ฉลุย", description: "ผู้ตรวจสอบไม่พบช่องโหว่ร้ายแรง", effect: { reputation: 10 } },
+    { id: "G03", title: "เงินสนับสนุน", description: "ได้รับเงินสนับสนุนโครงการความปลอดภัย", effect: { money: 10000 } },
+    { id: "G04", title: "ข่าวกรองภัยคุกคาม", description: "ได้รับข้อมูลเกี่ยวกับกลุ่มแฮกเกอร์", effect: { shields: 2 } },
+    { id: "G05", title: "สื่อชื่นชม", description: "สื่อมวลชนชื่นชมมาตรการความปลอดภัย", effect: { reputation: 15 } },
+    { id: "G06", title: "อัปเดต Patch อัตโนมัติ", description: "ระบบอัปเดต Patch สำคัญได้เอง", effect: { shields: 2 } },
+    { id: "G07", title: "โบนัสจาก CEO", description: "ผู้บริหารพอใจผลงานด้านความปลอดภัย", effect: { money: 10000 } },
+    { id: "G08", title: "คู่แข่งถูกโจมตี", description: "ลูกค้าหันมาสนใจคุณมากขึ้น", effect: { reputation: 5 } },
+    { id: "G09", title: "เทคโนโลยีใหม่", description: "ค้นพบวิธีปรับปรุงระบบต้นทุนต่ำ", choices: [{ text: "จ่าย $5K รับ +2🛡️", effect: { money: -5000, shields: 2 } }, { text: "ไม่ทำอะไร", effect: {} }] },
+    { id: "G10", title: "การซ้อมแผนได้ผล", description: "การซ้อมแผนรับมือ (Fire Drill) สำเร็จ", effect: { shields: 2 } },
+    { id: "G11", title: "พันธมิตรทางธุรกิจ", description: "เข้าร่วมกลุ่มแลกเปลี่ยนข้อมูลภัยคุกคาม", effect: { shields: 1 } },
+    { id: "G12", title: "ค่าเบี้ยประกันลดลง", description: "ประวัติความปลอดภัยดี", effect: { money: 7500 } },
+    { id: "G13", title: "พนักงานเก่ากลับมาช่วย", description: "ผู้เชี่ยวชาญให้คำปรึกษาฟรี", effect: { shields: 2 } },
+    { id: "G14", title: "ซอฟต์แวร์ Open Source", description: "เจอเครื่องมือ Open Source ประหยัดงบ", effect: { money: 5000 } },
+    { id: "G15", title: "วันหยุดยาว", description: "การโจมตีทางไซเบอร์ลดลง", effect: {} }
+];
+const redCards = [
+    { id: "R01", title: "อีเมลผู้บริหารปลอม", description: "CEO (ปลอม) สั่งให้โอนเงินด่วน", choices: [{ text: "ตรวจสอบ (เสีย 5 Ops)", effect: { operations: -5 } }, { text: "พลาดโอน (เสีย $20K)", effect: { money: -20000 } }] },
+    { id: "R02", title: "Wi-Fi ไม่ปลอดภัย", description: "พนักงานเชื่อมต่อ Wi-Fi ฟรี", choices: [{ text: "บังคับเปลี่ยนรหัส (เสีย 5 Ops)", effect: { operations: -5 } }, { text: "เสี่ยงดวง (เสีย 10 Rep)", effect: { reputation: -10 } }] },
+    { id: "R03", title: "USB ปริศนา", description: "พบ USB ตกและถูกเสียบเข้าคอมฯ", choices: [{ text: "ติดมัลแวร์ (เสีย 10 Ops)", effect: { operations: -10 } }, { text: "ใช้ 2🛡️ บล็อก", effect: { shields: -2 } }] },
+    { id: "R04", title: "เซิร์ฟเวอร์ล่ม", description: "เว็บไซต์หลักล่มไม่ทราบสาเหตุ", choices: [{ text: "ทุ่มทรัพยากรแก้ด่วน (เสีย $10K)", effect: { money: -10000 } }, { text: "แก้ไขตามปกติ (เสีย 10 Rep)", effect: { reputation: -10 } }] },
+    { id: "R05", title: "รหัสผ่านคาดเดาง่าย", description: "พนักงานใช้ 'password1234'", choices: [{ text: "บังคับอบรม (เสีย $7.5K)", effect: { money: -7500 } }, { text: "ปล่อยไว้ (เสีย 1🛡️, 5 Rep)", effect: { shields: -1, reputation: -5 } }] },
+    { id: "R06", title: "DDoS Attack ระดับเบา", description: "เว็บช้าลงจากการโจมตี", choices: [{ text: "จ่ายเงินป้องกัน (เสีย $12K)", effect: { money: -12000 } }, { text: "รอจนหยุดเอง (เสีย 10 Rep)", effect: { reputation: -10 } }] },
+    { id: "R07", title: "พนักงานโพสต์ข้อมูลอ่อนไหว", description: "พนักงานโพสต์ภาพบัตรลงโซเชียล", choices: [{ text: "ดำเนินการภายใน (เสีย 5 Ops, 5 Rep)", effect: { operations: -5, reputation: -5 } }, { text: "เจรจากับสาธารณะ (เสีย $5K, 5 Rep)", effect: { money: -5000, reputation: -5 } }] },
+    { id: "R08", title: "Phishing ระบาด", description: "อีเมล Phishing หลุดเข้าระบบ", choices: [{ text: "ระบบบล็อกได้ (เสีย 1🛡️)", effect: { shields: -1 } }, { text: "พนักงานคลิก (เสีย 2🛡️, 5 Rep)", effect: { shields: -2, reputation: -5 } }] },
+    { id: "R09", title: "ซอฟต์แวร์ไม่มี License", description: "พบการใช้โปรแกรมไม่มีลิขสิทธิ์", choices: [{ text: "จ่ายค่าปรับ (เสีย $25K)", effect: { money: -25000 } }, { text: "ลบโปรแกรม (เสีย 10 Ops)", effect: { operations: -10 } }] },
+    { id: "R10", title: "ข้อมูลลูกค้าเก่ารั่วไหล", description: "ข้อมูลจากระบบเก่ารั่วไหล", choices: [{ text: "แจ้งลูกค้า (เสีย 10 Rep, $10K)", effect: { reputation: -10, money: -10000 } }, { text: "ปิดข่าวเงียบ (เสีย 2🛡️)", effect: { shields: -2 } }] },
+    { id: "R11", title: "ระบบ Backup ล้มเหลว", description: "ระบบสำรองข้อมูลล่าสุดไม่สมบูรณ์", choices: [{ text: "ซ่อมทันที (เสีย $15K)", effect: { money: -15000 } }, { text: "ปล่อยไว้ก่อน (เสีย 1🛡️)", effect: { shields: -1 } }] },
+    { id: "R12", title: "CEO ทำมือถือหาย", description: "มือถือ CEO หายพร้อมข้อมูลบริษัท", choices: [{ text: "สั่งลบข้อมูล (เสีย 10 Ops)", effect: { operations: -10 } }, { text: "หวังว่าปลอดภัย (เสีย 15 Rep)", effect: { reputation: -15 } }] },
+    { id: "R13", title: "Social Engineering", description: "มีคนโทรมาหลอกเป็น IT ขอรหัสผ่าน", choices: [{ text: "พนักงานขอตรวจสอบ (เสีย 5 Ops)", effect: { operations: -5 } }, { text: "พนักงานหลงเชื่อ (เสีย 3🛡️)", effect: { shields: -3 } }] },
+    { id: "R14", title: "ช่องโหว่ Zero-Day", description: "พบช่องโหว่ร้ายแรงในซอฟต์แวร์", choices: [{ text: "ทีม IT ทำงานทั้งคืน (เสีย 5 Ops)", effect: { operations: -5 } }, { text: "ยังไม่มี Patch (เสีย 2🛡️)", effect: { shields: -2 } }] },
+    { id: "R15", title: "ข่าวลือแง่ลบ", description: "มีข่าวลือว่าบริษัทโดนแฮก", choices: [{ text: "ทีม PR ชี้แจง (เสีย $5K)", effect: { money: -5000 } }, { text: "ไม่ชี้แจง (เสีย 10 Rep)", effect: { reputation: -10 } }] }
+];
+const quizCards = [
+    { id: "Q01", question: "วิธีที่ดีที่สุดในการตรวจสอบอีเมล Phishing คืออะไร?", choices: ["คลิกที่ลิงก์เพื่อดู", "Hover เหนือลิงก์เพื่อดู URL จริง", "ตอบกลับเพื่อถาม"], answer: 1 },
+    { id: "Q02", question: "รหัสผ่านแบบใดปลอดภัยที่สุด?", choices: ["'Summer2025'", "'TreeCarBlueWindow'", "'CatName1990'"], answer: 1 },
+    { id: "Q03", question: "'Ransomware' คืออะไร?", choices: ["มัลแวร์ขโมยรหัสบัตรเครดิต", "มัลแวร์เข้ารหัสไฟล์เรียกค่าไถ่", "มัลแวร์ทำให้เครื่องช้า"], answer: 1 },
+    { id: "Q04", question: "เจอ USB Drive ตกอยู่ ควรทำอย่างไร?", choices: ["เสียบคอมดูว่าเป็นของใคร", "ปล่อยทิ้งไว้", "นำไปให้ฝ่าย IT โดยไม่เสียบ"], answer: 2 },
+    { id: "Q05", question: "Two-Factor Authentication (2FA) คืออะไร?", choices: ["ใช้รหัสผ่าน 2 ชุด", "ใช้รหัสผ่าน + สิ่งที่คุณมี (เช่น OTP)", "เปลี่ยนรหัสผ่านทุก 2 เดือน"], answer: 1 },
+    { id: "Q06", question: "ข้อใดคือความเสี่ยงของ 'Juice Jacking'?", choices: ["การถูกขโมยข้อมูลผ่านสายชาร์จ USB ปลอม", "การถูกดูดแบตเตอรี่จนหมดเร็ว", "การถูกติดตั้งแอปโดยไม่รู้ตัว"], answer: 0 },
+    { id: "Q07", question: "ทำไมต้องอัปเดตซอฟต์แวร์เสมอ?", choices: ["เพื่อให้ได้ฟีเจอร์ใหม่", "เพื่อปิดช่องโหว่ความปลอดภัย", "เพื่อให้โปรแกรมเร็วขึ้น"], answer: 1 },
+    { id: "Q08", question: "'Social Engineering' คืออะไร?", choices: ["การใช้เทคนิคแฮกขั้นสูง", "การใช้จิตวิทยาหลอกล่อคน", "การสร้างโปรแกรมปลอม"], answer: 1 },
+    { id: "Q09", question: "ข้อใด 'ไม่ใช่' ข้อมูลส่วนบุคคลตาม PDPA?", choices: ["เบอร์โทรศัพท์มือถือ", "อีเมลของบริษัท", "ลายนิ้วมือ"], answer: 1 },
+    { id: "Q10", question: "ทำไมการ Backup ข้อมูลจึงสำคัญ?", choices: ["เพื่อให้มีที่ว่างเพิ่ม", "เพื่อให้กู้คืนข้อมูลได้เมื่อเสียหาย", "เพื่อให้เข้าถึงไฟล์ได้หลายอุปกรณ์"], answer: 1 },
+    { id: "Q11", question: "'Vishing' คือการโจมตีรูปแบบใด?", choices: ["ใช้ไวรัสผ่าน USB", "ใช้การโทรศัพท์หลอกลวง", "ใช้เว็บไซต์ปลอม"], answer: 1 },
+    { id: "Q12", question: "หลักการ 'Least Privilege' หมายถึงอะไร?", choices: ["ให้สิทธิ์น้อยที่สุดเท่าที่จำเป็นต่อการทำงาน", "ให้สิทธิ์เฉพาะผู้บริหารระดับสูง", "ให้สิทธิ์การเข้าถึงเท่ากันทุกคนในแผนก"], answer: 0 },
+    { id: "Q13", question: "วิธีส่งข้อมูลลับที่เหมาะสมที่สุดคือ?", choices: ["ส่งผ่านแชทส่วนตัว", "ส่งอีเมลบริษัทและเข้ารหัสไฟล์", "เขียนใส่กระดาษวางบนโต๊ะ"], answer: 1 },
+    { id: "Q14", question: "'DDoS' คือการโจมตีแบบใด?", choices: ["ส่งไวรัสทำลายข้อมูล", "เดารหัสผ่านผู้ดูแล", "ระดมยิงข้อมูลจนเว็บล่ม"], answer: 2 },
+    { id: "Q15", question: "'Firewall' ทำหน้าที่เหมือนอะไร?", choices: ["ตำรวจจราจร", "ยามรักษาความปลอดภัย", "บุรุษไปรษณีย์"], answer: 1 }
+];
+
+let players = [];
+let currentPlayerIndex = 0;
+let gameStarted = false;
+let gameRound = 0;
+const MAX_ROUNDS = 25;
+
+let shuffledGreenCards, shuffledRedCards, shuffledQuizCards, bankruptPlayers = [];
+
+const playerColors = ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f'];
+const playerIcons = [
+    `<svg viewBox="0 0 24 24"><path fill="{color}" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>`,
+    `<svg viewBox="0 0 24 24"><path fill="{color}" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`,
+    `<svg viewBox="0 0 24 24"><path fill="{color}" d="M20,19V5c0-1.1-0.9-2-2-2H6C4.9,3,4,3.9,4,5v14H3v2h18v-2H20z M14,17H8v-2h6V17z M18,13H6V5h12V13z"/></svg>`,
+    `<svg viewBox="0 0 24 24"><path fill="{color}" d="M20.57 14.86L22 13.43 20.57 12 17 15.57 13.43 12 12 13.43 15.57 17 12 20.57 13.43 22 17 18.43 20.57 22 22 20.57 18.43 17l2.14-2.14M17.14 6.86L18 6l-2-2-1.14 1.14L13.72 4.01l-1.41 1.41l1.13 1.13l-1.41 1.41l-1.13-1.13L9.48 8.28l1.41 1.41l1.13-1.13l1.41 1.41l-1.13 1.13l1.41 1.41l1.13-1.13l1.42 1.42l-1.14 1.14L18 12l2-2-1.14-1.14-1.41-1.41l1.69-1.59zM3.43 12L12 3.43 20.57 12 12 20.57 3.43 12z"/></svg>`
+];
+
+
+const {
+    logBox, playerCountSelect, startGameBtn, setupModal, playersInfoContainer, board, 
+    rollDiceBtn, manualRollBtn, diceInput, diceResult, endTurnBtn, currentPlayerName,
+    purchaseModal, cardModal, eventRollModal, alertModal, roundCounter,
+    saveGameBtn, resetGameBtn,
+    actionSummaryModal
+} = {
+    logBox: document.getElementById('log-box'),
+    playerCountSelect: document.getElementById('player-count'),
+    startGameBtn: document.getElementById('start-game-btn'),
+    setupModal: document.getElementById('setup-modal'),
+    playersInfoContainer: document.getElementById('players-info-container'),
+    board: document.getElementById('board'),
+    rollDiceBtn: document.getElementById('roll-dice-btn'),
+    manualRollBtn: document.getElementById('manual-roll-btn'),
+    diceInput: document.getElementById('dice-input'),
+    diceResult: document.getElementById('dice-result'),
+    endTurnBtn: document.getElementById('end-turn-btn'),
+    currentPlayerName: document.getElementById('current-player-name'),
+    purchaseModal: document.getElementById('purchase-modal'),
+    cardModal: document.getElementById('card-modal'),
+    eventRollModal: document.getElementById('event-roll-modal'),
+    alertModal: document.getElementById('alert-modal'),
+    roundCounter: document.getElementById('round-counter'),
+    saveGameBtn: document.getElementById('save-game-btn'),
+    resetGameBtn: document.getElementById('reset-game-btn'),
+    actionSummaryModal: document.getElementById('action-summary-modal')
+};
+
+function addLog(message, showPopup = false, popupTitle = 'เหตุการณ์') {
+    logBox.innerHTML += `<p>${message}</p>`;
+    logBox.scrollTop = logBox.scrollHeight;
+    if (showPopup) {
+        showActionSummary(popupTitle, message);
+    }
+}
+
+function showActionSummary(title, message) {
+    const content = `<div class="action-summary-content">
+                        <div class="action-summary-title">${title}</div>
+                        <div class="action-summary-message">${message}</div>
+                     </div>`;
+    actionSummaryModal.innerHTML = content;
+    actionSummaryModal.style.display = 'flex';
+    setTimeout(() => {
+        actionSummaryModal.innerHTML = '';
+        actionSummaryModal.style.display = 'none';
+    }, 3000); // Popup disappears after 3 seconds
+}
+
+function populateBoard() {
+    spaceData.forEach(spaceInfo => {
+        const spaceEl = document.querySelector(`[data-id='${spaceInfo.id}']`);
+        if (spaceEl) {
+            let typeText = '';
+            if (spaceInfo.type === 'investment') typeText = 'ลงทุน';
+            else if (spaceInfo.type === 'event') typeText = 'สถานการณ์';
+            else if (spaceInfo.type === 'knowledge') typeText = 'ความรู้';
+            else if (spaceInfo.type.includes('corner')) typeText = 'มุมพิเศษ';
+            spaceEl.innerHTML = `<div class="space-name">${spaceInfo.name}</div><div class="space-type">${typeText}</div><div class="space-cost">${spaceInfo.costText}</div>`;
+        }
+    });
+}
+
+function updateUI() {
+    playersInfoContainer.innerHTML = '';
+    players.forEach((p, index) => {
+        const playerDiv = document.createElement('div');
+        playerDiv.className = 'player-info';
+        if (index === currentPlayerIndex) {
+            playerDiv.classList.add('active');
+            playerDiv.style.borderColor = playerColors[index];
+        }
+
+        const BASELINE_MONEY = 80000;
+        const BASELINE_SHIELDS = 5;
+        const BASELINE_REP = 100;
+        const BASELINE_OPS = 100;
+        const MONEY_WEIGHT = 25;
+        const SHIELD_WEIGHT = 35;
+        const REP_WEIGHT = 20;
+        const OPS_WEIGHT = 20;
+
+        const moneyScore = (p.money / BASELINE_MONEY) * MONEY_WEIGHT;
+        const shieldScore = (p.shields / BASELINE_SHIELDS) * SHIELD_WEIGHT;
+        const repScore = (p.reputation / BASELINE_REP) * REP_WEIGHT;
+        const opsScore = (p.operations / BASELINE_OPS) * OPS_WEIGHT;
+
+        p.score = Math.round(moneyScore + shieldScore + repScore + opsScore);
+
+        const scoreBreakdown = `Contribution to Score:
+` +
+                               `Money: ${moneyScore.toFixed(1)}
+` +
+                               `Shields: ${shieldScore.toFixed(1)}
+` +
+                               `Reputation: ${repScore.toFixed(1)}
+` +
+                               `Operations: ${opsScore.toFixed(1)}`;
+
+        playerDiv.innerHTML = `
+            <div class="player-name" style="color: ${playerColors[index]}">${p.name}</div>
+            <div class="player-stats">
+                <span>💰${p.money.toLocaleString()}</span>
+                <span>🛡️${p.shields}</span>
+                <span>📊${p.reputation}</span>
+                <span>⚙️${p.operations}%</span>
+            </div>
+            <div class="player-score" title="${scoreBreakdown}">Cyber Score: ${p.score} ℹ️</div>
+        `;
+        playersInfoContainer.appendChild(playerDiv);
+    });
+
+    players.forEach((p, index) => {
+        const piece = document.getElementById(`p${index+1}-piece`);
+        const space = document.querySelector(`[data-id='${p.position}']`);
+        if (piece && space) space.appendChild(piece);
+    });
+    
+    document.querySelectorAll('.owner-marker').forEach(marker => marker.remove());
+    spaceData.forEach(space => {
+        const spaceEl = document.querySelector(`[data-id='${space.id}']`);
+        if (space.owner !== null && space.owner !== undefined) {
+            spaceEl.style.borderColor = playerColors[space.owner];
+            spaceEl.style.borderWidth = '3px';
+            const ownerMarker = document.createElement('div');
+            ownerMarker.className = 'owner-marker';
+            ownerMarker.style.backgroundColor = playerColors[space.owner];
+            spaceEl.appendChild(ownerMarker);
+        } else if (spaceEl) {
+            spaceEl.style.borderColor = '#34495e';
+            spaceEl.style.borderWidth = '1px';
+        }
+    });
+
+    if(players.length > 0) {
+        const player = players[currentPlayerIndex];
+        currentPlayerName.textContent = player.name;
+        currentPlayerName.style.color = playerColors[currentPlayerIndex];
+        const isTurnActionFinished = player.hasRolled;
+        rollDiceBtn.disabled = !gameStarted || isTurnActionFinished;
+        manualRollBtn.disabled = !gameStarted || isTurnActionFinished;
+        diceInput.disabled = !gameStarted || isTurnActionFinished;
+        endTurnBtn.disabled = !gameStarted || !isTurnActionFinished;
+    }
+    roundCounter.textContent = `รอบที่: ${gameRound} / ${MAX_ROUNDS}`;
+}
+
+function setupGame() {
+    addLog("--- เริ่มเกมใหม่ ---");
+    populateBoard();
+    setupDecks();
+    
+    players = [];
+    gameRound = 1;
+    spaceData.forEach(s => s.owner = null); // Reset owners
+    document.querySelectorAll('.player-piece').forEach(p => p.remove());
+
+    const numPlayers = parseInt(playerCountSelect.value);
+    for (let i = 0; i < numPlayers; i++) {
+        players.push({ name: `Player ${i+1}`, position: 1, money: 80000, shields: 5, reputation: 100, operations: 100, inQuarantine: 0, hasRolled: false, score: 100 });
+        const piece = document.createElement('div');
+        piece.className = 'player-piece';
+        piece.id = `p${i+1}-piece`;
+        piece.innerHTML = playerIcons[i].replace('{color}', playerColors[i]);
+        const offsetsX = ['10%', '60%', '10%', '60%'];
+        const offsetsY = ['10%', '10%', '60%', '60%'];
+        piece.style.left = offsetsX[i];
+        piece.style.top = offsetsY[i];
+        document.querySelector(`[data-id='1']`).appendChild(piece);
+    }
+    
+    gameStarted = true;
+    setupModal.style.display = 'none';
+    addLog(`เกมเริ่มแล้วกับ ${numPlayers} ผู้เล่น.`);
+    addLog(`--- ถึงตาของ Player 1 (รอบที่ 1) ---`);
+    updateUI();
+}
+
+function endTurn() {
+    if (players.length === 0 || !players[currentPlayerIndex].hasRolled) { addLog("ทอยลูกเต๋าก่อนจบตาครับ"); return; }
+    if (checkForWinner()) return;
+
+    players[currentPlayerIndex].hasRolled = false;
+    
+    if (currentPlayerIndex === players.length - 1) {
+        gameRound++;
+        addLog(`--- จบรอบที่ ${gameRound-1} ---`);
+        if (checkForWinner()) return;
+    }
+
+    currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+    
+    const player = players[currentPlayerIndex];
+    if (player.inQuarantine > 0) {
+        addLog(`${player.name} อยู่ในช่อง Quarantine จึงต้องข้ามตานี้`);
+        player.inQuarantine--;
+        setTimeout(() => { players[currentPlayerIndex].hasRolled = true; updateUI(); endTurn(); }, 1500);
+        updateUI();
+        return;
+    }
+
+    addLog(`--- ถึงตาของ ${player.name} (รอบที่ ${gameRound}) ---`);
+    updateUI();
+}
+
+function movePlayer(roll) {
+    if (players[currentPlayerIndex].hasRolled) return;
+    let player = players[currentPlayerIndex];
+    player.hasRolled = true;
+    addLog(`${player.name} ทอยได้ ${roll}.`);
+    
+    const oldPosition = player.position;
+    let newPosition = player.position + roll;
+    if (newPosition > 40) {
+        newPosition -= 40;
+        player.money += 15000;
+        player.shields += 1;
+        const passGoMessage = `${player.name} เดินผ่านจุดเริ่มต้น ได้รับ $15,000 และ 1 🛡️.`;
+        addLog(passGoMessage, true, "รอบใหม่!");
+    }
+    player.position = newPosition;
+    
+    addLog(`${player.name} เดินไปที่ช่อง ${spaceData.find(s => s.id === newPosition).name}.`);
+    updateUI();
+    setTimeout(() => handleSpaceAction(player.position), 500);
+}
+
+function handleSpaceAction(position) {
+    const space = spaceData.find(s => s.id === position);
+    const player = players[currentPlayerIndex];
+
+    switch(space.type) {
+        case 'investment':
+            if (space.owner === null) promptPurchase(space);
+            else if (space.owner !== currentPlayerIndex) payRent(space);
+            else addLog(`${player.name} ตกช่องของตัวเอง`);
+            break;
+        case 'event': promptEventRoll(); break;
+        case 'knowledge': drawCard('quiz', space.reward); break;
+        case 'corner-alert': promptSystemAlert(); break;
+        case 'corner-quarantine':
+            if (space.id === 30) { // Go to Quarantine
+                addLog(`${player.name} ถูกส่งไปที่ Quarantine!`);
+                player.position = 40;
+                player.inQuarantine = 1;
+                updateUI();
+            } else if (space.id === 40) { // Landed on Quarantine
+                addLog(`${player.name} อยู่ในช่อง Quarantine และต้องหยุด 1 ตา`);
+                player.inQuarantine = 1;
+            }
+            break;
+    }
+    updateUI();
+}
+
+function payRent(space) {
+    const payer = players[currentPlayerIndex];
+    const owner = players[space.owner];
+    const rent = space.rent;
+    const rentMessage = `${payer.name} ต้องจ่ายค่าปรับ ${rent.toLocaleString()} ให้กับ ${owner.name}.`;
+    addLog(rentMessage, true, "จ่ายค่าปรับ");
+    if (payer.money < rent) {
+        addLog(`${payer.name} มีเงินไม่พอจ่ายค่าปรับ!`);
+        handleBankruptcy(currentPlayerIndex);
+    } else {
+        payer.money -= rent;
+        owner.money += rent;
+        addLog(`${payer.name} จ่ายค่าปรับเรียบร้อยแล้ว`);
+        updateUI();
+    }
+}
+
+function handleBankruptcy(playerIndex) {
+    const bankruptPlayer = players[playerIndex];
+    const bankruptcyMessage = `--- ${bankruptPlayer.name} ล้มละลาย! ---`;
+    addLog(bankruptcyMessage, true, "ผู้เล่นล้มละลาย");
+    bankruptPlayers.push(bankruptPlayer); // Track bankrupt player
+    spaceData.forEach(space => { if (space.owner === playerIndex) space.owner = null; });
+    document.getElementById(`p${playerIndex + 1}-piece`).remove();
+    players.splice(playerIndex, 1);
+    if (currentPlayerIndex >= playerIndex && players.length > 0) {
+        currentPlayerIndex = (players.length + currentPlayerIndex - 1) % players.length;
+    }
+    if (!checkForWinner()) updateUI();
+}
+
+function checkForWinner() {
+    if (players.length <= 1) {
+        endGame(players[0]);
+        return true;
+    }
+    if (gameRound > MAX_ROUNDS) {
+        addLog(`เกมจบแล้ว! ครบ ${MAX_ROUNDS} รอบ`);
+        const winner = players.reduce((best, p) => p.score > best.score ? p : best, players[0]);
+        endGame(winner, true);
+        return true;
+    }
+    return false;
+}
+
+function endGame(winner, byRounds = false) {
+    gameStarted = false;
+    localStorage.removeItem('cyberMonopolySave'); // Clear save on game end
+
+    let allPlayers = [...players, ...bankruptPlayers].sort((a, b) => b.score - a.score);
+
+    let message = byRounds ? 
+        `ครบ ${MAX_ROUNDS} รอบ! ผู้ชนะคือ ${winner.name} ที่มี Cyber Score สูงที่สุด!` : 
+        `ผู้เล่นคนสุดท้ายที่เหลือรอดคือ ${winner.name}!`;
+
+    let scoreboardHTML = allPlayers.map(p => {
+        const isWinner = p.name === winner.name;
+        const status = bankruptPlayers.some(bp => bp.name === p.name) ? ' (ล้มละลาย)' : '';
+        return `<div style="padding: 5px; ${isWinner ? 'background-color: #d4edda;' : ''}">
+                    <strong>${isWinner ? '🏆' : ''} ${p.name}${status}:</strong> 
+                    Cyber Score: ${p.score}
+                </div>`;
+    }).join('');
+
+    const html = `<h2>เกมจบแล้ว!</h2>
+        <p>${message}</p>
+        <h3 style="margin-top: 20px; margin-bottom: 10px; text-align: left;">สรุปคะแนน:</h3>
+        <div style="text-align: left; margin-bottom: 20px;">${scoreboardHTML}</div>
+        <button class="btn" onclick="location.reload()">เล่นอีกครั้ง</button>`;
+
+    showModal(alertModal, html);
+    addLog(`--- ${message} ---`);
+}
+
+function showModal(modalElement, contentHTML) { modalElement.innerHTML = `<div class="modal-content">${contentHTML}</div>`; modalElement.style.display = 'flex'; }
+function closeModal(modalElement) { modalElement.style.display = 'none'; }
+
+function promptPurchase(space) {
+    const player = players[currentPlayerIndex];
+    const canAfford = player.money >= space.cost;
+    const html = `<h2>ซื้อ ${space.name}?</h2><p>ราคา: $${space.cost.toLocaleString()}</p><p>รางวัล: +${space.reward} 🛡️</p>
+        <div style="margin-top: 20px;"><button id="buy-btn" class="btn" ${canAfford ? '' : 'disabled'}>ซื้อ</button>
+        <button id="pass-btn" class="btn" style="background: #c0392b;">ไม่ซื้อ</button></div>
+        ${!canAfford ? '<p style="color: red; margin-top: 10px;">คุณมีเงินไม่พอ</p>' : ''}`;
+    showModal(purchaseModal, html);
+    document.getElementById('buy-btn').onclick = () => { player.money -= space.cost; player.shields += space.reward; space.owner = currentPlayerIndex; addLog(`${player.name} ซื้อ ${space.name} และได้รับ ${space.reward} 🛡️.`); closeModal(purchaseModal); updateUI(); };
+    document.getElementById('pass-btn').onclick = () => { addLog(`${player.name} ไม่ซื้อ ${space.name}.`); closeModal(purchaseModal); };
+}
+
+function promptSystemAlert() {
+    const player = players[currentPlayerIndex];
+    const html = `<h2>System Alert!</h2><p>คุณต้องเลือกการกระทำอย่างใดอย่างหนึ่ง:</p>
+        <div style="margin-top: 20px; display: flex; justify-content: center; gap: 15px;">
+        <button id="pay-fine-btn" class="btn">จ่าย $5,000</button>
+        <button id="lose-ops-btn" class="btn" style="background: #f39c12;">เสีย 5% Operations</button></div>`;
+    showModal(alertModal, html);
+    document.getElementById('pay-fine-btn').onclick = () => { if (player.money < 5000) { addLog("เงินไม่พอจ่ายค่าปรับ!"); handleBankruptcy(currentPlayerIndex); } else { player.money -= 5000; addLog(`${player.name} จ่ายค่าปรับ $5,000.`); updateUI(); } closeModal(alertModal); };
+    document.getElementById('lose-ops-btn').onclick = () => { player.operations -= 5; addLog(`${player.name} เลือกที่จะเสีย 5% Operations.`); closeModal(alertModal); updateUI(); };
+}
+
+function promptEventRoll() {
+    const html = `<h2>สถานการณ์ไม่คาดฝัน!</h2><p>ทอยลูกเต๋า 1 ลูกเพื่อตัดสินโชคชะตา (สูง=เขียว, ต่ำ=แดง)</p>
+        <div class="dice-area" style="justify-content: center; margin-top: 15px;">
+            <button id="event-dice-roll-btn" class="btn">สุ่มเต๋า</button>
+            <input type="number" id="event-dice-input" min="1" max="6" placeholder="เลข">
+            <button id="event-manual-roll-btn" class="btn">ยืนยัน</button>
+        </div>
+        <p style="font-size: 3rem; margin: 15px 0;" id="event-dice-result">🎲</p>`;
+    showModal(eventRollModal, html);
+
+    const handleEventRoll = (roll) => {
+        document.getElementById('event-dice-result').innerText = roll;
+        document.getElementById('event-dice-roll-btn').disabled = true;
+        document.getElementById('event-manual-roll-btn').disabled = true;
+        document.getElementById('event-dice-input').disabled = true;
+
+        setTimeout(() => {
+            closeModal(eventRollModal);
+            if (roll >= 4) {
+                addLog(`ทอยได้ ${roll} (เลขสูง)! จั่วการ์ดเขียว`);
+                drawCard('green');
+            } else {
+                addLog(`ทอยได้ ${roll} (เลขต่ำ)... จั่วการ์ดแดง`);
+                drawCard('red');
+            }
+        }, 1500);
+    };
+
+    document.getElementById('event-dice-roll-btn').onclick = () => {
+        const roll = rollSingleDie();
+        handleEventRoll(roll);
+    };
+    
+    document.getElementById('event-manual-roll-btn').onclick = () => {
+        const roll = parseInt(document.getElementById('event-dice-input').value);
+        if (roll >= 1 && roll <= 6) {
+            handleEventRoll(roll);
+        } else {
+            addLog('กรุณาใส่ตัวเลข 1 ถึง 6 เท่านั้น');
+        }
+    };
+}
+
+function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+    while (currentIndex != 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    return array;
+}
+
+function setupDecks() {
+    shuffledGreenCards = shuffle([...greenCards]);
+    shuffledRedCards = shuffle([...redCards]);
+    shuffledQuizCards = shuffle([...quizCards]);
+    addLog("--- สำรับการ์ดถูกสับใหม่ ---");
+}
+
+function drawCard(type, reward = null) {
+    let card, cardPool, deckName;
+    if (type === 'green') {
+        if (!shuffledGreenCards || shuffledGreenCards.length === 0) setupDecks();
+        cardPool = shuffledGreenCards;
+        deckName = "การ์ดเขียว";
+    } else if (type === 'red') {
+        if (!shuffledRedCards || shuffledRedCards.length === 0) setupDecks();
+        cardPool = shuffledRedCards;
+        deckName = "การ์ดแดง";
+    } else if (type === 'quiz') {
+        if (!shuffledQuizCards || shuffledQuizCards.length === 0) setupDecks();
+        cardPool = shuffledQuizCards;
+        deckName = "การ์ดความรู้";
+    }
+
+    if (!cardPool || cardPool.length === 0) {
+        addLog(`ไม่สามารถจั่วการ์ดได้ (${deckName}) การ์ดหมดสำรับ`);
+        return;
+    }
+
+    card = cardPool.pop(); // Draw the top card
+    addLog(`${players[currentPlayerIndex].name} จั่ว ${deckName}. เหลือ ${cardPool.length} ใบในสำรับ`);
+
+    let cardHTML = `<div class="card-back">`;
+    if (type === 'quiz') {
+        card.reward = reward;
+        cardHTML += `<div class="card-title">${card.question}</div><div class="card-choices quiz-choices">
+            ${card.choices.map((choice, index) => `<div class="choice" onclick="handleQuizAnswer(${index}, ${card.answer}, '${card.id}')">${String.fromCharCode(65+index)}) ${choice}</div>`).join('')}</div>`;
+    } else {
+        cardHTML += `<div class="card-title">${card.title}</div><div class="card-description">${card.description}</div>`;
+        if (card.effect) {
+            cardHTML += `<div class="card-result">ผล: ${getEffectText(card.effect)}</div><button class="btn" onclick="applyCardEffect('${card.id}', '${type}')">OK</button>`;
+        }
+        if (card.choices) {
+            cardHTML += `<div class="card-choices">${card.choices.map((choice, index) => `<div class="choice" onclick="applyCardEffect('${card.id}', '${type}', ${index})">${choice.text}</div>`).join('')}</div>`;
+            if (type === 'red') cardHTML += `<button class="btn shield-btn" onclick="useShieldToCancel('${card.id}')">ใช้ 1🛡️ เพื่อยกเลิก</button>`;
+        }
+    }
+    cardHTML += `</div>`;
+    const modalContent = `<div class="modal-content ${type}-card">${cardHTML}</div>`;
+    cardModal.innerHTML = modalContent;
+    cardModal.style.display = 'flex';
+}
+
+function getEffectText(effect) {
+    return Object.entries(effect).map(([key, value]) => {
+        let text = value >= 0 ? '+' : '';
+        if (key === 'money') text += `$${Math.abs(value).toLocaleString()}`;
+        else if (key === 'shields') text += `${value}🛡️`;
+        else if (key === 'reputation') text += `${value} Rep`;
+        else if (key === 'operations') text += `${value}% Ops`;
+        return text;
+    }).join(', ');
+}
+
+function useShieldToCancel(cardId) {
+    const player = players[currentPlayerIndex];
+    if (player.shields > 0) {
+        player.shields--;
+        addLog(`${player.name} ใช้ 1 🛡️ เพื่อยกเลิกการ์ด '${redCards.find(c=>c.id === cardId).title}'.`);
+        closeModal(cardModal);
+        updateUI();
+    } else {
+        addLog(`${player.name} ไม่มี 🛡️ ให้ใช้!`);
+        const shieldBtn = document.querySelector('.shield-btn');
+        if(shieldBtn) shieldBtn.disabled = true;
+    }
+}
+
+function applyCardEffect(cardId, type, choiceIndex = -1) {
+    const player = players[currentPlayerIndex];
+    let card, effect, logText;
+    if (type === 'green') card = greenCards.find(c => c.id === cardId);
+    else if (type === 'red') card = redCards.find(c => c.id === cardId);
+
+    if (choiceIndex !== -1) { const choice = card.choices[choiceIndex]; effect = choice.effect; logText = `${player.name} เลือก: ${choice.text}`; }
+    else { effect = card.effect; logText = `${player.name} ได้รับผลจาก: ${card.title}.`; }
+    addLog(logText);
+
+    if (effect) {
+        if(effect.money && player.money + effect.money < 0) { handleBankruptcy(currentPlayerIndex); } else {
+            if(effect.money) player.money += effect.money;
+            if(effect.shields) player.shields += effect.shields;
+            if(effect.reputation) player.reputation += effect.reputation;
+            if(effect.operations) player.operations += effect.operations;
+        }
+    }
+    updateUI();
+    closeModal(cardModal);
+}
+
+function handleQuizAnswer(selectedIndex, correctIndex, cardId) {
+    const player = players[currentPlayerIndex];
+    const space = spaceData.find(s => s.id === player.position);
+    if (selectedIndex === correctIndex) {
+        const reward = space.reward;
+        addLog(`คำตอบถูกต้อง! ${player.name} ได้รับ ${getEffectText(reward)}`);
+        if(reward.shields) player.shields += reward.shields;
+        if(reward.money) player.money += reward.money;
+    } else {
+        addLog(`คำตอบผิด! ไม่มีอะไรเกิดขึ้น`);
+    }
+    updateUI();
+    closeModal(cardModal);
+}
+
+// --- UTILITY & GAME STATE FUNCTIONS ---
+function secureRandomIndex(arrayLength) {
+    const randomArray = new Uint32Array(1);
+    window.crypto.getRandomValues(randomArray);
+    return randomArray[0] % arrayLength;
+}
+
+function rollSingleDie() {
+    const randomArray = new Uint8Array(1);
+    window.crypto.getRandomValues(randomArray);
+    return (randomArray[0] % 6) + 1;
+}
+
+function saveGameState() {
+    if (!gameStarted) {
+        addLog("เกมยังไม่เริ่ม ไม่สามารถบันทึกได้");
+        return;
+    }
+    const state = {
+        players: players,
+        currentPlayerIndex: currentPlayerIndex,
+        gameRound: gameRound,
+        gameStarted: gameStarted,
+        spaceOwners: spaceData.map(s => s.owner),
+        shuffledGreenCards: shuffledGreenCards,
+        shuffledRedCards: shuffledRedCards,
+        shuffledQuizCards: shuffledQuizCards
+    };
+    localStorage.setItem('cyberMonopolySave', JSON.stringify(state));
+    addLog("--- บันทึกเกมเรียบร้อยแล้ว ---");
+}
+
+function loadGameState() {
+    const savedState = localStorage.getItem('cyberMonopolySave');
+    if (savedState) {
+        const state = JSON.parse(savedState);
+        players = state.players;
+        currentPlayerIndex = state.currentPlayerIndex;
+        gameRound = state.gameRound;
+        gameStarted = state.gameStarted;
+        shuffledGreenCards = state.shuffledGreenCards || [];
+        shuffledRedCards = state.shuffledRedCards || [];
+        shuffledQuizCards = state.shuffledQuizCards || [];
+
+        state.spaceOwners.forEach((owner, i) => {
+            spaceData[i].owner = owner;
+        });
+
+        addLog("--- โหลดเกมที่บันทึกไว้ ---");
+        populateBoard();
+        document.querySelectorAll('.player-piece').forEach(p => p.remove());
+        players.forEach((p, i) => {
+            const piece = document.createElement('div');
+            piece.className = 'player-piece';
+            piece.id = `p${i+1}-piece`;
+            piece.innerHTML = playerIcons[i].replace('{color}', playerColors[i]);
+            document.body.appendChild(piece); // Add to body temporarily
+        });
+        
+        setupModal.style.display = 'none';
+        updateUI();
+        return true;
+    }
+    return false;
+}
+
+function resetGame() {
+    if (confirm("คุณแน่ใจหรือไม่ว่าจะเริ่มเกมใหม่? ข้อมูลที่บันทึกไว้จะถูกลบ")) {
+        localStorage.removeItem('cyberMonopolySave');
+        location.reload();
+    }
+}
+
+// --- EVENT LISTENERS & GAME START ---
+window.addEventListener('load', () => {
+    if (!loadGameState()) {
+        setupModal.style.display = 'flex';
+    }
+});
+
+startGameBtn.addEventListener('click', setupGame);
+rollDiceBtn.addEventListener('click', () => { 
+    const roll = rollSingleDie() + rollSingleDie(); 
+    diceResult.textContent = `🎲 ${roll}`; 
+    diceResult.classList.add('dice-flash');
+    setTimeout(() => diceResult.classList.remove('dice-flash'), 400);
+    movePlayer(roll); 
+});
+manualRollBtn.addEventListener('click', () => { 
+    const roll = parseInt(diceInput.value); 
+    if (roll >= 2 && roll <= 12) { 
+        diceResult.textContent = `🎲 ${roll}`; 
+        diceResult.classList.add('dice-flash');
+        setTimeout(() => diceResult.classList.remove('dice-flash'), 400);
+        movePlayer(roll); 
+        diceInput.value = ''; 
+    } else { 
+        addLog('ใส่ตัวเลข 2 ถึง 12 เท่านั้น'); 
+    } 
+});
+endTurnBtn.addEventListener('click', endTurn);
+saveGameBtn.addEventListener('click', saveGameState);
+resetGameBtn.addEventListener('click', resetGame);
+
+</script>
+</body>
+</html>

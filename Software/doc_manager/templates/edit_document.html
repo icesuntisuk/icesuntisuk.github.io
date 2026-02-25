@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% block title %}แก้ไขเอกสาร{% endblock %}
+{% block content %}
+<h3 class="mb-4">📝 แก้ไขเอกสาร</h3>
+
+<form method="POST" enctype="multipart/form-data" class="row g-3">
+  <div class="col-md-6">
+    <label>เลขรับ</label>
+    <input type="text" name="number_received" value="{{ doc.number_received }}" class="form-control">
+  </div>
+  <div class="col-md-6">
+    <label>ที่หนังสือ</label>
+    <input type="text" name="book_number" value="{{ doc.book_number }}" class="form-control">
+  </div>
+
+  <div class="col-md-6">
+    <label>วันที่หนังสือ</label>
+    <input type="text" name="date_book" value="{{ doc.date_book }}" class="form-control datepicker" placeholder="เลือกวันที่">
+  </div>
+  <div class="col-md-6">
+    <label>วันที่เข้า</label>
+    <input type="text" name="date_received" value="{{ doc.date_received }}" class="form-control datepicker" placeholder="เลือกวันที่">
+  </div>
+
+  <div class="col-md-6">
+    <label>จากหน่วยงาน</label>
+    <input type="text" name="from_department" value="{{ doc.from_department }}" class="form-control">
+  </div>
+  <div class="col-md-6">
+    <label>เรื่อง</label>
+    <input type="text" name="subject" value="{{ doc.subject }}" class="form-control">
+  </div>
+
+  <div class="col-md-6">
+    <label>กองงานรับผิดชอบ</label>
+    <input type="text" name="responsible_group" value="{{ doc.responsible_group }}" class="form-control">
+  </div>
+  <div class="col-md-6">
+    <label>สถานะ</label>
+    <select name="status" class="form-select">
+      <option value="อยู่ระหว่างดำเนินการ" {% if doc.status == 'อยู่ระหว่างดำเนินการ' %}selected{% endif %}>อยู่ระหว่างดำเนินการ</option>
+      <option value="เสร็จสิ้น" {% if doc.status == 'เสร็จสิ้น' %}selected{% endif %}>เสร็จสิ้น</option>
+      <option value="รอดำเนินการ" {% if doc.status == 'รอดำเนินการ' %}selected{% endif %}>รอดำเนินการ</option>
+    </select>
+  </div>
+
+  <div class="col-md-12">
+    <label>หมายเหตุ</label>
+    <input type="text" name="remark" value="{{ doc.remark }}" class="form-control">
+  </div>
+
+  <div class="col-md-12">
+    <label>ไฟล์ PDF ใหม่ (หากต้องการเปลี่ยน)</label>
+    <input type="file" name="file" accept="application/pdf" class="form-control">
+    <p class="form-text">ปัจจุบัน: {{ doc.file_path }}</p>
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">💾 บันทึกการเปลี่ยนแปลง</button>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">ยกเลิก</a>
+  </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+  flatpickr('.datepicker', {
+    locale: 'th',
+    dateFormat: 'd-m-Y',
+    onReady: function(selectedDates, dateStr, instance) {
+      instance.currentYearElement.value = instance.currentYear + 543;
+    },
+    onChange: function(selectedDates, dateStr, instance) {
+      const date = selectedDates[0];
+      if (date) {
+        const buddhistYear = date.getFullYear() + 543;
+        instance.input.value = date.getDate().toString().padStart(2, '0') + '-' +
+                               (date.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                               buddhistYear;
+      }
+    }
+  });
+</script>
+{% endblock %}
+

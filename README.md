@@ -1,9 +1,9 @@
 ![](/img/ice2.png){:height="35%" width="35%" style="float: right"}
 
 # Biography of 
-# <font color="white"> Capt.Suntisuk Thepthong (Ice) </font>
+# <font color="white"> Maj.Suntisuk Thepthong (Ice) </font>
 
-Contact to me (LineID): coolangel
+Contact to me (Line ID): coolangel
 
 I have had the great fortune to be involved with nearly every dimension of cyber security. I deployed security technologies, designed infrastructure and developed security programs to maturity. 
 
@@ -28,7 +28,11 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Course: Ethical Hacking
     * Course: OWASP Top 10 2021
     * Course: CompTIA Security+
-* **2020 - 2022**: Plan and Engineering Division @ DIST.
+* **Working**: Instructor and Security Specialist @ Albatross CyberSec.
+    * Course: Cybersecurity Awareness Training
+    * Course: OWASP Top 10
+    * Course: Secure Coding 
+* **2020 - 2022**: Plan and Engineering Division @ Defence Information And Space Technology Department.
 
 * **2017 - 2020**: Security Officer @ Cyber Center (MOD).
     * Cyber Center is an office under Defence Information and Space Technology Department (DIST) in the Office of the Permanent Secretary for Defence, Ministry of Defense. ([ref.](http://dist.mod.go.th/Recommend/Responsibility.aspx ))
@@ -62,18 +66,27 @@ I have had the great fortune to be involved with nearly every dimension of cyber
     * Teacher assistant of the course.
     * Full scholarship.
 
+### **Training**
+
+* **Course**: 2nd Cybersecurity Course on Cyber Incident Response & Threat Analysis: 2nd CIRTA @ ADMM Cybersecurity and Information Centre of Excellence: ACICE (Singapore)
+* **Course**: OSCP Bootcamp
+* **Course**: CCIE Bootcamp 
+
+
 ### **Certification**
 
+* OffSec Certified Professional (OSCP and OSCP+) [My OSCP Journey](./OSCP%20Journey/IceSuntisukJourney.html)
 * CompTIA Security Infrastructure Expert (CSIE)
 * CompTIA Security Analytics Expert (CSAE)
 * CompTIA Security Analytics Professional (CSAP)
 * CompTIA Network Vulnerability Assessment Professional (CNVP)
-* Certified in Cybersecurity (ISC)²
+* Certified in Cybersecurity (ISC)² (CC)
 * CompTIA Network+
 * CompTIA Security+
 * CompTIA Pentest+
 * CompTIA CySA+
 * CompTIA SecurityX (CASP+)
+* Certified Ethical Hacker (CEH) 
 * Fortinet Certified Fundamentals in Cybersecurity
 * Fortinet NSE 4 (Network Security Professional)
 * Fortinet NSE 3 (Fortinet Product Awareness)
@@ -92,6 +105,7 @@ I have had the great fortune to be involved with nearly every dimension of cyber
 
 #### **Specialties**
 
+* AI Agent
 * Cybersecurity
 * Incident response
 * Security Operations Center (SOC)
@@ -131,6 +145,7 @@ My **hobbies** include Playing Basketball, Running, Surf Skating and Reading boo
 * [Thai Wordlist Generator](/KB/TH-WLGen/README.md)
 * [How to dump password on WindowsOS via Minikaz](/KB/minikaz.md)
 
+
 ### **บทเรียนฟรี หัวข้อ เครือข่ายคอมพิวเตอร์ 101**
 * [EP.1 ความรู้พื้นฐานเกี่ยวกับเครือข่ายและการสื่อสาร](https://youtu.be/U3iJ3d8Y-Sw)
 * [EP.2 รูปแบบการเชื่อมต่อเครือข่ายสารสนเทศ](https://youtu.be/0As4MsB7SIQ)
@@ -146,21 +161,12 @@ My **hobbies** include Playing Basketball, Running, Surf Skating and Reading boo
 * [EP.12 Inter VLAN (L3 Switch)](https://youtu.be/dxEkfXSKt8o)
 * [EP.13 CDP Protocol](https://youtu.be/qkgbYK6iKdQ)
 
-<!-- 
-# ข้อมูลด้านล่างนี้อยู่ระหว่างพัฒนา
-### Ethical Hacking Cheatsheet
-* [Command so necessary](/PentestCheatsheet/cmd.md)
-* [Reconnaissance](/PentestCheatsheet/recon.md)
-* [Network Pivoting](/PentestCheatsheet/)
-* [Enumeration and Gaining Access](/PentestCheatsheet/enum.md)
-* [Password Hacking](/PentestCheatsheet/)
-* [Web Hacking](/PentestCheatsheet/)
-* [Reverse Shells](/PentestCheatsheet/)
-* [Spawning Shells](/PentestCheatsheet/)
-* [Linux Privilege Escalation](/PentestCheatsheet/linux-pri.md)
-* [Windows Privilege Escalation](/PentestCheatsheet/win-pri.md)
--->
 
-**Created in ๒๐๒๐**
 
+<<<<<<< HEAD
 **Updated on ๒๕ ก.พ.๖๙**
+=======
+**Created in ๒๐๒๕**
+
+**Updated on ๒๒ พ.ค.๖๘**
+>>>>>>> 93a1fcf1bc6ff28a4f841087b8ccd4633050c6b9

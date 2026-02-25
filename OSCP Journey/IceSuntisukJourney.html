@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSCP Journey: บันทึกการเดินทางสู่ความสำเร็จ</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ff41;
+            --primary-dark: #00cc33;
+            --secondary: #ff6b35;
+            --bg-dark: #0a0a0a;
+            --bg-darker: #050505;
+            --bg-card: #1a1a1a;
+            --text: #e0e0e0;
+            --text-dim: #a0a0a0;
+            --accent: #00d4ff;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --shadow: 0 20px 40px rgba(0, 255, 65, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 255, 65, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 212, 255, 0.05) 0%, transparent 50%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(45deg, transparent 30%, rgba(0, 255, 65, 0.03) 50%, transparent 70%),
+                linear-gradient(-45deg, transparent 30%, rgba(255, 107, 53, 0.03) 50%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(0, 255, 65, 0.3); }
+            100% { box-shadow: 0 0 30px rgba(0, 255, 65, 0.5); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-dim);
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            background: rgba(26, 26, 26, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-item {
+            padding: 0.5rem 1rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .nav-item:hover {
+            color: var(--primary);
+            background: rgba(0, 255, 65, 0.1);
+        }
+
+        /* Sections */
+        .section {
+            padding: 6rem 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text), var(--text-dim));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .timeline-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            z-index: 2;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid var(--bg-dark);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.1);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            margin-top: 0.5rem;
+        }
+
+        /* Write-ups Grid */
+        .writeups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .writeup-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .writeup-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 255, 65, 0.1);
+        }
+
+        .writeup-header {
+            padding: 1.5rem;
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .writeup-header.htb {
+            background: var(--gradient-2);
+        }
+
+        .writeup-header.pg {
+            background: var(--gradient-3);
+        }
+
+        .writeup-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .writeup-count {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .writeup-list {
+            padding: 1.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .writeup-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .writeup-item:last-child {
+            border-bottom: none;
+        }
+
+        .writeup-name {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .writeup-name:hover {
+            color: var(--primary);
+        }
+
+        .difficulty-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .difficulty-easy { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
+        .difficulty-medium { background: rgba(255, 152, 0, 0.2); color: #ff9800; }
+        .difficulty-hard { background: rgba(244, 67, 54, 0.2); color: #f44336; }
+        .difficulty-insane { background: rgba(156, 39, 176, 0.2); color: #9c27b0; }
+        .difficulty-intermediate { background: rgba(33, 150, 243, 0.2); color: #2196f3; }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-darker);
+            padding: 4rem 0 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+            transform: translateY(-5px);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .nav {
+                position: static;
+                margin: 2rem auto;
+                width: fit-content;
+            }
+            
+            .timeline::before {
+                left: 2rem;
+            }
+            
+            .timeline-item {
+                flex-direction: row;
+                margin-left: 4rem;
+            }
+            
+            .timeline-icon {
+                left: 2rem;
+            }
+            
+            .timeline-content {
+                max-width: 100%;
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-items">
+            <a href="#journey" class="nav-item">Journey</a>
+            <a href="#writeups" class="nav-item">Write-ups</a>
+            <a href="#contact" class="nav-item">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-shield-alt"></i> OSCP Certified Professional
+                </div>
+                <h1>IceSuntisuk OSCP Journey</h1>
+                <p class="hero-subtitle">บันทึกการเดินทาง ความทุ่มเท และการ "Try Harder" สู่ความสำเร็จในสาย Cybersecurity</p>
+                
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number">6</span>
+                        <div class="stat-label">เดือนเตรียมตัว</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">24</span>
+                        <div class="stat-label">ชั่วโมงสอบ</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">40+</span>
+                        <div class="stat-label">เครื่อง Write-ups</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">1</span>
+                        <div class="stat-label">ความสำเร็จ</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Journey Timeline -->
+    <section id="journey" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">การเดินทางสู่ OSCP</h2>
+                <p class="section-subtitle">จากจุดเริ่มต้นที่ไม่คาดฝัน จนถึงวันที่ได้รับใบรับรอง</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="card">
+                            <h3><i class="fas fa-flag-checkered"></i> จุดเริ่มต้น: การแข่ง CTF</h3>
+                            <p>เริ่มต้นจากการเข้าร่วมการแข่งขัน CTF ที่จัดโดยสำนักข่าวกรองแห่งชาติ (สขช.) และสามารถคว้าอันดับที่ 2 ได้สำเร็จ ทำให้ได้รับ Voucher สำหรับการสอบ OSCP</p>
+                        </div>
+                    </div>
+                    <div class="timeline-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="card">
+                            <h3><i class="fas fa-book"></i> การเรียนรู้ PEN-200</h3>
+                            <p>เข้าเรียนหลักสูตร PEN-200 เป็นเวลา 3 เดือน ได้เรียนรู้เทคนิคต่างๆ ตั้งแต่ Information Gathering ไปจนถึงการเขียนรายงาน และที่สำคัญคือการเปลี่ยน Mindset เป็น "Try Harder"</p>
+                        </div>
+                    </div>
+                    <div class="timeline-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="card">
+                            <h3><i class="fas fa-laptop-code"></i> การฝึkฝนใน HTB & PG</h3>
+                            <p>ใช้เวลาอีก 3 เดือนในการฝึกฝนกับเครื่องใน TJNull's List บน Hack The Box และ Proving Grounds สร้าง Playbook และ Write-up ต่างๆ เพื่อเตรียมความพร้อม</p>
+                        </div>
+                    </div>
+                    <div class="timeline-icon">
+                        <i class="fas fa-terminal"></i>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="card">
+                            <h3><i class="fas fa-clock"></i> วันสอบ: 24 ชั่วโมงแห่งความท้าทาย</h3>
+                            <p>วันที่ 10 สิงหาคม 2568 เป็นวันที่ลงสนามสอบจริง ใช้เวลา 24 ชั่วโมงเต็มในการทำข้อสอบและเขียนรายงาน ผ่านความท้าทายและความเครียดมากมาย</p>
+                        </div>
+                    </div>
+                    <div class="timeline-icon">
+                        <i class="fas fa-stopwatch"></i>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="card">
+                            <h3><i class="fas fa-medal"></i> ความสำเร็จ: PASSED!</h3>
+                            <p>หลังจากรอคอยอย่างใจจดใจจ่อ ในที่สุดก็ได้รับอีเมลแจ้งผลว่า "PASSED" เป็นช่วงเวลาที่ภูมิใจและโล่งใจที่สุดในชีวิต พิสูจน์ให้เห็นว่า "Try Harder" ทำให้ทุกอย่างเป็นไปได้</p>
+                        </div>
+                    </div>
+                    <div class="timeline-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Write-ups Section -->
+    <section id="writeups" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Write-ups Collection</h2>
+                <p class="section-subtitle">รวม Write-ups ที่ได้ทำระหว่างการฝึกฝนเตรียมสอบ OSCP</p>
+            </div>
+
+            <div class="writeups-grid">
+                <!-- HTB Write-ups -->
+                <div class="writeup-card">
+                    <div class="writeup-header htb">
+                        <h3 class="writeup-title"><i class="fas fa-cube"></i> Hack The Box</h3>
+                        <p class="writeup-count">22 Machines Completed</p>
+                    </div>
+                    <div class="writeup-list">
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Access/Access.md" class="writeup-name">Access</a>
+                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/AdministratorHTB/Administrator.md" class="writeup-name">Administrator</a>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/APT/APT.md" class="writeup-name">APT</a>
+                            <span class="difficulty-badge difficulty-insane">Insane</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/ATOM HTB/ATOM.md" class="writeup-name">ATOM</a>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Blackfield/Blackfield.md" class="writeup-name">Blackfield</a>
+                            <span class="difficulty-badge difficulty-hard">Hard</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Builder/Builder.md" class="writeup-name">Builder</a>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Cerberus/Cerberus.md" class="writeup-name">Cerberus</a>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Clicker/Clicker.md" class="writeup-name">Clicker</a>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Dog/Dog.md" class="writeup-name">Dog</a>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Editorial/Editorial.md" class="writeup-name">Editorial</a>
+                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Magic/Magic.md" class="writeup-name">Magic</a>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Manager/Manager.md" class="writeup-name">Manager</a>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Mentro/Mentro.md" class="writeup-name">Mentro</a>
+                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Monteverde/Monteverde.md" class="writeup-name">Monteverde</a>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Networked/Networked.md" class="writeup-name">Networked</a>
+                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Pandora/Pandora.md" class="writeup-name">Pandora</a>
+                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Rebound/Rebound.md" class="writeup-name">Rebound</a>
+                            <span class="difficulty-badge difficulty-hard">Hard</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Soccer/Soccer.md" class="writeup-name">Soccer</a>
+                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/StreamIO/StreamIO.md" class="writeup-name">StreamIO</a>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Support/Support.md" class="writeup-name">Support</a>
+                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/UpDown/Updown.md" class="writeup-name">Updown</a>
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://github.com/icesuntisuk/icesuntisuk.github.io/tree/main/OSCP%20Journey/WriteUp/HTB Challenge/Usage/Usage.md" class="writeup-name">Usage</a>
+                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Resources Card -->
+                <div class="writeup-card">
+                    <div class="writeup-header">
+                        <h3 class="writeup-title"><i class="fas fa-link"></i> แหล่งข้อมูลอ้างอิง</h3>
+                        <p class="writeup-count">สำคัญสำหรับการเตรียมตัว</p>
+                    </div>
+                    <div class="writeup-list">
+                        <div class="writeup-item">
+                            <a href="https://www.offsec.com/courses/pen-200/" class="writeup-name" target="_blank">
+                                <i class="fas fa-graduation-cap"></i> OSCP Course (PEN-200)
+                            </a>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://docs.google.com/spreadsheets/d/1dwSMIAPIam0PuRBkCiDI88pU3yzrqqHkDtBngUHNCw8/edit#gid=183940215" class="writeup-name" target="_blank">
+                                <i class="fas fa-list"></i> TJNull's OSCP List
+                            </a>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://www.hackthebox.com/" class="writeup-name" target="_blank">
+                                <i class="fas fa-cube"></i> Hack The Box
+                            </a>
+                        </div>
+                        <div class="writeup-item">
+                            <a href="https://www.offsec.com/labs/proving-grounds/" class="writeup-name" target="_blank">
+                                <i class="fas fa-server"></i> Proving Grounds
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quote Section -->
+    <section class="section">
+        <div class="container">
+            <div class="card" style="text-align: center; background: var(--gradient-1); color: white; border: none;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">💪 "Try Harder!"</h2>
+                <p style="font-size: 1.3rem; opacity: 0.9; max-width: 600px; margin: 0 auto;">
+                    "Try Harder is not just a motto, it's a way of life! การเดินทางครั้งนี้สอนให้ผมรู้ว่าไม่มีอะไรที่เป็นไปไม่ได้ถ้าเรามีความพยายาม ความอดทน และความมุ่งมั่นที่มากพอ"
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">ติดต่อและติดตาม</h2>
+                <p class="section-subtitle">หวังว่าเรื่องราวนี้จะเป็นแรงบันดาลใจให้กับทุกคน</p>
+            </div>
+            
+            <div class="card" style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <h3 style="margin-bottom: 2rem;">🚀 ขอให้ทุกคนโชคดีและประสบความสำเร็จ!</h3>
+                <p style="margin-bottom: 2rem; color: var(--text-dim);">
+                    หากมีคำถามหรืออยากแชร์ประสบการณ์ สามารถติดต่อได้ตามช่องทางด้านล่าง
+                </p>
+                <div class="social-links">
+                    <a href="https://github.com/icesuntisuk" class="social-link" title="GitHub" target="_blank">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p style="color: var(--text-dim); margin-bottom: 1rem;">
+                    สร้างด้วย ❤️ และจิตวิญญาณ "Try Harder"
+                </p>
+                <p style="color: var(--text-dim); font-size: 0.9rem;">
+                    © 2025 OSCP Journey Blog. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Smooth Interactions -->
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll effect to navigation
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('.nav');
+            if (window.scrollY > 100) {
+                nav.style.background = 'rgba(26, 26, 26, 0.95)';
+                nav.style.backdropFilter = 'blur(20px)';
+            } else {
+                nav.style.background = 'rgba(26, 26, 26, 0.9)';
+                nav.style.backdropFilter = 'blur(20px)';
+            }
+        });
+
+        // Animate cards on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'slideInUp 0.6s ease forwards';
+                }
+            });
+        }, observerOptions);
+
+        // Add animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Observe all cards
+        document.querySelectorAll('.card, .writeup-card, .stat-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Add typing effect to hero title
+        function typeWriter(element, text, speed = 100) {
+            let i = 0;
+            element.innerHTML = '';
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Initialize typing effect after page load
+        window.addEventListener('load', function() {
+            const heroTitle = document.querySelector('.hero h1');
+            if (heroTitle) {
+                typeWriter(heroTitle, 'OSCP Journey', 150);
+            }
+        });
+
+        // Add hover effects to timeline icons
+        document.querySelectorAll('.timeline-icon').forEach(icon => {
+            icon.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(-50%) scale(1.1)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+            
+            icon.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(-50%) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

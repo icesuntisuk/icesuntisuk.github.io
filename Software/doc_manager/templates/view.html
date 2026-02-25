@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head><title>ดูเอกสาร</title></head>
+<body>
+    <h2>{{ document.subject }}</h2>
+    <iframe src="{{ url_for('serve_file', filename=document.file_path) }}" width="100%" height="600px"></iframe>
+    <br><a href="/">← กลับ</a>
+</body>
+</html>
