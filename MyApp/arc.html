@@ -331,7 +331,7 @@
         const tableHeaderHTML = `
             <thead class="bg-gray-100 text-gray-600 text-sm border-b">
                 <tr>
-                    <th class="p-3 font-semibold w-16">รหัส</th>
+                    <th class="p-3 font-semibold w-24 whitespace-nowrap">รหัส</th>
                     <th class="p-3 font-semibold w-1/3">รายละเอียดการประเมิน / วัตถุประสงค์</th>
                     <th class="p-3 font-semibold w-56 text-center">ผลการประเมิน</th>
                     <th class="p-3 font-semibold w-24 text-center">ความเสี่ยง</th>
@@ -360,7 +360,7 @@
                         const tr = document.createElement('tr');
                         tr.className = "border-b hover:bg-gray-50 transition";
                         tr.innerHTML = `
-                            <td class="p-3 text-sm font-medium text-gray-900 align-top">${item.id}</td>
+                            <td class="p-3 text-sm font-medium text-gray-900 align-top whitespace-nowrap">${item.id}</td>
                             <td class="p-3 align-top">
                                 <div class="font-medium text-gray-800">${item.req}</div>
                                 <div class="text-xs text-gray-500 mt-1">${item.desc}</div>
