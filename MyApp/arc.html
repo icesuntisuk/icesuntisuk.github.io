@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบฟอร์มการประเมินความมั่นคงปลอดภัยไซเบอร์ (CII)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f3f4f6;
+        }
+        @media print {
+            body { background-color: white; }
+            .no-print { display: none !important; }
+            .print-break { page-break-before: always; }
+            .tab-content { display: block !important; } /* Show all tabs when printing */
+            .shadow-md { box-shadow: none !important; border: 1px solid #e5e7eb; }
+        }
+        .radio-custom:checked + div {
+            border-color: currentColor;
+            background-color: currentColor;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-600 gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">แบบฟอร์มการประเมินความมั่นคงปลอดภัยไซเบอร์</h1>
+                <p class="text-sm text-gray-500 mt-1">สำหรับหน่วยงานโครงสร้างพื้นฐานสำคัญทางสารสนเทศ (CII)</p>
+            </div>
+            <div class="flex gap-2 w-full md:w-auto">
+                <button onclick="resetForm()" class="no-print w-full md:w-auto bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-4 py-2 rounded-md font-medium transition flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                    เริ่มใหม่
+                </button>
+                <button onclick="window.print()" class="no-print w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                    พิมพ์ / PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Scope & Information -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="flex justify-between items-center border-b pb-2 mb-4">
+                <h2 class="text-lg font-bold text-gray-800">📌 ข้อมูลการประเมินและขอบเขต (Scope of Assessment)</h2>
+                <span id="save-status" class="text-xs text-emerald-600 font-medium no-print transition-opacity duration-300 opacity-0">บันทึกข้อมูลแล้ว ✓</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อระบบ / โครงการ (System Name)</label>
+                    <input type="text" id="sys-name" oninput="saveData()" class="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="ระบุชื่อระบบ...">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">หน่วยงานที่รับผิดชอบ (Department)</label>
+                    <input type="text" id="dept" oninput="saveData()" class="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="ระบุชื่อหน่วยงาน...">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">วันที่ทำการประเมิน (Assessment Date)</label>
+                    <input type="date" id="assess-date" onchange="saveData()" class="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทสภาพแวดล้อม (Environment)</label>
+                    <div class="flex gap-2">
+                        <select id="env-select" onchange="handleEnvChange(); saveData()" class="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">-- เลือก --</option>
+                            <option value="Production">Production</option>
+                            <option value="UAT">UAT / Staging</option>
+                            <option value="DR">DR Site</option>
+                            <option value="Other">อื่นๆ</option>
+                        </select>
+                        <input type="text" id="env-other" oninput="saveData()" class="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 hidden" placeholder="ระบุเพิ่มเติม...">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ขอบเขตระบบ (Infrastructure Scope)</label>
+                    <select id="scope" onchange="saveData()" class="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">-- เลือก --</option>
+                        <option value="On-Premises">On-Premises</option>
+                        <option value="Cloud">Cloud</option>
+                        <option value="Hybrid">Hybrid</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ช่วง IP Address / Subnet</label>
+                    <input type="text" id="ip-range" oninput="saveData()" class="w-full border-gray-300 border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="เช่น 192.168.1.0/24">
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Widget -->
+        <div class="bg-white p-6 rounded-lg shadow-md flex flex-col md:flex-row items-center justify-between gap-4 border-l-4 border-emerald-500">
+            <div>
+                <h3 class="text-lg font-bold text-gray-800">สรุปผลการประเมิน (Live Summary)</h3>
+                <p class="text-sm text-gray-500">ระบบจะคำนวณผลลัพธ์จากทุกแท็บและบันทึกอัตโนมัติ</p>
+            </div>
+            <div class="flex gap-4 text-center w-full md:w-auto">
+                <div class="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg border border-emerald-200 flex-1 md:flex-none">
+                    <div class="text-2xl font-bold" id="sum-pass">0</div>
+                    <div class="text-xs font-medium uppercase tracking-wide">Pass</div>
+                </div>
+                <div class="bg-red-50 text-red-700 px-4 py-2 rounded-lg border border-red-200 flex-1 md:flex-none">
+                    <div class="text-2xl font-bold" id="sum-fail">0</div>
+                    <div class="text-xs font-medium uppercase tracking-wide">Fail</div>
+                </div>
+                <div class="bg-gray-50 text-gray-600 px-4 py-2 rounded-lg border border-gray-200 flex-1 md:flex-none">
+                    <div class="text-2xl font-bold" id="sum-na">0</div>
+                    <div class="text-xs font-medium uppercase tracking-wide">N/A</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="no-print border-b border-gray-200 overflow-x-auto">
+            <nav class="flex space-x-2 md:space-x-4 w-max md:w-auto" aria-label="Tabs">
+                <button onclick="switchTab('host')" id="tab-btn-host" class="tab-btn active bg-blue-100 text-blue-700 hover:text-blue-800 px-4 py-3 font-medium text-sm rounded-t-lg border-b-2 border-blue-700 transition">
+                    (ก) Host Security
+                </button>
+                <button onclick="switchTab('network')" id="tab-btn-network" class="tab-btn text-gray-500 hover:text-gray-700 px-4 py-3 font-medium text-sm rounded-t-lg border-b-2 border-transparent transition">
+                    (ข) Network Security
+                </button>
+                <button onclick="switchTab('arch')" id="tab-btn-arch" class="tab-btn text-gray-500 hover:text-gray-700 px-4 py-3 font-medium text-sm rounded-t-lg border-b-2 border-transparent transition">
+                    (ค) Architecture Review
+                </button>
+            </nav>
+        </div>
+
+        <!-- Tab Content: Host -->
+        <div id="tab-host" class="tab-content bg-white rounded-b-lg shadow-md overflow-hidden">
+            <div class="bg-gray-50 px-6 py-4 border-b">
+                <h2 class="text-lg font-bold text-gray-800">(ก) การประเมินความมั่นคงปลอดภัยของโฮสต์ (Host Security)</h2>
+                <p class="text-sm text-gray-500">ตรวจสอบการตั้งค่าความปลอดภัยที่ตัวระบบปฏิบัติการ, ซอฟต์แวร์พื้นฐาน และ Server</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[800px]" id="table-host">
+                    <!-- JS will inject rows here -->
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Content: Network -->
+        <div id="tab-network" class="tab-content bg-white rounded-b-lg shadow-md overflow-hidden hidden print-break">
+            <div class="bg-gray-50 px-6 py-4 border-b">
+                <h2 class="text-lg font-bold text-gray-800">(ข) การประเมินความมั่นคงปลอดภัยของเครือข่าย (Network Security)</h2>
+                <p class="text-sm text-gray-500">ตรวจสอบอุปกรณ์เครือข่าย, การส่งผ่านข้อมูล และการควบคุมการเข้าถึงในระดับเน็ตเวิร์ก</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[800px]" id="table-network">
+                    <!-- JS will inject rows here -->
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Content: Architecture -->
+        <div id="tab-arch" class="tab-content bg-white rounded-b-lg shadow-md overflow-hidden hidden print-break">
+            <div class="bg-gray-50 px-6 py-4 border-b">
+                <h2 class="text-lg font-bold text-gray-800">(ค) การตรวจสอบความมั่นคงปลอดภัยของสถาปัตยกรรม (Architecture Security)</h2>
+                <p class="text-sm text-gray-500">ประเมินภาพรวม การออกแบบโครงสร้าง การแบ่งโซน และความยืดหยุ่นทนทานของระบบ</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[800px]" id="table-arch">
+                    <!-- JS will inject rows here -->
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        let currentActiveTab = 'host';
+        let saveTimeout;
+
+        // Data Structure for the Assessment
+        const assessmentData = {
+            host: [
+                { group: "H-01 System Hardening & Configuration", items: [
+                    { id: "H-01.1", req: "มีการตั้งค่ามาตรฐานความปลอดภัยของ OS (เช่น CIS Benchmarks)", desc: "ตรวจสอบการปรับแต่ง OS ให้ปลอดภัยตามมาตรฐานระดับสากล เช่น ปิดฟีเจอร์ที่ไม่จำเป็น เพื่อลดช่องโหว่" },
+                    { id: "H-01.2", req: "ปิดการใช้งาน Service, Ports และ Protocol ที่ไม่จำเป็น", desc: "ลดพื้นที่การโจมตี (Attack Surface) โดยปิด Service ที่มีความเสี่ยงหรือไม่ได้ใช้งาน เช่น Telnet, FTP" },
+                    { id: "H-01.3", req: "ปิดหรือลบ Default Accounts และเปลี่ยนรหัสผ่านเริ่มต้น", desc: "ป้องกันผู้ไม่หวังดีใช้บัญชีพื้นฐาน (เช่น admin/admin) ลักลอบเข้าสู่ระบบ" },
+                    { id: "H-01.4", req: "ตั้งค่า Timeout สำหรับ Inactive Sessions", desc: "ป้องกันการสวมรอยใช้งานเมื่อผู้ดูแลระบบเปิดหน้าจอทิ้งไว้ (เช่น ตัดการเชื่อมต่อหลัง 15 นาที)" }
+                ]},
+                { group: "H-02 Patch Management", items: [
+                    { id: "H-02.1", req: "ตรวจสอบและติดตั้ง Security Patches สำหรับ OS และ Third-party", desc: "อุดช่องโหว่ซอฟต์แวร์เพื่อป้องกันการถูกเจาะระบบจากช่องโหว่ที่เป็นที่รู้จัก (Known Vulnerabilities)" },
+                    { id: "H-02.2", req: "ใช้งานระบบจัดการ Patch อัตโนมัติ (เช่น WSUS, SCCM)", desc: "เพื่อให้การบริหารจัดการ Patch เป็นไปอย่างทั่วถึง ครบถ้วน และรวดเร็วในจำนวนเครื่องที่มาก" },
+                    { id: "H-02.3", req: "มีการทดสอบ Patch ใน UAT/Staging ก่อนลง Production", desc: "ป้องกันปัญหาความเข้ากันได้ (Incompatibility) ที่อาจทำให้ระบบหลักหยุดทำงานหลังอัปเดต" }
+                ]},
+                { group: "H-03 Identity and Access Management (IAM)", items: [
+                    { id: "H-03.1", req: "บังคับใช้นโยบายรหัสผ่านที่รัดกุม (ความซับซ้อน/ความยาว)", desc: "บังคับความซับซ้อนและความยาวขั้นต่ำ เพื่อป้องกันการเดารหัสผ่าน (Brute-force/Dictionary Attack)" },
+                    { id: "H-03.2", req: "จำกัดสิทธิ์ Administrator (Principle of Least Privilege)", desc: "ให้สิทธิ์เท่าที่จำเป็นต่อการทำงานเท่านั้น เพื่อลดความเสียหายหากบัญชีถูกยึด (Compromised)" },
+                    { id: "H-03.3", req: "ไม่มีการใช้ Shared Account สำหรับการดูแลระบบ", desc: "เพื่อให้สามารถระบุตัวตนและตรวจสอบย้อนหลังได้ (Accountability) ว่าใครเป็นผู้กระทำการนั้นๆ" },
+                    { id: "H-03.4", req: "บังคับใช้ MFA สำหรับการเข้าถึงเครื่องแบบ Remote (RDP/SSH)", desc: "เพิ่มชั้นการป้องกันการเข้าถึงจากระยะไกล แม้รหัสผ่านจะหลุดก็ยังมี MFA ป้องกันการเจาะระบบ" }
+                ]},
+                { group: "H-04 Endpoint Protection & Anti-Malware", items: [
+                    { id: "H-04.1", req: "ติดตั้งซอฟต์แวร์ป้องกันไวรัส หรือ EDR บนทุก Host", desc: "ตรวจจับ สกัดกั้นมัลแวร์ และตรวจสอบพฤติกรรมผิดปกติในระดับคอมพิวเตอร์/เซิร์ฟเวอร์" },
+                    { id: "H-04.2", req: "มีการอัปเดต Signature/Database ของระบบป้องกันอัตโนมัติ", desc: "เพื่อให้ระบบสามารถป้องกันภัยคุกคามและมัลแวร์สายพันธุ์ใหม่ๆ ได้ทันท่วงที" },
+                    { id: "H-04.3", req: "เปิดใช้งาน Host-based Firewall (เช่น Windows Firewall)", desc: "กรองและจำกัดการเข้าถึง Inbound/Outbound เฉพาะพอร์ตและ IP ที่อนุญาตในระดับเครื่องเซิร์ฟเวอร์" }
+                ]},
+                { group: "H-05 Logging & Audit", items: [
+                    { id: "H-05.1", req: "เปิดใช้งาน OS Audit Logging (Logon, Privilege Change)", desc: "บันทึกเหตุการณ์สำคัญที่เกิดขึ้นในระบบ เพื่อใช้เป็นหลักฐานในการสืบสวนหากเกิดเหตุละเมิดความปลอดภัย" },
+                    { id: "H-05.2", req: "ส่ง Log ไปยังระบบจัดการกลาง (Centralized Syslog / SIEM)", desc: "ป้องกันผู้บุกรุกลบ Log ในเครื่องเพื่อทำลายหลักฐาน และช่วยให้วิเคราะห์ความสัมพันธ์ของเหตุการณ์ได้" },
+                    { id: "H-05.3", req: "ระบบมีการซิงโครไนซ์เวลากับ NTP Server กลาง", desc: "เพื่อให้ Timestamp ของ Log ทุกเครื่องตรงกัน ทำให้ง่ายต่อการสอบสวนลำดับเหตุการณ์ (Forensic)" }
+                ]}
+            ],
+            network: [
+                { group: "N-01 Network Device Security & Hardening", items: [
+                    { id: "N-01.1", req: "อุปกรณ์เครือข่ายตั้งค่าตามมาตรฐาน (เช่น CIS Benchmarks)", desc: "ปรับแต่งค่าความปลอดภัยของ Router, Switch, Firewall ตามมาตรฐานสากลเพื่อปิดช่องโหว่" },
+                    { id: "N-01.2", req: "บริหารจัดการอุปกรณ์ผ่านโปรโตคอลเข้ารหัส (SSHv2, HTTPS)", desc: "ป้องกันการดักจับข้อมูล (Sniffing) รหัสผ่านของผู้ดูแลระบบเครือข่ายระหว่างที่มีการรีโมท" },
+                    { id: "N-01.3", req: "Firmware ของอุปกรณ์เครือข่ายได้รับการอัปเดตอย่างสม่ำเสมอ", desc: "ปิดช่องโหว่ระดับระบบปฏิบัติการของอุปกรณ์เครือข่าย (เช่น Cisco IOS, FortiOS)" },
+                    { id: "N-01.4", req: "ปิดพอร์ตที่ไม่มีการใช้งาน หรือตั้งค่า Port Security", desc: "ป้องกันผู้ไม่หวังดีหรือพนักงานนำอุปกรณ์แปลกปลอม (Rogue Device) มาเสียบเชื่อมต่อกับเครือข่าย" }
+                ]},
+                { group: "N-02 Boundary Protection & Access Control", items: [
+                    { id: "N-02.1", req: "กฎของ Firewall ถูกกำหนดเป็นแบบ 'Default Deny'", desc: "อนุญาตเฉพาะการสื่อสารที่จำเป็น นอกเหนือจากนั้นบล็อกการเชื่อมต่อทั้งหมดโดยปริยาย" },
+                    { id: "N-02.2", req: "มีการทบทวนกฎ Firewall อย่างน้อยปีละ 1-2 ครั้ง", desc: "ลบกฎที่หมดความจำเป็น, กฎที่ซ้ำซ้อน, หรือกฎที่เปิดกว้างเกินไป ทิ้ง" },
+                    { id: "N-02.3", req: "ไม่เปิดพอร์ตความเสี่ยงสูง (RDP, SMB) สู่ Internet โดยตรง", desc: "ลดความเสี่ยงจากการถูกโจมตี Service ยอดนิยมจากภายนอก หากต้องใช้ควรทำผ่าน VPN" }
+                ]},
+                { group: "N-03 Intrusion Detection and Prevention (IDS/IPS)", items: [
+                    { id: "N-03.1", req: "ติดตั้งระบบ IPS/IDS ในตำแหน่งที่เหมาะสมของเครือข่าย", desc: "ตรวจจับและสกัดกั้นการโจมตีเครือข่ายในระดับแพ็กเก็ตก่อนเข้าถึงเซิร์ฟเวอร์" },
+                    { id: "N-03.2", req: "มีการอัปเดต Signature และ Threat Rules อย่างสม่ำเสมอ", desc: "เพื่อให้ระบบ IPS ครอบคลุมและสามารถรับมือกับการโจมตีรูปแบบใหม่ๆ ได้" },
+                    { id: "N-03.3", req: "มีทีมงาน (เช่น SOC) มอนิเตอร์แจ้งเตือนจาก IDS/IPS", desc: "มั่นใจได้ว่าหากมีเหตุการณ์แจ้งเตือนที่ผิดปกติ จะมีบุคลากรตรวจสอบและจัดการภัยคุกคามได้ทันที" }
+                ]},
+                { group: "N-04 Remote Access & VPN Security", items: [
+                    { id: "N-04.1", req: "เข้าถึงเครือข่ายจากภายนอกผ่าน VPN ที่เข้ารหัส (TLS 1.2+)", desc: "ปกป้องข้อมูลสำคัญไม่ให้ถูกดักจับระหว่างการส่งผ่านอินเทอร์เน็ตสาธารณะ" },
+                    { id: "N-04.2", req: "บังคับใช้ MFA สำหรับผู้ใช้งาน VPN และ Remote Access", desc: "ป้องกันการเจาะระบบเครือข่ายกรณีที่ Username/Password ของผู้ใช้งาน VPN ถูกขโมย" },
+                    { id: "N-04.3", req: "มีการตรวจสอบสถานะเครื่อง (Endpoint Posture Check)", desc: "ตรวจสอบความปลอดภัยของเครื่องผู้ใช้ก่อนอนุญาตให้ต่อเข้าเครือข่ายองค์กร" }
+                ]},
+                { group: "N-05 Network Vulnerability Scanning", items: [
+                    { id: "N-05.1", req: "จัดทำ Vulnerability Scan (Internal & External) ตามรอบ", desc: "ค้นหาจุดอ่อนของเครือข่ายและระบบอย่างสม่ำเสมอ เพื่อลดความเสี่ยง" },
+                    { id: "N-05.2", req: "มีแผนและกรอบเวลาในการแก้ไขช่องโหว่ (Remediation Plan)", desc: "กำหนดกรอบเวลาการอุดช่องโหว่ให้สอดคล้องกับระดับความรุนแรง" }
+                ]}
+            ],
+            arch: [
+                { group: "A-01 Network Segmentation & Zoning", items: [
+                    { id: "A-01.1", req: "สถาปัตยกรรมมีการแบ่งโซนชัดเจน (DMZ, Internal, DB)", desc: "จำกัดขอบเขตความเสียหาย หากเซิร์ฟเวอร์โซนหนึ่งถูกแฮก จะไม่ลุกลามเข้าไปยังโซนอื่นได้ง่ายๆ" },
+                    { id: "A-01.2", req: "ระบบ Database ไม่เชื่อมต่อกับ Internet โดยตรง", desc: "ป้องกันการเข้าถึงฐานข้อมูลที่เก็บข้อมูลสำคัญขององค์กรจากผู้ไม่หวังดีภายนอก" },
+                    { id: "A-01.3", req: "แยกระบบเครือข่ายบริหารจัดการ (Management Network) ออก", desc: "จำกัดการเข้าถึงส่วนควบคุมระบบไว้เฉพาะเครือข่ายของผู้ดูแลระบบเท่านั้น" }
+                ]},
+                { group: "A-02 Defense in Depth & Zero Trust Principles", items: [
+                    { id: "A-02.1", req: "ประยุกต์ใช้การป้องกันหลายชั้น (Defense in Depth)", desc: "ซ้อนชั้นความปลอดภัยหลายรูปแบบ (FW, IPS, WAF, EDR) เพื่อเพิ่มความยากในการถูกเจาะระบบ" },
+                    { id: "A-02.2", req: "ประยุกต์ใช้หลักการ Zero Trust", desc: "ไม่เชื่อถือสิ่งใดโดยอัตโนมัติ ต้องมีการตรวจสอบตัวตนและสถานะสิทธิ์เสมอแม้เชื่อมต่อจากภายใน" },
+                    { id: "A-02.3", req: "มีการทำ Micro-segmentation สำหรับการสื่อสารระหว่าง Server", desc: "ควบคุมการสื่อสารในระดับ Workload ให้ส่งข้อมูลได้เฉพาะทางที่อนุญาตเท่านั้น" }
+                ]},
+                { group: "A-03 Data Flow & Encryption Architecture", items: [
+                    { id: "A-03.1", req: "มี Data Flow Diagram (DFD) และ Network Diagram ปัจจุบัน", desc: "เพื่อให้ผู้ออกแบบและผู้ประเมินเข้าใจทิศทางการไหลของข้อมูล และระบุจุดเสี่ยงของระบบได้ถูกต้อง" },
+                    { id: "A-03.2", req: "ข้อมูลสำคัญถูกเข้ารหัสขณะส่งผ่านเครือข่าย (In Transit)", desc: "ป้องกันข้อมูลถูกดักจับหรือแอบอ่านระหว่างการส่งผ่านเครือข่าย (ใช้ TLS 1.2+ หรือ IPsec)" },
+                    { id: "A-03.3", req: "ข้อมูลสำคัญถูกเข้ารหัสเมื่อถูกจัดเก็บ (At Rest) ใน Storage/DB", desc: "ป้องกันข้อมูลหลุดรอดหรือรั่วไหล กรณีที่สื่อบันทึกข้อมูลถูกขโมย หรือถูกบุกรุก" }
+                ]},
+                { group: "A-04 High Availability (HA) & Disaster Recovery", items: [
+                    { id: "A-04.1", req: "สถาปัตยกรรมไม่มี Single Point of Failure (SPOF)", desc: "ออกแบบระบบให้มีความซ้ำซ้อน (Redundancy) ทำงานต่อเนื่องได้แม้มีอุปกรณ์บางตัวล่ม" },
+                    { id: "A-04.2", req: "มีระบบป้องกันการโจมตีแบบ DDoS (DDoS Mitigation)", desc: "ป้องกันระบบให้บริการหลักล่มจากการถูกโจมตีด้วยการส่งทราฟฟิกขยะปริมาณมหาศาล" },
+                    { id: "A-04.3", req: "มีศูนย์ข้อมูลสำรอง (DR Site) หรือกลไก Backup แบบ Off-site", desc: "เตรียมพร้อมกู้คืนระบบกรณีเกิดภัยพิบัติร้ายแรง ไฟไหม้ หรือ Ransomware เข้ารหัสเซิร์ฟเวอร์หลัก" }
+                ]},
+                { group: "A-05 Centralized Identity and Log Architecture", items: [
+                    { id: "A-05.1", req: "สถาปัตยกรรมระบบยืนยันตัวตน (AD/SSO) ออกแบบให้ทนทาน (HA)", desc: "ระบบ Identity ต้องพร้อมใช้งานเสมอ เพราะหากระบบนี้ล่ม ผู้ใช้จะไม่สามารถล็อกอินได้" },
+                    { id: "A-05.2", req: "สถาปัตยกรรม Log มีกลไกป้องกันการลบทำลาย (Immutable)", desc: "ป้องกันการดัดแปลงหรือลบ Log จากแฮกเกอร์ เพื่อรักษาความถูกต้องและความน่าเชื่อถือของหลักฐาน" }
+                ]}
+            ]
+        };
+
+        // Render Table Headers
+        const tableHeaderHTML = `
+            <thead class="bg-gray-100 text-gray-600 text-sm border-b">
+                <tr>
+                    <th class="p-3 font-semibold w-16">รหัส</th>
+                    <th class="p-3 font-semibold w-1/3">รายละเอียดการประเมิน / วัตถุประสงค์</th>
+                    <th class="p-3 font-semibold w-56 text-center">ผลการประเมิน</th>
+                    <th class="p-3 font-semibold w-24 text-center">ความเสี่ยง</th>
+                    <th class="p-3 font-semibold">หลักฐาน / ข้อเสนอแนะ</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        `;
+
+        // Render Tables dynamically
+        function renderTables() {
+            Object.keys(assessmentData).forEach(tabKey => {
+                const table = document.getElementById(`table-${tabKey}`);
+                table.innerHTML = tableHeaderHTML;
+                const tbody = table.querySelector('tbody');
+
+                assessmentData[tabKey].forEach(groupData => {
+                    // Render Group Header
+                    const groupTr = document.createElement('tr');
+                    groupTr.className = "bg-blue-50 border-b";
+                    groupTr.innerHTML = `<td colspan="5" class="p-3 font-bold text-blue-800">${groupData.group}</td>`;
+                    tbody.appendChild(groupTr);
+
+                    // Render Items
+                    groupData.items.forEach(item => {
+                        const tr = document.createElement('tr');
+                        tr.className = "border-b hover:bg-gray-50 transition";
+                        tr.innerHTML = `
+                            <td class="p-3 text-sm font-medium text-gray-900 align-top">${item.id}</td>
+                            <td class="p-3 align-top">
+                                <div class="font-medium text-gray-800">${item.req}</div>
+                                <div class="text-xs text-gray-500 mt-1">${item.desc}</div>
+                            </td>
+                            <td class="p-3 align-top text-center">
+                                <div class="flex justify-center gap-2">
+                                    <label class="flex items-center gap-1 cursor-pointer text-sm">
+                                        <input type="radio" name="res_${item.id}" value="Pass" class="peer sr-only text-emerald-600 focus:ring-emerald-500" onchange="toggleRisk('${item.id}', false); calculateSummary(); saveData()">
+                                        <div class="w-10 py-1 rounded border border-gray-300 text-gray-400 peer-checked:bg-emerald-500 peer-checked:text-white peer-checked:border-emerald-500 transition text-center font-medium">P</div>
+                                    </label>
+                                    <label class="flex items-center gap-1 cursor-pointer text-sm">
+                                        <input type="radio" name="res_${item.id}" value="Fail" class="peer sr-only text-red-600 focus:ring-red-500" onchange="toggleRisk('${item.id}', true); calculateSummary(); saveData()">
+                                        <div class="w-10 py-1 rounded border border-gray-300 text-gray-400 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition text-center font-medium">F</div>
+                                    </label>
+                                    <label class="flex items-center gap-1 cursor-pointer text-sm">
+                                        <input type="radio" name="res_${item.id}" value="NA" class="peer sr-only text-gray-600 focus:ring-gray-500" onchange="toggleRisk('${item.id}', false); calculateSummary(); saveData()">
+                                        <div class="w-10 py-1 rounded border border-gray-300 text-gray-400 peer-checked:bg-gray-500 peer-checked:text-white peer-checked:border-gray-500 transition text-center font-medium">NA</div>
+                                    </label>
+                                </div>
+                            </td>
+                            <td class="p-3 align-top text-center">
+                                <select id="risk_${item.id}" onchange="saveData()" disabled class="w-full border-gray-300 border rounded p-1 text-sm bg-gray-100 text-gray-500 outline-none focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 transition">
+                                    <option value="">-</option>
+                                    <option value="H">High</option>
+                                    <option value="M">Medium</option>
+                                    <option value="L">Low</option>
+                                </select>
+                            </td>
+                            <td class="p-3 align-top">
+                                <textarea id="remark_${item.id}" oninput="saveData()" class="w-full border-gray-300 border rounded-md p-2 text-sm focus:ring-blue-500 focus:border-blue-500 min-h-[60px]" placeholder="ระบุหลักฐาน หรือข้อเสนอแนะ..."></textarea>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                });
+            });
+        }
+
+        // Logic for "Other" Environment Field
+        function handleEnvChange() {
+            const select = document.getElementById('env-select');
+            const otherInput = document.getElementById('env-other');
+            if (select.value === 'Other') {
+                otherInput.classList.remove('hidden');
+            } else {
+                otherInput.classList.add('hidden');
+                otherInput.value = ''; // Clear the input if hidden
+            }
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            currentActiveTab = tabId;
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Reset Tab Buttons Styling
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn text-gray-500 hover:text-gray-700 px-4 py-3 font-medium text-sm rounded-t-lg border-b-2 border-transparent transition";
+            });
+
+            // Show selected content
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            
+            // Style Active Tab Button
+            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+            activeBtn.className = "tab-btn active bg-blue-100 text-blue-700 px-4 py-3 font-medium text-sm rounded-t-lg border-b-2 border-blue-700 transition";
+            
+            saveData(); // Save active tab to memory
+        }
+
+        // Enable/Disable Risk Dropdown based on "Fail" selection
+        function toggleRisk(id, isFail) {
+            const riskSelect = document.getElementById(`risk_${id}`);
+            if (isFail) {
+                riskSelect.disabled = false;
+                riskSelect.classList.remove('bg-gray-100', 'text-gray-500');
+                riskSelect.classList.add('bg-white', 'text-gray-900', 'border-red-300');
+            } else {
+                riskSelect.disabled = true;
+                riskSelect.value = "";
+                riskSelect.classList.add('bg-gray-100', 'text-gray-500');
+                riskSelect.classList.remove('bg-white', 'text-gray-900', 'border-red-300');
+            }
+        }
+
+        // Auto Calculate Summary
+        function calculateSummary() {
+            let passCount = 0;
+            let failCount = 0;
+            let naCount = 0;
+
+            document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+                if(radio.value === 'Pass') passCount++;
+                if(radio.value === 'Fail') failCount++;
+                if(radio.value === 'NA') naCount++;
+            });
+
+            document.getElementById('sum-pass').innerText = passCount;
+            document.getElementById('sum-fail').innerText = failCount;
+            document.getElementById('sum-na').innerText = naCount;
+        }
+
+        // Feature: Save Data to LocalStorage
+        function saveData() {
+            // Debounce save to prevent lag when typing quickly
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                const data = {
+                    header: {
+                        sysName: document.getElementById('sys-name').value,
+                        dept: document.getElementById('dept').value,
+                        date: document.getElementById('assess-date').value,
+                        env: document.getElementById('env-select').value,
+                        envOther: document.getElementById('env-other').value,
+                        scope: document.getElementById('scope').value,
+                        ip: document.getElementById('ip-range').value
+                    },
+                    assessments: {},
+                    activeTab: currentActiveTab
+                };
+
+                // Capture all assessment table inputs
+                Object.keys(assessmentData).forEach(tabKey => {
+                    assessmentData[tabKey].forEach(group => {
+                        group.items.forEach(item => {
+                            const resNode = document.querySelector(`input[name="res_${item.id}"]:checked`);
+                            const res = resNode ? resNode.value : '';
+                            const risk = document.getElementById(`risk_${item.id}`).value;
+                            const remark = document.getElementById(`remark_${item.id}`).value;
+                            data.assessments[item.id] = { res, risk, remark };
+                        });
+                    });
+                });
+
+                localStorage.setItem('ciiAssessmentData', JSON.stringify(data));
+                showSaveStatus();
+            }, 500);
+        }
+
+        // UI Feedback for Save
+        function showSaveStatus() {
+            const statusLabel = document.getElementById('save-status');
+            statusLabel.style.opacity = '1';
+            setTimeout(() => {
+                statusLabel.style.opacity = '0';
+            }, 2000);
+        }
+
+        // Feature: Load Data from LocalStorage
+        function loadData() {
+            const savedStr = localStorage.getItem('ciiAssessmentData');
+            if (savedStr) {
+                try {
+                    const data = JSON.parse(savedStr);
+                    
+                    // Restore Header
+                    if (data.header) {
+                        document.getElementById('sys-name').value = data.header.sysName || '';
+                        document.getElementById('dept').value = data.header.dept || '';
+                        document.getElementById('assess-date').value = data.header.date || '';
+                        document.getElementById('env-select').value = data.header.env || '';
+                        handleEnvChange(); // Toggle 'other' input visibility
+                        document.getElementById('env-other').value = data.header.envOther || '';
+                        document.getElementById('scope').value = data.header.scope || '';
+                        document.getElementById('ip-range').value = data.header.ip || '';
+                    }
+
+                    // Restore Assessments
+                    if (data.assessments) {
+                        Object.keys(data.assessments).forEach(id => {
+                            const itemData = data.assessments[id];
+                            
+                            // Restore Radio
+                            if (itemData.res) {
+                                const radio = document.querySelector(`input[name="res_${id}"][value="${itemData.res}"]`);
+                                if (radio) {
+                                    radio.checked = true;
+                                    toggleRisk(id, itemData.res === 'Fail');
+                                }
+                            }
+                            
+                            // Restore Risk Dropdown
+                            if (itemData.risk) {
+                                const riskDrop = document.getElementById(`risk_${id}`);
+                                if(riskDrop) riskDrop.value = itemData.risk;
+                            }
+                            
+                            // Restore Remark
+                            if (itemData.remark) {
+                                const remarkBox = document.getElementById(`remark_${id}`);
+                                if(remarkBox) remarkBox.value = itemData.remark;
+                            }
+                        });
+                    }
+
+                    // Restore Active Tab (So users resume where they left off)
+                    if (data.activeTab) {
+                        switchTab(data.activeTab);
+                    }
+
+                } catch (e) {
+                    console.error("Error loading saved data", e);
+                }
+            } else {
+                switchTab('host'); // Default tab on first load
+            }
+            
+            calculateSummary();
+        }
+
+        // Feature: Reset Form and Clear Storage
+        function resetForm() {
+            if (confirm('คุณแน่ใจหรือไม่ว่าต้องการเริ่มใหม่ทั้งหมด?\nข้อมูลที่กรอกไว้จะถูกลบและไม่สามารถกู้คืนได้')) {
+                // Clear storage
+                localStorage.removeItem('ciiAssessmentData');
+                
+                // Clear Header Inputs
+                document.getElementById('sys-name').value = '';
+                document.getElementById('dept').value = '';
+                document.getElementById('assess-date').value = '';
+                document.getElementById('env-select').value = '';
+                document.getElementById('env-other').value = '';
+                document.getElementById('scope').value = '';
+                document.getElementById('ip-range').value = '';
+                handleEnvChange(); // Hide "other" field
+                
+                // Clear Tables Inputs
+                document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+                document.querySelectorAll('select[id^="risk_"]').forEach(el => {
+                    el.value = '';
+                    el.disabled = true;
+                    el.classList.add('bg-gray-100', 'text-gray-500');
+                    el.classList.remove('bg-white', 'text-gray-900', 'border-red-300');
+                });
+                document.querySelectorAll('textarea[id^="remark_"]').forEach(el => el.value = '');
+                
+                calculateSummary();
+                switchTab('host'); // Back to first tab
+                
+                // Show feedback
+                alert('รีเซ็ตข้อมูลเรียบร้อยแล้ว');
+            }
+        }
+
+        // Initialization
+        window.onload = () => {
+            renderTables();
+            loadData(); // Load saved data after tables are injected
+        };
+
+    </script>
+</body>
+</html>
