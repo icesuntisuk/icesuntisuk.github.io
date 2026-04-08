@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIST CSF 2.0 Assessment - Cybersecurity Expert</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Sarabun -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Sarabun', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* ซ่อน Scrollbar แต่ยังเลื่อนได้ สำหรับ Tab */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* การตั้งค่าสำหรับการ Export เป็น PDF (Print) */
+        @media print {
+            header, nav, .no-print { display: none !important; }
+            .tab-content { 
+                display: block !important; 
+                page-break-before: always; 
+                margin-top: 2rem;
+            }
+            #tab-db { page-break-before: auto; margin-top: 0; }
+            body { background-color: white !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .shadow-sm, .shadow-lg { box-shadow: none !important; border: 1px solid #e2e8f0; }
+            table, tr, td, th { page-break-inside: avoid; }
+            textarea, select { 
+                border: none !important; 
+                appearance: none; 
+                -moz-appearance: none; 
+                -webkit-appearance: none; 
+                background: transparent;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-shield-halved text-blue-400 text-3xl"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold">NIST CSF 2.0 Assessment Tool</h1>
+                        <p class="text-slate-400 text-sm">เครื่องมือประเมินความมั่นคงปลอดภัยไซเบอร์ระดับองค์กร</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-3">
+                    <button onclick="window.print()" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        <i class="fa-solid fa-file-pdf mr-2 text-red-400"></i>Export PDF
+                    </button>
+                    <span class="bg-blue-600/20 text-blue-400 px-3 py-2 rounded-lg text-xs font-semibold border border-blue-500/30 flex items-center">
+                        EXPERT MODE
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation (Tabs) -->
+    <div class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex space-x-8 overflow-x-auto no-scrollbar" aria-label="Tabs">
+                <button id="btn-db" onclick="openTab('db')" class="tab-btn border-blue-600 text-blue-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                    <i class="fa-solid fa-chart-pie mr-2"></i>Dashboard
+                </button>
+                <button id="btn-gv" onclick="openTab('gv')" class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                    <i class="fa-solid fa-landmark mr-2"></i>Govern (GV)
+                </button>
+                <button id="btn-id" onclick="openTab('id')" class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                    <i class="fa-solid fa-magnifying-glass mr-2"></i>Identify (ID)
+                </button>
+                <button id="btn-pr" onclick="openTab('pr')" class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                    <i class="fa-solid fa-lock mr-2"></i>Protect (PR)
+                </button>
+                <button id="btn-de" onclick="openTab('de')" class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                    <i class="fa-solid fa-radar mr-2"></i>Detect (DE)
+                </button>
+                <button id="btn-rs" onclick="openTab('rs')" class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                    <i class="fa-solid fa-truck-fast mr-2"></i>Respond (RS)
+                </button>
+                <button id="btn-rc" onclick="openTab('rc')" class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                    <i class="fa-solid fa-kit-medical mr-2"></i>Recover (RC)
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- ==================== TAB: DASHBOARD (DB) ==================== -->
+        <div id="tab-db" class="tab-content block">
+            <div class="mb-6 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">Executive Dashboard</h2>
+                    <p class="text-slate-500 text-sm mt-1">ภาพรวมระดับความพร้อมด้านความมั่นคงปลอดภัยไซเบอร์ขององค์กร</p>
+                </div>
+                <button onclick="window.print()" class="no-print bg-slate-800 hover:bg-slate-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm md:hidden">
+                    <i class="fa-solid fa-file-pdf mr-2"></i>Export
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Overall Weighted Score -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-center items-center text-center">
+                    <h3 class="text-lg font-semibold text-slate-600 mb-2">Overall Preparedness</h3>
+                    <div class="relative w-40 h-40 flex items-center justify-center my-4">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="global-circle" class="text-blue-600 transition-all duration-700 ease-out" stroke-dasharray="0, 100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="absolute flex flex-col items-center">
+                            <span class="text-4xl font-bold text-slate-800" id="global-score">0%</span>
+                            <span class="text-xs text-slate-400 mt-1">Weighted</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-500">คะแนนเฉลี่ยรวมทุกหมวดหมู่ (ถ่วงน้ำหนัก)</p>
+                </div>
+
+                <!-- Radar Chart -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 lg:col-span-2">
+                    <h3 class="text-lg font-semibold text-slate-600 mb-4">NIST CSF 2.0 Core Functions Profile (Radar)</h3>
+                    <div class="h-64 w-full relative flex justify-center">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weight Configurator -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 no-print">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-800"><i class="fa-solid fa-scale-balanced text-blue-500 mr-2"></i>ปรับน้ำหนักคะแนน (Weighting Configuration)</h3>
+                        <p class="text-sm text-slate-500">กำหนดความสำคัญของแต่ละหมวดหมู่เพื่อให้สะท้อนกับบริบทความเสี่ยงขององค์กร (ค่าเริ่มต้นคือ 1 เท่ากันทั้งหมด)</p>
+                    </div>
+                    <button onclick="resetWeights()" class="text-sm text-blue-600 hover:text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md">รีเซ็ตน้ำหนัก</button>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <!-- GV Weight -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-center">
+                        <label class="block text-sm font-bold text-teal-700 mb-2">Govern (GV)</label>
+                        <input type="number" id="weight-gv" min="0" max="10" step="0.5" value="1" onchange="updateWeights()" class="w-20 text-center border border-slate-300 rounded-md py-1 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <!-- ID Weight -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-center">
+                        <label class="block text-sm font-bold text-blue-700 mb-2">Identify (ID)</label>
+                        <input type="number" id="weight-id" min="0" max="10" step="0.5" value="1" onchange="updateWeights()" class="w-20 text-center border border-slate-300 rounded-md py-1 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <!-- PR Weight -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-center">
+                        <label class="block text-sm font-bold text-purple-700 mb-2">Protect (PR)</label>
+                        <input type="number" id="weight-pr" min="0" max="10" step="0.5" value="1" onchange="updateWeights()" class="w-20 text-center border border-slate-300 rounded-md py-1 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <!-- DE Weight -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-center">
+                        <label class="block text-sm font-bold text-amber-600 mb-2">Detect (DE)</label>
+                        <input type="number" id="weight-de" min="0" max="10" step="0.5" value="1" onchange="updateWeights()" class="w-20 text-center border border-slate-300 rounded-md py-1 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <!-- RS Weight -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-center">
+                        <label class="block text-sm font-bold text-rose-600 mb-2">Respond (RS)</label>
+                        <input type="number" id="weight-rs" min="0" max="10" step="0.5" value="1" onchange="updateWeights()" class="w-20 text-center border border-slate-300 rounded-md py-1 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <!-- RC Weight -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-center">
+                        <label class="block text-sm font-bold text-emerald-600 mb-2">Recover (RC)</label>
+                        <input type="number" id="weight-rc" min="0" max="10" step="0.5" value="1" onchange="updateWeights()" class="w-20 text-center border border-slate-300 rounded-md py-1 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: GOVERN (GV) ==================== -->
+        <div id="tab-gv" class="tab-content hidden">
+            <!-- Dashboard & Summary -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Score Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-center items-center text-center">
+                    <h2 class="text-lg font-semibold text-slate-600 mb-2">Govern (GV) Completion</h2>
+                    <div class="relative w-32 h-32 flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="overall-circle-gv" class="text-teal-600 transition-all duration-500 ease-out" stroke-dasharray="0, 100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="absolute text-3xl font-bold text-slate-800" id="overall-score-gv">0%</div>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-4">คะแนนเฉลี่ยการประเมินหมวด Govern</p>
+                </div>
+
+                <!-- Chart Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 lg:col-span-2">
+                    <h2 class="text-lg font-semibold text-slate-600 mb-4">ระดับความพร้อมรายหมวดหมู่ (Categories Maturity)</h2>
+                    <div class="h-48 w-full relative">
+                        <canvas id="gvChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions Container -->
+            <div id="gv-questions-container" class="space-y-6"></div>
+            
+            <div class="mt-8 flex justify-end no-print">
+                <button onclick="clearData('gv')" class="text-red-500 hover:text-red-700 text-sm font-medium mr-4">
+                    <i class="fa-solid fa-trash-can mr-1"></i> ล้างข้อมูลและรีเซ็ต (GV)
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: IDENTIFY (ID) ==================== -->
+        <div id="tab-id" class="tab-content hidden">
+            <!-- Dashboard & Summary -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Score Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-center items-center text-center">
+                    <h2 class="text-lg font-semibold text-slate-600 mb-2">Identify (ID) Completion</h2>
+                    <div class="relative w-32 h-32 flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="overall-circle-id" class="text-blue-600 transition-all duration-500 ease-out" stroke-dasharray="0, 100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="absolute text-3xl font-bold text-slate-800" id="overall-score-id">0%</div>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-4">คะแนนเฉลี่ยการประเมินหมวด Identify</p>
+                </div>
+
+                <!-- Chart Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 lg:col-span-2">
+                    <h2 class="text-lg font-semibold text-slate-600 mb-4">ระดับความพร้อมรายหมวดหมู่ (Categories Maturity)</h2>
+                    <div class="h-48 w-full relative">
+                        <canvas id="idChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions Container -->
+            <div id="id-questions-container" class="space-y-6"></div>
+            
+            <div class="mt-8 flex justify-end no-print">
+                <button onclick="clearData('id')" class="text-red-500 hover:text-red-700 text-sm font-medium mr-4">
+                    <i class="fa-solid fa-trash-can mr-1"></i> ล้างข้อมูลและรีเซ็ต (ID)
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: PROTECT (PR) ==================== -->
+        <div id="tab-pr" class="tab-content hidden">
+            <!-- Dashboard & Summary -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Score Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-center items-center text-center">
+                    <h2 class="text-lg font-semibold text-slate-600 mb-2">Protect (PR) Completion</h2>
+                    <div class="relative w-32 h-32 flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="overall-circle-pr" class="text-purple-600 transition-all duration-500 ease-out" stroke-dasharray="0, 100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="absolute text-3xl font-bold text-slate-800" id="overall-score-pr">0%</div>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-4">คะแนนเฉลี่ยการประเมินหมวด Protect</p>
+                </div>
+
+                <!-- Chart Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 lg:col-span-2">
+                    <h2 class="text-lg font-semibold text-slate-600 mb-4">ระดับความพร้อมรายหมวดหมู่ (Categories Maturity)</h2>
+                    <div class="h-48 w-full relative">
+                        <canvas id="prChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions Container -->
+            <div id="pr-questions-container" class="space-y-6"></div>
+            
+            <div class="mt-8 flex justify-end no-print">
+                <button onclick="clearData('pr')" class="text-red-500 hover:text-red-700 text-sm font-medium mr-4">
+                    <i class="fa-solid fa-trash-can mr-1"></i> ล้างข้อมูลและรีเซ็ต (PR)
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: DETECT (DE) ==================== -->
+        <div id="tab-de" class="tab-content hidden">
+            <!-- Dashboard & Summary -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Score Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-center items-center text-center">
+                    <h2 class="text-lg font-semibold text-slate-600 mb-2">Detect (DE) Completion</h2>
+                    <div class="relative w-32 h-32 flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="overall-circle-de" class="text-amber-500 transition-all duration-500 ease-out" stroke-dasharray="0, 100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="absolute text-3xl font-bold text-slate-800" id="overall-score-de">0%</div>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-4">คะแนนเฉลี่ยการประเมินหมวด Detect</p>
+                </div>
+
+                <!-- Chart Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 lg:col-span-2">
+                    <h2 class="text-lg font-semibold text-slate-600 mb-4">ระดับความพร้อมรายหมวดหมู่ (Categories Maturity)</h2>
+                    <div class="h-48 w-full relative">
+                        <canvas id="deChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions Container -->
+            <div id="de-questions-container" class="space-y-6"></div>
+            
+            <div class="mt-8 flex justify-end no-print">
+                <button onclick="clearData('de')" class="text-red-500 hover:text-red-700 text-sm font-medium mr-4">
+                    <i class="fa-solid fa-trash-can mr-1"></i> ล้างข้อมูลและรีเซ็ต (DE)
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: RESPOND (RS) ==================== -->
+        <div id="tab-rs" class="tab-content hidden">
+            <!-- Dashboard & Summary -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Score Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-center items-center text-center">
+                    <h2 class="text-lg font-semibold text-slate-600 mb-2">Respond (RS) Completion</h2>
+                    <div class="relative w-32 h-32 flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="overall-circle-rs" class="text-rose-600 transition-all duration-500 ease-out" stroke-dasharray="0, 100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="absolute text-3xl font-bold text-slate-800" id="overall-score-rs">0%</div>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-4">คะแนนเฉลี่ยการประเมินหมวด Respond</p>
+                </div>
+
+                <!-- Chart Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 lg:col-span-2">
+                    <h2 class="text-lg font-semibold text-slate-600 mb-4">ระดับความพร้อมรายหมวดหมู่ (Categories Maturity)</h2>
+                    <div class="h-48 w-full relative">
+                        <canvas id="rsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions Container -->
+            <div id="rs-questions-container" class="space-y-6"></div>
+            
+            <div class="mt-8 flex justify-end no-print">
+                <button onclick="clearData('rs')" class="text-red-500 hover:text-red-700 text-sm font-medium mr-4">
+                    <i class="fa-solid fa-trash-can mr-1"></i> ล้างข้อมูลและรีเซ็ต (RS)
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: RECOVER (RC) ==================== -->
+        <div id="tab-rc" class="tab-content hidden">
+            <!-- Dashboard & Summary -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Score Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-center items-center text-center">
+                    <h2 class="text-lg font-semibold text-slate-600 mb-2">Recover (RC) Completion</h2>
+                    <div class="relative w-32 h-32 flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="overall-circle-rc" class="text-emerald-500 transition-all duration-500 ease-out" stroke-dasharray="0, 100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="absolute text-3xl font-bold text-slate-800" id="overall-score-rc">0%</div>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-4">คะแนนเฉลี่ยการประเมินหมวด Recover</p>
+                </div>
+
+                <!-- Chart Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 lg:col-span-2">
+                    <h2 class="text-lg font-semibold text-slate-600 mb-4">ระดับความพร้อมรายหมวดหมู่ (Categories Maturity)</h2>
+                    <div class="h-48 w-full relative">
+                        <canvas id="rcChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions Container -->
+            <div id="rc-questions-container" class="space-y-6"></div>
+            
+            <div class="mt-8 flex justify-end no-print">
+                <button onclick="clearData('rc')" class="text-red-500 hover:text-red-700 text-sm font-medium mr-4">
+                    <i class="fa-solid fa-trash-can mr-1"></i> ล้างข้อมูลและรีเซ็ต (RC)
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Data Structures for NIST CSF 2.0 (All 6 Core Functions)
+        const identifyData = [
+            {
+                category: "Asset Management (ID.AM)",
+                desc: "การบริหารจัดการและจัดทำบัญชีทรัพย์สินที่สนับสนุนการดำเนินงานของธุรกิจ",
+                questions: [
+                    { id: "ID.AM-01", text: "มีการจัดทำและบำรุงรักษาบัญชีรายการฮาร์ดแวร์ (Hardware Inventory) ที่อยู่ในการดูแล" },
+                    { id: "ID.AM-02", text: "มีการจัดทำและบำรุงรักษาบัญชีรายการซอฟต์แวร์และบริการคลาวด์ (Software & Services Inventory)" },
+                    { id: "ID.AM-03", text: "มีการจัดทำแผนผังการเชื่อมต่อเครือข่ายและการไหลของข้อมูล (Network Map & Data Flows)" },
+                    { id: "ID.AM-04", text: "มีการระบุและจัดทำบัญชีบริการที่ได้รับจากผู้ให้บริการภายนอก (Supplier Inventory)" },
+                    { id: "ID.AM-05", text: "มีการจัดลำดับความสำคัญของทรัพย์สิน (Asset Prioritization) ตามระดับความวิกฤตที่มีต่อธุรกิจ" },
+                    { id: "ID.AM-07", text: "มีการจัดทำบัญชีรายการข้อมูลและ Metadata ที่สำคัญ (Data Inventory)" },
+                    { id: "ID.AM-08", text: "มีการบริหารจัดการระบบ ฮาร์ดแวร์ ซอฟต์แวร์ บริการ และข้อมูล ตลอดวงจรชีวิต (Life Cycles Management)" }
+                ]
+            },
+            {
+                category: "Risk Assessment (ID.RA)",
+                desc: "กระบวนการประเมินและทำความเข้าใจความเสี่ยงด้านความมั่นคงปลอดภัยไซเบอร์",
+                questions: [
+                    { id: "ID.RA-01", text: "มีการระบุ ตรวจสอบ และบันทึกช่องโหว่ (Vulnerabilities) ของระบบและทรัพย์สิน" },
+                    { id: "ID.RA-02", text: "มีการติดตามข่าวสารภัยคุกคามไซเบอร์ (Cyber Threat Intelligence) จากหน่วยงานภายนอก" },
+                    { id: "ID.RA-03", text: "มีการระบุและบันทึกภัยคุกคาม (Threats) ทั้งจากปัจจัยภายในและภายนอกองค์กร" },
+                    { id: "ID.RA-04", text: "มีการประเมินโอกาสเกิดและผลกระทบ (Likelihood & Impact) จากเหตุการณ์ทางไซเบอร์" },
+                    { id: "ID.RA-05", text: "มีการนำข้อมูลภัยคุกคามและช่องโหว่ มาคำนวณเป็นระดับความเสี่ยง (Determine Risk)" },
+                    { id: "ID.RA-06", text: "มีการกำหนดแผนและแนวทางการตอบสนองความเสี่ยง (Risk Responses) ตามลำดับความสำคัญ" },
+                    { id: "ID.RA-07", text: "มีการติดตามการเปลี่ยนแปลงขององค์กรและสภาพแวดล้อมภัยคุกคาม เพื่อปรับปรุงการตอบสนองความเสี่ยง" }
+                ]
+            },
+            {
+                category: "Improvement (ID.IM)",
+                desc: "การนำผลประเมินและเหตุการณ์ที่เกิดขึ้นมาปรับปรุงกระบวนการอย่างต่อเนื่อง",
+                questions: [
+                    { id: "ID.IM-01", text: "มีการระบุแนวทางการปรับปรุงจากผลการประเมินหรือการตรวจสอบ (Audits/Evaluations)" },
+                    { id: "ID.IM-02", text: "มีการนำบทเรียนจากเหตุการณ์ละเมิดความปลอดภัย (Security Incidents) มาปรับปรุง" },
+                    { id: "ID.IM-03", text: "มีการนำผลจากการซ้อมรับมือภัยคุกคาม (Cybersecurity Exercises) มาปรับปรุงกระบวนการ Identify" },
+                    { id: "ID.IM-04", text: "มีการนำแนวทางการปรับปรุงกระบวนการ Identify (Improvement Plans) ไปปฏิบัติและดำเนินการจริง" }
+                ]
+            }
+        ];
+
+        const governData = [
+            {
+                category: "Organizational Context (GV.OC)",
+                desc: "การทำความเข้าใจบริบทองค์กรเพื่อประกอบการจัดการความเสี่ยงด้านไซเบอร์",
+                questions: [
+                    { id: "GV.OC-01", text: "มีการทำความเข้าใจพันธกิจขององค์กร และนำมาใช้ประกอบการบริหารความเสี่ยงด้านไซเบอร์" },
+                    { id: "GV.OC-02", text: "มีการทำความเข้าใจผู้มีส่วนได้ส่วนเสีย ทั้งภายในและภายนอก และนำความต้องการและความคาดหวังมาพิจารณา" },
+                    { id: "GV.OC-03", text: "มีการทำความเข้าใจและจัดการข้อกำหนดทางกฎหมาย กฎระเบียบ และสัญญาที่เกี่ยวข้อง" },
+                    { id: "GV.OC-04", text: "มีการทำความเข้าใจวัตถุประสงค์ ขีดความสามารถ และบริการที่สำคัญ ซึ่งผู้มีส่วนได้ส่วนเสียพึ่งพา" },
+                    { id: "GV.OC-05", text: "มีการทำความเข้าใจผลลัพธ์ ขีดความสามารถ และบริการ ที่องค์กรจำเป็นต้องพึ่งพา" }
+                ]
+            },
+            {
+                category: "Risk Management Strategy (GV.RM)",
+                desc: "การกำหนดกลยุทธ์และทิศทางในการบริหารความเสี่ยงด้านไซเบอร์",
+                questions: [
+                    { id: "GV.RM-01", text: "มีการกำหนดและตกลงร่วมกันในวัตถุประสงค์การบริหารความเสี่ยง โดยผู้มีส่วนได้ส่วนเสียขององค์กร" },
+                    { id: "GV.RM-02", text: "มีการกำหนด สื่อสาร และรักษาไว้ซึ่งแถลงการณ์ด้านความเสี่ยงที่ยอมรับได้ (Risk Appetite) และระดับความเสี่ยงที่ทนได้ (Risk Tolerance)" },
+                    { id: "GV.RM-03", text: "มีการบูรณาการกิจกรรมและผลลัพธ์การบริหารความเสี่ยงด้านไซเบอร์ เข้ากับกระบวนการบริหารความเสี่ยงระดับองค์กร (ERM)" },
+                    { id: "GV.RM-04", text: "มีการกำหนดและสื่อสารทิศทางเชิงกลยุทธ์ ซึ่งอธิบายถึงตัวเลือกการตอบสนองความเสี่ยงที่เหมาะสม" },
+                    { id: "GV.RM-05", text: "มีการสร้างช่องทางการสื่อสารทั่วทั้งองค์กร สำหรับประเด็นความเสี่ยงด้านความมั่นคงปลอดภัยไซเบอร์" },
+                    { id: "GV.RM-06", text: "มีการกำหนดและสื่อสารวิธีการมาตรฐาน สำหรับการคำนวณ จัดทำเอกสาร จัดหมวดหมู่ และจัดลำดับความสำคัญของความเสี่ยง" },
+                    { id: "GV.RM-07", text: "มีการใช้ผลลัพธ์เชิงกลยุทธ์ เพื่อประกอบการตัดสินใจเรื่องความเสี่ยงด้านไซเบอร์อย่างต่อเนื่อง" }
+                ]
+            },
+            {
+                category: "Roles, Responsibilities & Authorities (GV.RR)",
+                desc: "การกำหนดบทบาท ความรับผิดชอบ และอำนาจหน้าที่ที่ชัดเจน",
+                questions: [
+                    { id: "GV.RR-01", text: "ผู้บริหารระดับสูงรับผิดชอบต่อความเสี่ยงด้านไซเบอร์ และส่งเสริมวัฒนธรรมที่ตระหนักถึงความเสี่ยงและมีจริยธรรม" },
+                    { id: "GV.RR-02", text: "มีการกำหนด สื่อสาร ทำความเข้าใจ และบังคับใช้ บทบาท ความรับผิดชอบ และอำนาจหน้าที่ที่เกี่ยวข้องกับการบริหารความเสี่ยง" },
+                    { id: "GV.RR-03", text: "มีการจัดสรรทรัพยากรอย่างเพียงพอ ให้สอดคล้องกับกลยุทธ์ความเสี่ยง บทบาท ความรับผิดชอบ และนโยบาย" },
+                    { id: "GV.RR-04", text: "มีการนำประเด็นด้านความมั่นคงปลอดภัยไซเบอร์ ไปรวมไว้ในแนวปฏิบัติและกระบวนการของทรัพยากรบุคคล (HR)" }
+                ]
+            },
+            {
+                category: "Policy (GV.PO)",
+                desc: "การกำหนดและบังคับใช้นโยบายด้านความมั่นคงปลอดภัยไซเบอร์",
+                questions: [
+                    { id: "GV.PO-01", text: "มีการกำหนด สื่อสาร และบังคับใช้นโยบายด้านความมั่นคงปลอดภัยไซเบอร์ (Cybersecurity Policy)" },
+                    { id: "GV.PO-02", text: "มีการทบทวน อัปเดต สื่อสาร และบังคับใช้นโยบาย เพื่อให้สอดคล้องกับการเปลี่ยนแปลงของข้อกำหนดและภัยคุกคาม" }
+                ]
+            },
+            {
+                category: "Oversight (GV.OV)",
+                desc: "การกำกับดูแลและประเมินผลการดำเนินการ",
+                questions: [
+                    { id: "GV.OV-01", text: "มีการประเมินและปรับปรุงผลการดำเนินงานด้านความเสี่ยง เพื่อให้กลยุทธ์ นโยบาย และแนวปฏิบัติตรงตามความคาดหวัง" },
+                    { id: "GV.OV-02", text: "มีการทบทวนและปรับปรุงกลยุทธ์การบริหารความเสี่ยง เพื่อให้ครอบคลุมข้อกำหนดขององค์กร กฎหมาย และกฎระเบียบ" },
+                    { id: "GV.OV-03", text: "มีการสื่อสารผลการดำเนินงานด้านการบริหารความเสี่ยงให้แก่ผู้บริหารและผู้มีส่วนได้ส่วนเสียรับทราบอย่างสม่ำเสมอ" }
+                ]
+            },
+            {
+                category: "Supply Chain Risk Management (GV.SC)",
+                desc: "การบริหารความเสี่ยงไซเบอร์สำหรับห่วงโซ่อุปทาน (Third-parties / Suppliers)",
+                questions: [
+                    { id: "GV.SC-01", text: "มีการกำหนดและตกลงร่วมกันในโปรแกรม กลยุทธ์ วัตถุประสงค์ และนโยบาย บริหารความเสี่ยงห่วงโซ่อุปทาน" },
+                    { id: "GV.SC-02", text: "มีการกำหนด สื่อสาร และประสานงาน บทบาทและความรับผิดชอบด้านไซเบอร์ สำหรับซัพพลายเออร์และพันธมิตร" },
+                    { id: "GV.SC-03", text: "มีการบูรณาการความเสี่ยงห่วงโซ่อุปทาน เข้ากับการบริหารความเสี่ยงระดับองค์กร (ERM)" },
+                    { id: "GV.SC-04", text: "มีการทำความรู้จักซัพพลายเออร์และจัดลำดับความสำคัญตามระดับความวิกฤต (Criticality)" },
+                    { id: "GV.SC-05", text: "มีการกำหนดและบูรณาการข้อกำหนดด้านไซเบอร์ ลงในสัญญาและข้อตกลงกับซัพพลายเออร์" },
+                    { id: "GV.SC-06", text: "มีการตรวจสอบสถานะ (Due Diligence) เพื่อลดความเสี่ยงก่อนเข้าสู่ความสัมพันธ์กับซัพพลายเออร์อย่างเป็นทางการ" },
+                    { id: "GV.SC-07", text: "มีการทำความเข้าใจ ประเมิน ตอบสนอง และติดตาม ความเสี่ยงที่เกิดจากซัพพลายเออร์ ตลอดความสัมพันธ์ (Lifecycle)" },
+                    { id: "GV.SC-08", text: "มีการนำซัพพลายเออร์ที่เกี่ยวข้อง เข้ามามีส่วนร่วมในการวางแผน การตอบสนอง และการฟื้นฟูจากเหตุการณ์ (Incident Response)" },
+                    { id: "GV.SC-09", text: "มีการบูรณาการแนวปฏิบัติด้านความปลอดภัยของห่วงโซ่อุปทาน เข้ากับโปรแกรมบริหารความเสี่ยงและประเมินผลอย่างต่อเนื่อง" },
+                    { id: "GV.SC-10", text: "แผนการบริหารความเสี่ยงห่วงโซ่อุปทาน ครอบคลุมถึงข้อปฏิบัติหลังจากสิ้นสุดความร่วมมือหรือข้อตกลงการบริการ (Offboarding)" }
+                ]
+            }
+        ];
+
+        const protectData = [
+            {
+                category: "Identity Management, Authentication & Access Control (PR.AA)",
+                desc: "การจัดการตัวตน การยืนยันตัวตน และการควบคุมการเข้าถึงระบบและข้อมูล",
+                questions: [
+                    { id: "PR.AA-01", text: "มีการจัดการตัวตนและวงจรชีวิตของบัญชีผู้ใช้ (User lifecycle management)" },
+                    { id: "PR.AA-02", text: "มีการกำหนดและบังคับใช้การควบคุมการเข้าถึงระบบและข้อมูล (Access control & Least privilege)" },
+                    { id: "PR.AA-03", text: "มีการใช้งานการยืนยันตัวตนแบบหลายปัจจัย (MFA) สำหรับการเข้าถึงระบบที่สำคัญ" },
+                    { id: "PR.AA-04", text: "มีการบริหารจัดการและยืนยันตัวตนของอุปกรณ์ (Device authentication) ก่อนเข้าถึงเครือข่าย" },
+                    { id: "PR.AA-05", text: "มีการบริหารจัดการบัญชีผู้ดูแลระบบ (Privileged accounts) และบัญชีระบบอย่างเข้มงวด" },
+                    { id: "PR.AA-06", text: "มีการยืนยันตัวตนของการเชื่อมต่อและสื่อสารข้ามเครือข่ายเพื่อความปลอดภัย" }
+                ]
+            },
+            {
+                category: "Awareness and Training (PR.AT)",
+                desc: "การสร้างความตระหนักรู้และฝึกอบรมด้านความมั่นคงปลอดภัยไซเบอร์",
+                questions: [
+                    { id: "PR.AT-01", text: "บุคลากรทุกคนได้รับการอบรมและมีความตระหนักรู้ด้านความมั่นคงปลอดภัยไซเบอร์เบื้องต้น" },
+                    { id: "PR.AT-02", text: "ผู้ที่มีบทบาทหรือหน้าที่เฉพาะเจาะจง ได้รับการฝึกอบรมทักษะเชิงลึกที่จำเป็นต่อการปฏิบัติงาน" }
+                ]
+            },
+            {
+                category: "Data Security (PR.DS)",
+                desc: "การรักษาความมั่นคงปลอดภัยของข้อมูลตามกลยุทธ์ความเสี่ยงขององค์กร",
+                questions: [
+                    { id: "PR.DS-01", text: "ข้อมูลขณะพัก (Data at rest) ได้รับการปกป้องและเข้ารหัสตามระดับความสำคัญ" },
+                    { id: "PR.DS-02", text: "ข้อมูลขณะส่งผ่าน (Data in transit) ได้รับการปกป้องและเข้ารหัส" },
+                    { id: "PR.DS-10", text: "มีการจัดการวงจรชีวิตของข้อมูล และทำลายข้อมูลอย่างปลอดภัยเมื่อหมดความจำเป็น" },
+                    { id: "PR.DS-11", text: "มีการสำรองข้อมูล (Data backups) และตัวสำรองได้รับการปกป้องอย่างปลอดภัย" }
+                ]
+            },
+            {
+                category: "Platform Security (PR.PS)",
+                desc: "การรักษาความมั่นคงปลอดภัยของฮาร์ดแวร์ ซอฟต์แวร์ และบริการต่างๆ",
+                questions: [
+                    { id: "PR.PS-01", text: "มีการกำหนดและบังคับใช้การตั้งค่าพื้นฐานของระบบอย่างปลอดภัย (Secure baselines/Configuration)" },
+                    { id: "PR.PS-02", text: "มีการอัปเดตและจัดการแพตช์ (Patch management) ของระบบและซอฟต์แวร์อย่างต่อเนื่อง" },
+                    { id: "PR.PS-03", text: "มีการจำกัดฟังก์ชันการทำงาน พอร์ต หรือโปรโตคอลที่ไม่จำเป็น (Principle of least functionality)" },
+                    { id: "PR.PS-04", text: "มีการตรวจสอบและจำกัดการใช้งานอุปกรณ์พกพา และสื่อบันทึกข้อมูลภายนอก (Removable media)" },
+                    { id: "PR.PS-05", text: "มีการจัดการ บันทึก และควบคุมการเปลี่ยนแปลงของระบบ (Change management)" },
+                    { id: "PR.PS-06", text: "มีการติดตั้งระบบและกลไกปกป้องแพลตฟอร์มจากโค้ดอันตราย (Malware protection/Antivirus)" }
+                ]
+            },
+            {
+                category: "Technology Infrastructure Resilience (PR.IR)",
+                desc: "สถาปัตยกรรมเครือข่ายและโครงสร้างพื้นฐานที่ออกแบบมาเพื่อความยืดหยุ่นและปลอดภัย",
+                questions: [
+                    { id: "PR.IR-01", text: "สถาปัตยกรรมเครือข่ายมีการแบ่งส่วนย่อย (Network segmentation) อย่างเหมาะสม" },
+                    { id: "PR.IR-02", text: "มีการปกป้องและควบคุมจุดเชื่อมต่อระหว่างเครือข่ายภายในและภายนอก (Network perimeters)" },
+                    { id: "PR.IR-03", text: "มีกลไกป้องกันระบบจากพฤติกรรมหรือการรับส่งข้อมูลที่ผิดปกติ เช่น การโจมตีแบบ DDoS" },
+                    { id: "PR.IR-04", text: "มีการจัดสรรทรัพยากร (Capacity planning) เพื่อรองรับการดำเนินงานอย่างต่อเนื่อง" }
+                ]
+            }
+        ];
+
+        const detectData = [
+            {
+                category: "Continuous Monitoring (DE.CM)",
+                desc: "การเฝ้าระวังสินทรัพย์และสภาพแวดล้อมอย่างต่อเนื่อง เพื่อค้นหาเหตุการณ์ที่ผิดปกติ",
+                questions: [
+                    { id: "DE.CM-01", text: "มีการเฝ้าระวังเครือข่ายและบริการเครือข่าย (Networks and network services) เพื่อค้นหาเหตุการณ์ที่อาจส่งผลกระทบ" },
+                    { id: "DE.CM-02", text: "มีการเฝ้าระวังสภาพแวดล้อมทางกายภาพ (Physical environment) เพื่อค้นหาเหตุการณ์ที่อาจส่งผลกระทบ" },
+                    { id: "DE.CM-03", text: "มีการเฝ้าระวังกิจกรรมของบุคลากรและการใช้เทคโนโลยี เพื่อค้นหาพฤติกรรมที่ผิดปกติหรืออาจส่งผลกระทบ" },
+                    { id: "DE.CM-06", text: "มีการเฝ้าระวังกิจกรรมของผู้ให้บริการภายนอก (External service providers) เพื่อค้นหาเหตุการณ์ที่อาจส่งผลกระทบ" },
+                    { id: "DE.CM-09", text: "มีการเฝ้าระวังฮาร์ดแวร์ ซอฟต์แวร์ สภาพแวดล้อมการทำงาน (Runtime) และข้อมูล เพื่อค้นหาเหตุการณ์ที่อาจส่งผลกระทบ" }
+                ]
+            },
+            {
+                category: "Adverse Event Analysis (DE.AE)",
+                desc: "การวิเคราะห์เหตุการณ์ที่ผิดปกติ เพื่อประเมินผลกระทบและประกาศสถานการณ์ภัยคุกคาม",
+                questions: [
+                    { id: "DE.AE-02", text: "เหตุการณ์ที่อาจส่งผลกระทบได้รับการวิเคราะห์ เพื่อทำความเข้าใจกิจกรรมที่เกี่ยวข้อง" },
+                    { id: "DE.AE-03", text: "มีการรวบรวมและเชื่อมโยงข้อมูล (Correlation) จากหลายแหล่งที่มาเพื่อประกอบการวิเคราะห์เหตุการณ์" },
+                    { id: "DE.AE-04", text: "มีการประเมินเพื่อทำความเข้าใจขอบเขตและผลกระทบ (Impact and scope) ที่อาจเกิดขึ้นจากเหตุการณ์" },
+                    { id: "DE.AE-06", text: "ข้อมูลเหตุการณ์ที่อาจส่งผลกระทบถูกส่งมอบให้บุคลากรหรือระบบที่ได้รับอนุญาต เพื่อดำเนินการต่อ" },
+                    { id: "DE.AE-07", text: "มีการนำข้อมูลภัยคุกคามทางไซเบอร์ (Cyber threat intelligence) และข้อมูลบริบทอื่นๆ มาบูรณาการร่วมกับการวิเคราะห์" },
+                    { id: "DE.AE-08", text: "มีการประกาศเป็นสถานการณ์ภัยคุกคาม (Incidents are declared) เมื่อเหตุการณ์เข้าเกณฑ์ที่องค์กรกำหนดไว้" }
+                ]
+            }
+        ];
+
+        const respondData = [
+            {
+                category: "Incident Management (RS.MA)",
+                desc: "การบริหารจัดการเหตุการณ์เมื่อมีการประกาศสถานการณ์ภัยคุกคาม",
+                questions: [
+                    { id: "RS.MA-01", text: "มีการปฏิบัติตามแผนตอบสนองเหตุการณ์ (Incident response plan) ร่วมกับหน่วยงานที่เกี่ยวข้อง" },
+                    { id: "RS.MA-02", text: "มีการคัดกรองและตรวจสอบความถูกต้องของรายงานเหตุการณ์ (Triage and validate)" },
+                    { id: "RS.MA-03", text: "มีการจัดหมวดหมู่และจัดลำดับความสำคัญของเหตุการณ์ (Categorize and prioritize)" },
+                    { id: "RS.MA-04", text: "มีการยกระดับและส่งต่อเหตุการณ์ (Escalation) ให้ผู้ที่เกี่ยวข้องตามความจำเป็น" },
+                    { id: "RS.MA-05", text: "มีการประเมินเกณฑ์เพื่อเริ่มต้นกระบวนการฟื้นฟูระบบ (Initiate incident recovery)" }
+                ]
+            },
+            {
+                category: "Incident Analysis (RS.AN)",
+                desc: "การสืบสวนและวิเคราะห์เหตุการณ์เพื่อสนับสนุนการตอบสนองและฟื้นฟู",
+                questions: [
+                    { id: "RS.AN-03", text: "มีการวิเคราะห์เพื่อกำหนดแนวทางการดำเนินการตอบสนองต่อเหตุการณ์ที่เหมาะสม" },
+                    { id: "RS.AN-06", text: "มีการบันทึกการกระทำต่างๆ ระหว่างการสืบสวน พร้อมรักษาความถูกต้องและที่มาของข้อมูล (Integrity and provenance)" },
+                    { id: "RS.AN-07", text: "มีการรวบรวมข้อมูลและ Metadata ของเหตุการณ์ พร้อมรักษาความถูกต้องของข้อมูลเพื่อการสืบสวน (Forensics support)" },
+                    { id: "RS.AN-08", text: "มีการประเมินและตรวจสอบขนาดหรือระดับความรุนแรงของเหตุการณ์ (Magnitude estimation)" }
+                ]
+            },
+            {
+                category: "Incident Response Reporting & Communication (RS.CO)",
+                desc: "การรายงานและการสื่อสารกิจกรรมการตอบสนองกับผู้มีส่วนได้ส่วนเสีย",
+                questions: [
+                    { id: "RS.CO-02", text: "มีการแจ้งเตือนเหตุการณ์ให้ผู้มีส่วนได้ส่วนเสียทั้งภายในและภายนอกทราบตามนโยบายหรือกฎหมายที่กำหนด" },
+                    { id: "RS.CO-03", text: "มีการแบ่งปันข้อมูลกับผู้มีส่วนได้ส่วนเสีย เพื่อให้บรรลุวัตถุประสงค์ร่วมในการตอบสนองต่อเหตุการณ์" }
+                ]
+            },
+            {
+                category: "Incident Mitigation (RS.MI)",
+                desc: "การดำเนินการเพื่อระงับ ยับยั้ง และกำจัดภัยคุกคามไม่ให้ขยายวงกว้าง",
+                questions: [
+                    { id: "RS.MI-01", text: "มีการกักกัน (Containment) พื้นที่หรือระบบเพื่อจำกัดวงความเสียหายของเหตุการณ์" },
+                    { id: "RS.MI-02", text: "มีการกำจัด (Eradication) ต้นตอของเหตุการณ์และภัยคุกคามออกจากระบบอย่างเด็ดขาด" }
+                ]
+            }
+        ];
+
+        const recoverData = [
+            {
+                category: "Incident Recovery Plan Execution (RC.RP)",
+                desc: "การปฏิบัติตามแผนฟื้นฟูระบบเพื่อให้กลับมาดำเนินงานได้ตามปกติอย่างปลอดภัย",
+                questions: [
+                    { id: "RC.RP-01", text: "มีการปฏิบัติตามแผนฟื้นฟู (Recovery plan) เพื่อกู้คืนระบบและข้อมูลที่ได้รับผลกระทบ" },
+                    { id: "RC.RP-02", text: "มีการตรวจสอบและยืนยันความถูกต้องของข้อมูลและระบบหลังการฟื้นฟู (Integrity checks)" },
+                    { id: "RC.RP-03", text: "มีการตรวจสอบการทำงานของระบบเพื่อยืนยันว่ากลับมาให้บริการได้ตามปกติ" },
+                    { id: "RC.RP-04", text: "มีการดำเนินการฟื้นฟูระบบและข้อมูลตามลำดับความสำคัญของธุรกิจ (Prioritization)" },
+                    { id: "RC.RP-05", text: "มีการดำเนินการเพื่อป้องกันไม่ให้เกิดเหตุการณ์ซ้ำซ้อนระหว่างกระบวนการฟื้นฟู" },
+                    { id: "RC.RP-06", text: "มีการนำบทเรียนที่ได้จากการฟื้นฟู (Lessons learned) มาปรับปรุงแผนอย่างต่อเนื่อง" }
+                ]
+            },
+            {
+                category: "Incident Recovery Communication (RC.CO)",
+                desc: "การสื่อสารกิจกรรมและสถานะการฟื้นฟูระบบกับผู้มีส่วนได้ส่วนเสีย",
+                questions: [
+                    { id: "RC.CO-03", text: "มีการสื่อสารสถานะการฟื้นฟูระบบและระยะเวลาที่คาดว่าจะแล้วเสร็จ ให้กับผู้มีส่วนได้ส่วนเสียทราบอย่างต่อเนื่อง" },
+                    { id: "RC.CO-04", text: "มีการแถลงการณ์หรือสื่อสารต่อสาธารณะ/ผู้ให้บริการภายนอก (Public/External relations) ตามความเหมาะสมของเหตุการณ์" }
+                ]
+            }
+        ];
+
+        // Centralized Mapping
+        const frameworkData = {
+            'gv': governData,
+            'id': identifyData,
+            'pr': protectData,
+            'de': detectData,
+            'rs': respondData,
+            'rc': recoverData
+        };
+
+        const charts = { gv: null, id: null, pr: null, de: null, rs: null, rc: null };
+        let radarChartMain = null;
+        
+        // Global Scores Memory to update Radar
+        let globalScores = { gv: 0, id: 0, pr: 0, de: 0, rs: 0, rc: 0 };
+        // Weights for Calculation
+        let categoryWeights = { gv: 1, id: 1, pr: 1, de: 1, rs: 1, rc: 1 };
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', () => {
+            loadWeights();
+            initRadarChart();
+
+            Object.keys(frameworkData).forEach(domain => {
+                renderQuestions(domain);
+                initChart(domain);
+                loadData(domain); 
+                calculateScores(domain); 
+            });
+            
+            // First time load Radar Data
+            updateGlobalDashboard();
+        });
+
+        // Tab Switching Logic (รองรับการจำ State แบบไม่โหลดหน้าใหม่)
+        function openTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('block');
+                el.classList.add('hidden');
+            });
+            const activeTab = document.getElementById('tab-' + tabName);
+            if(activeTab) {
+                activeTab.classList.remove('hidden');
+                activeTab.classList.add('block');
+            }
+
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('border-blue-600', 'text-blue-600');
+                el.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            const activeBtn = document.getElementById('btn-' + tabName);
+            if(activeBtn) {
+                activeBtn.classList.remove('border-transparent', 'text-slate-500');
+                activeBtn.classList.add('border-blue-600', 'text-blue-600');
+            }
+        }
+
+        // --- DASHBOARD & RADAR LOGIC ---
+        function initRadarChart() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            radarChartMain = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Govern (GV)', 'Identify (ID)', 'Protect (PR)', 'Detect (DE)', 'Respond (RS)', 'Recover (RC)'],
+                    datasets: [{
+                        label: 'Preparedness (%)',
+                        data: [0, 0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                        borderColor: 'rgba(37, 99, 235, 1)',
+                        pointBackgroundColor: 'rgba(37, 99, 235, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(37, 99, 235, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { stepSize: 20, display: false }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function updateGlobalDashboard() {
+            // Update Radar
+            if(radarChartMain) {
+                radarChartMain.data.datasets[0].data = [
+                    globalScores.gv,
+                    globalScores.id,
+                    globalScores.pr,
+                    globalScores.de,
+                    globalScores.rs,
+                    globalScores.rc
+                ];
+                radarChartMain.update();
+            }
+
+            // Calculate Weighted Score
+            let totalWeightedScore = 0;
+            let totalWeights = 0;
+            
+            Object.keys(globalScores).forEach(domain => {
+                let w = parseFloat(categoryWeights[domain]) || 0;
+                totalWeightedScore += (globalScores[domain] * w);
+                totalWeights += w;
+            });
+
+            const finalScore = totalWeights > 0 ? Math.round(totalWeightedScore / totalWeights) : 0;
+            
+            const scoreEl = document.getElementById('global-score');
+            const circleEl = document.getElementById('global-circle');
+            
+            if(scoreEl) scoreEl.innerText = finalScore + '%';
+            if(circleEl) circleEl.setAttribute('stroke-dasharray', `${finalScore}, 100`);
+            
+            // Adjust color dynamically based on score
+            if(circleEl) {
+                circleEl.classList.remove('text-red-500', 'text-amber-500', 'text-blue-600', 'text-emerald-500');
+                if(finalScore < 40) circleEl.classList.add('text-red-500');
+                else if(finalScore < 70) circleEl.classList.add('text-amber-500');
+                else if(finalScore < 90) circleEl.classList.add('text-blue-600');
+                else circleEl.classList.add('text-emerald-500');
+            }
+        }
+
+        function loadWeights() {
+            const saved = localStorage.getItem('nist_csf_2_weights');
+            if(saved) {
+                try {
+                    categoryWeights = JSON.parse(saved);
+                    Object.keys(categoryWeights).forEach(domain => {
+                        const el = document.getElementById(`weight-${domain}`);
+                        if(el) el.value = categoryWeights[domain];
+                    });
+                } catch(e) {}
+            }
+        }
+
+        function updateWeights() {
+            Object.keys(categoryWeights).forEach(domain => {
+                const el = document.getElementById(`weight-${domain}`);
+                if(el) categoryWeights[domain] = parseFloat(el.value) || 0;
+            });
+            localStorage.setItem('nist_csf_2_weights', JSON.stringify(categoryWeights));
+            updateGlobalDashboard();
+        }
+
+        function resetWeights() {
+            Object.keys(categoryWeights).forEach(domain => {
+                categoryWeights[domain] = 1;
+                const el = document.getElementById(`weight-${domain}`);
+                if(el) el.value = 1;
+            });
+            updateWeights();
+        }
+
+
+        // --- DYNAMIC RENDERING ---
+        function renderQuestions(domain) {
+            const container = document.getElementById(`${domain}-questions-container`);
+            if(!container) return; 
+
+            let html = '';
+            frameworkData[domain].forEach((cat, cIndex) => {
+                html += `
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50/80 px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-800">${cat.category}</h3>
+                            <p class="text-sm text-slate-500">${cat.desc}</p>
+                        </div>
+                        <div class="mt-2 sm:mt-0 flex items-center bg-white px-4 py-2 rounded-lg border border-slate-200 shadow-sm">
+                            <span class="text-sm font-medium text-slate-500 mr-2">ความพร้อม:</span>
+                            <span class="text-lg font-bold text-blue-600" id="cat-score-${domain}-${cIndex}">0%</span>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[800px]">
+                            <thead>
+                                <tr class="bg-white text-slate-600 text-sm border-b">
+                                    <th class="py-3 px-6 w-5/12 font-semibold">ข้อกำหนด (Subcategory)</th>
+                                    <th class="py-3 px-6 w-3/12 font-semibold">ระดับการดำเนินการ (Maturity)</th>
+                                    <th class="py-3 px-6 w-4/12 font-semibold">หลักฐานอ้างอิง / หมายเหตุ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                cat.questions.forEach((q, qIndex) => {
+                    html += `
+                        <tr class="border-b last:border-b-0 hover:bg-slate-50 transition-colors">
+                            <td class="py-4 px-6 align-top">
+                                <div class="font-bold text-blue-700">${q.id}</div>
+                                <p class="text-sm text-slate-700 mt-1 leading-relaxed">${q.text}</p>
+                            </td>
+                            <td class="py-4 px-6 align-top">
+                                <select class="score-select-${domain} w-full border border-slate-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-shadow"
+                                        data-cat="${cIndex}" data-q="${qIndex}" onchange="handleDataChange('${domain}')">
+                                    <option value="0">0 - ยังไม่มีการดำเนินการ (None)</option>
+                                    <option value="1">1 - ดำเนินการเบื้องต้น (Initial)</option>
+                                    <option value="2">2 - ดำเนินการบางส่วนมีแบบแผน (Partial)</option>
+                                    <option value="3">3 - ครบถ้วนตามมาตรฐาน (Defined)</option>
+                                    <option value="4">4 - วัดผลและเชิงรุกได้ (Managed)</option>
+                                </select>
+                            </td>
+                            <td class="py-4 px-6 align-top">
+                                <textarea class="note-input-${domain} w-full border border-slate-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-shadow"
+                                          rows="2" placeholder="ระบุระบบที่ใช้ หรือเอกสารอ้างอิง..." 
+                                          data-cat="${cIndex}" data-q="${qIndex}" onkeyup="handleDataChange('${domain}')"></textarea>
+                            </td>
+                        </tr>
+                    `;
+                });
+                html += `</tbody></table></div></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // --- DOMAIN CHARTS ---
+        function initChart(domain) {
+            const canvas = document.getElementById(`${domain}Chart`);
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const dataLabels = frameworkData[domain].map(d => d.category.split(' ')[0] + ' ' + d.category.split(' ')[1]); 
+            const initData = new Array(frameworkData[domain].length).fill(0);
+
+            let colorBg = 'rgba(37, 99, 235, 0.7)'; 
+            let colorBorder = 'rgba(37, 99, 235, 1)';
+            
+            if (domain === 'gv') { colorBg = 'rgba(15, 118, 110, 0.7)'; colorBorder = 'rgba(15, 118, 110, 1)'; }
+            else if (domain === 'pr') { colorBg = 'rgba(147, 51, 234, 0.7)'; colorBorder = 'rgba(147, 51, 234, 1)'; }
+            else if (domain === 'de') { colorBg = 'rgba(245, 158, 11, 0.7)'; colorBorder = 'rgba(245, 158, 11, 1)'; }
+            else if (domain === 'rs') { colorBg = 'rgba(225, 29, 72, 0.7)'; colorBorder = 'rgba(225, 29, 72, 1)'; }
+            else if (domain === 'rc') { colorBg = 'rgba(16, 185, 129, 0.7)'; colorBorder = 'rgba(16, 185, 129, 1)'; }
+
+            charts[domain] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dataLabels,
+                    datasets: [{
+                        label: 'ระดับความพร้อม (%)',
+                        data: initData,
+                        backgroundColor: colorBg,
+                        borderColor: colorBorder,
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { callback: function(value) { return value + '%' } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: function(context) { return context.parsed.y + '%'; } } }
+                    }
+                }
+            });
+        }
+
+        // --- CALCULATIONS & DATA HANDLING ---
+        function handleDataChange(domain) {
+            calculateScores(domain);
+            saveData(domain);
+        }
+
+        function calculateScores(domain) {
+            let totalScore = 0;
+            let totalMax = 0;
+
+            frameworkData[domain].forEach((cat, cIndex) => {
+                let catScore = 0;
+                let catMax = cat.questions.length * 4;
+
+                cat.questions.forEach((q, qIndex) => {
+                    const select = document.querySelector(`.score-select-${domain}[data-cat="${cIndex}"][data-q="${qIndex}"]`);
+                    if(select) { catScore += parseInt(select.value); }
+                });
+
+                const catPercent = Math.round((catScore / catMax) * 100);
+                
+                const scoreLabel = document.getElementById(`cat-score-${domain}-${cIndex}`);
+                if(scoreLabel) scoreLabel.innerText = catPercent + '%';
+
+                if(charts[domain]) {
+                    charts[domain].data.datasets[0].data[cIndex] = catPercent;
+                }
+
+                totalScore += catScore;
+                totalMax += catMax;
+            });
+
+            const overallPercent = Math.round((totalScore / totalMax) * 100);
+            
+            // Save to Global Scores
+            globalScores[domain] = overallPercent;
+            
+            // Update the circle in the specific domain tab
+            const idSuffix = domain === 'id' ? '-id' : `-${domain}`;
+            const overallScoreEl = document.getElementById(`overall-score${idSuffix}`);
+            const overallCircleEl = document.getElementById(`overall-circle${idSuffix}`);
+            
+            if(overallScoreEl) overallScoreEl.innerText = overallPercent + '%';
+            if(overallCircleEl) overallCircleEl.setAttribute('stroke-dasharray', `${overallPercent}, 100`);
+
+            if(charts[domain]) { charts[domain].update(); }
+            
+            // Trigger Dashboard Update
+            updateGlobalDashboard();
+        }
+
+        function saveData(domain) {
+            const data = { scores: {}, notes: {} };
+            document.querySelectorAll(`.score-select-${domain}`).forEach(el => {
+                const key = `${el.dataset.cat}-${el.dataset.q}`;
+                data.scores[key] = el.value;
+            });
+            document.querySelectorAll(`.note-input-${domain}`).forEach(el => {
+                const key = `${el.dataset.cat}-${el.dataset.q}`;
+                data.notes[key] = el.value;
+            });
+            localStorage.setItem(`nist_csf_2_${domain}_data`, JSON.stringify(data));
+        }
+
+        function loadData(domain) {
+            const saved = localStorage.getItem(`nist_csf_2_${domain}_data`);
+            if(saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    document.querySelectorAll(`.score-select-${domain}`).forEach(el => {
+                        const key = `${el.dataset.cat}-${el.dataset.q}`;
+                        if(data.scores[key]) el.value = data.scores[key];
+                    });
+                    document.querySelectorAll(`.note-input-${domain}`).forEach(el => {
+                        const key = `${el.dataset.cat}-${el.dataset.q}`;
+                        if(data.notes[key]) el.value = data.notes[key];
+                    });
+                } catch (e) { console.error(`Error loading ${domain} data`, e); }
+            }
+        }
+
+        function clearData(domain) {
+            const domainNames = { 'gv': 'Govern', 'id': 'Identify', 'pr': 'Protect', 'de': 'Detect', 'rs': 'Respond', 'rc': 'Recover' };
+            const domainName = domainNames[domain] || domain.toUpperCase();
+            if(confirm(`คุณแน่ใจหรือไม่ว่าต้องการล้างข้อมูลการประเมินในหมวดหมู่ ${domainName} ทั้งหมด?`)) {
+                localStorage.removeItem(`nist_csf_2_${domain}_data`);
+                document.querySelectorAll(`.score-select-${domain}`).forEach(el => el.value = "0");
+                document.querySelectorAll(`.note-input-${domain}`).forEach(el => el.value = "");
+                calculateScores(domain);
+            }
+        }
+    </script>
+</body>
+</html>
