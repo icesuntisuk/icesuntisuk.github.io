@@ -430,9 +430,9 @@
                 <input type="text" class="input-sm" style="margin-left:8px; padding:6px 10px; height:32px;" placeholder="ระบุชื่อ">
               </label>
             </div>
-            <div class="inline-flex" style="width: 100%;">
-              <span style="font-size:14px; font-weight:500; min-width:60px;">อื่นๆ :</span>
-              <input type="text" placeholder="ระบุระบบหรืออุปกรณ์เพิ่มเติม (ถ้ามี)" style="flex:1;">
+            <div class="inline-flex" style="width: 100%; align-items: flex-start;">
+              <span style="font-size:14px; font-weight:500; min-width:60px; padding-top: 8px;">อื่นๆ :</span>
+              <textarea placeholder="ระบุระบบหรืออุปกรณ์เพิ่มเติม (ถ้ามี)" style="flex:1; min-height: 60px;"></textarea>
             </div>
           </div>
         </div>
@@ -491,9 +491,9 @@
               <label class="choice-lbl"><input type="checkbox"> Database Server</label>
               <label class="choice-lbl"><input type="checkbox"> Mail Server / Exchange</label>
             </div>
-            <div class="inline-flex" style="width: 100%; margin-top: 16px;">
-              <span style="font-size:14px; font-weight:500; min-width:60px;">อื่นๆ :</span>
-              <input type="text" placeholder="ระบุระบบหรืออุปกรณ์เพิ่มเติม (เช่น IoT, SCADA)" style="flex:1;">
+            <div class="inline-flex" style="width: 100%; margin-top: 16px; align-items: flex-start;">
+              <span style="font-size:14px; font-weight:500; min-width:60px; padding-top: 8px;">อื่นๆ :</span>
+              <textarea placeholder="ระบุระบบหรืออุปกรณ์เพิ่มเติม (เช่น IoT, SCADA)" style="flex:1; min-height: 60px;"></textarea>
             </div>
           </div>
         </div>
@@ -862,7 +862,7 @@ function exportJSON() {
           if (cb && cb.checked) scopeDetails.push('สภาพแวดล้อม: ' + extractNodeText(lbl));
         });
         
-        group.querySelectorAll('.env-section > .inline-flex input[type="text"]').forEach(function(inp) {
+        group.querySelectorAll('.env-section > .inline-flex input[type="text"], .env-section > .inline-flex textarea').forEach(function(inp) {
            if(inp.value.trim() !== '') scopeDetails.push('อื่นๆ: ' + inp.value.trim());
         });
         
