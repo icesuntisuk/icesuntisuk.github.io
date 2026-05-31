@@ -456,28 +456,28 @@
             <div class="sub-lbl">Servers <span class="en">เครื่องแม่ข่าย (นับรวม Physical และ Virtual)</span></div>
             <div class="sub-input">
               <input type="number" class="input-sm calc-internal" placeholder="ระบุจำนวน" min="0" oninput="calculateTotalInternal()"> 
-              <span style="font-size:13px; color:var(--text-muted);">เครื่อง</span>
+              <span style="font-size:13px; color:var(--text-muted);">IPs</span>
             </div>
           </div>
           <div class="sub-item">
             <div class="sub-lbl">Workstations / Endpoints <span class="en">เครื่องคอมพิวเตอร์พนักงาน / ผู้ใช้งาน</span></div>
             <div class="sub-input">
               <input type="number" class="input-sm calc-internal" placeholder="ระบุจำนวน" min="0" oninput="calculateTotalInternal()"> 
-              <span style="font-size:13px; color:var(--text-muted);">เครื่อง</span>
+              <span style="font-size:13px; color:var(--text-muted);">IPs</span>
             </div>
           </div>
           <div class="sub-item">
             <div class="sub-lbl">Network Devices <span class="en">อุปกรณ์เครือข่ายพื้นฐาน (Router, Switch)</span></div>
             <div class="sub-input">
               <input type="number" class="input-sm calc-internal" placeholder="ระบุจำนวน" min="0" oninput="calculateTotalInternal()"> 
-              <span style="font-size:13px; color:var(--text-muted);">อุปกรณ์</span>
+              <span style="font-size:13px; color:var(--text-muted);">IPs</span>
             </div>
           </div>
           <div class="sub-item">
             <div class="sub-lbl">Security Devices <span class="en">อุปกรณ์ความมั่นคงปลอดภัย (Firewall, IPS)</span></div>
             <div class="sub-input">
               <input type="number" class="input-sm calc-internal" placeholder="ระบุจำนวน" min="0" oninput="calculateTotalInternal()"> 
-              <span style="font-size:13px; color:var(--text-muted);">อุปกรณ์</span>
+              <span style="font-size:13px; color:var(--text-muted);">IPs</span>
             </div>
           </div>
           
@@ -588,6 +588,7 @@
         <div class="input-box">
           <div class="choice-stack">
             <label class="choice-lbl"><input type="radio" name="window"> ดำเนินการได้ตลอด 24 ชั่วโมง <span class="en">(24/7)</span></label>
+            <label class="choice-lbl"><input type="radio" name="window"> ในเวลาทำการ / เวลาราชการ <span class="en">(Business / Office Hours)</span></label>
             <label class="choice-lbl inline-flex">
               <input type="radio" name="window"> เฉพาะนอกเวลาทำการ <span class="en">(After Business Hours):</span>
               <input type="text" class="input-sm" style="height:30px; padding:4px 8px; max-width:80px;" placeholder="เริ่ม - จบ">
@@ -641,18 +642,6 @@
             <input type="number" class="input-sm" placeholder="จำนวน" style="max-width:70px; margin-left:4px;">
             <span style="font-size:14px;">รอบ</span>
           </label>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="label-box">
-          <span class="th">ภาษาของรายงาน</span>
-          <span class="en">Report Language</span>
-        </div>
-        <div class="input-box choice-row">
-          <label class="choice-lbl"><input type="radio" name="lang"> ภาษาไทย (Thai)</label>
-          <label class="choice-lbl"><input type="radio" name="lang"> ภาษาอังกฤษ (English)</label>
-          <label class="choice-lbl"><input type="radio" name="lang"> สองภาษา (Bilingual)</label>
         </div>
       </div>
       
