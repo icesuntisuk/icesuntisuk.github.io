@@ -3,715 +3,966 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>แบบฟอร์มประเมินราคา Vulnerability Assessment</title>
+<title>แบบฟอร์มขอรับการประเมินราคา Vulnerability Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --primary: #1a2a4a;
-    --primary-light: #2c3e6b;
-    --accent: #d94a00;
-    --border: #e2e5ea;
-    --bg: #f4f5f8;
-    --card: #ffffff;
-    --text: #1a1a2e;
-    --muted: #6b7280;
-    --radius: 8px;
+    --primary: #0F172A;       /* Slate 900 */
+    --primary-light: #1E293B; /* Slate 800 */
+    --accent: #2563EB;        /* Blue 600 */
+    --bg-main: #F8FAFC;       /* Slate 50 */
+    --surface: #FFFFFF;
+    --border: #E2E8F0;        /* Slate 200 */
+    --border-hover: #CBD5E1;  /* Slate 300 */
+    --text-main: #0F172A;
+    --text-muted: #64748B;    /* Slate 500 */
+    --radius-lg: 12px;
+    --radius-md: 8px;
+    --radius-sm: 6px;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
   body {
-    font-family: 'Segoe UI', 'Sarabun', 'Noto Sans Thai', -apple-system, Tahoma, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-    padding: 24px 16px;
+    font-family: 'Sarabun', -apple-system, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+    padding: 32px 16px;
     -webkit-font-smoothing: antialiased;
   }
-  .cover {
-    max-width: 860px;
+
+  .container {
+    max-width: 900px;
     margin: 0 auto;
-    background: var(--card);
-    border-radius: 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05), 0 6px 20px rgba(0,0,0,0.06);
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
     overflow: hidden;
   }
+
   .header {
     background: var(--primary);
     color: white;
-    padding: 32px 36px 28px;
+    padding: 40px 48px;
+    border-bottom: 4px solid var(--accent);
   }
   .header h1 {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
-    letter-spacing: -0.2px;
-    margin-bottom: 2px;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
   }
-  .header .sub {
-    font-size: 14px;
-    opacity: 0.75;
+  .header p {
+    font-size: 15px;
+    color: #94A3B8;
     font-weight: 300;
   }
-  .header .sub-en {
+  .header p.en {
     font-size: 13px;
-    opacity: 0.5;
-    font-weight: 300;
+    opacity: 0.7;
     margin-top: 2px;
   }
-  .body-wrap { padding: 28px 36px 32px; }
 
-  .objective {
-    background: #f0f2f9;
-    border-radius: var(--radius);
-    padding: 14px 18px;
-    margin-bottom: 28px;
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-    border-left: 3px solid var(--primary);
-  }
-  .objective .en { margin-top: 4px; font-size: 12px; color: #8a9098; }
+  .content-wrap { padding: 32px 48px 48px; }
 
-  .sec {
-    margin-bottom: 28px;
-    page-break-inside: avoid;
+  .notice-box {
+    background: #EFF6FF;
+    border-left: 4px solid var(--accent);
+    padding: 16px 20px;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    margin-bottom: 32px;
   }
-  .sec-head {
+  .notice-box p { font-size: 14px; color: #1E3A8A; font-weight: 500; }
+  .notice-box p.en { font-size: 13px; color: #3B82F6; margin-top: 4px; font-weight: 400; }
+
+  .section { margin-bottom: 40px; page-break-inside: avoid; }
+  .sec-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
+    gap: 12px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 12px;
   }
   .sec-num {
-    width: 28px; height: 28px;
     background: var(--primary);
     color: white;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 13px;
-    flex-shrink: 0;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-sm);
+    font-weight: 700; font-size: 14px;
   }
-  .sec-head h2 {
-    font-size: 16px;
+  .sec-title {
+    font-size: 18px;
     font-weight: 600;
     color: var(--primary);
   }
-  .sec-head .en {
+  .sec-title .en {
+    font-size: 13px;
     font-weight: 400;
-    font-size: 12px;
-    color: var(--muted);
-    margin-left: 4px;
+    color: var(--text-muted);
+    margin-left: 8px;
   }
 
-  /* ---------- form rows ---------- */
-  .f-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 10px 14px;
-    border-bottom: 1px solid #f0f1f4;
+  .form-group {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 20px;
+    padding: 16px 0;
+    border-bottom: 1px dashed var(--border);
+    align-items: start;
   }
-  .f-row:last-child { border-bottom: none; }
-  .f-row .lbl {
-    min-width: 180px;
-    flex-shrink: 0;
-    padding-top: 4px;
-  }
-  .f-row .lbl .th { font-weight: 600; font-size: 13px; display: block; }
-  .f-row .lbl .en { font-size: 11px; color: var(--muted); display: block; margin-top: 0; }
-  .f-row .val { flex: 1; min-width: 0; }
+  .form-group:last-child { border-bottom: none; }
+  
+  .label-box { padding-top: 8px; }
+  .label-box .th { display: block; font-size: 15px; font-weight: 600; color: var(--text-main); }
+  .label-box .en { display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-  .f-card {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: white;
-    overflow: hidden;
-  }
-
-  /* ---------- inputs ---------- */
-  input, textarea, select {
+  input[type="text"], input[type="number"], input[type="email"], textarea, select {
+    width: 100%;
     font-family: inherit;
-    font-size: 13px;
-    color: var(--text);
-    outline: none;
-    transition: border 0.15s, box-shadow 0.15s;
-  }
-  .inp {
-    border: 1px solid #d4d7dd;
-    border-radius: 5px;
-    padding: 7px 10px;
-    background: white;
-    width: 100%;
-    min-width: 80px;
-  }
-  .inp:focus { border-color: var(--primary-light); box-shadow: 0 0 0 2px rgba(26,42,74,0.08); }
-  .inp-sm { width: auto; min-width: 50px; max-width: 120px; }
-  .inp-mid { width: auto; min-width: 140px; }
-  .inp-lg { min-width: 200px; }
-  .inp-wrap { display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-  textarea.inp { min-height: 50px; resize: vertical; }
-
-  /* ---------- scope table ---------- */
-  .st {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
+    font-size: 15px;
+    padding: 10px 14px;
+    color: var(--text-main);
+    background: #F8FAFC;
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
   }
-  .st thead th {
-    background: #f6f7f9;
-    color: var(--muted);
-    padding: 8px 12px;
-    text-align: left;
-    font-weight: 600;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    border-bottom: 1px solid var(--border);
+  input::placeholder, textarea::placeholder { color: #94A3B8; }
+  input:hover, textarea:hover { border-color: var(--border-hover); }
+  input:focus, textarea:focus {
+    outline: none;
+    background: var(--surface);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
   }
-  .st tbody td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #f0f1f4;
-    vertical-align: middle;
-    background: white;
-  }
-  .st tbody tr:last-child td { border-bottom: none; }
+  
+  .input-sm { max-width: 120px; }
+  .input-md { max-width: 240px; }
+  .inline-flex { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  textarea { min-height: 80px; resize: vertical; }
 
-  .st .cb-cell { width: 32px; text-align: center; }
-  .st .cb-cell input[type="checkbox"] {
-    accent-color: var(--primary);
-    width: 16px; height: 16px;
-    cursor: pointer;
-    display: block;
-    margin: 0 auto;
-  }
-  .st .item-cell .th { font-weight: 600; display: block; }
-  .st .item-cell .en { font-size: 11px; color: var(--muted); display: block; margin-top: 0; }
-
-  .qty-field { display: none; }
-  .qty-field.visible { display: table-cell; }
-
-  /* ---------- radios / checkboxes ---------- */
-  .opt-col { display: flex; flex-direction: column; gap: 1px; }
-  .opt-col label {
+  .choice-stack { display: flex; flex-direction: column; gap: 8px; padding-top: 6px; }
+  .choice-row { display: flex; flex-wrap: wrap; gap: 12px 24px; padding-top: 6px; }
+  .choice-lbl {
     display: flex;
     align-items: flex-start;
-    gap: 7px;
-    font-size: 13px;
+    gap: 8px;
+    font-size: 15px;
     cursor: pointer;
-    padding: 5px 0;
     line-height: 1.4;
   }
-  .opt-col label .en { font-size: 11px; color: var(--muted); display: inline; }
-  .opt-col label .en-blk { font-size: 11px; color: var(--muted); display: block; font-weight: 400; }
-  .opt-col input[type="radio"],
-  .opt-col input[type="checkbox"] {
-    accent-color: var(--primary);
+  .choice-lbl input[type="radio"], .choice-lbl input[type="checkbox"] {
+    margin-top: 4px;
+    accent-color: var(--accent);
     width: 16px; height: 16px;
     cursor: pointer;
-    margin-top: 1px;
-    flex-shrink: 0;
   }
+  .choice-lbl .en { font-size: 13px; color: var(--text-muted); display: inline-block; }
+  .choice-lbl .block-en { display: block; font-size: 13px; color: var(--text-muted); }
 
-  .opt-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 20px;
+  .scope-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: 16px;
+    background: var(--surface);
+    transition: all 0.2s ease;
   }
-  .opt-row label {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
+  .scope-card:hover { border-color: var(--border-hover); }
+  .scope-card-header {
+    padding: 16px 20px;
+    background: #F1F5F9;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
   }
-  .opt-row label .en { font-size: 11px; color: var(--muted); }
+  .scope-card.active .scope-card-header {
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    border-bottom: 1px solid var(--border);
+    background: #E2E8F0;
+  }
+  .scope-card-header input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 20px; height: 20px;
+    cursor: pointer;
+  }
+  .scope-title { font-size: 16px; font-weight: 600; color: var(--primary); flex: 1; }
+  .scope-title .en { font-weight: 400; font-size: 13px; color: var(--text-muted); margin-left: 6px; }
+  
+  .scope-body {
+    padding: 0 20px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+  }
+  .scope-card.active .scope-body {
+    padding: 20px;
+    max-height: 1500px;
+    opacity: 1;
+  }
 
-  /* ---------- env grid ---------- */
+  .sub-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--border);
+    gap: 16px;
+  }
+  .sub-item:last-child { border-bottom: none; }
+  .sub-lbl { flex: 1; font-size: 15px; font-weight: 500; }
+  .sub-lbl .en { display: block; font-size: 12px; color: var(--text-muted); font-weight: 400; }
+  .sub-input { display: flex; align-items: center; gap: 8px; flex-shrink: 0; width: 160px; justify-content: flex-end;}
+  
+  .env-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .env-title { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
   .env-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px 20px;
-    font-size: 13px;
-    padding: 8px 14px 12px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
   }
-  .env-grid label {
-    display: flex;
-    align-items: flex-start;
-    gap: 7px;
-    cursor: pointer;
-    padding: 5px 0;
-  }
-  .env-grid label .en { font-size: 11px; color: var(--muted); display: block; }
-  .env-grid input[type="checkbox"] {
-    accent-color: var(--primary);
-    width: 16px; height: 16px;
-    cursor: pointer;
-    margin-top: 1px;
-    flex-shrink: 0;
-  }
+  .env-grid .choice-lbl { font-size: 14px; }
 
-  .hint {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-
-  .act-bar {
+  .action-bar {
     display: flex;
     justify-content: center;
-    padding: 16px 36px 24px;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
   }
   .btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    padding: 12px 44px;
-    font-size: 14px;
+    padding: 12px 32px;
+    font-size: 15px;
     font-weight: 600;
     font-family: inherit;
-    background: var(--primary);
-    color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: background 0.2s, transform 0.15s;
-    box-shadow: 0 2px 6px rgba(26,42,74,0.18);
+    transition: all 0.2s ease;
   }
-  .btn:hover { background: var(--primary-light); transform: translateY(-1px); }
-  .btn:active { transform: translateY(0); }
+  .btn-primary { background: var(--primary); color: white; box-shadow: var(--shadow-sm); }
+  .btn-primary:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .btn-success { background: #16A34A; color: white; box-shadow: var(--shadow-sm); }
+  .btn-success:hover { background: #15803D; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .btn-outline { background: #F8FAFC; color: #0F172A; border: 1px solid #CBD5E1; box-shadow: var(--shadow-sm); }
+  .btn-outline:hover { background: #F1F5F9; border-color: #94A3B8; }
+
+  @media (max-width: 768px) {
+    .header { padding: 32px 24px; }
+    .content-wrap { padding: 24px; }
+    .form-group { grid-template-columns: 1fr; gap: 8px; padding: 12px 0; }
+    .label-box { padding-top: 0; }
+    .sub-item { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .sub-input { width: 100%; justify-content: flex-start; }
+    .action-bar { flex-direction: column; }
+    .btn { width: 100%; }
+  }
 
   @media print {
     body { background: white; padding: 0; }
-    .cover { box-shadow: none; border-radius: 0; }
-    .act-bar { display: none !important; }
-    .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .st thead th { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #f6f7f9 !important; }
-  }
-
-  @media (max-width: 660px) {
-    body { padding: 10px; }
-    .header { padding: 22px 16px; }
-    .header h1 { font-size: 18px; }
-    .body-wrap { padding: 16px; }
-    .f-row { flex-direction: column; gap: 4px; padding: 10px 12px; }
-    .f-row .lbl { min-width: auto; }
-    .f-row .lbl .en { display: inline; margin-left: 4px; }
-    .st thead { display: none; }
-    .st tbody tr { display: block; padding: 8px 0; border-bottom: 1px solid var(--border); }
-    .st tbody td { display: block; width: 100% !important; border: none; padding: 4px 12px; }
-    .st .cb-cell { text-align: left; }
-    .st .cb-cell input[type="checkbox"] { margin: 0; }
-    .env-grid { grid-template-columns: 1fr; padding: 8px 12px; }
-    .opt-row { flex-direction: column; gap: 2px; }
-    .btn { width: 100%; justify-content: center; }
+    .container { box-shadow: none; max-width: 100%; }
+    .action-bar, .notice-box { display: none !important; }
+    .header { padding: 24px; border-bottom: 2px solid black; background: white !important; color: black !important;}
+    .header h1, .header p, .header p.en { color: black !important; }
+    .scope-card { border: 1px solid #ccc; page-break-inside: avoid; }
+    .scope-body { max-height: none !important; opacity: 1 !important; display: block !important; padding: 16px !important; }
+    .scope-card-header { background: #f0f0f0 !important; border-bottom: 1px solid #ccc; }
+    input, textarea { border: 1px solid #ddd; background: transparent; }
   }
 </style>
 </head>
 <body>
 
-<div class="cover">
+<div class="container">
   <div class="header">
-    <h1>&#x1F6E1;&#xFE0F; แบบฟอร์มประเมินราคา Vulnerability Assessment</h1>
-    <div class="sub">ใช้สำหรับเก็บข้อมูลเบื้องต้นเพื่อประเมินราคาค่าบริการ VA</div>
-    <div class="sub-en">Initial Information Gathering for Vulnerability Assessment Pricing</div>
+    <h1>แบบฟอร์มขอรับการประเมินราคา Vulnerability Assessment</h1>
+    <p>ข้อมูลเบื้องต้นเพื่อประกอบการกำหนดขอบเขตและจัดทำใบเสนอราคา</p>
+    <p class="en">Initial Information Gathering for Vulnerability Assessment Proposal</p>
   </div>
 
-  <div class="body-wrap">
-
-    <div class="objective">
-      กรุณากรอกข้อมูลในแบบฟอร์มนี้ให้ครบถ้วนเท่าที่สามารถเปิดเผยได้ ยิ่งข้อมูลละเอียดมากเท่าไหร่ ราคาที่ยิ่งตรงกับความเป็นจริง และลดความเสี่ยงของการเปลี่ยนแปลงขอบเขตงานภายหลัง
-      <div class="en">Please complete this form to the best of your ability. The more accurate your input, the more precise our quotation will be.</div>
+  <div class="content-wrap">
+    
+    <div class="notice-box">
+      <p>ℹ️ คำชี้แจงเพื่อประโยชน์ขององค์กรท่าน</p>
+      <p class="en">กรุณาระบุข้อมูลให้ครบถ้วนและใกล้เคียงความเป็นจริงมากที่สุด เพื่อให้การประเมินระยะเวลาและค่าใช้จ่ายมีความแม่นยำ และลดผลกระทบจากการปรับเปลี่ยนขอบเขต (Scope Change) ในภายหลัง</p>
     </div>
 
     <!-- ===== SECTION 1 ===== -->
-    <div class="sec">
-      <div class="sec-head">
-        <span class="sec-num">1</span>
-        <h2>ข้อมูลผู้ติดต่อ <span class="en">Contact Information</span></h2>
+    <div class="section">
+      <div class="sec-header">
+        <div class="sec-num">1</div>
+        <div class="sec-title">ข้อมูลองค์กรและผู้ประสานงาน <span class="en">Organization & Contact Info</span></div>
       </div>
-      <div class="f-card">
-        <div class="f-row">
-          <div class="lbl"><span class="th">ชื่อองค์กร / หน่วยงาน</span><span class="en">Company / Organization Name</span></div>
-          <div class="val"><input class="inp inp-lg" type="text" placeholder="ชื่อองค์กร"></div>
+      
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">ชื่อองค์กร / บริษัท</span>
+          <span class="en">Organization Name</span>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">อุตสาหกรรม</span><span class="en">Industry</span></div>
-          <div class="val"><input class="inp inp-lg" type="text" placeholder="เช่น การเงิน, e-Commerce, สาธารณสุข"></div>
+        <div class="input-box">
+          <input type="text" placeholder="เช่น บมจ. ตัวอย่าง หรือ ชื่อหน่วยงานรัฐ">
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">ผู้ประสานงานหลัก</span><span class="en">Primary Point of Contact</span></div>
-          <div class="val"><input class="inp inp-lg" type="text" placeholder="ชื่อ-นามสกุล"></div>
+      </div>
+      
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">กลุ่มธุรกิจ / อุตสาหกรรม</span>
+          <span class="en">Industry Sector</span>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">ตำแหน่ง / บทบาท</span><span class="en">Job Title / Role</span></div>
-          <div class="val"><div class="inp-wrap"><input class="inp inp-mid" type="text" placeholder="ตำแหน่ง"> <span style="color:var(--muted);font-size:12px;">&#x1F4DE;</span> <input class="inp inp-mid" type="text" placeholder="โทรศัพท์"></div></div>
+        <div class="input-box">
+          <input type="text" placeholder="เช่น สถาบันการเงิน, โทรคมนาคม, พลังงาน, สาธารณสุข">
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">อีเมล</span><span class="en">Email Address</span></div>
-          <div class="val"><input class="inp inp-lg" type="text" placeholder="email@company.com"></div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">ผู้ประสานงานหลัก</span>
+          <span class="en">Primary Contact Person</span>
+        </div>
+        <div class="input-box">
+          <input type="text" placeholder="ชื่อ - นามสกุล">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">ตำแหน่ง และ เบอร์ติดต่อ</span>
+          <span class="en">Position & Telephone</span>
+        </div>
+        <div class="input-box inline-flex">
+          <input type="text" placeholder="ตำแหน่ง / ฝ่าย" style="flex:1; min-width: 140px;">
+          <span style="color:var(--text-muted);">|</span>
+          <input type="text" placeholder="เบอร์โทรศัพท์" style="flex:1; min-width: 140px;">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">อีเมล</span>
+          <span class="en">Email Address</span>
+        </div>
+        <div class="input-box">
+          <input type="email" placeholder="email@organization.com">
         </div>
       </div>
     </div>
 
     <!-- ===== SECTION 2 ===== -->
-    <div class="sec">
-      <div class="sec-head">
-        <span class="sec-num">2</span>
-        <h2>ขอบเขตระบบที่ต้องการตรวจสอบ <span class="en">Scope of Assessment</span></h2>
+    <div class="section">
+      <div class="sec-header">
+        <div class="sec-num">2</div>
+        <div class="sec-title">ขอบเขตของระบบที่ต้องการประเมิน <span class="en">Scope of Assessment</span></div>
       </div>
 
-      <table class="st">
-        <thead><tr><th class="cb-cell">&nbsp;</th><th>รายการ &mdash; Item</th><th>จำนวน / รายละเอียด &mdash; Qty / Details</th></tr></thead>
-        <tbody>
-          <tr>
-            <td class="cb-cell"><input type="checkbox" onclick="toggleQty(this)"></td>
-            <td class="item-cell"><span class="th">2.1 Public IP Addresses</span><span class="en">External IPs accessible from the internet</span></td>
-            <td class="qty-field"><div class="inp-wrap"><input class="inp inp-sm" type="text" placeholder="จำนวน"> <span style="color:var(--muted);font-size:12px;">IPs</span></div></td>
-          </tr>
-          <tr>
-            <td class="cb-cell"><input type="checkbox" onclick="toggleQty(this)"></td>
-            <td class="item-cell"><span class="th">2.2 Internal IP Addresses</span><span class="en">Internal / private IP ranges to scan</span></td>
-            <td class="qty-field"><div class="inp-wrap"><input class="inp inp-sm" type="text" placeholder="จำนวน"> <span style="color:var(--muted);font-size:12px;">IPs</span></div></td>
-          </tr>
-          <tr>
-            <td class="cb-cell"><input type="checkbox" onclick="toggleQty(this)"></td>
-            <td class="item-cell"><span class="th">2.3 Domain / FQDN / Subdomain</span><span class="en">Number of domains, FQDNs, and subdomains</span></td>
-            <td class="qty-field"><div class="inp-wrap"><input class="inp inp-sm" type="text" placeholder="จำนวน"> <span style="color:var(--muted);font-size:12px;">domains</span></div></td>
-          </tr>
-          <tr>
-            <td class="cb-cell"><input type="checkbox" onclick="toggleQty(this)"></td>
-            <td class="item-cell"><span class="th">2.4 Servers</span><span class="en">Total servers (physical + virtual)</span></td>
-            <td class="qty-field"><div class="inp-wrap"><input class="inp inp-sm" type="text" placeholder="จำนวน"> <span style="color:var(--muted);font-size:12px;">servers</span></div></td>
-          </tr>
-          <tr>
-            <td class="cb-cell"><input type="checkbox" onclick="toggleQty(this)"></td>
-            <td class="item-cell"><span class="th">2.5 Workstations / Endpoints</span><span class="en">Workstations and endpoints (approximate)</span></td>
-            <td class="qty-field"><div class="inp-wrap"><input class="inp inp-sm" type="text" placeholder="จำนวน"> <span style="color:var(--muted);font-size:12px;">workstations</span></div></td>
-          </tr>
-          <tr>
-            <td class="cb-cell"><input type="checkbox" onclick="toggleQty(this)"></td>
-            <td class="item-cell"><span class="th">2.6 Firewall</span><span class="en">Number of firewalls</span></td>
-            <td class="qty-field"><div class="inp-wrap"><input class="inp inp-sm" type="text" placeholder="จำนวน"> <span style="color:var(--muted);font-size:12px;">เครื่อง</span></div></td>
-          </tr>
-          <tr>
-            <td class="cb-cell"><input type="checkbox" onclick="toggleQty(this)"></td>
-            <td class="item-cell"><span class="th">2.7 Switch</span><span class="en">Number of switches</span></td>
-            <td class="qty-field"><div class="inp-wrap"><input class="inp inp-sm" type="text" placeholder="จำนวน"> <span style="color:var(--muted);font-size:12px;">เครื่อง</span></div></td>
-          </tr>
-          <tr>
-            <td class="cb-cell"><input type="checkbox" onclick="toggleQty(this)"></td>
-            <td class="item-cell"><span class="th">2.8 Router</span><span class="en">Number of routers</span></td>
-            <td class="qty-field"><div class="inp-wrap"><input class="inp inp-sm" type="text" placeholder="จำนวน"> <span style="color:var(--muted);font-size:12px;">เครื่อง</span></div></td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- 2.1 External -->
+      <div class="scope-card" id="card-external">
+        <label class="scope-card-header">
+          <input type="checkbox" onchange="toggleCard(this, 'card-external')">
+          <div class="scope-title">2.1 ระบบเชื่อมต่ออินเทอร์เน็ต / ภายนอก <span class="en">(External / Public Facing)</span></div>
+        </label>
+        <div class="scope-body">
+          <div class="sub-item" style="background: #F1F5F9; padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid #CBD5E1; margin-bottom: 8px;">
+            <div class="sub-lbl" style="font-weight: 600; color: var(--primary);">รวมจำนวนระบบ / อุปกรณ์ภายนอกทั้งหมด <span class="en">(Total External Assets - Auto calculated)</span></div>
+            <div class="sub-input" style="width: auto;">
+              <input type="number" id="total-external-assets" class="input-sm" value="0" readonly style="background: #E2E8F0; font-weight: 700; color: var(--primary); cursor: not-allowed; border-color: #CBD5E1;"> 
+              <span style="font-size:13px; color:var(--text-muted); font-weight: 600;">รายการ</span>
+            </div>
+          </div>
+          <div class="sub-item">
+            <div class="sub-lbl">Domain / Subdomain <span class="en">ชื่อโดเมนหลักและโดเมนย่อย</span></div>
+            <div class="sub-input">
+              <input type="number" class="input-sm calc-external" placeholder="ระบุจำนวน" min="0" oninput="calculateTotalExternal()"> 
+              <span style="font-size:13px; color:var(--text-muted);">โดเมน</span>
+            </div>
+          </div>
+          <div class="sub-item">
+            <div class="sub-lbl">Public IP Addresses <span class="en">หมายเลข IP สาธารณะ (เช่น Web, Mail, VPN)</span></div>
+            <div class="sub-input">
+              <input type="number" class="input-sm calc-external" placeholder="ระบุจำนวน" min="0" oninput="calculateTotalExternal()"> 
+              <span style="font-size:13px; color:var(--text-muted);">IPs</span>
+            </div>
+          </div>
+          <div class="sub-item">
+            <div class="sub-lbl">Web Applications <span class="en">ระบบงานหรือแอปพลิเคชันบนเว็บไซต์</span></div>
+            <div class="sub-input">
+              <input type="number" class="input-sm calc-external" placeholder="ระบุจำนวน" min="0" oninput="calculateTotalExternal()"> 
+              <span style="font-size:13px; color:var(--text-muted);">URLs</span>
+            </div>
+          </div>
+          <div class="sub-item">
+            <div class="sub-lbl">API Services <span class="en">บริการ API (REST, GraphQL, SOAP ฯลฯ)</span></div>
+            <div class="sub-input">
+              <input type="number" class="input-sm calc-external" placeholder="ระบุจำนวน" min="0" oninput="calculateTotalExternal()"> 
+              <span style="font-size:13px; color:var(--text-muted);">APIs</span>
+            </div>
+          </div>
+          <div class="sub-item">
+            <div class="sub-lbl">Mobile App Backend <span class="en">ระบบหลังบ้านของแอปพลิเคชันมือถือ</span></div>
+            <div class="sub-input">
+              <input type="number" class="input-sm calc-external" placeholder="ระบุจำนวน" min="0" oninput="calculateTotalExternal()"> 
+              <span style="font-size:13px; color:var(--text-muted);">ระบบ</span>
+            </div>
+          </div>
+          
+          <div class="env-section">
+            <div class="env-title">สภาพแวดล้อม (Environment) & ข้อมูลเพิ่มเติม</div>
+            <div class="env-grid" style="margin-bottom: 12px; display: block;">
+              <label class="choice-lbl" style="display:inline-flex; align-items:center; margin-bottom: 8px;">
+                <input type="checkbox"> Cloud Provider 
+                <span class="en" style="margin-left:4px;">(เช่น AWS, Azure, GCP):</span>
+                <input type="text" class="input-sm" style="margin-left:8px; padding:6px 10px; height:32px;" placeholder="ระบุชื่อ">
+              </label>
+            </div>
+            <div class="inline-flex" style="width: 100%;">
+              <span style="font-size:14px; font-weight:500; min-width:60px;">อื่นๆ :</span>
+              <input type="text" placeholder="ระบุระบบหรืออุปกรณ์เพิ่มเติม (ถ้ามี)" style="flex:1;">
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <div style="margin-top:14px;">
-        <div style="font-weight:600;font-size:13px;padding:0 2px;">2.9 สภาพแวดล้อมของระบบและแอปพลิเคชัน <span style="font-weight:400;font-size:11px;color:var(--muted);">Environment &amp; Application (สามารถเลือกได้มากกว่า 1 ข้อ)</span></div>
-        <div class="env-grid">
-          <label><input type="checkbox"> Web Application <span class="en">(ระบุ URL:</span> <input class="inp" type="text" placeholder="https://" style="min-width:100px;">)</label>
-          <label><input type="checkbox"> API Service <span class="en">(REST, GraphQL, SOAP จำนวน:</span> <input class="inp inp-sm" type="text" placeholder="จำนวน" style="max-width:60px;">)</label>
-          <label><input type="checkbox"> Mobile App Backend <span class="en">(Platform:</span> <input class="inp" type="text" placeholder="iOS / Android" style="min-width:80px;">)</label>
-          <label><input type="checkbox"> On-premise <span class="en">(datacenter องค์กร)</span></label>
-          <label><input type="checkbox"> Cloud <span class="en">(AWS, Azure, GCP หรืออื่นๆ:</span> <input class="inp inp-sm" type="text" placeholder="ระบุ" style="max-width:70px;">)</label>
-          <label><input type="checkbox"> Hybrid <span class="en">(on-prem + cloud)</span></label>
-          <label><input type="checkbox"> Container / Kubernetes / Docker</label>
-          <label><input type="checkbox"> Active Directory / Domain Controller</label>
-          <label><input type="checkbox"> Database Server <span class="en">(MSSQL, MySQL, Oracle ฯลฯ:</span> <input class="inp inp-sm" type="text" placeholder="ระบุ" style="max-width:70px;">)</label>
-          <label><input type="checkbox"> Mail Server <span class="en">(Exchange, Office 365)</span></label>
-          <label><input type="checkbox"> SCADA / IoT / Industrial Control System</label>
-          <label><input type="checkbox"> Staging / Test Environment <span class="en">(แยกจาก production)</span></label>
+      <!-- 2.2 Internal -->
+      <div class="scope-card" id="card-internal">
+        <label class="scope-card-header">
+          <input type="checkbox" onchange="toggleCard(this, 'card-internal')">
+          <div class="scope-title">2.2 ระบบเครือข่ายภายในองค์กร <span class="en">(Internal Network & Infrastructure)</span></div>
+        </label>
+        <div class="scope-body">
+          <div class="sub-item" style="background: #F1F5F9; padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid #CBD5E1; margin-bottom: 8px;">
+            <div class="sub-lbl" style="font-weight: 600; color: var(--primary);">รวมจำนวน IP / อุปกรณ์ภายในทั้งหมด <span class="en">(Total Internal Assets - Auto calculated)</span></div>
+            <div class="sub-input" style="width: auto;">
+              <input type="number" id="total-internal-ips" class="input-sm" value="0" readonly style="background: #E2E8F0; font-weight: 700; color: var(--primary); cursor: not-allowed; border-color: #CBD5E1;"> 
+              <span style="font-size:13px; color:var(--text-muted); font-weight: 600;">IPs</span>
+            </div>
+          </div>
+          <div class="sub-item">
+            <div class="sub-lbl">Servers <span class="en">เครื่องแม่ข่าย (นับรวม Physical และ Virtual)</span></div>
+            <div class="sub-input">
+              <input type="number" class="input-sm calc-internal" placeholder="ระบุจำนวน" min="0" oninput="calculateTotalInternal()"> 
+              <span style="font-size:13px; color:var(--text-muted);">เครื่อง</span>
+            </div>
+          </div>
+          <div class="sub-item">
+            <div class="sub-lbl">Workstations / Endpoints <span class="en">เครื่องคอมพิวเตอร์พนักงาน / ผู้ใช้งาน</span></div>
+            <div class="sub-input">
+              <input type="number" class="input-sm calc-internal" placeholder="ระบุจำนวน" min="0" oninput="calculateTotalInternal()"> 
+              <span style="font-size:13px; color:var(--text-muted);">เครื่อง</span>
+            </div>
+          </div>
+          <div class="sub-item">
+            <div class="sub-lbl">Network Devices <span class="en">อุปกรณ์เครือข่ายพื้นฐาน (Router, Switch)</span></div>
+            <div class="sub-input">
+              <input type="number" class="input-sm calc-internal" placeholder="ระบุจำนวน" min="0" oninput="calculateTotalInternal()"> 
+              <span style="font-size:13px; color:var(--text-muted);">อุปกรณ์</span>
+            </div>
+          </div>
+          <div class="sub-item">
+            <div class="sub-lbl">Security Devices <span class="en">อุปกรณ์ความมั่นคงปลอดภัย (Firewall, IPS)</span></div>
+            <div class="sub-input">
+              <input type="number" class="input-sm calc-internal" placeholder="ระบุจำนวน" min="0" oninput="calculateTotalInternal()"> 
+              <span style="font-size:13px; color:var(--text-muted);">อุปกรณ์</span>
+            </div>
+          </div>
+          
+          <div class="env-section">
+            <div class="env-title">สภาพแวดล้อม (Environment) ของระบบภายใน</div>
+            <div class="env-grid">
+              <label class="choice-lbl"><input type="checkbox"> On-premise (Datacenter)</label>
+              <label class="choice-lbl"><input type="checkbox"> Hybrid (On-premise + Cloud)</label>
+              <label class="choice-lbl"><input type="checkbox"> Container / Docker / K8s</label>
+              <label class="choice-lbl"><input type="checkbox"> Active Directory / Domain</label>
+              <label class="choice-lbl"><input type="checkbox"> Database Server</label>
+              <label class="choice-lbl"><input type="checkbox"> Mail Server / Exchange</label>
+            </div>
+            <div class="inline-flex" style="width: 100%; margin-top: 16px;">
+              <span style="font-size:14px; font-weight:500; min-width:60px;">อื่นๆ :</span>
+              <input type="text" placeholder="ระบุระบบหรืออุปกรณ์เพิ่มเติม (เช่น IoT, SCADA)" style="flex:1;">
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- ===== SECTION 3 ===== -->
-    <div class="sec">
-      <div class="sec-head">
-        <span class="sec-num">3</span>
-        <h2>รูปแบบและข้อจำกัด <span class="en">Assessment Type &amp; Constraints</span></h2>
+    <div class="section">
+      <div class="sec-header">
+        <div class="sec-num">3</div>
+        <div class="sec-title">ข้อกำหนดและเงื่อนไขการปฏิบัติงาน <span class="en">Operational Requirements & Constraints</span></div>
       </div>
-      <div class="f-card">
-        <div class="f-row">
-          <div class="lbl"><span class="th">3.1 รูปแบบการปฏิบัติงาน</span><span class="en">Delivery method</span></div>
-          <div class="val">
-            <div class="opt-col">
-              <label><input type="radio" name="onsite"> On-Site <span class="en-blk">(ทีมประเมินเดินทางมาปฏิบัติงานที่องค์กร)</span></label>
-              <label><input type="radio" name="onsite"> Remote VPN <span class="en-blk">(ดำเนินการทางไกลผ่าน VPN)</span></label>
-              <label><input type="radio" name="onsite"> Hybrid <span class="en-blk">(ผสมทั้ง on-site และ remote)</span></label>
-            </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">รูปแบบการปฏิบัติงาน</span>
+          <span class="en">Delivery Method</span>
+        </div>
+        <div class="input-box">
+          <div class="choice-stack">
+            <label class="choice-lbl">
+              <input type="radio" name="method"> On-Site 
+              <span class="en">(ทีมประเมินเดินทางไปปฏิบัติงาน ณ ที่ทำการขององค์กร)</span>
+            </label>
+            <label class="choice-lbl">
+              <input type="radio" name="method"> Remote / VPN 
+              <span class="en">(ดำเนินการทางไกลผ่านช่องทางที่ปลอดภัย)</span>
+            </label>
+            <label class="choice-lbl">
+              <input type="radio" name="method"> Hybrid 
+              <span class="en">(ผสมผสานตามความเหมาะสมของระบบ)</span>
+            </label>
           </div>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">3.2 Architecture Review <span style="color:var(--accent);font-weight:700;">&#x26A0;</span></span><span class="en">Review system architecture per สกมช. (NCSA) requirements?</span></div>
-          <div class="val">
-            <div class="opt-col">
-              <label><input type="radio" name="arch"> ไม่ <span class="en">(No — VA only)</span></label>
-              <label><input type="radio" name="arch"> ใช่ — ตามข้อกำหนด สกมช. <span class="en-blk">(Yes — per NCSA Thailand cybersecurity standard)</span></label>
-            </div>
-            <div class="hint">&#x2139;&#xFE0F; ทบทวนตาม พ.ร.บ. Cybersecurity พ.ศ. 2562 และประกาศ สกมช. ที่เกี่ยวข้อง</div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">ความสอดคล้องกับมาตรฐาน</span>
+          <span class="en">Compliance Requirements</span>
+        </div>
+        <div class="input-box">
+          <div class="choice-stack">
+            <label class="choice-lbl">
+              <input type="radio" name="comp"> การประเมินช่องโหว่ทั่วไป <span class="en">(Standard VA)</span>
+            </label>
+            <label class="choice-lbl">
+              <input type="radio" name="comp"> ต้องการประเมินอ้างอิงตามมาตรฐาน / กฎหมาย <span class="block-en" style="margin-left: 24px;">(เช่น ข้อบังคับ ธปท., กลต., คปภ., PDPA, PCI-DSS)</span>
+            </label>
+            <input type="text" placeholder="โปรดระบุมาตรฐานหรือข้อบังคับที่ต้องการ" style="margin-left:24px; margin-top:8px; width:calc(100% - 24px);">
           </div>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">3.3 มี Sensor หรือ Security Device วางอยู่ด้านหน้าระบบเป้าหมายหรือไม่</span><span class="en">Is there any security sensor or device (WAF, CDN, IPS, IDS, Firewall) in front of the target?</span></div>
-          <div class="val">
-            <div class="opt-col">
-              <label><input type="radio" name="waf"> มี <span class="en">(Yes —</span> <input class="inp inp-sm" type="text" placeholder="Cloudflare, Akamai, AWS WAF, F5 ฯลฯ" style="min-width:120px;">)</label>
-              <label><input type="radio" name="waf"> ไม่มี <span class="en">(No)</span></label>
-              <label><input type="radio" name="waf"> ไม่ทราบ <span class="en">(Unknown)</span></label>
-            </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">การประเมินสถาปัตยกรรม</span>
+          <span class="en">Architecture Review</span>
+        </div>
+        <div class="input-box">
+          <div style="font-size: 14px; margin-bottom: 8px; color: var(--text-muted); font-weight: 500;">ท่านต้องการให้ดำเนินการทบทวนสถาปัตยกรรมระบบ (Architecture Review) ตามที่ สกมช. กำหนดด้วยหรือไม่?</div>
+          <div class="choice-row">
+            <label class="choice-lbl"><input type="radio" name="arch" value="ไม่ต้องการ"> ไม่ต้องการ <span class="en">(ประเมิน VA อย่างเดียว)</span></label>
+            <label class="choice-lbl"><input type="radio" name="arch" value="ต้องการ"> ต้องการ <span class="en">(ประเมิน VA และ Architecture Review ตามประกาศ สกมช.)</span></label>
           </div>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">3.4 ระบบ Production ที่ไม่ควรได้รับผลกระทบระหว่างการตรวจสอบ</span><span class="en">Critical systems that MUST NOT be disrupted</span></div>
-          <div class="val"><input class="inp inp-lg" type="text" placeholder="ระบุชื่อระบบ IP Address หรืออธิบายข้อยกเว้น"></div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">ระบบป้องกันความปลอดภัย</span>
+          <span class="en">Security Controls in front of target</span>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">3.5 ระยะเวลาที่อนุญาตให้ดำเนินการตรวจสอบ</span><span class="en">Allowed scanning window</span></div>
-          <div class="val">
-            <div class="opt-col">
-              <label><input type="radio" name="window"> 24/7 <span class="en">(ใดก็ได้)</span></label>
-              <label><input type="radio" name="window"> นอกเวลาทำการ <span class="en">(After hours:</span> <input class="inp inp-sm" type="text" placeholder="__:__" style="min-width:40px;"> - <input class="inp inp-sm" type="text" placeholder="__:__" style="min-width:40px;"> น.)</label>
-              <label><input type="radio" name="window"> เฉพาะวันเสาร์-อาทิตย์ <span class="en">(Weekends only)</span></label>
-              <label><input type="radio" name="window"> อื่นๆ <span class="en">(Other:</span> <input class="inp inp-sm" type="text" placeholder="ระบุ" style="min-width:80px;">)</label>
-            </div>
+        <div class="input-box">
+          <div style="font-size: 14px; margin-bottom: 8px; color: var(--text-muted);">มีอุปกรณ์จำพวก WAF, IPS, CDN ป้องกันอยู่หน้าระบบเป้าหมายหรือไม่?</div>
+          <div class="choice-row">
+            <label class="choice-lbl"><input type="radio" name="waf"> ไม่มี (None)</label>
+            <label class="choice-lbl"><input type="radio" name="waf"> ไม่ทราบข้อมูล (Unknown)</label>
+            <label class="choice-lbl inline-flex">
+              <input type="radio" name="waf"> มี (Yes)
+              <input type="text" class="input-sm" style="height:30px; padding:4px 8px;" placeholder="ระบุแบรนด์">
+            </label>
           </div>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">3.6 ระบบที่ต้องแจ้งหรือขออนุญาตก่อนดำเนินการตรวจสอบ</span><span class="en">Systems requiring prior notification or approval</span></div>
-          <div class="val"><input class="inp inp-lg" type="text" placeholder="ระบุระบบ หรือหน่วยงานที่ต้องแจ้ง"></div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">ช่วงเวลาที่อนุญาตให้สแกน</span>
+          <span class="en">Permitted Scanning Window</span>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">3.7 ข้อจำกัดด้านกฎหมายหรือข้อบังคับ</span><span class="en">Legal or regulatory constraints</span></div>
-          <div class="val"><input class="inp inp-lg" type="text" placeholder="เช่น PDPA, PCI-DSS, ข้อบังคับ ธปท. ฯลฯ"></div>
+        <div class="input-box">
+          <div class="choice-stack">
+            <label class="choice-lbl"><input type="radio" name="window"> ดำเนินการได้ตลอด 24 ชั่วโมง <span class="en">(24/7)</span></label>
+            <label class="choice-lbl inline-flex">
+              <input type="radio" name="window"> เฉพาะนอกเวลาทำการ <span class="en">(After Business Hours):</span>
+              <input type="text" class="input-sm" style="height:30px; padding:4px 8px; max-width:80px;" placeholder="เริ่ม - จบ">
+            </label>
+            <label class="choice-lbl"><input type="radio" name="window"> เฉพาะวันหยุดเสาร์-อาทิตย์ <span class="en">(Weekends Only)</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">ระบบที่ห้ามได้รับผลกระทบ</span>
+          <span class="en">Critical Systems / Exclusions</span>
+        </div>
+        <div class="input-box">
+          <textarea placeholder="ระบุชื่อระบบ, IP, หรือช่วงเวลาห้ามแตะต้องระบบโดยเด็ดขาด (เพื่อป้องกัน System Down)"></textarea>
         </div>
       </div>
     </div>
 
     <!-- ===== SECTION 4 ===== -->
-    <div class="sec">
-      <div class="sec-head">
-        <span class="sec-num">4</span>
-        <h2>ระยะเวลาและรายงาน <span class="en">Timeline &amp; Reporting</span></h2>
+    <div class="section">
+      <div class="sec-header">
+        <div class="sec-num">4</div>
+        <div class="sec-title">ระยะเวลาดำเนินการและรูปแบบรายงาน <span class="en">Timeline & Deliverables</span></div>
       </div>
-      <div class="f-card">
-        <div class="f-row">
-          <div class="lbl"><span class="th">4.1 วันเริ่มโครงการที่ต้องการ</span><span class="en">Desired project start date</span></div>
-          <div class="val"><input class="inp inp-mid" type="text" placeholder="dd/mm/yyyy"></div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">กำหนดการที่คาดหวัง</span>
+          <span class="en">Expected Timeline</span>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">4.2 ระยะเวลาที่คาดหวัง</span><span class="en">Expected completion timeline</span></div>
-          <div class="val"><div class="inp-wrap"><input class="inp inp-sm" type="text" placeholder="จำนวน"> <span style="color:var(--muted);font-size:12px;">วันทำการ (business days)</span></div></div>
+        <div class="input-box inline-flex">
+          <span style="font-size:14px;">วันที่เริ่มโครงการ:</span>
+          <input type="text" class="input-sm" placeholder="DD/MM/YYYY">
+          <span style="font-size:14px; margin-left:12px;">ระยะเวลาทำงาน:</span>
+          <input type="number" class="input-sm" placeholder="จำนวน" style="max-width:70px;">
+          <span style="font-size:14px;">วันทำการ</span>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">4.3 ความเร่งด่วน</span><span class="en">Urgency level</span></div>
-          <div class="val">
-            <div class="opt-row">
-              <label><input type="radio" name="urgent"> ปกติ <span class="en">(Normal)</span></label>
-              <label><input type="radio" name="urgent"> เร่ง <span class="en">(Urgent — may incur additional cost)</span></label>
-              <label><input type="radio" name="urgent"> เร่งด่วนมาก <span class="en">(Critical)</span></label>
-            </div>
-          </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">รอบการตรวจซ้ำหลังแก้ไข</span>
+          <span class="en">Verification Scan (Re-test)</span>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">4.4 การตรวจซ้ำหลังแก้ไข</span><span class="en">Verification scan (re-scan)</span></div>
-          <div class="val">
-            <div class="inp-wrap">
-              <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;"><input type="radio" name="rescan"> ใช่ <span class="en">(Yes)</span></label>
-              <input class="inp inp-sm" type="text" placeholder="จำนวน" style="min-width:40px;"> <span style="color:var(--muted);font-size:12px;">รอบ</span>
-              <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;margin-left:6px;"><input type="radio" name="rescan"> ไม่ <span class="en">(No)</span></label>
-            </div>
-          </div>
+        <div class="input-box choice-row">
+          <label class="choice-lbl"><input type="radio" name="retest"> ไม่ต้องการ (No)</label>
+          <label class="choice-lbl inline-flex">
+            <input type="radio" name="retest"> ต้องการ (Yes)
+            <input type="number" class="input-sm" placeholder="จำนวน" style="max-width:70px; margin-left:4px;">
+            <span style="font-size:14px;">รอบ</span>
+          </label>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">4.5 ภาษาที่ต้องการในรายงาน</span><span class="en">Preferred report language</span></div>
-          <div class="val">
-            <div class="opt-row">
-              <label><input type="radio" name="lang"> ภาษาไทย</label>
-              <label><input type="radio" name="lang"> ภาษาอังกฤษ <span class="en">(English)</span></label>
-              <label><input type="radio" name="lang"> สองภาษา <span class="en">(Bilingual)</span></label>
-            </div>
-          </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">ภาษาของรายงาน</span>
+          <span class="en">Report Language</span>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">4.6 รูปแบบรายงาน</span><span class="en">Desired report format(s)</span></div>
-          <div class="val">
-            <div class="opt-row">
-              <label><input type="checkbox"> PDF Report</label>
-              <label><input type="checkbox"> Excel / CSV</label>
-              <label><input type="checkbox"> Executive Summary <span class="en">(ผู้บริหาร)</span></label>
-              <label><input type="checkbox"> Technical Report <span class="en">(ทีม IT)</span></label>
-              <label><input type="checkbox"> Remediation Guide</label>
-            </div>
-          </div>
+        <div class="input-box choice-row">
+          <label class="choice-lbl"><input type="radio" name="lang"> ภาษาไทย (Thai)</label>
+          <label class="choice-lbl"><input type="radio" name="lang"> ภาษาอังกฤษ (English)</label>
+          <label class="choice-lbl"><input type="radio" name="lang"> สองภาษา (Bilingual)</label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">รูปแบบรายงานที่ต้องการ</span>
+          <span class="en">Desired Report Formats</span>
+        </div>
+        <div class="input-box choice-row">
+          <label class="choice-lbl"><input type="checkbox"> PDF Document</label>
+          <label class="choice-lbl"><input type="checkbox"> Excel / CSV Raw Data</label>
+          <label class="choice-lbl"><input type="checkbox"> Executive Summary (สำหรับผู้บริหาร)</label>
+          <label class="choice-lbl"><input type="checkbox"> Technical Report (สำหรับทีม IT)</label>
         </div>
       </div>
     </div>
 
     <!-- ===== SECTION 5 ===== -->
-    <div class="sec">
-      <div class="sec-head">
-        <span class="sec-num">5</span>
-        <h2>ข้อมูลเพิ่มเติม <span class="en">Additional Information</span></h2>
+    <div class="section">
+      <div class="sec-header">
+        <div class="sec-num">5</div>
+        <div class="sec-title">ข้อมูลสนับสนุนเพิ่มเติม <span class="en">Additional Information</span></div>
       </div>
-      <div class="f-card">
-        <div class="f-row">
-          <div class="lbl"><span class="th">5.1 เอกสารที่สามารถส่งให้ทีมประเมินล่วงหน้า</span><span class="en">Documents you can provide in advance</span></div>
-          <div class="val">
-            <div class="opt-row">
-              <label><input type="checkbox"> Network Diagram</label>
-              <label><input type="checkbox"> System Architecture</label>
-              <label><input type="checkbox"> Security Policy</label>
-              <label><input type="checkbox"> Previous Assessment Report</label>
-            </div>
-          </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">เอกสารที่มีพร้อมส่งมอบให้ทีมประเมิน</span>
+          <span class="en">Available Documentation</span>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">5.2 ข้อกังวล / ช่องโหว่ที่ทราบ</span><span class="en">Known concerns or existing vulnerabilities</span></div>
-          <div class="val"><input class="inp inp-lg" type="text" placeholder="กรุณาระบุ"></div>
+        <div class="input-box choice-stack">
+          <label class="choice-lbl"><input type="checkbox"> แผนผังเครือข่าย (Network Diagram)</label>
+          <label class="choice-lbl"><input type="checkbox"> แผนผังสถาปัตยกรรมระบบ (System Architecture)</label>
+          <label class="choice-lbl"><input type="checkbox"> รายงานการประเมินช่องโหว่ครั้งก่อน (Previous VA Report)</label>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">5.3 ระบบใหม่ที่กำลังจะนำไปใช้งาน</span><span class="en">New systems being deployed near the assessment date</span></div>
-          <div class="val"><input class="inp inp-lg" type="text" placeholder="กรุณาระบุ"></div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">ข้อกังวล / วัตถุประสงค์หลักพิเศษ</span>
+          <span class="en">Specific Concerns / Objectives</span>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">5.4 Vendor / Third-party ที่เกี่ยวข้อง</span><span class="en">Involved vendors or third parties</span></div>
-          <div class="val"><input class="inp inp-lg" type="text" placeholder="กรุณาระบุ"></div>
+        <div class="input-box">
+          <textarea placeholder="เช่น มีความกังวลเรื่อง Ransomware, เพิ่งมีการอัปเดตระบบครั้งใหญ่, หรือเป็นระบบที่กำลังจะ Go-live"></textarea>
         </div>
-        <div class="f-row">
-          <div class="lbl"><span class="th">5.5 ข้อสงสัย / คำถามอื่นๆ</span><span class="en">Additional questions or notes</span></div>
-          <div class="val"><textarea class="inp" placeholder="ข้อความ..."></textarea></div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-box">
+          <span class="th">หมายเหตุ / คำถามเพิ่มเติม</span>
+          <span class="en">Other Notes</span>
+        </div>
+        <div class="input-box">
+          <textarea placeholder="กรอกข้อมูลเพิ่มเติมที่ต้องการแจ้งให้ทีมประเมินราคาทราบ"></textarea>
         </div>
       </div>
     </div>
 
-    <div class="act-bar" style="gap:12px;flex-wrap:wrap;">
-      <button class="btn" onclick="window.print()">&#x1F5A8; พิมพ์เป็น PDF</button>
-      <button class="btn" onclick="exportCSV()" style="background:#2d5a3b;">&#x1F4CA; ส่งออก CSV</button>
+    <!-- Action Buttons -->
+    <div class="action-bar">
+      <!-- File Input สำหรับระบบ Import JSON -->
+      <input type="file" id="jsonFileInput" accept=".json" style="display: none;" onchange="importJSON(event)">
+      <button class="btn btn-outline" onclick="document.getElementById('jsonFileInput').click()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+        นำเข้าข้อมูล (Import JSON)
+      </button>
+      <button class="btn btn-primary" onclick="window.print()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+        พิมพ์เป็น PDF
+      </button>
+      <button class="btn btn-success" onclick="exportJSON()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+        บันทึกข้อมูล (Export JSON)
+      </button>
     </div>
 
   </div>
 </div>
 
+<!-- Toast Notification UI -->
+<div id="toast-msg" style="position:fixed; bottom:-100px; left:50%; transform:translateX(-50%); background:#1E293B; color:white; padding:12px 24px; border-radius:8px; font-weight:500; font-size:15px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); transition:bottom 0.3s ease; z-index:9999;">
+  Message
+</div>
+
 <script>
-function toggleQty(cb) {
-  var cell = cb.closest('tr').querySelector('.qty-field');
-  if (cell) {
-    if (cb.checked) cell.classList.add('visible');
-    else cell.classList.remove('visible');
+// ============================================
+// UI Functions
+// ============================================
+function showToast(msg, isError = false) {
+  var toast = document.getElementById('toast-msg');
+  toast.textContent = msg;
+  toast.style.background = isError ? '#DC2626' : '#16A34A'; 
+  toast.style.bottom = '32px';
+  setTimeout(function() { toast.style.bottom = '-100px'; }, 4000);
+}
+
+function toggleCard(checkbox, cardId) {
+  var card = document.getElementById(cardId);
+  if (checkbox.checked) {
+    card.classList.add('active');
+  } else {
+    card.classList.remove('active');
   }
 }
 
-function exportCSV() {
-  var data = [];
-  function add(key, val) { data.push([key, val || '']); }
-  function addSec(title) { data.push(['','']); data.push(['--- ' + title + ' ---','']); }
-
-  // Collect all values from a .val area: checked radio/checkbox labels + all text inputs
-  function collectVal(el) {
-    var parts = [];
-    // checked radios
-    el.querySelectorAll('input[type="radio"]:checked').forEach(function(r) {
-      var txt = r.parentElement.textContent.replace(/\s+/g, ' ').trim();
-      parts.push(txt);
-    });
-    // checked checkboxes
-    el.querySelectorAll('input[type="checkbox"]:checked').forEach(function(c) {
-      var txt = c.parentElement.textContent.replace(/\s+/g, ' ').trim();
-      parts.push(txt);
-    });
-    // all text inputs + textareas (capture inline values even inside labels)
-    el.querySelectorAll('.inp, textarea').forEach(function(inp) {
-      if (inp.value && inp.value.trim()) {
-        var label = '';
-        // try to find nearest label text
-        var p = inp.parentElement;
-        while (p && p !== el) {
-          if (p.tagName === 'LABEL') {
-            var lblTxt = p.textContent.replace(/\s+/g, ' ').trim();
-            // remove the input's own value from label text
-            lblTxt = lblTxt.replace(inp.value, '').trim();
-            if (lblTxt) label = lblTxt + ' ';
-            break;
-          }
-          p = p.parentElement;
-        }
-        parts.push(label + inp.value.trim());
-      }
-    });
-    return parts.join('; ');
-  }
-
-  // ---- Section 1: Contact ----
-  addSec('1. ข้อมูลผู้ติดต่อ / Contact');
-  var s1Rows = document.querySelector('.sec .f-card');
-  if (s1Rows) {
-    s1Rows.querySelectorAll('.f-row').forEach(function(row) {
-      var keyEl = row.querySelector('.lbl .th');
-      if (!keyEl) return;
-      var val = collectVal(row.querySelector('.val'));
-      add(keyEl.textContent.trim(), val);
-    });
-  }
-
-  // ---- Section 2: Scope ----
-  addSec('2. ขอบเขตระบบ / Scope');
-  document.querySelectorAll('.st tbody tr').forEach(function(tr) {
-    var cb = tr.querySelector('.cb-cell input');
-    var label = tr.querySelector('.item-cell .th');
-    var qty = tr.querySelector('.inp-wrap .inp');
-    if (cb && label && cb.checked) {
-      add(label.textContent.trim(), qty ? qty.value : '');
+window.onload = function() {
+  document.querySelectorAll('.scope-card-header input[type="checkbox"]').forEach(function(cb) {
+    if(cb.checked) {
+      cb.closest('.scope-card').classList.add('active');
     }
   });
-  // Environment
-  var envGrid = document.querySelector('.env-grid');
-  if (envGrid) {
-    envGrid.querySelectorAll('label').forEach(function(lbl) {
-      var cb = lbl.querySelector('input[type="checkbox"]');
-      if (cb && cb.checked) {
-        var txt = lbl.textContent.replace(/\s+/g, ' ').trim();
-        var extra = lbl.querySelector('.inp');
-        var val = extra ? extra.value : '';
-        add(txt, val);
+};
+
+function calculateTotalExternal() {
+  let total = 0;
+  document.querySelectorAll('.calc-external').forEach(function(inp) {
+    let val = parseInt(inp.value, 10);
+    if (!isNaN(val) && val > 0) total += val;
+  });
+  document.getElementById('total-external-assets').value = total;
+}
+
+function calculateTotalInternal() {
+  let total = 0;
+  document.querySelectorAll('.calc-internal').forEach(function(inp) {
+    let val = parseInt(inp.value, 10);
+    if (!isNaN(val) && val > 0) total += val;
+  });
+  document.getElementById('total-internal-ips').value = total;
+}
+
+// ============================================
+// Export / Import JSON Logic
+// ============================================
+
+function extractNodeText(node) {
+  if (!node) return '';
+  let text = '';
+  node.childNodes.forEach(function(n) {
+    if (n.nodeType === Node.TEXT_NODE) {
+      text += n.nodeValue;
+    } else if (n.nodeType === Node.ELEMENT_NODE) {
+      if (n.tagName === 'INPUT') {
+        if (n.type === 'text' || n.type === 'number' || n.type === 'email') {
+          if (n.value) text += ' ' + n.value + ' ';
+        }
+      } else if (n.tagName === 'TEXTAREA' || n.tagName === 'SELECT') {
+        if (n.value) text += ' ' + n.value + ' ';
+      } else {
+        text += ' ' + extractNodeText(n) + ' ';
       }
-    });
+    }
+  });
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+function exportJSON() {
+  var readableData = {};
+  
+  function addReadable(key, val) {
+    if (val === '') return;
+    if (readableData[key]) {
+      readableData[key] += " | " + val;
+    } else {
+      readableData[key] = val;
+    }
   }
 
-  // ---- Sections 3-5 (generic) ----
-  [3, 4, 5].forEach(function(n) {
-    var titles = {3: '3. รูปแบบและข้อจำกัด / Assessment Type & Constraints', 4: '4. ระยะเวลาและรายงาน / Timeline & Reporting', 5: '5. ข้อมูลเพิ่มเติม / Additional Information'};
-    addSec(titles[n]);
-    var rows = document.querySelectorAll('.sec:nth-of-type(' + n + ') .f-card .f-row');
-    if (!rows.length) return;
-    rows.forEach(function(row) {
-      var keyEl = row.querySelector('.lbl .th');
-      if (!keyEl) return;
-      var valEl = row.querySelector('.val');
-      add(keyEl.textContent.trim(), valEl ? collectVal(valEl) : '');
+  // --- 1. สกัดข้อมูลที่อ่านง่าย (Human-readable summary) ---
+  document.querySelectorAll('.form-group, .scope-card').forEach(function(group) {
+    // กรณีเป็นกล่องแบบฟอร์มปกติ
+    var keyEl = group.querySelector('.label-box .th');
+    if (keyEl) {
+      var key = keyEl.textContent.trim();
+      var valArea = group.querySelector('.input-box');
+      if (valArea) {
+        var parts = [];
+        var choices = valArea.querySelectorAll('.choice-lbl');
+        if (choices.length > 0) {
+          choices.forEach(function(lbl) {
+            var check = lbl.querySelector('input[type="radio"], input[type="checkbox"]');
+            if (check && check.checked) parts.push(extractNodeText(lbl));
+          });
+          valArea.querySelectorAll(':scope > input[type="text"], :scope > textarea, .choice-stack > input[type="text"]').forEach(function(inp) {
+            if (inp.value && inp.value.trim() !== '') parts.push("เพิ่มเติม: " + inp.value.trim());
+          });
+        } else {
+          var inlineFlex = valArea.querySelector('.inline-flex');
+          if (inlineFlex) {
+             parts.push(extractNodeText(inlineFlex));
+          } else {
+             valArea.querySelectorAll('input, textarea').forEach(function(inp) {
+                if (inp.value && inp.value.trim() !== '') parts.push(inp.value.trim());
+             });
+          }
+        }
+        addReadable(key, parts.length > 0 ? parts.join(', ') : '-');
+      }
+    }
+
+    // กรณีเป็น Scope Card (ระบบภายนอก / ภายใน)
+    if (group.classList.contains('scope-card')) {
+      var mainCb = group.querySelector('.scope-card-header input[type="checkbox"]');
+      if (mainCb && mainCb.checked) {
+        var groupName = group.querySelector('.scope-title').innerText.split('\n')[0].trim();
+        var scopeDetails = [];
+        
+        group.querySelectorAll('.sub-item').forEach(function(item) {
+          var lbl = item.querySelector('.sub-lbl').innerText.split('\n')[0].trim();
+          var inp = item.querySelector('.sub-input input');
+          var unit = item.querySelector('.sub-input span');
+          if (inp && inp.value && (parseInt(inp.value) > 0 || inp.hasAttribute('readonly'))) {
+            scopeDetails.push(lbl + ": " + inp.value.trim() + " " + (unit ? unit.textContent.trim() : ''));
+          }
+        });
+
+        group.querySelectorAll('.env-grid .choice-lbl').forEach(function(lbl) {
+          var cb = lbl.querySelector('input[type="checkbox"]');
+          if (cb && cb.checked) scopeDetails.push('สภาพแวดล้อม: ' + extractNodeText(lbl));
+        });
+        
+        group.querySelectorAll('.env-section > .inline-flex input[type="text"]').forEach(function(inp) {
+           if(inp.value.trim() !== '') scopeDetails.push('อื่นๆ: ' + inp.value.trim());
+        });
+        
+        addReadable(groupName, scopeDetails.join(' | '));
+      }
+    }
+  });
+
+  // --- 2. เก็บสถานะดิบของฟอร์มเพื่อการ Import (Raw State) ---
+  var formState = [];
+  document.querySelectorAll('input:not(#jsonFileInput), textarea, select').forEach(function(el) {
+    formState.push({
+      type: el.type,
+      value: el.value,
+      checked: el.checked
     });
   });
 
-  // Build CSV with BOM for Thai
-  var csv = '\uFEFF';
-  data.forEach(function(row) {
-    var a = (row[0] || '').replace(/"/g, '""');
-    var b = (row[1] || '').replace(/"/g, '""');
-    csv += '"' + a + '","' + b + '"\n';
-  });
+  // --- 3. ประกอบร่างและสร้างไฟล์ JSON ---
+  var finalExport = {
+    metadata: {
+      document: "Vulnerability Assessment Request Form",
+      exportDate: new Date().toISOString()
+    },
+    summary: readableData,
+    rawState: formState
+  };
 
-  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var jsonString = JSON.stringify(finalExport, null, 2);
+  var blob = new Blob([jsonString], { type: 'application/json;charset=utf-8;' });
   var link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = 'VA_Questionnaire_' + new Date().toISOString().slice(0,10) + '.csv';
+  link.download = 'VA_Pricing_Form_' + new Date().toISOString().slice(0,10) + '.json';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(link.href);
+  
+  showToast('✅ บันทึกไฟล์ JSON สำเร็จ!');
+}
+
+function importJSON(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var json = JSON.parse(e.target.result);
+      
+      // รองรับโครงสร้างทั้งแบบที่มี rawState หรือถ้ามีใครดันเซฟแค่ array ดิบๆ มา
+      var state = json.rawState || json; 
+      
+      if (Array.isArray(state)) {
+        var els = document.querySelectorAll('input:not(#jsonFileInput), textarea, select');
+        
+        state.forEach(function(st, i) {
+          if (els[i]) {
+            if (st.type === 'checkbox' || st.type === 'radio') {
+              els[i].checked = st.checked;
+              
+              // หากเป็น Checkbox หลักของ Scope Card ให้กาง/หุบ กล่องด้วย
+              if (els[i].closest('.scope-card-header')) {
+                toggleCard(els[i], els[i].closest('.scope-card').id);
+              }
+            } else {
+              els[i].value = st.value;
+            }
+          }
+        });
+        
+        // คำนวณยอดรวมใหม่
+        calculateTotalExternal();
+        calculateTotalInternal();
+        
+        showToast('✅ นำเข้าข้อมูล JSON สำเร็จ ระบบอัปเดตฟอร์มแล้ว');
+      } else {
+        showToast('❌ รูปแบบไฟล์ JSON ไม่ถูกต้อง ไม่มีข้อมูลสถานะฟอร์ม', true);
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('❌ ไฟล์เกิดความเสียหาย หรือไม่ใช่ไฟล์ JSON ที่ถูกต้อง', true);
+    }
+    
+    // รีเซ็ต input เผื่อต้องโหลดไฟล์เดิมซ้ำ
+    event.target.value = '';
+  };
+  
+  reader.readAsText(file);
 }
 </script>
 </body>
