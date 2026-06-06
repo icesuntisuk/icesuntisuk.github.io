@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บทที่ 1: บทนำเกี่ยวกับความมั่นคงปลอดภัยของซอฟต์แวร์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#1a56db;--primary-dark:#1340a0;--primary-light:#e8effc;--navy:#1e293b;--navy-light:#334155;--success:#059669;--success-light:#d1fae5;--danger:#dc2626;--danger-light:#fee2e2;--warning:#d97706;--warning-light:#fef3c7;--critical:#991b1b;--critical-light:#fef2f2;--purple:#7c3aed;--purple-light:#ede9fe;--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--radius:12px;--radius-sm:8px;--sidebar-w:292px;--font-thai:'Sarabun',sans-serif;--font-mono:'IBM Plex Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.8;display:flex;min-height:100vh}a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);height:100vh;background:var(--navy);color:#fff;overflow-y:auto;z-index:100;transition:transform .3s}.sidebar-header{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}.sidebar-header h1{font-size:1rem;font-weight:600;color:#fff;line-height:1.4}.sidebar-header .sub{font-size:.75rem;color:#94a3b8;margin-top:.25rem}.sidebar-nav{padding:.75rem 0}.sidebar-nav a{display:block;padding:.5rem 1.25rem;color:#cbd5e1;font-size:.84rem;transition:all .15s;border-left:3px solid transparent}.sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--primary);text-decoration:none}.sidebar-nav .section-label{padding:.6rem 1.25rem .25rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#64748b;font-weight:600}.sidebar-nav .sub-link{padding-left:2.35rem;font-size:.78rem}.sidebar-toggle{display:none;position:fixed;top:.75rem;left:.75rem;z-index:200;background:var(--navy);color:#fff;border:none;width:44px;height:44px;border-radius:var(--radius-sm);cursor:pointer;font-size:1.5rem;align-items:center;justify-content:center}.sidebar-overlay{display:none}.main{flex:1;margin-left:var(--sidebar-w);max-width:100%;padding:0}.topbar{position:sticky;top:0;z-index:50;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between}.topbar-title{font-size:.85rem;color:var(--text-muted)}.topbar-title strong{color:var(--text);font-weight:600}.topbar-progress{font-size:.8rem;color:var(--text-muted)}.topbar-home{color:var(--text-muted);font-size:.85rem;text-decoration:none;margin-right:.75rem;transition:color.15s;white-space:nowrap}.topbar-home:hover{color:var(--primary);text-decoration:none}.content{padding:2rem;max-width:1040px;margin:0 auto}h2{font-size:1.75rem;color:var(--navy);margin:3rem 0 1.5rem;padding-bottom:.75rem;border-bottom:3px solid var(--primary);font-weight:700}h2:first-of-type{margin-top:0}h3{font-size:1.35rem;color:var(--navy);margin:2rem 0 1rem;font-weight:600}h4{font-size:1.1rem;color:var(--navy-light);margin:1.5rem 0 .75rem;font-weight:600}h5{font-size:1rem;color:var(--text);margin:1rem 0 .5rem;font-weight:600}p{margin-bottom:.75rem;color:var(--text)}p:last-child{margin-bottom:0}.card{background:var(--bg-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;margin-bottom:1.5rem;border:1px solid var(--border)}.card-header{font-weight:600;font-size:1.05rem;margin-bottom:.75rem;color:var(--navy);display:flex;align-items:center;gap:.5rem}.info-box{border-radius:var(--radius-sm);padding:1rem 1.25rem;margin:1rem 0;display:flex;gap:.75rem;align-items:flex-start}.info-box .icon{font-size:1.25rem;flex-shrink:0;margin-top:.1rem}.info-box p{font-size:.92rem}.info-box.remember{background:var(--primary-light);border-left:4px solid var(--primary)}.info-box.warning{background:var(--danger-light);border-left:4px solid var(--danger)}.info-box.tip{background:var(--success-light);border-left:4px solid var(--success)}.info-box.question{background:var(--warning-light);border-left:4px solid var(--warning)}.example-box{border:2px solid var(--primary);border-radius:var(--radius);padding:1.25rem;margin:1rem 0;background:linear-gradient(135deg,var(--primary-light),#fff)}.example-box .example-label{font-weight:700;color:var(--primary);font-size:.85rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}.table-wrap{overflow-x:auto;margin:1rem 0}table{width:100%;border-collapse:collapse;font-size:.9rem;border-radius:var(--radius-sm);overflow:hidden}thead{background:var(--navy);color:#fff}th{padding:.75rem 1rem;text-align:left;font-weight:600;font-size:.85rem}td{padding:.65rem 1rem;border-bottom:1px solid var(--border)}tbody tr:nth-child(even){background:#f1f5f9}tbody tr:hover{background:#e2e8f0}tbody tr:last-child td{border-bottom:none}code{font-family:var(--font-mono);font-size:.85rem;background:#f1f5f9;padding:.15em .4em;border-radius:4px;color:var(--danger)}pre{background:#1e293b;color:#e2e8f0;border-radius:var(--radius-sm);padding:1rem;overflow-x:auto;margin:1rem 0;font-family:var(--font-mono);font-size:.85rem;line-height:1.6}pre code{background:none;color:inherit;padding:0;font-size:inherit}.keywords-wrap{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}.keyword{display:inline-flex;align-items:center;gap:.4rem;background:var(--primary-light);color:var(--primary);padding:.35rem .85rem;border-radius:50px;font-size:.82rem;font-weight:500;border:1px solid rgba(26,86,219,0.2)}.keyword:hover{background:var(--primary);color:#fff}.keyword .en{font-family:var(--font-mono);font-size:.78rem;opacity:.8}.case-card{background:var(--bg-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;margin-bottom:2rem;border-top:4px solid var(--primary)}.case-card .meta{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}.case-card .meta span{background:#f1f5f9;padding:.25rem .75rem;border-radius:50px;font-size:.78rem;color:var(--text-muted)}.case-card .meta .year{background:var(--navy);color:#fff}.case-card .meta .type{background:var(--danger-light);color:var(--danger)}.case-card h4{margin-top:0;color:var(--primary)}.case-card .lessons{margin-top:1rem}.case-card .lessons li{margin-bottom:.5rem}.principle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin:1rem 0}.principle-card{background:var(--bg-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem;border-left:4px solid var(--primary);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border)}.principle-card .num{display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:.85rem;margin-bottom:.5rem}.figure{margin:2rem 0;text-align:center}.figure svg{max-width:100%;height:auto;border-radius:var(--radius-sm);background:#fff;box-shadow:var(--shadow);padding:.5rem}.figure figcaption{font-size:.85rem;color:var(--text-muted);margin-top:.5rem;font-style:italic}.content ul,.content ol{padding-left:1.5rem;margin:.75rem 0}.content li{margin-bottom:.35rem}.scroll-top{position:fixed;bottom:2rem;right:2rem;width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;border:none;cursor:pointer;font-size:1.25rem;box-shadow:var(--shadow-lg);z-index:50;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .3s}.scroll-top.visible{opacity:1;visibility:visible}.scroll-top:hover{background:var(--primary)}.kw{color:#c084fc;font-weight:500}.fn{color:#34d399}.lab-section{margin:1.5rem 0;padding:1rem;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border)}.lab-section h5{color:var(--primary);margin-top:0}.interactive{background:linear-gradient(135deg,#fff,var(--primary-light));border:1px solid rgba(26,86,219,.25);border-radius:var(--radius);padding:1.25rem;margin:1.25rem 0;box-shadow:var(--shadow)}.interactive h4{margin-top:0;color:var(--primary)}.control-row{display:flex;flex-wrap:wrap;gap:.75rem;margin:.75rem 0}.control-row input:not([type=radio]),.control-row select,.control-row textarea{font-family:var(--font-thai);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.6rem .75rem;min-width:220px;background:#fff}.control-row textarea{width:100%;min-height:92px}.btn{border:none;border-radius:999px;padding:.55rem 1rem;cursor:pointer;background:var(--primary);color:#fff;font-family:var(--font-thai);font-weight:600;box-shadow:var(--shadow);transition:background .2s}.btn:hover{background:var(--primary-dark)}.btn.secondary{background:var(--navy-light)}.btn.safe{background:var(--success)}.btn.warn{background:var(--warning)}.result{border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:.75rem;background:#fff;border:1px solid var(--border)}.result.ok{background:var(--success-light);border-color:var(--success);color:#064e3b}.result.bad{background:var(--danger-light);border-color:var(--danger);color:#7f1d1d}.result.bad-critical{background:var(--critical-light);border-color:var(--critical);color:#450a0a;font-weight:bold}.result.mid{background:var(--warning-light);border-color:var(--warning);color:#78350f}.tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0}.tab-btn{border:1px solid var(--border);background:#fff;color:var(--text);border-radius:999px;padding:.45rem .85rem;cursor:pointer;font-family:var(--font-thai);transition:all .2s}.tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:var(--shadow)}.tab-panel{display:none}.tab-panel.active{display:block;animation:fadeIn .3s ease-in-out}.quiz-option{display:block;width:100%;text-align:left;border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);padding:.7rem .85rem;margin:.45rem 0;cursor:pointer;font-family:var(--font-thai);transition:all .2s}.quiz-option:hover{border-color:var(--primary)}.quiz-option.correct{border-color:var(--success);background:var(--success-light)}.quiz-option.wrong{border-color:var(--danger);background:var(--danger-light)}.checklist label{display:flex;align-items:flex-start;gap:.6rem;padding:.35rem 0;cursor:pointer;font-size:.92rem}.checklist input[type=checkbox]{margin-top:.25rem;width:18px;height:18px;flex-shrink:0}.meter{height:12px;background:var(--border);border-radius:99px;margin:.75rem 0;overflow:hidden}.meter-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--danger),var(--warning),var(--success));width:0;transition:width .4s}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+
+/* CVSS Calculator Specific Styles */
+.cvss-container { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
+.cvss-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.cvss-group { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+.cvss-group-title { font-size: .85rem; font-weight: 700; color: var(--navy); margin-bottom: .75rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); padding-bottom: .25rem; }
+.cvss-metric { margin-bottom: 1rem; }
+.cvss-metric:last-child { margin-bottom: 0; }
+.cvss-metric-label { display: block; font-size: .85rem; font-weight: 600; color: var(--text); margin-bottom: .4rem; }
+.cvss-options { display: flex; flex-wrap: wrap; gap: .4rem; }
+.cvss-option { flex: 1; min-width: 60px; }
+.cvss-option input[type="radio"] { display: none; }
+.cvss-option label { display: block; text-align: center; padding: .4rem .2rem; font-size: .75rem; font-family: var(--font-mono); font-weight: 600; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; color: var(--text-muted); background: #f8fafc; transition: all .2s; user-select: none; }
+.cvss-option label:hover { background: #e2e8f0; }
+.cvss-option input[type="radio"]:checked + label { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 2px 4px rgba(26,86,219,.2); }
+.cvss-score-panel { background: var(--navy); color: #fff; border-radius: var(--radius-sm); padding: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .5rem; text-align: center; }
+.cvss-score-value { font-size: 3rem; font-weight: 700; line-height: 1; font-family: var(--font-mono); }
+.cvss-score-severity { font-size: 1.1rem; font-weight: 600; text-transform: uppercase; padding: .2rem 1rem; border-radius: 50px; margin-top: .25rem; }
+.cvss-vector { font-family: var(--font-mono); font-size: .8rem; color: #94a3b8; background: rgba(0,0,0,.2); padding: .4rem .75rem; border-radius: 4px; margin-top: .5rem; word-break: break-all; }
+.sev-none { background: #64748b; color: #fff; }
+.sev-low { background: var(--success); color: #fff; }
+.sev-medium { background: var(--warning); color: #fff; }
+.sev-high { background: var(--danger); color: #fff; }
+.sev-critical { background: var(--critical); color: #fff; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@media(max-width:1024px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sidebar-toggle{display:flex}.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}.sidebar-overlay.show{display:block}.main{margin-left:0}.content{padding:1.25rem}.topbar{padding:.75rem 1rem}.grid-2{grid-template-columns:1fr}}@media(max-width:640px){h2{font-size:1.35rem}h3{font-size:1.15rem}.content{padding:1rem}.card{padding:1rem}.topbar-title{font-size:.75rem}.topbar-progress{display:none}.control-row input:not([type=radio]),.control-row select{width:100%;min-width:0}}@media print{.sidebar,.sidebar-toggle,.sidebar-overlay,.topbar,.scroll-top,.interactive button,.interactive input,.interactive select,.interactive textarea{display:none!important}.main{margin-left:0}.content{max-width:100%;padding:0}.interactive{break-inside:avoid}}
+</style>
+</head>
+<body>
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="เปิดเมนู">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-header"><h1>ความมั่นคงปลอดภัยของซอฟต์แวร์</h1><div class="sub">บทที่ 1 · บทนำ</div></div>
+  <div class="sidebar-nav">
+    <div class="section-label">เนื้อหา</div>
+    <a href="#s1">1.1 ภาพรวมและนิยาม</a>
+    <a href="#s1-1" class="sub-link">1.1.1 ความหมายและขอบเขต</a>
+    <a href="#s1-2" class="sub-link">1.1.2 ความแตกต่าง</a>
+    <a href="#s1-3" class="sub-link">1.1.3 เหตุผลที่มีช่องโหว่</a>
+    <a href="#s2">1.2 ระบบจำแนกและให้คะแนนช่องโหว่</a>
+    <a href="#s2-1" class="sub-link">1.2.1 CVE</a>
+    <a href="#s2-2" class="sub-link">1.2.2 CWE</a>
+    <a href="#s2-3" class="sub-link">1.2.3 NVD</a>
+    <a href="#s2-4" class="sub-link">1.2.4 CVSS</a>
+    <a href="#s3">1.3 สถิติและแนวโน้ม</a>
+    <a href="#s3-1" class="sub-link">1.3.1 ข้อมูลสถิติ</a>
+    <a href="#s3-2" class="sub-link">1.3.2 ต้นทุนการละเมิดข้อมูล</a>
+    <a href="#s4">1.4 Security Mindset</a>
+    <a href="#s4-1" class="sub-link">1.4.1 Attack vs Defense</a>
+    <a href="#s4-2" class="sub-link">1.4.2 Assume Breach และ Zero Trust</a>
+    <a href="#s4-3" class="sub-link">1.4.3 Trade-offs</a>
+    <a href="#s4-4" class="sub-link">1.4.4 Defense in Depth</a>
+    <a href="#s5">1.5 ภัยคุกคามและผู้โจมตี</a>
+    <a href="#s5-1" class="sub-link">1.5.1 ประเภทแฮกเกอร์</a>
+    <a href="#s5-2" class="sub-link">1.5.2 Script Kiddie</a>
+    <a href="#s5-3" class="sub-link">1.5.3 APT</a>
+    <a href="#s5-4" class="sub-link">1.5.4 Insider Threat</a>
+    <a href="#s6">1.6 Attack Surface</a>
+    <a href="#s7">1.7 ทักษะและเครื่องมือพื้นฐาน</a>
+    <a href="#s8">1.8 จริยธรรมและกฎหมาย</a>
+    <a href="#s8-1" class="sub-link">1.8.1 จริยธรรม</a>
+    <a href="#s8-2" class="sub-link">1.8.2 พรบ.คอมพิวเตอร์</a>
+    <a href="#s9">1.9 เส้นทางสายอาชีพ</a>
+    <div class="section-label">Interactive</div>
+    <a href="#play-scope">Security Scope Matcher</a>
+    <a href="#play-cvss">CVSS v3.1 Calculator</a>
+    <a href="#play-cve">CVE Lookup Simulator</a>
+    <a href="#play-chart">CVE Chart Interactive</a>
+    <a href="#play-cost">Cost Calculator</a>
+    <a href="#play-zerotrust">Zero Trust Checklist</a>
+    <a href="#play-did">Defense in Depth Layers</a>
+    <a href="#play-hackers">Hacker Tab Panels</a>
+    <a href="#play-ethics">Ethics Scenario Quiz</a>
+    <a href="#play-portscan">Port Scanner Simulator</a>
+    <div class="section-label">กรณีศึกษา</div>
+    <a href="#case1">Equifax (2017)</a>
+    <a href="#case2">SolarWinds (2020)</a>
+    <a href="#case3">Log4Shell (2021)</a>
+    <a href="#case4">MOVEit (2023)</a>
+    <a href="#case-compare">ตารางเปรียบเทียบ</a>
+    <div class="section-label">กิจกรรม</div>
+    <a href="#lab1">Lab 1.1</a>
+    <a href="#lab2">Lab 1.2</a>
+    <div class="section-label">ท้ายบท</div>
+    <a href="#summary">สรุปท้ายบท</a>
+    <a href="#questions">คำถามท้ายบท</a>
+    <a href="#refs">เอกสารอ้างอิง</a>
+  </div>
+</nav>
+<div class="main">
+  <header class="topbar"><a href="index.html" class="topbar-home" aria-label="กลับหน้าแรก">← HOME</a><div class="topbar-title"><strong>บทที่ 1</strong> · บทนำเกี่ยวกับความมั่นคงปลอดภัยของซอฟต์แวร์</div><div class="topbar-progress" id="readingProgress">Software Security</div></header>
+  <div class="content">
+    <div style="text-align:center;padding:2rem 0 1rem">
+      <span style="display:inline-block;background:var(--primary);color:#fff;padding:.25rem 1rem;border-radius:50px;font-size:.85rem;margin-bottom:1rem">บทที่ 1</span>
+      <h1 style="font-size:2.25rem;color:var(--navy);margin-bottom:.5rem;border:none">บทนำเกี่ยวกับความมั่นคงปลอดภัยของซอฟต์แวร์</h1>
+      <p style="color:var(--text-muted);font-size:1rem">บรรยาย 2 ชม. + ปฏิบัติการ 1 ชม. | รวม 3 ชม.</p>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,var(--navy),#0f172a);color:#fff;border:none">
+      <div class="card-header" style="color:#fff">วัตถุประสงค์การเรียนรู้</div>
+      <ol style="color:#cbd5e1;padding-left:1.25rem">
+        <li style="margin-bottom:.5rem">อธิบายความหมาย ขอบเขต และความสำคัญของความมั่นคงปลอดภัยของซอฟต์แวร์ในยุคดิจิทัล พร้อมยกตัวอย่างเหตุการณ์จริง</li>
+        <li style="margin-bottom:.5rem">จำแนกความแตกต่างระหว่าง Software Security, Application Security, Network Security และ Information Security ได้</li>
+        <li style="margin-bottom:.5rem">อธิบายระบบการจำแนกและให้คะแนนช่องโหว่มาตรฐานสากล ได้แก่ CVE, CWE, NVD และ CVSS</li>
+        <li style="margin-bottom:.5rem">ประยุกต์ใช้ Security Mindset และหลักการสำคัญในการคิดด้านความปลอดภัย เช่น Defense in Depth, Zero Trust, Assume Breach</li>
+        <li style="margin-bottom:.5rem">ระบุประเภทของผู้โจมตี ภัยคุกคาม และพื้นผิวการถูกโจมตี (Attack Surface) พร้อมแนวทางป้องกัน</li>
+        <li style="margin-bottom:.5rem">อธิบายจริยธรรมและกฎหมายที่เกี่ยวข้องกับการทดสอบความมั่นคงปลอดภัยของซอฟต์แวร์</li>
+      </ol>
+    </div>
+
+    <h2 id="s1">1.1 ภาพรวมและนิยามความมั่นคงปลอดภัยของซอฟต์แวร์</h2>
+    <h3 id="s1-1">1.1.1 ความหมายและขอบเขตของ Software Security</h3>
+    <p>ความมั่นคงปลอดภัยของซอฟต์แวร์ (Software Security) หมายถึง กระบวนการ แนวปฏิบัติ และเทคโนโลยีที่นำมาใช้เพื่อให้แน่ใจว่าซอฟต์แวร์สามารถทำงานได้ตามที่ออกแบบไว้ โดยไม่มีช่องโหว่ที่ทำให้เกิดความเสียหายต่อข้อมูล ระบบ หรือผู้ใช้ ซอฟต์แวร์ที่ "ปลอดภัย" ไม่ได้หมายถึงซอฟต์แวร์ที่ไม่มีช่องโหว่เลย แต่หมายถึงซอฟต์แวร์ที่มีการบริหารจัดการความเสี่ยงอย่างเหมาะสม และมีมาตรการป้องกันที่เพียงพอต่อภัยคุกคามที่คาดการณ์ได้</p>
+    <p>Software Security ครอบคลุมตั้งแต่ขั้นตอนการออกแบบสถาปัตยกรรม การเขียนโค้ด การทดสอบ การปรับใช้ ไปจนถึงการบำรุงรักษาและตอบสนองต่อเหตุการณ์ ซึ่งแตกต่างจากแนวคิดด้านความปลอดภัยอื่นๆ ที่มุ่งเน้นเฉพาะในส่วนใดส่วนหนึ่ง</p>
+    <p>Software Security มีความสำคัญมากขึ้นเรื่อยๆ เนื่องจากซอฟต์แวร์กลายเป็นส่วนสำคัญของทุกองค์กรและทุกชีวิตประจำวันของผู้คน รายงานจาก IBM Cost of a Data Breach Report ปี 2025 ระบุว่าต้นทุนเฉลี่ยของการถูกละเมิดข้อมูลทั่วโลกอยู่ที่ 4.44 ล้านเหรียญสหรัฐต่อครั้ง สำหรับสหรัฐอเมริกาอยู่ที่ 10.22 ล้านเหรียญสหรัฐ ซึ่งเป็นค่าสูงสุดเป็นประวัติการณ์ ค่าใช้จ่ายต่อหนึ่งระเบียนข้อมูลที่ถูกขโมยเฉลี่ย 173 เหรียญสหรัฐ</p>
+    <div class="info-box remember">
+      <span class="icon">📌</span>
+      <div>
+        <strong>ข้อควรจำ:</strong>
+        <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+          <li>Software Security ครอบคลุมตั้งแต่การออกแบบ การพัฒนา การทดสอบ ไปจนถึงการบำรุงรักษา</li>
+          <li>ช่องโหว่ในซอฟต์แวร์เป็นสาเหตุหลักของการถูกละเมิดข้อมูลในปัจจุบัน</li>
+          <li>ต้นทุนเฉลี่ยของการถูกละเมิดข้อมูลทั่วโลกในปี 2025 อยู่ที่ 4.44 ล้านเหรียญสหรัฐต่อเหตุการณ์</li>
+        </ul>
+      </div>
+    </div>
+    <div class="info-box question">
+      <span class="icon">💬</span>
+      <div>
+        <strong>คำถามสำหรับการอภิปรายในชั้นเรียน:</strong>
+        <p style="margin:.25rem 0 0">ในชีวิตประจำวันของนักศึกษา มีซอฟต์แวร์ใดบ้างที่นักศึกษาใช้งานและคิดว่าอาจมีช่องโหว่ทางความปลอดภัย ท่านคิดว่าซอฟต์แวร์เหล่านั้นควรมีมาตรการป้องกันใดบ้าง</p>
+      </div>
+    </div>
+
+    <h3 id="s1-2">1.1.2 ความแตกต่างระหว่าง Software Security, Application Security, Network Security และ Information Security</h3>
+    <p>แม้ว่าคำศัพท์เหล่านี้มักถูกใช้แทนที่กัน แต่มีความหมายและขอบเขตที่ต่างกันดังนี้</p>
+    <p><strong>Software Security</strong> เป็นแนวคิดระดับสูงที่มุ่งเน้นความปลอดภัยของซอฟต์แวร์ในทุกขั้นตอนของวงจรการพัฒนาซอฟต์แวร์ (Secure SDLC) รวมถึงการออกแบบสถาปัตยกรรม การเขียนโค้ดที่ปลอดภัย การทดสอบความปลอดภัย และการบำรุงรักษา เป็นหน้าที่ของนักพัฒนา สถาปนิกซอฟต์แวร์ และวิศวกรความปลอดภัย</p>
+    <p><strong>Application Security (AppSec)</strong> เป็นสาขาย่อยของ Software Security ที่มุ่งเน้นเฉพาะความปลอดภัยของแอปพลิเคชันที่ทำงานอยู่ โดยเฉพาะเว็บแอปพลิเคชันและ API ครอบคลุมการป้องกันช่องโหว่เช่น SQL Injection, XSS, Broken Access Control</p>
+    <p><strong>Network Security</strong> เป็นการรักษาความปลอดภัยของโครงสร้างพื้นฐานเครือข่าย โดยใช้ Firewall, IDS/IPS, VPN, Network Segmentation ป้องกันการโจมตีที่อาศัยช่องโหว่ในโปรโตคอลเครือข่าย</p>
+    <p><strong>Information Security (InfoSec)</strong> เป็นแนวคิดที่กว้างที่สุด ครอบคลุมการป้องกันข้อมูลทุกรูปแบบทั้งดิจิทัลและกายภาพ โดยมีเป้าหมายเพื่อรักษา CIA Triad (Confidentiality, Integrity, Availability)</p>
+    
+    <div class="interactive" id="play-scope">
+      <h4>Interactive: Security Scope Matcher</h4>
+      <p>เลือกสถานการณ์แล้วดูว่าควรคิดในมุมใดเป็นหลัก</p>
+      <div class="control-row">
+        <select id="scopeCase">
+          <option value="software">ออกแบบ validation และ error handling ตั้งแต่ขั้น design</option>
+          <option value="appsec">ทดสอบ login, session และ access control ของเว็บแอป</option>
+          <option value="network">กำหนด firewall rule และ network segmentation</option>
+          <option value="infosec">จัดชั้นความลับและ retention policy ของข้อมูล</option>
+        </select>
+        <button class="btn" id="scopeBtn">วิเคราะห์ขอบเขต</button>
+      </div>
+      <div id="scopeResult" class="result">เลือกสถานการณ์แล้วกดวิเคราะห์</div>
+    </div>
+
+    <div class="interactive">
+      <h4>Quick Check: SQL Injection ควรป้องกันด้วยมาตรการใดที่ต้นทาง</h4>
+      <p>หากเว็บแอปพลิเคชันมีช่องโหว่ SQL Injection มาตรการใดที่ป้องกันที่ต้นทางได้ดีที่สุด</p>
+      <button class="quiz-option" data-quiz="sqlprevent" data-correct="false">เพิ่ม WAF เพื่อบล็อก request ที่มีรูปแบบ SQL</button>
+      <button class="quiz-option" data-quiz="sqlprevent" data-correct="true">ใช้ Parameterized Query ในการเขียนโค้ด</button>
+      <button class="quiz-option" data-quiz="sqlprevent" data-correct="false">ปิดพอร์ต 80/443 ที่ firewall</button>
+      <div class="result" id="sqlpreventResult">เลือกคำตอบเพื่อดูเหตุผล</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>มิติ</th><th>Software Security</th><th>Application Security</th><th>Network Security</th><th>Information Security</th></tr></thead>
+        <tbody>
+          <tr><td>ขอบเขต</td><td>วงจรชีวิตซอฟต์แวร์ทั้งหมด</td><td>แอปพลิเคชันที่ทำงาน</td><td>โครงสร้างพื้นฐานเครือข่าย</td><td>ข้อมูลทุกรูปแบบ</td></tr>
+          <tr><td>ผู้รับผิดชอบหลัก</td><td>นักพัฒนา, DevOps</td><td>ทีม AppSec, Pentester</td><td>ทีมเครือข่าย, SOC</td><td>ทีมความปลอดภัย, CISO</td></tr>
+          <tr><td>ตัวอย่างมาตรการ</td><td>Secure coding, Threat Modeling, Code Review</td><td>WAF, DAST, SAST</td><td>Firewall, IDS/IPS, VPN</td><td>นโยบาย, การบริหารความเสี่ยง</td></tr>
+          <tr><td>จุดเน้น</td><td>ป้องกันช่องโหว่ตั้งแต่ต้นทาง</td><td>ตรวจจับและป้องกันขณะรัน</td><td>ป้องกันการเข้าถึงโดยไม่ได้รับอนุญาต</td><td>ป้องกันข้อมูลรั่วไหล</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="example-box">
+      <div class="example-label">ตัวอย่างสถานการณ์</div>
+      <p>หากเว็บแอปพลิเคชันมีช่องโหว่ SQL Injection:</p>
+      <ul>
+        <li>Network Security (Firewall) อาจมองไม่เห็นเพราะ traffic ไปยังพอร์ต 80/443 ปกติ</li>
+        <li>Application Security (WAF) สามารถบล็อก request ที่มีรูปแบบ SQL Injection</li>
+        <li>Software Security ต้องป้องกันตั้งแต่ตอนเขียนโค้ด โดยใช้ Parameterized Query แทนการต่อ string</li>
+        <li>Information Security ต้องประเมินว่ามีข้อมูลสำคัญใดบ้างที่เสี่ยงต่อการรั่วไหล</li>
+      </ul>
+    </div>
+    <div class="info-box remember">
+      <span class="icon">📌</span>
+      <div>
+        <strong>ข้อควรจำ:</strong>
+        <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+          <li>Software Security ครอบคลุมกว้างกว่า Application Security และเป็นส่วนหนึ่งของ Information Security</li>
+          <li>การรักษาความปลอดภัยแบบแยกส่วนไม่เพียงพอ ต้องอาศัยการรวมกำลังกันทุกระดับ</li>
+          <li>ซอฟต์แวร์ที่ปลอดภัยต้องเริ่มต้นจากการออกแบบ ไม่ใช่การเพิ่มมาตรการป้องกันทีหลัง</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 id="s1-3">1.1.3 เหตุผลที่ซอฟต์แวร์มีช่องโหว่</h3>
+    <p>ช่องโหว่ในซอฟต์แวร์เกิดจากหลายปัจจัยหลัก ดังนี้</p>
+    <p><strong>1. ความซับซ้อนของระบบ (Complexity)</strong> — Chrome มีโค้ดมากกว่า 30 ล้านบรรทัด Windows 11 มีโค้ดประมาณ 50-60 ล้านบรรทัด แอปพลิเคชันมือถือมี third-party libs มากกว่า 100 ตัว ความซับซ้อนหมายถึงจำนวนจุดที่อาจผิดพลาดมีมากตามไปด้วย</p>
+    <p><strong>2. ข้อจำกัดด้านทรัพยากร (Resource Constraints)</strong> — ต้นทุนและเวลา: ผู้บริหารกดดันให้ส่งมอบเร็ว ขาดบุคลากร: Dev ไม่ได้อบรมด้านความปลอดภัย งบประมาณ: Security มักถูกมองว่าเป็นต้นทุน</p>
+    <p><strong>3. ความผิดพลาดของมนุษย์ (Human Error)</strong> — การเขียนโค้ดโดยไม่ตรวจสอบข้อมูลนำเข้า Misconfiguration ลืมป้องกันฟังก์ชันสำคัญ ใช้ API หรือ lib ที่ไม่ปลอดภัย</p>
+    <p><strong>4. การใช้ซอฟต์แวร์คอมโพเนนต์จากภายนอก (Third-party Dependencies)</strong> — โครงการโดยเฉลี่ยมี dependencies กว่า 2,000 ตัว (Synopsys OSSRA) ช่องโหว่ใน dependency ตัวเดียว (Log4j) ส่งผลกระทบต่อซอฟต์แวร์นับแสนตัว</p>
+    <p><strong>5. ข้อผิดพลาดในการออกแบบ (Design Flaws)</strong> — สถาปัตยกรรมไม่คำนึงถึงความปลอดภัย Authentication/Authorization ผิดพลาด Session Management ไม่ปลอดภัย การเข้ารหัสไม่ถูกต้อง</p>
+    <p><strong>6. ภัยคุกคามที่เปลี่ยนแปลงตลอดเวลา (Evolving Threat Landscape)</strong> — เทคนิคโจมตีพัฒนาขึ้นทุกวัน Zero-day ใหม่ถูกค้นพบเสมอ AI, IoT, Cloud สร้างพื้นผิวการโจมตีใหม่</p>
+    <div class="example-box">
+      <div class="example-label">ตัวอย่างจากโลกแห่งความเป็นจริง</div>
+      <p>ในปี 2017 Equifax ถูกโจมตีผ่าน CVE-2017-5638 ใน Apache Struts ทั้งที่ Apache ออกแพตชตั้งแต่เดือนมีนาคม 2017 แต่ Equifax ไม่ได้อัปเดต ส่งผลให้ข้อมูลส่วนบุคคล 143 ล้านรายถูกขโมย ค่าใช้จ่ายสูงกว่า 1.4 พันล้านเหรียญสหรัฐ</p>
+    </div>
+    <div class="info-box remember">
+      <span class="icon">📌</span>
+      <div>
+        <strong>ข้อควรจำ:</strong>
+        <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+          <li>ซอฟต์แวร์มีช่องโหว่เพราะซับซ้อน ถูกจำกัดด้านทรัพยากร และมนุษย์ผิดพลาด</li>
+          <li>การใช้ไลบรารีภายนอกเพิ่มความเสี่ยงต่อ Supply Chain Attack</li>
+          <li>การอัปเดตและรักษาความปลอดภัยอย่างต่อเนื่องเป็นสิ่งจำเป็น</li>
+        </ul>
+      </div>
+    </div>
+    <div class="info-box question">
+      <span class="icon">💬</span>
+      <div>
+        <strong>คำถามสำหรับการอภิปรายในชั้นเรียน:</strong>
+        <p style="margin:.25rem 0 0">หากนักศึกษาเป็นผู้บริหารบริษัทซอฟต์แวร์แห่งหนึ่ง ท่านจะจัดสรรงบประมาณและเวลาให้กับความปลอดภัยอย่างไรในขณะที่ต้องส่งมอบซอฟต์แวร์ตามกำหนดการ</p>
+      </div>
+    </div>
+
+    <h2 id="s2">1.2 ระบบการจำแนกและให้คะแนนช่องโหว่มาตรฐานสากล</h2>
+    <p>ในวงการความมั่นคงปลอดภัยทางไซเบอร์ มีมาตรฐานสากลที่สำคัญ 4 ระบบ ได้แก่ CVE, CWE, NVD และ CVSS</p>
+
+    <h3 id="s2-1">1.2.1 CVE (Common Vulnerabilities and Exposures)</h3>
+    <p>CVE เป็นระบบบัญชีรายชื่อช่องโหว่ที่รู้จักต่อสาธารณะ ดำเนินการโดย MITRE สนับสนุนโดย CISA สหรัฐอเมริกา CVE-ID มีรูปแบบ CVE-ปี-เลขที่ เช่น CVE-2017-5638 (Equifax), CVE-2021-44228 (Log4Shell), CVE-2023-34362 (MOVEit) แต่ละรายการประกอบด้วย CVE ID, คำอธิบาย, References และ Date</p>
+    <div class="info-box warning">
+      <span class="icon">⚠️</span>
+      <div>
+        <strong>สิ่งที่ CVE ไม่ใช่:</strong>
+        <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+          <li>CVE ไม่ได้บอกความรุนแรงของช่องโหว่</li>
+          <li>CVE ไม่ได้ประเมินผลกระทบต่อระบบของท่าน</li>
+          <li>CVE เป็นแค่ "ป้าย" ระบุตัวตนของช่องโหว่ ไม่ใช่รายงานฉบับสมบูรณ์</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 id="s2-2">1.2.2 CWE (Common Weakness Enumeration)</h3>
+    <p>CWE เป็นระบบจำแนกประเภทของจุดอ่อนในซอฟต์แวร์ CVE ตอบ "ช่องโหว่นี้คืออะไร (What)" ส่วน CWE ตอบ "จุดอ่อนประเภทไหนที่ทำให้เกิด (Why)"</p>
+    <p><strong>ตัวอย่าง CWE-ID ที่พบบ่อย:</strong> CWE-79 (XSS), CWE-89 (SQL Injection), CWE-287 (Improper Authentication), CWE-200 (Exposure of Sensitive Information), CWE-502 (Deserialization of Untrusted Data), CWE-20 (Improper Input Validation), CWE-798 (Hard-coded Credentials), CWE-269 (Improper Privilege Management)</p>
+
+    <h3 id="s2-3">1.2.3 NVD (National Vulnerability Database)</h3>
+    <p>NVD คือคลังข้อมูลช่องโหว่แห่งชาติสหรัฐฯ โดย NIST ทำหน้าที่ "เติมเต็ม" CVE ด้วยคะแนน CVSS, CWE Mapping, CPE และ Reference Tags ดังนั้น CVE บอกว่าช่องโหว่คืออะไร NVD บอกว่ามีความรุนแรงแค่ไหน</p>
+
+    <h3 id="s2-4">1.2.4 CVSS (Common Vulnerability Scoring System)</h3>
+    <p>CVSS เป็นมาตรฐานเปิดสำหรับให้คะแนนความรุนแรงของช่องโหว่ พัฒนาโดย FIRST.org ปัจจุบันคือ CVSS v4.0 (ในอุตสาหกรรมยังนิยม v3.1 เป็นหลัก)</p>
+    <p><strong>Base Metrics:</strong> Attack Vector (AV), Attack Complexity (AC), Privileges Required (PR), User Interaction (UI), Scope (S), Confidentiality (C), Integrity (I), Availability (A)</p>
+
+    <!-- ปรับปรุงใหม่: Professional CVSS v3.1 Calculator Simulator -->
+    <div class="interactive" id="play-cvss" style="padding: 1.5rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+        <h4 style="margin:0;">Interactive: CVSS v3.1 Base Score Calculator</h4>
+        <button class="btn secondary" id="resetCvssBtn" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">รีเซ็ตค่า</button>
+      </div>
+      <p style="font-size: 0.9rem; color: var(--text-muted);">คำนวณคะแนนและ Vector String ตามสูตรคณิตศาสตร์ของมาตรฐาน <a href="https://www.first.org/cvss/calculator/3.1" target="_blank">FIRST.org</a> อย่างแม่นยำ</p>
+      
+      <div class="cvss-container">
+        <!-- Result Panel at top for better UX -->
+        <div class="cvss-score-panel">
+          <div style="font-size:0.85rem; color:#cbd5e1; text-transform:uppercase; letter-spacing:1px;">Base Score</div>
+          <div class="cvss-score-value" id="cvssFinalScore">0.0</div>
+          <div class="cvss-score-severity sev-none" id="cvssSeverity">None</div>
+          <div class="cvss-vector" id="cvssVectorStr">CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:N</div>
+        </div>
+
+        <form id="cvssForm" class="cvss-grid">
+          <!-- Column 1: Exploitability -->
+          <div class="cvss-group">
+            <div class="cvss-group-title">Exploitability Metrics</div>
+            
+            <div class="cvss-metric">
+              <span class="cvss-metric-label">Attack Vector (AV)</span>
+              <div class="cvss-options">
+                <div class="cvss-option"><input type="radio" name="AV" id="AV_N" value="N" checked><label for="AV_N">Network</label></div>
+                <div class="cvss-option"><input type="radio" name="AV" id="AV_A" value="A"><label for="AV_A">Adjacent</label></div>
+                <div class="cvss-option"><input type="radio" name="AV" id="AV_L" value="L"><label for="AV_L">Local</label></div>
+                <div class="cvss-option"><input type="radio" name="AV" id="AV_P" value="P"><label for="AV_P">Physical</label></div>
+              </div>
+            </div>
+
+            <div class="cvss-metric">
+              <span class="cvss-metric-label">Attack Complexity (AC)</span>
+              <div class="cvss-options">
+                <div class="cvss-option"><input type="radio" name="AC" id="AC_L" value="L" checked><label for="AC_L">Low</label></div>
+                <div class="cvss-option"><input type="radio" name="AC" id="AC_H" value="H"><label for="AC_H">High</label></div>
+              </div>
+            </div>
+
+            <div class="cvss-metric">
+              <span class="cvss-metric-label">Privileges Required (PR)</span>
+              <div class="cvss-options">
+                <div class="cvss-option"><input type="radio" name="PR" id="PR_N" value="N" checked><label for="PR_N">None</label></div>
+                <div class="cvss-option"><input type="radio" name="PR" id="PR_L" value="L"><label for="PR_L">Low</label></div>
+                <div class="cvss-option"><input type="radio" name="PR" id="PR_H" value="H"><label for="PR_H">High</label></div>
+              </div>
+            </div>
+
+            <div class="cvss-metric">
+              <span class="cvss-metric-label">User Interaction (UI)</span>
+              <div class="cvss-options">
+                <div class="cvss-option"><input type="radio" name="UI" id="UI_N" value="N" checked><label for="UI_N">None</label></div>
+                <div class="cvss-option"><input type="radio" name="UI" id="UI_R" value="R"><label for="UI_R">Required</label></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Scope & Impact -->
+          <div class="cvss-group">
+            <div class="cvss-group-title">Scope & Impact Metrics</div>
+            
+            <div class="cvss-metric" style="margin-bottom: 1.5rem;">
+              <span class="cvss-metric-label">Scope (S)</span>
+              <div class="cvss-options">
+                <div class="cvss-option"><input type="radio" name="S" id="S_U" value="U" checked><label for="S_U">Unchanged</label></div>
+                <div class="cvss-option"><input type="radio" name="S" id="S_C" value="C"><label for="S_C">Changed</label></div>
+              </div>
+            </div>
+
+            <div class="cvss-metric">
+              <span class="cvss-metric-label">Confidentiality (C)</span>
+              <div class="cvss-options">
+                <div class="cvss-option"><input type="radio" name="C" id="C_N" value="N" checked><label for="C_N">None</label></div>
+                <div class="cvss-option"><input type="radio" name="C" id="C_L" value="L"><label for="C_L">Low</label></div>
+                <div class="cvss-option"><input type="radio" name="C" id="C_H" value="H"><label for="C_H">High</label></div>
+              </div>
+            </div>
+
+            <div class="cvss-metric">
+              <span class="cvss-metric-label">Integrity (I)</span>
+              <div class="cvss-options">
+                <div class="cvss-option"><input type="radio" name="I" id="I_N" value="N" checked><label for="I_N">None</label></div>
+                <div class="cvss-option"><input type="radio" name="I" id="I_L" value="L"><label for="I_L">Low</label></div>
+                <div class="cvss-option"><input type="radio" name="I" id="I_H" value="H"><label for="I_H">High</label></div>
+              </div>
+            </div>
+
+            <div class="cvss-metric">
+              <span class="cvss-metric-label">Availability (A)</span>
+              <div class="cvss-options">
+                <div class="cvss-option"><input type="radio" name="A" id="A_N" value="N" checked><label for="A_N">None</label></div>
+                <div class="cvss-option"><input type="radio" name="A" id="A_L" value="L"><label for="A_L">Low</label></div>
+                <div class="cvss-option"><input type="radio" name="A" id="A_H" value="H"><label for="A_H">High</label></div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- จบส่วน CVSS Calculator -->
+
+    <p><strong>ระดับคะแนน CVSS v3.1:</strong> None 0.0, Low 0.1-3.9, Medium 4.0-6.9, High 7.0-8.9, Critical 9.0-10.0</p>
+    <div class="example-box">
+      <div class="example-label">ตัวอย่าง: Log4Shell</div>
+      <p>CVE-2021-44228 CVSS v3.1 = 10.0 (Critical) Vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H</p>
+      <p>AV:N = โจมตีผ่าน Network ระยะไกล, AC:L = ซับซ้อนต่ำ, PR:N = ไม่ต้องมีสิทธิ์, UI:N = ไม่ต้อง interaction, S:C = กระทบระบบอื่น, C:H/I:H/A:H = ผลกระทบสูงทุกด้าน</p>
+    </div>
+
+    <div class="interactive" id="play-cve">
+      <h4>Interactive: CVE Lookup Simulator</h4>
+      <p>พิมพ์ CVE ID เพื่อค้นหาข้อมูล (ลองใช้ CVE-2017-5638, CVE-2021-44228, CVE-2023-34362 หรือ CVE-2023-35036)</p>
+      <div class="control-row">
+        <input type="text" id="cveInput" placeholder="เช่น CVE-2021-44228">
+        <button class="btn" id="cveLookupBtn">ค้นหา</button>
+      </div>
+      <div id="cveResult" class="result">พิมพ์ CVE ID และกดค้นหา</div>
+    </div>
+
+    <div class="info-box remember">
+      <span class="icon">📌</span>
+      <div>
+        <strong>ข้อควรจำ:</strong>
+        <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+          <li>CVSS วัดความรุนแรง (Severity) ไม่ใช่ความเสี่ยง (Risk)</li>
+          <li>คะแนนเดียวกันแต่บริบทต่างกัน อาจมีความเสี่ยงต่างกัน</li>
+          <li>CVSS 10.0 ในระบบที่ไม่ได้เชื่อมต่ออินเทอร์เน็ตอาจเสี่ยงต่ำกว่า CVSS 7.5 ในระบบที่เปิดสู่สาธารณะ</li>
+        </ul>
+      </div>
+    </div>
+    <div class="info-box question">
+      <span class="icon">💬</span>
+      <div>
+        <strong>คำถามสำหรับการอภิปราย:</strong>
+        <p style="margin:.25rem 0 0">การใช้คะแนน CVSS เพียงอย่างเดียวในการจัดลำดับความสำคัญของการแพตชมีข้อจำกัดอย่างไร</p>
+      </div>
+    </div>
+
+    <h2 id="s3">1.3 สถิติและแนวโน้มการโจมตีซอฟต์แวร์</h2>
+    <h3 id="s3-1">1.3.1 ข้อมูลสถิติช่องโหว่</h3>
+    <p>ข้อมูลจาก NVD แสดงแนวโน้มการเพิ่มขึ้นของช่องโหว่อย่างต่อเนื่อง</p>
+    
+    <div class="interactive" id="play-chart">
+      <h4>Interactive: CVE Count by Year (2019-2024)</h4>
+      <p>คลิกแท่งกราฟเพื่อดูจำนวน CVE ในแต่ละปี</p>
+      <div style="display:flex;align-items:flex-end;gap:8px;height:260px;padding:10px;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--border);margin:.75rem 0">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+          <div class="cve-bar" data-year="2019" data-count="17000" style="width:100%;background:var(--primary);border-radius:4px 4px 0 0;height:calc(17000/31000*220px);min-height:4px;transition:all .3s;cursor:pointer"></div>
+          <span style="font-size:.75rem;margin-top:4px;color:var(--text-muted)">2019</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+          <div class="cve-bar" data-year="2020" data-count="18000" style="width:100%;background:var(--primary);border-radius:4px 4px 0 0;height:calc(18000/31000*220px);min-height:4px;transition:all .3s;cursor:pointer"></div>
+          <span style="font-size:.75rem;margin-top:4px;color:var(--text-muted)">2020</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+          <div class="cve-bar" data-year="2021" data-count="20000" style="width:100%;background:var(--primary);border-radius:4px 4px 0 0;height:calc(20000/31000*220px);min-height:4px;transition:all .3s;cursor:pointer"></div>
+          <span style="font-size:.75rem;margin-top:4px;color:var(--text-muted)">2021</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+          <div class="cve-bar" data-year="2022" data-count="25000" style="width:100%;background:var(--warning);border-radius:4px 4px 0 0;height:calc(25000/31000*220px);min-height:4px;transition:all .3s;cursor:pointer"></div>
+          <span style="font-size:.75rem;margin-top:4px;color:var(--text-muted)">2022</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+          <div class="cve-bar" data-year="2023" data-count="26000" style="width:100%;background:var(--warning);border-radius:4px 4px 0 0;height:calc(26000/31000*220px);min-height:4px;transition:all .3s;cursor:pointer"></div>
+          <span style="font-size:.75rem;margin-top:4px;color:var(--text-muted)">2023</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+          <div class="cve-bar" data-year="2024" data-count="30000" style="width:100%;background:var(--danger);border-radius:4px 4px 0 0;height:calc(30000/31000*220px);min-height:4px;transition:all .3s;cursor:pointer"></div>
+          <span style="font-size:.75rem;margin-top:4px;color:var(--text-muted)">2024</span>
+        </div>
+      </div>
+      <div id="cveChartResult" class="result">คลิกแท่งกราฟเพื่อดูจำนวน CVE</div>
+    </div>
+
+    <p>แนวโน้มเพิ่มขึ้นประมาณร้อยละ 10-15 ต่อปี แสดงว่าจำนวนช่องโหว่เพิ่มขึ้นอย่างต่อเนื่อง</p>
+    <p><strong>OWASP Top 10 (2021):</strong> 1. Broken Access Control, 2. Cryptographic Failures, 3. Injection, 4. Insecure Design, 5. Security Misconfiguration, 6. Vulnerable and Outdated Components, 7. Identification and Authentication Failures, 8. Software and Data Integrity Failures, 9. Security Logging and Monitoring Failures, 10. SSRF</p>
+
+    <h3 id="s3-2">1.3.2 ต้นทุนจากการถูกละเมิดข้อมูล</h3>
+    <p>ข้อมูลจาก IBM Cost of a Data Breach Report 2024-2025:</p>
+    <ul>
+      <li>ต้นทุนเฉลี่ยต่อเหตุการณ์ทั่วโลก (2024): 4.88 ล้านเหรียญสหรัฐ</li>
+      <li>ต้นทุนเฉลี่ยต่อเหตุการณ์ทั่วโลก (2025): 4.44 ล้านเหรียญสหรัฐ (ลดลง 9%)</li>
+      <li>ต้นทุนเฉลี่ยสหรัฐอเมริกา (2025): 10.22 ล้านเหรียญสหรัฐ (สูงสุดเป็นประวัติการณ์)</li>
+      <li>ต้นทุนต่อหนึ่งระเบียนข้อมูลที่ถูกขโมย: 173 เหรียญสหรัฐ</li>
+      <li>เวลาเฉลี่ยในการตรวจพบและควบคุม (MTTC): 241 วัน (ต่ำสุดในรอบ 9 ปี)</li>
+    </ul>
+    <p><strong>สาเหตุหลัก (IBM 2025):</strong> Stolen Credentials 16%, Phishing 15%, Vulnerability Exploit 12%, Misconfiguration 12%, Insider Threat 8%</p>
+
+    <div class="interactive" id="play-cost">
+      <h4>Interactive: Data Breach Cost Calculator</h4>
+      <p>ป้อนจำนวนระเบียนข้อมูลที่ถูกขโมยเพื่อประมาณต้นทุน ($173/record อ้างอิง IBM 2025)</p>
+      <div class="control-row">
+        <input type="number" id="costRecords" value="1000" min="1" max="100000000">
+        <button class="btn" id="costCalcBtn">คำนวณ</button>
+      </div>
+      <div id="costResult" class="result">ป้อนจำนวนระเบียนแล้วกดคำนวณ</div>
+    </div>
+
+    <h2 id="s4">1.4 Security Mindset และหลักคิดด้านความปลอดภัย</h2>
+    <h3 id="s4-1">1.4.1 Attack vs Defense Thinking</h3>
+    <p>Security Mindset คือวิธีคิดที่คำนึงถึงความปลอดภัย โดยเฉพาะการคิดในมุมของผู้โจมตี (Adversarial Thinking)</p>
+    <p><strong>Defense Thinking:</strong> มุ่งเน้นการป้องกัน ถามว่า "ฉันจะทำให้ระบบนี้ปลอดภัยได้อย่างไร"</p>
+    <p><strong>Attack Thinking:</strong> มุ่งเน้นหาจุดอ่อน ถามว่า "ฉันจะโจมตีระบบนี้ด้วยวิธีใดได้บ้าง"</p>
+    <div class="example-box">
+      <div class="example-label">ตัวอย่าง Security Mindset</div>
+      <ul>
+        <li>เมื่อรับไฟล์อัปโหลด คิดว่า "จะเกิดอะไรขึ้นถ้าส่งไฟล์ 100 GB หรือ .exe แทน .jpg"</li>
+        <li>เมื่อออกแบบ Authentication คิดว่า "จะเกิดอะไรขึ้นถ้า login 1000 ครั้งต่อวินาที"</li>
+        <li>เมื่อใช้ lib ภายนอก คิดว่า "จะเกิดอะไรขึ้นถ้า lib นี้มีช่องโหว่"</li>
+      </ul>
+    </div>
+
+    <h3 id="s4-2">1.4.2 หลักการ Assume Breach และ Zero Trust</h3>
+    <p><strong>Assume Breach:</strong> สมมติว่าถูกเจาะแล้ว ออกแบบให้จำกัดความเสียหาย ใช้ Network Segmentation, Continuous Monitoring, Encryption, Least Privilege, Incident Response Plan</p>
+    <p><strong>Zero Trust:</strong> "อย่าไว้ใจใคร ตรวจสอบเสมอ" 3 หลักการ: 1. Verify Explicitly, 2. Least Privilege Access, 3. Assume Breach ประกอบด้วย Micro-segmentation, MFA, Continuous Monitoring, Automation</p>
+
+    <div class="interactive" id="play-zerotrust">
+      <h4>Interactive: Zero Trust Principles Checklist</h4>
+      <p>ทำเครื่องหมายมาตรการ Zero Trust ที่มีในองค์กร</p>
+      <div class="checklist" id="ztChecks">
+        <label><input type="checkbox" value="verify"> Verify Explicitly — ตรวจสอบตัวตนและสิทธิ์ทุกครั้ง</label>
+        <label><input type="checkbox" value="least"> Least Privilege Access — ให้สิทธิ์น้อยที่สุด</label>
+        <label><input type="checkbox" value="assume"> Assume Breach — สมมติว่าถูกเจาะแล้ว</label>
+        <label><input type="checkbox" value="mfa"> Multi-factor Authentication (MFA)</label>
+        <label><input type="checkbox" value="micro"> Micro-segmentation — แบ่งเครือข่ายย่อย</label>
+        <label><input type="checkbox" value="monitor"> Continuous Monitoring</label>
+        <label><input type="checkbox" value="encrypt"> Encryption — At Rest และ In Transit</label>
+        <label><input type="checkbox" value="auto"> Automation — ตอบสนองอัตโนมัติ</label>
+      </div>
+      <div class="meter"><div class="meter-fill" id="ztMeter"></div></div>
+      <div id="ztResult" class="result">เลือกมาตรการ Zero Trust เพื่อดูคะแนน</div>
+    </div>
+
+    <h3 id="s4-3">1.4.3 การตัดสินใจภายใต้ Trade-offs</h3>
+    <p>ไม่มีระบบใดปลอดภัย 100% ต้องประนีประนอมระหว่าง:</p>
+    <ul>
+      <li><strong>Security vs Usability:</strong> MFA ปลอดภัยขึ้นแต่ใช้งานยากขึ้น</li>
+      <li><strong>Security vs Cost:</strong> งบประมาณจำกัด ROI วัดยาก</li>
+      <li><strong>Security vs Performance:</strong> การเข้ารหัสและ logging ทำให้ระบบช้าลง</li>
+    </ul>
+    <p>ต้องใช้ Risk Management: ประเมิน Asset Value, Likelihood, Impact, เลือก Risk Treatment</p>
+
+    <h3 id="s4-4">1.4.4 หลักการ Defense in Depth</h3>
+    <p>"การป้องกันแบบหลายชั้น" — ไม่พึ่งพามาตรการเดียว แต่สร้างกำแพงหลายชั้น</p>
+
+    <div class="interactive" id="play-did">
+      <h4>Interactive: Defense in Depth Layers</h4>
+      <p>คลิกแต่ละชั้นเพื่อดูรายละเอียด</p>
+      <div style="display:flex;flex-direction:column-reverse;gap:6px;margin:.75rem 0">
+        <div class="did-layer" data-layer="1" style="background:#dbeafe;color:var(--navy);border-radius:var(--radius-sm);padding:.65rem 1rem;cursor:pointer;font-weight:600;font-size:.85rem;text-align:center;transition:all .2s;border:1px solid var(--border)">ชั้นที่ 1 — Security Requirements</div>
+        <div class="did-detail" id="did-detail-1" style="display:none;padding:.75rem 1rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:.85rem"><strong>Security Requirements:</strong> กำหนดตั้งแต่ตอนออกแบบ เช่น ต้องมี MFA, เข้ารหัสข้อมูลผู้ใช้, Audit Log</div>
+        <div class="did-layer" data-layer="2" style="background:#93c5fd;color:var(--navy);border-radius:var(--radius-sm);padding:.65rem 1rem;cursor:pointer;font-weight:600;font-size:.85rem;text-align:center;transition:all .2s;border:1px solid var(--border)">ชั้นที่ 2 — Secure Coding</div>
+        <div class="did-detail" id="did-detail-2" style="display:none;padding:.75rem 1rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:.85rem"><strong>Secure Coding:</strong> Parameterized Query, Input Validation, Output Encoding, หลีกเลี่ยง eval()</div>
+        <div class="did-layer" data-layer="3" style="background:#60a5fa;color:#fff;border-radius:var(--radius-sm);padding:.65rem 1rem;cursor:pointer;font-weight:600;font-size:.85rem;text-align:center;transition:all .2s;border:1px solid var(--border)">ชั้นที่ 3 — SAST (Static Testing)</div>
+        <div class="did-detail" id="did-detail-3" style="display:none;padding:.75rem 1rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:.85rem"><strong>SAST:</strong> วิเคราะห์โค้ดต้นฉบับก่อนคอมไพลด้วย SonarQube, Semgrep, CodeQL</div>
+        <div class="did-layer" data-layer="4" style="background:#3b82f6;color:#fff;border-radius:var(--radius-sm);padding:.65rem 1rem;cursor:pointer;font-weight:600;font-size:.85rem;text-align:center;transition:all .2s;border:1px solid var(--border)">ชั้นที่ 4 — Dependency Scanning (SCA)</div>
+        <div class="did-detail" id="did-detail-4" style="display:none;padding:.75rem 1rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:.85rem"><strong>SCA:</strong> สแกน Third-party Components ด้วย Trivy, Snyk, OWASP Dependency-Check</div>
+        <div class="did-layer" data-layer="5" style="background:#2563eb;color:#fff;border-radius:var(--radius-sm);padding:.65rem 1rem;cursor:pointer;font-weight:600;font-size:.85rem;text-align:center;transition:all .2s;border:1px solid var(--border)">ชั้นที่ 5 — WAF</div>
+        <div class="did-detail" id="did-detail-5" style="display:none;padding:.75rem 1rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:.85rem"><strong>WAF:</strong> กรอง request อันตรายด้วย ModSecurity, AWS WAF, Cloudflare WAF</div>
+        <div class="did-layer" data-layer="6" style="background:#1a56db;color:#fff;border-radius:var(--radius-sm);padding:.65rem 1rem;cursor:pointer;font-weight:600;font-size:.85rem;text-align:center;transition:all .2s;border:1px solid var(--border)">ชั้นที่ 6 — DAST (Dynamic Testing)</div>
+        <div class="did-detail" id="did-detail-6" style="display:none;padding:.75rem 1rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:.85rem"><strong>DAST:</strong> ทดสอบขณะทำงานจริงด้วย OWASP ZAP, Burp Suite</div>
+        <div class="did-layer" data-layer="7" style="background:#334155;color:#fff;border-radius:var(--radius-sm);padding:.65rem 1rem;cursor:pointer;font-weight:600;font-size:.85rem;text-align:center;transition:all .2s;border:1px solid var(--border)">ชั้นที่ 7 — Security Monitoring</div>
+        <div class="did-detail" id="did-detail-7" style="display:none;padding:.75rem 1rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:.85rem"><strong>Security Monitoring:</strong> SIEM, IDS/IPS ตรวจจับพฤติกรรมผิดปกติ</div>
+        <div class="did-layer" data-layer="8" style="background:#1e293b;color:#fff;border-radius:var(--radius-sm);padding:.65rem 1rem;cursor:pointer;font-weight:600;font-size:.85rem;text-align:center;transition:all .2s;border:1px solid var(--border)">ชั้นที่ 8 — Incident Response</div>
+        <div class="did-detail" id="did-detail-8" style="display:none;padding:.75rem 1rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:.85rem"><strong>Incident Response:</strong> แผนและทีมรับมือเหตุการณ์, Disaster Recovery, Forensics</div>
+      </div>
+    </div>
+
+    <div class="info-box remember">
+      <span class="icon">📌</span>
+      <div>
+        <strong>ข้อควรจำ:</strong>
+        <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+          <li>ไม่มีมาตรการใดป้องกันทุกชนิดได้</li>
+          <li>Defense in Depth คือการสร้างกำแพงหลายชั้น</li>
+          <li>ยิ่งชั้นมาก ยิ่งปลอดภัย แต่ก็ยิ่งใช้ทรัพยากรมาก</li>
+        </ul>
+      </div>
+    </div>
+    <div class="info-box question">
+      <span class="icon">💬</span>
+      <div><strong>คำถาม:</strong><p style="margin:.25rem 0 0">ในฐานะนักพัฒนา ท่านคิดว่าชั้นใดสำคัญที่สุด เพราะเหตุใด</p></div>
+    </div>
+
+    <h2 id="s5">1.5 ประเภทของภัยคุกคามและผู้โจมตี</h2>
+    
+    <div class="interactive" id="play-hackers">
+      <h4>Interactive: ประเภทผู้โจมตี</h4>
+      <div class="tabs" data-tabs="hackers">
+        <button class="tab-btn active" data-tab="blackhat">Black Hat</button>
+        <button class="tab-btn" data-tab="whitehat">White Hat</button>
+        <button class="tab-btn" data-tab="greyhat">Grey Hat</button>
+        <button class="tab-btn" data-tab="skiddie">Script Kiddie</button>
+        <button class="tab-btn" data-tab="apt">APT</button>
+      </div>
+      <div id="blackhat" class="tab-panel active">
+        <p><strong>Black Hat Hacker (หมวกดำ)</strong> — บุกรกระบบโดยไม่ได้รับอนุญาตเพื่อผลประโยชน์ส่วนตัว ผิดกฎหมายอาญา ตัวอย่าง: Kevin Mitnick, LockBit, Clop</p>
+      </div>
+      <div id="whitehat" class="tab-panel">
+        <p><strong>White Hat Hacker (หมวกขาว)</strong> — ได้รับอนุญาตให้ทดสอบระบบ ถูกต้องตามกฎหมาย รายงานช่องโหว่ ตัวอย่าง: Penetration Tester, Bug Bounty Hunter</p>
+      </div>
+      <div id="greyhat" class="tab-panel">
+        <p><strong>Grey Hat Hacker (หมวกเทา)</strong> — อยู่กลางระหว่างดำและขาว เจาะโดยไม่ได้รับอนุญาตแต่อาจไม่มีเจตนาร้าย การกระทำอาจผิดกฎหมายแม้มีเจตนาดี</p>
+      </div>
+      <div id="skiddie" class="tab-panel">
+        <p><strong>Script Kiddie (Skiddie)</strong> — ใช้เครื่องมือสำเร็จรูปโดยไม่เข้าใจลึกซึ้ง มักโจมตีแบบสุ่ม มีทักษะจำกัดแต่เครื่องมือมีประสิทธิภาพสูง</p>
+      </div>
+      <div id="apt" class="tab-panel">
+        <p><strong>APT (Advanced Persistent Threat)</strong> — มีความสามารถสูง สนับสนุนโดยรัฐ เป้าหมายเฉพาะเจาะจง ต่อเนื่องยาวนาน มีทรัพยากรมหาศาล ใช้ Zero-day เป็นอาวุธหลัก</p>
+        <p><strong>กลุ่ม APT:</strong> APT29 (Cozy Bear/รัสเซีย), APT41 (Winnti/จีน), Lazarus Group (เกาหลีเหนือ), APT28 (Fancy Bear/รัสเซีย)</p>
+        <p><strong>วิธีการ:</strong> Reconnaissance → Initial Compromise → Establish Foothold → Lateral Movement → Data Exfiltration</p>
+      </div>
+    </div>
+
+    <h3 id="s5-4">1.5.4 Insider Threat (ภัยคุกคามจากภายใน)</h3>
+    <p>เกิดจากบุคคลภายในองค์กร: พนักงาน, อดีตพนักงาน, ผู้รับเหมา, คู่ค้า</p>
+    <ul>
+      <li><strong>Malicious Insider (เจตนาร้าย) 23%</strong> — พนักงานไม่พอใจ, รับสินบน, อดีตพนักงาน</li>
+      <li><strong>Accidental Insider (ไม่ได้ตั้งใจ) 63%</strong> — คลิก Phishing, ส่งข้อมูลผิด, ตั้งค่าผิด</li>
+      <li><strong>Compromised Insider (ถูกประนีประนอม) 14%</strong> — บัญชีถูกขโมย, อุปกรณ์ถูกมัลแวร์</li>
+    </ul>
+    <p>สถิติ Ponemon Institute: ต้นทุนเฉลี่ยต่อเหตุการณ์ 16.2 ล้านเหรียญสหรัฐ (2023)</p>
+    <p><strong>การป้องกัน:</strong> Least Privilege, UBA, อบรมพนักงาน, Onboarding/Offboarding รัดกุม</p>
+    <div class="info-box question">
+      <span class="icon">💬</span>
+      <div><strong>คำถาม:</strong><p style="margin:.25rem 0 0">องค์กรควรมีมาตรการตรวจสอบพนักงานมากน้อยแค่ไหนโดยไม่ละเมิดสิทธิส่วนบุคคล</p></div>
+    </div>
+
+    <h2 id="s6">1.6 Attack Surface (พื้นผิวการถูกโจมตี)</h2>
+    <p>Attack Surface คือพื้นที่หรือช่องทางทั้งหมดที่ผู้โจมตีใช้โจมตีระบบ</p>
+    <p><strong>Network Attack Surface:</strong> พอร์ตเปิด (SSH 22, HTTP 80, HTTPS 443, DB 3306/5432), API, บริการ</p>
+    <p><strong>Software Attack Surface:</strong> Input Points, Third-party Components, Error Messages, Config Files</p>
+    <p><strong>Human Attack Surface:</strong> พนักงาน, ผู้ดูแล, ผู้ใช้ปลายทาง</p>
+    <p><strong>Physical Attack Surface:</strong> อุปกรณ์, USB, เอกสาร</p>
+
+    <div class="interactive" id="play-portscan">
+      <h4>Interactive: Port Scanner Simulator</h4>
+      <p>เลือกพอร์ตเพื่อจำลองการค้นหาบริการที่เปิดอยู่</p>
+      <div class="control-row">
+        <select id="portSelect">
+          <option value="22">พอร์ต 22 (SSH)</option>
+          <option value="80">พอร์ต 80 (HTTP)</option>
+          <option value="443">พอร์ต 443 (HTTPS)</option>
+          <option value="3306">พอร์ต 3306 (MySQL)</option>
+          <option value="5432">พอร์ต 5432 (PostgreSQL)</option>
+          <option value="8080">พอร์ต 8080 (HTTP Proxy)</option>
+          <option value="8443">พอร์ต 8443 (HTTPS Alt)</option>
+        </select>
+        <button class="btn" id="portScanBtn">สแกน</button>
+      </div>
+      <div id="portResult" class="result">เลือกพอร์ตแล้วกดสแกน</div>
+    </div>
+
+    <p><strong>การลด Attack Surface:</strong> ปิดบริการ/พอร์ตไม่จำเป็น, Network Segmentation, Firewall, ACL, จำกัด Input, API Gateway</p>
+    <div class="info-box remember">
+      <span class="icon">📌</span>
+      <div>
+        <strong>ข้อควรจำ:</strong>
+        <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+          <li>ยิ่งซอฟต์แวร์มีฟังก์ชันมาก Attack Surface ยิ่งใหญ่</li>
+          <li>Attack Surface เพิ่มขึ้นตามความซับซ้อน</li>
+          <li>การลด Attack Surface เป็นวิธีป้องกันที่มีประสิทธิภาพ</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 id="s7">1.7 ทักษะและเครื่องมือพื้นฐาน</h2>
+    <p><strong>1. ความรู้ด้านโปรแกรมมิ่ง:</strong> Python, JavaScript, Java, C#, Go, Input Validation, Type Safety</p>
+    <p><strong>2. ความรู้ด้าน OS:</strong> Linux (CLI, Permissions), Windows (AD, Group Policy)</p>
+    <p><strong>3. ความรู้ด้านเครือข่าย:</strong> OSI Model, TCP/IP, HTTP/HTTPS, DNS, TLS, Wireshark, nmap</p>
+    <p><strong>4. ความรู้ด้าน Web:</strong> HTTP Methods, Headers, Cookies, Session, REST API, CORS</p>
+    <p><strong>เครื่องมือ:</strong> SAST (SonarQube, Semgrep, CodeQL), DAST (OWASP ZAP, Burp Suite), SCA (Trivy, Snyk), Network (Nmap, Wireshark), Exploitation (Metasploit, SQLMap), Crypto (OpenSSL, Hashcat), Cloud (ScoutSuite, Prowler), OSINT (Shodan, Recon-ng)</p>
+
+    <h2 id="s8">1.8 จริยธรรมและกฎหมายที่เกี่ยวข้อง</h2>
+    <h3 id="s8-1">1.8.1 จริยธรรม</h3>
+    <ol>
+      <li>ได้รับอนุญาตก่อนทดสอบ</li>
+      <li>รายงานช่องโหว่อย่างรับผิดชอบ (Responsible Disclosure) — แจ้งก่อน 90-120 วัน</li>
+      <li>ไม่สร้างความเสียหายเกินจำเป็น</li>
+      <li>รักษาความลับ</li>
+      <li>ไม่นำวิชาความรู้ไปใช้ในทางที่ผิด</li>
+    </ol>
+
+    <div class="interactive" id="play-ethics">
+      <h4>Interactive: Ethics Scenario Quiz</h4>
+      <p>คุณพบช่องโหว่สำคัญในระบบของบริษัทโดยไม่ได้ตั้งใจ ควรทำอย่างไร</p>
+      <button class="quiz-option" data-quiz="ethics1" data-correct="false">ทดสอบต่อเพื่อดูว่าขโมยข้อมูลได้มากแค่ไหน</button>
+      <button class="quiz-option" data-quiz="ethics1" data-correct="true">หยุด เก็บหลักฐานเท่าที่จำเป็น รายงานผ่านช่องทางที่เหมาะสม</button>
+      <button class="quiz-option" data-quiz="ethics1" data-correct="false">เผยแพร่รายละเอียดบน Twitter ทันที</button>
+      <div id="ethics1Result" class="result">เลือกคำตอบ</div>
+    </div>
+
+    <div class="interactive">
+      <h4>Quick Check: ข้อใดถูกต้องตาม พรบ.คอมพิวเตอร์</h4>
+      <button class="quiz-option" data-quiz="thailaw" data-correct="false">ใช้ Burp Suite ทดสอบระบบมหาวิทยาลัยโดยไม่ต้องขออนุญาต</button>
+      <button class="quiz-option" data-quiz="thailaw" data-correct="true">ทดสอบเฉพาะใน Sandbox ที่แยกขาดและได้รับอนุญาตเป็นลายลักษณ์อักษร</button>
+      <button class="quiz-option" data-quiz="thailaw" data-correct="false">สแกนพอร์ตเว็บไซต์ราชการโดยไม่ต้องขออนุญาต</button>
+      <div id="thailawResult" class="result">เลือกคำตอบ</div>
+    </div>
+
+    <h3 id="s8-2">1.8.2 พรบ.คอมพิวเตอร์ พ.ศ. 2550 และฉบับที่ 2 พ.ศ. 2560</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>มาตรา</th><th>สาระสำคัญ</th><th>โทษ</th></tr></thead>
+        <tbody>
+          <tr><td>มาตรา 5</td><td>เข้าถึงระบบคอมพิวเตอร์ผู้อื่นโดยมิชอบ</td><td>จำคุกไม่เกิน 6 เดือน หรือปรับไม่เกิน 1 หมื่นบาท</td></tr>
+          <tr><td>มาตรา 6</td><td>เปิดเผยมาตรการป้องกัน</td><td>จำคุกไม่เกิน 1 ปี หรือปรับไม่เกิน 2 หมื่นบาท</td></tr>
+          <tr><td>มาตรา 7</td><td>เข้าถึงข้อมูลคอมพิวเตอร์โดยมิชอบ</td><td>จำคุกไม่เกิน 2 ปี หรือปรับไม่เกิน 4 หมื่นบาท</td></tr>
+          <tr><td>มาตรา 8</td><td>ดักรับข้อมูลคอมพิวเตอร์</td><td>จำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 6 หมื่นบาท</td></tr>
+          <tr><td>มาตรา 9</td><td>ทำให้เสียหาย/เปลี่ยนแปลงข้อมูล</td><td>จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 1 แสนบาท</td></tr>
+          <tr><td>มาตรา 10</td><td>ก่อให้เกิดการขัดข้องของระบบ (DDoS)</td><td>จำคุกไม่เกิน 5 ปี หรือปรับไม่เกิน 1 แสนบาท</td></tr>
+          <tr><td>มาตรา 11</td><td>ส่งข้อมูลเท็จ/ก่อความเดือดร้อน</td><td>-</td></tr>
+          <tr><td>มาตรา 12/1</td><td>ทำให้เสียหายจากการบิดเบือนข้อมูล</td><td>-</td></tr>
+          <tr><td>มาตรา 14</td><td>ข้อมูลคอมพิวเตอร์เท็จและบิดโกง</td><td>-</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="info-box warning">
+      <span class="icon">⚠️</span>
+      <div>
+        <strong>ผลกระทบ:</strong>
+        <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+          <li>ฝึกปฏิบัติในสภาพแวดล้อมที่แยกขาดจากระบบจริง</li>
+          <li>ต้องได้รับอนุญาตเป็นลายลักษณ์อักษรเท่านั้น</li>
+          <li>การใช้ Nmap, Metasploit, SQLMap ต่อระบบไม่ได้รับอนุญาตอาจผิด ม.5,7,8</li>
+          <li>แม้เจตนาเพื่อการศึกษาก็อาจไม่ได้รับการยกเว้น</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 id="s9">1.9 เส้นทางสายอาชีพ</h2>
+    <p><strong>ตำแหน่ง:</strong> Security Software Engineer, AppSec Engineer, Penetration Tester, Security Architect, DevSecOps Engineer, Secure Code Reviewer, Bug Bounty Hunter, Security Researcher</p>
+    <p><strong>เงินเดือน (ไทย 2568):</strong> Junior 30-60K, Mid 60-120K, Senior 120-200K+, Manager 150-300K+</p>
+    <p><strong>Certification:</strong> CSSLP, OSCP, CISSP, GWAPT, GSSP</p>
+
+    <h2 id="case1">กรณีศึกษา 1: Equifax Data Breach (2017)</h2>
+    <div class="case-card">
+      <div class="meta"><span class="year">2017</span><span class="type">Known RCE ไม่ได้แพตช</span><span>147 ล้านคน</span><span>>1.4 พันล้าน USD</span></div>
+      <p><strong>สาเหตุ:</strong> CVE-2017-5638 Apache Struts 2 RCE — Apache ออกแพตช 6 มี.ค. 2017 แต่ Equifax ไม่ได้อัปเดต</p>
+      <p><strong>ลำดับ:</strong> 13 พ.ค. โจมตี → Web Shell → Lateral Movement → 29 ก.ค. ตรวจพบ → ก.ย. แจ้งสาธารณะ</p>
+      <p><strong>ข้อมูล:</strong> ชื่อ, SSN, วันเกิด, ที่อยู่, ใบขับขี่, บัตรเครดิต 209,000 ใบ</p>
+      <p><strong>ผลกระทบ:</strong> >1.4 พันล้าน USD, CEO ลาออก, ปรับ FTC 575 ล้าน USD</p>
+      <div class="lessons">
+        <h5>บทเรียน</h5>
+        <ol><li>Patch Management</li><li>Asset Inventory</li><li>Network Segmentation</li><li>Monitoring (76 วันในระบบ)</li><li>Secure SDLC</li></ol>
+      </div>
+    </div>
+
+    <h2 id="case2">กรณีศึกษา 2: SolarWinds Supply Chain Attack (2020)</h2>
+    <div class="case-card">
+      <div class="meta"><span class="year">2020</span><span class="type">Supply Chain</span><span>18,000 องค์กร</span><span>>3.5 พันล้าน USD</span></div>
+      <p><strong>สาเหตุ:</strong> APT29/SVR แทรกโค้ดใน SolarWinds Orion Build → SUNBURST DLL ลายเซ็นถูกต้อง → กระจายผ่าน Hotfix → C2 ผ่าน DGA → Cobalt Strike</p>
+      <p><strong>ผลกระทบ:</strong> 18,000 องค์กร, 100+ ถูกโจมตีต่อ (รัฐบาล, Microsoft, FireEye), SolarWinds เสียหาย >3.5 พันล้าน USD</p>
+      <div class="lessons">
+        <h5>บทเรียน</h5>
+        <ol><li>Build Pipeline Security</li><li>Zero Trust</li><li>SBOM</li><li>Least Privilege</li><li>Behavioral Monitoring</li></ol>
+      </div>
+    </div>
+
+    <h2 id="case3">กรณีศึกษา 3: Log4Shell (CVE-2021-44228) - ธ.ค. 2564</h2>
+    <div class="case-card">
+      <div class="meta"><span class="year">2021</span><span class="type">Zero-day RCE</span><span>นับแสนระบบ</span><span>CVSS 10.0</span></div>
+      <p><strong>สาเหตุ:</strong> JNDI Lookupใน Log4j 2 อนุญาต "${}" โดยไม่ตรวจสอบ ส่ง ${jndi:ldap://...} → โหลด class อันตราย</p>
+      <p><strong>ผลกระทบ:</strong> Minecraft, Apple iCloud, AWS, Steam, VMware, Cisco, IBM, Oracle — CISA สั่งแก้ 15 วัน</p>
+      <div class="lessons">
+        <h5>บทเรียน</h5>
+        <ol><li>Third-party Dependency ผลกระทบกว้าง</li><li>SBOM</li><li>Input Validation + Egress Filtering</li><li>SCA Tools</li><li>Zero Trust</li></ol>
+      </div>
+    </div>
+
+    <h2 id="case4">กรณีศึกษา 4: MOVEit Transfer Attack (2023)</h2>
+    <div class="case-card">
+      <div class="meta"><span class="year">2023</span><span class="type">Zero-day SQLi</span><span>2,000+ องค์กร</span><span>93M+ คน</span></div>
+      <p><strong>สาเหตุ:</strong> CVE-2023-34362 SQLi Zero-day โดย Clop → Web Shell LEMURLOOT (C#, human2.aspx)</p>
+      <p><strong>ผลกระทบ:</strong> BBC, British Airways, Shell, US Federal — ค่าไถ่ตั้งแต่ 1 ล้าน USD</p>
+      <div class="lessons">
+        <h5>บทเรียน</h5>
+        <ol><li>Zero-day จัดการยาก</li><li>Network Segmentation</li><li>Encryption at Rest</li><li>จำกัด Egress</li><li>Asset Inventory</li></ol>
+      </div>
+    </div>
+
+    <h2 id="case-compare">ตารางเปรียบเทียบกรณีศึกษา</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>มิติ</th><th>Equifax</th><th>SolarWinds</th><th>Log4Shell</th><th>MOVEit</th></tr></thead>
+        <tbody>
+          <tr><td>ปี</td><td>2017</td><td>2020</td><td>2021</td><td>2023</td></tr>
+          <tr><td>ประเภท</td><td>Known RCE ไม่ได้แพตช</td><td>Supply Chain</td><td>Zero-day RCE</td><td>Zero-day SQLi</td></tr>
+          <tr><td>จุดอ่อน</td><td>ขาด Patch Mgmt</td><td>Build Security</td><td>Design Flaw</td><td>Input Validation</td></tr>
+          <tr><td>ผลกระทบ</td><td>147 ล้านคน</td><td>18,000 องค์กร</td><td>แสนระบบ</td><td>2,000+ องค์กร</td></tr>
+          <tr><td>ต้นทุน</td><td>>1.4 พันล้าน USD</td><td>>3.5 พันล้าน USD</td><td>ยากประเมิน</td><td>หลายพันล้าน USD</td></tr>
+          <tr><td>CVSS</td><td>10.0</td><td>-</td><td>10.0</td><td>9.8</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="summary">สรุปท้ายบท</h2>
+    <div class="card" style="background:linear-gradient(135deg,var(--navy),#0f172a);color:#fff;border:none">
+      <ol style="color:#cbd5e1;padding-left:1.25rem">
+        <li style="margin-bottom:.5rem">Software Security ครอบคลุมตั้งแต่การออกแบบถึงบำรุงรักษา</li>
+        <li style="margin-bottom:.5rem">ช่องโหว่เกิดจากความซับซ้อน ข้อจำกัด และความผิดพลาด</li>
+        <li style="margin-bottom:.5rem">CVE, CWE, NVD, CVSS เป็นมาตรฐานสากล</li>
+        <li style="margin-bottom:.5rem">Security Mindset — คิดเหมือนผู้โจมตี</li>
+        <li style="margin-bottom:.5rem">Defense in Depth, Zero Trust, Assume Breach, Least Privilege</li>
+        <li style="margin-bottom:.5rem">ผู้โจมตีมีหลายประเภทตั้งแต่ Script Kiddie ถึง APT</li>
+        <li style="margin-bottom:.5rem">Attack Surface เพิ่มขึ้นตามความซับซ้อน</li>
+        <li style="margin-bottom:.5rem">การทดสอบต้องอยู่ภายใต้กฎหมายและจริยธรรม</li>
+      </ol>
+      <div style="margin-top:1rem;padding:1rem;background:rgba(255,255,255,0.1);border-radius:8px">
+        <p style="font-weight:600">แนวคิดที่ต้องนำติดตัว:</p>
+        <ul style="color:#93c5fd;padding-left:1.25rem">
+          <li>"ไม่มีซอฟต์แวร์ใดปลอดภัย 100% แต่เราบริหารความเสี่ยงได้"</li>
+          <li>"คิดเหมือนผู้โจมตี แต่ทำงานเหมือนผู้ป้องกัน"</li>
+          <li>"ความปลอดภัยไม่ใช่ฟังก์ชันเพิ่มเติม แต่เป็นคุณสมบัติที่ต้องออกแบบตั้งแต่แรก"</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 id="lab1">Lab 1.1: วิเคราะห์กรณีศึกษา (50 นาที)</h2>
+    <div class="card">
+      <p><strong>วัตถุประสงค์:</strong> วิเคราะห์สาเหตุ เชื่อมโยง CVE/CWE/CVSS กับเหตุการณ์จริง</p>
+      <p><strong>ขั้นตอน:</strong> แบ่งกลุ่ม 3-4 คน เลือก 1 กรณีศึกษา ค้นคว้าจาก NVD, CISA, Vendor Advisory วิเคราะห์ตามกรอบ (CVE, CWE, CVSS, วิธีการ, ผลกระทบ, บทเรียน) นำเสนอหน้าชั้น</p>
+    </div>
+
+    <h2 id="lab2">Lab 1.2: สำรวจ OWASP WebGoat (40 นาที)</h2>
+    <div class="card">
+      <div class="info-box warning">
+        <span class="icon">⚠️</span>
+        <div><strong>คำเตือน!</strong> WebGoat มีช่องโหว่โดยตั้งใจ ห้ามรันบนระบบที่เชื่อมต่อเครือข่ายจริง</div>
+      </div>
+      <pre><code>docker pull webgoat/webgoat-12.0
+docker run -d -p 8080:8080 -p 9090:9090 --name webgoat webgoat/webgoat-12.0</code></pre>
+      <p>เปิด <a href="http://localhost:8080/WebGoat">http://localhost:8080/WebGoat</a> สำรวจหมวดหมู่ เชื่อมโยง OWASP Top 10</p>
+      <pre><code>docker stop webgoat && docker rm webgoat</code></pre>
+    </div>
+
+    <h2 id="questions">คำถามท้ายบท</h2>
+    <div class="card">
+      <h4>คำถามแบบอัตนัย</h4>
+      <ol>
+        <li>อธิบายความแตกต่างระหว่าง Software Security, AppSec, Network Security และ InfoSec</li>
+        <li>SolarWinds เกิดขึ้นได้อย่างไร แนวทางใดป้องกันได้ดีที่สุด</li>
+        <li>Security Mindset คืออะไร พร้อมตัวอย่าง</li>
+        <li>ความแตกต่าง CVE, CWE, NVD, CVSS พร้อมตัวอย่าง</li>
+        <li>Trade-off Security vs Usability 3 ตัวอย่าง</li>
+        <li>Defense in Depth แต่ละชั้นพร้อมตัวอย่าง</li>
+        <li>เปรียบเทียบ Script Kiddie, Black Hat, White Hat, APT</li>
+        <li>Attack Surface และตัวอย่างเมื่อย้ายไป Cloud</li>
+        <li>ผลของ พรบ.คอมพิวเตอร์ต่อการเรียน</li>
+        <li>แผนพัฒนาตนเอง 1 ปี 3 ปี 5 ปี</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h4>คำถามแบบเลือกตอบ</h4>
+      <div class="interactive">
+        <p><strong>11.</strong> ความหมายของ CVE</p>
+        <button class="quiz-option" data-quiz="mcq11" data-correct="false">ระบบให้คะแนนความรุนแรง</button>
+        <button class="quiz-option" data-quiz="mcq11" data-correct="true">ระบบบัญชีรายชื่อช่องโหว่สากล</button>
+        <button class="quiz-option" data-quiz="mcq11" data-correct="false">คลังข้อมูลแห่งชาติสหรัฐฯ</button>
+        <button class="quiz-option" data-quiz="mcq11" data-correct="false">ระบบจำแนกจุดอ่อน</button>
+        <div id="mcq11Result" class="result">เลือกคำตอบ</div>
+      </div>
+      <div class="interactive">
+        <p><strong>12.</strong> CVSS 9.5 อยู่ระดับใด</p>
+        <button class="quiz-option" data-quiz="mcq12" data-correct="false">Low</button>
+        <button class="quiz-option" data-quiz="mcq12" data-correct="false">Medium</button>
+        <button class="quiz-option" data-quiz="mcq12" data-correct="false">High</button>
+        <button class="quiz-option" data-quiz="mcq12" data-correct="true">Critical</button>
+        <div id="mcq12Result" class="result">เลือกคำตอบ</div>
+      </div>
+      <div class="interactive">
+        <p><strong>13.</strong> Equifax ละเลยอะไร</p>
+        <button class="quiz-option" data-quiz="mcq13" data-correct="false">Security Mindset</button>
+        <button class="quiz-option" data-quiz="mcq13" data-correct="true">Patch Management</button>
+        <button class="quiz-option" data-quiz="mcq13" data-correct="false">Real-time Monitoring</button>
+        <button class="quiz-option" data-quiz="mcq13" data-correct="false">Zero Trust</button>
+        <div id="mcq13Result" class="result">เลือกคำตอบ</div>
+      </div>
+      <div class="interactive">
+        <p><strong>14.</strong> Insider Threat ที่พบบ่อยที่สุด</p>
+        <button class="quiz-option" data-quiz="mcq14" data-correct="false">Malicious</button>
+        <button class="quiz-option" data-quiz="mcq14" data-correct="true">Accidental (Negligence)</button>
+        <button class="quiz-option" data-quiz="mcq14" data-correct="false">Compromised</button>
+        <button class="quiz-option" data-quiz="mcq14" data-correct="false">Professional</button>
+        <div id="mcq14Result" class="result">เลือกคำตอบ</div>
+      </div>
+      <div class="interactive">
+        <p><strong>15.</strong> ข้อใดไม่ใช่ Zero Trust</p>
+        <button class="quiz-option" data-quiz="mcq15" data-correct="false">Verify Explicitly</button>
+        <button class="quiz-option" data-quiz="mcq15" data-correct="false">Assume Breach</button>
+        <button class="quiz-option" data-quiz="mcq15" data-correct="true">Trust but Verify</button>
+        <button class="quiz-option" data-quiz="mcq15" data-correct="false">Least Privilege</button>
+        <div id="mcq15Result" class="result">เลือกคำตอบ</div>
+      </div>
+    </div>
+
+    <h2 id="refs">เอกสารอ้างอิง</h2>
+    <div class="card">
+      <ol>
+        <li>OWASP Top 10 2021: <a href="https://owasp.org/Top10/" target="_blank">https://owasp.org/Top10/</a></li>
+        <li>MITRE CVE: <a href="https://cve.mitre.org/" target="_blank">https://cve.mitre.org/</a></li>
+        <li>MITRE CWE: <a href="https://cwe.mitre.org/" target="_blank">https://cwe.mitre.org/</a></li>
+        <li>NIST NVD: <a href="https://nvd.nist.gov/" target="_blank">https://nvd.nist.gov/</a></li>
+        <li>FIRST CVSS v3.1: <a href="https://www.first.org/cvss/" target="_blank">https://www.first.org/cvss/</a></li>
+        <li>IBM Cost of Data Breach 2025: <a href="https://www.ibm.com/reports/data-breach" target="_blank">https://www.ibm.com/reports/data-breach</a></li>
+        <li>พรบ.คอมพิวเตอร์ พ.ศ. 2550 และฉบับที่ 2 พ.ศ. 2560</li>
+      </ol>
+    </div>
+
+    <div style="text-align:center;padding:2rem 0;color:var(--text-muted);font-size:.85rem">
+      <p>— จบบทที่ 1 —</p>
+      <p>ความมั่นคงปลอดภัยของซอฟต์แวร์ (Software Security)</p>
+    </div>
+
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTopBtn" aria-label="กลับด้านบน">↑</button>
+
+<script>
+(function(){
+  var sidebar=document.getElementById('sidebar'),toggle=document.getElementById('sidebarToggle'),overlay=document.getElementById('sidebarOverlay');
+  function openSidebar(){sidebar.classList.add('open');overlay.classList.add('show')}
+  function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('show')}
+  if(toggle)toggle.addEventListener('click',function(){sidebar.classList.contains('open')?closeSidebar():openSidebar()});
+  if(overlay)overlay.addEventListener('click',closeSidebar);
+  document.querySelectorAll('.sidebar-nav a').forEach(function(l){l.addEventListener('click',function(){if(window.innerWidth<=1024)closeSidebar()})});
+  var scrollBtn=document.getElementById('scrollTopBtn');
+  window.addEventListener('scroll',function(){if(window.scrollY>300)scrollBtn.classList.add('visible');else scrollBtn.classList.remove('visible')});
+  if(scrollBtn)scrollBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+  var sections=[],anchors=document.querySelectorAll('.sidebar-nav a');
+  anchors.forEach(function(a){var h=a.getAttribute('href');if(h&&h.startsWith('#')){var t=document.getElementById(h.substring(1));if(t)sections.push({el:t,link:a})}});
+  function updateActive(){var p=window.scrollY+120,c=null;sections.forEach(function(s){if(s.el.offsetTop<=p)c=s});anchors.forEach(function(a){a.classList.remove('active')});if(c)c.link.classList.add('active')}
+  window.addEventListener('scroll',updateActive);updateActive();
+
+  function setResult(id,msg,cls){var el=document.getElementById(id);if(!el)return;el.className='result '+(cls||'');el.textContent=msg}
+
+  // >>> [Personalization Feature]: Persistent Tabs
+  document.querySelectorAll('.tabs').forEach(function(tabsGroup){
+    var groupId = tabsGroup.dataset.tabs;
+    // Load saved tab
+    if(groupId) {
+      var savedTab = localStorage.getItem('activeTab_' + groupId);
+      if(savedTab) {
+        var targetBtn = tabsGroup.querySelector('[data-tab="'+savedTab+'"]');
+        if(targetBtn) {
+           tabsGroup.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+           targetBtn.classList.add('active');
+           tabsGroup.parentElement.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+           var d = document.getElementById(savedTab);
+           if(d) d.classList.add('active');
+        }
+      }
+    }
+    
+    tabsGroup.querySelectorAll('.tab-btn').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var w=btn.closest('.tabs'),t=btn.dataset.tab,p=[];
+        w.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');p.push(b.dataset.tab)});
+        btn.classList.add('active');
+        p.forEach(function(i){var d=document.getElementById(i);if(d)d.classList.toggle('active',i===t)});
+        // Save state
+        if(groupId) localStorage.setItem('activeTab_' + groupId, t);
+      })
+    });
+  });
+
+  var quizMsgs={'sqlprevent':'ถูกต้อง: Parameterized Query ป้องกัน SQL Injection ที่ต้นทาง','ethics1':'ถูกต้อง: หยุดทดสอบและรายงานตามช่องทางที่เหมาะสม','thailaw':'ถูกต้อง: การทดสอบต้องได้รับอนุญาตและทำใน Sandbox เท่านั้น','mcq11':'เฉลย: CVE คือระบบบัญชีรายชื่อช่องโหว่สากล','mcq12':'เฉลย: 9.0-10.0 = Critical','mcq13':'เฉลย: Equifax ละเลย Patch Management','mcq14':'เฉลย: 63% เกิดจาก Accidental Insider','mcq15':'เฉลย: Zero Trust คือ Never Trust Always Verify'};
+  document.querySelectorAll('.quiz-option').forEach(function(btn){btn.addEventListener('click',function(){var q=btn.dataset.quiz,ok=btn.dataset.correct==='true';document.querySelectorAll('[data-quiz="'+q+'"]').forEach(function(b){b.classList.remove('correct','wrong')});btn.classList.add(ok?'correct':'wrong');var msg=quizMsgs[q]||(ok?'ถูกต้อง':'ยังไม่ถูกต้อง');setResult(q+'Result',msg,ok?'ok':'bad')})});
+
+  var scopeBtn=document.getElementById('scopeBtn');
+  if(scopeBtn)scopeBtn.addEventListener('click',function(){var v=document.getElementById('scopeCase').value,m={'software':['Software Security','คิดตั้งแต่ design จนถึง operation'],'appsec':['Application Security','โฟกัสแอปพลิเคชันที่ทำงาน'],'network':['Network Security','โฟกัสระดับเครือข่าย'],'infosec':['Information Security','โฟกัสการคุ้มครองข้อมูล']}[v];setResult('scopeResult',m[0]+': '+m[1],'ok')});
+
+  // >>> [Professional Upgrade]: CVSS v3.1 Exact Mathematical Implementation
+  const cvssForm = document.getElementById('cvssForm');
+  if(cvssForm) {
+    // Official CVSS 3.1 Constants
+    const W = {
+      AV: { N: 0.85, A: 0.62, L: 0.55, P: 0.20 },
+      AC: { L: 0.77, H: 0.44 },
+      PR: { 
+        U: { N: 0.85, L: 0.62, H: 0.27 },
+        C: { N: 0.85, L: 0.68, H: 0.50 }
+      },
+      UI: { N: 0.85, R: 0.62 },
+      CIA: { H: 0.56, L: 0.22, N: 0 }
+    };
+
+    // Official CVSS RoundUp Macro
+    function roundUp1(d) {
+      return Math.ceil(Math.round(d * 100000) / 10000) / 10;
+    }
+
+    function calculateCVSS() {
+      // Get Values
+      const v = {
+        AV: document.querySelector('input[name="AV"]:checked').value,
+        AC: document.querySelector('input[name="AC"]:checked').value,
+        PR: document.querySelector('input[name="PR"]:checked').value,
+        UI: document.querySelector('input[name="UI"]:checked').value,
+        S:  document.querySelector('input[name="S"]:checked').value,
+        C:  document.querySelector('input[name="C"]:checked').value,
+        I:  document.querySelector('input[name="I"]:checked').value,
+        A:  document.querySelector('input[name="A"]:checked').value
+      };
+
+      // Vector String
+      const vector = `CVSS:3.1/AV:${v.AV}/AC:${v.AC}/PR:${v.PR}/UI:${v.UI}/S:${v.S}/C:${v.C}/I:${v.I}/A:${v.A}`;
+      
+      // Save state to keep values on refresh (Personalization constraint)
+      localStorage.setItem('cvssState', JSON.stringify(v));
+
+      // Calculate Impact Sub-Score (ISS)
+      const iss = 1 - ((1 - W.CIA[v.C]) * (1 - W.CIA[v.I]) * (1 - W.CIA[v.A]));
+
+      // Calculate Impact
+      let impact = 0;
+      if (v.S === 'U') {
+        impact = 6.42 * iss;
+      } else {
+        impact = 7.52 * (iss - 0.029) - 3.25 * Math.pow(iss - 0.02, 15);
+      }
+
+      // Calculate Exploitability
+      const exploitability = 8.22 * W.AV[v.AV] * W.AC[v.AC] * W.PR[v.S][v.PR] * W.UI[v.UI];
+
+      // Calculate Base Score
+      let baseScore = 0;
+      if (iss <= 0) {
+        baseScore = 0;
+      } else if (v.S === 'U') {
+        baseScore = roundUp1(Math.min((impact + exploitability), 10));
+      } else {
+        baseScore = roundUp1(Math.min((1.08 * (impact + exploitability)), 10));
+      }
+
+      // Format Output
+      let severity = "None";
+      let classToRemove = ['sev-none', 'sev-low', 'sev-medium', 'sev-high', 'sev-critical'];
+      let classToAdd = "sev-none";
+
+      if (baseScore === 0) { severity = "None"; classToAdd = "sev-none"; }
+      else if (baseScore < 4.0) { severity = "Low"; classToAdd = "sev-low"; }
+      else if (baseScore < 7.0) { severity = "Medium"; classToAdd = "sev-medium"; }
+      else if (baseScore < 9.0) { severity = "High"; classToAdd = "sev-high"; }
+      else { severity = "Critical"; classToAdd = "sev-critical"; }
+
+      // Update UI Elements
+      document.getElementById('cvssFinalScore').textContent = baseScore.toFixed(1);
+      const sevEl = document.getElementById('cvssSeverity');
+      sevEl.textContent = severity;
+      sevEl.classList.remove(...classToRemove);
+      sevEl.classList.add(classToAdd);
+      document.getElementById('cvssVectorStr').textContent = vector;
+    }
+
+    // Attach listener for real-time update
+    cvssForm.addEventListener('change', calculateCVSS);
+
+    // Load saved state (Personalization requirement)
+    try {
+      const savedState = JSON.parse(localStorage.getItem('cvssState'));
+      if(savedState) {
+        Object.keys(savedState).forEach(key => {
+          const radio = document.querySelector(`input[name="${key}"][value="${savedState[key]}"]`);
+          if(radio) radio.checked = true;
+        });
+      }
+    } catch(e){}
+
+    // Handle Reset Button
+    document.getElementById('resetCvssBtn').addEventListener('click', function(e){
+      e.preventDefault();
+      localStorage.removeItem('cvssState');
+      ['AV_N', 'AC_L', 'PR_N', 'UI_N', 'S_U', 'C_N', 'I_N', 'A_N'].forEach(id => {
+        document.getElementById(id).checked = true;
+      });
+      calculateCVSS();
+    });
+
+    // Initial calculation on page load
+    calculateCVSS();
+  }
+  // <<< End Professional Upgrade
+
+  // CVE Lookup Simulator
+  var cveBtn=document.getElementById('cveLookupBtn');
+  if(cveBtn)cveBtn.addEventListener('click',function(){
+    var input=document.getElementById('cveInput').value.trim().toUpperCase();
+    var db={'CVE-2017-5638':{desc:'Apache Struts 2 RCE (Jakarta Multipart parser)',severity:'Critical',cvss:'10.0',cwe:'CWE-20',affected:'Apache Struts 2.3.5-2.3.31, 2.5-2.5.10',published:'2017-03-07',notes:'ใช้โจมตี Equifax'},'CVE-2021-44228':{desc:'Apache Log4j 2 JNDI RCE (Log4Shell)',severity:'Critical',cvss:'10.0',cwe:'CWE-917',affected:'Log4j 2.0-2.14.1',published:'2021-12-09',notes:'กระทบนับแสนระบบทั่วโลก'},'CVE-2023-34362':{desc:'MOVEit Transfer SQL Injection',severity:'Critical',cvss:'9.8',cwe:'CWE-89',affected:'MOVEit Transfer 2021.0-2023.0',published:'2023-05-31',notes:'กลุ่ม Clop ใช้โจมตี 2000+ องค์กร'},'CVE-2023-35036':{desc:'MOVEit Transfer Second SQL Injection',severity:'High',cvss:'8.2',cwe:'CWE-89',affected:'MOVEit Transfer 2021.0-2023.0',published:'2023-06-15',notes:'แพตชเพิ่มเติมหลัง CVE-2023-34362'}};
+    var found=db[input];
+    if(found)setResult('cveResult','CVE: '+input+' | '+found.desc+' | Severity: '+found.severity+' | CVSS: '+found.cvss+' | CWE: '+found.cwe+' | Affected: '+found.affected+' | Published: '+found.published+' | '+found.notes,'ok');
+    else if(input.startsWith('CVE-'))setResult('cveResult','ไม่พบข้อมูล CVE "'+input+'" ในฐานข้อมูลจำลอง ลองใช้: CVE-2017-5638, CVE-2021-44228, CVE-2023-34362, CVE-2023-35036','bad');
+    else setResult('cveResult','กรุณาพิมพ์ CVE ID เช่น CVE-2021-44228','mid');
+  });
+
+  // CVE Chart
+  document.querySelectorAll('.cve-bar').forEach(function(bar){bar.addEventListener('click',function(){var y=bar.dataset.year,c=bar.dataset.count;setResult('cveChartResult','ปี '+y+': '+parseInt(c).toLocaleString()+' CVE ที่ถูกเผยแพร่','ok')})});
+
+  // Cost Calculator
+  var costBtn=document.getElementById('costCalcBtn');
+  if(costBtn)costBtn.addEventListener('click',function(){
+    var n=parseInt(document.getElementById('costRecords').value);
+    if(isNaN(n)||n<1){setResult('costResult','กรุณากรอกจำนวนระเบียนที่ถูกต้อง','bad');return}
+    var cost=n*173;
+    var costM=cost/1000000;
+    var cls=cost>=50000000?'bad':cost>=5000000?'mid':'ok';
+    setResult('costResult','จำนวน '+n.toLocaleString()+' ระเบียน × $173 = $'+costM.toFixed(2)+' ล้าน หรือประมาณ $'+cost.toLocaleString()+' (อ้างอิง IBM 2025)',cls);
+  });
+
+  // Zero Trust Checklist
+  function updateZtMeter(){var boxes=document.querySelectorAll('#ztChecks input'),ck=0;boxes.forEach(function(b){if(b.checked)ck++});var pct=boxes.length?Math.round(ck/boxes.length*100):0;document.getElementById('ztMeter').style.width=pct+'%';var cls=pct>=75?'ok':pct>=40?'mid':'bad';setResult('ztResult','คะแนน Zero Trust: '+pct+'%'+(pct>=75?' ดีมาก':pct>=40?' พอใช้ควรเพิ่ม':' ควรรีบเพิ่มมาตรการ'),cls)}
+  var ztBox=document.getElementById('ztChecks');if(ztBox)ztBox.addEventListener('change',updateZtMeter);
+
+  // Defense in Depth Layers
+  document.querySelectorAll('.did-layer').forEach(function(layer){layer.addEventListener('click',function(){var n=layer.dataset.layer;var d=document.getElementById('did-detail-'+n);if(d){var isOpen=d.style.display!=='none';d.style.display=isOpen?'none':'block';layer.style.opacity=isOpen?'0.7':'1';layer.style.transform=isOpen?'scale(0.98)':'scale(1)'}})});
+
+  // Port Scanner
+  var portBtn=document.getElementById('portScanBtn');
+  if(portBtn)portBtn.addEventListener('click',function(){
+    var p=document.getElementById('portSelect').value;
+    var ports={'22':{svc:'SSH',risk:'กลาง',desc:'Secure Shell — หากเปิดไม่จำเป็นหรือใช้รหัสผ่านอ่อน เสี่ยงถูก brute force','sug':'ใช้ key-based auth, จำกัด IP, เปลี่ยนพอร์ต'},
+    '80':{svc:'HTTP',risk:'สูง',desc:'Hypertext Transfer Protocol — ข้อมูลไม่เข้ารหัส เสี่ยงถูกดักจับ','sug':'เปลี่ยนเป็น HTTPS เสมอ'},
+    '443':{svc:'HTTPS',risk:'ต่ำ',desc:'HTTP over TLS — มาตรฐานสำหรับเว็บที่ปลอดภัย','sug':'ตรวจสอบ TLS config ไม่ให้อ่อนแอ'},
+    '3306':{svc:'MySQL',risk:'สูงมาก',desc:'MySQL Database — ไม่ควรเปิดสู่สาธารณะ','sug':'ปิดพอร์ตหรือจำกัด IP ด้วย firewall'},
+    '5432':{svc:'PostgreSQL',risk:'สูงมาก',desc:'PostgreSQL Database — เสี่ยงถูกโจมตี','sug':'ใช้ firewall, strong password, network segmentation'},
+    '8080':{svc:'HTTP-Proxy',risk:'ปานกลาง',desc:'HTTP Alternate — อาจเป็น proxy หรือ web server','sug':'จำกัดการเข้าถึง ใช้ HTTPS'},
+    '8443':{svc:'HTTPS-Alt',risk:'ต่ำ-ปานกลาง',desc:'HTTPS Alternate — พอร์ตสำรอง','sug':'ตรวจสอบ certificate และ TLS config'}};
+    var info=ports[p];
+    var cls=info.risk==='สูงมาก'||info.risk==='สูง'?'bad':info.risk==='กลาง'||info.risk==='ปานกลาง'?'mid':'ok';
+    setResult('portResult','พอร์ต '+p+' ('+info.svc+') | ความเสี่ยง: '+info.risk+' | '+info.desc+' | แนะนำ: '+info.sug,cls);
+  });
+
+})();
+</script>
+<div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--text-muted, #64748b);border-top:1px solid var(--border, #e2e8f0)">Powered by: IceSuntisuk</div></body>
+</html>
