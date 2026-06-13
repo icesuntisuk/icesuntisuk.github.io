@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-1: หลักการพื้นฐานด้าน Network Security | วิชา Network Security</title>
+<meta name="description" content="บทที่ 1 วิชา Network Security — หลักการพื้นฐานด้าน Network Security: CIA Triad, AAA, NIST CSF 2.0, ISO 27001:2022, กรณีศึกษา Colonial Pipeline, SolarWinds, Mirai Botnet, Defense in Depth">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "CH-1: หลักการพื้นฐานด้าน Network Security",
+  "description": "บทที่ 1 ของวิชา Network Security — ครอบคลุมหลักการ CIA Triad, AAA, NIST CSF 2.0, ISO/IEC 27001:2022, กรณีศึกษา Colonial Pipeline, SolarWinds, Mirai Botnet, สถิติและแนวโน้ม, Security Governance, Defense in Depth",
+  "educationalLevel": "Undergraduate",
+  "educationalRole": "Instructor",
+  "teaches": [
+    "Network Security Fundamentals",
+    "CIA Triad",
+    "Authentication Authorization Accounting",
+    "NIST Cybersecurity Framework 2.0",
+    "ISO/IEC 27001:2022",
+    "Supply Chain Security",
+    "Defense in Depth",
+    "Zero Trust Architecture",
+    "Cybersecurity Risk Management"
+  ],
+  "inLanguage": "th"
+}
+</script>
+<style>
+
+:root {
+  --primary: #1a3a5c;
+  --primary-dark: #0f2440;
+  --primary-light: #2c5a8c;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --bg: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --text: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --code-bg: #0f172a;
+  --code-text: #e2e8f0;
+  --table-stripe: #f8fafc;
+  --sidebar-bg: #f8fafc;
+  --sidebar-border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --radius: 8px;
+  --radius-sm: 4px;
+  --radius-lg: 12px;
+  --font-thai: 'Sarabun', 'IBM Plex Sans Thai', 'Kanit', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
+  --transition: 0.2s ease;
+  --header-height: 64px;
+  --toc-width: 280px;
+}
+[data-theme="dark"] {
+  --primary: #60a5fa;
+  --primary-dark: #1e3a5f;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --bg: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --border: #334155;
+  --code-bg: #020617;
+  --table-stripe: #1e293b;
+  --sidebar-bg: #1e293b;
+  --sidebar-border: #334155;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+h1,h2,h3,h4,h5,h6{line-height:1.3;font-weight:700;color:var(--text);margin-top:1.5em;margin-bottom:.75em}
+h1{font-size:2.25rem;margin-top:0}
+h2{font-size:1.75rem;border-bottom:2px solid var(--border);padding-bottom:.4em}
+h3{font-size:1.35rem}
+h4{font-size:1.1rem}
+p{margin-bottom:1em}
+hr{border:none;border-top:2px solid var(--border);margin:2.5em 0}
+strong,b{font-weight:700}
+ul,ol{margin-bottom:1em;padding-left:1.5em}
+li{margin-bottom:.35em}
+#loading-screen{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s ease}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-secondary);font-size:1rem}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#818cf8);z-index:9998;width:0%;transition:width .15s ease-out}
+.top-nav{position:fixed;top:3px;left:0;right:0;z-index:9997;height:var(--header-height);background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-nav .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem;color:var(--text);white-space:nowrap}
+.top-nav .logo i{color:var(--accent);font-size:1.3rem}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-actions button,.nav-actions .search-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:1rem}
+.nav-actions button:hover,.nav-actions .search-toggle:hover{background:var(--bg-tertiary);color:var(--text);border-color:var(--text-muted)}
+#sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.search-overlay{position:fixed;inset:0;z-index:9996;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(4px)}
+.search-overlay.active{display:flex}
+.search-panel{background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:90%;max-width:640px;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
+.search-input-wrap{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);gap:.5rem}
+.search-input-wrap i{color:var(--text-muted)}
+.search-input-wrap input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:1rem;font-family:var(--font-thai)}
+.search-input-wrap input::placeholder{color:var(--text-muted)}
+.search-count{font-size:.8rem;color:var(--text-muted);white-space:nowrap;padding:.25rem .5rem;background:var(--bg-tertiary);border-radius:var(--radius-sm)}
+.search-results{overflow-y:auto;padding:.5rem;flex:1;max-height:50vh}
+.search-results .no-results{padding:2rem;text-align:center;color:var(--text-muted)}
+.search-result-item{padding:.75rem;border-radius:var(--radius);cursor:pointer;transition:background .2s ease;border-bottom:1px solid var(--border-light)}
+.search-result-item:hover{background:var(--bg-tertiary)}
+.search-result-item .result-heading{font-weight:600;font-size:.9rem;color:var(--accent);margin-bottom:.2rem}
+.search-result-item .result-snippet{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.search-result-item .result-snippet mark,.highlight{background:#fef08a;color:#1e293b;padding:0 2px;border-radius:2px}
+[data-theme="dark"] .search-result-item .result-snippet mark,[data-theme="dark"] .highlight{background:#854d0e;color:#fef9c3}
+.layout{display:flex;padding-top:calc(var(--header-height) + 3px);min-height:100vh}
+.sidebar{width:var(--toc-width);flex-shrink:0;position:sticky;top:calc(var(--header-height) + 3px);height:calc(100vh - var(--header-height) - 3px);overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:1.25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--text-muted) transparent;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:4px}
+.sidebar-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{margin-bottom:.15rem}
+.toc-link{display:block;padding:.4rem .6rem;border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-secondary);transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;line-height:1.4}
+.toc-link:hover{background:var(--bg-tertiary);color:var(--text);text-decoration:none}
+.toc-link.active{color:var(--accent);background:rgba(37,99,235,.08);border-left-color:var(--accent);font-weight:600}
+.toc-link.sub{padding-left:1.4rem;font-size:.8rem}
+.toc-link.sub2{padding-left:2.2rem;font-size:.78rem}
+.main-content{flex:1;min-width:0;padding:2rem 2.5rem;max-width:calc(100vw - var(--toc-width))}
+.main-content>section{margin-bottom:2.5rem}
+.section-ref{scroll-margin-top:calc(var(--header-height) + 16px)}
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:2.5rem 2rem;border-radius:var(--radius-lg);margin-bottom:2.5rem}
+.hero h1{color:#fff;font-size:2rem;margin-bottom:.5rem}
+.hero .subtitle{color:rgba(255,255,255,.85);font-size:1.1rem;margin-bottom:1.25rem}
+.hero .meta-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.hero .meta-tag{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);padding:.25rem .75rem;border-radius:20px;font-size:.8rem}
+.learning-objectives{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+.learning-objectives h3{margin-top:0;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.learning-objectives ol{margin:.75rem 0 0;padding-left:1.25rem}
+.learning-objectives li{margin-bottom:.5rem;color:var(--text-secondary);font-size:.95rem}
+.table-wrap{overflow-x:auto;margin:1.25em 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}
+thead{background:var(--bg-tertiary)}
+th,td{padding:.6rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}
+th{font-weight:700;color:var(--text)}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+tbody tr:hover{background:var(--bg-tertiary)}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:1.25em 0;position:relative}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+code{background:var(--bg-tertiary);color:var(--accent);padding:.15em .4em;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.85em}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:0}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.expandable{margin:1.25em 0}
+.expandable-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease;user-select:none;font-weight:600;font-size:.95rem}
+.expandable-header:hover{background:var(--border)}
+.expandable-header i{transition:transform .2s ease;font-size:.85rem;color:var(--text-muted)}
+.expandable.expanded .expandable-header i{transform:rotate(180deg)}
+.expandable-content{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;border:1px solid transparent}
+.expandable.expanded .expandable-content{max-height:50000px;padding:1rem;border-color:var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.quiz-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:all .2s ease}
+.quiz-card.revealed{border-left:4px solid #22c55e}
+.quiz-question{display:flex;gap:.75rem;align-items:flex-start}
+.q-number{background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.quiz-question p{margin:0;font-weight:500;color:var(--text);font-size:.95rem}
+.quiz-card .reveal-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-family:var(--font-thai);transition:all .2s ease}
+.quiz-card .reveal-btn:hover{background:var(--accent-hover)}
+.quiz-card.revealed .reveal-btn{background:var(--text-muted)}
+.quiz-answer{margin-top:.75rem;padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border);font-size:.9rem}
+.hidden{display:none}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:9995;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-lg);transition:all .2s ease;opacity:0;visibility:hidden;transform:translateY(10px)}
+#back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+#back-to-top:hover{background:var(--accent-hover);transform:translateY(-2px)}
+.site-footer{margin-top:3rem;padding:1.5rem 2rem;background:var(--bg-secondary);border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+.glossary-term{color:var(--accent);border-bottom:1px dashed var(--accent);cursor:help;position:relative;font-weight:500}
+.glossary-term .tooltip{visibility:hidden;opacity:0;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--primary-dark);color:#fff;padding:.5rem .85rem;border-radius:var(--radius-sm);font-size:.78rem;line-height:1.5;font-weight:400;white-space:normal;z-index:9999;box-shadow:var(--shadow-lg);transition:opacity .2s ease,visibility .2s ease;pointer-events:none;max-width:300px;text-align:center}
+.glossary-term .tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--primary-dark)}
+.glossary-term:hover .tooltip{visibility:visible;opacity:1}
+@media print{
+  .top-nav,.sidebar,#back-to-top,#progress-bar,.copy-btn,.search-overlay,#sidebar-toggle,.nav-actions{display:none!important}
+  .layout{display:block;padding-top:0}
+  .main-content{max-width:100%;padding:0}
+  .hero{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .hero h1,.hero .subtitle{color:#fff!important}
+  table{font-size:.8rem}
+  pre{white-space:pre-wrap;word-break:break-all}
+  .expandable-content{max-height:none!important;padding:1rem!important;border-color:var(--border)!important}
+  .expandable-header i{display:none}
+  .table-wrap{overflow:visible}
+  .quiz-answer.hidden{display:block!important}
+  .quiz-card .reveal-btn{display:none}
+  body{font-size:11pt}
+  section{page-break-inside:avoid}
+  h2,h3{page-break-after:avoid}
+}
+@media(max-width:1024px){:root{--toc-width:240px}.main-content{padding:1.5rem}}
+@media(max-width:768px){
+  :root{--toc-width:0px}
+  #sidebar-toggle{display:flex}
+  .sidebar{position:fixed;left:-280px;top:calc(var(--header-height) + 3px);width:280px;height:calc(100vh - var(--header-height) - 3px);transition:left .3s ease;z-index:9990;box-shadow:var(--shadow-lg)}
+  .sidebar.open{left:0}
+  .sidebar-overlay{position:fixed;inset:0;z-index:9989;background:rgba(0,0,0,.4);display:none}
+  .sidebar-overlay.active{display:block}
+  .main-content{max-width:100%;padding:1rem}
+  .hero{padding:1.5rem 1rem}
+  .hero h1{font-size:1.5rem}
+  h2{font-size:1.4rem}
+  h3{font-size:1.15rem}
+  .top-nav{padding:0 .75rem}
+  .top-nav .logo{font-size:.85rem}
+  table{font-size:.8rem}
+  th,td{padding:.4rem .6rem}
+  .quiz-card{padding:1rem}
+}
+@media(max-width:480px){
+  .nav-actions button,.nav-actions .search-toggle{width:36px;height:36px}
+  #back-to-top{bottom:1rem;right:1rem;width:40px;height:40px}
+  .search-panel{width:95%}
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<div id="loading-screen" role="status" aria-label="กำลังโหลดเนื้อหา">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">กำลังโหลดเนื้อหา...</div>
+</div>
+<div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้าการอ่าน"></div>
+<header class="top-nav" role="banner">
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button id="sidebar-toggle" aria-label="เปิดเมนูสารบัญ" aria-expanded="false">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="logo">
+      <i class="fas fa-shield-halved" aria-hidden="true"></i>
+      <span>Network Security — บทที่ 1</span>
+    </div>
+  </div>
+  <div class="nav-actions">
+    <button class="search-toggle" id="search-toggle-btn" aria-label="ค้นหา" title="ค้นหา (Ctrl+K / &#8984;K)">
+      <i class="fas fa-search" aria-hidden="true"></i>
+    </button>
+    <button id="dark-mode-toggle" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง">
+      <i class="fas fa-moon" aria-hidden="true"></i>
+    </button>
+  </div>
+</header>
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="ค้นหาเนื้อหา">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="ค้นหาในเนื้อหาทั้งหมด..." aria-label="ป้อนคำค้นหา" autocomplete="off">
+      <span class="search-count" id="search-count"></span>
+      <button id="search-close-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;" aria-label="ปิดค้นหา">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="layout">
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-title"><i class="fas fa-list" aria-hidden="true"></i> สารบัญ</div>
+  <ul class="toc-list" id="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#hero-section" data-target="hero-section">บทนำ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section1" data-target="section1">1. ความรู้เบื้องต้น</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-1" data-target="section1-1">1.1 ความหมาย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-2" data-target="section1-2">1.2 ความสำคัญ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-3" data-target="section1-3">1.3 ภัยคุกคาม</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section2" data-target="section2">2. CIA Triad</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-1" data-target="section2-1">2.1 นิยาม NIST</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-2" data-target="section2-2">2.2 Confidentiality</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-3" data-target="section2-3">2.3 Integrity</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-4" data-target="section2-4">2.4 Availability</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-5" data-target="section2-5">2.5 Trade-off</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-6" data-target="section2-6">2.6 Parkerian Hexad</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-7" data-target="section2-7">2.7 โมเดลอื่นๆ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section3" data-target="section3">3. AAA</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-1" data-target="section3-1">3.1 Authentication</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-2" data-target="section3-2">3.2 Authorization</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-3" data-target="section3-3">3.3 Accounting</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-4" data-target="section3-4">3.4 RADIUS/TACACS+/Diameter</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-5" data-target="section3-5">3.5 802.1X/EAP</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section4" data-target="section4">4. NIST CSF 2.0</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-1" data-target="section4-1">4.1 ภาพรวม</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-2" data-target="section4-2">4.2 โครงสร้าง</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-3" data-target="section4-3">4.3 6 Functions</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-4" data-target="section4-4">4.4 Categories</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-5" data-target="section4-5">4.5 Tiers</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-6" data-target="section4-6">4.6 Profiles</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-7" data-target="section4-7">4.7 References</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section5" data-target="section5">5. ISO 27001:2022</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-1" data-target="section5-1">5.1 ISMS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-2" data-target="section5-2">5.2 PDCA</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-3" data-target="section5-3">5.3 Annex A</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-4" data-target="section5-4">5.4 11 Controls ใหม่</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-5" data-target="section5-5">5.5 SoA</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-6" data-target="section5-6">5.6 Risk Assessment</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-7" data-target="section5-7">5.7 ISO 27001 vs 27002</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section6" data-target="section6">6. เปรียบเทียบ CSF/ISO</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section7" data-target="section7">7. กรณีศึกษา</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-1" data-target="section7-1">7.1 Colonial Pipeline</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-2" data-target="section7-2">7.2 SolarWinds</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-3" data-target="section7-3">7.3 Mirai/Dyn DDoS</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section8" data-target="section8">8. สถิติและแนวโน้ม</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-1" data-target="section8-1">8.1 IBM 2025</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-2" data-target="section8-2">8.2 Verizon DBIR</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-3" data-target="section8-3">8.3 ENISA</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-4" data-target="section8-4">8.4 Ransomware</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-5" data-target="section8-5">8.5 Zero Trust</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-6" data-target="section8-6">8.6 Skills Gap</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section9" data-target="section9">9. Governance</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-1" data-target="section9-1">9.1 Risk Management</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-2" data-target="section9-2">9.2 Policy Hierarchy</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-3" data-target="section9-3">9.3 บทบาท</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-4" data-target="section9-4">9.4 กฎหมาย</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section10" data-target="section10">10. Defense in Depth</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-1" data-target="section10-1">10.1 หลักการ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-2" data-target="section10-2">10.2 People/Process/Tech</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-3" data-target="section10-3">10.3 ประเภทมาตรการ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-4" data-target="section10-4">10.4 Web App Example</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-5" data-target="section10-5">10.5 Zero Trust</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section11" data-target="section11">11. สรุปท้ายบท</a></li>
+    <li class="toc-item"><a class="toc-link" href="#review-questions" data-target="review-questions">คำถามทบทวน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#references" data-target="references">เอกสารอ้างอิง</a></li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content" role="main">
+<section id="hero-section" class="hero section-ref">
+  <h1><i class="fas fa-shield-halved" aria-hidden="true"></i> CH-1: หลักการพื้นฐานด้าน Network Security</h1>
+  <p class="subtitle">ความรู้เบื้องต้นเกี่ยวกับ Network Security, CIA Triad, AAA, NIST CSF 2.0, ISO/IEC 27001:2022, กรณีศึกษา และแนวคิด Defense in Depth</p>
+  <div class="meta-tags">
+    <span class="meta-tag"><i class="fas fa-graduation-cap" aria-hidden="true"></i> วิชา Network Security</span>
+    <span class="meta-tag"><i class="fas fa-calendar" aria-hidden="true"></i> ภาคเรียนที่ 1/2569</span>
+    <span class="meta-tag"><i class="fas fa-book-open" aria-hidden="true"></i> บทที่ 1</span>
+  </div>
+</section>
+<div class="learning-objectives section-ref" id="learning-objectives">
+  <h3><i class="fas fa-bullseye" aria-hidden="true"></i> วัตถุประสงค์การเรียนรู้ (Learning Objectives)</h3>
+  <p>เมื่อจบบทนี้แล้ว ผู้เรียนสามารถ:</p>
+  <ol>
+    <li>อธิบายความหมายและความสำคัญของการรักษาความปลอดภัยทางเครือข่ายในยุคดิจิทัล พร้อมยกตัวอย่างสถิติและแนวโน้มล่าสุดได้</li>
+    <li>อธิบายหลักการ CIA Triad ตามนิยามของ NIST SP 800-12 และยกตัวอย่างการละเมิดในแต่ละด้านจากกรณีจริงที่เกิดขึ้นในประวัติศาสตร์</li>
+    <li>อธิบายแนวคิด AAA (Authentication, Authorization, Accounting) และเปรียบเทียบ RADIUS, TACACS+, และ Diameter ได้</li>
+    <li>อธิบายองค์ประกอบของ NIST Cybersecurity Framework (CSF) 2.0 ทั้ง 6 ฟังก์ชัน พร้อมการเปลี่ยนแปลงจากเวอร์ชัน 1.1</li>
+    <li>อธิบายโครงสร้างของ ISO/IEC 27001:2022 กระบวนการ ISMS และความสัมพันธ์กับ Annex A (93 Controls)</li>
+    <li>วิเคราะห์บทเรียนจากเหตุการณ์โจมตีที่มีผลกระทบในวงกว้าง (Colonial Pipeline, SolarWinds, Dyn DNS) และระบุเทคนิคตาม MITRE ATT&amp;CK ได้</li>
+    <li>อธิบายแนวคิด Defense in Depth และความสัมพันธ์กับ Zero Trust Architecture</li>
+    <li>อธิบายหลักการบริหารความเสี่ยงด้าน Cybersecurity ตามกรอบมาตรฐานสากล</li>
+  </ol>
+</div>
+<hr>
+<section id="section1" class="section-ref">
+<h2>1. ความรู้เบื้องต้นเกี่ยวกับ Network Security</h2>
+<h3 id="section1-1" class="section-ref">1.1 ความหมายของ Network Security</h3>
+<p><span class="glossary-term">Network Security<span class="tooltip">การรักษาความปลอดภัยทางเครือข่าย — แนวปฏิบัติ นโยบาย กระบวนการ และเทคโนโลยีที่ใช้ปกป้องเครือข่ายคอมพิวเตอร์ ข้อมูล และทรัพยากร</span></span> หรือการรักษาความปลอดภัยทางเครือข่าย หมายถึงแนวปฏิบัติ นโยบาย กระบวนการ และเทคโนโลยีที่ถูกนำมาใช้เพื่อปกป้องเครือข่ายคอมพิวเตอร์ ข้อมูล และทรัพยากรที่เกี่ยวข้องจากการถูกเข้าถึงโดยไม่ได้รับอนุญาต การถูกดัดแปลง การถูกทำลาย หรือการถูกขัดขวางการใช้งาน โดยครอบคลุมทั้งฮาร์ดแวร์ (เราเตอร์ สวิตช์ ไฟร์วอลล์) และซอฟต์แวร์ (ระบบปฏิบัติการ แอปพลิเคชัน โพรโทคอล)</p>
+<p>Network Security ไม่ได้จำกัดอยู่เพียงการป้องกันการโจมตีจากภายนอกเท่านั้น แต่ยังรวมถึง:</p>
+<ul>
+  <li><strong>การควบคุมการเข้าถึงจากภายใน</strong> — ป้องกันผู้ใช้ภายในที่ไม่มีสิทธิ์เข้าถึงข้อมูลที่สำคัญ</li>
+  <li><strong>การรักษาความปลอดภัยของข้อมูลขณะส่งผ่านเครือข่าย</strong> — ป้องกันการดักจับหรือแก้ไขข้อมูลระหว่างทาง</li>
+  <li><strong>การทำให้แน่ใจว่าระบบสามารถทำงานได้อย่างต่อเนื่อง</strong> — แม้เผชิญกับภัยคุกคาม เช่น <span class="glossary-term">DDoS<span class="tooltip">Distributed Denial of Service — การโจมตีที่ทำให้ระบบไม่สามารถให้บริการได้โดยการส่ง traffic ปริมาณมหาศาลจากหลายแหล่ง</span></span> หรือ Ransomware</li>
+</ul>
+
+<h3 id="section1-2" class="section-ref">1.2 ความสำคัญในยุคดิจิทัล</h3>
+<p>ในปัจจุบันที่องค์กรทุกแห่งต้องพึ่งพาระบบเครือข่ายในการดำเนินธุรกิจ การโจมตีทางเครือข่ายสามารถสร้างความเสียหายได้ในวงกว้าง ข้อมูลจากรายงานสำคัญในปี 2025 ระบุว่า:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ตัวชี้วัด</th><th>ค่าสถิติ</th></tr></thead>
+  <tbody>
+    <tr><td>ค่าเสียหายเฉลี่ยต่อการละเมิดข้อมูล (IBM 2025)</td><td><strong>4.44 ล้าน USD</strong></td></tr>
+    <tr><td>ค่าเสียหายเฉลี่ยในสหรัฐอเมริกา</td><td><strong>10.22 ล้าน USD</strong> (สูงเป็นประวัติการณ์)</td></tr>
+    <tr><td>อุตสาหกรรมที่เสียหายสูงสุด</td><td>Healthcare — <strong>7.42 ล้าน USD</strong></td></tr>
+    <tr><td>เวลาเฉลี่ยในการตรวจจับและควบคุม (Breach Lifecycle)</td><td><strong>241 วัน</strong> (158 วันตรวจจับ + 83 วันควบคุม) — ต่ำสุดในรอบ 9 ปี</td></tr>
+    <tr><td>Ransomware ใน breaches ทั้งหมด (Verizon DBIR 2025)</td><td><strong>44%</strong> (เพิ่มขึ้น 37% จากปีก่อน)</td></tr>
+    <tr><td>องค์กรที่ใช้ AI ด้านความปลอดภัย</td><td><strong>67%</strong> — ลดค่าเสียหายลงเฉลี่ย 1.9 ล้าน USD</td></tr>
+    <tr><td>การโจมตีผ่าน Edge Device/VPN</td><td>เพิ่มขึ้น <strong>8 เท่า</strong> จากปีก่อน</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>ผลกระทบหลักของการโจมตีทางเครือข่าย:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภทผลกระทบ</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>การหยุดชะงักของธุรกิจ</strong></td><td>ระบบไม่สามารถให้บริการ สูญเสียรายได้</td><td>Colonial Pipeline หยุดส่งน้ำมัน 6 วัน, NHS ต้องเลื่อนการผ่าตัด 1,500+ ครั้ง</td></tr>
+    <tr><td><strong>การสูญเสียข้อมูลสำคัญ</strong></td><td>ข้อมูลลูกค้า ความลับทางการค้าถูกขโมย</td><td>Equifax 147.9M records รั่วไหล, Marriott 500M records</td></tr>
+    <tr><td><strong>ความเสียหายทางการเงิน</strong></td><td>ค่าไถ่ ค่าปรับตามกฎหมาย ค่าใช้จ่ายในการกู้คืน</td><td>ค่าเสียหายเฉลี่ย 4.44 ล้าน USD ต่อการละเมิด</td></tr>
+    <tr><td><strong>ความเสียหายด้านชื่อเสียง</strong></td><td>ความเชื่อมั่นของลูกค้าลดลง</td><td>63% ขององค์กรเพิ่มราคาสินค้าเพื่อชดเชยค่าเสียหาย</td></tr>
+    <tr><td><strong>ผลกระทบทางกฎหมาย</strong></td><td>ค่าปรับจาก PDPA, GDPR, HIPAA</td><td>GDPR ปรับสูงสุดถึง 4% ของรายได้ทั่วโลก หรือ 20 ล้าน EUR</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section1-3" class="section-ref">1.3 ภาพรวมภัยคุกคามในปัจจุบัน</h3>
+<p>ข้อมูลจาก Verizon 2025 Data Breach Investigations Report (DBIR) ซึ่งวิเคราะห์เหตุการณ์ 22,052 incidents และ 12,195 confirmed breaches จาก 139 ประเทศ พบแนวโน้มสำคัญ:</p>
+<ul>
+  <li><strong>Human Element</strong>: 60% ของ breaches เกี่ยวข้องกับความผิดพลาดของมนุษย์</li>
+  <li><strong>Credential Abuse</strong>: 22% — ยังคงเป็นเวกเตอร์อันดับหนึ่ง</li>
+  <li><strong><span class="glossary-term">Ransomware<span class="tooltip">มัลแวร์เรียกค่าไถ่ — Malware ที่เข้ารหัสข้อมูลของเหยื่อและเรียกร้องเงินเพื่อถอดรหัส</span></span></strong>: 44% ของ breaches (เพิ่มขึ้น 37% YoY) — SMB 88% โดน ransomware</li>
+  <li><strong>Vulnerability Exploitation</strong>: 20% ของ breaches (เพิ่มขึ้น 34% YoY) — แซงหน้า Phishing</li>
+  <li><strong>Third-Party Involvement</strong>: เพิ่มเป็น 30% (จาก 15% — เพิ่มขึ้นเท่าตัว)</li>
+  <li><strong>Espionage</strong>: 17% ของ breaches (เพิ่มขึ้นอย่างมีนัยสำคัญ)</li>
+</ul>
+<p>จากรายงาน ENISA Threat Landscape 2025 (วิเคราะห์ 4,875 incidents ใน EU):</p>
+<ul>
+  <li><strong>DDoS</strong>: 76.7% ของ incidents ทั้งหมด (ส่วนใหญ่มาจาก Hacktivist)</li>
+  <li><strong>Phishing</strong>: 60% ของ initial intrusion vectors</li>
+  <li><strong>AI-generated phishing</strong>: &gt;80% ของแคมเปญ Phishing ใช้เนื้อหาที่สร้างโดย AI</li>
+  <li><strong>Vulnerability disclosures</strong>: 42,595 CVEs ใหม่ (เพิ่มขึ้น 27% YoY)</li>
+  <li><strong>Sectors ที่ถูกโจมตีมากที่สุด</strong>: Public admin (38.2%), Transport (7.5%), Finance (4.5%)</li>
+</ul>
+</section>
+<hr>
+<section id="section2" class="section-ref">
+<h2>2. หลักการ <span class="glossary-term">CIA Triad<span class="tooltip">หลักการพื้นฐานด้านความปลอดภัยของข้อมูล 3 ด้าน: Confidentiality (การรักษาความลับ), Integrity (การรักษาความถูกต้อง), Availability (การทำให้พร้อมใช้งาน)</span></span></h2>
+
+<h3 id="section2-1" class="section-ref">2.1 นิยามตามมาตรฐาน NIST</h3>
+<p>CIA Triad เป็นหลักการพื้นฐานด้านการรักษาความปลอดภัยของข้อมูลที่ถูกอ้างอิงในมาตรฐานความปลอดภัยทุกรูปแบบ ตามนิยามของ NIST SP 800-12 Rev. 1:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>องค์ประกอบ</th><th>นิยาม (NIST SP 800-12)</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Confidentiality</strong> (การรักษาความลับ)</td><td>"Preserving authorized restrictions on information access and disclosure, including means for protecting personal privacy and proprietary information."</td><td>การจำกัดการเข้าถึงและการเปิดเผยข้อมูลเฉพาะผู้ที่ได้รับอนุญาตเท่านั้น</td></tr>
+    <tr><td><strong>Integrity</strong> (การรักษาความถูกต้อง)</td><td>"Guarding against improper information modification or destruction, and includes ensuring information non-repudiation and authenticity."</td><td>การป้องกันการแก้ไขหรือทำลายข้อมูลโดยไม่ได้รับอนุญาต รวมถึงการยืนยันความถูกต้องแท้จริง</td></tr>
+    <tr><td><strong>Availability</strong> (การทำให้พร้อมใช้งาน)</td><td>"Ensuring timely and reliable access to and use of information."</td><td>การทำให้แน่ใจว่าข้อมูลและระบบสามารถเข้าถึงได้อย่างทันท่วงทีและเชื่อถือได้</td></tr>
+  </tbody>
+</table></div>
+<p>CIA Triad ถูกฝังอยู่ในมาตรฐานสำคัญต่างๆ:</p>
+<ul>
+  <li><strong>ISO 27001</strong>: Annex A controls ถูก mapping กับ CIA properties</li>
+  <li><strong>GDPR Article 32</strong>: กำหนด "ระดับความปลอดภัยที่เหมาะสมกับความเสี่ยง" โดยอ้างอิง CIA</li>
+  <li><strong>NIST SP 800-53</strong>: Sections 3.3.2 (Availability), 3.3.3 (Integrity), 3.3.4 (Confidentiality)</li>
+  <li><strong>CIS Controls</strong>: Control 6 (Access Control Mgmt) สำหรับ Confidentiality, Control 3 (Data Protection) สำหรับ Integrity, Control 11 (Data Recovery) สำหรับ Availability</li>
+</ul>
+
+<h3 id="section2-2" class="section-ref">2.2 Confidentiality (การรักษาความลับ)</h3>
+<p><strong>มาตรการป้องกันที่สำคัญ:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>มาตรการ</th><th>คำอธิบาย</th><th>ตัวอย่างการนำไปใช้</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Encryption (At Rest / In Transit)</strong></td><td>เข้ารหัสข้อมูลทั้งขณะจัดเก็บและขณะส่ง</td><td>AES-256 สำหรับ Database, TLS 1.3 สำหรับ HTTPS, E2EE สำหรับ Messaging</td></tr>
+    <tr><td><strong>Access Control</strong></td><td>ควบคุมสิทธิ์การเข้าถึงตามหลัก Least Privilege</td><td><span class="glossary-term">RBAC<span class="tooltip">Role-Based Access Control — การควบคุมการเข้าถึงตามบทบาทหน้าที่ในองค์กร</span></span>, ABAC, MAC</td></tr>
+    <tr><td><strong>Data Classification</strong></td><td>จำแนกระดับความลับของข้อมูล</td><td>Public, Internal, Confidential, Restricted, Secret</td></tr>
+    <tr><td><strong><span class="glossary-term">Multi-Factor Authentication (MFA)<span class="tooltip">การพิสูจน์ตัวตนหลายปัจจัย — ใช้ปัจจัยตั้งแต่ 2 ประเภทขึ้นไปเพื่อยืนยันตัวตน เช่น รหัสผ่าน + OTP + ลายนิ้วมือ</span></span></strong></td><td>พิสูจน์ตัวตนหลายปัจจัย</td><td>FIDO2/WebAuthn, OTP + Password + Biometric</td></tr>
+    <tr><td><strong>Network Segmentation</strong></td><td>แยกเครือข่ายตามระดับความปลอดภัย</td><td>VLAN, Microsegmentation, DMZ, Air Gapped Network</td></tr>
+    <tr><td><strong>Data Masking</strong></td><td>ปกปิดข้อมูลสำคัญไม่ให้แสดงทั้งหมด</td><td>แสดงเฉพาะเลข 4 ตัวท้ายของบัตรเครดิต</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ตัวอย่างการละเมิดจากกรณีจริง:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>กรณี</th><th>ปี</th><th>รายละเอียด</th><th>สาเหตุ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Equifax</strong></td><td>2017</td><td>ข้อมูล 147.9 ล้านรายการรั่วไหล (SSN, DOB)</td><td>ไม่แพตช์ Apache Struts CVE-2017-5638</td></tr>
+    <tr><td><strong>Marriott/Starwood</strong></td><td>2018</td><td>ข้อมูล 500 ล้านรายการของแขกโรงแรม</td><td>Database Access ไม่มีการควบคุม</td></tr>
+    <tr><td><strong>Facebook/Cambridge Analytica</strong></td><td>2018</td><td>ข้อมูล 87 ล้าน profiles ถูกเก็บไปใช้</td><td>API Access Controls ไม่รัดกุม</td></tr>
+    <tr><td><strong>Optus Australia</strong></td><td>2022</td><td>ข้อมูล 10 ล้านรายการของลูกค้า</td><td>API ไม่มี Authentication</td></tr>
+    <tr><td><strong>Medibank</strong></td><td>2022</td><td>ข้อมูล 9.7 ล้านรายการ</td><td>Credentials ถูกขโมยผ่าน Partner Access</td></tr>
+    <tr><td><strong>ESHYFT</strong></td><td>2024</td><td>ข้อมูล 86,000+ รายการ (SSN, ใบอนุญาตวิชาชีพ)</td><td>Amazon S3 Bucket ไม่มี Encryption และ Access Control</td></tr>
+  </tbody>
+</table></div>
+<p><strong>คำถามสำหรับการตรวจสอบ (Audit Question):</strong> "ข้อมูลที่ละเอียดอ่อนของเราถูกเข้ารหัสหรือไม่? ใครบ้างที่สามารถเข้าถึงข้อมูลนี้ได้? มีการควบคุมตามหลัก Least Privilege หรือไม่?"</p>
+
+<h3 id="section2-3" class="section-ref">2.3 Integrity (การรักษาความถูกต้องครบถ้วน)</h3>
+<p><strong>มาตรการป้องกันที่สำคัญ:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>มาตรการ</th><th>คำอธิบาย</th><th>ตัวอย่างการนำไปใช้</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Hashing</strong></td><td>ใช้ฟังก์ชัน Hash ตรวจสอบความถูกต้องของข้อมูล</td><td>SHA-256, SHA-3, HMAC</td></tr>
+    <tr><td><strong>Digital Signature</strong></td><td>ลงนามดิจิทัลเพื่อยืนยันแหล่งที่มา</td><td>RSA, ECDSA</td></tr>
+    <tr><td><strong>File Integrity Monitoring (FIM)</strong></td><td>ตรวจสอบการเปลี่ยนแปลงของไฟล์และระบบ</td><td>Tripwire, OSSEC, Wazuh, AIDE</td></tr>
+    <tr><td><strong>Logging &amp; Audit Trail</strong></td><td>บันทึกการเปลี่ยนแปลงทั้งหมดเพื่อตรวจสอบย้อนหลัง</td><td><span class="glossary-term">SIEM<span class="tooltip">Security Information and Event Management — ระบบรวบรวมและวิเคราะห์ log ด้านความปลอดภัยจากหลายแหล่ง</span></span>, Syslog, Blockchain/Immutable Ledger</td></tr>
+    <tr><td><strong>Version Control</strong></td><td>ควบคุมเวอร์ชันของข้อมูลและการเปลี่ยนแปลง</td><td>Git, Checksum verification</td></tr>
+    <tr><td><strong>Database ACID Properties</strong></td><td>ทำให้แน่ใจว่าธุรกรรมฐานข้อมูลสมบูรณ์</td><td>Atomicity, Consistency, Isolation, Durability</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ตัวอย่างการละเมิดจากกรณีจริง:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>กรณี</th><th>ปี</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Stuxnet</strong></td><td>2010</td><td>แก้ไข PLC Code ของเครื่องหมุนเหวี่ยงนิวเคลียร์อิหร่าน — การโจมตี Integrity disguised เป็นการทำงานปกติ</td></tr>
+    <tr><td><strong>Bangladesh Bank</strong></td><td>2016</td><td>ขโมยเงิน 81 ล้าน USD โดยแก้ไข SWIFT Transaction Messages</td></tr>
+    <tr><td><strong>NotPetya</strong></td><td>2017</td><td>แก้ไข M.E.Doc (ซอฟต์แวร์บัญชีของยูเครน) — Supply Chain Integrity Compromise</td></tr>
+    <tr><td><strong>SolarWinds</strong></td><td>2020</td><td>Malicious DLL ที่ Sign ด้วย Certificate จริง — Code Integrity Bypass</td></tr>
+    <tr><td><strong>Twitter Bitcoin Scam</strong></td><td>2020</td><td>ผู้โจมตีแก้ไข Internal Admin Tools เพื่อยึดบัญชีผู้มีชื่อเสียง</td></tr>
+  </tbody>
+</table></div>
+<p><strong>คำถามสำหรับการตรวจสอบ:</strong> "เรามีวิธีการตรวจสอบหรือไม่ว่าข้อมูลของเราไม่ถูกเปลี่ยนแปลงโดยไม่ได้รับอนุญาต? เรามี File Integrity Monitoring หรือไม่?"</p>
+
+<h3 id="section2-4" class="section-ref">2.4 Availability (การทำให้พร้อมใช้งาน)</h3>
+<p><strong>มาตรการป้องกันที่สำคัญ:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>มาตรการ</th><th>คำอธิบาย</th><th>ตัวอย่างการนำไปใช้</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Redundancy</strong></td><td>มีระบบสำรองเพื่อป้องกัน Single Point of Failure</td><td>N+1, 2N, Active-Active Cluster, RAID</td></tr>
+    <tr><td><strong>Disaster Recovery</strong></td><td>แผนการกู้คืนระบบเมื่อเกิดภัยพิบัติ</td><td>RPO (Recovery Point Objective), RTO (Recovery Time Objective)</td></tr>
+    <tr><td><strong>Load Balancing</strong></td><td>กระจาย Traffic เพื่อป้องกัน Overload</td><td>AWS ALB, NGINX, F5, Geographic Distribution</td></tr>
+    <tr><td><strong>DDoS Protection</strong></td><td>ป้องกันการโจมตีแบบ Distributed Denial of Service</td><td>Cloudflare, AWS Shield, Akamai Kona</td></tr>
+    <tr><td><strong>Backup Strategy</strong></td><td>สำรองข้อมูลตามหลัก 3-2-1</td><td>3 Copies, 2 Media, 1 Offsite; Immutable Backup, Air-Gapped</td></tr>
+    <tr><td><strong>Patch Management</strong></td><td>อัปเดตระบบอย่างสม่ำเสมอ</td><td>WSUS, SCCM, Automox</td></tr>
+    <tr><td><strong>SLA Guarantees</strong></td><td>ระดับการให้บริการที่รับประกัน</td><td>99.9% (Three Nines = 8.76 ชม./ปี), 99.999% (Five Nines = 5.26 นาที/ปี)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ตัวอย่างการละเมิดจากกรณีจริง:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>กรณี</th><th>ปี</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Dyn DDoS</strong></td><td>2016</td><td>IoT Botnet 100,000+ เครื่องโจมตี DNS — Twitter, Netflix, Reddit ออฟไลน์</td></tr>
+    <tr><td><strong>Colonial Pipeline</strong></td><td>2021</td><td>Ransomware บังคับปิดท่อส่งน้ำมัน 6 วัน — 45% ของ East Coast Fuel</td></tr>
+    <tr><td><strong>AWS US-East-1</strong></td><td>2017</td><td>S3 Outage จาก Typo — ส่วนใหญ่ของอินเทอร์เน็ตล่ม</td></tr>
+    <tr><td><strong>WannaCry</strong></td><td>2017</td><td>200,000+ เครื่องใน 150 ประเทศ — NHS ยกเลิกนัดหมาย 19,000 ครั้ง</td></tr>
+    <tr><td><strong>OVHcloud</strong></td><td>2021</td><td>ไฟไหม้ Data Center ที่ Strasbourg — 3.6 ล้านเว็บไซต์ออฟไลน์</td></tr>
+  </tbody>
+</table></div>
+<p><strong>คำถามสำหรับการตรวจสอบ:</strong> "หากระบบนี้ล่มในวันนี้ เราจะสามารถกู้คืนได้ภายในกี่ชั่วโมง? RTO และ RPO ของเราคือเท่าใด?"</p>
+
+<h3 id="section2-5" class="section-ref">2.5 ความสัมพันธ์ระหว่าง CIA Triad และการ Trade-off</h3>
+<p>ทั้งสามองค์ประกอบของ CIA Triad มีความสัมพันธ์แบบ Trade-off ซึ่งหมายถึงการเพิ่มความแข็งแกร่งให้ด้านหนึ่งอาจทำให้อีกด้านลดลง:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>การ Trade-off</th><th>สถานการณ์</th><th>ผลกระทบ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Confidentiality ↔ Availability</strong></td><td>เข้ารหัสข้อมูลด้วย AES-256 ต้องใช้เวลาในการถอดรหัส</td><td>ผู้ใช้รอนานขึ้น — Availability ลดลง; ใช้อุปกรณ์ HSM (Hardware Security Module) เพื่อลดผลกระทบ</td></tr>
+    <tr><td><strong>Integrity ↔ Availability</strong></td><td>ตรวจสอบ Checksum ทุก Transaction</td><td>Performance ลดลง — อาจไม่ทันต่อความต้องการ; ใช้ Tiered Storage กับ WORM สำหรับ Critical Logs</td></tr>
+    <tr><td><strong>Availability ↔ Confidentiality</strong></td><td>มีสำเนาข้อมูลหลายชุดเพื่อ Redundancy</td><td>ความเสี่ยงของการเปิดเผยข้อมูลเพิ่มขึ้น — ใช้ Encrypted Backups พร้อม Key Rotation</td></tr>
+    <tr><td><strong>Cost ↔ All Three</strong></td><td>งบประมาณจำกัด — ต้องเลือก</td><td>ใช้ Risk-Based Control Selection — ลงทุนกับสิ่งที่สำคัญที่สุด</td></tr>
+  </tbody>
+</table></div>
+<p>การหาจุดสมดุล (Balancing) ที่เหมาะสมระหว่างทั้งสามด้านเป็นหน้าที่ของนักบริหารความปลอดภัยที่ต้องพิจารณาตามความเสี่ยงและความต้องการขององค์กร</p>
+
+<h3 id="section2-6" class="section-ref">2.6 Parkerian Hexad (ส่วนขยายของ CIA)</h3>
+<p>Donn B. Parker ได้เสนอ <strong>Parkerian Hexad</strong> ในหนังสือ <em>Fighting Computer Crime</em> (1998) ซึ่งเป็นส่วนขยายของ CIA Triad โดยเพิ่ม 3 องค์ประกอบ:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>องค์ประกอบ</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Confidentiality</strong> (การรักษาความลับ)</td><td>"Known only to a limited few" — ข้อมูลเป็นที่รู้จักเฉพาะกลุ่มที่จำกัด</td><td>การเข้ารหัสข้อมูล</td></tr>
+    <tr><td><strong>Possession/Control</strong> (การครอบครอง)</td><td>การควบคุมความเป็นเจ้าของข้อมูลทางกายภาพหรือทางตรรกะ — แยกจากการรักษาความลับ</td><td>ฮาร์ดดิสก์ที่เข้ารหัสถูกขโมย → เสีย Possession แต่ Confidentiality ยังคงอยู่</td></tr>
+    <tr><td><strong>Integrity</strong> (ความถูกต้อง)</td><td>"Material wholeness, unimpaired condition" — ความสมบูรณ์ของข้อมูล</td><td>ไฟล์ไม่ถูกแก้ไข — แตกต่างจาก CIA Integrity เล็กน้อย</td></tr>
+    <tr><td><strong>Authenticity</strong> (ความถูกต้องแท้จริง)</td><td>"Genuine, valid, of established authority" — ข้อมูลและแหล่งที่มาต้องเป็นของจริง</td><td>Digital Signature ยืนยัน Authenticity — เอกสารอาจ Integrity ดีแต่ปลอมแปลง (ไม่ Authentic)</td></tr>
+    <tr><td><strong>Availability</strong> (ความพร้อมใช้งาน)</td><td>"Capable of use, immediately usable"</td><td>ระบบทำงานได้เมื่อต้องการ</td></tr>
+    <tr><td><strong>Utility</strong> (ประโยชน์ใช้สอย)</td><td>"Usefulness, fitness for purpose" — ข้อมูลต้องมีประโยชน์และใช้งานได้</td><td>ข้อมูลที่เข้ารหัสมี Utility ต่ำสำหรับผู้โจมตี แต่ Confidentiality ยังคงอยู่</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ข้อแตกต่างสำคัญของ Parkerian Hexad:</strong> Parker แยก "Possession" (การครอบครองทางกายภาพ) ออกจาก "Confidentiality" (การรักษาความลับ) — ฮาร์ดดิสก์ที่เข้ารหัสถูกขโมยหมายถึงเสียการครอบครองแต่ยังรักษาความลับไว้ได้ ในทำนองเดียวกัน "Authenticity" ถูกแยกจาก "Integrity" — เอกสารสามารถมีความถูกต้องครบถ้วน (Integrity) แต่เป็นของปลอม (ไม่ Authentic)</p>
+
+<h3 id="section2-7" class="section-ref">2.7 โมเดลอื่นๆ ที่เกี่ยวข้อง</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>โมเดล</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>STRIDE</strong> (Microsoft)</td><td>แบ่งภัยคุกคามเป็น 6 ประเภท: Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege — เป็น Threat-Centric</td></tr>
+    <tr><td><strong>DAD</strong></td><td>Disclosure, Alteration, Destruction — ด้านตรงข้าม (Negative) ของ CIA</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+<section id="section3" class="section-ref">
+<h2>3. แนวคิด AAA (Authentication, Authorization, Accounting)</h2>
+<h3 id="section3-1" class="section-ref">3.1 Authentication (การพิสูจน์ตัวตน)</h3>
+<p><strong>หลักการ:</strong> การยืนยันว่าผู้ใช้หรืออุปกรณ์เป็นใครตามที่อ้างว่าเป็น โดยใช้ปัจจัยหนึ่งหรือหลายปัจจัยร่วมกัน เรียกการพิสูจน์ตัวตนหลายปัจจัยว่า <strong><span class="glossary-term">Multi-Factor Authentication (MFA)<span class="tooltip">การพิสูจน์ตัวตนหลายปัจจัย — ใช้ปัจจัยตั้งแต่ 2 ประเภทขึ้นไปเพื่อยืนยันตัวตน เช่น รหัสผ่าน + OTP + ลายนิ้วมือ</span></span></strong></p>
+<p><strong>คำถามที่ Authentication ตอบ:</strong> "คุณคือใคร?" (Who are you?)</p>
+<p><strong>ปัจจัยในการพิสูจน์ตัวตน (5 ปัจจัย):</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ปัจจัย</th><th>ชื่อ</th><th>ตัวอย่าง</th><th>รายละเอียดทางเทคนิค</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Type 1</strong></td><td>Something You Know (สิ่งที่รู้)</td><td>Password, PIN, Security Questions</td><td>Entropy ต่ำที่สุด; เสี่ยงต่อ Phishing, Brute-Force, Credential Stuffing</td></tr>
+    <tr><td><strong>Type 2</strong></td><td>Something You Have (สิ่งที่ครอบครอง)</td><td>OTP Token, Smart Card, Phone, FIDO2 Key, TPM</td><td>Hardware-Backed; FIDO2/U2F ทนต่อ Phishing</td></tr>
+    <tr><td><strong>Type 3</strong></td><td>Something You Are (สิ่งที่คุณเป็น)</td><td>ลายนิ้วมือ, Face ID, ม่านตา, เสียง</td><td>ต้องมี Liveness Detection; เสี่ยงต่อ Template Storage</td></tr>
+    <tr><td><strong>Type 4</strong></td><td>Somewhere You Are (สถานที่)</td><td>GPS, IP Geolocation, Network Segment</td><td>ใช้สำหรับ Risk-Based Authentication</td></tr>
+    <tr><td><strong>Type 5</strong></td><td>Something You Do (พฤติกรรม)</td><td>Keystroke Dynamics, รูปแบบการเดิน</td><td>Continuous Authentication; ความซับซ้อนสูง</td></tr>
+  </tbody>
+</table></div>
+<p><strong>หมายเหตุ:</strong> NIST SP 800-63-4 (2025) กำหนดอย่างเป็นทางการเพียง 3 ปัจจัย (Knowledge, Possession, Inherence) แต่ระบุ Location และ Behavior เป็น Supplementary Signals</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>วิธีการ MFA</th><th>การนำไปใช้</th><th>ความเสี่ยงในการ bypass</th></tr></thead>
+  <tbody>
+    <tr><td>SMS OTP</td><td>ส่งรหัสทาง SMS</td><td>SIM Swapping, SS7 attacks, Phishing</td></tr>
+    <tr><td>TOTP</td><td>Authenticator App (Google Auth, Authy)</td><td>Real-Time Relay Phishing, Seed Theft</td></tr>
+    <tr><td>Push Notification</td><td>Duo, Microsoft Authenticator</td><td>MFA Fatigue / Push Bombing</td></tr>
+    <tr><td>Hardware Token</td><td>YubiKey, RSA SecurID</td><td>Physical Theft, Cost ต่อผู้ใช้</td></tr>
+    <tr><td>FIDO2/WebAuthn</td><td>Public Key Cryptography ต่อ Site</td><td><strong>ปลอดภัยที่สุด</strong> — ทนต่อ Phishing</td></tr>
+    <tr><td>Smart Card</td><td>CAC/PIV (US Government)</td><td>ต้องใช้ Card Reader</td></tr>
+    <tr><td>Biometrics</td><td>Fingerprint, Face ID</td><td>Spoofing ด้วย Deepfakes (ความเสี่ยงเพิ่มขึ้น)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>เทคนิคการ bypass MFA ที่สำคัญ:</strong></p>
+<ul>
+  <li><strong>MFA Fatigue Attack</strong>: ส่ง Push Notification ซ้ำๆ จนผู้ใช้กดยอมรับ (Uber Breach 2022)</li>
+  <li><strong>SIM Swapping</strong>: โน้มน้าวให้ Carrier โอนหมายเลข (Twitter 2020, สูญเสีย 540M USD ใน Crypto)</li>
+  <li><strong>Real-Time Phishing (EvilGinx2, Muraena)</strong>: Proxy ที่ Relay Credentials + Session Cookies แบบ Real-Time</li>
+  <li><strong>OAuth Token Theft</strong>: ขโมย Session Tokens หลัง Authentication</li>
+</ul>
+
+<h3 id="section3-2" class="section-ref">3.2 Authorization (การกำหนดสิทธิ์)</h3>
+<p><strong>หลักการ:</strong> การกำหนดว่าผู้ที่ผ่านการพิสูจน์ตัวตนแล้วสามารถเข้าถึงทรัพยากรใดได้บ้างและทำอะไรได้บ้าง โดยยึดหลัก <strong>Least Privilege</strong> — ให้สิทธิ์เท่าที่จำเป็นเท่านั้น</p>
+<p><strong>คำถามที่ Authorization ตอบ:</strong> "คุณทำอะไรได้บ้าง?" (What can you do?)</p>
+<p><strong>โมเดลการควบคุมการเข้าถึง:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>โมเดล</th><th>ใครควบคุม</th><th>ใช้หลักการอะไร</th><th>ความปลอดภัย</th><th>ความยืดหยุ่น</th><th>การใช้งาน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>DAC</strong> (Discretionary)</td><td>เจ้าของข้อมูล</td><td>Owner-Set Permissions</td><td><strong>ต่ำ</strong></td><td><strong>สูง</strong></td><td>Unix chmod, Shared Drives</td></tr>
+    <tr><td><strong>MAC</strong> (Mandatory)</td><td>ระบบ/Admin</td><td>Security Labels + Clearances</td><td><strong>สูงที่สุด</strong></td><td><strong>ต่ำ</strong></td><td>Military, Government (SELinux, AppArmor)</td></tr>
+    <tr><td><strong><span class="glossary-term">RBAC<span class="tooltip">Role-Based Access Control — การควบคุมการเข้าถึงตามบทบาทหน้าที่ในองค์กร</span></span></strong> (Role-Based)</td><td>Admin</td><td>Roles → Permissions</td><td><strong>ปานกลาง-สูง</strong></td><td><strong>ปานกลาง</strong></td><td>Enterprise, ERP, SaaS</td></tr>
+    <tr><td><strong>ABAC</strong> (Attribute-Based)</td><td>Admin/ระบบ</td><td>User + Resource + Environment Attributes</td><td><strong>สูง</strong></td><td><strong>สูงที่สุด</strong></td><td>Cloud, Zero Trust, Dynamic Environments</td></tr>
+  </tbody>
+</table></div>
+<p><strong>แนวทางปฏิบัติสมัยใหม่:</strong> ระบบส่วนใหญ่ใช้ RBAC สำหรับการจัดระดับกว้าง + ABAC สำหรับการกำหนดข้อยกเว้นแบบละเอียด (Hybrid Approach)</p>
+
+<h3 id="section3-3" class="section-ref">3.3 Accounting (การบันทึกและการตรวจสอบ)</h3>
+<p><strong>หลักการ:</strong> การติดตาม บันทึก และรายงานการกระทำของผู้ใช้ในระบบ เพื่อให้สามารถตรวจสอบย้อนหลัง (Audit Trail) และใช้เป็นหลักฐานในการสอบสวน</p>
+<p><strong>คำถามที่ Accounting ตอบ:</strong> "คุณทำอะไรไปแล้วบ้าง?" (What did you do?)</p>
+<p><strong>ข้อมูลที่ควรบันทึก (ตาม OWASP, PCI DSS, ISO 27001):</strong></p>
+<ul>
+  <li><strong>เมื่อใด</strong> — Timestamp ของการกระทำ</li>
+  <li><strong>ใคร</strong> — User ID, Session ID, Source IP</li>
+  <li><strong>อะไร</strong> — Resource ที่ถูกเข้าถึง, Action ที่ทำ (Read, Write, Delete, Modify)</li>
+  <li><strong>อย่างไร</strong> — Success/Failure, วิธีการ, Privilege Changes</li>
+  <li><strong>Authentication Attempts</strong> — ทั้งที่สำเร็จและล้มเหลว</li>
+</ul>
+<p><strong>รูปแบบ Log มาตรฐาน:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>รูปแบบ</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Common Log Format (CLF)</strong></td><td><code>127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /image.gif HTTP/1.0" 200 2326</code></td></tr>
+    <tr><td><strong>Combined Log Format</strong></td><td>CLF + Referer + User-Agent</td></tr>
+    <tr><td><strong>Syslog (RFC 5424)</strong></td><td>Facility, Severity (0-7), Timestamp, Hostname, App, Message</td></tr>
+    <tr><td><strong>CEF (ArcSight)</strong></td><td>ArcSight Common Event Format — มี Structured Fields</td></tr>
+    <tr><td><strong>JSON/NDJSON</strong></td><td>Structured, Machine-Parseable — นิยมในระบบสมัยใหม่</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section3-4" class="section-ref">3.4 RADIUS, TACACS+, และ Diameter</h3>
+<p>RADIUS, TACACS+ และ Diameter เป็นโพรโทคอลสำหรับทำ AAA ในระบบเครือข่าย:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>RADIUS</th><th>TACACS+</th><th>Diameter</th></tr></thead>
+  <tbody>
+    <tr><td><strong>มาตรฐาน</strong></td><td>IETF (RFC 2865)</td><td>Cisco Proprietary → Open</td><td>IETF (RFC 6733)</td></tr>
+    <tr><td><strong>Transport</strong></td><td>UDP (พอร์ต 1812/1813)</td><td>TCP (พอร์ต 49)</td><td>TCP หรือ SCTP</td></tr>
+    <tr><td><strong>Encryption</strong></td><td>เข้ารหัสเฉพาะ Password</td><td>เข้ารหัสทั้ง Packet (Payload)</td><td>IPsec/TLS</td></tr>
+    <tr><td><strong>Auth + Authz</strong></td><td>รวมกัน</td><td>แยกกัน</td><td>แยกกัน</td></tr>
+    <tr><td><strong>Protocol</strong></td><td>Client/Server</td><td>Client/Server</td><td>Peer-to-Peer</td></tr>
+    <tr><td><strong>Vendor</strong></td><td>มาตรฐานเปิด</td><td>Cisco</td><td>มาตรฐานเปิด</td></tr>
+    <tr><td><strong>Use Case หลัก</strong></td><td>Network Access (VPN, 802.1X)</td><td>Device Admin (Router/Switch)</td><td>LTE/5G, IMS, Mobile Networks</td></tr>
+    <tr><td><strong>Accounting</strong></td><td>แยก Application</td><td>ในตัว</td><td>Built-in</td></tr>
+    <tr><td><strong>Failover</strong></td><td>จำกัด</td><td>จำกัด</td><td>Robust, Stateful</td></tr>
+  </tbody>
+</table></div>
+<p><strong>RADIUS</strong>: ใช้กับ 802.1X มากที่สุด; รองรับ EAP Methods หลายแบบ (EAP-TLS, PEAP, EAP-TTLS)<br>
+<strong>TACACS+</strong>: นิยมสำหรับ Device Administration เพราะแยก AAA Functions ออกจากกัน<br>
+<strong>Diameter</strong>: ทายาทของ RADIUS; ใช้ใน 4G/5G Core Networks; รองรับ 1,000+ Attribute-Value Pairs (AVPs)</p>
+
+<h3 id="section3-5" class="section-ref">3.5 802.1X และ EAP Methods</h3>
+<p><strong>802.1X</strong> เป็น Port-Based Network Access Control ประกอบด้วย 3 บทบาท:</p>
+<ol>
+  <li><strong>Supplicant</strong> (อุปกรณ์ของผู้ใช้ - Client)</li>
+  <li><strong>Authenticator</strong> (Switch, Access Point)</li>
+  <li><strong>Authentication Server</strong> (RADIUS Server)</li>
+</ol>
+<p><strong>EAP Methods (IANA Registry: 40+ Methods):</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Method</th><th>ความปลอดภัย</th><th>ต้องใช้ Certificate</th><th>การใช้งาน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>EAP-TLS</strong></td><td><strong>สูงที่สุด</strong></td><td>Client + Server</td><td>Enterprise Wireless; ปลอดภัยที่สุด</td></tr>
+    <tr><td><strong>EAP-TTLS</strong></td><td>สูง</td><td>Server เท่านั้น</td><td>Tunnel สำหรับ Legacy Auth</td></tr>
+    <tr><td><strong>PEAPv0/EAP-MSCHAPv2</strong></td><td>ปานกลาง-สูง</td><td>Server เท่านั้น</td><td>ใช้แพร่หลายที่สุด</td></tr>
+    <tr><td><strong>EAP-FAST</strong></td><td>ปานกลาง-สูง</td><td>Optional (PAC)</td><td>Cisco Environments</td></tr>
+    <tr><td><strong>EAP-SIM/AKA</strong></td><td>ปานกลาง</td><td>SIM Card</td><td>Mobile/Cellular Auth</td></tr>
+    <tr><td><strong>EAP-MD5</strong></td><td><strong>ต่ำ</strong></td><td>ไม่ต้อง</td><td>Legacy — <strong>ไม่แนะนำ</strong></td></tr>
+    <tr><td><strong>LEAP</strong></td><td><strong>ต่ำ</strong></td><td>ไม่ต้อง</td><td>Cisco Legacy — <strong>Deprecated</strong></td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+<section id="section4" class="section-ref">
+<h2>4. <span class="glossary-term">NIST Cybersecurity Framework (CSF) 2.0<span class="tooltip">กรอบการทำงานด้าน Cybersecurity ของ NIST ประกอบด้วย 6 ฟังก์ชัน: Govern, Identify, Protect, Detect, Respond, Recover</span></span></h2>
+<h3 id="section4-1" class="section-ref">4.1 ภาพรวม</h3>
+<p>NIST Cybersecurity Framework (CSF) 2.0 ได้รับการเผยแพร่เมื่อวันที่ <strong>26 กุมภาพันธ์ 2024</strong> โดย National Institute of Standards and Technology (NIST) ประเทศสหรัฐอเมริกา (CSWP 29) เป็นกรอบการทำงานที่ช่วยให้องค์กรทุกขนาดและทุกภาคส่วนสามารถบริหารจัดการความเสี่ยงด้าน Cybersecurity ได้อย่างเป็นระบบ</p>
+<p><strong>การเปลี่ยนแปลงที่สำคัญจาก CSF 1.1:</strong></p>
+<ul>
+  <li>ขยายขอบเขตจาก Critical Infrastructure → <strong>ทุกองค์กร</strong> (โรงเรียน, องค์กรไม่แสวงหากำไร, รัฐบาล, SME)</li>
+  <li>เพิ่มฟังก์ชัน <strong>Govern (GV)</strong> ใหม่ — Governance ถูกยกระดับจาก Subcategory ใน Identify เป็น Function เต็ม</li>
+  <li><strong>ไม่มีเนื้อหาใดถูกลบ</strong> — ทุกเนื้อหาจาก 1.1 ยังคงอยู่ใน 2.0</li>
+  <li>เพิ่ม <strong>2 Categories ใหม่ใน Protect</strong>: PR.PS (Platform Security) และ PR.IR (Technology Infrastructure Resilience)</li>
+  <li><strong>Implementation Examples</strong> แนบมากับทุก Subcategory</li>
+  <li><strong>CSF 2.0 Reference Tool</strong> — ค้นหาและ Export ข้อมูลในรูปแบบ Machine-Readable</li>
+  <li><strong>Informative References Catalog</strong> — Mapping ไปยัง 50+ Cybersecurity Documents</li>
+</ul>
+<h3 id="section4-2" class="section-ref">4.2 โครงสร้างของ CSF 2.0</h3>
+<p>CSF 2.0 ประกอบด้วย 3 ส่วนหลัก:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌───────────────────────────────────────────────────────────┐
+│                     CSF Core                               │
+│  ประกอบด้วย 6 Functions → 22 Categories → 106 Subcategories     │
+├───────────────────────────────────────────────────────────┤
+│                   Organizational Profiles                   │
+│  Current Profile (ปัจจุบัน) ↔ Target Profile (เป้าหมาย)          │
+│  → Gap Analysis → Action Plan                             │
+├───────────────────────────────────────────────────────────┤
+│                   Implementation Tiers                     │
+│  Tier 1 (Partial) → Tier 2 (Risk-Informed)                  │
+│  → Tier 3 (Repeatable) → Tier 4 (Adaptive)                  │
+└───────────────────────────────────────────────────────────┘</pre>
+<h3 id="section4-3" class="section-ref">4.3 6 Functions ของ CSF 2.0</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ฟังก์ชัน</th><th>ตัวย่อ</th><th>จำนวน Categories</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Govern</strong></td><td>GV</td><td>6</td><td><strong>ใหม่ใน 2.0</strong> — กำหนดนโยบาย, บทบาท, ความเสี่ยง, และห่วงโซ่อุปทาน</td></tr>
+    <tr><td><strong>Identify</strong></td><td>ID</td><td>3</td><td>ระบุทรัพย์สิน, ประเมินความเสี่ยง, ปรับปรุง</td></tr>
+    <tr><td><strong>Protect</strong></td><td>PR</td><td>5</td><td>ป้องกัน — IAM, Training, Data Security, Platform, Resilience</td></tr>
+    <tr><td><strong>Detect</strong></td><td>DE</td><td>2</td><td>ตรวจจับ — Continuous Monitoring, Event Analysis</td></tr>
+    <tr><td><strong>Respond</strong></td><td>RS</td><td>4</td><td>ตอบสนอง — Incident Management, Analysis, Communication, Mitigation</td></tr>
+    <tr><td><strong>Recover</strong></td><td>RC</td><td>2</td><td>กู้คืน — Recovery Plan Execution, Communication</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section4-4" class="section-ref">4.4 รายละเอียด Categories ในแต่ละ Function</h3>
+<p><strong>Govern (GV): การกำกับดูแล — NEW</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Category</th><th>ตัวย่อ</th><th>รายละเอียด</th><th>Key Subcategories</th></tr></thead>
+  <tbody>
+    <tr><td>Organizational Context</td><td>GV.OC</td><td>บริบทขององค์กร — ภารกิจ, กฎหมาย, ข้อบังคับ</td><td>Mission, Stakeholder Expectations, Legal/Regulatory</td></tr>
+    <tr><td>Risk Management Strategy</td><td>GV.RM</td><td>กลยุทธ์การบริหารความเสี่ยง</td><td>Risk Appetite, Tolerance, Enterprise Risk Integration</td></tr>
+    <tr><td>Roles, Responsibilities, Authorities</td><td>GV.RR</td><td>บทบาทและหน้าที่ด้าน Cybersecurity</td><td>Defined and Communicated Roles</td></tr>
+    <tr><td>Policy</td><td>GV.PO</td><td>นโยบายด้าน Cybersecurity</td><td>Established, Reviewed, Updated</td></tr>
+    <tr><td>Oversight</td><td>GV.OV</td><td>การกำกับดูแลและการตรวจสอบ</td><td>Board Oversight, Independent Review</td></tr>
+    <tr><td>Cybersecurity Supply Chain Risk Mgmt</td><td>GV.SC</td><td>การบริหารความเสี่ยงในห่วงโซ่อุปทาน</td><td>C-SCRM Processes, Supplier Risk, Third-Party Assessment</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Identify (ID): การระบุ</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Category</th><th>ตัวย่อ</th><th>รายละเอียด</th><th>การเปลี่ยนแปลงจาก 1.1</th></tr></thead>
+  <tbody>
+    <tr><td>Asset Management</td><td>ID.AM</td><td>การบริหารจัดการทรัพย์สินทางเทคโนโลยี</td><td>ID.AM เหมือนเดิม</td></tr>
+    <tr><td>Risk Assessment</td><td>ID.RA</td><td>การประเมินความเสี่ยง</td><td>ID.RA เหมือนเดิม</td></tr>
+    <tr><td>Improvement</td><td>ID.IM</td><td><strong>ใหม่</strong> — การปรับปรุงจากการเรียนรู้เหตุการณ์</td><td>ย้ายมาจาก RC.IM (Improvements)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>การเปลี่ยนแปลงจาก 1.1:</strong> ID.BE (Business Environment) → GV.OC; ID.GV → GV.RM; ID.SC → GV.SC; ID.RM → GV.RM; ID.IM ใหม่</p>
+<p><strong>Protect (PR): การป้องกัน</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Category</th><th>ตัวย่อ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td>Identity Management, Authentication, Access Control</td><td>PR.AA</td><td>การจัดการตัวตน, Credentials, Access Permissions</td></tr>
+    <tr><td>Awareness and Training</td><td>PR.AT</td><td>การอบรมและสร้างความตระหนักรู้, Role-Based Training</td></tr>
+    <tr><td>Data Security</td><td>PR.DS</td><td>Data At Rest/In Transit, Encryption, Classification</td></tr>
+    <tr><td><strong>Platform Security</strong></td><td><strong>PR.PS</strong></td><td><strong>NEW</strong> — Hardware, Software, Platform Hardening</td></tr>
+    <tr><td><strong>Technology Infrastructure Resilience</strong></td><td><strong>PR.IR</strong></td><td><strong>NEW</strong> — Resilience, Redundancy, Capacity Management</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Detect (DE): การตรวจจับ</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Category</th><th>ตัวย่อ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td>Continuous Monitoring</td><td>DE.CM</td><td>การเฝ้าระวังอย่างต่อเนื่อง — Network, Physical, Personnel</td></tr>
+    <tr><td>Adverse Event Analysis</td><td>DE.AE</td><td>Event Correlation, Impact Analysis, Alert Triage</td></tr>
+  </tbody>
+</table></div>
+<p><strong>การเปลี่ยนแปลง:</strong> DE.DP (Detection Processes) ถูกย้ายและรวมเข้ากับ GV, ID, DE</p>
+<p><strong>Respond (RS): การตอบสนอง</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Category</th><th>ตัวย่อ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td>Incident Management</td><td>RS.MA</td><td><strong>ขยายจาก RS.RP</strong> — การจัดการเหตุการณ์ที่ครอบคลุมขึ้น</td></tr>
+    <tr><td>Incident Analysis</td><td>RS.AN</td><td>Investigation, Forensics, Root Cause</td></tr>
+    <tr><td>Incident Response Reporting &amp; Communication</td><td>RS.CO</td><td>Internal/External Reporting, Stakeholder Communication</td></tr>
+    <tr><td>Incident Mitigation</td><td>RS.MI</td><td>Containment, Eradication</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Recover (RC): การกู้คืน</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Category</th><th>ตัวย่อ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td>Incident Recovery Plan Execution</td><td>RC.RP</td><td><strong>ขยายอย่างมีนัยสำคัญ</strong></td></tr>
+    <tr><td>Incident Recovery Communication</td><td>RC.CO</td><td>Internal/External Recovery Communication</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section4-5" class="section-ref">4.5 CSF Implementation Tiers</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ระดับ</th><th>ชื่อ</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Tier 1</strong></td><td>Partial (บางส่วน)</td><td>ไม่มีกระบวนการที่เป็นทางการ, ตอบสนองแบบ Reactively, Risk Management ไม่เป็นทางการ</td></tr>
+    <tr><td><strong>Tier 2</strong></td><td>Risk-Informed (ตระหนักถึงความเสี่ยง)</td><td>มีกระบวนการแต่ยังไม่ครอบคลุมทั้งองค์กร, ทำงานแบบ Siloed</td></tr>
+    <tr><td><strong>Tier 3</strong></td><td>Repeatable (ทำซ้ำได้)</td><td>มีกระบวนการที่ได้มาตรฐานทั่วทั้งองค์กร, วัดผลและปรับปรุง</td></tr>
+    <tr><td><strong>Tier 4</strong></td><td>Adaptive (ปรับตัวได้)</td><td>ปรับปรุงอย่างต่อเนื่อง, ใช้ข้อมูลเชิงลึกในการตัดสินใจแบบ Real-Time</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section4-6" class="section-ref">4.6 Organizational Profiles</h3>
+<ul>
+  <li><strong>Current Profile</strong>: จุดที่องค์กรยืนอยู่ตอนนี้ (Current Cybersecurity Outcomes)</li>
+  <li><strong>Target Profile</strong>: จุดที่องค์กรต้องการไปให้ถึง</li>
+  <li><strong>Gap Analysis</strong>: ความแตกต่างระหว่าง Current และ Target Profile</li>
+  <li><strong>Action Plan</strong>: ขั้นตอนที่มีลำดับความสำคัญเพื่อปิด Gap</li>
+</ul>
+<h3 id="section4-7" class="section-ref">4.7 Informative References</h3>
+<p>CSF 2.0 มีการ Mapping ไปยัง 50+ เอกสาร รวมถึง:</p>
+<ul>
+  <li>NIST SP 800-53 Rev. 5 — Security and Privacy Controls</li>
+  <li><strong>ISO/IEC 27001:2022</strong> — ISMS Requirements</li>
+  <li>CIS Controls v8</li>
+  <li>COBIT 2019</li>
+  <li>NIST Privacy Framework</li>
+  <li>NIST AI Risk Management Framework</li>
+  <li>OWASP ASVS (Application Security Verification Standard)</li>
+</ul>
+</section>
+<hr>
+<section id="section5" class="section-ref">
+<h2>5. ISO/IEC 27001:2022</h2>
+<h3 id="section5-1" class="section-ref">5.1 ภาพรวมของ ISMS</h3>
+<p><strong>ISO/IEC 27001:2022</strong> เป็นมาตรฐานสากลด้านการจัดการความปลอดภัยของข้อมูล (Information Security Management System — ISMS) ที่กำหนดข้อกำหนดสำหรับการจัดตั้ง ดำเนินการ ติดตาม ทบทวน และปรับปรุง ISMS ภายในองค์กร เผยแพร่เมื่อ <strong>25 ตุลาคม 2022</strong> แทนที่เวอร์ชัน 2013</p>
+<p><strong>ISMS (Information Security Management System):</strong> ระบบการจัดการที่ครอบคลุม People, Processes, และ IT Systems ผ่านกระบวนการบริหารความเสี่ยง เพื่อปกป้องข้อมูลขององค์กรอย่างเป็นระบบ</p>
+<p><strong>ประโยชน์ของ ISMS (ตาม ISO):</strong></p>
+<ul>
+  <li>ลดความเสี่ยงต่อการถูกโจมตีทางไซเบอร์</li>
+  <li>มีกรอบการจัดการที่เป็นระบบและเป็นศูนย์กลาง</li>
+  <li>พร้อมรับมือกับภัยคุกคามที่เปลี่ยนแปลง</li>
+  <li>ได้เปรียบทางการแข่งขันผ่าน Certification</li>
+  <li>ประหยัดต้นทุนผ่านประสิทธิภาพที่เพิ่มขึ้น</li>
+</ul>
+<h3 id="section5-2" class="section-ref">5.2 หลักการ PDCA (Plan-Do-Check-Act)</h3>
+<p>ISMS ใช้แนวคิดกระบวนการ PDCA:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌─────────────────────────────────────────────────────────────┐
+│ PLAN (วางแผน)                                                │
+│  └── กําหนดขอบเขต ISMS, นโยบาย, ประเมินความเสี่ยง              │
+│  └── เลือก Controls, สร้าง Risk Treatment Plan, จัดทำ SoA     │
+│       ↓                                                       │
+│ DO (ปฏิบัติ)                                                   │
+│  └── ดําเนินการตาม Risk Treatment Plan                         │
+│  └── ควบคุมการปฏิบัติงานตามกระบวนการที่กําหนด                    │
+│       ↓                                                       │
+│ CHECK (ตรวจสอบ)                                               │
+│  └── ติดตาม วัดผล วิเคราะห์                                    │
+│  └── Internal Audit, Management Review                         │
+│       ↓                                                       │
+│ ACT (ปรับปรุง)                                                 │
+│  └── ปรับปรุงอย่างต่อเนื่อง (Continuous Improvement)             │
+│  └── Corrective Actions, ปรับปรุง ISMS                         │
+└─────────────────────────────────────────────────────────────┘</pre>
+<h3 id="section5-3" class="section-ref">5.3 Annex A: 93 Controls แบ่งเป็น 4 หมวด</h3>
+<p>Annex A ของ ISO 27001:2022 ประกอบด้วยมาตรการควบคุมจํานวน <strong>93 ข้อ</strong> (ลดลงจาก 114 ข้อในเวอร์ชัน 2013 ผ่านการรวมข้อที่ซ้ำซ้อน) แบ่งเป็น 4 หมวด:</p>
+<div class="expandable">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-sitemap" aria-hidden="true"></i> ดูโครงสร้าง Annex A 93 Controls</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌─────────────────────────────────────────────────────────────┐
+│                    Annex A (93 Controls)                     │
+├─────────────────────────────────────────────────────────────┤
+│  A.5 Organizational Controls (37 ข้อ)                        │
+│  │  — Governance, Policy, Risk, Supply Chain, Cloud         │
+│  │  — Threat Intelligence, BC/DR, Project Management        │
+│  A.6 People Controls (8 ข้อ)                                 │
+│  │  — Screening, Training, Awareness, Disciplinary Process   │
+│  │  — Remote Working                                         │
+│  A.7 Physical Controls (14 ข้อ)                              │
+│  │  — Physical Security Perimeters, Entry Controls            │
+│  │  — Equipment Security, Cabling, Clear Desk/Clear Screen   │
+│  A.8 Technological Controls (34 ข้อ)                         │
+│  │  — Access Control, Cryptography, Secure Development        │
+│  │  — DLP, Monitoring, Web Filtering, Secure Coding          │
+└─────────────────────────────────────────────────────────────┘</pre>
+  </div>
+</div>
+<p><strong>สถิติการเปลี่ยนแปลงจากเวอร์ชัน 2013:</strong></p>
+<ul>
+  <li>57 controls ถูก Merge</li>
+  <li>23 controls ถูก Rename</li>
+  <li>3 controls ถูกลบ</li>
+  <li><strong>11 controls ถูกเพิ่มใหม่</strong></li>
+</ul>
+<h3 id="section5-4" class="section-ref">5.4 11 Controls ใหม่ใน ISO 27001:2022</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>Control ID</th><th>ชื่อ</th><th>หมวด</th><th>คําอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>5.7</strong></td><td>Threat Intelligence</td><td>Organizational</td><td>รวบรวมและวิเคราะห์ข้อมูลภัยคุกคามเพื่อป้องกันเชิงรุก</td></tr>
+    <tr><td><strong>5.23</strong></td><td>Information Security for Cloud Services</td><td>Organizational</td><td>จัดการความปลอดภัยสําหรับบริการคลาวด์ — Shared Responsibility Model</td></tr>
+    <tr><td><strong>5.30</strong></td><td>ICT Readiness for Business Continuity</td><td>Organizational</td><td>ความพร้อมของ ICT สําหรับความต่อเนื่องทางธุรกิจ</td></tr>
+    <tr><td><strong>7.4</strong></td><td>Physical Security Monitoring</td><td>Physical</td><td>การตรวจสอบทางกายภาพอย่างต่อเนื่องเพื่อตรวจจับการบุกรุก</td></tr>
+    <tr><td><strong>8.9</strong></td><td>Configuration Management</td><td>Technological</td><td>จัดการ Configuration ของระบบ — Baseline Hardening</td></tr>
+    <tr><td><strong>8.10</strong></td><td>Information Deletion</td><td>Technological</td><td>การลบข้อมูลอย่างปลอดภัยเมื่อไม่จําเป็นต้องใช้แล้ว</td></tr>
+    <tr><td><strong>8.11</strong></td><td>Data Masking</td><td>Technological</td><td>การปกปิดข้อมูลตามนโยบาย Access Control และ Data Classification</td></tr>
+    <tr><td><strong>8.12</strong></td><td>Data Leakage Prevention (DLP)</td><td>Technological</td><td>ป้องกันการรั่วไหลของข้อมูลโดยไม่ได้รับอนุญาต</td></tr>
+    <tr><td><strong>8.16</strong></td><td>Monitoring Activities</td><td>Technological</td><td>ตรวจสอบเครือข่ายและระบบเพื่อหาพฤติกรรมผิดปกติ</td></tr>
+    <tr><td><strong>8.23</strong></td><td>Web Filtering</td><td>Technological</td><td>จัดการการเข้าถึงเว็บไซต์ — ปิดกั้นเนื้อหาที่เป็นอันตราย</td></tr>
+    <tr><td><strong>8.28</strong></td><td>Secure Coding</td><td>Technological</td><td>ใช้หลักการ Secure Coding ตลอด SDLC</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section5-5" class="section-ref">5.5 Statement of Applicability (SoA)</h3>
+<p>SoA เป็นเอกสารบังคับตาม ISO 27001 <strong>Clause 6.1.3(d)</strong> ที่องค์กรต้องจัดทำขึ้นเพื่อ:</p>
+<ul>
+  <li>แสดงรายการควบคุมทั้งหมด <strong>93 ข้อ</strong></li>
+  <li>ระบุว่า Control ใด <strong>Applicable</strong> และ Control ใด <strong>Excluded</strong></li>
+  <li>ให้เหตุผลสําหรับการ Exclude แต่ละ Control</li>
+  <li>ระบุ Implementation Status สําหรับ Applicable Controls</li>
+  <li>อ้างอิง Policy/Procedure ที่เกี่ยวข้อง</li>
+</ul>
+<h3 id="section5-6" class="section-ref">5.6 กระบวนการ Risk Assessment &amp; Treatment (Clause 6.1)</h3>
+<p><strong>1. Risk Assessment (6.1.2):</strong></p>
+<ul>
+  <li>Define และ Apply Risk Assessment Methodology</li>
+  <li>Identify Risks (Threats × Vulnerabilities × Assets)</li>
+  <li>Analyze Likelihood และ Impact</li>
+  <li>Evaluate Risks กับ Acceptance Criteria</li>
+</ul>
+<p><strong>2. Risk Treatment (6.1.3):</strong></p>
+<ul>
+  <li>Select Treatment Options: <strong>Mitigate, Transfer, Accept, Avoid</strong></li>
+  <li>Determine Necessary Controls (จาก Annex A หรืออื่นๆ)</li>
+  <li>เปรียบเทียบกับ Annex A เพื่อยืนยันว่าไม่มี Control ใดถูกละเว้น</li>
+  <li><strong>จัดทำ Statement of Applicability (SoA)</strong></li>
+  <li>จัดทำ Risk Treatment Plan พร้อม Responsible Persons, Timelines, Resources, Success Criteria</li>
+  <li>ขออนุมัติจาก Risk Owner</li>
+</ul>
+<h3 id="section5-7" class="section-ref">5.7 ISO 27001 vs ISO 27002</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>มิติ</th><th>ISO 27001</th><th>ISO 27002</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ประเภท</strong></td><td>Requirements Standard (<strong>Certifiable</strong>)</td><td>Guidelines / Code of Practice</td></tr>
+    <tr><td><strong>วัตถุประสงค์</strong></td><td>สิ่งที่องค์กร <strong>ต้องทำ</strong> (Requirements)</td><td><strong>วิธีการ</strong> Implement Controls (Guidance)</td></tr>
+    <tr><td><strong>Clauses</strong></td><td>Clauses 4-10 (Mandatory)</td><td>Guidance Only</td></tr>
+    <tr><td><strong>Annex A</strong></td><td>รายการ 93 Controls (Normative)</td><td>รายละเอียด Control (Informative)</td></tr>
+    <tr><td><strong>Certification</strong></td><td>Yes — Third-Party Audit</td><td>No</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+<section id="section6" class="section-ref">
+<h2>6. การเปรียบเทียบ NIST CSF 2.0 และ ISO/IEC 27001:2022</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>มิติ</th><th>NIST CSF 2.0</th><th>ISO/IEC 27001:2022</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ลักษณะ</strong></td><td>กรอบแนวคิด (Framework)</td><td>มาตรฐานที่รับรองได้ (Certifiable Standard)</td></tr>
+    <tr><td><strong>การรับรอง</strong></td><td>ไม่มีการรับรอง</td><td>มีการรับรองโดย Certification Body</td></tr>
+    <tr><td><strong>โครงสร้าง</strong></td><td>6 Functions → 22 Categories → 106 Subcategories</td><td>Clauses 4-10 + Annex A (93 Controls, 4 Themes)</td></tr>
+    <tr><td><strong>ภาษา</strong></td><td>Outcomes-Based (What to achieve)</td><td>Requirements-Based (What to implement)</td></tr>
+    <tr><td><strong>การนําไปใช้</strong></td><td>ทุกองค์กร ทุกขนาด</td><td>ทุกองค์กร ทุกขนาด</td></tr>
+    <tr><td><strong>การปรับใช้</strong></td><td>ยืดหยุ่น — เลือกใช้ตามความเหมาะสม</td><td>ต้องใช้ทุกข้อหรือระบุข้อยกเว้นใน SoA</td></tr>
+    <tr><td><strong>ระดับรายละเอียด</strong></td><td>ระดับสูง (Strategic)</td><td>ระดับกลาง (Operational)</td></tr>
+    <tr><td><strong>การจัดการความเสี่ยง</strong></td><td>Risk-Based</td><td>Risk-Based</td></tr>
+    <tr><td><strong>ความสัมพันธ์</strong></td><td>CSF 2.0 อ้างอิง ISO 27001 เป็น Informative Reference</td><td>ISO 27001 สามารถใช้คู่กับ CSF 2.0 ได้</td></tr>
+  </tbody>
+</table></div>
+<p><strong>แนวทางการเลือกใช้:</strong></p>
+<ul>
+  <li>องค์กรที่ต้องการ <strong>ความยืดหยุ่น</strong> และ <strong>แนวทางเชิงกลยุทธ์</strong> → NIST CSF 2.0</li>
+  <li>องค์กรที่ต้องการ <strong>Certification</strong> และ <strong>มาตรฐานที่ตรวจสอบได้</strong> → ISO 27001:2022</li>
+  <li>องค์กรที่ต้องการทั้งสองอย่าง → ใช้ NIST CSF 2.0 เป็นกรอบภาพรวม และ ISO 27001 เป็นมาตรฐานสําหรับการดําเนินงาน</li>
+</ul>
+</section>
+<hr>
+<section id="section7" class="section-ref">
+<h2>7. กรณีศึกษา (Case Studies)</h2>
+<div class="expandable expanded" id="section7-1">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-industry" aria-hidden="true"></i> 7.1 Colonial Pipeline Ransomware Attack (2021)</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายการ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>วันที่เกิดเหตุ</strong></td><td>7 พฤษภาคม 2021</td></tr>
+    <tr><td><strong>ผู้โจมตี</strong></td><td>DarkSide (Ransomware-as-a-Service)</td></tr>
+    <tr><td><strong>ประเภท</strong></td><td>Ransomware + Data Exfiltration (Double Extortion)</td></tr>
+    <tr><td><strong>ค่าเสียหาย</strong></td><td>จ่ายค่าไถ่ 4.4 ล้าน USD (75 BTC) — FBI กู้คืนได้ ~2.3 ล้าน USD</td></tr>
+  </tbody>
+</table></div>
+<p><strong>เส้นทางการโจมตี (Attack Timeline):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>29 เม.ย. 2021 — เข้าถึงเครือข่ายครั้งแรกผ่าน VPN Account ที่ไม่มีการใช้งานแล้ว
+                    └── Credential รั่วไหล (พบใน Dark Web — reused password)
+                    └── **ไม่มี MFA** — จุดอ่อนสำคัญที่สุด
+   ↓
+30 เม.ย.-6 พ.ค. — ยกระดับสิทธิ์, ขโมยข้อมูล 100 GB (Billing Data), วาง Ransomware
+                    └── PowerShell สําหรับ Deployment, RDP สําหรับ Persistence
+                    └── Shadow Copy ถูกลบเพื่อป้องกัน Recovery
+   ↓
+7 พ.ค. 05:00 น. — พนักงานพบ Ransom Note บน Control Room Computer
+7 พ.ค. 06:10 น. — ปิดระบบท่อส่งน้ำมันยาว 5,500 ไมล์ (ป้องกันการแพร่กระจายไปยัง OT)
+   ↓
+8 พ.ค. — จ่ายค่าไถ่ 4.4 ล้าน USD (75 Bitcoin) — ได้ Decryption Tool (แต่ทำงานช้า)
+   ↓
+10-12 พ.ค. — Panic Buying ทั่ว SE USA — ปั๊มน้ำมัน 11,000+ แห่งขาดแคลน
+   ↓
+12 พ.ค. — เริ่มเดินระบบอีกครั้ง (หยุด 6 วัน)
+   ↓
+ต่อมา — FBI กู้คืน Bitcoin ได้ ~2.3 ล้าน USD โดยยึด Private Key ของ DarkSide Wallet</pre>
+<p><strong>การวิเคราะห์สาเหตุหลัก (Root Cause):</strong></p>
+<ul>
+  <li><strong>Primary</strong>: VPN Profile ที่ไม่ได้ใช้แล้วแต่ยังเปิดอยู่ — ไม่มี MFA — Password รั่วจาก Data Breach ก่อนหน้า</li>
+  <li><strong>Contributing</strong>: ไม่มี Access Review, ไม่มีการ Monitor VPN Access, IT/OT ไม่ได้ Segmentation ที่ดีพอ</li>
+</ul>
+<p><strong><span class="glossary-term">MITRE ATT&CK<span class="tooltip">ฐานความรู้เกี่ยวกับเทคนิคและกลยุทธ์ที่ผู้โจมตีใช้ในการโจมตีทางไซเบอร์ — พัฒนาโดย MITRE Corporation</span></span> Techniques ที่ใช้ในการโจมตี:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Tactic</th><th>Technique ID</th><th>ชื่อ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td>Initial Access</td><td>T1133</td><td>External Remote Services</td><td>Legacy VPN Exploitation</td></tr>
+    <tr><td>Initial Access</td><td>T1078</td><td>Valid Accounts</td><td>Compromised VPN Credentials</td></tr>
+    <tr><td>Execution</td><td>T1059</td><td>Command &amp; Scripting Interpreter</td><td>PowerShell</td></tr>
+    <tr><td>Persistence</td><td>T1021.001</td><td>Remote Services: RDP</td><td>RDP สําหรับ Persistence</td></tr>
+    <tr><td>Defense Evasion</td><td>T1562.001</td><td>Impair Defenses: Disable/Modify Tools</td><td>Shadow Copy Deletion</td></tr>
+    <tr><td>Lateral Movement</td><td>T1021.001</td><td>Remote Services: RDP</td><td>Lateral Movement ทั่ว IT Network</td></tr>
+    <tr><td>Command &amp; Control</td><td>T1090.003</td><td>Proxy: Multi-hop Proxy</td><td>Tor Network สําหรับ C2</td></tr>
+    <tr><td>Command &amp; Control</td><td>T1071</td><td>Application Layer Protocol</td><td>Cobalt Strike C2</td></tr>
+    <tr><td>Exfiltration</td><td>T1567</td><td>Exfiltration Over Web Service</td><td>ขโมยข้อมูล 100 GB</td></tr>
+    <tr><td>Impact</td><td>T1486</td><td>Data Encrypted for Impact</td><td>DarkSide Ransomware Encryption</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ผลกระทบ:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ด้าน</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Operational</strong></td><td>ท่อส่ง 5,500 ไมล์หยุด 6 วัน — 45% ของ East Coast Fuel (100M แกลลอน/วัน)</td></tr>
+    <tr><td><strong>Financial</strong></td><td>ค่าไถ่ 4.4M USD + ค่า Recovery — รวมประมาณ 5-10M USD</td></tr>
+    <tr><td><strong>Societal</strong></td><td>Panic Buying, รัฐ 17 แห่ง + DC ประกาศสถานการณ์ฉุกเฉิน, ราคาน้ำมันเพิ่ม 2-3 cents/gallon</td></tr>
+    <tr><td><strong>Regulatory</strong></td><td>TSA ออก Security Directives ใหม่, Executive Order 14028</td></tr>
+  </tbody>
+</table></div>
+<p><strong>บทเรียนที่ได้:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>บทเรียน</th><th>แนวทางปฏิบัติ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>เปิด MFA ทุกจุด</strong></td><td>โดยเฉพาะ Remote Access (VPN, RDP, VDI) — CISA/FBI Primary Recommendation</td></tr>
+    <tr><td><strong>ตรวจจับและลบบัญชีที่ไม่ใช้งาน</strong></td><td>Quarterly Access Reviews — Dormant Account Detection</td></tr>
+    <tr><td><strong>แยก IT และ OT Network</strong></td><td>Controlled Conduits + Monitoring — ป้องกัน Lateral Movement</td></tr>
+    <tr><td><strong>มี Incident Response Plan</strong></td><td>ฝึกซ้อม IR Plan อย่างสม่ําเสมอ — Communication Protocols</td></tr>
+    <tr><td><strong>Backup ที่แยกออกจากเครือข่าย</strong></td><td>3-2-1 Backup Rule + Immutable Backup + Offline Backup</td></tr>
+    <tr><td><strong>จับตาดู Dark Web</strong></td><td>Credential Monitoring — รู้ว่า Password ของคุณรั่วหรือไม่</td></tr>
+  </tbody>
+</table></div>
+<p><strong>การเปลี่ยนแปลงหลังจากเหตุการณ์:</strong></p>
+<ul>
+  <li><strong>TSA Security Directives</strong> (2021-2022): กําหนด Cybersecurity Coordinator, รายงาน Incidents ภายใน 12 ชม.</li>
+  <li><strong>Executive Order 14028</strong> (พ.ค. 2021): Improving Nation's Cybersecurity</li>
+  <li><strong>CISA Joint Cyber Defense Collaborative (JCDC)</strong> ก่อตั้งขึ้น</li>
+  <li><strong>Cyber Incident Reporting for Critical Infrastructure Act (CIRCIA)</strong> 2022</li>
+  <li><strong>Pipeline-Specific Cybersecurity Performance Goals (CPGs)</strong></li>
+</ul>
+  </div>
+</div>
+<div class="expandable expanded" id="section7-2">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-cloud" aria-hidden="true"></i> 7.2 SolarWinds Supply Chain Attack (2020)</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายการ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>วันที่ตรวจพบ</strong></td><td>ธันวาคม 2020 (FireEye ค้นพบและเปิดเผย 12 ธ.ค. 2020)</td></tr>
+    <tr><td><strong>ผู้โจมตี</strong></td><td>NOBELIUM / APT29 / Cozy Bear — Russian Foreign Intelligence Service (SVR)</td></tr>
+    <tr><td><strong>ประเภท</strong></td><td>Supply Chain Attack + Backdoor</td></tr>
+  </tbody>
+</table></div>
+<p><strong>เส้นทางการโจมตี:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ต้น 2019 — NOBELIUM เริ่ม Reconnaissance Build Environment ของ SolarWinds
+   ↓
+ต.ค. 2019 — ทดสอบ Injection — Empty Classes ถูกแทรกเพื่อทดสอบ
+   ↓
+ก.พ. 2020 — SUNBURST Backdoor ถูก Compile เข้าไปใน Orion DLL
+               └── SUNSPOT Code Injector รันบน Build Server
+               └── Source Code Repository สะอาด — ไม่มี Malicious Code
+               └── DLL ถูก Sign ด้วย Certificate จริงของ SolarWinds
+   ↓
+มี.ค. 2020 — Orion 2019.4 Hotfix 5 เผยแพร่ — มี Trojanized DLL
+   ↓
+เม.ย. 2020 — DNS Beaconing ไปยัง avsvmcloud[.]com เริ่ม (หลังรอ 2 สัปดาห์)
+   ↓
+พ.ค.-พ.ย. 2020 — Hands-on-Keyboard บนเครือข่ายเหยื่อ — C2, Lateral Movement, Exfil
+   ↓
+12 ธ.ค. 2020 — FireEye ตรวจพบและเปิดเผย SUNBURST
+15 ธ.ค. 2020 — Microsoft + GoDaddy Sinkhole avsvmcloud[.]com — Killswitch ทํางาน</pre>
+<p><strong>รายละเอียดทางเทคนิคของ SUNBURST:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ไฟล์</strong></td><td><code>SolarWinds.Orion.Core.BusinessLayer.dll</code> — ~4,000 บรรทัด Malicious Code</td></tr>
+    <tr><td><strong>การ Sign</strong></td><td>Digitally Signed ด้วย SolarWinds' Legitimate Certificate</td></tr>
+    <tr><td><strong>Dormancy</strong></td><td>รอ <strong>2 สัปดาห์</strong> ก่อนเริ่มกิจกรรม — หลบเลี่ยง Sandbox/Analysis</td></tr>
+    <tr><td><strong>Anti-Analysis</strong></td><td>Blacklist Forensic/AV Tools: Carbon Black, CrowdStrike, SentinelOne, FireEye, Defender, ESET, F-SECURE</td></tr>
+    <tr><td><strong>C2 Protocol</strong></td><td>DNS-Based C2 ผ่าน DGA (avsvmcloud[.]com) — Traffic ปลอมเป็น Orion Improvement Protocol (OIP)</td></tr>
+    <tr><td><strong>DGA Details</strong></td><td>Subdomain = <code>[encoded_userID][encoded_domain].avsvmcloud[.]com</code> — Reversible Encoding</td></tr>
+  </tbody>
+</table></div>
+<p><strong>SUNSPOT Code Injector:</strong></p>
+<ul>
+  <li><strong>ไม่เคยถูก Distributed ไปยัง Customer</strong> — พบเฉพาะบน Build Servers ของ SolarWinds</li>
+  <li>รันใน Background เฝ้าดู Build ใหม่ของ Orion</li>
+  <li>ที่ Build Time: Inject SUNBURST Malicious Code เข้าไปใน Source File ชั่วคราว</li>
+  <li>หลัง Compile: ลบ Temp File — <strong>Source Code Repository สะอาด</strong></li>
+  <li>ค้นพบโดย <strong>KPMG</strong> ระหว่าง Forensic Investigation</li>
+</ul>
+<p><strong>MITRE ATT&amp;CK Techniques:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Tactic</th><th>Technique ID</th><th>ชื่อ</th></tr></thead>
+  <tbody>
+    <tr><td>Initial Access</td><td>T1195.002</td><td>Compromise Software Supply Chain</td></tr>
+    <tr><td>Execution</td><td>T1569.002</td><td>Service Execution</td></tr>
+    <tr><td>Defense Evasion</td><td>T1027</td><td>Obfuscated Files or Information</td></tr>
+    <tr><td>Defense Evasion</td><td>T1553.002</td><td>Code Signing</td></tr>
+    <tr><td>Discovery</td><td>T1083</td><td>File and Directory Discovery</td></tr>
+    <tr><td>Discovery</td><td>T1518.001</td><td>Security Software Discovery</td></tr>
+    <tr><td>Discovery</td><td>T1057</td><td>Process Discovery</td></tr>
+    <tr><td>Command &amp; Control</td><td>T1071.001</td><td>Web Protocols</td></tr>
+    <tr><td>Command &amp; Control</td><td>T1071.004</td><td>DNS</td></tr>
+    <tr><td>Command &amp; Control</td><td>T1568.002</td><td>Domain Generation Algorithms</td></tr>
+    <tr><td>Persistence</td><td>T1543.003</td><td>Windows Service</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ผลกระทบ:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ด้าน</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>จํานวนผู้ได้รับผลกระทบ</strong></td><td>18,000 Customers ได้รับ Trojanized Update; ~100 องค์กรถูกเจาะลึก</td></tr>
+    <tr><td><strong>หน่วยงานรัฐบาลสหรัฐฯ</strong></td><td>Treasury, Commerce, State, Energy, Homeland Security, NIH</td></tr>
+    <tr><td><strong>บริษัทเอกชน</strong></td><td>Microsoft, FireEye, Cisco, Intel, Deloitte, Nvidia, VMware, Malwarebytes</td></tr>
+    <tr><td><strong>ประเทศที่ได้รับผลกระทบ</strong></td><td>US, UK, Canada, Mexico, Belgium, Spain, Israel, UAE</td></tr>
+  </tbody>
+</table></div>
+<p><strong>SBOM — Software Bill of Materials:</strong></p>
+<p><strong>คําจํากัดความ (ตาม NTIA):</strong> บันทึกทางการที่ประกอบด้วยรายละเอียดและความสัมพันธ์ใน Supply Chain ของ Components ที่ใช้ในการสร้าง Software</p>
+<p><strong>องค์ประกอบสําคัญ:</strong> ชื่อ Component, เวอร์ชัน, Supplier, Dependency Relationships, Hash ของแต่ละ Component, License Information</p>
+<p><strong>มาตรฐาน:</strong> SPDX (ISO/IEC 5962:2021), CycloneDX (OWASP), SWID (ISO/IEC 19770-2)</p>
+<p><strong>Executive Order 14028</strong> กําหนดให้ SBOM เป็นข้อบังคับสําหรับ Software ที่ขายให้กับ US Government</p>
+<p><strong>บทเรียนที่ได้:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>บทเรียน</th><th>แนวทางปฏิบัติ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Supply Chain Risk Management</strong></td><td>ตรวจสอบ Security Posture ของ Vendor ทุกราย</td></tr>
+    <tr><td><strong>Software Bill of Materials (SBOM)</strong></td><td>รู้ Component ทั้งหมดใน Software — ตรวจสอบได้</td></tr>
+    <tr><td><strong>Zero Trust Architecture</strong></td><td>ไม่เชื่อถือ Software หรือ Device ใดโดยปริยาย</td></tr>
+    <tr><td><strong>Build Environment Security</strong></td><td>แยก Build Environment, Secure CI/CD, Code Signing Protection</td></tr>
+    <tr><td><strong>Code Signing Protection</strong></td><td>ปกป้อง Code Signing Certificate อย่างเข้มงวด — HSM</td></tr>
+    <tr><td><strong>Endpoint Detection and Response (EDR)</strong></td><td>ใช้ EDR ตรวจจับพฤติกรรมผิดปกติ</td></tr>
+    <tr><td><strong>Runtime Integrity Monitoring</strong></td><td>ตรวจจับพฤติกรรมที่ไม่คาดคิดของ Application</td></tr>
+  </tbody>
+</table></div>
+  </div>
+</div>
+<div class="expandable expanded" id="section7-3">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-network-wired" aria-hidden="true"></i> 7.3 Mirai Botnet / Dyn DNS DDoS Attack (2016)</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายการ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>วันที่เกิดเหตุ</strong></td><td>21 ตุลาคม 2016</td></tr>
+    <tr><td><strong>ผู้โจมตี</strong></td><td>Mirai Botnet (เขียนโดย Paras Jha "Anna-senpai" — รับสารภาพผิด 2017)</td></tr>
+    <tr><td><strong>ประเภท</strong></td><td>DDoS (Distributed Denial of Service) — IoT Botnet</td></tr>
+  </tbody>
+</table></div>
+<p><strong>เส้นทางการโจมตี:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>IoT Devices (กล้องวงจรปิด, DVR, Router) ถูกติดตั้ง Mirai Malware
+    └── สแกน Internet ทั่วโลกที่ TCP Port 23 และ 2323 (Telnet)
+    └── ใช้ 62 Hardcoded Default Credentials (admin:admin, root:root, ฯลฯ)
+    └── Device Phone Home ไปยัง C2 Server — กลายเป็น Bot
+   ↓
+21 ต.ค. 2016 — สั่ง Botnet ~50,000-100,000 เครื่อง
+                  โจมตี DNS Provider Dyn (DNS Water Torture + Amplification)
+   ↓
+DNS Resolution ของเว็บไซต์ใหญ่ล้มเหลว — 3 Waves ตลอดทั้งวัน:
+    Twitter, Netflix, Reddit, CNN, Spotify, Airbnb, Pinterest, The Guardian, PayPal, GitHub, Etsy, NYT
+   ↓
+Traffic สูงสุด: ~1.2 Tbps — 30+ Attack Commands — DNS Response Time 500ms → 16 วินาที</pre>
+<p><strong>รายละเอียดทางเทคนิคของ Mirai:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ภาษา</strong></td><td>C (สําหรับ Bot), Go (สําหรับ C2 Server)</td></tr>
+    <tr><td><strong>Target Ports</strong></td><td>TCP 23 และ 2323 (Telnet)</td></tr>
+    <tr><td><strong>Credentials</strong></td><td>62 Hardcoded Default Username/Password Pairs</td></tr>
+    <tr><td><strong>Self-Protection</strong></td><td>Blocklist คู่แข่ง, Process Scanning, Telnet/SSH Port Blocking</td></tr>
+    <tr><td><strong>Persistence</strong></td><td>RAM-Only — Reboot ล้าง แต่ติดตั้งใหม่ได้ทันที (Rapid Reinfection)</td></tr>
+    <tr><td><strong>Source Code</strong></td><td>เผยแพร่สู่สาธารณะ 30 ก.ย. 2016 — นําไปสู่ Mirai Forks มากมาย</td></tr>
+  </tbody>
+</table></div>
+<p><strong>DDoS Capabilities:</strong></p>
+<ul>
+  <li>UDP Flood, ACK Flood, SYN Flood</li>
+  <li>GRE IP/GRE ETH Flood</li>
+  <li>DNS Water Torture (Subdomain Attack)</li>
+  <li>HTTP Flood (Layer 7)</li>
+  <li>STOMP Flood</li>
+</ul>
+<p><strong>IoT Vulnerability Landscape (2016):</strong></p>
+<ul>
+  <li>อุปกรณ์หลายสิบล้านชิ้นใช้ Default Passwords</li>
+  <li>Telnet/SSH เปิดบน WAN Interface</li>
+  <li>อุปกรณ์จํานวนมากไม่สามารถ Patch ได้ (No Update Mechanism)</li>
+  <li>XiongMai Technologies เพียงเจ้าเดียวมีอุปกรณ์เสี่ยง 515,000+ เครื่อง</li>
+  <li>แหล่งข้อมูล Rapid7: 15M Public Telnet Servers ทั่วโลก</li>
+</ul>
+<p><strong>การโจมตีของ Mirai ที่สําคัญก่อน Dyn:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>วันที่</th><th>Target</th><th>Traffic</th></tr></thead>
+  <tbody>
+    <tr><td>ส.ค. 2016</td><td>Incapsula (GRE Floods)</td><td>280 Gbps</td></tr>
+    <tr><td>20 ก.ย. 2016</td><td>Brian Krebs' Blog</td><td>620 Gbps — สูงสุดในเวลานั้น</td></tr>
+    <tr><td>ปลาย ก.ย. 2016</td><td>OVH (French Webhost)</td><td>1.1-1.5 Tbps — สถิติโลกใหม่</td></tr>
+    <tr><td>21 ต.ค. 2016</td><td>Dyn DNS</td><td>~1.2 Tbps</td></tr>
+  </tbody>
+</table></div>
+<p><strong>บทเรียนที่ได้:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>บทเรียน</th><th>แนวทางปฏิบัติ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>IoT Device Security</strong></td><td>เปลี่ยน Default Password ทุกครั้ง, ปิด Telnet, ใช้ SSH</td></tr>
+    <tr><td><strong>DDoS Mitigation Strategy</strong></td><td>ใช้ DDoS Protection Service (Cloudflare, AWS Shield, Akamai)</td></tr>
+    <tr><td><strong>DNS Redundancy</strong></td><td>ใช้ DNS Provider หลายราย (Multi-Vendor)</td></tr>
+    <tr><td><strong>Network Monitoring</strong></td><td>ตรวจจับ Traffic Anomaly ก่อนถึงขั้นรุนแรง</td></tr>
+    <tr><td><strong>IoT Segmentation</strong></td><td>แยก IoT Devices ไว้คนละ VLAN</td></tr>
+    <tr><td><strong>Outbound Filtering</strong></td><td>IoT Devices ไม่ควร Initiate Arbitrary External Connections</td></tr>
+    <tr><td><strong>Vendor Liability</strong></td><td>ผลักดันความรับผิดชอบไปยัง Manufacturer (Cyber Resilience Act 2024/2847)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ความคืบหน้าด้าน IoT Security นับตั้งแต่นั้น:</strong></p>
+<ul>
+  <li><strong>California SB-327</strong> (2018): กฎหมายฉบับแรกในสหรัฐฯ ที่กําหนดให้ IoT Devices มี Security Features</li>
+  <li><strong>EU Cyber Resilience Act</strong> (Regulation 2024/2847): กําหนด Security Requirements สําหรับ Products with Digital Elements</li>
+  <li><strong>NIST IR 8425</strong>: IoT Device Cybersecurity Guidance</li>
+  <li><strong>IoT Botnets ยังคงมีอยู่</strong>: Mozi, Gafgyt (Bashlite Successor), FBot</li>
+  <li><strong>Global IoT Devices</strong>: 18+ พันล้านเครื่อง (2025, est.)</li>
+</ul>
+  </div>
+</div>
+</section>
+<hr>
+<section id="section8" class="section-ref">
+<h2>8. สถิติและแนวโน้มด้าน Network Security</h2>
+<h3 id="section8-1" class="section-ref">8.1 IBM Cost of Data Breach Report 2025</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ตัวชี้วัด</th><th>ค่า</th><th>การเปลี่ยนแปลง</th></tr></thead>
+  <tbody>
+    <tr><td>ค่าเสียหายเฉลี่ยโลก</td><td>4.44 ล้าน USD</td><td>ลดลง 9% จาก 2024 (ลดครั้งแรกใน 5 ปี)</td></tr>
+    <tr><td>ค่าเสียหายเฉลี่ยในสหรัฐอเมริกา</td><td>10.22 ล้าน USD</td><td>เพิ่มขึ้น 9% — สูงเป็นประวัติการณ์</td></tr>
+    <tr><td>Healthcare</td><td>7.42 ล้าน USD</td><td>สูงสุด (14 ปีติดต่อกัน)</td></tr>
+    <tr><td>Financial Services</td><td>5.56 ล้าน USD</td><td>อันดับสอง</td></tr>
+    <tr><td>เวลาตรวจจับ (Mean Time to Identify)</td><td>158 วัน</td><td>ต่ำสุดในรอบ 9 ปี</td></tr>
+    <tr><td>เวลาควบคุม (Mean Time to Contain)</td><td>83 วัน</td><td>—</td></tr>
+    <tr><td>% ที่องค์กรตรวจจับได้เอง</td><td>42%</td><td>เพิ่มขึ้นจาก 33%</td></tr>
+    <tr><td>AI + Automation — ลดค่าเสียหาย</td><td>1.9 ล้าน USD</td><td>เทียบกับองค์กรที่ไม่ใช้ AI</td></tr>
+    <tr><td>AI Governance Gap</td><td>97% ของ AI-Related Breaches ขาด Access Control</td><td>63% ไม่มี AI Governance Policy</td></tr>
+    <tr><td>Shadow AI</td><td>20% ของ Breaches เกี่ยวข้องกับ Shadow AI</td><td>เพิ่มค่าเสียหาย 670K USD</td></tr>
+    <tr><td>Phishing</td><td>16%</td><td>Top Attack Vector</td></tr>
+    <tr><td>Malicious Insider</td><td>4.92 ล้าน USD</td><td>Highest Cost Vector</td></tr>
+    <tr><td>Supply Chain</td><td>4.91 ล้าน USD</td><td>Second Costliest; Longest Lifecycle (267 วัน)</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section8-2" class="section-ref">8.2 Verizon 2025 Data Breach Investigations Report (DBIR)</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ตัวชี้วัด</th><th>ค่า</th></tr></thead>
+  <tbody>
+    <tr><td>Dataset</td><td>22,052 Incidents, 12,195 Confirmed Breaches, 139 ประเทศ</td></tr>
+    <tr><td>Ransomware in Breaches</td><td><strong>44%</strong> (เพิ่มขึ้น 37% YoY จาก 32%)</td></tr>
+    <tr><td>Vulnerability Exploitation</td><td><strong>20%</strong> (เพิ่มขึ้น 34% YoY — แซง Phishing)</td></tr>
+    <tr><td>Edge Device/VPN Attacks</td><td>เพิ่มขึ้น <strong>8 เท่า</strong> (22% ของ Vulnerability Exploitations)</td></tr>
+    <tr><td>Third-Party Involvement</td><td><strong>30%</strong> (เพิ่มขึ้นเท่าตัวจาก 15%)</td></tr>
+    <tr><td>Credential Abuse</td><td><strong>22%</strong> — ยังคงอันดับหนึ่ง</td></tr>
+    <tr><td>Human Element</td><td><strong>60%</strong></td></tr>
+    <tr><td>Espionage</td><td><strong>17%</strong> (เพิ่มขึ้นอย่างมีนัยสําคัญ)</td></tr>
+    <tr><td>SMB Ransomware</td><td><strong>88%</strong> ของ SMB Breaches (vs 39% สําหรับ Large Orgs)</td></tr>
+    <tr><td>Median Ransom Payment</td><td>115,000 USD (ลดลงจาก 150,000)</td></tr>
+    <tr><td>Non-Payment Rate</td><td>64% (เพิ่มขึ้นจาก 50% เมื่อ 2 ปีก่อน)</td></tr>
+    <tr><td>Infostealer Credentials</td><td>30% Enterprise Devices; 46% Non-Managed (BYOD)</td></tr>
+    <tr><td>Patching Gap</td><td>แค่ 54% ของ Edge Device Vulns ได้รับการแก้ไข — Median 32 วัน</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section8-3" class="section-ref">8.3 ENISA Threat Landscape 2025</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ตัวชี้วัด</th><th>ค่า</th></tr></thead>
+  <tbody>
+    <tr><td>ระยะเวลา</td><td>กรกฎาคม 2024 — มิถุนายน 2025</td></tr>
+    <tr><td>Incidents ที่วิเคราะห์</td><td>4,875</td></tr>
+    <tr><td>DDoS Attacks</td><td><strong>76.7%</strong> ของ incidents ทั้งหมด (ส่วนใหญ่มาจาก Hacktivist)</td></tr>
+    <tr><td>Ransomware</td><td><strong>Most Impactful</strong> Threat ใน EU</td></tr>
+    <tr><td>Hacktivism</td><td>79% ของ Incidents (ส่วนใหญ่เป็น Low-Impact DDoS)</td></tr>
+    <tr><td>State-Aligned</td><td>7.2% ของ Incidents; 46 Distinct Intrusion Sets</td></tr>
+    <tr><td>Phishing (Initial Intrusion)</td><td>60%</td></tr>
+    <tr><td>AI-Generated Phishing</td><td>&gt;80% ของแคมเปญทั้งหมด</td></tr>
+    <tr><td>CVEs ใหม่</td><td>42,595 (เพิ่มขึ้น 27% YoY)</td></tr>
+    <tr><td>Sectors ที่ถูกโจมตีมากที่สุด</td><td>Public Admin 38.2%, Transport 7.5%, Digital Infrastructure 4.8%, Finance 4.5%</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section8-4" class="section-ref">8.4 สถิติ Ransomware เฉพาะทาง</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>แหล่งที่มา</th><th>ตัวชี้วัด</th><th>ค่า</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Chainalysis 2025</strong></td><td>ยอดรวมจ่ายค่าไถ่ 2024</td><td>813.55 ล้าน USD (ลดลง 35% YoY)</td></tr>
+    <tr><td><strong>BlackFog 2025</strong></td><td>Disclosed Attacks เพิ่มขึ้น</td><td>49% YoY (1,174 Incidents)</td></tr>
+    <tr><td><strong>BlackFog 2025</strong></td><td>Undisclosed Attacks</td><td>86% ไม่เคยรายงานต่อสาธารณะ</td></tr>
+    <tr><td><strong>Sophos 2025</strong></td><td>Median Ransom Demand</td><td>1.20 ล้าน USD (ลดลง 56% YoY)</td></tr>
+    <tr><td><strong>Sophos 2025</strong></td><td>Median Ransom Paid</td><td>1.0 ล้าน USD</td></tr>
+    <tr><td><strong>CheckPoint 2025</strong></td><td>Monthly Victims</td><td>~535/month (เพิ่มขึ้นจาก 420 YoY)</td></tr>
+    <tr><td><strong>Coveware Q4 2024</strong></td><td>Payment Rate</td><td>25% — All-Time Low</td></tr>
+    <tr><td><strong>Verizon DBIR 2025</strong></td><td>Ransomware in Breaches</td><td>44%</td></tr>
+  </tbody>
+</table></div>
+<p><strong>กลุ่ม Ransomware ที่ Active (Q3 2025):</strong> Qilin (~75 victims/month), LockBit (re-emerged), 85+ Active Data Leak Sites</p>
+<h3 id="section8-5" class="section-ref">8.5 Zero Trust Adoption</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ตัวชี้วัด</th><th>ค่า</th><th>แหล่งที่มา</th></tr></thead>
+  <tbody>
+    <tr><td>Market Size 2024</td><td>36.96 พันล้าน USD</td><td>Grand View Research</td></tr>
+    <tr><td>Market Size 2025</td><td>41.5-50.9 พันล้าน USD</td><td>Multiple Sources</td></tr>
+    <tr><td>Projected 2030</td><td>92.42-121.6 พันล้าน USD</td><td>Multiple Sources</td></tr>
+    <tr><td>CAGR</td><td>14.7%-17.7%</td><td>Multiple Sources</td></tr>
+    <tr><td>องค์กรที่ Adopt (ทั้งหมดหรือบางส่วน)</td><td>63%</td><td>Gartner</td></tr>
+    <tr><td>อยู่ระหว่าง Adopt</td><td>46%</td><td>Survey 2,200 Leaders</td></tr>
+    <tr><td>ไม่มีแผน Zero Trust</td><td>11%</td><td>Survey 2,200 Leaders</td></tr>
+    <tr><td>Asia-Pacific CAGR</td><td>16.87% (เร็วที่สุด)</td><td>Kings Research</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section8-6" class="section-ref">8.6 Cybersecurity Skills Gap</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ตัวชี้วัด</th><th>ค่า</th><th>แหล่งที่มา</th></tr></thead>
+  <tbody>
+    <tr><td>องค์กรที่มี Skills Shortage</td><td><strong>95%</strong></td><td>ISC2 2025</td></tr>
+    <tr><td>Critical/Significant Shortage</td><td><strong>59%</strong> (เพิ่มจาก 44% ใน 2024)</td><td>ISC2 2025</td></tr>
+    <tr><td>มีผลกระทบจาก Skills Gap</td><td><strong>88%</strong></td><td>ISC2 2025</td></tr>
+    <tr><td>Top Skill ที่ต้องการ</td><td>AI/ML <strong>41%</strong></td><td>ISC2 2025</td></tr>
+    <tr><td>ทักษะอันดับสอง</td><td>Cloud Security <strong>36%</strong></td><td>ISC2 2025</td></tr>
+    <tr><td>Budget Cuts</td><td>36%</td><td>ISC2 2025</td></tr>
+    <tr><td>จํานวนผู้ตอบแบบสอบถาม</td><td>16,029</td><td>ISC2 2025</td></tr>
+  </tbody>
+</table></div>
+<p><strong>หมายเหตุสําคัญ:</strong> ISC2 2025 ไม่ได้เผยแพร่ตัวเลข Global Workforce Gap — เปลี่ยนโฟกัสจาก Headcount เป็น <strong>Skills</strong></p>
+</section>
+<hr>
+<section id="section9" class="section-ref">
+<h2>9. Security Governance และการบริหารความเสี่ยง</h2>
+<h3 id="section9-1" class="section-ref">9.1 กรอบการบริหารความเสี่ยง (Risk Management Frameworks)</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>Framework</th><th>ขอบเขต</th><th>Methodology</th><th>ผลลัพธ์</th><th>Certifiable</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ISO 31000:2018</strong></td><td>องค์กรทั้งหมด (Enterprise)</td><td>คุณภาพ (Qualitative) / หลักการ</td><td>Risk Register, Treatment Plan</td><td>ไม่มี</td></tr>
+    <tr><td><strong>COSO ERM (2017)</strong></td><td>องค์กรทั้งหมด — เน้น Governance</td><td>คุณภาพ (Qualitative)</td><td>Risk Appetite, Strategy Alignment</td><td>ไม่มี</td></tr>
+    <tr><td><strong>FAIR</strong></td><td>ภัยคุกคามทางไซเบอร์เท่านั้น</td><td><strong>ปริมาณ (Quantitative)</strong> — เป็นตัวเลขเงิน</td><td>Annual Loss Expectancy (ALE)</td><td>ไม่มี</td></tr>
+    <tr><td><strong>NIST RMF</strong></td><td>ระบบสารสนเทศของรัฐบาลสหรัฐฯ</td><td>แบบขั้นตอน 7 ขั้นตอน</td><td>System Authorization</td><td>ไม่มี</td></tr>
+    <tr><td><strong>ISO 27001</strong></td><td>ISMS</td><td>Risk-Based Controls</td><td>ISMS Certification</td><td><strong>มี</strong></td></tr>
+  </tbody>
+</table></div>
+<p><strong>คําอธิบายเพิ่มเติม:</strong></p>
+<p><strong>ISO 31000:2018:</strong></p>
+<ul>
+  <li>หลักการ: "Risk management creates and protects value"</li>
+  <li>กระบวนการ: Communication &amp; Consultation → Establish Context → Risk Assessment (ID → Analyze → Evaluate) → Risk Treatment → Monitoring &amp; Review</li>
+  <li>ยืดหยุ่น — ไม่กําหนดวิธีการเฉพาะ</li>
+</ul>
+<p><strong>COSO ERM (2017 Update):</strong></p>
+<ul>
+  <li>20 Principles ใน 5 Components: Governance &amp; Culture; Strategy &amp; Objective-Setting; Performance; Review &amp; Revision; Information, Communication &amp; Reporting</li>
+  <li>Strong on Board Oversight, Risk Appetite Definition</li>
+</ul>
+<p><strong>FAIR (Factor Analysis of Information Risk):</strong></p>
+<ul>
+  <li>Quantitative Cyber Risk Analysis — ผลลัพธ์เป็นตัวเลขเงิน</li>
+  <li>สูตร: <strong>Loss Event Frequency × Loss Magnitude = Risk ($/year)</strong></li>
+  <li>SLE (Single Loss Expectancy) = Asset Value × Exposure Factor</li>
+  <li>ARO (Annualized Rate of Occurrence)</li>
+  <li>ALE (Annualized Loss Expectancy) = SLE × ARO</li>
+</ul>
+<h3 id="section9-2" class="section-ref">9.2 Security Policy Hierarchy</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ระดับ</th><th>ประเภทเอกสาร</th><th>คําอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>1</strong></td><td><strong>Policies</strong></td><td>เจตนารมณ์ระดับบริหาร — บังคับ</td><td>"ข้อมูลทั้งหมดต้องถูกเข้ารหัส"</td></tr>
+    <tr><td><strong>2</strong></td><td><strong>Standards</strong></td><td>กฎเกณฑ์บังคับที่สนับสนุน Policy</td><td>"ต้องใช้ AES-256 สําหรับ Encryption"</td></tr>
+    <tr><td><strong>3</strong></td><td><strong>Procedures</strong></td><td>ขั้นตอนการปฏิบัติทีละขั้น</td><td>"วิธีการเข้ารหัส Laptop ด้วย BitLocker"</td></tr>
+    <tr><td><strong>4</strong></td><td><strong>Guidelines</strong></td><td>คําแนะนํา (ไม่บังคับ)</td><td>"ควรพิจารณาใช้ Tools เพิ่มเติมสําหรับ Key Management"</td></tr>
+    <tr><td><strong>5</strong></td><td><strong>Baselines</strong></td><td>การกําหนดค่า Security ขั้นต่ํา</td><td>"Windows 11 Security Baseline"</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section9-3" class="section-ref">9.3 บทบาทและหน้าที่ด้าน Cybersecurity</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>บทบาท</th><th>ความรับผิดชอบหลัก</th></tr></thead>
+  <tbody>
+    <tr><td><strong>CISO</strong></td><td>กลยุทธ์, Governance, Risk Appetite, การสื่อสารกับ Board, งบประมาณ</td></tr>
+    <tr><td><strong>Security Architect</strong></td><td>ออกแบบระบบรักษาความปลอดภัย, Reference Architectures, Security Patterns</td></tr>
+    <tr><td><strong>SOC Analyst</strong></td><td>ติดตาม Alert, Triage Incidents, Escalation</td></tr>
+    <tr><td><strong>Incident Responder</strong></td><td>Contain, Eradicate, Recovery จาก Security Incidents</td></tr>
+    <tr><td><strong>Security Engineer</strong></td><td>Implement, Configure, บํารุงรักษา Security Tools (FW, IDS, EDR, SIEM)</td></tr>
+    <tr><td><strong>Penetration Tester</strong></td><td>Ethical Hacking, Vulnerability Assessment, Red Team</td></tr>
+    <tr><td><strong>GRC Analyst</strong></td><td>Compliance Audits, Policy Development, Risk Assessments</td></tr>
+    <tr><td><strong>IAM Administrator</strong></td><td>Identity Lifecycle, Access Reviews, MFA/SSO Administration</td></tr>
+    <tr><td><strong>Security Awareness Manager</strong></td><td>Training Programs, Phishing Simulations, Culture Change</td></tr>
+    <tr><td><strong>Data Protection Officer (DPO)</strong></td><td>Privacy Compliance, DPIAs, Data Subject Rights</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section9-4" class="section-ref">9.4 ภาพรวมกฎหมายและข้อบังคับที่เกี่ยวข้อง</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>กฎหมาย/ข้อบังคับ</th><th>ขอบเขต</th><th>ข้อกําหนดสําคัญ</th><th>บทลงโทษ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>GDPR</strong> (EU)</td><td>ข้อมูลส่วนบุคคลของ residents ใน EU</td><td>Data Protection by Design, Breach Notification (72 ชม.), DPO, Consent</td><td>สูงสุด 20M EUR หรือ 4% ของรายได้ทั่วโลก</td></tr>
+    <tr><td><strong>PDPA</strong> (ไทย)</td><td>ข้อมูลส่วนบุคคลของ residents ในไทย</td><td>Consent, Data Subject Rights, Breach Notification (72 ชม.), DPO</td><td>สูงสุด 5M THB + โทษอาญา</td></tr>
+    <tr><td><strong>HIPAA</strong> (US)</td><td>Healthcare PHI</td><td>Administrative/Physical/Technical Safeguards, BAA</td><td>สูงสุด 1.9M USD/ปี ต่อ Violation</td></tr>
+    <tr><td><strong>PCI DSS v4.0</strong></td><td>ข้อมูลบัตรเครดิต</td><td>12 Requirements, 78 Sub-Requirements, Network Segmentation, Encryption</td><td>ค่าปรับ, ค่าธรรมเนียมที่เพิ่มขึ้น, การเพิกถอนสิทธิ์</td></tr>
+    <tr><td><strong>NIS2</strong> (EU)</td><td>Critical Infrastructure</td><td>Incident Reporting, Supply Chain Security, Risk Management</td><td>สูงสุด 10M EUR หรือ 2% ของรายได้ทั่วโลก</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+<section id="section10" class="section-ref">
+<h2>10. แนวคิด Defense in Depth</h2>
+<h3 id="section10-1" class="section-ref">10.1 หลักการพื้นฐาน</h3>
+<p><span class="glossary-term">Defense in Depth<span class="tooltip">การป้องกันเชิงลึก — แนวคิดที่ใช้การป้องกันหลายชั้นซ้อนกันเพื่อให้แน่ใจว่าหากชั้นใดชั้นหนึ่งล้มเหลว ก็ยังมีชั้นอื่นที่สามารถป้องกันได้</span></span> (การป้องกันเชิงลึก) เป็นแนวคิดที่ได้รับการพัฒนาขึ้นโดย <strong>National Security Agency (NSA)</strong> ของสหรัฐอเมริกา โดยมีหลักการสําคัญคือ <strong>ไม่มีมาตรการป้องกันเพียงชั้นเดียวที่เพียงพอ</strong> — ต้องมีการป้องกันหลายชั้นซ้อนทับกันเพื่อให้แน่ใจว่าหากชั้นใดชั้นหนึ่งล้มเหลว ก็ยังมีชั้นอื่นที่สามารถป้องกันหรือลดผลกระทบได้</p>
+<p><strong>"The Onion Model"</strong> — ข้อมูลอยู่ที่แกนกลาง ถูกล้อมรอบด้วยชั้นป้องกันซ้อนกันหลายชั้น</p>
+<h3 id="section10-2" class="section-ref">10.2 People, Process, Technology Framework</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ชั้น</th><th>คําอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>People</strong> (คน)</td><td>ปัจจัยมนุษย์, วัฒนธรรม, ทักษะ</td><td>Awareness Training, Background Checks, Security Culture</td></tr>
+    <tr><td><strong>Process</strong> (กระบวนการ)</td><td>นโยบาย, ขั้นตอน, Governance</td><td>Incident Response Plan, Change Management, Risk Assessment</td></tr>
+    <tr><td><strong>Technology</strong> (เทคโนโลยี)</td><td>เครื่องมือ, มาตรการควบคุม, สถาปัตยกรรม</td><td>Firewalls, EDR, SIEM, IAM, Encryption</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section10-3" class="section-ref">10.3 การแบ่งประเภทของมาตรการควบคุม</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>คําอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Administrative Controls</strong> (เชิงบริหาร)</td><td>นโยบายและกระบวนการ</td><td>Security Policies, Risk Assessments, Training, Background Checks, Vendor Due Diligence</td></tr>
+    <tr><td><strong>Technical Controls</strong> (เชิงเทคนิค)</td><td>เครื่องมือและเทคโนโลยี</td><td><strong>Preventive</strong>: Firewalls, IAM, Encryption — <strong>Detective</strong>: IDS/IPS, SIEM, EDR, FIM — <strong>Corrective</strong>: Automated Containment, Backup Restoration, Patching</td></tr>
+    <tr><td><strong>Physical Controls</strong> (เชิงกายภาพ)</td><td>การป้องกันทางกายภาพ</td><td>รั้ว, CCTV, Biometric Access Control, Server Room Locks, Environmental Controls (Fire Suppression, HVAC)</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section10-4" class="section-ref">10.4 ตัวอย่าง: Defense in Depth สําหรับ Web Application</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>Layer</th><th>มาตรการควบคุม</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>1 — Perimeter</strong></td><td>Firewall, WAF, DDoS Protection</td><td>Cloudflare, AWS WAF, ModSecurity</td></tr>
+    <tr><td><strong>2 — Network</strong></td><td>IDS/IPS, Network Segmentation</td><td>Snort, Suricata; VLANs, Microsegmentation</td></tr>
+    <tr><td><strong>3 — Endpoint</strong></td><td>EDR, Anti-Malware, HIPS</td><td>CrowdStrike, Defender for Endpoint</td></tr>
+    <tr><td><strong>4 — Application</strong></td><td>Secure Coding, SAST/DAST</td><td>OWASP Top 10, SonarQube, Burp Suite</td></tr>
+    <tr><td><strong>5 — Data</strong></td><td>Encryption At Rest/In Transit, DLP</td><td>AES-256, TLS 1.3, Microsoft Purview DLP</td></tr>
+    <tr><td><strong>6 — Identity</strong></td><td>MFA, IAM, Least Privilege</td><td>Okta, Azure AD, FIDO2 Keys</td></tr>
+    <tr><td><strong>7 — Monitoring</strong></td><td>SIEM, SOAR, 24/7 SOC</td><td>Splunk, Sentinel, Chronicle</td></tr>
+    <tr><td><strong>8 — Response</strong></td><td>Incident Response Plan, Playbooks</td><td>NIST SP 800-61, MITRE D3FEND</td></tr>
+    <tr><td><strong>9 — Recovery</strong></td><td>Backups, DR, BCP</td><td>3-2-1 Backup Rule, Immutable Backups, Air-Gapped</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section10-5" class="section-ref">10.5 ความสัมพันธ์กับ Zero Trust Architecture</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>มิติ</th><th>Defense in Depth</th><th>Zero Trust Architecture</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Focus</strong></td><td>WHAT — Layered Controls</td><td>HOW — "Never Trust, Always Verify"</td></tr>
+    <tr><td><strong>Assumption</strong></td><td>Assume Breach</td><td>Assume Breach</td></tr>
+    <tr><td><strong>Verification</strong></td><td>ตรวจสอบที่ Perimeter เป็นหลัก</td><td>ตรวจสอบ <strong>ทุก Request</strong> อย่างต่อเนื่อง</td></tr>
+    <tr><td><strong>Segmentation</strong></td><td>VLANs เป็นหลัก</td><td><strong>Microsegmentation</strong> — Per-Workload Isolation</td></tr>
+    <tr><td><strong>Access</strong></td><td>Static Permissions</td><td>Just-In-Time, Just-Enough Access</td></tr>
+    <tr><td><strong>Data-Centric</strong></td><td>ป้องกันที่ Network</td><td>ป้องกันที่ <strong>Data</strong> ไม่ใช่ Location</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ความเหมือน:</strong></p>
+<ul>
+  <li>ทั้งสองแนวคิดตั้งอยู่บนสมมติฐาน "Assume Breach"</li>
+  <li>ต้องมี Verification Points หลายจุด</li>
+  <li>ปฏิเสธ Implicit Trust</li>
+</ul>
+<p><strong>NIST SP 800-207</strong> กําหนด ZTA 7 Tenets:</p>
+<ol>
+  <li>All data sources and computing services are resources</li>
+  <li>All communication is secured regardless of network location</li>
+  <li>Access to resources is granted on a per-session basis</li>
+  <li>Access to resources is determined by dynamic policy</li>
+  <li>The enterprise monitors and measures the security posture of all owned assets</li>
+  <li>All resource authentication and authorization is dynamic and strictly enforced before access is allowed</li>
+  <li>The enterprise collects as much information as possible about the current state of assets, network infrastructure, and communications and uses it to improve its security posture</li>
+</ol>
+<p><strong>CISA Zero Trust Maturity Model (v2.0, 2023):</strong> วัด Maturity 5 Pillars — Identity, Devices, Networks, Applications/Workloads, Data — จาก Traditional → Advanced → Optimal</p>
+</section>
+<hr>
+<section id="section11" class="section-ref">
+<h2>11. สรุปท้ายบท (Chapter Summary)</h2>
+<h3>11.1 หลักการสําคัญ</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>หัวข้อ</th><th>สรุป</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Network Security</strong></td><td>การปกป้องเครือข่ายและข้อมูลจากการถูกเข้าถึงหรือโจมตีโดยไม่ได้รับอนุญาต — มีความสําคัญมากขึ้นในยุคที่ทุกองค์กรพึ่งพาระบบดิจิทัล</td></tr>
+    <tr><td><strong>CIA Triad</strong></td><td>Confidentiality (การรักษาความลับ), Integrity (การรักษาความถูกต้อง), Availability (การทำให้พร้อมใช้งาน) — หลักการพื้นฐานที่ถูกอ้างอิงในมาตรฐานทุกรูปแบบ; มี Parkerian Hexad เป็นส่วนขยาย</td></tr>
+    <tr><td><strong>AAA</strong></td><td>Authentication (พิสูจน์ตัวตน), Authorization (กําหนดสิทธิ์), Accounting (บันทึกการใช้งาน) — RADIUS, TACACS+, และ Diameter เป็นโพรโทคอลหลัก</td></tr>
+    <tr><td><strong>NIST CSF 2.0</strong></td><td>(กุมภาพันธ์ 2024) 6 ฟังก์ชัน: Govern, Identify, Protect, Detect, Respond, Recover — ขยายจาก Critical Infrastructure สู่ทุกองค์กร</td></tr>
+    <tr><td><strong>ISO/IEC 27001:2022</strong></td><td>93 Controls แบ่งเป็น 4 หมวด (Organizational, People, Physical, Technological) — 11 Controls ใหม่</td></tr>
+    <tr><td><strong>กรณีศึกษา Colonial Pipeline</strong></td><td>MFA, Credential Review, IT/OT Segmentation — การโจมตีผ่าน Legacy VPN ที่ไม่มี MFA</td></tr>
+    <tr><td><strong>กรณีศึกษา SolarWinds</strong></td><td>Supply Chain Security, SBOM, Zero Trust — การโจมตีผ่าน Build Pipeline ที่ซับซ้อนที่สุดในประวัติศาสตร์</td></tr>
+    <tr><td><strong>กรณีศึกษา Dyn DDoS</strong></td><td>IoT Security, DDoS Mitigation, DNS Redundancy — IoT Botnet 100,000+ เครื่องโจมตี DNS</td></tr>
+    <tr><td><strong>Defense in Depth</strong></td><td>9 Layers of Protection — ไม่มีมาตรการป้องกันชั้นเดียวที่เพียงพอ</td></tr>
+    <tr><td><strong>Security Governance</strong></td><td>Risk Management Frameworks (ISO 31000, COSO ERM, FAIR), Policy Hierarchy, Roles &amp; Responsibilities</td></tr>
+  </tbody>
+</table></div>
+<h3>11.2 ตัวเลขสําคัญที่ควรจํา</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ตัวเลข</th><th>ความหมาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>4.44 ล้าน USD</strong></td><td>ค่าเสียหายเฉลี่ยต่อ Data Breach (IBM 2025)</td></tr>
+    <tr><td><strong>241 วัน</strong></td><td>Breach Lifecycle เฉลี่ย (ตรวจจับ + ควบคุม)</td></tr>
+    <tr><td><strong>44%</strong></td><td>สัดส่วน Ransomware ใน Breaches ทั้งหมด (Verizon DBIR 2025)</td></tr>
+    <tr><td><strong>76.7%</strong></td><td>สัดส่วน DDoS ใน Incidents ทั้งหมดใน EU (ENISA 2025)</td></tr>
+    <tr><td><strong>93</strong></td><td>จํานวน Controls ใน ISO 27001:2022 Annex A</td></tr>
+    <tr><td><strong>6</strong></td><td>จํานวน Functions ใน NIST CSF 2.0</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+<section id="review-questions" class="section-ref">
+<h2><i class="fas fa-question-circle" aria-hidden="true"></i> คําถามทบทวน (Review Questions)</h2>
+<p style="color:var(--text-secondary);margin-bottom:1.5rem;">คลิกปุ่ม <strong>"🔍 ดูเฉลย"</strong> เพื่อเปิดคําตอบ</p>
+
+<div class="quiz-card" data-question="1">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 1</span>
+    <p>จงอธิบายหลักการ CIA Triad ตามนิยามของ NIST SP 800-12 และยกตัวอย่างการละเมิดในแต่ละด้านจากกรณีจริงที่เกิดขึ้นในประวัติศาสตร์</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> CIA Triad ประกอบด้วย 3 องค์ประกอบ: (1) <strong>Confidentiality</strong> — "Preserving authorized restrictions on information access and disclosure" ตัวอย่างการละเมิด: Equifax (2017) ข้อมูล 147.9 ล้านรายการรั่วไหลจาก Apache Struts CVE ที่ไม่ได้รับการแพตช์, Marriott/Starwood (2018) ข้อมูล 500 ล้านรายการรั่วไหล; (2) <strong>Integrity</strong> — "Guarding against improper information modification or destruction" ตัวอย่างการละเมิด: Stuxnet (2010) แก้ไข PLC Code, Bangladesh Bank (2016) แก้ไข SWIFT Messages, SolarWinds (2020) Code Integrity Bypass; (3) <strong>Availability</strong> — "Ensuring timely and reliable access to and use of information" ตัวอย่างการละเมิด: Dyn DDoS (2016) Twitter/Netflix/Reddit ออฟไลน์, Colonial Pipeline (2021) หยุดส่งน้ำมัน 6 วัน, WannaCry (2017) 200,000+ เครื่องใน 150 ประเทศ</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="2">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 2</span>
+    <p>MFA (Multi-Factor Authentication) ช่วยป้องกันการโจมตีแบบใด? จงอธิบายปัจจัยทั้ง 5 ประเภท พร้อมยกตัวอย่าง MFA Fatigue Attack</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> MFA ป้องกันการโจมตีที่อาศัย Credentials ที่ถูกขโมย เช่น Credential Stuffing, Phishing, Brute-Force การ bypass MFA ทําได้ยากขึ้นมาก ปัจจัย 5 ประเภท: <strong>Type 1</strong> — Something You Know (Password, PIN), <strong>Type 2</strong> — Something You Have (OTP Token, FIDO2 Key), <strong>Type 3</strong> — Something You Are (ลายนิ้วมือ, Face ID), <strong>Type 4</strong> — Somewhere You Are (GPS, IP Geolocation), <strong>Type 5</strong> — Something You Do (Keystroke Dynamics) <strong>MFA Fatigue Attack:</strong> ผู้โจมตีส่ง Push Notification ซ้ำๆ จนผู้ใช้รู้สึกรำคาญและกดยอมรับ ตัวอย่าง: Uber Breach 2022</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="3">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 3</span>
+    <p>NIST CSF 2.0 มีกี่ฟังก์ชัน? อะไรบ้าง? และแตกต่างจากเวอร์ชัน 1.1 อย่างไร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> NIST CSF 2.0 มี <strong>6 ฟังก์ชัน</strong> ได้แก่: (1) <strong>Govern (GV)</strong> — ใหม่ใน 2.0, (2) <strong>Identify (ID)</strong>, (3) <strong>Protect (PR)</strong>, (4) <strong>Detect (DE)</strong>, (5) <strong>Respond (RS)</strong>, (6) <strong>Recover (RC)</strong> <strong>การเปลี่ยนแปลงจาก 1.1:</strong> เพิ่มฟังก์ชัน Govern (GV) ใหม่ — Governance ถูกยกระดับจาก Subcategory เป็น Function เต็ม; ขยายขอบเขตจาก Critical Infrastructure สู่ทุกองค์กร; เพิ่ม 2 Categories ใหม่ใน Protect (PR.PS และ PR.IR); ไม่มีเนื้อหาใดถูกลบ; มี Implementation Examples แนบทุก Subcategory; CSF 2.0 Reference Tool</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="4">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 4</span>
+    <p>ISO 27001:2022 Annex A มีกี่ Controls? แบ่งเป็นกี่หมวด? มี Controls ใหม่อะไรบ้าง? จงอธิบายกระบวนการ Risk Assessment ตาม Clause 6.1</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> Annex A มี <strong>93 Controls</strong> แบ่งเป็น <strong>4 หมวด</strong>: A.5 Organizational (37), A.6 People (8), A.7 Physical (14), A.8 Technological (34) <strong>11 Controls ใหม่:</strong> 5.7 Threat Intelligence, 5.23 Cloud Security, 5.30 ICT BC, 7.4 Physical Security Monitoring, 8.9 Configuration Management, 8.10 Information Deletion, 8.11 Data Masking, 8.12 DLP, 8.16 Monitoring Activities, 8.23 Web Filtering, 8.28 Secure Coding <strong>Risk Assessment (6.1.2):</strong> Define Methodology → Identify Risks (Threats × Vulnerabilities × Assets) → Analyze Likelihood &amp; Impact → Evaluate Risks vs Acceptance Criteria <strong>Risk Treatment (6.1.3):</strong> Select Options (Mitigate/Transfer/Accept/Avoid) → Determine Controls → จัดทำ SoA → Risk Treatment Plan → ขออนุมัติ</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="5">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 5</span>
+    <p>จงวิเคราะห์และเปรียบเทียบบทเรียนที่ได้จากเหตุการณ์ Colonial Pipeline และ SolarWinds Attack โดยระบุ MITRE ATT&CK Techniques ที่เกี่ยวข้อง</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Colonial Pipeline:</strong> บทเรียน — ต้องมี MFA ทุกจุด, ตรวจจับบัญชีที่ไม่ใช้งาน, แยก IT/OT, มี IR Plan, Backup แยกเครือข่าย MITRE Techniques: T1133 (External Remote Services), T1078 (Valid Accounts), T1059 (PowerShell), T1486 (Data Encrypted for Impact) <strong>SolarWinds:</strong> บทเรียน — Supply Chain Risk Management, SBOM, Zero Trust, Build Environment Security, Code Signing Protection, EDR MITRE Techniques: T1195.002 (Compromise Software Supply Chain), T1553.002 (Code Signing), T1568.002 (Domain Generation Algorithms) <strong>เปรียบเทียบ:</strong> Colonial เป็น Ransomware ผ่าน Legacy VPN ที่ไม่มี MFA; SolarWinds เป็น Supply Chain Attack ที่แทรก Backdoor ใน Build Pipeline — แตกต่างกันทั้ง Tactics และ Targets</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="6">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 6</span>
+    <p>RADIUS แตกต่างจาก TACACS+ และ Diameter ในด้านใดบ้าง? โพรโทคอลใดเหมาะสําหรับใช้งานใน 5G Network?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>RADIUS</strong> (IETF RFC 2865) — ใช้ UDP, เข้ารหัสเฉพาะ Password, Auth+Authz รวมกัน, เหมาะสําหรับ Network Access (VPN, 802.1X) <strong>TACACS+</strong> (Cisco) — ใช้ TCP, เข้ารหัสทั้ง Packet, Auth+Authz แยกกัน, เหมาะสําหรับ Device Admin <strong>Diameter</strong> (IETF RFC 6733) — ใช้ TCP/SCTP, IPsec/TLS, Auth+Authz แยกกัน, Peer-to-Peer, รองรับ 1,000+ AVPs <strong>สําหรับ 5G Network:</strong> <strong>Diameter</strong> เป็นโพรโทคอลที่เหมาะสมที่สุด เพราะถูกออกแบบมาสําหรับ Mobile Networks (LTE/5G Core, IMS) รองรับ Stateful Failover และมี AVPs จํานวนมากที่จําเป็นสําหรับ 5G</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="7">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 7</span>
+    <p>หากคุณเป็น CISO ขององค์กร คุณจะเลือกใช้ NIST CSF 2.0 หรือ ISO 27001:2022? เพราะเหตุใด? หรือจะใช้ทั้งสองแบบร่วมกัน?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> ขึ้นอยู่กับความต้องการขององค์กร: <strong>เลือก NIST CSF 2.0</strong> หากต้องการความยืดหยุ่น แนวทางเชิงกลยุทธ์ และ Outcomes-Based Approach — เหมาะกับองค์กรที่ต้องการกรอบภาพรวมในการพัฒนาความมั่นคงปลอดภัย <strong>เลือก ISO 27001:2022</strong> หากต้องการ Certification ที่ตรวจสอบได้และการรับรองจากภายนอก — เหมาะกับองค์กรที่ต้องแสดง Compliance กับลูกค้าหรือหน่วยงานกํากับดูแล <strong>ใช้ทั้งสองแบบร่วมกัน</strong> เป็นแนวทางที่ดีที่สุด: ใช้ NIST CSF 2.0 เป็นกรอบภาพรวมเชิงกลยุทธ์ (Strategic) และ ISO 27001 เป็นมาตรฐานสําหรับการดําเนินงาน (Operational) โดย CSF 2.0 อ้างอิง ISO 27001 เป็น Informative Reference อยู่แล้ว</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="8">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 8</span>
+    <p>Parkerian Hexad มีองค์ประกอบอะไรเพิ่มเติมจาก CIA Triad? จงอธิบายความแตกต่างระหว่าง Possession และ Confidentiality</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> Parkerian Hexad เพิ่ม 3 องค์ประกอบจาก CIA Triad: <strong>Possession/Control</strong> (การครอบครอง), <strong>Authenticity</strong> (ความถูกต้องแท้จริง), <strong>Utility</strong> (ประโยชน์ใช้สอย) รวมเป็น 6 องค์ประกอบ <strong>ความแตกต่างระหว่าง Possession และ Confidentiality:</strong> Possession คือการครอบครองข้อมูลทางกายภาพหรือทางตรรกะ — ฮาร์ดดิสก์ที่เข้ารหัสถูกขโมยหมายถึงเสียการครอบครอง (Possession) แต่ข้อมูลยังคงเป็นความลับ (Confidentiality) เพราะถูกเข้ารหัสไว้ Parker แยกสองแนวคิดนี้ออกจากกันเพราะการสูญเสียการครอบครองไม่ได้หมายถึงการสูญเสียความลับเสมอไป</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="9">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 9</span>
+    <p>จงอธิบายแนวคิด Defense in Depth และยกตัวอย่าง 9 Layers of Protection สําหรับ Web Application</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> Defense in Depth เป็นแนวคิดที่พัฒนาโดย NSA โดยมีหลักการสําคัญคือไม่มีมาตรการป้องกันเพียงชั้นเดียวที่เพียงพอ ("The Onion Model") — ต้องมีการป้องกันหลายชั้นซ้อนทับกัน <strong>9 Layers สําหรับ Web Application:</strong> (1) <strong>Perimeter</strong> — Firewall, WAF, DDoS Protection; (2) <strong>Network</strong> — IDS/IPS, Network Segmentation; (3) <strong>Endpoint</strong> — EDR, Anti-Malware; (4) <strong>Application</strong> — Secure Coding, SAST/DAST; (5) <strong>Data</strong> — Encryption At Rest/In Transit, DLP; (6) <strong>Identity</strong> — MFA, IAM, Least Privilege; (7) <strong>Monitoring</strong> — SIEM, SOAR, 24/7 SOC; (8) <strong>Response</strong> — Incident Response Plan, Playbooks; (9) <strong>Recovery</strong> — Backups, DR, BCP</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="10">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 10</span>
+    <p>ข้อมูลจาก IBM Cost of Data Breach Report 2025 และ Verizon DBIR 2025 บ่งชี้อะไรเกี่ยวกับแนวโน้มด้าน Ransomware และ AI ใน Cybersecurity?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Ransomware:</strong> Verizon DBIR 2025 พบว่า Ransomware คิดเป็น 44% ของ Breaches ทั้งหมด (เพิ่มขึ้น 37% YoY) — SMB 88% โดน Ransomware; IBM 2025 พบว่าค่าเสียหายเฉลี่ย 4.44 ล้าน USD <strong>AI ใน Cybersecurity:</strong> 67% ขององค์กรใช้ AI ด้านความปลอดภัย — ช่วยลดค่าเสียหายลงเฉลี่ย 1.9 ล้าน USD; แต่องค์กร 97% ที่มี AI-Related Breaches ขาด Access Control ที่เหมาะสม และ 63% ไม่มี AI Governance Policy; Shadow AI (20% ของ Breaches) เพิ่มค่าเสียหาย 670K USD; ENISA 2025 รายงานว่า &gt;80% ของแคมเปญ Phishing ใช้เนื้อหาที่สร้างโดย AI — แสดงให้เห็นว่า AI เป็นทั้งอาวุธของผู้ป้องกันและผู้โจมตี</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="11">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 11</span>
+    <p>จงเปรียบเทียบ ISO 31000, COSO ERM, และ FAIR — Framework ใดเหมาะกับการสื่อสารความเสี่ยงทางไซเบอร์กับ Board of Directors?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>ISO 31000:2018</strong> — ครอบคลุม Enterprise Risk Management, Qualitative, ยืดหยุ่น, ไม่ Certifiable <strong>COSO ERM (2017)</strong> — เน้น Governance และ Board Oversight, 20 Principles ใน 5 Components, ไม่ Certifiable <strong>FAIR</strong> — Cyber Risk เท่านั้น, <strong>Quantitative</strong> (เป็นตัวเลขเงิน) ใช้สูตร Loss Event Frequency × Loss Magnitude = Risk ($/year) <strong>Framework ที่เหมาะกับ Board of Directors:</strong> <strong>FAIR</strong> เป็นตัวเลือกที่ดีที่สุดสําหรับการสื่อสารกับ Board เพราะให้ผลลัพธ์เป็นตัวเลขเงิน (Annual Loss Expectancy) ที่เข้าใจง่าย สอดคล้องกับภาษาธุรกิจที่ Board ใช้ในการตัดสินใจ อย่างไรก็ตาม ควรใช้ COSO ERM หรือ ISO 31000 สําหรับ Governance ในภาพรวมขององค์กร</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="12">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 12</span>
+    <p>จงอธิบายความสัมพันธ์ระหว่าง Defense in Depth และ Zero Trust Architecture — แตกต่างและเสริมกันอย่างไร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Defense in Depth</strong> เน้นที่ <strong>WHAT</strong> — การป้องกันหลายชั้น (Layered Controls) โดยตรวจสอบที่ Perimeter เป็นหลัก ใช้ Static Permissions, VLAN Segmentation <strong>Zero Trust Architecture</strong> เน้นที่ <strong>HOW</strong> — "Never Trust, Always Verify" ตรวจสอบทุก Request อย่างต่อเนื่อง ใช้ Microsegmentation, Just-In-Time/Just-Enough Access, ป้องกันที่ Data ไม่ใช่ Location <strong>ความเหมือน:</strong> ทั้งสองแนวคิดตั้งอยู่บนสมมติฐาน "Assume Breach", ต้องมี Verification Points หลายจุด, ปฏิเสธ Implicit Trust <strong>การเสริมกัน:</strong> Defense in Depth เป็นพื้นฐานที่จําเป็น — Zero Trust Architecture ใช้หลักการ Defense in Depth แต่เพิ่ม Dynamic Policy, Continuous Verification, และ Data-Centric Approach ทําให้การป้องกันมีประสิทธิภาพมากขึ้นในยุค Cloud และ Remote Work</p>
+  </div>
+</div>
+</section>
+
+<hr>
+<section id="references" class="section-ref">
+<h2><i class="fas fa-book" aria-hidden="true"></i> เอกสารอ้างอิง (References)</h2>
+
+<h3>มาตรฐานและกรอบการทํางาน</h3>
+<ol>
+  <li>NIST. (2024). <em>Cybersecurity Framework 2.0</em>. CSWP 29. National Institute of Standards and Technology.</li>
+  <li>ISO/IEC. (2022). <em>ISO/IEC 27001:2022 Information Security Management Systems — Requirements</em>.</li>
+  <li>NIST SP 800-53 Rev. 5. (2020). <em>Security and Privacy Controls for Information Systems and Organizations</em>.</li>
+  <li>NIST SP 800-207. (2020). <em>Zero Trust Architecture</em>.</li>
+  <li>NIST SP 800-12 Rev. 1. (2017). <em>An Introduction to Information Security</em>.</li>
+  <li>NIST SP 800-63-4. (2025). <em>Digital Identity Guidelines</em>.</li>
+  <li>ISO 31000:2018. <em>Risk Management — Guidelines</em>.</li>
+  <li>FAIR Institute. <em>Factor Analysis of Information Risk (FAIR) Framework</em>.</li>
+  <li>CISA. (2023). <em>Zero Trust Maturity Model v2.0</em>.</li>
+</ol>
+
+<h3>ตําราหลัก</h3>
+<ol start="10">
+  <li>Stallings, W. (2022). <em>Cryptography and Network Security: Principles and Practice</em> (8th ed.). Pearson.</li>
+  <li>Whitman, M. E., &amp; Mattord, H. J. (2021). <em>Principles of Information Security</em> (7th ed.). Cengage Learning.</li>
+  <li>Kaufman, C., Perlman, R., &amp; Speciner, M. (2022). <em>Network Security: Private Communication in a Public World</em> (3rd ed.). Addison-Wesley.</li>
+</ol>
+
+<h3>รายงานและกรณีศึกษา</h3>
+<ol start="13">
+  <li>IBM Security &amp; Ponemon Institute. (2025). <em>Cost of a Data Breach Report 2025</em>.</li>
+  <li>IBM Security &amp; Ponemon Institute. (2024). <em>Cost of a Data Breach Report 2024</em>.</li>
+  <li>Verizon. (2025). <em>2025 Data Breach Investigations Report</em>.</li>
+  <li>ENISA. (2025). <em>ENISA Threat Landscape 2025</em>.</li>
+  <li>ISC2. (2025). <em>ISC2 Cybersecurity Workforce Study 2025</em>.</li>
+  <li>CISA. (2023). <em>The Attack on Colonial Pipeline: What We've Learned &amp; What We've Done Over the Past Two Years</em>.</li>
+  <li>CyOTE Program. (2025). <em>Colonial Pipeline Case Study</em>. Idaho National Laboratory.</li>
+  <li>Microsoft Threat Intelligence. (2020). <em>Analyzing Solorigate: The Compromised DLL File</em>.</li>
+  <li>FireEye. (2020). <em>Evasive Attacker Leverages SolarWinds Supply Chain Compromises with SUNBURST Backdoor</em>.</li>
+  <li>Antonakakis, M., et al. (2017). <em>Understanding the Mirai Botnet</em>. USENIX Security Symposium.</li>
+  <li>Chainalysis. (2025). <em>2025 Crypto Ransomware Report</em>.</li>
+  <li>Sophos. (2025). <em>State of Ransomware 2025</em>.</li>
+</ol>
+
+<h3>แหล่งข้อมูลเพิ่มเติม</h3>
+<ol start="25">
+  <li>OWASP. (2024). <em>OWASP Top 10 - 2021</em>. https://owasp.org/Top10/</li>
+  <li>MITRE ATT&CK. (2024). https://attack.mitre.org/</li>
+  <li>NIST National Vulnerability Database. https://nvd.nist.gov/</li>
+  <li>NIST Cybersecurity Framework (CSF) 2.0 Reference Tool. https://www.nist.gov/cyberframework</li>
+  <li>CISA Known Exploited Vulnerabilities Catalog. https://www.cisa.gov/known-exploited-vulnerabilities-catalog</li>
+</ol>
+</section>
+</main>
+</div> <!-- .layout -->
+
+<footer class="site-footer" role="contentinfo">
+  <hr class="footer-divider">
+  <p><i class="fas fa-shield-halved" aria-hidden="true"></i> รายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+  <p style="margin-top:0.5rem;font-size:0.8rem;">เอกสารนี้เป็นส่วนหนึ่งของรายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+</footer>
+
+<button id="back-to-top" aria-label="กลับไปด้านบน" title="กลับไปด้านบน">
+  <i class="fas fa-arrow-up" aria-hidden="true"></i>
+</button>
+
+<script>
+// ====== Loading Screen ======
+window.addEventListener('load', function() {
+  document.getElementById('loading-screen').classList.add('hidden');
+});
+
+// ====== Progress Bar ======
+window.addEventListener('scroll', function() {
+  var scrollTop = window.scrollY;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progress-bar').style.width = progress + '%';
+  document.getElementById('progress-bar').setAttribute('aria-valuenow', Math.round(progress));
+});
+
+// ====== Dark Mode ======
+(function() {
+  var toggle = document.getElementById('dark-mode-toggle');
+  var icon = toggle.querySelector('i');
+  var theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    icon.className = 'fas fa-sun';
+  }
+  toggle.addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    if (current === 'dark') {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      icon.className = 'fas fa-moon';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      icon.className = 'fas fa-sun';
+    }
+  });
+})();
+
+// ====== Sidebar Toggle (mobile) ======
+(function() {
+  var btn = document.getElementById('sidebar-toggle');
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  if (!btn || !sidebar || !overlay) return;
+  btn.addEventListener('click', function() {
+    var open = sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+    btn.setAttribute('aria-expanded', open);
+  });
+  overlay.addEventListener('click', function() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+    btn.setAttribute('aria-expanded', 'false');
+  });
+})();
+
+// ====== Scroll Spy ======
+(function() {
+  var tocLinks = document.querySelectorAll('.toc-link');
+  var sections = [];
+  tocLinks.forEach(function(link) {
+    var targetId = link.getAttribute('data-target');
+    var el = document.getElementById(targetId);
+    if (el) sections.push({ id: targetId, el: el, link: link });
+  });
+  
+  function updateActive() {
+    var scrollPos = window.scrollY + 120;
+    var currentId = null;
+    for (var i = 0; i < sections.length; i++) {
+      var s = sections[i];
+      if (s.el.offsetTop <= scrollPos) {
+        currentId = s.id;
+      }
+    }
+    tocLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (currentId) {
+      var activeLink = document.querySelector('.toc-link[data-target="' + currentId + '"]');
+      if (activeLink) {
+        activeLink.classList.add('active');
+        // Scroll sidebar item into view
+        var sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+          var itemTop = activeLink.offsetTop - sidebar.offsetTop;
+          var itemBottom = itemTop + activeLink.offsetHeight;
+          var sidebarScrollTop = sidebar.scrollTop;
+          var sidebarHeight = sidebar.clientHeight;
+          if (itemTop < sidebarScrollTop) {
+            activeLink.scrollIntoView({ block: 'nearest' });
+          } else if (itemBottom > sidebarScrollTop + sidebarHeight) {
+            activeLink.scrollIntoView({ block: 'nearest' });
+          }
+        }
+      }
+    }
+  }
+  
+  window.addEventListener('scroll', updateActive);
+  window.addEventListener('load', updateActive);
+  // Run after a short delay to ensure layout is stable
+  setTimeout(updateActive, 500);
+})();
+
+// ====== Smooth scroll for TOC links ======
+document.querySelectorAll('.toc-link').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    var targetId = this.getAttribute('data-target');
+    var target = document.getElementById(targetId);
+    if (target) {
+      var offset = 80;
+      var targetPos = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: targetPos, behavior: 'smooth' });
+    }
+    // Close sidebar on mobile after click
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebar-overlay');
+    if (sidebar && sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      document.getElementById('sidebar-toggle').setAttribute('aria-expanded', 'false');
+    }
+  });
+});
+
+// ====== Back to Top ======
+(function() {
+  var btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 400) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  });
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+
+// ====== Copy Code ======
+function copyCode(btn) {
+  var pre = btn.closest('pre');
+  var code = pre.textContent;
+  // Remove the button text from code content if present
+  code = code.replace(/คัดลอก/g, '').trim();
+  navigator.clipboard.writeText(code).then(function() {
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i> คัดลอก';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(function() {
+    // Fallback
+    var textarea = document.createElement('textarea');
+    textarea.value = code;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i> คัดลอก';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ====== Expandable Sections ======
+function toggleExpand(header) {
+  var expandable = header.closest('.expandable');
+  if (!expandable) return;
+  var isExpanded = expandable.classList.toggle('expanded');
+  header.setAttribute('aria-expanded', isExpanded);
+}
+
+// ====== Reveal Answer (Quiz) ======
+function revealAnswer(btn) {
+  var card = btn.closest('.quiz-card');
+  if (!card) return;
+  card.classList.add('revealed');
+  var answer = card.querySelector('.quiz-answer');
+  if (answer) {
+    answer.classList.remove('hidden');
+  }
+  btn.textContent = '✅ ดูเฉลยแล้ว';
+  btn.disabled = true;
+}
+
+// ====== Search ======
+(function() {
+  var searchToggle = document.getElementById('search-toggle-btn');
+  var searchOverlay = document.getElementById('search-overlay');
+  var searchInput = document.getElementById('search-input');
+  var searchResults = document.getElementById('search-results');
+  var searchCount = document.getElementById('search-count');
+  var searchClose = document.getElementById('search-close-btn');
+  
+  // Get all text content from main
+  var mainContent = document.getElementById('main-content');
+  var searchData = [];
+  
+  function buildSearchIndex() {
+    searchData = [];
+    var sections = mainContent.querySelectorAll('h2, h3, h4, p, li, td, th, pre');
+    sections.forEach(function(el) {
+      var text = el.textContent.trim();
+      if (text.length > 10) {
+        // Find the nearest heading for context
+        var heading = '';
+        var parent = el.parentElement;
+        while (parent && parent !== mainContent) {
+          var prevHeading = parent.querySelector('h2, h3, h4');
+          if (prevHeading) { heading = prevHeading.textContent.trim(); break; }
+          parent = parent.parentElement;
+        }
+        searchData.push({
+          text: text,
+          heading: heading || 'เนื้อหา',
+          element: el
+        });
+      }
+    });
+  }
+  
+  buildSearchIndex();
+  
+  function performSearch(query) {
+    if (!query || query.length < 2) {
+      searchResults.innerHTML = '<div class="no-results">กรุณาป้อนคําค้นหาอย่างน้อย 2 ตัวอักษร</div>';
+      searchCount.textContent = '';
+      return;
+    }
+    
+    var q = query.toLowerCase();
+    var results = [];
+    var totalMatches = 0;
+    
+    searchData.forEach(function(item) {
+      var lower = item.text.toLowerCase();
+      var idx = lower.indexOf(q);
+      if (idx !== -1) {
+        // Count matches
+        var count = 0;
+        var pos = -1;
+        while ((pos = lower.indexOf(q, pos + 1)) !== -1) count++;
+        totalMatches += count;
+        
+        // Create snippet with highlight
+        var snippet = item.text.substring(Math.max(0, idx - 60), idx + q.length + 120);
+        if (idx > 60) snippet = '...' + snippet;
+        if (idx + q.length + 120 < item.text.length) snippet = snippet + '...';
+        
+        // Escape HTML
+        snippet = snippet.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        // Highlight matches
+        snippet = snippet.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'), '<mark>$1</mark>');
+        
+        results.push({
+          heading: item.heading,
+          snippet: snippet,
+          element: item.element,
+          count: count
+        });
+      }
+    });
+    
+    // Limit results
+    if (results.length > 50) results = results.slice(0, 50);
+    
+    searchCount.textContent = totalMatches + ' ผลลัพธ์';
+    
+    if (results.length === 0) {
+      searchResults.innerHTML = '<div class="no-results">ไม่พบผลลัพธ์สําหรับ "' + query + '"</div>';
+      return;
+    }
+    
+    var html = '';
+    results.forEach(function(r) {
+      html += '<div class="search-result-item" data-heading="' + r.heading.replace(/"/g, '&quot;') + '">';
+      html += '<div class="result-heading">' + r.heading + '</div>';
+      html += '<div class="result-snippet">' + r.snippet + '</div>';
+      html += '</div>';
+    });
+    searchResults.innerHTML = html;
+    
+    // Add click handlers
+    searchResults.querySelectorAll('.search-result-item').forEach(function(item, i) {
+      item.addEventListener('click', function() {
+        var el = results[i].element;
+        if (el) {
+          var offset = 100;
+          var pos = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: pos, behavior: 'smooth' });
+          searchOverlay.classList.remove('active');
+          // Highlight the element temporarily
+          el.style.transition = 'background 0.5s ease';
+          el.style.background = 'var(--bg-tertiary)';
+          setTimeout(function() {
+            el.style.background = '';
+          }, 1500);
+        }
+      });
+    });
+  }
+  
+  var searchTimeout = null;
+  searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      performSearch(searchInput.value);
+    }, 300);
+  });
+  
+  searchToggle.addEventListener('click', function() {
+    searchOverlay.classList.add('active');
+    setTimeout(function() { searchInput.focus(); }, 100);
+  });
+  
+  searchClose.addEventListener('click', function() {
+    searchOverlay.classList.remove('active');
+    searchInput.value = '';
+    searchResults.innerHTML = '';
+    searchCount.textContent = '';
+  });
+  
+  searchOverlay.addEventListener('click', function(e) {
+    if (e.target === searchOverlay) {
+      searchOverlay.classList.remove('active');
+      searchInput.value = '';
+      searchResults.innerHTML = '';
+      searchCount.textContent = '';
+    }
+  });
+  
+  // Keyboard shortcut
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      searchToggle.click();
+    }
+    if (e.key === 'Escape') {
+      searchOverlay.classList.remove('active');
+    }
+  });
+})();
+
+// ====== Ensure all expandable case studies start expanded ======
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.expandable.expanded').forEach(function(el) {
+    var header = el.querySelector('.expandable-header');
+    if (header) header.setAttribute('aria-expanded', 'true');
+  });
+});
+</script>
+</body>
+</html>
