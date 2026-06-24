@@ -1,0 +1,1097 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Threat Analysis — Interactive Learning</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0 }
+body { background:#0d1117; color:#e6edf3; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.7; font-size:15px }
+
+/* Layout */
+.app { display:flex; min-height:100vh }
+.sidebar { width:240px; background:#161b22; border-right:1px solid #30363d; position:sticky; top:0; max-height:100vh; overflow-y:auto; flex-shrink:0; padding:0 0 24px }
+.sidebar h1 { font-size:14px; padding:20px 16px 8px; color:#8b949e; letter-spacing:.5px; text-transform:uppercase }
+.sidebar nav a { display:flex; align-items:center; gap:8px; padding:7px 16px; color:#8b949e; text-decoration:none; font-size:13px; transition:.15s; border-left:2px solid transparent }
+.sidebar nav a:hover { color:#e6edf3; background:#1c2128 }
+.sidebar nav a.active { color:#58a6ff; border-left-color:#58a6ff; background:#1c2128 }
+.sidebar .num { color:#58a6ff; font-size:11px; font-weight:600; min-width:18px }
+.mobile-menu { display:none; position:sticky; top:0; z-index:10; background:#161b22; padding:12px 16px; border-bottom:1px solid #30363d }
+.mobile-menu button { background:#21262d; border:1px solid #30363d; color:#e6edf3; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:13px }
+
+.content { flex:1; max-width:960px; margin:0 auto; padding:40px 32px 80px; min-width:0 }
+
+/* Sections */
+section { margin-bottom:44px }
+h2 { font-size:22px; font-weight:600; color:#f0f6fc; margin-bottom:16px; display:flex; align-items:center; gap:10px }
+h3 { font-size:17px; font-weight:600; color:#e6edf3; margin:20px 0 10px }
+h4 { font-size:14px; font-weight:600; color:#e6edf3; margin:14px 0 8px }
+
+/* Tables */
+table { width:100%; border-collapse:collapse; margin:12px 0; font-size:13px }
+th { background:#161b22; color:#8b949e; font-weight:600; text-align:left; padding:8px 12px; border:1px solid #30363d; font-size:12px; text-transform:uppercase; letter-spacing:.3px }
+td { padding:8px 12px; border:1px solid #30363d; vertical-align:top }
+tr:hover td { background:#1c2128 }
+
+/* Cards */
+.card { background:#161b22; border:1px solid #30363d; border-radius:8px; padding:20px; margin:16px 0 }
+.tag { display:inline-block; background:#1c2128; color:#8b949e; font-size:11px; padding:2px 8px; border-radius:4px; margin:2px }
+
+/* Code blocks */
+pre { background:#0d1117; border:1px solid #30363d; border-radius:6px; padding:14px 16px; font-size:13px; overflow-x:auto; margin:12px 0 }
+code { font-family:'SF Mono','Cascadia Code','Consolas',monospace; font-size:13px }
+p code { background:#1c2128; padding:1px 5px; border-radius:3px; font-size:12px }
+
+/* Interactive */
+.clickable { cursor:pointer; transition:.15s }
+.clickable:hover { border-color:#58a6ff !important }
+
+/* Tabs */
+.tabs { display:flex; gap:4px; flex-wrap:wrap; margin:12px 0 0 }
+.tab-btn { background:#1c2128; border:1px solid #30363d; color:#8b949e; padding:7px 14px; border-radius:6px; cursor:pointer; font-size:12px; transition:.15s }
+.tab-btn.active { background:#58a6ff; color:#0d1117; border-color:#58a6ff; font-weight:600 }
+.tab-btn:hover:not(.active) { border-color:#58a6ff; color:#e6edf3 }
+.tab-panel { display:none; margin-top:12px }
+.tab-panel.active { display:block }
+
+/* Sub tabs (scenarios) */
+.sub-tabs { display:flex; gap:4px; margin-bottom:8px }
+.sub-tab { background:transparent; border:1px solid #30363d; color:#8b949e; padding:4px 12px; border-radius:4px; cursor:pointer; font-size:12px; transition:.15s }
+.sub-tab.active { background:#1c2128; color:#e6edf3; border-color:#8b949e }
+.sub-tab:hover:not(.active) { border-color:#8b949e; color:#e6edf3 }
+.sub-panel { display:none }
+.sub-panel.active { display:block }
+
+/* Timeline */
+.timeline { position:relative; padding-left:24px; margin:12px 0 }
+.timeline::before { content:''; position:absolute; left:7px; top:4px; bottom:4px; width:2px; background:#30363d }
+.timeline-item { position:relative; padding:4px 0 12px; font-size:13px; color:#8b949e }
+.timeline-item::before { content:''; position:absolute; left:-21px; top:10px; width:10px; height:10px; border-radius:50%; background:#30363d; border:2px solid #0d1117 }
+.timeline-item strong { color:#e6edf3 }
+.timeline-item .time { color:#58a6ff; font-weight:600; font-size:12px }
+
+/* Collapse */
+.collapse-toggle { cursor:pointer; user-select:none }
+.collapse-toggle::after { content:' ▼'; font-size:10px; color:#8b949e }
+.collapse-toggle.open::after { content:' ▲' }
+.collapse-body { display:none; margin-top:8px }
+.collapse-body.open { display:block }
+
+/* Scenario */
+.scenario-header { background:linear-gradient(135deg,#1c2128,#0d1117); padding:16px 20px; border-radius:8px; margin-bottom:16px; border-left:3px solid #58a6ff }
+.scenario-header h3 { margin:0 0 4px }
+.scenario-header .meta { color:#8b949e; font-size:13px }
+
+/* Detection grid */
+.detect-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; margin:12px 0 }
+.detect-cell { background:#0d1117; border:1px solid #30363d; border-radius:6px; padding:12px; font-size:12px }
+.detect-cell .label { color:#8b949e; font-size:11px; text-transform:uppercase; letter-spacing:.3px; margin-bottom:4px; display:block }
+.detect-cell .yes { color:#3fb950 }
+.detect-cell .no { color:#f85149 }
+
+/* Attack surface progress */
+.surface-group { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 }
+.surface-card { flex:1; min-width:160px; background:#0d1117; border:1px solid #30363d; border-radius:6px; padding:14px; text-align:center }
+.surface-card .emoji { font-size:24px; display:block; margin-bottom:6px }
+.surface-card .name { font-weight:600; font-size:13px; color:#e6edf3 }
+.surface-card .desc { font-size:11px; color:#8b949e; margin-top:4px }
+
+/* Pyramid */
+.pyramid { display:flex; flex-direction:column; align-items:center; gap:3px; margin:16px 0 }
+.pyramid-level { text-align:center; padding:8px 12px; border-radius:4px; font-size:13px; color:#0d1117; transition:.2s; cursor:pointer }
+.pyramid-level:hover { transform:scale(1.03) }
+
+/* Quiz */
+.quiz-option { display:block; width:100%; text-align:left; background:#0d1117; border:1px solid #30363d; color:#e6edf3; padding:10px 14px; border-radius:6px; cursor:pointer; font-size:13px; margin:4px 0; transition:.15s }
+.quiz-option:hover { border-color:#58a6ff }
+.quiz-option.selected { border-color:#58a6ff; background:#1c2128 }
+.quiz-option.correct { border-color:#3fb950; background:rgba(63,185,80,.1); color:#3fb950 }
+.quiz-option.wrong { border-color:#f85149; background:rgba(248,81,73,.1); color:#f85149 }
+.quiz-option:disabled { cursor:default; opacity:.8 }
+
+/* YAML blocks */
+.yaml { background:#0d1117; border:1px solid #30363d; border-radius:6px; padding:14px 16px; font-size:13px; font-family:'SF Mono','Cascadia Code','Consolas',monospace; line-height:1.6; margin:12px 0; overflow-x:auto }
+
+/* Responsive */
+@media(max-width:768px) {
+  .sidebar { display:none; position:fixed; top:0; left:0; width:260px; z-index:20; box-shadow:0 8px 32px rgba(0,0,0,.5) }
+  .sidebar.open { display:block }
+  .mobile-menu { display:flex }
+  .content { padding:24px 16px 60px }
+  .detect-grid { grid-template-columns:1fr 1fr }
+  .surface-card { min-width:140px }
+  table { font-size:12px }
+  th, td { padding:6px 8px }
+}
+</style>
+</head>
+<body>
+<div class="mobile-menu">
+  <button onclick="document.getElementById('sidebar').classList.toggle('open')">= Menu</button>
+</div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <h1>Threat Analysis</h1>
+    <nav>
+      <a href="#basics" onclick="closeSidebar()"><span class="num">01</span>แนวคิดพื้นฐาน</a>
+      <a href="#cia" onclick="closeSidebar()"><span class="num">02</span>CIA Triad</a>
+      <a href="#stride" onclick="closeSidebar()"><span class="num">03</span>STRIDE Model</a>
+      <a href="#pasta" onclick="closeSidebar()"><span class="num">04</span>PASTA Framework</a>
+      <a href="#surface" onclick="closeSidebar()"><span class="num">05</span>Attack Surface</a>
+      <a href="#analysis" onclick="closeSidebar()"><span class="num">06</span>Analysis</a>
+      <a href="#detection" onclick="closeSidebar()"><span class="num">07</span>Detection</a>
+      <a href="#malware" onclick="closeSidebar()"><span class="num">08</span>Malware Analysis</a>
+      <a href="#siem" onclick="closeSidebar()"><span class="num">09</span>SIEM</a>
+      <a href="#scenarios" onclick="closeSidebar()"><span class="num">10</span>Scenarios</a>
+      <a href="#compare" onclick="closeSidebar()"><span class="num">11</span>Frameworks</a>
+      <a href="#tools" onclick="closeSidebar()"><span class="num">12</span>Tools</a>
+      <a href="#summary" onclick="closeSidebar()"><span class="num">13</span>สรุป</a>
+      <a href="#quiz" onclick="closeSidebar()"><span class="num">14</span>Quiz</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+  <!-- ====== HEADER ====== -->
+  <div style="margin-bottom:40px">
+    <h1 style="font-size:28px;font-weight:700;color:#f0f6fc;margin-bottom:4px">Threat Analysis</h1>
+    <p style="color:#8b949e;font-size:14px">การวิเคราะห์ภัยคุกคามทางไซเบอร์ — ตั้งแต่แนวคิดพื้นฐานจนถึงเทคนิคการตรวจจับแบบครบวงจร</p>
+  </div>
+
+  <!-- ====== 1 BASICS ====== -->
+  <section id="basics">
+    <h2>แนวคิดพื้นฐาน</h2>
+    <table>
+      <tr><th>ศัพท์</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr>
+      <tr><td><strong>Asset</strong></td><td>สิ่งที่มีคุณค่าที่ต้องปกป้อง</td><td>ฐานข้อมูลลูกค้า, source code, API key, server</td></tr>
+      <tr><td><strong>Vulnerability</strong></td><td>จุดอ่อนในระบบที่ถูกโจมตีได้้</td><td>ซอฟต์แวร์ไม่อัปเดต, รหัสผ่านอ่อน, misconfigured S3 bucket</td></tr>
+      <tr><td><strong>Threat</strong></td><td>สิ่งที่อาจก่อให้เกิดความเสียหาย</td><td>แฮกเกอร์, Ransomware, insider</td></tr>
+      <tr><td><strong>Risk</strong></td><td>โอกาสที่ threat จะใช้ประโยชน์จาก vulnerability</td><td><code>Risk = Likelihood x Impact</code></td></tr>
+      <tr><td><strong>Attack Vector</strong></td><td>เส้นทางที่ผู้โจมตีใช้เข้าถึงระบบ</td><td>Phishing email, USB drop, exposed RDP</td></tr>
+      <tr><td><strong>IOC</strong></td><td>ร่องรอยว่ามีการบุกรุกแล้ว</td><td>IP C2, hash malware</td></tr>
+      <tr><td><strong>IOA</strong></td><td>พฤติกรรมบ่งชี้กำลังถูกโจมตี</td><td>Login ล้มเหลว 20 ครั้ง/นาที</td></tr>
+    </table>
+  </section>
+
+  <!-- ====== 2 CIA ====== -->
+  <section id="cia">
+    <h2>CIA Triad</h2>
+    <table>
+      <tr><th>หลักการ</th><th>เป้าหมาย</th><th>มาตรการ</th><th>ภัยคุกคาม</th></tr>
+      <tr><td><strong>Confidentiality</strong></td><td>ข้อมูลเข้าถึงได้้เฉพาะผู้มีสิทธิ์</td><td>Encryption, Access Control, MFA</td><td>Data breach, MITM</td></tr>
+      <tr><td><strong>Integrity</strong></td><td>ข้อมูลไม่ถูกแก้ไขโดยไม่ได้้รับอนุญาต</td><td>Hashing, Digital Signature, Checksum</td><td>SQL Injection, log tampering</td></tr>
+      <tr><td><strong>Availability</strong></td><td>ระบบพร้อมใช้งานเสมอ</td><td>Redundancy, Backup, Auto-scaling</td><td>DDoS, Ransomware, HW failure</td></tr>
+    </table>
+    <div class="card">
+      <strong>ตัวอย่างการประยุกต์ใช้:</strong> ระบบธนาคารออนไลน์ต้องใช้ TLS (Confidentiality), มี checksum ทุกรายการ (Integrity), และมี failover cluster (Availability)
+    </div>
+  </section>
+
+  <!-- ====== 3 STRIDE ====== -->
+  <section id="stride">
+    <h2>STRIDE Model</h2>
+    <p style="color:#8b949e;font-size:14px;margin-bottom:12px">พัฒนาโดย Microsoft — จำแนกภัยคุกคามตามลักษณะการโจมตี</p>
+    <table>
+      <tr><th>ประเภท</th><th>คำถาม</th><th>ตัวอย่าง</th><th>การรับมือ</th></tr>
+      <tr class="clickable" onclick="toggleRow(this)"><td><strong>Spoofing</strong></td><td>service หนึ่งแอบอ้างเป็นอีก service ได้้ไหม?</td><td>ปลอม email CEO, ARP spoofing</td><td>MFA, mutual TLS</td></tr>
+      <tr class="clickable" onclick="toggleRow(this)"><td><strong>Tampering</strong></td><td>ผู้โจมตีแก้ไขข้อมูลโดยไม่ได้้รับอนุญาตได้้ไหม?</td><td>SQL Injection เปลี่ยนยอดเงิน</td><td>Input validation, HMAC</td></tr>
+      <tr class="clickable" onclick="toggleRow(this)"><td><strong>Repudiation</strong></td><td>ผู้ใช้ปฏิเสธว่าไม่ได้้ทำบางอย่างได้้ไหม?</td><td>ไม่มี log การลบข้อมูล</td><td>Digital signature, immutable audit</td></tr>
+      <tr class="clickable" onclick="toggleRow(this)"><td><strong>Information Disclosure</strong></td><td>คนนอกอ่านข้อมูลลับได้้ไหม?</td><td>Error เปิดเผย stack trace</td><td>Encryption, access control</td></tr>
+      <tr class="clickable" onclick="toggleRow(this)"><td><strong>Denial of Service</strong></td><td>ทำให้ระบบใช้การไม่ได้้ไหม?</td><td>SYN flood, disk space attack</td><td>Rate limiting, WAF, auto-scaling</td></tr>
+      <tr class="clickable" onclick="toggleRow(this)"><td><strong>Elevation of Privilege</strong></td><td>ผู้ใช้ทั่วไปทำสิ่งที่มีเฉพาะ admin ได้้ไหม?</td><td>Buffer overflow → RCE, DLL hijacking</td><td>Least privilege, sandboxing</td></tr>
+    </table>
+
+    <div class="collapse-toggle" onclick="toggleCollapse(this)">STRIDE Per Element (DFD-based)</div>
+    <div class="collapse-body">
+      <table>
+        <tr><th>Element</th><th>S</th><th>T</th><th>R</th><th>I</th><th>D</th><th>E</th></tr>
+        <tr><td>External Entity</td><td class="yes">Y</td><td>-</td><td class="yes">Y</td><td>-</td><td>-</td><td>-</td></tr>
+        <tr><td>Process</td><td class="yes">Y</td><td class="yes">Y</td><td class="yes">Y</td><td class="yes">Y</td><td class="yes">Y</td><td class="yes">Y</td></tr>
+        <tr><td>Data Store</td><td>-</td><td class="yes">Y</td><td class="yes">Y</td><td class="yes">Y</td><td class="yes">Y</td><td>-</td></tr>
+        <tr><td>Data Flow</td><td class="yes">Y</td><td class="yes">Y</td><td class="yes">Y</td><td class="yes">Y</td><td class="yes">Y</td><td>-</td></tr>
+        <tr><td>Trust Boundary</td><td>-</td><td>-</td><td>-</td><td class="yes">Y</td><td>-</td><td class="yes">Y</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ====== 4 PASTA ====== -->
+  <section id="pasta">
+    <h2>PASTA Framework</h2>
+    <p style="color:#8b949e;font-size:14px;margin-bottom:12px">Process for Attack Simulation and Threat Analysis — 7 ขั้นตอน risk-centric</p>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px">
+      <div class="tab-btn active" onclick="showPasta(0)">1. Objectives</div>
+      <div class="tab-btn" onclick="showPasta(1)">2. Tech Scope</div>
+      <div class="tab-btn" onclick="showPasta(2)">3. Decompose</div>
+      <div class="tab-btn" onclick="showPasta(3)">4. Threat Analysis</div>
+      <div class="tab-btn" onclick="showPasta(4)">5. Vulnerabilities</div>
+      <div class="tab-btn" onclick="showPasta(5)">6. Attack Model</div>
+      <div class="tab-btn" onclick="showPasta(6)">7. Risk & Impact</div>
+    </div>
+    <div id="pastaDetail" class="card" style="font-size:14px;min-height:80px">
+      <strong style="color:#58a6ff">Stage 1: Objectives</strong><br><br>
+      Business impact analysis, risk acceptance criteria<br>
+      กำหนดขอบเขตระบบ ระบุเป้าหมายธุรกิจ KPI ด้านความปลอดภัย
+    </div>
+  </section>
+
+  <!-- ====== 5 ATTACK SURFACE ====== -->
+  <section id="surface">
+    <h2>Attack Surface</h2>
+    <div class="surface-group">
+      <div class="surface-card"><span class="emoji">WAN</span><span class="name">Network</span><span class="desc">Port 22/3389, API ไม่มี Auth</span></div>
+      <div class="surface-card"><span class="emoji">APP</span><span class="name">Software</span><span class="desc">Form upload, XML parser</span></div>
+      <div class="surface-card"><span class="emoji">PPL</span><span class="name">Human</span><span class="desc">Phishing, Insider</span></div>
+      <div class="surface-card"><span class="emoji">KEY</span><span class="name">Physical</span><span class="desc">USB drop, Access card clone</span></div>
+    </div>
+    <div class="card" style="font-size:13px;color:#8b949e">
+      <strong style="color:#e6edf3">หลักการลด Attack Surface:</strong> Minimize (ปิดของไม่จำเป็น) → Least Privilege → Segmentation → Defense in Depth
+    </div>
+  </section>
+
+  <!-- ====== 6 ANALYSIS ====== -->
+  <section id="analysis">
+    <h2>Analysis Techniques</h2>
+    <div class="tabs">
+      <div class="tab-btn active" onclick="switchTab('analysis',0)">Static Analysis</div>
+      <div class="tab-btn" onclick="switchTab('analysis',1)">Dynamic Analysis</div>
+      <div class="tab-btn" onclick="switchTab('analysis',2)">Behavioral</div>
+      <div class="tab-btn" onclick="switchTab('analysis',3)">Indicator Analysis</div>
+    </div>
+
+    <div class="tab-panel active" id="analysis-0">
+      <p style="font-size:13px;color:#8b949e;margin:8px 0">ตรวจสอบไฟล์หรือโค้ดโดยไม่ต้องเรียกใช้งาน (Execute)</p>
+      <table>
+        <tr><th>เทคนิค</th><th>ใช้กับอะไร</th><th>เครื่องมือ</th></tr>
+        <tr><td>Signature matching</td><td>เปรียบเทียบ hash กับ known malware</td><td>YARA, ClamAV</td></tr>
+        <tr><td>SAST</td><td>วิเคราะห์ source code หา vulnerability</td><td>Semgrep, CodeQL, SonarQube</td></tr>
+        <tr><td>SCA</td><td>ตรวจ dependency และ license</td><td>Snyk, Dependabot, OWASP DC</td></tr>
+        <tr><td>Binary analysis</td><td>Disassemble/decompile executable</td><td>Ghidra, IDA Pro, Radare2</td></tr>
+        <tr><td>String analysis</td><td>สกัด IOC (IP, domain, registry key)</td><td>strings, FLOSS</td></tr>
+        <tr><td>PE/ELF analysis</td><td>ตรวจสอบโครงสร้างไฟล์ (imports, sections)</td><td>pefile, readelf</td></tr>
+      </table>
+      <pre># Quick triage malware
+sha256sum sample.exe
+strings sample.exe | grep -i "http\|https"
+diec sample.exe</pre>
+    </div>
+
+    <div class="tab-panel" id="analysis-1">
+      <p style="font-size:13px;color:#8b949e;margin:8px 0">ทำงานใน Sandbox และสังเกตพฤติกรรม</p>
+      <table>
+        <tr><th>เทคนิค</th><th>ตรวจจับอะไร</th><th>เครื่องมือ</th></tr>
+        <tr><td>Sandboxing</td><td>พฤติกรรมรวมของ malware</td><td>CAPE, Cuckoo, Joe Sandbox</td></tr>
+        <tr><td>DAST</td><td>Vulnerability ของ web app ขณะรัน</td><td>OWASP ZAP, Burp Suite</td></tr>
+        <tr><td>Fuzzing</td><td>Input handling bug</td><td>AFL, libFuzzer, Honggfuzz</td></tr>
+        <tr><td>Memory analysis</td><td>Process injection, rootkit</td><td>Volatility, Rekall</td></tr>
+        <tr><td>Network capture</td><td>C2 communication, data exfil</td><td>Wireshark, Zeek</td></tr>
+      </table>
+      <pre># Monitor ขณะรัน suspicious file
+tcpdump -i eth0 host victim-ip -w traffic.pcap
+strace -f -o trace.log ./sample.exe
+volatility -f memory.dump malfind</pre>
+    </div>
+
+    <div class="tab-panel" id="analysis-2">
+      <p style="font-size:13px;color:#8b949e;margin:8px 0">ศึกษารูปแบบ (Pattern) ของระบบหรือผู้ใช้ — ไม่พิจารณาไฟล์เดี่ยว</p>
+      <table>
+        <tr><th>เทคนิค</th><th>หลักการ</th><th>ตัวอยาง</th></tr>
+        <tr><td>UEBA</td><td>สร้าง baseline แล้วหา deviation</td><td>พนักงาน login เวลา 03.00 น.</td></tr>
+        <tr><td>Process Tree</td><td>ดู parent-child relationship</td><td><code>winword.exe</code> spawn <code>powershell.exe</code></td></tr>
+        <tr><td>Network Flow</td><td>วิเคราะห์ NetFlow ปริมาณ traffic</td><td>Data upload 50GB ออกนอก network</td></tr>
+        <tr><td>Timeline</td><td>เรียงลำดับเหตุการณ์</td><td>Phishing mail → click → beacon 15 นาที</td></tr>
+      </table>
+    </div>
+
+    <div class="tab-panel" id="analysis-3">
+      <p style="font-size:13px;color:#8b949e;margin:8px 0">วิเคราะห์ตัวบ่งชี้ (IOC) ตามระดับ Pyramid of Pain</p>
+      <table>
+        <tr><th>Indicator</th><th>ระดับ</th><th>อายุการใช้งาน</th></tr>
+        <tr><td>Hash (MD5/SHA1/SHA256)</td><td>ไฟล์เดียว</td><td>เปลี่ยนทันทีถ้าแก้ 1 bit</td></tr>
+        <tr><td>IP/Domain</td><td>C2 server</td><td>ถูก block และเปลี่ยนภายในชั่วโมง</td></tr>
+        <tr><td>Registry key / File path</td><td>Persistence mechanism</td><td>เปลี่ยนเมื่อ dev อัปเดต</td></tr>
+        <tr><td>TTP (MITRE ATT&CK)</td><td>รูปแบบการโจมตี</td><td>เปลี่ยนยาก — ต้องเปลี่ยนวิธีโจมตี</td></tr>
+      </table>
+      <div class="yaml"># Sigma rule — ตรวจจับ encoded PowerShell
+title: PowerShell Encoded Command
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\\powershell.exe'
+    CommandLine|contains: '-enc'
+  condition: selection</div>
+    </div>
+  </section>
+
+  <!-- ====== 7 DETECTION ====== -->
+  <section id="detection">
+    <h2>Detection Techniques</h2>
+
+    <div class="tabs">
+      <div class="tab-btn active" onclick="switchTab('detect',0)">Signature-Based</div>
+      <div class="tab-btn" onclick="switchTab('detect',1)">Anomaly-Based</div>
+      <div class="tab-btn" onclick="switchTab('detect',2)">Heuristic-Based</div>
+      <div class="tab-btn" onclick="switchTab('detect',3)">Pyramid of Pain</div>
+    </div>
+
+    <div class="tab-panel active" id="detect-0">
+      <div class="card" style="border-left:3px solid #3fb950">
+        <div style="font-size:13px;color:#3fb950;margin-bottom:6px">แม่นยำสูง เร็ว false positive ต่ำ</div>
+        <div style="font-size:13px;color:#f85149">ตรวจจับ zero-day หรือ variant ใหม่ไม่ได้้</div>
+      </div>
+      <table>
+        <tr><th>เครื่องมือ</th><th>วิธี</th></tr>
+        <tr><td>Antivirus</td><td>hash + heuristic match</td></tr>
+        <tr><td>Snort/Suricata</td><td>rule-based network detection</td></tr>
+        <tr><td>YARA</td><td>pattern-based file/memory detection</td></tr>
+        <tr><td>IDS/IPS</td><td>ตรวจจับ intrusion ที่รู้จัก</td></tr>
+      </table>
+    </div>
+
+    <div class="tab-panel" id="detect-1">
+      <div class="card" style="border-left:3px solid #58a6ff">
+        <div style="font-size:13px;color:#3fb950;margin-bottom:6px">ตรวจจับ zero-day และ unknown threat ได้้</div>
+        <div style="font-size:13px;color:#f85149">False positive สูง ต้องปรับ baseline ตลอด</div>
+      </div>
+      <table>
+        <tr><th>วิธี</th><th>หลักการ</th><th>ตัวอย่าง</th></tr>
+        <tr><td>Statistical</td><td>mean/std dev ตั้ง threshold</td><td>Login > 3 SD = alert</td></tr>
+        <tr><td>ML</td><td>Isolation Forest, One-Class SVM</td><td>จัดกลุ่ม traffic ปกติ แล้ว flag outlier</td></tr>
+        <tr><td>Deep Learning</td><td>Autoencoder, LSTM</td><td>เรียน sequence ปกติแล้วหา anomaly</td></tr>
+      </table>
+    </div>
+
+    <div class="tab-panel" id="detect-2">
+      <table>
+        <tr><th>เทคนิค</th><th>วิธี</th><th>ตัวอย่าง</th></tr>
+        <tr><td>Emulation</td><td>รัน code ใน VM ก่อนตัดสิน</td><td>ไฟล์ลอง decrypt ตัวเอง แล้ว connect ออก</td></tr>
+        <tr><td>Reputation</td><td>คะแนนจากประวัติที่มา</td><td>ไฟล์จากเว็บไม่รู้จัก + ไม่มี signature = risk สูง</td></tr>
+        <tr><td>API heuristics</td><td>ดู sequence การเรียก API</td><td><code>OpenProcess → VirtualAllocEx → WriteProcessMemory</code> = process injection</td></tr>
+      </table>
+    </div>
+
+    <div class="tab-panel" id="detect-3">
+      <p style="font-size:14px;color:#8b949e;margin-bottom:8px"><strong style="color:#e6edf3">Pyramid of Pain</strong> (David Bianco) — ยิ่งระดับสูง ยิ่งสร้างความเจ็บปวดให้ attacker</p>
+      <div class="pyramid">
+        <div class="pyramid-level" style="background:#f85149;width:40%" onclick="alert('TTPs — เปลี่ยนยากที่สุด ต้องเปลี่ยนพฤติกรรม')">TTPs</div>
+        <div class="pyramid-level" style="background:#d29922;width:50%" onclick="alert('Tools — ตองหา tool ใหม')">Tools</div>
+        <div class="pyramid-level" style="background:#3fb950;width:60%" onclick="alert('Artifacts — ตอง rewrite')">Artifacts</div>
+        <div class="pyramid-level" style="background:#58a6ff;width:70%" onclick="alert('Domain Names — เปลี่ยนภายในชั่วโมง')">Domain Names</div>
+        <div class="pyramid-level" style="background:#a371f7;width:80%" onclick="alert('IP Addresses — เปลี่ยนในไม่กี่นาที')">IP Addresses</div>
+        <div class="pyramid-level" style="background:#8b949e;width:90%" onclick="alert('Hash Values — เปลี่ยนง่ายสุด แก 1 bit')">Hash Values</div>
+      </div>
+      <div class="card" style="font-size:13px;color:#8b949e">
+        <strong style="color:#e6edf3">กลยุทธ:</strong> มุ่งตรวจจับ TTPs (ระดับบน) แทน hash/IP — ผู้โจมตีเปลี่ยน hash ได้้ใน 1 วินาที แต่การเปลี่ยน TTP ต้องปรับเปลี่ยนวิธีการโจมตีทั้งหมด
+      </div>
+    </div>
+
+    <h3>เปรียบเทียบวิธีตรวจจับ</h3>
+    <table>
+      <tr><th>วิธี</th><th>Zero-Day</th><th>Known Threat</th><th>False Positive</th><th>Speed</th></tr>
+      <tr><td>Signature</td><td class="no">X</td><td class="yes">Y</td><td>ต่ำ</td><td>เร็ว</td></tr>
+      <tr><td>Anomaly (ML)</td><td class="yes">Y</td><td class="yes">Y</td><td>กลาง-สูง</td><td>ปานกลาง</td></tr>
+      <tr><td>Heuristic</td><td class="yes">Y</td><td class="yes">Y</td><td>กลาง</td><td>เร็ว</td></tr>
+      <tr><td>Sandbox</td><td class="yes">Y</td><td class="yes">Y</td><td>ต่ำ</td><td>ช้า</td></tr>
+    </table>
+  </section>
+
+  <!-- ====== 8 MALWARE ====== -->
+  <section id="malware">
+    <h2>Malware Analysis</h2>
+    <div class="tabs">
+      <div class="tab-btn active" onclick="switchTab('malware',0)">Static Triage</div>
+      <div class="tab-btn" onclick="switchTab('malware',1)">Dynamic</div>
+      <div class="tab-btn" onclick="switchTab('malware',2)">Memory</div>
+      <div class="tab-btn" onclick="switchTab('malware',3)">Reverse</div>
+    </div>
+
+    <div class="tab-panel active" id="malware-0">
+      <pre>sha256sum ransom.exe
+# ส่ง hash ตรวจ VirusTotal / AlienVault OTX
+
+strings ransom.exe | grep -i "bitcoin\|wallet\|encrypt\|\.onion"
+# ถ้าพบ bitcoin wallet address หรือ .onion → ransomware
+
+diec ransom.exe
+# ถ้า "packed" → ต้อง unpack ก่อนวิเคราะห์ตอ</pre>
+      <div class="card">
+        <strong>ตัวอย่าง:</strong> เจอไฟล์ <code>invoice_2024.exe</code> — hash ตรงกับ LockBit 3.0, strings พบ <code>.onion</code> และ <code>-encrypt</code> — สรุปเบื้องต้น: Ransomware
+      </div>
+    </div>
+
+    <div class="tab-panel" id="malware-1">
+      <pre># ใน VM ที่แยกเด็ดขาด
+tcpdump -i eth0 -w ransom.pcap
+strace -f -o syscall.log ./ransom.exe
+inotifywait -m -r /home/victim/</pre>
+      <div class="card">
+        <strong>ตัวอย่าง:</strong> Malware สราง <code>\\.\\AACS\\</code> mutex — ระบุ family ได้, DNS query ไป <code>xyz.ddns.net</code> — C2 domain
+      </div>
+    </div>
+
+    <div class="tab-panel" id="malware-2">
+      <pre>volatility -f mem.dump windows.netscan
+volatility -f mem.dump windows.malfind
+volatility -f mem.dump windows.pslist
+volatility -f mem.dump windows.dumpcerts</pre>
+    </div>
+
+    <div class="tab-panel" id="malware-3">
+      <pre># Ghidra: import binary → decompile → ดูฟังก์ชัน decrypt
+# x64dbg: set breakpoint ที่ CryptDecrypt → dump output</pre>
+      <div class="card">
+        <strong>ตัวอย่าง:</strong> Decompile ransomware ด้วย Ghidra — พบฟังก์ชัน <code>decrypt_file()</code> ที่เรียก <code>CryptDecrypt</code> — ตั้ง breakpoint ที่ x64dbg จับ key ขณะ decrypt ใน memory
+      </div>
+    </div>
+
+    <h3>YARA Rules</h3>
+    <div class="tabs">
+      <div class="tab-btn active" onclick="switchTab('yara',0)">LockBit</div>
+      <div class="tab-btn" onclick="switchTab('yara',1)">PowerShell Download</div>
+    </div>
+    <div class="tab-panel active" id="yara-0">
+      <pre>rule LockBit_Ransomware {
+  meta:
+    description = "Detect LockBit ransomware strings"
+  strings:
+    $s1 = "LOCKBIT" nocase
+    $s2 = "\\aacs\\" nocase
+    $s3 = ".lockbit" ascii
+    $s4 = "bitcoin" ascii
+  condition:
+    2 of ($s1,$s2,$s3) or $s4
+}</pre>
+    </div>
+    <div class="tab-panel" id="yara-1">
+      <pre>rule Suspicious_Powershell_Download {
+  meta:
+    description = "Detect PowerShell download cradle"
+  strings:
+    $web = "Net.WebClient" nocase
+    $down = ".DownloadString" nocase
+    $invoke = "IEX" nocase
+    $enc = "-enc" nocase
+  condition:
+    ($web and $down) and ($invoke or $enc)
+}</pre>
+    </div>
+  </section>
+
+  <!-- ====== 9 SIEM ====== -->
+  <section id="siem">
+    <h2>Security Monitoring & SIEM</h2>
+
+    <h3>Log Sources</h3>
+    <table>
+      <tr><th>Source</th><th>ตรวจจับอะไร</th><th>เครื่องมือ</th></tr>
+      <tr><td>Endpoint</td><td>Process create, network connect, registry change</td><td>Sysmon, auditd, osquery</td></tr>
+      <tr><td>Network</td><td>Flow, DNS, HTTP, TLS</td><td>Zeek, Suricata, ntopng</td></tr>
+      <tr><td>Cloud</td><td>API calls, config change, access logs</td><td>CloudTrail, Audit Logs</td></tr>
+      <tr><td>Identity</td><td>Auth success/fail, privilege change</td><td>Event ID 4624/4625/4670</td></tr>
+      <tr><td>Application</td><td>Web access, DB query, API errors</td><td>Nginx log, PostgreSQL log</td></tr>
+    </table>
+
+    <h3>SIEM Flow</h3>
+    <div class="card" style="padding:24px;text-align:center">
+      <div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+        <span class="tag">Endpoint</span>
+        <span class="tag">Network</span>
+        <span class="tag">Cloud</span>
+        <span class="tag">Identity</span>
+        <span class="tag">Application</span>
+      </div>
+      <div style="font-size:14px;color:#30363d;margin:4px 0">↓</div>
+      <div style="display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:6px 16px;font-size:13px;color:#e6edf3">Log Collector</span>
+        <span style="color:#30363d">→</span>
+        <span style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:6px 16px;font-size:13px;color:#e6edf3">SIEM Engine</span>
+      </div>
+      <div style="font-size:14px;color:#30363d;margin:4px 0">↓</div>
+      <div style="margin-bottom:8px">
+        <span style="background:#1c2128;border:1px solid #30363d;border-radius:6px;padding:6px 16px;font-size:13px;color:#8b949e">Detection Rules + ML</span>
+      </div>
+      <div style="font-size:14px;color:#30363d;margin:4px 0">↓</div>
+      <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
+        <span style="background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:4px 14px;font-size:12px;color:#8b949e">Alert / SOAR</span>
+        <span style="background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:4px 14px;font-size:12px;color:#8b949e">Dashboard</span>
+        <span style="background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:4px 14px;font-size:12px;color:#8b949e">Incident Case</span>
+      </div>
+    </div>
+
+    <h3>Detection Queries</h3>
+    <table>
+      <tr><th>สถานการณ์</th><th>SIEM Query</th></tr>
+      <tr><td>Brute force login</td><td><code>event_id=4625 | stats count by src_ip, user | where count > 10</code></td></tr>
+      <tr><td>PowerShell download</td><td><code>event_id=4103 AND scriptblock contains "DownloadString" OR "IEX"</code></td></tr>
+      <tr><td>Lateral movement</td><td><code>event_id=4624 AND logon_type=3 AND src_ip NOT IN (known)</code></td></tr>
+      <tr><td>Data exfil</td><td><code>dns_query_type=TXT AND bytes > 500 OR dest_port=53 AND bytes > 1000</code></td></tr>
+      <tr><td>Scheduled task malware</td><td><code>event_id=4698 AND commandline contains ".ps1" OR ".exe" OR "-enc"</code></td></tr>
+    </table>
+
+    <h3>SOAR</h3>
+    <table>
+      <tr><th>ความสามารถ</th><th>เครื่องมือ</th></tr>
+      <tr><td>Automated playbook</td><td>Splunk SOAR, Palo Alto XSOAR</td></tr>
+      <tr><td>Open source stack</td><td>Shuffle, TheHive + Cortex + MISP</td></tr>
+      <tr><td>Auto-block IP</td><td>firewall API — block offender ทันที</td></tr>
+      <tr><td>Enrich IOC</td><td>ส่ง hash ไป VirusTotal/MISP อัตโนมัติ</td></tr>
+    </table>
+  </section>
+
+  <!-- ====== 10 SCENARIOS ====== -->
+  <section id="scenarios">
+    <h2>Scenarios</h2>
+    <p style="color:#8b949e;font-size:14px;margin-bottom:12px">ตัวอย่างการตรวจจับและวิเคราะห์ภัยคุกคามแบบครบวงจร 4 กรณีศึกษา</p>
+
+    <div class="tabs" style="margin-bottom:16px">
+      <div class="tab-btn active" onclick="switchTab('scenario',0)">1 Phishing C2 Ransomware</div>
+      <div class="tab-btn" onclick="switchTab('scenario',1)">2 SQL Injection</div>
+      <div class="tab-btn" onclick="switchTab('scenario',2)">3 Insider Threat</div>
+      <div class="tab-btn" onclick="switchTab('scenario',3)">4 Supply Chain npm</div>
+    </div>
+
+    <!-- Scenario 1 -->
+    <div class="tab-panel active" id="scenario-0">
+      <div class="scenario-header">
+        <h3>Phishing → C2 Beacon → Ransomware</h3>
+        <div class="meta">พนักงานบัญชีได้รับอีเมลแจ้ง "ใบแจ้งหนี้ค้างชำระ" แนบไฟล์ .docm</div>
+      </div>
+
+      <div class="sub-tabs">
+        <span class="sub-tab active" onclick="showSubTab(this,'s0-timeline')">Timeline</span>
+        <span class="sub-tab" onclick="showSubTab(this,'s0-analysis')">Analysis</span>
+        <span class="sub-tab" onclick="showSubTab(this,'s0-summary')">Summary</span>
+      </div>
+
+      <div id="s0-timeline" class="sub-panel active">
+        <div class="timeline">
+          <div class="timeline-item"><span class="time">10:00</span> <strong>ผู้ใช้คลิกเปิดไฟล์แนบ</strong> — Macro ทำงาน</div>
+          <div class="timeline-item"><span class="time">10:01</span> powershell.exe ดาวน์โหลด payload จาก <code>hxxps://evil.c2/delivery.ps1</code></div>
+          <div class="timeline-item"><span class="time">10:02</span> Beacon ติดต่อ C2 server <code>198.51.100.99:8443</code></div>
+          <div class="timeline-item"><span class="time">10:15</span> C2 สั่งยกระดับสิทธิ์ (juicy-potato) + Lateral Movement</div>
+          <div class="timeline-item"><span class="time">10:20</span> C2 สั่งติดตั้ง LockBit ransomware</div>
+          <div class="timeline-item"><span class="time">10:21</span> ไฟล์เริ่มถูกเข้ารหัส — ตรวจพบจาก <code>.lockbit</code></div>
+        </div>
+        <h3>การตรวจจับ</h3>
+        <table>
+          <tr><th>Layer</th><th>สิ่งที่ detect</th><th>เครื่องมือ</th><th>Alert</th></tr>
+          <tr><td>Endpoint</td><td><code>winword.exe</code> spawn <code>powershell.exe</code></td><td>Sysmon Event ID 1</td><td class="yes">Y</td></tr>
+          <tr><td>Endpoint</td><td>PowerShell เรียก <code>DownloadString</code> + <code>-enc</code></td><td>Sysmon Event ID 4103</td><td class="yes">Y</td></tr>
+          <tr><td>Network</td><td>DNS query <code>evil.c2</code> (ไม่เคยมีประวัติ)</td><td>Zeek DNS log</td><td class="yes">Y</td></tr>
+          <tr><td>Network</td><td>Beacon outbound <code>198.51.100.99:8443</code></td><td>Zeek conn / Suricata</td><td class="yes">Y</td></tr>
+          <tr><td>Endpoint</td><td>File นับร้อยถูกเขียน <code>.lockbit</code></td><td>Sysmon Event ID 11</td><td class="yes">Y</td></tr>
+        </table>
+      </div>
+
+      <div id="s0-analysis" class="sub-panel">
+        <h3>ขั้นตอนวิเคราะห์</h3>
+        <pre># 1. Static — ตรวจสอบ macro ใน docm
+olevba invoice.docm > macro_analysis.txt
+# พบ AutoOpen() ที่เรียก powershell -enc &lt;base64&gt;
+
+# 2. Decode payload
+powershell -enc &lt;base64&gt;  # decode ดู URL download
+
+# 3. Dynamic — sandbox payload
+cape submit delivery.ps1  # รายงาน: เรียก beacon ไป 198.51.100.99:8443
+
+# 4. Network — ดู traffic ใน PCAP
+wireshark -r traffic.pcap -Y "http.request"
+# POST /auth?uid=WS-001 พร้อม hostname เยอะมาก (beacon)</pre>
+        <h4>MITRE ATT&CK</h4>
+        <table>
+          <tr><th>Technique</th><th>Tactic</th><th>ID</th></tr>
+          <tr><td>Spearphishing Attachment</td><td>Initial Access</td><td>T1566.001</td></tr>
+          <tr><td>PowerShell</td><td>Execution</td><td>T1059.001</td></tr>
+          <tr><td>Encrypted Channel</td><td>C2</td><td>T1573</td></tr>
+          <tr><td>Data Encrypted for Impact</td><td>Impact</td><td>T1486</td></tr>
+        </table>
+      </div>
+
+      <div id="s0-summary" class="sub-panel">
+        <div class="card">
+          <h4 style="margin:0 0 4px">IOC</h4>
+          <div style="font-size:13px;color:#8b949e">
+            <strong>SHA256:</strong> a1b2c3d4e5f6... (macro docm)<br>
+            <strong>URL:</strong> hxxps://evil.c2/delivery.ps1<br>
+            <strong>Domain:</strong> evil.c2<br>
+            <strong>IP:</strong> 198.51.100.99<br>
+            <strong>Registry:</strong> HKCU\...\Run\Updater
+          </div>
+        </div>
+        <div class="card" style="border-left:3px solid #f85149">
+          <h4 style="margin:0 0 4px;color:#f85149">สรุป</h4>
+          <div style="font-size:13px">
+            <strong>Verdict:</strong> LockBit Ransomware — confirmed<br>
+            <strong>Initial Access:</strong> Phishing (T1566.001)<br>
+            <strong>Impact:</strong> 1,500 ไฟล์ถูกเข้ารหัส<br>
+            <strong>Gap:</strong> ไม่มี EDR บน endpoint — ตรวจพบช้า (ตอน ransomware ทำงานแล้ว)<br>
+            <strong>Action:</strong> block IP/domain, isolate machine, restore from backup
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scenario 2 -->
+    <div class="tab-panel" id="scenario-1">
+      <div class="scenario-header">
+        <h3>SQL Injection → Data Exfiltration</h3>
+        <div class="meta">เว็บ e-commerce มีช่องโหว่ SQL Injection ที่ search endpoint</div>
+      </div>
+
+      <div class="sub-tabs">
+        <span class="sub-tab active" onclick="showSubTab(this,'s1-timeline')">Timeline</span>
+        <span class="sub-tab" onclick="showSubTab(this,'s1-analysis')">Analysis</span>
+        <span class="sub-tab" onclick="showSubTab(this,'s1-summary')">Summary</span>
+      </div>
+
+      <div id="s1-timeline" class="sub-panel active">
+        <div class="timeline">
+          <div class="timeline-item"><span class="time">14:23:15</span> ส่งคำสั่ง <code>' OR 1=1--</code> ไปที่ <code>/api/products/search</code></div>
+          <div class="timeline-item"><span class="time">14:23:18</span> Response — ข้อมูล products ทั้งหมด (ไม่ปกติ)</div>
+          <div class="timeline-item"><span class="time">14:24:30</span> UNION SELECT username,password FROM users</div>
+          <div class="timeline-item"><span class="time">14:25:00</span> 10,000 records ถูกดึงออกใน 5 วินาที</div>
+          <div class="timeline-item"><span class="time">14:25:30</span> WAF alert: SQL Injection attempt — Blocked IP</div>
+        </div>
+      </div>
+
+      <div id="s1-analysis" class="sub-panel">
+        <h3>Log Analysis</h3>
+        <pre># 1. WAF alert — SQL injection pattern
+[WAF] Blocked from 203.0.113.5
+  Rule: SQLI-942100 (SQL Injection - UNION)
+  URI: /api/products/search?q=1'+UNION+SELECT+...
+
+# 2. Web server log
+203.0.113.5 - [24/Jun/2026:14:23:15 +0700] "GET /api/products/search?q=test' HTTP/1.1" 200
+203.0.113.5 - [24/Jun/2026:14:24:30 +0700] "GET /api/products/search?q=1'+UNION+SELECT+*+FROM+users-- HTTP/1.1" 200
+
+# 3. SIEM — WAF + web log + DB audit
+# DB audit: query จาก app user SELECT * FROM users — ผิดปกติ</pre>
+
+        <h3>ขั้นตอนวิเคราะห์</h3>
+        <pre># 1. สกัด requests ของ attacker
+cat nginx-access.log | grep "203.0.113.5" | awk '{print $7}' | urldecode
+
+# 2. ทดสอบยืนยัน (ใน dev)
+sqlmap -u "http://app/api/products/search?q=1" --dbs
+# พบ database: ecommerce_db
+
+# 3. ตรวจสอบ data ที่ถูก exfiltrate
+cat nginx-access.log | grep "203.0.113.5" | grep "UNION"
+
+# 4. Response size ผิดปกติ
+# ปกติ ~2KB, response UNION ~500KB</pre>
+      </div>
+
+      <div id="s1-summary" class="sub-panel">
+        <div class="card" style="border-left:3px solid #f85149">
+          <h4 style="margin:0 0 4px;color:#f85149">Root Cause</h4>
+          <div style="font-size:13px">
+            <strong>ช่องโหว่:</strong> Raw string interpolation ใน SQL query<br>
+            <code>f"SELECT * FROM products WHERE name LIKE '%{q}%'"</code><br>
+            <strong>ป้องกันที่ขาด:</strong> No parameterized query, DB user มีสิทธิ SELECT users<br>
+            <strong>Gap:</strong> WAF ตรวจจับช้า (หลัง data ถูกขโมย)
+          </div>
+        </div>
+        <pre># ก่อน (มีช่องโหว่)
+cursor.execute(f"SELECT * FROM products WHERE name LIKE '%{q}%'")
+
+
+# หลัง (parameterized query)
+cursor.execute("SELECT * FROM products WHERE name LIKE %s", ('%' + q + '%',))</pre>
+      </div>
+    </div>
+
+    <!-- Scenario 3 -->
+    <div class="tab-panel" id="scenario-2">
+      <div class="scenario-header">
+        <h3>Insider Threat — Data Theft</h3>
+        <div class="meta">พนักงานขายกำลังจะลาออก ดาวน์โหลดฐานข้อมูลลูกคาก่อนออกจากบริษัท</div>
+      </div>
+
+      <div class="sub-tabs">
+        <span class="sub-tab active" onclick="showSubTab(this,'s2-timeline')">Timeline</span>
+        <span class="sub-tab" onclick="showSubTab(this,'s2-analysis')">Analysis</span>
+        <span class="sub-tab" onclick="showSubTab(this,'s2-summary')">Summary</span>
+      </div>
+
+      <div id="s2-timeline" class="sub-panel active">
+        <div class="timeline">
+          <div class="timeline-item"><span class="time">09:00</span> เข้าสู่ระบบตามปกติ</div>
+          <div class="timeline-item"><span class="time">09:15</span> ส่งอีเมล resume ไปยังคู่แข่ง</div>
+          <div class="timeline-item"><span class="time">11:30</span> CRM export 100 รายการ (ปกติ)</div>
+          <div class="timeline-item"><span class="time">13:00</span> CRM export 50,000 รายการ — <code>SELECT * FROM customers</code></div>
+          <div class="timeline-item"><span class="time">13:01</span> DLP block: "PII มากเกินไป"</div>
+          <div class="timeline-item"><span class="time">13:15</span> อัปโหลดไป Google Drive ส่วนตัว</div>
+          <div class="timeline-item"><span class="time">13:20</span> UEBA alert: "ข้อมูล > 5x SD จาก baseline"</div>
+        </div>
+      </div>
+
+      <div id="s2-analysis" class="sub-panel">
+        <h3>Detection & Investigation</h3>
+        <div class="yaml"># SIEM Rule: CRM Mass Data Export
+title: CRM Mass Data Export (Insider Threat)
+detection:
+  selection:
+    action: "export"
+    records: "> 1000"
+  condition: selection
+
+# UEBA alert
+rule: Data volume anomaly
+trigger: user="john.doe" AND operation="crm_export" AND records=50000
+baseline: avg_export=120, stddev=45
+score: 5 SD above baseline</div>
+
+        <h3>ขั้นตอนสืบสวน</h3>
+        <pre># 1. ดู export history
+grep "john.doe" crm_audit.log | grep "export"
+# 09:00 export 100 records (ปกติ)
+# 13:00 export 50,000 records (ผิดปกติ)
+
+# 2. Cloud Access log
+[Proxy] POST drive.google.com (john.doe@company.com)
+  File: customer_db_export.xlsx  Size: 25MB
+  # company policy ห้าม upload data ไป personal drive
+
+# 3. DLP: Email attachment เป็น zip ใส่ password (covert channel)</pre>
+      </div>
+
+      <div id="s2-summary" class="sub-panel">
+        <h3>Response</h3>
+        <table>
+          <tr><th>ขั้นตอน</th><th>สิ่งที่ทำ</th></tr>
+          <tr><td>1. Contain</td><td>Revoke access, disable account, VPN kill</td></tr>
+          <tr><td>2. Preserve</td><td>ภาพ forensic endpoint, copy log, backup CRM audit</td></tr>
+          <tr><td>3. Investigate</td><td>ถาม HR, สัมภาษณ์พนักงาน</td></tr>
+          <tr><td>4. Legal</td><td>แจ้ง legal — data breach notification ตาม PDPA</td></tr>
+          <tr><td>5. Prevent</td><td>ติดตั้ง DLP + UEBA, จำกัดสิทธิ CRM export</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Scenario 4 -->
+    <div class="tab-panel" id="scenario-3">
+      <div class="scenario-header">
+        <h3>Supply Chain — Compromised npm Package</h3>
+        <div class="meta">ปลอมแพ็กเกจ <code>lodash</code> (typosquatting) ใน npm registry</div>
+      </div>
+
+      <div class="sub-tabs">
+        <span class="sub-tab active" onclick="showSubTab(this,'s3-timeline')">Timeline</span>
+        <span class="sub-tab" onclick="showSubTab(this,'s3-analysis')">Analysis</span>
+        <span class="sub-tab" onclick="showSubTab(this,'s3-summary')">Summary</span>
+      </div>
+
+      <div id="s3-timeline" class="sub-panel active">
+        <pre># Developer รัน npm install โดยสะกดผิด
+# npm install lodash  (1 แทน l) — lodash@1.0.0 = fake!
+
+# 1. SCA alert
+snyk test
+# Critical: lodash@1.0.0 — Malicious package (typosquatting)
+# Postinstall script ที่เรียก curl ไปยัง C2
+
+# 2. Network detection
+[Suricata] ET MALWARE Known Malicious IP (198.51.100.200)
+  Flow: build-server:443 → 198.51.100.200:443
+  Payload: POST /collect with HOSTNAME, AWS_ACCESS_KEY_ID</pre>
+      </div>
+
+      <div id="s3-analysis" class="sub-panel">
+        <h3>ขั้นตอนวิเคราะห์</h3>
+        <pre># 1. ตรวจสอบ package.json
+grep "lodash" package.json
+# "lodash": "^1.0.0" — lodash จริง version 4.17.21!
+
+# 2. Static — ดู postinstall script
+cat node_modules/lodash/package.json | jq '.scripts'
+# "postinstall": "node malicious.js"
+cat node_modules/lodash/malicious.js
+# สง process.env, AWS credentials ไป evil.c2
+
+# 3. Impact — ตรวจ CI/CD
+git log --all --oneline | xargs -I{} sh -c \
+  'git show {}:package.json 2>/dev/null' | grep "lodash"
+
+# 4. Secret ถูกสงตอนรัน postinstall (runtime)</pre>
+
+        <h4>MITRE ATT&CK</h4>
+        <table>
+          <tr><th>Technique</th><th>Tactic</th><th>ID</th></tr>
+          <tr><td>Supply Chain Compromise</td><td>Initial Access</td><td>T1475</td></tr>
+          <tr><td>External Remote Services</td><td>Persistence</td><td>T1133</td></tr>
+          <tr><td>Credential from Password Stores</td><td>Credential Access</td><td>T1555</td></tr>
+        </table>
+      </div>
+
+      <div id="s3-summary" class="sub-panel">
+        <h3>Prevention</h3>
+        <table>
+          <tr><th>Layer</th><th>มาตรการ</th><th>เครื่องมือ</th></tr>
+          <tr><td>Registry</td><td>Use private npm registry + scoped packages</td><td>Verdaccio</td></tr>
+          <tr><td>CI</td><td>Lockfile + integrity hash</td><td>npm audit, yarn.lock</td></tr>
+          <tr><td>SCA</td><td>ตรวจ dependencies ก่อนใช้งาน</td><td>Snyk, Dependabot</td></tr>
+          <tr><td>Network</td><td>Block outbound ยกเว้น whitelist</td><td>Egress firewall</td></tr>
+          <tr><td>Runtime</td><td>Detect postinstall ที่เรียก network</td><td>Falco, OPA</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 11 COMPARE ====== -->
+  <section id="compare">
+    <h2>Framework Comparison</h2>
+    <table>
+      <tr><th>Framework</th><th>จุดเน้น</th><th>วิธีคิด</th><th>เหมาะกับ</th></tr>
+      <tr><td><strong>STRIDE</strong></td><td>จำแนกประเภทภัย</td><td>Per-element (DFD)</td><td>Developer, feature-level</td></tr>
+      <tr><td><strong>PASTA</strong></td><td>วิเคราะห์ความเสี่ยง</td><td>7-stage, data-driven</td><td>Enterprise, risk team</td></tr>
+      <tr><td><strong>LINDDUN</strong></td><td>Privacy threat</td><td>คล้าย STRIDE เน้น privacy</td><td>ระบบที่มี PII</td></tr>
+      <tr><td><strong>CVSS</strong></td><td>ประเมิน severity</td><td>Scoring (0-10)</td><td>Patch prioritization</td></tr>
+      <tr><td><strong>Attack Trees</strong></td><td>เส้นทางโจมตี</td><td>Tree structure</td><td>Red team, pentest</td></tr>
+      <tr><td><strong>MITRE ATT&CK</strong></td><td>TTP ผู้โจมตี</td><td>Knowledge base</td><td>Blue team, threat intel</td></tr>
+    </table>
+  </section>
+
+  <!-- ====== 12 TOOLS ====== -->
+  <section id="tools">
+    <h2>Tools</h2>
+    <div class="tabs">
+      <div class="tab-btn active" onclick="switchTab('tools',0)">Analysis & Detection</div>
+      <div class="tab-btn" onclick="switchTab('tools',1)">Threat Modeling</div>
+      <div class="tab-btn" onclick="switchTab('tools',2)">SIEM</div>
+    </div>
+
+    <div class="tab-panel active" id="tools-0">
+      <table>
+        <tr><th>เครื่องมือ</th><th>ใชสำหรับ</th><th>Free</th></tr>
+        <tr><td>Ghidra</td><td>Reverse engineering / decompile</td><td class="yes">Y</td></tr>
+        <tr><td>IDA Pro</td><td>Disassembler / decompiler มาตรฐาน</td><td class="no">N</td></tr>
+        <tr><td>x64dbg</td><td>Windows debugger</td><td class="yes">Y</td></tr>
+        <tr><td>Volatility</td><td>Memory forensics</td><td class="yes">Y</td></tr>
+        <tr><td>CAPE / Cuckoo</td><td>Malware sandbox</td><td class="yes">Y</td></tr>
+        <tr><td>YARA</td><td>Malware pattern matching</td><td class="yes">Y</td></tr>
+        <tr><td>Wireshark</td><td>Network traffic analysis</td><td class="yes">Y</td></tr>
+        <tr><td>Zeek</td><td>Network monitoring</td><td class="yes">Y</td></tr>
+        <tr><td>Suricata</td><td>IDS/IPS</td><td class="yes">Y</td></tr>
+        <tr><td>Velociraptor</td><td>Endpoint visibility</td><td class="yes">Y</td></tr>
+      </table>
+    </div>
+
+    <div class="tab-panel" id="tools-1">
+      <table>
+        <tr><th>เครื่องมือ</th><th>จุดเด่น</th></tr>
+        <tr><td>OWASP Threat Dragon</td><td>ฟรี, วาด DFD ได้</td></tr>
+        <tr><td>Microsoft TMT</td><td>STRIDE-based, auto-generate threat list</td></tr>
+        <tr><td>IriusRisk</td><td>Automation, CI/CD integration</td></tr>
+        <tr><td>pyTM</td><td>Code-as-threat-model (Python)</td></tr>
+        <tr><td>Draw.io</td><td>ฟรี, ใช้วาด DFD และ diagram</td></tr>
+      </table>
+    </div>
+
+    <div class="tab-panel" id="tools-2">
+      <table>
+        <tr><th>เครื่องมือ</th><th>ประเภท</th></tr>
+        <tr><td>Wazuh</td><td>Open source (fork of OSSEC)</td></tr>
+        <tr><td>ELK Stack</td><td>Open source log analytics</td></tr>
+        <tr><td>Splunk</td><td>Enterprise (มี free tier)</td></tr>
+        <tr><td>Microsoft Sentinel</td><td>Cloud-native SIEM</td></tr>
+        <tr><td>Palo Alto XSIAM</td><td>AI-driven SIEM</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ====== 13 SUMMARY ====== -->
+  <section id="summary">
+    <h2>สรุป</h2>
+    <div class="card">
+      <ol style="font-size:14px;color:#8b949e;line-height:2;padding-left:20px">
+        <li><strong style="color:#e6edf3">CIA Triad</strong> — รากฐานของ security: Confidentiality, Integrity, Availability</li>
+        <li><strong style="color:#e6edf3">STRIDE</strong> — ใช้ DFD + STRIDE questions เพื่อ identify threat แบบ per-element</li>
+        <li><strong style="color:#e6edf3">PASTA</strong> — 7 ขั้นตอน เชื่อม business impact, technical analysis, risk score</li>
+        <li><strong style="color:#e6edf3">Analysis</strong> — Static (triage เร็ว), Dynamic (ยืนยันพฤติกรรม), Behavioral (หา unknown)</li>
+        <li><strong style="color:#e6edf3">Detection</strong> — Signature แม่นยำ, Anomaly จับ zero-day, Heuristic สมดุล</li>
+        <li><strong style="color:#e6edf3">Pyramid of Pain</strong> — ตรวจจับ TTPs (ระดับบน) ดีกว่า hash/IP (ระดับล่าง)</li>
+        <li><strong style="color:#e6edf3">SIEM + SOAR</strong> — รวม log ทุกแหล่ง, ใช้ rule + ML ตรวจจับ, ตอบสนองอัตโนมัติ</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ====== 14 QUIZ ====== -->
+  <section id="quiz">
+    <h2>Quiz</h2>
+    <p style="color:#8b949e;font-size:14px;margin-bottom:12px">ทดสอบความเข้าใจเกี่ยวกับ Threat Analysis</p>
+    <div id="quizContainer"></div>
+    <div style="display:flex;gap:8px;margin:16px 0">
+      <button class="tab-btn" onclick="checkQuiz()" style="background:#58a6ff;color:#0d1117;border-color:#58a6ff;font-weight:600">ตรวจคำตอบ</button>
+      <button class="tab-btn" onclick="resetQuiz()" style="color:#8b949e">ลองใหม่</button>
+    </div>
+    <div id="quizScore" class="card" style="display:none;text-align:center;font-size:16px;font-weight:600"></div>
+  </section>
+
+  </main>
+</div>
+
+<script>
+// ====== UTILITY ======
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ====== SIDEBAR TOGGLE (mobile) ======
+document.addEventListener('click', function(e) {
+  const s = document.getElementById('sidebar');
+  const m = document.querySelector('.mobile-menu');
+  if (window.innerWidth <= 768 && !s.contains(e.target) && !m.contains(e.target)) s.classList.remove('open');
+});
+
+// ====== ACTIVE NAV ======
+const navSections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.sidebar nav a');
+window.addEventListener('scroll', function() {
+  let current = '';
+  navSections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 150) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+// ====== COLLAPSE ======
+function toggleCollapse(el) {
+  el.classList.toggle('open');
+  const body = el.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// ====== SUB TABS (SCENARIO) ======
+function showSubTab(btn, panelId) {
+  const container = btn.closest('.tab-panel');
+  container.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  container.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+}
+
+// ====== ROW CLICK (STRIDE) ======
+function toggleRow(el) {
+  const row = el.closest('tr');
+  const next = row.nextElementSibling;
+  if (next && next.classList.contains('detail-row')) {
+    next.style.display = next.style.display === 'none' ? 'table-row' : 'none';
+  }
+}
+
+// ====== PASTA ======
+const pastaData = [
+  'Business impact analysis, risk acceptance criteria.<br>• กำหนดขอบเขตระบบ ระบุเป้าหมายธุรกิจ KPI ด้านความปลอดภัย',
+  'Technical architecture inventory, Attack surface map.<br>• รวบรวม architecture diagram, DFD, API spec ระบุเทคโนโลยีและ dependencies',
+  'Data Flow Diagram, Trust boundaries, Entry points.<br>• วิเคราะห์ฟังก์ชันการทำงาน ระบุ trust boundaries, entry/exit points',
+  'Threat list, Attack scenarios.<br>• วิเคราะห์จาก logs, threat intelligence ใช้ STRIDE หรือ kill chain จำแนก',
+  'Vulnerability report by severity.<br>• SAST/DAST/SCA scan, Penetration test, code review',
+  'Attack tree, Attack path analysis.<br>• สร้าง attack tree สำหรับแต่ละ scenario วิเคราะห์ likelihood และ impact',
+  'Risk heatmap, Remediation plan, Residual risk report.<br>• ประเมินระดับความเสี่ยง จัดลำดับความสำคัญ เสนอมาตรการป้องกัน'
+];
+function showPasta(idx) {
+  document.querySelectorAll('#pasta .tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  document.getElementById('pastaDetail').innerHTML =
+    '<strong style="color:#58a6ff">Stage ' + (idx+1) + '</strong><br><br>' + pastaData[idx];
+}
+
+// ====== TABS ======
+function switchTab(prefix, idx) {
+  const parent = document.getElementById(prefix + '-0');
+  if (!parent) return;
+  const container = parent.closest('section, div[id^="scenario"]');
+  const btns = container ? container.querySelectorAll('.tab-btn') : document.querySelectorAll('#analysis .tab-btn');
+  btns.forEach((b,i) => b.classList.toggle('active', i===idx));
+  for (let i=0; i<20; i++) {
+    const el = document.getElementById(prefix + '-' + i);
+    if (!el) break;
+    el.classList.toggle('active', i===idx);
+  }
+}
+
+// ====== QUIZ ======
+const quizData = [
+  { q: 'STRIDE Model พัฒนาโดยองค์กรใด?', options: ['OWASP', 'Microsoft', 'MITRE', 'NIST'], correct: 1 },
+  { q: 'ข้อใดคือหลักการทั้งสามของ CIA Triad?', options: ['Code, Identity, Access', 'Confidentiality, Integrity, Availability', 'Control, Intelligence, Automation', 'Compute, Integrate, Authenticate'], correct: 1 },
+  { q: 'PASTA Framework มีทั้งหมดกี่ขั้นตอน?', options: ['5', '6', '7', '8'], correct: 2 },
+  { q: 'Pyramid of Pain ข้อใดสร้างความเจ็บปวดให้ผู้โจมตีมากที่สุด?', options: ['Hash Values', 'IP Addresses', 'Tools', 'TTPs'], correct: 3 },
+  { q: 'ข้อใดคือจุดอ่อนของ Signature-Based Detection?', options: ['False positive สูง', 'ไม่สามารถตรวจจับ zero-day ได้้', 'ช้ามาก', 'ใช้ทรัพยากรเยอะ'], correct: 1 },
+  { q: 'เครื่องมือใดใช้สำหรับ Memory Forensics?', options: ['Wireshark', 'Ghidra', 'Volatility', 'YARA'], correct: 2 },
+  { q: 'Sysmon Event ID ใดใช้ตรวจจับการสร้าง process?', options: ['1', '11', '4103', '4625'], correct: 0 },
+  { q: 'ข้อใดคือมาตรการป้องกัน SQL Injection ที่ถูกต้อง?', options: ['ใช้รหัสผ่านที่ซับซ้อน', 'Parameterized Query', 'ติดตั้ง Firewall', 'เข้ารหัสฐานข้อมูล'], correct: 1 }
+];
+
+let userAnswers = {};
+
+function renderQuiz() {
+  const c = document.getElementById('quizContainer');
+  c.innerHTML = '';
+  quizData.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'margin-bottom:16px;padding:16px;background:#0d1117;border:1px solid #30363d;border-radius:8px';
+    div.innerHTML = '<div style="font-size:12px;color:#58a6ff;margin-bottom:4px">ข้อ ' + (i+1) + '/' + quizData.length + '</div>' +
+      '<p style="font-weight:600;margin:0 0 8px;font-size:14px">' + item.q + '</p>';
+    item.options.forEach((opt, j) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-option';
+      btn.textContent = String.fromCharCode(65 + j) + '. ' + opt;
+      btn.dataset.qidx = i;
+      btn.dataset.optIdx = j;
+      btn.onclick = function() { selectQuizOption(i, j); };
+      div.appendChild(btn);
+    });
+    c.appendChild(div);
+  });
+}
+
+function selectQuizOption(qIdx, optIdx) {
+  userAnswers[qIdx] = optIdx;
+  const parent = document.getElementById('quizContainer').children[qIdx];
+  parent.querySelectorAll('.quiz-option').forEach((b,i) => b.classList.toggle('selected', i === optIdx));
+}
+
+function checkQuiz() {
+  let correct = 0;
+  const total = quizData.length;
+  quizData.forEach((item, i) => {
+    const parent = document.getElementById('quizContainer').children[i];
+    parent.querySelectorAll('.quiz-option').forEach((b,j) => {
+      b.disabled = true;
+      b.classList.remove('selected');
+      if (j === item.correct) b.classList.add('correct');
+      else if (j === userAnswers[i]) b.classList.add('wrong');
+    });
+  });
+  Object.keys(userAnswers).forEach(k => {
+    if (parseInt(userAnswers[k]) === quizData[parseInt(k)].correct) correct++;
+  });
+  const el = document.getElementById('quizScore');
+  const pct = Math.round((correct/total)*100);
+  const passed = pct >= 60;
+  el.style.display = 'block';
+  el.style.background = passed ? 'rgba(63,185,80,.1)' : 'rgba(248,81,73,.1)';
+  el.style.borderColor = passed ? 'rgba(63,185,80,.3)' : 'rgba(248,81,73,.3)';
+  el.style.color = passed ? '#3fb950' : '#f85149';
+  el.textContent = 'คะแนน: ' + correct + '/' + total + ' (' + pct + '%) — ' + (passed ? 'ผ่าน' : 'ไมผ่าน ลองใหม');
+}
+
+function resetQuiz() {
+  userAnswers = {};
+  document.getElementById('quizScore').style.display = 'none';
+  document.querySelectorAll('.quiz-option').forEach(b => {
+    b.disabled = false;
+    b.className = 'quiz-option';
+  });
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
