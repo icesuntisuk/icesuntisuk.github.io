@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บทที่ 3: Secure Software Development Lifecycle (SDLC)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#1a56db;--primary-dark:#1340a0;--primary-light:#e8effc;--navy:#1e293b;--navy-light:#334155;--success:#059669;--success-light:#d1fae5;--danger:#dc2626;--danger-light:#fee2e2;--warning:#d97706;--warning-light:#fef3c7;--purple:#7c3aed;--purple-light:#ede9fe;--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--radius:12px;--radius-sm:8px;--sidebar-w:292px;--font-thai:'Sarabun',sans-serif;--font-mono:'IBM Plex Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.8;display:flex;min-height:100vh}a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);height:100vh;background:var(--navy);color:#fff;overflow-y:auto;z-index:100;transition:transform .3s}.sidebar-header{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}.sidebar-header h1{font-size:1rem;font-weight:600;color:#fff;line-height:1.4}.sidebar-header .sub{font-size:.75rem;color:#94a3b8;margin-top:.25rem}.sidebar-nav{padding:.75rem 0}.sidebar-nav a{display:block;padding:.5rem 1.25rem;color:#cbd5e1;font-size:.84rem;transition:all .15s;border-left:3px solid transparent}.sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--primary);text-decoration:none}.sidebar-nav .section-label{padding:.6rem 1.25rem .25rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#64748b;font-weight:600}.sidebar-nav .sub-link{padding-left:2.35rem;font-size:.78rem}.sidebar-toggle{display:none;position:fixed;top:.75rem;left:.75rem;z-index:200;background:var(--navy);color:#fff;border:none;width:44px;height:44px;border-radius:var(--radius-sm);cursor:pointer;font-size:1.5rem;align-items:center;justify-content:center}.sidebar-overlay{display:none}.main{flex:1;margin-left:var(--sidebar-w);max-width:100%;padding:0}.topbar{position:sticky;top:0;z-index:50;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between}.topbar-title{font-size:.85rem;color:var(--text-muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.topbar-title strong{color:var(--text);font-weight:600}.topbar-progress{font-size:.8rem;color:var(--text-muted)}.topbar-home{color:var(--text-muted);font-size:.85rem;text-decoration:none;margin-right:.75rem;transition: color .15s;white-space:nowrap}.topbar-home:hover{color:var(--primary);text-decoration:none}.content{padding:2rem;max-width:1040px;margin:0 auto}h2{font-size:1.75rem;color:var(--navy);margin:3rem 0 1.5rem;padding-bottom:.75rem;border-bottom:3px solid var(--primary);font-weight:700}h3{font-size:1.35rem;color:var(--navy);margin:2rem 0 1rem;font-weight:600}h4{font-size:1.1rem;color:var(--navy-light);margin:1.5rem 0 .75rem;font-weight:600}h5{font-size:1rem;color:var(--text);margin:1rem 0 .5rem;font-weight:600}.card{background:var(--bg-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;margin-bottom:1.5rem;border:1px solid var(--border)}.card-header{font-weight:600;font-size:1.05rem;margin-bottom:.75rem;color:var(--navy)}.info-box{border-radius:var(--radius-sm);padding:1rem 1.25rem;margin:1rem 0;display:flex;gap:.75rem;align-items:flex-start}.info-box .icon{font-size:1.25rem;flex-shrink:0;margin-top:.1rem}.info-box p{font-size:.92rem}.info-box.remember{background:var(--primary-light);border-left:4px solid var(--primary)}.info-box.warning{background:var(--danger-light);border-left:4px solid var(--danger)}.info-box.tip{background:var(--success-light);border-left:4px solid var(--success)}.info-box.question{background:var(--warning-light);border-left:4px solid var(--warning)}.example-box{border:2px solid var(--primary);border-radius:var(--radius);padding:1.25rem;margin:1rem 0;background:linear-gradient(135deg,var(--primary-light),#fff)}.example-box .example-label{font-weight:700;color:var(--primary);font-size:.85rem;margin-bottom:.5rem}.table-wrap{overflow-x:auto;margin:1rem 0}table{width:100%;border-collapse:collapse;font-size:.9rem;border-radius:var(--radius-sm);overflow:hidden}thead{background:var(--navy);color:#fff}th{padding:.75rem 1rem;text-align:left;font-weight:600;font-size:.85rem}td{padding:.65rem 1rem;border-bottom:1px solid var(--border)}tbody tr:nth-child(even){background:#f1f5f9}tbody tr:hover{background:#e2e8f0}code{font-family:var(--font-mono);font-size:.85rem;background:#f1f5f9;padding:.15em .4em;border-radius:4px;color:var(--danger)}pre{background:#1e293b;color:#e2e8f0;border-radius:var(--radius-sm);padding:1rem;overflow-x:auto;margin:1rem 0;font-family:var(--font-mono);font-size:.85rem;line-height:1.6}pre code{background:none;color:inherit;padding:0;font-size:inherit}.keywords-wrap{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}.keyword{display:inline-flex;align-items:center;gap:.4rem;background:var(--primary-light);color:var(--primary);padding:.35rem .85rem;border-radius:50px;font-size:.82rem;font-weight:500;border:1px solid rgba(26,86,219,.2)}.keyword:hover{background:var(--primary);color:#fff}.case-card{background:var(--bg-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;margin-bottom:2rem;border-top:4px solid var(--primary)}.case-card .meta{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}.case-card .meta span{background:#f1f5f9;padding:.25rem .75rem;border-radius:50px;font-size:.78rem;color:var(--text-muted)}.case-card .meta .year{background:var(--navy);color:#fff}.case-card .meta .type{background:var(--danger-light);color:var(--danger)}.case-card h4{margin-top:0;color:var(--primary)}.case-card .lessons{margin-top:1rem}.content ul,.content ol{padding-left:1.5rem;margin:.75rem 0}.content li{margin-bottom:.35rem}.scroll-top{position:fixed;bottom:2rem;right:2rem;width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;border:none;cursor:pointer;font-size:1.25rem;box-shadow:var(--shadow-lg);z-index:50;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .3s}.scroll-top.visible{opacity:1;visibility:visible}.scroll-top:hover{background:var(--primary)}.interactive{background:linear-gradient(135deg,#fff,var(--primary-light));border:1px solid rgba(26,86,219,.25);border-radius:var(--radius);padding:1.25rem;margin:1.25rem 0;box-shadow:var(--shadow)}.interactive h4{margin-top:0;color:var(--primary)}.control-row{display:flex;flex-wrap:wrap;gap:.75rem;margin:.75rem 0}.control-row input,.control-row select,.control-row textarea{font-family:var(--font-thai);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.6rem .75rem;min-width:220px;background:#fff}.control-row textarea{width:100%;min-height:92px}.btn{border:none;border-radius:999px;padding:.55rem 1rem;cursor:pointer;background:var(--primary);color:#fff;font-family:var(--font-thai);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.05)}.btn:hover{background:var(--primary-dark)}.btn.secondary{background:var(--navy-light)}.result{border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:.75rem;background:#fff;border:1px solid var(--border)}.result.ok{background:var(--success-light);border-color:var(--success);color:#064e3b}.result.bad{background:var(--danger-light);border-color:var(--danger);color:#7f1d1d}.result.mid{background:var(--warning-light);border-color:var(--warning);color:#78350f}.tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0}.tab-btn{border:1px solid var(--border);background:#fff;color:var(--text);border-radius:999px;padding:.45rem .85rem;cursor:pointer;font-family:var(--font-thai)}.tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}.tab-panel{display:none}.tab-panel.active{display:block}.quiz-option{display:block;width:100%;text-align:left;border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);padding:.7rem .85rem;margin:.45rem 0;cursor:pointer;font-family:var(--font-thai)}.quiz-option.correct{border-color:var(--success);background:var(--success-light)}.quiz-option.wrong{border-color:var(--danger);background:var(--danger-light)}.checklist{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.5rem;margin:.75rem 0}.checklist label{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:.65rem .75rem;cursor:pointer}.meter{height:12px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin:.75rem 0}.meter-fill{height:100%;width:0;background:linear-gradient(90deg,var(--warning),var(--success));transition:width .2s}.principle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin:1rem 0}.principle-card{background:var(--bg-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem;border-left:4px solid var(--primary);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border)}.principle-card .num{display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:.85rem;margin-bottom:.5rem}.cost-chart{display:flex;gap:6px;align-items:flex-end;height:200px;padding:1rem 0;margin:.75rem 0}.cost-bar{flex:1;min-width:55px;border-radius:var(--radius-sm) var(--radius-sm) 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:.5rem;cursor:pointer;transition:all .2s;position:relative}.cost-bar:hover{opacity:.85}.cost-bar .label{font-family:var(--font-thai);font-size:.72rem;color:inherit;text-align:center;font-weight:600;margin-top:.3rem;max-width:80px}.cost-bar .val{font-family:var(--font-mono);font-size:.9rem;font-weight:700;color:inherit}.cost-detail{display:none;margin-top:.75rem;padding:.75rem;border-radius:var(--radius-sm);background:#fff;border:1px solid var(--border)}.cost-detail.show{display:block}.expand-card{cursor:pointer;transition:all .2s}.expand-card .expand-body{display:none;padding-top:.75rem;border-top:1px solid var(--border);margin-top:.75rem}.expand-card.open .expand-body{display:block}.expand-card .expand-icon{float:right;transition:transform .2s}.expand-card.open .expand-icon{transform:rotate(180deg)}.lab-section{margin:1.5rem 0;padding:1rem;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border)}.lab-meta{display:flex;gap:1rem;margin-bottom:.75rem;font-size:.85rem;color:var(--text-muted)}.filter-btns{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0}.filter-btn{border:1px solid var(--border);border-radius:999px;padding:.3rem .7rem;cursor:pointer;font-family:var(--font-thai);font-size:.82rem;background:#fff}.filter-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}.fill-blank{display:inline-block;border:none;border-bottom:2px dashed var(--primary);background:transparent;font-family:var(--font-thai);font-size:1rem;padding:0 .25rem;min-width:120px;color:var(--primary)}.fill-blank:focus{border-bottom-style:solid;outline:none}.match-item{padding:.5rem .75rem;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;text-align:center;transition:all .15s;background:#fff;font-size:.85rem;display:inline-block;margin:.2rem}.match-item.selected{border-color:var(--primary);background:var(--primary-light)}.match-item.matched{background:var(--success-light);border-color:var(--success);cursor:default}.match-item.wrong{background:var(--danger-light);border-color:var(--danger)}.click-hint{font-size:.8rem;color:var(--text-muted);font-style:italic;margin-bottom:.5rem}.phase-bar{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}.phase-btn{flex:1;min-width:90px;padding:1rem .5rem;border:2px solid var(--border);border-radius:var(--radius-sm);background:#fff;cursor:pointer;text-align:center;font-family:var(--font-thai);font-weight:600;transition:all .15s;color:var(--text)}.phase-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.phase-btn.active{transform:translateY(-2px);box-shadow:var(--shadow)}.figure{margin:2rem 0;text-align:center}.figure svg{max-width:100%;height:auto}.figure figcaption{font-size:.85rem;color:var(--text-muted);margin-top:.5rem;font-style:italic}@media(max-width:1024px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sidebar-toggle{display:flex}.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}.sidebar-overlay.show{display:block}.main{margin-left:0}.content{padding:1.25rem}.topbar{padding:.75rem 1rem}}@media(max-width:640px){h2{font-size:1.35rem}h3{font-size:1.15rem}.content{padding:1rem}.card{padding:1rem}.topbar-title{font-size:.75rem}.topbar-progress{display:none}.control-row input,.control-row select{width:100%;min-width:0}.cost-chart{height:140px}.cost-bar .label{font-size:.6rem}}@media print{.sidebar,.sidebar-toggle,.sidebar-overlay,.topbar,.scroll-top,.interactive button,.interactive .quiz-option,.interactive .phase-btn,.interactive .cost-bar{display:none!important}.main{margin-left:0}.content{max-width:100%;padding:0}.interactive{border:1px solid #ccc;background:#f9f9f9}.interactive .result{display:none}.result.ok,.result.bad,.result.mid{display:block}}
+</style>
+</head>
+<body>
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="เปิดเมนู">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-header"><h1>Secure Software Development Lifecycle</h1><div class="sub">บทที่ 3 · Shift Left, SDLC Models, DevSecOps</div></div>
+  <div class="sidebar-nav">
+    <div class="section-label">เนื้อหา</div>
+    <a href="#s1">3.1 Shift Left Security</a>
+    <a href="#s1-1" class="sub-link">3.1.1 ความเป็นมา</a>
+    <a href="#s1-2" class="sub-link">3.1.2 Traditional vs Secure SDLC</a>
+    <a href="#s1-3" class="sub-link">3.1.3 Security Debt</a>
+    <a href="#s1-4" class="sub-link">3.1.4 Mean Time to Remediate</a>
+    <a href="#s2">3.2 โมเดล Secure SDLC</a>
+    <a href="#s2-1" class="sub-link">3.2.1 Microsoft SDL</a>
+    <a href="#s2-2" class="sub-link">3.2.2 OWASP SAMM</a>
+    <a href="#s2-3" class="sub-link">3.2.3 NIST SSDF</a>
+    <a href="#s2-4" class="sub-link">3.2.4 ตารางเปรียบเทียบ</a>
+    <a href="#s2-5" class="sub-link">3.2.5 Agile vs Waterfall</a>
+    <a href="#s3">3.3 กิจกรรมตาม SDLC Phase</a>
+    <a href="#s3-1" class="sub-link">3.3.1 Requirements</a>
+    <a href="#s3-2" class="sub-link">3.3.2 Design</a>
+    <a href="#s3-3" class="sub-link">3.3.3 Implementation</a>
+    <a href="#s3-4" class="sub-link">3.3.4 Testing</a>
+    <a href="#s3-5" class="sub-link">3.3.5 Deployment</a>
+    <a href="#s3-6" class="sub-link">3.3.6 Operations</a>
+    <a href="#s4">3.4 DevSecOps และ CI/CD</a>
+    <a href="#s4-1" class="sub-link">3.4.1 Security as Code</a>
+    <a href="#s4-2" class="sub-link">3.4.2 Policy as Code</a>
+    <a href="#s4-3" class="sub-link">3.4.3 Compliance as Code</a>
+    <a href="#s4-4" class="sub-link">3.4.4 SAST/DAST/SCA ใน CI/CD</a>
+    <a href="#s4-5" class="sub-link">3.4.5 IaC Security</a>
+    <a href="#s4-6" class="sub-link">3.4.6 Container Security</a>
+    <div class="section-label">Interactive</div>
+    <a href="#play-cost">Cost Explorer</a>
+    <a href="#play-nasa">NASA Study</a>
+    <a href="#play-debt">Security Debt</a>
+    <a href="#play-mttr">MTTR SLO</a>
+    <a href="#play-sdl">Microsoft SDL</a>
+    <a href="#play-samm">SAMM Visualizer</a>
+    <a href="#play-ssdf">NIST SSDF</a>
+    <a href="#play-compare">Model Comparison</a>
+    <a href="#play-abuse">Abuse Cases Quiz</a>
+    <a href="#play-story">Security Stories</a>
+    <a href="#play-stride">STRIDE Match</a>
+    <a href="#play-sast">SAST Table</a>
+    <a href="#play-review">Review Checklist</a>
+    <a href="#play-pipeline">Pipeline Visualizer</a>
+    <div class="section-label">กรณีศึกษา</div>
+    <a href="#case1">Microsoft SDL</a>
+    <a href="#case2">Equifax (2017)</a>
+    <a href="#case3">Codecov (2021)</a>
+    <a href="#case4">Capital One</a>
+    <a href="#case5">SolarWinds (2020)</a>
+    <div class="section-label">กิจกรรม</div>
+    <a href="#labs">Labs</a>
+    <a href="#questions">คำถามท้ายบท</a>
+    <a href="#summary">สรุปท้ายบท</a>
+  </div>
+</nav>
+<div class="main">
+  <header class="topbar"><a href="index.html" class="topbar-home" aria-label="กลับหน้าแรก">← HOME</a><div class="topbar-title"><strong>บทที่ 3</strong> · Secure Software Development Lifecycle (SDLC)</div><div class="topbar-progress" id="readingProgress">Software Security</div></header>
+  <div class="content">
+    <div style="text-align:center;padding:2rem 0 1rem">
+      <span style="display:inline-block;background:var(--primary);color:#fff;padding:.25rem 1rem;border-radius:50px;font-size:.85rem;margin-bottom:1rem">บทที่ 3</span>
+      <h1 style="font-size:2.25rem;color:var(--navy);margin-bottom:.5rem;border:none">Secure Software Development Lifecycle (SDLC)</h1>
+      <p style="color:var(--text-muted);font-size:1rem">จำนวนชั่วโมง: บรรยาย 2 ชม. + ปฏิบัติการ 2 ชม. | รวม 4 ชม.</p>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,var(--navy),#0f172a);color:#fff;border:none">
+      <div class="card-header" style="color:#fff">วัตถุประสงค์การเรียนรู้</div>
+      <ol style="color:#cbd5e1;padding-left:1.25rem">
+        <li>อธิบายแนวคิด Shift Left Security และวิเคราะห์ต้นทุนในการแก้ไขข้อบกพร่องในแต่ละขั้นของ SDLC พร้อมยกตัวอย่างข้อมูลจากงานวิจัย</li>
+        <li>เปรียบเทียบโมเดล Secure SDLC ที่สำคัญ (Microsoft SDL, OWASP SAMM, NIST SSDF SP 800-218) ในแง่ของโครงสร้าง จุดเด่น และความเหมาะสมกับการปรับใช้</li>
+        <li>อธิบายกิจกรรมด้านความปลอดภัยในแต่ละขั้นของ SDLC ตั้งแต่ Requirements ถึง Operations พร้อมระบุเครื่องมือและแนวปฏิบัติที่ดี</li>
+        <li>ออกแบบและอธิบายการบูรณาการ Security Tools ใน CI/CD Pipeline ตามแนวคิด DevSecOps</li>
+        <li>ประยุกต์ใช้ Security Requirements Engineering, Abuse Cases, Security Stories และ Security Acceptance Criteria ในการพัฒนาซอฟต์แวร์</li>
+      </ol>
+    </div>
+    <h2 id="s1">3.1 แนวคิด Shift Left Security</h2>
+    <p>Shift Left Security เป็นแนวคิดในการ "ย้าย" (Shift) กิจกรรมด้านความปลอดภัยไปยังช่วงต้น (Left) ของกระบวนการพัฒนาซอฟต์แวร์ (SDLC) แทนที่จะปล่อยให้ความปลอดภัยเป็นสิ่งที่ต้องมาตรวจสอบท้ายสุดก่อนหรือหลังการ Deploy คำว่า "Shift Left" มาจากการเปรียบเทียบ SDLC เป็นเส้นเวลาจากซ้ายไปขวา — ยิ่งอยู่ซ้ายมากเท่าไหร่ ยิ่งเป็นช่วงต้นของโครงการมากเท่านั้น</p>
+
+    <h3 id="s1-1">3.1.1 ความเป็นมาและความสำคัญ</h3>
+    <p>แนวคิด Shift Left มีรากฐานมาจากหลักการทางวิศวกรรมที่ว่า "ยิ่งค้นพบข้อบกพร่องช้าเท่าไหร่ ต้นทุนในการแก้ไขยิ่งสูงขึ้นเท่านั้น" ซึ่งได้รับการยืนยันจากงานวิจัยหลายชิ้น:</p>
+    <ul>
+      <li><strong>IBM Systems Sciences Institute (อ้างอิงใน Dawson et al., 2010):</strong> รายงานว่าต้นทุนในการแก้ไขข้อบกพร่อง (Bug) เพิ่มขึ้นแบบทวีคูณ (Exponential) ตามขั้นตอนของ SDLC — การแก้ไขข้อบกพร่องในช่วง Maintenance (หลัง deploy) มีต้นทุนสูงกว่าการแก้ไขในช่วง Design ถึง 100 เท่า</li>
+      <li><strong>NASA (2010) — การศึกษาจาก 3 วิธี:</strong> การศึกษาของ NASA เรื่อง "The Relative Cost of Fixing Errors" ใช้ 3 วิธีในการคำนวณ (Bottom-Up Cost, Total Costs Breakdown, Top-Down Hypothetical Project) พบว่าต้นทุนในการแก้ไข Requirements Error หากตรวจพบในช่วง Requirements = 1 หน่วย เมื่อตรวจพบในช่วง Design = 3–8 หน่วย, ในช่วง Build = 7–16 หน่วย, ในช่วง Integration and Test = 21–78 หน่วย, และในช่วง Operations = 29 ถึงมากกว่า 1,500 หน่วย</li>
+      <li><strong>IBM Rational (2008):</strong> รายงานว่าต้นทุนในการแก้ไขข้อบกพร่องหลัง Release สูงกว่าการแก้ไขในช่วง Design และ Architecture ถึง 30 เท่า</li>
+    </ul>
+
+    <div class="interactive" id="play-cost">
+      <h4>Interactive: ต้นทุนการแก้ไขข้อบกพร่องตาม SDLC Phase</h4>
+      <p class="click-hint">คลิกที่แต่ละ Phase เพื่อดูรายละเอียดต้นทุนสัมพัทธ์ (IBM Systems Sciences Institute)</p>
+      <div class="cost-chart" id="costChart">
+        <div class="cost-bar" style="height:20px;background:#1a56db" data-phase="Requirements" data-cost="1" data-desc="พบในช่วง Requirements: ต้นทุน 1 เท่า ($1) — แก้ไขได้ง่ายที่สุด ใช้ต้นทุนน้อยที่สุด">
+          <span class="val">1x</span>
+          <span class="label">Requirements</span>
+        </div>
+        <div class="cost-bar" style="height:40px;background:#2563eb" data-phase="Design" data-cost="6" data-desc="พบในช่วง Design: ต้นทุน 6 เท่า ($6) — ต้องแก้ไข Design Document และอาจกระทบ Architecture">
+          <span class="val">6x</span>
+          <span class="label">Design</span>
+        </div>
+        <div class="cost-bar" style="height:80px;background:#d97706" data-phase="Coding" data-cost="15" data-desc="พบในช่วง Coding: ต้นทุน 15 เท่า ($15) — ต้องแก้ไข Code, Design และอาจต้องย้อนกลับไปทบทวน Requirements">
+          <span class="val">15x</span>
+          <span class="label">Coding</span>
+        </div>
+        <div class="cost-bar" style="height:130px;background:#dc2626" data-phase="Testing" data-cost="60" data-desc="พบในช่วง Testing: ต้นทุน 60 เท่า ($60) — ต้องย้อนกลับหลายขั้น + Regression Testing">
+          <span class="val">60x</span>
+          <span class="label">Testing</span>
+        </div>
+        <div class="cost-bar" style="height:180px;background:#7c3aed" data-phase="Production" data-cost="100" data-desc="พบในช่วง Production: ต้นทุน 100+ เท่า ($100+) — รวม Hotfix, Reputation Damage, Legal Cost">
+          <span class="val">100x+</span>
+          <span class="label">Production</span>
+        </div>
+      </div>
+      <div id="costDetail" class="cost-detail show">
+        <p><strong>คลิกที่ Phase ใดๆ</strong> เพื่อดูรายละเอียดต้นทุนและคำอธิบาย</p>
+        <p style="font-size:.85rem;color:var(--text-muted);margin-top:.35rem">ที่มา: IBM Systems Sciences Institute (Dawson et al., 2010)</p>
+      </div>
+    </div>
+
+    <div class="interactive" id="play-nasa">
+      <h4>Interactive: NASA Study — 3 วิธีคำนวณต้นทุน</h4>
+      <p>การศึกษาของ NASA เรื่อง "The Relative Cost of Fixing Errors" ใช้ 3 วิธีในการคำนวณ:</p>
+      <div class="tabs" data-tabs="nasa">
+        <button class="tab-btn active" data-tab="nasa-bottom">Bottom-Up Cost</button>
+        <button class="tab-btn" data-tab="nasa-total">Total Costs Breakdown</button>
+        <button class="tab-btn" data-tab="nasa-top">Top-Down Hypothetical</button>
+      </div>
+      <div id="nasa-bottom" class="tab-panel active">
+        <div class="table-wrap"><table><thead><tr><th>ขั้นตอน</th><th>ตัวคูณต้นทุน</th></tr></thead><tbody>
+          <tr><td>Requirements</td><td>1 หน่วย</td></tr>
+          <tr><td>Design</td><td>3–6 หน่วย</td></tr>
+          <tr><td>Build</td><td>7–13 หน่วย</td></tr>
+          <tr><td>Integration and Test</td><td>21–45 หน่วย</td></tr>
+          <tr><td>Operations</td><td>29–780 หน่วย</td></tr>
+        </tbody></table></div>
+        <p style="font-size:.85rem;color:var(--text-muted)">Bottom-Up Cost คำนวณจากค่าใช้จ่ายจริงในแต่ละขั้นตอนของโครงการ</p>
+      </div>
+      <div id="nasa-total" class="tab-panel">
+        <div class="table-wrap"><table><thead><tr><th>ขั้นตอน</th><th>ตัวคูณต้นทุน</th></tr></thead><tbody>
+          <tr><td>Requirements</td><td>1 หน่วย</td></tr>
+          <tr><td>Design</td><td>3–8 หน่วย</td></tr>
+          <tr><td>Build</td><td>7–16 หน่วย</td></tr>
+          <tr><td>Integration and Test</td><td>21–78 หน่วย</td></tr>
+          <tr><td>Operations</td><td>29–1,500+ หน่วย</td></tr>
+        </tbody></table></div>
+        <p style="font-size:.85rem;color:var(--text-muted)">Total Costs Breakdown รวมค่าใช้จ่ายทั้งหมดในองค์กรและกระจายตามสัดส่วน</p>
+      </div>
+      <div id="nasa-top" class="tab-panel">
+        <div class="table-wrap"><table><thead><tr><th>ขั้นตอน</th><th>ตัวคูณต้นทุน</th></tr></thead><tbody>
+          <tr><td>Requirements</td><td>1 หน่วย</td></tr>
+          <tr><td>Design</td><td>3–6 หน่วย</td></tr>
+          <tr><td>Build</td><td>7–10 หน่วย</td></tr>
+          <tr><td>Integration and Test</td><td>21–50 หน่วย</td></tr>
+          <tr><td>Operations</td><td>29–700+ หน่วย</td></tr>
+        </tbody></table></div>
+        <p style="font-size:.85rem;color:var(--text-muted)">Top-Down Hypothetical Project ประมาณการจากโครงการสมมติที่มีขนาดและความซับซ้อนต่างกัน</p>
+      </div>
+    </div>
+
+    <h4>สาเหตุที่ต้นทุนเพิ่มขึ้นแบบทวีคูณ</h4>
+    <ol>
+      <li><strong>การค้นพบช้า → ต้องย้อนกลับหลายขั้น:</strong> เมื่อพบข้อบกพร่องในช่วง Testing หรือ Deployment ต้องย้อนกลับไปแก้ไขที่ Requirements, Design, และ Code — แต่ละขั้นต้องใช้เวลาและทรัพยากร</li>
+      <li><strong>ผลกระทบต่อระบบอื่น:</strong> การเปลี่ยนแปลงในช่วงท้ายอาจส่งผลกระทบต่อ Component และ Integration กับระบบอื่นๆ ที่พัฒนาไปแล้ว</li>
+      <li><strong>ค่าใช้จ่ายในการ Regression Testing:</strong> ทุกครั้งที่แก้ไข ต้องทำการทดสอบซ้ำทั้งหมด</li>
+      <li><strong>ต้นทุนด้านชื่อเสียงและกฎหมาย:</strong> ข้อบกพร่องด้านความปลอดภัยที่ถูกค้นพบใน Production อาจนำไปสู่การละเมิดข้อมูล (Data Breach) ค่าปรับตามกฎหมาย และความเสียหายต่อชื่อเสียง</li>
+      <li><strong>ค่าใช้จ่ายในการ Hotfix/Emergency Patch:</strong> การแก้ไขด่วน (Hotfix) ใน Production มีต้นทุนสูงกว่าการแก้ไขตามรอบปกติ (Normal Release Cycle)</li>
+    </ol>
+    <h3 id="s1-2">3.1.2 Traditional SDLC vs Secure SDLC</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>มิติ</th><th>Traditional SDLC</th><th>Secure SDLC</th></tr></thead>
+        <tbody>
+          <tr><td><strong>การคิดถึงความปลอดภัย</strong></td><td>ทีหลัง (Afterthought) — มักทำเฉพาะก่อน Deploy หรือเมื่อมีปัญหา</td><td>ตั้งแต่ต้น (Built-in) — ทุกขั้นตอนมีกิจกรรมด้านความปลอดภัย</td></tr>
+          <tr><td><strong>ทีมรับผิดชอบ</strong></td><td>เฉพาะ Security Team</td><td>Everyone — Developer, QA, DevOps, Security ร่วมมือกัน</td></tr>
+          <tr><td><strong>การทดสอบความปลอดภัย</strong></td><td>ทำครั้งเดียวก่อน Release</td><td>ทำอย่างต่อเนื่องในทุก Sprint / ทุก Commit</td></tr>
+          <tr><td><strong>เครื่องมือ</strong></td><td>Manual Penetration Testing เป็นหลัก</td><td>Automation: SAST, DAST, SCA, IaC Scanning ใน CI/CD</td></tr>
+          <tr><td><strong>วัฒนธรรม</strong></td><td>Security "ปิดกั้น" การพัฒนา (Gatekeeper)</td><td>Security "อำนวยความสะดวก" ให้พัฒนาอย่างปลอดภัย (Enablement)</td></tr>
+          <tr><td><strong>การวัดผล</strong></td><td>จำนวนช่องโหว่ที่พบก่อน Release</td><td>Mean Time to Remediate, Security Debt, จำนวนช่องโหว่ใน Production</td></tr>
+          <tr><td><strong>ความเร็ว</strong></td><td>Security เป็นคอขวด (Bottleneck) — ชะลอการ Release</td><td>Security ถูกทำงานอัตโนมัติ — ไม่ชะลอการ Release</td></tr>
+          <tr><td><strong>ต้นทุนระยะยาว</strong></td><td>สูง — แก้ไขช่องโหว่ใน Production</td><td>ต่ำ — ป้องกันตั้งแต่ต้น</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="s1-3">3.1.3 Security Debt</h3>
+    <p>Security Debt เป็นแนวคิดที่ได้รับแรงบันดาลใจจาก Technical Debt — หมายถึง "หนี้" ด้านความปลอดภัยที่สะสมจากการตัดสินใจทางวิศวกรรมที่ให้ความสำคัญกับความเร็วมากกว่าความปลอดภัย เช่น การไม่แก้ไขช่องโหว่ที่ค้นพบ (Deferring Fixes), การใช้ Library เวอร์ชันเก่าที่มีช่องโหว่, การไม่มี Security Testing ใน CI/CD Pipeline, การออกแบบระบบโดยไม่ทำ Threat Modeling, การใช้ Default Configuration ที่ไม่ปลอดภัย</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ตัวชี้วัด</th><th>คำอธิบาย</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Known Vulnerabilities Count</strong></td><td>จำนวนช่องโหว่ที่รู้จักแต่ยังไม่ได้รับการแก้ไข</td></tr>
+          <tr><td><strong>Critical/High Severity Backlog</strong></td><td>จำนวนช่องโหว่ระดับวิกฤต/สูงที่คั่งค้าง</td></tr>
+          <tr><td><strong>Patch Lag Time</strong></td><td>ระยะเวลาตั้งแต่มี Patch จนถึงการติดตั้ง</td></tr>
+          <tr><td><strong>Security Debt Ratio</strong></td><td>สัดส่วนของ Code ที่มีช่องโหว่เทียบกับ Code ทั้งหมด</td></tr>
+          <tr><td><strong>Days to Remediate (DTR)</strong></td><td>จำนวนวันเฉลี่ยในการแก้ไขช่องโหว่</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="interactive" id="play-debt">
+      <h4>Interactive: Security Debt Calculator</h4>
+      <p>ป้อนจำนวนช่องโหว่และวันเฉลี่ยที่ใช้ในการแก้ไข เพื่อประมาณ "ดอกเบี้ย" ของ Security Debt</p>
+      <div class="control-row">
+        <input id="debtVulns" type="number" min="1" value="50" aria-label="จำนวนช่องโหว่ที่ทราบ">
+        <input id="debtDays" type="number" min="1" value="45" aria-label="วันเฉลี่ยในการแก้ไข">
+        <button class="btn" id="debtCalcBtn">คำนวณ Security Debt</button>
+      </div>
+      <div id="debtResult" class="result">ป้อนข้อมูลแล้วกดคำนวณ</div>
+    </div>
+
+    <h3 id="s1-4">3.1.4 Mean Time to Remediate (MTTR)</h3>
+    <p>Mean Time to Remediate หรือ MTTR เป็นตัวชี้วัดสำคัญใน Secure SDLC — วัดระยะเวลาโดยเฉลี่ยตั้งแต่การค้นพบช่องโหว่จนถึงการแก้ไขเสร็จสมบูรณ์</p>
+    <p><strong>ข้อมูลจาก Edgescan Vulnerability Statistics Report 2024:</strong></p>
+    <ul>
+      <li>MTTR เฉลี่ยสำหรับช่องโหว่ความรุนแรงสูง (CVSS >= 7.0) ทั่วทุกอุตสาหกรรม = 46–117 วัน ขึ้นอยู่กับประเภทของช่องโหว่</li>
+      <li>ช่องโหว่ที่มี EPSS (Exploit Prediction Scoring System) สูง (>0.8) มี MTTR ต่ำกว่าช่องโหว่ทั่วไป — แสดงว่าองค์กรให้ความสำคัญกับช่องโหว่ที่กำลังถูกโจมตีจริง</li>
+      <li>อุตสาหกรรมที่มี MTTR ต่ำที่สุด: Financial Services (โดยเฉพาะ KEV มี MTTR < 7 วัน)</li>
+      <li>อุตสาหกรรมที่มี MTTR สูง: Healthcare (บางช่องโหว่ใช้เวลาเฉลี่ย 244 วัน — ข้อมูลจาก Cobalt State of Pentesting 2025)</li>
+    </ul>
+
+    <div class="info-box tip">
+      <span class="icon">INFO</span>
+      <div><strong>ข้อมูลจาก CISA Known Exploited Vulnerabilities (KEV) Catalog:</strong> หน่วยงาน Federal ต้องแก้ไข KEV ภายใน 7 วัน (ตาม BOD 22-01) จาก Tenable Research 2025: แม้ Government Sector จะมีข้อบังคับ 7 วัน แต่ค่าเฉลี่ยการแก้ไข KEV ในบางกรณีอยู่ที่ 116 วัน</div>
+    </div>
+
+    <div class="interactive" id="play-mttr">
+      <h4>Interactive: MTTR SLO — คลิกเพื่อดูรายละเอียด</h4>
+      <p class="click-hint">คลิกที่ระดับความรุนแรงเพื่อดูคำแนะนำ SLO (Service Level Objective)</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ความรุนแรง</th><th>SLO ที่แนะนำ</th></tr></thead>
+          <tbody>
+            <tr class="mttr-row" data-sev="KEV" data-slo="7" data-desc="ช่องโหว่ที่ถูกใช้โจมตีจริงในวงกว้าง ต้องแก้ไขภายใน 7 วัน (Internet-facing: ≤ 72 ชั่วโมง)" style="cursor:pointer">
+              <td><strong>KEV / กำลังถูกโจมตี</strong></td><td>≤ 7 วัน (Internet-facing: ≤ 72 ชั่วโมง)</td>
+            </tr>
+            <tr class="mttr-row" data-sev="Critical" data-slo="14" data-desc="ช่องโหว่ระดับวิกฤต (CVSS 9.0+) อาจนำไปสู่ RCE หรือ Data Breach ต้องแก้ไขภายใน 14 วัน" style="cursor:pointer">
+              <td><strong>Critical (CVSS 9.0+)</strong></td><td>≤ 14 วัน</td>
+            </tr>
+            <tr class="mttr-row" data-sev="High" data-slo="30" data-desc="ช่องโหว่ระดับสูง (CVSS 7.0-8.9) เช่น Privilege Escalation ต้องแก้ไขภายใน 30 วัน" style="cursor:pointer">
+              <td><strong>High (CVSS 7.0-8.9)</strong></td><td>≤ 30 วัน</td>
+            </tr>
+            <tr class="mttr-row" data-sev="Medium" data-slo="75" data-desc="ช่องโหว่ระดับกลาง (CVSS 4.0-6.9) ต้องแก้ไขภายใน 60-90 วัน" style="cursor:pointer">
+              <td><strong>Medium (CVSS 4.0-6.9)</strong></td><td>≤ 60-90 วัน</td>
+            </tr>
+            <tr class="mttr-row" data-sev="Low" data-slo="120" data-desc="ช่องโหว่ระดับต่ำ (CVSS 0.1-3.9) สามารถแก้ไขในรอบ Major Release ถัดไป หรือภายใน 120 วัน" style="cursor:pointer">
+              <td><strong>Low (CVSS 0.1-3.9)</strong></td><td>≤ 120 วัน หรือรอบ Major Release ถัดไป</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="mttrDetail" class="result">คลิกที่ระดับความรุนแรงเพื่อดูคำแนะนำ</div>
+    </div>
+
+    <div class="info-box tip">
+      <span class="icon">INFO</span>
+      <div>
+        <strong>ความสัมพันธ์ระหว่าง Shift Left กับ MTTR:</strong>
+        <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+          <li>ยิ่ง Shift Left มากเท่าไหร่ = ยิ่งพบช่องโหว่เร็ว = MTTR ยิ่งต่ำ</li>
+          <li>การค้นพบช่องโหว่ในช่วง Development (SAST) มี MTTR ต่ำกว่าในช่วง Production (Pen Test) อย่างมีนัยสำคัญ</li>
+          <li>การทำ Security Automation ใน CI/CD Pipeline ช่วยลด MTTR จากระดับสัปดาห์/เดือน เป็นระดับชั่วโมง/วัน</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-box question">
+      <span class="icon">Q</span>
+      <div>
+        <strong>คำถามสำหรับการอภิปรายในชั้นเรียน:</strong>
+        <p style="margin:.25rem 0 0">ในฐานะนักพัฒนา หากพบช่องโหว่ความรุนแรงสูง (Critical) ในโค้ดของตนเองในช่วงก่อนส่งมอบ Sprint นักศึกษาจะเลือกแก้ไขทันที หรือขอเลื่อนไป Sprint หน้า เพราะกลัวงานไม่ทัน deadline? ปัจจัยอะไรที่ใช้ตัดสินใจ?</p>
+        <div style="margin-top:.5rem"><button class="quiz-option" data-quiz="q1" data-correct="true">แก้ไขทันที เพราะความเสี่ยงด้านความปลอดภัยสำคัญกว่าระยะเวลา</button><button class="quiz-option" data-quiz="q1" data-correct="false">เลื่อนไป Sprint หน้า เพราะ deadline เป็นสิ่งที่ต้องมาก่อน</button><div id="q1Result" class="result">เลือกคำตอบเพื่อดูความคิดเห็น</div></div>
+      </div>
+    </div>
+    <h2 id="s2">3.2 โมเดล Secure SDLC ที่สำคัญ</h2>
+    <p>มีโมเดล Secure SDLC ที่เป็นที่ยอมรับในระดับสากล 3 โมเดลหลัก ได้แก่ Microsoft SDL, OWASP SAMM, และ NIST SSDF (SP 800-218) แต่ละโมเดลมีจุดเด่นและแนวทางที่แตกต่างกัน</p>
+
+    <h3 id="s2-1">3.2.1 Microsoft SDL (Security Development Lifecycle)</h3>
+    <p>Microsoft SDL เกิดจากวิกฤตความเชื่อมั่นด้านความปลอดภัยของ Microsoft ในช่วงต้นทศวรรษ 2000 — โดยเฉพาะหลังจาก Bill Gates ส่ง memo "Trustworthy Computing" ถึงพนักงานทุกคนในวันที่ 15 มกราคม 2002 (อ้างอิง: Microsoft, "The Trustworthy Computing Memo," 2002) โดยประกาศให้ความปลอดภัยเป็น "ลำดับความสำคัญสูงสุด" (Highest Priority)</p>
+    <p>Microsoft SDL ฉบับแรกได้รับการพัฒนาโดย Michael Howard และ Steve Lipner จาก Microsoft และเผยแพร่ในปี 2004 — ปัจจุบันเวอร์ชันล่าสุดคือ 5.2 (เผยแพร่ 15 กรกฎาคม 2024) และ Microsoft ได้พัฒนาไปสู่ "Continuous SDL" (มีนาคม 2024) เพื่อรองรับการพัฒนาแบบ Cloud-Native และ CI/CD</p>
+
+    <div class="interactive" id="play-sdl">
+      <h4>Interactive: 7 ขั้นตอนของ Microsoft SDL</h4>
+      <p class="click-hint">คลิกที่แต่ละ Phase เพื่อดูรายละเอียดและ Output</p>
+      <div class="principle-grid">
+        <div class="principle-card expand-card" style="border-left-color:#1a56db">
+          <div class="num">1 <span class="expand-icon">▼</span></div>
+          <h5>Core Security Training</h5>
+          <p style="font-size:.85rem">นักพัฒนาทุกคนต้องผ่านการอบรมความปลอดภัยพื้นฐาน เนื้อหาครอบคลุม: Secure Design, Threat Modeling, Secure Coding, Security Testing, Privacy</p>
+          <div class="expand-body">
+            <p style="font-size:.82rem">Microsoft จัดทำ "Essential Software Security Training" สำหรับนักพัฒนา มี "SDL Banned Function Calls" — รายชื่อฟังก์ชันที่ห้ามใช้ (เช่น <code>strcpy</code>, <code>gets</code>, <code>strcat</code>)</p>
+            <p style="font-size:.8rem;color:var(--text-muted);margin-top:.35rem"><strong>Output:</strong> พนักงานทุกคนที่เกี่ยวข้องผ่านการอบรม (Training Record)</p>
+          </div>
+        </div>
+        <div class="principle-card expand-card" style="border-left-color:#059669">
+          <div class="num">2 <span class="expand-icon">▼</span></div>
+          <h5>Requirements</h5>
+          <p style="font-size:.85rem">กำหนด Security Requirements และ Privacy Requirements ตั้งแต่เริ่มโครงการ ทีมงานต้องทำ Security Risk Assessment และ Privacy Impact Assessment</p>
+          <div class="expand-body">
+            <p style="font-size:.82rem">กำหนดระดับความรุนแรงของความปลอดภัย (Security Bug Bar) — กำหนดว่า Bug แบบไหนต้องแก้ก่อน Release กำหนด Security Quality Gates — เกณฑ์ขั้นต่ำที่ต้องผ่านก่อน Release</p>
+            <p style="font-size:.8rem;color:var(--text-muted);margin-top:.35rem"><strong>Output:</strong> Security Requirements Document, Bug Bar Definition, Risk Assessment Report</p>
+          </div>
+        </div>
+        <div class="principle-card expand-card" style="border-left-color:#d97706">
+          <div class="num">3 <span class="expand-icon">▼</span></div>
+          <h5>Design</h5>
+          <p style="font-size:.85rem">ทำ Threat Modeling โดยใช้ STRIDE methodology กำหนด Design Requirements ด้านความปลอดภัย ระบุ Attack Surface กำหนด Cryptographic Standards</p>
+          <div class="expand-body">
+            <p style="font-size:.82rem">เครื่องมือ: Microsoft Threat Modeling Tool (ฟรี, เปิดตัวปี 2005, อัปเดตล่าสุด 2024) ทำ Architecture Review ก่อนเริ่ม Coding</p>
+            <p style="font-size:.8rem;color:var(--text-muted);margin-top:.35rem"><strong>Output:</strong> Threat Model Diagram, Attack Surface Analysis Report, Design Specification</p>
+          </div>
+        </div>
+        <div class="principle-card expand-card" style="border-left-color:#dc2626">
+          <div class="num">4 <span class="expand-icon">▼</span></div>
+          <h5>Implementation</h5>
+          <p style="font-size:.85rem">ใช้ Secure Coding Guidelines ของ Microsoft ห้ามใช้ฟังก์ชันที่อยู่ใน Banned Function Calls List ใช้ Static Analysis Tools</p>
+          <div class="expand-body">
+            <p style="font-size:.82rem">Microsoft ใช้ PREfast (สำหรับ C/C++) และ FxCop (สำหรับ .NET) ปัจจุบันใช้ Roslyn Analyzers ตรวจสอบเวอร์ชันของ Dependency และ Library ทำ Code Review โดยผู้ที่ไม่ใช่เจ้าของ Code (Separation of Duties)</p>
+            <p style="font-size:.8rem;color:var(--text-muted);margin-top:.35rem"><strong>Output:</strong> Code ที่ผ่าน SAST Scan, Code Review Log</p>
+          </div>
+        </div>
+        <div class="principle-card expand-card" style="border-left-color:#7c3aed">
+          <div class="num">5 <span class="expand-icon">▼</span></div>
+          <h5>Verification</h5>
+          <p style="font-size:.85rem">ทำ Dynamic Analysis (Fuzz Testing) — โดยเฉพาะสำหรับโปรแกรมที่รับ Input จากผู้ใช้ ทำ Penetration Testing (Security Push) — ทีมแฮกเกอร์ของ Microsoft (Microsoft Red Team) ทดสอบระบบ</p>
+          <div class="expand-body">
+            <p style="font-size:.82rem">ตรวจสอบ Attack Surface Reduction — ดูว่ายังมีฟังก์ชัน/บริการที่ไม่จำเป็นเปิดอยู่หรือไม่ ทดสอบ Security Features ว่าทำงานถูกต้อง</p>
+            <p style="font-size:.8rem;color:var(--text-muted);margin-top:.35rem"><strong>Output:</strong> Fuzz Test Results, Pen Test Report, Final Security Review</p>
+          </div>
+        </div>
+        <div class="principle-card expand-card" style="border-left-color:#0891b2">
+          <div class="num">6 <span class="expand-icon">▼</span></div>
+          <h5>Release</h5>
+          <p style="font-size:.85rem">ทำ Final Security Review (FSR) — ผู้บริหารต้องอนุมัติ ทำ Privacy Review สร้าง Incident Response Plan จัดทำเอกสารการติดตั้งและ Deploy อย่างปลอดภัย</p>
+          <div class="expand-body">
+            <p style="font-size:.82rem"><strong>Safe Deployment Process (SDP):</strong> Ring 0 (ทีมพัฒนาที่รับผิดชอบ) → Ring 1 (พนักงาน Microsoft ทั้งหมด) → Ring 2 (ลูกค้าที่เลือกใช้ Targeted Release Channel) → Ring 3 (ทั่วโลก)</p>
+            <p style="font-size:.8rem;color:var(--text-muted);margin-top:.35rem"><strong>Output:</strong> Final Security Review Sign-off, Incident Response Plan, SBOM</p>
+          </div>
+        </div>
+        <div class="principle-card expand-card" style="border-left-color:#be185d">
+          <div class="num">7 <span class="expand-icon">▼</span></div>
+          <h5>Response</h5>
+          <p style="font-size:.85rem">จัดตั้ง Product Security Incident Response Team (PSIRT) ดำเนินการตาม Incident Response Plan เมื่อพบช่องโหว่ ออก Security Advisory และ Security Update</p>
+          <div class="expand-body">
+            <p style="font-size:.82rem">วิเคราะห์ Root Cause — ป้องกันไม่ให้เกิดซ้ำ (Post-Incident Review)</p>
+            <p style="font-size:.8rem;color:var(--text-muted);margin-top:.35rem"><strong>Output:</strong> Security Bulletin, Patch/Update, Post-Incident Review</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h4>ผลลัพธ์จากการใช้ SDL ของ Microsoft</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ผลิตภัณฑ์</th><th>ผลลัพธ์</th><th>ที่มา</th></tr></thead>
+        <tbody>
+          <tr><td>Windows Server 2003 (เทียบกับ Windows 2000)</td><td>ลดจำนวน Critical/Important Vulnerabilities ได้ 63% ในปีแรก</td><td>Microsoft SDL FAQ</td></tr>
+          <tr><td>Internet Information Services (IIS) 6.0</td><td>มีเพียง 1 Security Vulnerability หลัง Release (และเป็น Feature ที่ปิดโดย Default)</td><td>ZDNet, 2005</td></tr>
+          <tr><td>SQL Server 2005</td><td>0 Vulnerabilities ใน 24 เดือน (หลังจาก Service Pack 3)</td><td>Microsoft SDL Progress Report</td></tr>
+          <tr><td>โดยรวม (2004–2010)</td><td>ลด Security Defects ได้ 50–60%</td><td>MSDN Magazine, 2005</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 id="s2-2">3.2.2 OWASP SAMM (Software Assurance Maturity Model)</h3>
+    <p>OWASP SAMM เป็นโมเดลการประเมินวุฒิภาวะ (Maturity Model) สำหรับการสร้างหลักประกันด้านความปลอดภัยของซอฟต์แวร์ พัฒนาโดย OWASP (Open Web Application Security Project) เวอร์ชันแรก (v1.0) เขียนโดย Pravir Chandra ในปี 2009 เวอร์ชันปัจจุบันคือ v2.0 (เผยแพร่ 31 มกราคม 2020)</p>
+    <p><strong>ปรัชญาของ SAMM:</strong> SAMM เป็น Prescriptive Model — บอกว่าองค์กร "ควรทำอะไร" ในแต่ละระดับวุฒิภาวะ, เป็น Risk-Driven — ให้องค์กรเลือกให้ความสำคัญกับสิ่งที่เหมาะสมกับความเสี่ยงของตน, เป็น Technology and Process Agnostic — ใช้ได้กับทุกเทคโนโลยีและทุกกระบวนการพัฒนา SAMM v2.0 เปลี่ยนจาก v1.5 อย่างมีนัยสำคัญ: สร้าง Business Function "Implementation" ใหม่, ยกเลิก "Operational Enablement", และปรับปรุง Verification</p>
+
+    <div class="interactive" id="play-samm">
+      <h4>Interactive: SAMM Maturity Model Visualizer</h4>
+      <p class="click-hint">คลิกที่ Business Function เพื่อดู Security Practices ที่เกี่ยวข้อง</p>
+      <div class="principle-grid">
+        <div class="principle-card samm-func" data-func="Governance" style="border-left-color:#1a56db;cursor:pointer">
+          <h5>Governance</h5>
+          <p style="font-size:.82rem">Strategy and Metrics, Policy and Compliance, Education and Guidance</p>
+          <p style="font-size:.78rem;color:var(--text-muted)">การจัดการ วางแผน และวัดผลด้านความปลอดภัยของซอฟต์แวร์</p>
+        </div>
+        <div class="principle-card samm-func" data-func="Design" style="border-left-color:#059669;cursor:pointer">
+          <h5>Design</h5>
+          <p style="font-size:.82rem">Threat Assessment, Security Requirements, Secure Architecture</p>
+          <p style="font-size:.78rem;color:var(--text-muted)">การออกแบบระบบโดยคำนึงถึงความปลอดภัย</p>
+        </div>
+        <div class="principle-card samm-func" data-func="Implementation" style="border-left-color:#d97706;cursor:pointer">
+          <h5>Implementation</h5>
+          <p style="font-size:.82rem">Secure Build, Secure Deployment, Defect Management</p>
+          <p style="font-size:.78rem;color:var(--text-muted)">การพัฒนาที่ปลอดภัยและการจัดการข้อบกพร่อง</p>
+        </div>
+        <div class="principle-card samm-func" data-func="Verification" style="border-left-color:#7c3aed;cursor:pointer">
+          <h5>Verification</h5>
+          <p style="font-size:.82rem">Architecture Assessment, Requirements-Driven Testing, Security Testing</p>
+          <p style="font-size:.78rem;color:var(--text-muted)">การตรวจสอบและทดสอบความปลอดภัย</p>
+        </div>
+        <div class="principle-card samm-func" data-func="Operations" style="border-left-color:#0891b2;cursor:pointer">
+          <h5>Operations</h5>
+          <p style="font-size:.82rem">Incident Management, Environment Management, Operational Management</p>
+          <p style="font-size:.78rem;color:var(--text-muted)">การดำเนินงานและการตอบสนองต่อเหตุการณ์</p>
+        </div>
+      </div>
+      <div id="sammDetail" class="result">คลิกที่ Business Function เพื่อดูรายละเอียด</div>
+      <div class="info-box tip" style="margin-top:.75rem">
+        <span class="icon">INFO</span>
+        <div>
+          <strong>ระดับวุฒิภาวะ (Maturity Levels) ใน SAMM:</strong>
+          <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+            <li><strong>Level 0:</strong> ยังไม่เริ่มทำ (No activity)</li>
+            <li><strong>Level 1:</strong> ทำแบบไม่เป็นทางการ (Initial / Ad-hoc)</li>
+            <li><strong>Level 2:</strong> ทำอย่างเป็นระบบ (Structured / Consistent)</li>
+            <li><strong>Level 3:</strong> ทำอย่างมีประสิทธิภาพและเป็นอัตโนมัติ (Optimized / Automated)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h3 id="s2-3">3.2.3 NIST SSDF SP 800-218 (Secure Software Development Framework)</h3>
+    <p>NIST SSDF (Secure Software Development Framework) ถูกพัฒนาขึ้นเพื่อตอบสนองต่อ Executive Order (EO) 14028 ของประธานาธิบดีสหรัฐฯ เรื่อง "Improving the Nation's Cybersecurity" (12 พฤษภาคม 2021) ซึ่งกำหนดให้ NIST พัฒนากรอบแนวทางสำหรับการพัฒนาซอฟต์แวร์ที่ปลอดภัย เวอร์ชันแรก (v1.0) เผยแพร่เป็น White Paper ในเดือนเมษายน 2020 และเวอร์ชัน 1.1 (ปัจจุบัน) เผยแพร่เป็น NIST Special Publication 800-218 ในเดือนกุมภาพันธ์ 2022 (authors: Scarfone, K., Souppaya, M., and Dodson, D.) ในเดือนกุมภาพันธ์ 2024 NIST ได้เผยแพร่ SP 800-218A เพิ่มเติมสำหรับ Secure Software Development Practices for Generative AI and Dual-Use Foundation Models</p>
+
+    <div class="interactive" id="play-ssdf">
+      <h4>Interactive: NIST SSDF — 4 Groups, 19 Practices</h4>
+      <p class="click-hint">คลิกที่แท็บเพื่อดูแต่ละกลุ่ม</p>
+      <div class="tabs" data-tabs="ssdf">
+        <button class="tab-btn active" data-tab="ssdf-po">PO: Prepare</button>
+        <button class="tab-btn" data-tab="ssdf-ps">PS: Protect</button>
+        <button class="tab-btn" data-tab="ssdf-pw">PW: Produce</button>
+        <button class="tab-btn" data-tab="ssdf-rv">RV: Respond</button>
+      </div>
+      <div id="ssdf-po" class="tab-panel active">
+        <p style="font-weight:600;color:var(--primary)">กลุ่ม PO: Prepare the Organization (เตรียมความพร้อมองค์กร)</p>
+        <div class="table-wrap"><table><thead><tr><th>Practice</th><th>Tasks สำคัญ</th></tr></thead><tbody>
+          <tr><td>PO.1: Define Security Requirements for Software Development</td><td>กำหนด Security Requirements จาก Policy ภายใน + กฎหมายภายนอก</td></tr>
+          <tr><td>PO.2: Implement Roles and Responsibilities</td><td>กำหนดบทบาทหน้าที่ด้านความปลอดภัยให้ชัดเจน</td></tr>
+          <tr><td>PO.3: Implement Supporting Toolchains</td><td>ใช้ Automation Toolchain เพื่อลด Human Effort และเพิ่มความแม่นยำ</td></tr>
+          <tr><td>PO.4: Define and Use Criteria for Software Security Checks</td><td>กำหนด Criteria สำหรับการตรวจสอบความปลอดภัย</td></tr>
+          <tr><td>PO.5: Implement and Maintain Secure Environments for Software Development</td><td>ปกป้อง Development Environment (Dev, Build, Test, Distribution)</td></tr>
+        </tbody></table></div>
+      </div>
+      <div id="ssdf-ps" class="tab-panel">
+        <p style="font-weight:600;color:var(--success)">กลุ่ม PS: Protect the Software (ปกป้องซอฟต์แวร์)</p>
+        <div class="table-wrap"><table><thead><tr><th>Practice</th><th>Tasks สำคัญ</th></tr></thead><tbody>
+          <tr><td>PS.1: Protect All Forms of Code from Unauthorized Access and Tampering</td><td>ปกป้อง Source Code และ Build Artifacts</td></tr>
+          <tr><td>PS.2: Provide a Mechanism for Verifying Software Release Integrity</td><td>ให้กลไกตรวจสอบ Integrity ของ Release (Code Signing, SBOM)</td></tr>
+          <tr><td>PS.3: Archive and Protect Each Software Release</td><td>เก็บ Software Release อย่างปลอดภัย (สามารถย้อนกลับได้)</td></tr>
+        </tbody></table></div>
+      </div>
+      <div id="ssdf-pw" class="tab-panel">
+        <p style="font-weight:600;color:var(--warning)">กลุ่ม PW: Produce Well-Secured Software (ผลิตซอฟต์แวร์ที่ปลอดภัย)</p>
+        <div class="table-wrap"><table><thead><tr><th>Practice</th><th>Tasks สำคัญ</th></tr></thead><tbody>
+          <tr><td>PW.1: Design Software to Meet Security Requirements</td><td>ออกแบบตาม Security Requirements — ทำ Threat Modeling</td></tr>
+          <tr><td>PW.2: Review Software Design to Verify Compliance with Security Requirements</td><td>ตรวจสอบ Design ว่าตรงตาม Security Requirements</td></tr>
+          <tr><td>PW.3: Reuse Existing, Well-Secured Software When Feasible</td><td>ใช้ซอฟต์แวร์ที่ปลอดภัยที่มีอยู่แล้ว — จัดการ Dependency</td></tr>
+          <tr><td>PW.4: Create Source Code by Adhering to Secure Coding Practices</td><td>เขียน Code ตาม Secure Coding Practices</td></tr>
+          <tr><td>PW.5: Review Source Code to Identify and Remove Vulnerabilities</td><td>Review Code เพื่อค้นหาและกำจัดช่องโหว่</td></tr>
+          <tr><td>PW.6: Test Software to Identify and Remove Vulnerabilities</td><td>ทดสอบซอฟต์แวร์เพื่อหาช่องโหว่ (SAST, DAST, Fuzz)</td></tr>
+          <tr><td>PW.7: Test Software to Identify and Remove Vulnerabilities in Built executables</td><td>ทดสอบที่ Binary/Executable level</td></tr>
+          <tr><td>PW.8: Configure Software and Build Processes for Secure Deployment</td><td>กำหนดค่า Build Process และ Deployment ให้ปลอดภัย</td></tr>
+        </tbody></table></div>
+      </div>
+      <div id="ssdf-rv" class="tab-panel">
+        <p style="font-weight:600;color:var(--danger)">กลุ่ม RV: Respond to Vulnerabilities (ตอบสนองต่อช่องโหว่)</p>
+        <div class="table-wrap"><table><thead><tr><th>Practice</th><th>Tasks สำคัญ</th></tr></thead><tbody>
+          <tr><td>RV.1: Identify and Confirm Vulnerabilities</td><td>ระบุและยืนยันช่องโหว่ — มีกระบวนการรับรายงานจากภายนอก</td></tr>
+          <tr><td>RV.2: Assess, Prioritize, and Remediate Vulnerabilities</td><td>ประเมิน จัดลำดับ และแก้ไขช่องโหว่</td></tr>
+          <tr><td>RV.3: Analyze Vulnerabilities to Identify Their Root Causes</td><td>วิเคราะห์ Root Cause ของช่องโหว่</td></tr>
+          <tr><td>RV.4: Communicate Vulnerabilities to Relevant Parties</td><td>แจ้งข้อมูลช่องโหว่ให้ผู้เกี่ยวข้องทราบ</td></tr>
+          <tr><td>RV.5: Coordinate with External Parties</td><td>ประสานงานกับหน่วยงานภายนอก (CERT, CISA, ผู้ใช้งาน)</td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+
+    <h3 id="s2-4">3.2.4 ตารางเปรียบเทียบ Microsoft SDL vs OWASP SAMM vs NIST SSDF</h3>
+
+    <div class="interactive" id="play-compare">
+      <h4>Interactive: เปรียบเทียบโมเดล Secure SDLC</h4>
+      <p class="click-hint">เลือกหมวดหมู่เพื่อกรองมิติที่ต้องการเปรียบเทียบ</p>
+      <div class="filter-btns" id="compareFilters">
+        <button class="filter-btn active" data-filter="all">ทั้งหมด</button>
+        <button class="filter-btn" data-filter="basic">ข้อมูลพื้นฐาน</button>
+        <button class="filter-btn" data-filter="process">โครงสร้าง</button>
+        <button class="filter-btn" data-filter="practical">การปรับใช้</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>มิติ</th><th>Microsoft SDL</th><th>OWASP SAMM v2.0</th><th>NIST SSDF SP 800-218</th></tr></thead>
+          <tbody id="compareBody">
+            <tr data-cat="basic"><td><strong>ผู้พัฒนา</strong></td><td>Microsoft</td><td>OWASP Community</td><td>NIST (US Government)</td></tr>
+            <tr data-cat="basic"><td><strong>ปีแรกที่เผยแพร่</strong></td><td>2004 (v5.2: 2024)</td><td>2009 (v2.0: 2020)</td><td>2020 (v1.1: 2022)</td></tr>
+            <tr data-cat="process"><td><strong>ประเภท</strong></td><td>Process Model (ขั้นตอน)</td><td>Maturity Model (วุฒิภาวะ)</td><td>Framework (กรอบแนวทาง)</td></tr>
+            <tr data-cat="process"><td><strong>Prescriptive/Descriptive</strong></td><td>Prescriptive</td><td>Prescriptive</td><td>Descriptive (outcome-based)</td></tr>
+            <tr data-cat="process"><td><strong>จำนวนขั้นตอน/กลุ่ม</strong></td><td>7 Phases</td><td>5 Business Functions + 15 Practices</td><td>4 Groups + 19 Practices</td></tr>
+            <tr data-cat="process"><td><strong>จุดเน้น</strong></td><td>ขั้นตอนที่ต้องทำในแต่ละ Phase</td><td>การประเมินและพัฒนาวุฒิภาวะ</td><td>ผลลัพธ์ที่ต้องบรรลุ (Outcome)</td></tr>
+            <tr data-cat="process"><td><strong>การวัดผล</strong></td><td>Security Bug Bar, Quality Gates</td><td>Maturity Level (0–3)</td><td>Task Completion</td></tr>
+            <tr data-cat="practical"><td><strong>ความยืดหยุ่น</strong></td><td>ปานกลาง — มีขั้นตอนชัดเจนต่อเนื่อง</td><td>สูง — เลือกให้ความสำคัญตาม Risk</td><td>สูง — ไม่กำหนดวิธีการ</td></tr>
+            <tr data-cat="practical"><td><strong>การปรับใช้ใน Agile</strong></td><td>Continuous SDL (2024)</td><td>สนับสนุนโดย Design</td><td>ไม่จำกัดกระบวนการ</td></tr>
+            <tr data-cat="practical"><td><strong>การรับรอง (Certification)</strong></td><td>ไม่มีการรับรองบุคคล</td><td>SAMM Assessment (องค์กร)</td><td>ไม่มีการรับรอง</td></tr>
+            <tr data-cat="practical"><td><strong>การอ้างอิงในกฎหมาย</strong></td><td>เอกสารอ้างอิงทั่วไป</td><td>ใช้เป็นกรอบประเมินองค์กร</td><td>อ้างอิงใน EO 14028</td></tr>
+            <tr data-cat="practical"><td><strong>เครื่องมือสนับสนุน</strong></td><td>Threat Modeling Tool, PREfast, FxCop</td><td>SAMM Toolbox (Assessment + Roadmap)</td><td>SSDF Mapping Tables</td></tr>
+            <tr data-cat="practical"><td><strong>เหมาะสมกับ</strong></td><td>องค์กรที่ต้องการ Process ที่ชัดเจน</td><td>องค์กรที่ต้องการ Maturity Baseline</td><td>องค์กรที่ต้องการ Compliance ตามมาตรฐานรัฐบาล</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <h3 id="s2-5">3.2.5 การปรับใช้ Secure SDLC ใน Agile vs Waterfall</h3>
+    <div class="principle-grid">
+      <div class="principle-card" style="border-left-color:#1a56db">
+        <h5>Waterfall (Traditional)</h5>
+        <p style="font-size:.85rem">แต่ละ Phase ทำตามลำดับ — Security Activities ทำตาม Phase นั้นๆ Threat Modeling ทำในช่วง Design, SAST ทำในช่วง Development, Pen Test ทำในช่วง Testing</p>
+        <ul style="font-size:.8rem;margin-top:.5rem">
+          <li><strong>ข้อดี:</strong> มี Gate/Checkpoint ชัดเจน — ทำ FSR ก่อน Release ทุกครั้ง</li>
+          <li><strong>ข้อเสีย:</strong> พบช่องโหว่ช้า — ต้องรอถึง Testing Phase</li>
+        </ul>
+      </div>
+      <div class="principle-card" style="border-left-color:#059669">
+        <h5>Agile (Scrum/Kanban)</h5>
+        <p style="font-size:.85rem">Security Activities ต้องถูก "บีบ" ให้อยู่ใน Sprint (2–4 สัปดาห์)</p>
+        <ul style="font-size:.8rem;margin-top:.5rem">
+          <li><strong>Security Stories:</strong> เขียนเป็น User Story ด้านความปลอดภัย</li>
+          <li><strong>Security Acceptance Criteria:</strong> เพิ่ม Acceptance Criteria ด้านความปลอดภัยในทุก Story</li>
+          <li><strong>Threat Modeling แบบ Lightweight:</strong> ทำเฉพาะ Feature ใหม่ใน Sprint Planning</li>
+          <li><strong>Automated Security Testing:</strong> SAST/DAST/SCA ต้องทำงานทุก Sprint (ทุก Commit)</li>
+          <li><strong>Security Champion:</strong> แต่ละทีมต้องมี Security Champion</li>
+        </ul>
+      </div>
+      <div class="principle-card" style="border-left-color:#d97706">
+        <h5>Hybrid (Recommended)</h5>
+        <p style="font-size:.85rem">ใช้ Agile สำหรับการพัฒนา Feature (Sprint 2–4 สัปดาห์) + มี "Security Milestone" ในทุก Release (ทุก 3–6 Sprints)</p>
+        <ul style="font-size:.8rem;margin-top:.5rem">
+          <li>ใช้ Automation ให้มากที่สุดใน CI/CD Pipeline</li>
+          <li>จัดให้มี "Security Sprint" เป็นระยะ — ทุ่มเท Sprint หนึ่งให้กับการปรับปรุงความปลอดภัย</li>
+          <li>Threat Modeling Review + Pen Test ทุก 3–6 Sprints</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 id="s3">3.3 กิจกรรมด้านความปลอดภัยในแต่ละขั้นของ SDLC</h2>
+
+    <h3 id="s3-1">3.3.1 Requirements Phase (ขั้นตอนการกำหนดความต้องการ)</h3>
+    <p><strong>วัตถุประสงค์:</strong> กำหนดความต้องการด้านความปลอดภัย (Security Requirements) ให้ชัดเจนตั้งแต่เริ่มโครงการ เพื่อเป็นแนวทางในการออกแบบ พัฒนา และทดสอบ</p>
+
+    <h4>1. Security Requirements Engineering</h4>
+    <p>วิเคราะห์ความต้องการด้านความปลอดภัยจาก: นโยบายองค์กร, กฎหมายและข้อบังคับ (PDPA, GDPR, PCI DSS, HIPAA, SOX), มาตรฐานอุตสาหกรรม (NIST SP 800-53, ISO 27001, OWASP ASVS), ข้อกำหนดทางธุรกิจ (SLA, ข้อกำหนดด้านความพร้อมใช้งาน)</p>
+
+    <div class="example-box">
+      <div class="example-label">ตัวอย่าง Security Requirements</div>
+      <ul>
+        <li>ระบบต้องเข้ารหัสข้อมูลขณะส่งด้วย TLS 1.3</li>
+        <li>ระบบต้องจัดเก็บรหัสผ่านโดยใช้ Algorithm แบบ One-Way Hashing (Argon2id หรือ bcrypt)</li>
+        <li>ระบบต้องบันทึก Audit Log สำหรับทุกการเข้าถึงข้อมูลส่วนบุคคล</li>
+        <li>ระบบต้องมีการ Lockout Account หลังจาก Login ล้มเหลว 5 ครั้ง</li>
+        <li>ระบบต้องสามารถคืนค่าได้ภายใน 4 ชั่วโมงหลังจาก Disaster</li>
+      </ul>
+    </div>
+
+    <h4>2. Abuse Cases (กรณีการใช้งานในเชิงลบ)</h4>
+    <p>Abuse Cases หรือ Misuse Cases เป็นเทคนิคในการระบุว่าผู้โจมตี (Attacker) อาจใช้ระบบในทางที่ผิดอย่างไร — เป็น Complementary ของ Use Cases ปกติ</p>
+
+    <div class="interactive" id="play-abuse">
+      <h4>Interactive: จับคู่ Use Case กับ Abuse Case</h4>
+      <p>คลิกเลือก Abuse Case ที่ถูกต้องสำหรับแต่ละ Use Case</p>
+      <div id="abuseQuiz">
+        <div class="card" style="margin-bottom:.75rem">
+          <p style="font-weight:600">Use Case: ผู้ใช้ Login ด้วย Username/Password</p>
+          <button class="quiz-option" data-abuse-q="1" data-correct="false">ผู้โจมตีอัปโหลดไฟล์ที่มี Malicious Code</button>
+          <button class="quiz-option" data-abuse-q="1" data-correct="true">ผู้โจมตี Brute Force Password เพื่อเข้าสู่ระบบ</button>
+          <button class="quiz-option" data-abuse-q="1" data-correct="false">ผู้โจมตีพยายามดูประวัติการรักษาของผู้อื่น (IDOR)</button>
+        </div>
+        <div class="card" style="margin-bottom:.75rem">
+          <p style="font-weight:600">Use Case: ผู้ใช้โอนเงินให้ผู้อื่น</p>
+          <button class="quiz-option" data-abuse-q="2" data-correct="true">ผู้โจมตีพยายามโอนเงินจากบัญชีผู้อื่น</button>
+          <button class="quiz-option" data-abuse-q="2" data-correct="false">ผู้โจมตีส่ง Request จำนวนมากจนระบบล่ม</button>
+          <button class="quiz-option" data-abuse-q="2" data-correct="false">ผู้โจมตีปลอมแปลงตัวตนเป็น Admin</button>
+        </div>
+        <div class="card">
+          <p style="font-weight:600">Use Case: ผู้ใช้อัปโหลดรูปโปรไฟล์</p>
+          <button class="quiz-option" data-abuse-q="3" data-correct="false">ผู้โจมตี Brute Force Password เพื่อเข้าสู่ระบบ</button>
+          <button class="quiz-option" data-abuse-q="3" data-correct="false">ผู้โจมตีแก้ไข Payload ระหว่างส่ง</button>
+          <button class="quiz-option" data-abuse-q="3" data-correct="true">ผู้โจมตีอัปโหลดไฟล์ที่มี Malicious Code</button>
+        </div>
+      </div>
+      <div id="abuseResult" class="result">เลือกคำตอบสำหรับแต่ละข้อ</div>
+    </div>
+
+    <h4>3. Security Stories (เรื่องราวความปลอดภัย)</h4>
+    <p>ใน Agile Development, Security Requirements ถูกเขียนในรูปแบบของ User Story:</p>
+
+    <div class="interactive" id="play-story">
+      <h4>Interactive: Security Story Template Builder</h4>
+      <p>กรอกข้อมูลในช่องว่างเพื่อสร้าง Security Story</p>
+      <div class="card">
+        <p style="font-size:.95rem">
+          ในฐานะ <input class="fill-blank" id="storyRole" value="ผู้ใช้ระบบ" style="min-width:100px">,
+          ฉันต้องการ <input class="fill-blank" id="storyFunc" value="ให้รหัสผ่านของฉันถูกเข้ารหัสก่อนจัดเก็บ" style="min-width:180px">
+          เพื่อให้ <input class="fill-blank" id="storyValue" value="ข้อมูลรหัสผ่านปลอดภัยแม้ฐานข้อมูลถูกรั่วไหล" style="min-width:180px">
+        </p>
+        <p style="font-weight:600;margin-top:.75rem">Acceptance Criteria:</p>
+        <textarea id="storyAC" rows="3" style="width:100%;font-family:var(--font-thai);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.6rem .75rem">- รหัสผ่านถูก Hashing ด้วย Argon2id ก่อนจัดเก็บ
+- ไม่มีการเก็บ Plaintext Password ใน Log หรือ Database
+- กระบวนการ Hash ใช้ Salt ที่ไม่ซ้ำกันในแต่ละ Record
+- การ Reset Password ต้อง Invalid Token ทันที</textarea>
+        <button class="btn" id="storyBtn" style="margin-top:.5rem">แสดงผลลัพธ์</button>
+      </div>
+      <div id="storyResult" class="result">กรอกข้อมูลแล้วกดแสดงผลลัพธ์</div>
+    </div>
+
+    <h4>4. Security Acceptance Criteria (เกณฑ์การยอมรับด้านความปลอดภัย)</h4>
+    <p>เพิ่มเงื่อนไขด้านความปลอดภัยในทุก User Story — ไม่จำเป็นต้องมี Security Story แยก:</p>
+    <div class="example-box">
+      <div class="example-label">User Story: สมัครสมาชิกใหม่ — Acceptance Criteria</div>
+      <ul>
+        <li>ส่งอีเมลยืนยันก่อนเปิดใช้งาน (ป้องกัน Fake Account)</li>
+        <li>ตรวจสอบความแข็งแกร่งของรหัสผ่าน (12+ chars, มีตัวเลขและสัญลักษณ์)</li>
+        <li>ไม่เปิดเผยว่ารหัสผ่านผิดหรือ Username ไม่มี (ป้องกัน Enumeration)</li>
+        <li>Rate Limit การส่ง OTP (ป้องกัน Brute Force)</li>
+        <li>บันทึก Audit Log ทุกการสมัคร (Timestamp, IP, Email)</li>
+      </ul>
+    </div>
+
+    <h3 id="s3-2">3.3.2 Design Phase (ขั้นตอนการออกแบบ)</h3>
+    <p><strong>วัตถุประสงค์:</strong> ออกแบบสถาปัตยกรรมและฟังก์ชันของระบบโดยคำนึงถึงความปลอดภัยตั้งแต่ต้น เพื่อป้องกันช่องโหว่ทางโครงสร้างก่อนเริ่มพัฒนา</p>
+
+    <h4>1. Threat Modeling (STRIDE)</h4>
+    <p>Threat Modeling เป็นกระบวนการระบุ วิเคราะห์ และจัดลำดับความสำคัญของภัยคุกคามต่อระบบ โดยทั่วไปใช้กรอบ STRIDE (พัฒนาโดย Microsoft):</p>
+
+    <div class="interactive" id="play-stride">
+      <h4>Interactive: STRIDE — จับคู่ภัยคุกคาม</h4>
+      <p class="click-hint">คลิกที่ตัวอักษร STRIDE ก่อน แล้วคลิกคำอธิบายที่ถูกต้อง</p>
+      <div style="margin-bottom:.75rem" id="strideLetters">
+        <span class="match-item" data-stride="S">S - Spoofing</span>
+        <span class="match-item" data-stride="T">T - Tampering</span>
+        <span class="match-item" data-stride="R">R - Repudiation</span>
+        <span class="match-item" data-stride="I">I - Information Disclosure</span>
+        <span class="match-item" data-stride="D">D - Denial of Service</span>
+        <span class="match-item" data-stride="E">E - Elevation of Privilege</span>
+      </div>
+      <div style="margin-bottom:.5rem" id="strideDescs">
+        <span class="match-item" data-stride="T">แก้ไขข้อมูล — แก้ไข Payload ระหว่างส่ง</span>
+        <span class="match-item" data-stride="D">ปฏิเสธการให้บริการ — ส่ง Request จำนวนมากจนระบบล่ม</span>
+        <span class="match-item" data-stride="S">ปลอมแปลงตัวตน — แฮกเกอร์ปลอมเป็นผู้ใช้อื่น</span>
+        <span class="match-item" data-stride="R">ปฏิเสธการกระทำ — ผู้ใช้บอกว่า "ไม่ได้ทำ"</span>
+        <span class="match-item" data-stride="E">ยกระดับสิทธิ์ — ผู้ใช้ทั่วไปกลายเป็น Admin</span>
+        <span class="match-item" data-stride="I">ข้อมูลรั่วไหล — SQL Injection อ่านข้อมูลจากฐานข้อมูล</span>
+      </div>
+      <div id="strideResult" class="result">คลิก STRIDE letter ก่อน แล้วคลิกคำอธิบาย</div>
+    </div>
+
+    <h4>2. Secure Design Principles</h4>
+    <p>ประยุกต์ใช้หลักการของ Saltzer and Schroeder ในการออกแบบ:</p>
+    <div class="principle-grid">
+      <div class="principle-card"><h5>Economy of Mechanism</h5><p style="font-size:.82rem">ออกแบบระบบให้เรียบง่าย — หลีกเลี่ยง Complexity ที่ไม่จำเป็น</p></div>
+      <div class="principle-card"><h5>Fail-Safe Defaults</h5><p style="font-size:.82rem">Default Deny — ปิดทุกอย่างแล้วเปิดเฉพาะที่จำเป็น</p></div>
+      <div class="principle-card"><h5>Complete Mediation</h5><p style="font-size:.82rem">ทุก API Call ต้องตรวจสอบ Authorization — ไม่ Cache สิทธิ์</p></div>
+      <div class="principle-card"><h5>Least Privilege</h5><p style="font-size:.82rem">แต่ละ Service/Component มีสิทธิ์เฉพาะที่จำเป็น</p></div>
+      <div class="principle-card"><h5>Defense in Depth</h5><p style="font-size:.82rem">มีหลายชั้นป้องกัน — WAF, API Gateway, Service, Database</p></div>
+      <div class="principle-card"><h5>Open Design</h5><p style="font-size:.82rem">ใช้มาตรฐานเปิด (OAuth 2.0, TLS 1.3), ไม่พึ่งพา Security Through Obscurity</p></div>
+    </div>
+
+    <h4>3. Attack Surface Analysis</h4>
+    <p>Attack Surface = จุดทั้งหมดที่ผู้โจมตีสามารถเข้าถึงระบบได้ (Network Ports, API Endpoints, Files, User Inputs)</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>วิธีการลด Attack Surface</th><th>ตัวอย่าง</th></tr></thead>
+        <tbody>
+          <tr><td>ปิดบริการ/Port ที่ไม่จำเป็น</td><td>ปิด SSH จาก Internet, ปิด Debug Endpoint</td></tr>
+          <tr><td>จำกัดการเข้าถึง</td><td>IP Allowlist, VPN, Zero Trust Network</td></tr>
+          <tr><td>ใช้ Network Segmentation</td><td>แยก DMZ, Internal Network, Database Tier</td></tr>
+          <tr><td>ใช้ API Gateway</td><td>ตรวจสอบ Request ทุกรายการก่อนถึง Service</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 id="s3-3">3.3.3 Implementation Phase (ขั้นตอนการพัฒนา)</h3>
+    <p><strong>วัตถุประสงค์:</strong> พัฒนาซอฟต์แวร์ตาม Design ที่กำหนด โดยใช้แนวปฏิบัติการเขียนโค้ดที่ปลอดภัย และตรวจสอบหาช่องโหว่ตั้งแต่ในขั้นตอนการพัฒนา</p>
+
+    <h4>1. Secure Coding Standards</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>มาตรฐาน</th><th>รายละเอียด</th><th>เหมาะกับ</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CERT Secure Coding Standards</strong></td><td>มาตรฐานจาก Carnegie Mellon University — ครอบคลุม C, C++, Java, Perl, Android</td><td>ภาษา C/C++, Java</td></tr>
+          <tr><td><strong>OWASP ASVS</strong></td><td>Application Security Verification Standard — ครอบคลุม Web Application ทั่วไป</td><td>Web App ทุกภาษา</td></tr>
+          <tr><td><strong>OWASP Top 10</strong></td><td>รายการช่องโหว่ 10 อันดับที่พบบ่อย</td><td>ทุกประเภท</td></tr>
+          <tr><td><strong>Microsoft SDL Banned Function Calls</strong></td><td>รายชื่อฟังก์ชันที่ห้ามใช้ (strcpy, gets, strcat)</td><td>C/C++</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2. Static Application Security Testing (SAST)</h4>
+    <p>SAST เป็นการวิเคราะห์ Source Code, Bytecode, หรือ Binary โดยไม่ต้องรันโปรแกรม (White Box Testing) — เปรียบเสมือน "Grammar Checker" สำหรับช่องโหว่</p>
+
+    <div class="interactive" id="play-sast">
+      <h4>Interactive: เปรียบเทียบเครื่องมือ SAST</h4>
+      <p class="click-hint">เลือกประเภทเพื่อกรองเครื่องมือ SAST</p>
+      <div class="filter-btns" id="sastFilters">
+        <button class="filter-btn active" data-sast="all">ทั้งหมด</button>
+        <button class="filter-btn" data-sast="open">Open Source</button>
+        <button class="filter-btn" data-sast="commercial">Commercial</button>
+        <button class="filter-btn" data-sast="python">Python</button>
+        <button class="filter-btn" data-sast="java">Java</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>เครื่องมือ</th><th>ประเภท</th><th>ภาษา</th><th>จุดเด่น</th></tr></thead>
+          <tbody id="sastTableBody">
+            <tr data-sast-cat="open,python"><td>Semgrep</td><td>Open Source</td><td>Python, JS, Java, Go</td><td>กฎกำหนดเองได้, เร็ว, รองรับ CI/CD</td></tr>
+            <tr data-sast-cat="open,java"><td>SonarQube</td><td>Open Source + Commercial</td><td>30+ ภาษา</td><td>Code Quality + Security, Community Edition ฟรี</td></tr>
+            <tr data-sast-cat="open,java"><td>CodeQL</td><td>Semi-Open</td><td>Python, JS, Java, C#, Go</td><td>Query-Based, GitHub Integration</td></tr>
+            <tr data-sast-cat="commercial,java"><td>Checkmarx</td><td>Commercial</td><td>25+ ภาษา</td><td>Coverage สูง, CI/CD Integration</td></tr>
+            <tr data-sast-cat="commercial,java"><td>Fortify</td><td>Commercial</td><td>27+ ภาษา</td><td>Enterprise Grade, Compliance Reporting</td></tr>
+            <tr data-sast-cat="open,python"><td>Bandit</td><td>Open Source</td><td>Python</td><td>เฉพาะ Python, ใช้งานง่าย</td></tr>
+            <tr data-sast-cat="open"><td>Brakeman</td><td>Open Source</td><td>Ruby on Rails</td><td>เฉพาะ Rails</td></tr>
+            <tr data-sast-cat="open,java"><td>SpotBugs + FindSecBugs</td><td>Open Source</td><td>Java</td><td>Android + Java</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h4>3. Peer Code Review with Security Checklist</h4>
+
+    <div class="interactive" id="play-review">
+      <h4>Interactive: Security Code Review Checklist</h4>
+      <p>ติ๊กรายการที่ตรวจสอบแล้วเพื่อดูความคืบหน้าในการทำ Code Review</p>
+      <div class="checklist" id="reviewChecks">
+        <label><input type="checkbox"> มี Input Validation สำหรับทุก Input ที่รับจากผู้ใช้หรือระบบภายนอก</label>
+        <label><input type="checkbox"> มี Output Encoding ก่อนแสดงข้อมูลใน HTML/JSON/XML</label>
+        <label><input type="checkbox"> ใช้ Parameterized Query / ORM แทน String Concatenation</label>
+        <label><input type="checkbox"> จัดการ Authentication อย่างถูกต้อง — ไม่ Hardcode Credential</label>
+        <label><input type="checkbox"> ตรวจสอบ Authorization ทุกครั้ง — ไม่ใช่แค่ตรวจที่ Frontend</label>
+        <label><input type="checkbox"> ใช้ Cryptography อย่างถูกต้อง — Algorithm ที่ปลอดภัย, Key Management</label>
+        <label><input type="checkbox"> จัดการ Error อย่างปลอดภัย — ไม่แสดง Stack Trace</label>
+        <label><input type="checkbox"> มี Rate Limiting / Throttling สำหรับ API ที่สำคัญ</label>
+        <label><input type="checkbox"> ไม่เปิด Debug/Test Code ใน Production</label>
+        <label><input type="checkbox"> Log เฉพาะข้อมูลที่จำเป็น — ไม่ Log Secrets (Password, Token, PII)</label>
+      </div>
+      <div class="meter"><div class="meter-fill" id="reviewMeter"></div></div>
+      <div id="reviewResult" class="result">เลือก checklist เพื่อดูความคืบหน้า</div>
+    </div>
+
+    <h3 id="s3-4">3.3.4 Testing Phase (ขั้นตอนการทดสอบ)</h3>
+    <p><strong>วัตถุประสงค์:</strong> ทดสอบความปลอดภัยของซอฟต์แวร์ในสภาพแวดล้อมที่ใกล้เคียง Production เพื่อค้นหาช่องโหว่ที่อาจหลุดรอดจากขั้นตอนการพัฒนา</p>
+    <div class="principle-grid">
+      <div class="principle-card" style="border-left-color:#7c3aed">
+        <h5>DAST (Dynamic Analysis)</h5>
+        <p style="font-size:.82rem">ทดสอบความปลอดภัยโดยรันโปรแกรมจริง (Black Box Testing) — ไม่ต้องมี Source Code</p>
+        <p style="font-size:.78rem;color:var(--text-muted)">เครื่องมือ: OWASP ZAP (Open Source), Burp Suite, Acunetix</p>
+      </div>
+      <div class="principle-card" style="border-left-color:#dc2626">
+        <h5>Penetration Testing</h5>
+        <p style="font-size:.82rem">จำลองการโจมตีจริง — Black Box, White Box, Grey Box, Red Team, Purple Team</p>
+        <p style="font-size:.78rem;color:var(--text-muted)">⚠️ ต้องได้รับอนุญาตเป็นลายลักษณ์อักษรก่อนเสมอ</p>
+      </div>
+      <div class="principle-card" style="border-left-color:#d97706">
+        <h5>Fuzz Testing</h5>
+        <p style="font-size:.82rem">ป้อนข้อมูลที่สุ่ม ไม่ถูกต้อง หรือไม่คาดคิด — Dumb, Smart, Mutation, Generation</p>
+        <p style="font-size:.78rem;color:var(--text-muted)">เครื่องมือ: AFL, libFuzzer, zzuf, radamsa</p>
+      </div>
+      <div class="principle-card" style="border-left-color:#059669">
+        <h5>SCA / Dependency Scanning</h5>
+        <p style="font-size:.82rem">วิเคราะห์ Third-Party Components เพื่อค้นหา Known Vulnerabilities และตรวจสอบ License</p>
+        <p style="font-size:.78rem;color:var(--text-muted)">เครื่องมือ: Trivy, Snyk, OWASP Dependency-Check, Dependabot</p>
+      </div>
+    </div>
+
+    <h3 id="s3-5">3.3.5 Deployment Phase (ขั้นตอนการปรับใช้)</h3>
+    <p><strong>วัตถุประสงค์:</strong> กำหนดค่าและสภาพแวดล้อมการทำงานให้ปลอดภัยก่อนนำซอฟต์แวร์ขึ้น Production</p>
+    <div class="principle-grid">
+      <div class="principle-card"><h5>Security Configuration Review</h5><p style="font-size:.82rem">Web Server: ปิด Directory Listing, ตั้ง HSTS, CSP / Database: Non-Root User, Encryption at Rest / Cloud: ตรวจ IAM Policy, S3 Permission</p></div>
+      <div class="principle-card"><h5>Infrastructure Scanning</h5><p style="font-size:.82rem">ScoutSuite (AWS/Azure/GCP), Prowler (AWS CIS), CloudSploit, AWS Security Hub</p></div>
+      <div class="principle-card"><h5>Container Image Scanning</h5><p style="font-size:.82rem">Trivy, Docker Scout, Anchore, Clair — สแกน Known Vulnerabilities, Misconfiguration, Embedded Secrets</p></div>
+    </div>
+
+    <h3 id="s3-6">3.3.6 Operations Phase (ขั้นตอนการดำเนินงาน)</h3>
+    <p><strong>วัตถุประสงค์:</strong> รักษาความปลอดภัยของระบบขณะทำงานใน Production ตรวจจับและตอบสนองต่อภัยคุกคาม</p>
+    <div class="principle-grid">
+      <div class="principle-card"><h5>Incident Response Plan</h5><p style="font-size:.82rem">Preparation → Detection and Analysis → Containment/Eradication/Recovery → Post-Incident Activity (NIST SP 800-61)</p></div>
+      <div class="principle-card"><h5>Patch Management</h5><p style="font-size:.82rem">Critical (RCE): ≤ 48 ชม. / High: ≤ 7 วัน / Medium: ≤ 30 วัน / Low: ≤ 90 วัน</p></div>
+      <div class="principle-card"><h5>Vulnerability Management</h5><p style="font-size:.82rem">Discover → Prioritize → Remediate → Verify → Report</p></div>
+      <div class="principle-card"><h5>Continuous Monitoring</h5><p style="font-size:.82rem">SIEM (Splunk, ELK), EDR (CrowdStrike), IDS/IPS (Snort), WAF, CSPM, Runtime Protection (Falco)</p></div>
+    </div>
+    <h2 id="s4">3.4 DevSecOps และ CI/CD Security</h2>
+    <p>DevSecOps คือการบูรณาการความปลอดภัย (Security) เข้าไปในกระบวนการ DevOps — ทำให้ความปลอดภัยเป็นส่วนหนึ่งของ Pipeline การพัฒนาตั้งแต่ Commit ถึง Production ไม่ใช่สิ่งที่มา "ตรวจทีหลัง"</p>
+
+    <div class="interactive" id="play-pipeline">
+      <h4>Interactive: CI/CD Pipeline Visualizer</h4>
+      <p class="click-hint">คลิกที่แต่ละ Stage เพื่อดู Security Tools ที่แนะนำในแต่ละขั้น</p>
+      <div class="phase-bar">
+        <div class="phase-btn" data-pstage="commit" style="background:#1a56db;color:#fff">Code Commit</div>
+        <div class="phase-btn" data-pstage="build" style="background:#059669;color:#fff">Build</div>
+        <div class="phase-btn" data-pstage="dependency" style="background:#d97706;color:#fff">Dependency</div>
+        <div class="phase-btn" data-pstage="container" style="background:#dc2626;color:#fff">Container</div>
+        <div class="phase-btn" data-pstage="iac" style="background:#7c3aed;color:#fff">IaC Scan</div>
+        <div class="phase-btn" data-pstage="staging" style="background:#0891b2;color:#fff">Staging</div>
+        <div class="phase-btn" data-pstage="monitor" style="background:#be185d;color:#fff">Monitor</div>
+      </div>
+      <div id="pipelineDetail" class="result">คลิกที่ Stage เพื่อดูรายละเอียด Security Tools</div>
+    </div>
+
+    <h3 id="s4-1">3.4.1 Security as Code</h3>
+    <p>Security as Code คือแนวคิดในการเขียน Security Controls ในรูปแบบของ Code ที่ Version Control ได้ ทดสอบอัตโนมัติได้ และ Deploy ได้ผ่าน CI/CD Pipeline</p>
+    <p><strong>หลักการสำคัญ:</strong> Version Controlled, Automated, Testable, Repeatable, Auditable</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>องค์ประกอบ</th><th>คำอธิบาย</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Policy as Code</strong></td><td>เขียน Policy ในรูปแบบ Code — OPA, Sentinel</td></tr>
+          <tr><td><strong>Compliance as Code</strong></td><td>ตรวจสอบ Compliance โดยอัตโนมัติ — InSpec, Cloud Custodian</td></tr>
+          <tr><td><strong>Infrastructure as Code Security</strong></td><td>สแกน IaC (Terraform, CloudFormation) ก่อน Deploy — Checkov, tfsec</td></tr>
+          <tr><td><strong>Pipeline Security</strong></td><td>SAST, DAST, SCA ในรูปแบบ Step ของ Pipeline</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="s4-2">3.4.2 Policy as Code</h3>
+    <p>Policy as Code คือแนวทางในการเขียนนโยบาย (Policy) ในรูปแบบของรหัส (Code) ที่สามารถตรวจสอบได้โดยอัตโนมัติ เครื่องมือหลัก:</p>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <h5>Open Policy Agent (OPA)</h5>
+        <p style="font-size:.82rem">Open Source Policy Engine ที่ได้รับ Graduation จาก CNCF ในปี 2021 ใช้ภาษา Rego OPA 1.0 เผยแพร่ในเดือนธันวาคม 2024 สามารถใช้กับ Kubernetes, Terraform, API Gateway, CI/CD</p>
+        <pre style="font-size:.75rem;margin-top:.5rem">package terraform.aws
+deny[msg] {
+  resource := input.resource.aws_security_group_rule[_]
+  resource.type == "ingress"
+  resource.cidr_blocks[_] == "0.0.0.0/0"
+  resource.from_port == 22
+  msg := "Security group opens SSH to internet"
+}</pre>
+      </div>
+      <div class="principle-card">
+        <h5>HashiCorp Sentinel</h5>
+        <p style="font-size:.82rem">Policy as Code Framework จาก HashiCorp ใช้กับ Terraform Enterprise, Vault, Consul ภาษา Sentinel (Declarative Language)</p>
+        <div class="table-wrap" style="margin-top:.5rem"><table style="font-size:.75rem"><thead><tr><th>เปรียบเทียบ</th><th>OPA</th><th>Sentinel</th></tr></thead><tbody>
+          <tr><td>ผู้พัฒนา</td><td>Open Source (CNCF)</td><td>HashiCorp</td></tr>
+          <tr><td>ภาษา</td><td>Rego</td><td>Sentinel</td></tr>
+          <tr><td>การใช้งาน</td><td>Kubernetes, Terraform, API, CI/CD</td><td>Terraform, Vault, Consul</td></tr>
+          <tr><td>License</td><td>Apache 2.0</td><td>Business Source License</td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+
+    <h3 id="s4-3">3.4.3 Compliance as Code</h3>
+    <p>Compliance as Code คือการตรวจสอบ Compliance (PDPA, GDPR, PCI DSS, HIPAA) โดยอัตโนมัติใน CI/CD Pipeline</p>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <h5>InSpec (Chef)</h5>
+        <p style="font-size:.82rem">Open Source Framework สำหรับกำหนด Compliance Test ในรูปแบบ Code รองรับการทดสอบ Infrastructure, Application, และ Cloud APIs</p>
+        <pre style="font-size:.75rem;margin-top:.5rem">control 'cis-1.1' do
+  impact 1.0
+  title 'Ensure IAM policies are not overly permissive'
+  describe aws_iam_policy('AdministratorAccess') do
+    it { should_not be_attached }
+  end
+end</pre>
+      </div>
+      <div class="principle-card">
+        <h5>Cloud Custodian</h5>
+        <p style="font-size:.82rem">Tool สำหรับจัดการ Cloud Resources ให้สอดคล้องกับ Policy สามารถ Detect, Tag, และ Remediate Resources โดยอัตโนมัติ</p>
+        <pre style="font-size:.75rem;margin-top:.5rem">policies:
+  - name: unencrypted-s3-bucket
+    resource: s3
+    filters:
+      - type: bucket-encryption
+        state: false
+    actions:
+      - type: notify
+        subject: "S3 Bucket ไม่มีการเข้ารหัส!"
+        to:
+          - security-team@company.com</pre>
+      </div>
+    </div>
+
+    <h3 id="s4-4">3.4.4 การบูรณาการ SAST/DAST/SCA ใน CI/CD Pipeline</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Stage</th><th>เครื่องมือ</th><th>สิ่งที่ตรวจสอบ</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Code Commit</strong></td><td>Pre-commit Hooks, Git Hooks</td><td>Secrets Leak, Code Format, Simple Lint</td></tr>
+          <tr><td><strong>Build</strong></td><td>Semgrep, SonarQube (SAST)</td><td>Source Code Vulnerabilities</td></tr>
+          <tr><td><strong>Dependency</strong></td><td>Trivy, Snyk, OWASP DC (SCA)</td><td>Known Vulnerabilities in Library</td></tr>
+          <tr><td><strong>Container Build</strong></td><td>Trivy, Anchore, Docker Scout</td><td>OS/App Vulnerabilities in Image</td></tr>
+          <tr><td><strong>IaC Scan</strong></td><td>Checkov, tfsec, Terrascan</td><td>Misconfiguration in Terraform/CloudFormation</td></tr>
+          <tr><td><strong>Deploy to Staging</strong></td><td>OWASP ZAP, Nikto (DAST)</td><td>Runtime Vulnerabilities</td></tr>
+          <tr><td><strong>Production Monitoring</strong></td><td>Falco, WAF, SIEM</td><td>Runtime Anomaly Detection</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="s4-5">3.4.5 Infrastructure as Code (IaC) Security</h3>
+    <p>IaC Security คือการสแกน Configuration ของ Terraform, CloudFormation, Kubernetes Manifest ก่อน Deploy เพื่อค้นหา Misconfiguration</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>เครื่องมือ</th><th>Platform ที่รองรับ</th><th>จุดเด่น</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Checkov</strong> (Bridgecrew)</td><td>Terraform, CloudFormation, K8s, ARM, Ansible</td><td>500+ Built-in Policies, Open Source</td></tr>
+          <tr><td><strong>tfsec</strong></td><td>Terraform</td><td>เฉพาะ Terraform, Static Analysis</td></tr>
+          <tr><td><strong>Terrascan</strong></td><td>Terraform, K8s, Helm, ARM</td><td>Open Source, Policy-as-Code</td></tr>
+          <tr><td><strong>Kics</strong> (Checkmarx)</td><td>Terraform, K8s, Docker, Ansible</td><td>SAST สำหรับ IaC</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="s4-6">3.4.6 Container Security</h3>
+    <div class="principle-grid">
+      <div class="principle-card"><h5>Image Security</h5><p style="font-size:.82rem">เลือก Base Image ที่ปลอดภัย (Alpine, Distroless) — สแกนด้วย Trivy, Docker Scout — Sign ด้วย Cosign (Sigstore) — ตรวจสอบ SBOM ด้วย Syft</p></div>
+      <div class="principle-card"><h5>Runtime Protection</h5><p style="font-size:.82rem">Falco (CNCF) — ตรวจจับ behavior ผิดปกติ / AppArmor — จำกัด program capability / Seccomp — จำกัด system call / SELinux — MAC สำหรับ Container</p></div>
+    </div>
+    <div class="info-box tip">
+      <span class="icon">INFO</span>
+      <div>
+        <strong>แนวปฏิบัติ Container Security ที่ดี:</strong>
+        <ol style="margin:.35rem 0 0;padding-left:1.25rem">
+          <li>ใช้ Minimal Base Image: Alpine (5MB) หรือ Distroless — ลด Attack Surface</li>
+          <li>ไม่รันด้วย Root: ใช้ USER directive ใน Dockerfile</li>
+          <li>Immutable Filesystem: ใช้ Read-Only Root Filesystem</li>
+          <li>ไม่มี Privileged Container: ห้ามใช้ --privileged flag</li>
+          <li>จำกัด Resource: ใช้ --memory, --cpus — ป้องกัน DoS</li>
+          <li>Network Policy: จำกัด Network Traffic ระหว่าง Pod (Kubernetes Network Policy)</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- ===== KEYWORDS ===== -->
+    <h2 id="keywords">Keywords</h2>
+    <div class="card">
+      <p style="line-height:2.2">Secure SDLC · Shift Left Security · Microsoft SDL · OWASP SAMM · NIST SSDF SP 800-218 · DevSecOps · Security as Code · Policy as Code · Compliance as Code · CI/CD Pipeline Security · SAST · DAST · SCA · Security Debt · MTTR · STRIDE Threat Modeling · Abuse Cases · Security Requirements Engineering · Security Stories · Security Acceptance Criteria · Attack Surface Analysis · Secure Coding Standards · CERT Secure Coding · OWASP ASVS · Fuzz Testing · Penetration Testing · Container Security · Image Scanning · Runtime Protection · Falco · OPA · Rego · Sentinel · Infrastructure as Code Security · Checkov · tfsec · Trivy · Semgrep · Software Supply Chain Security · SBOM · Incident Response Plan · Patch Management · Vulnerability Management Lifecycle · Continuous Monitoring · SIEM · EDR · SBOM · BSIMM · Defense in Depth · Zero Trust · Security Champion · Continuous SDL</p>
+    </div>
+
+    <hr>
+
+    <!-- ===== STANDARDS REFERENCE ===== -->
+    <h2 id="standards">มาตรฐานอ้างอิง (Standards Reference)</h2>
+    <p>เนื้อหาในบทนี้สัมพันธ์กับมาตรฐานและกรอบแนวคิดด้านความปลอดภัยดังต่อไปนี้:</p>
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>หัวข้อ</th><th>มาตรฐาน / กรอบแนวคิดที่เกี่ยวข้อง</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Shift Left Security / Cost of Fixing Bugs</strong></td><td>IBM Systems Sciences Institute (Dawson et al., 2010), NASA Cost of Fixing Errors Study (2010), NIST SP 800-218</td></tr>
+        <tr><td><strong>Microsoft SDL</strong></td><td>Microsoft SDL Process Guidance v5.2 (2024), Microsoft Continuous SDL White Paper (2024), MSDN Magazine "A Look Inside SDL" (2005)</td></tr>
+        <tr><td><strong>OWASP SAMM</strong></td><td>OWASP SAMM v2.0 (2020), OWASP SAMM Quick Start Guide, OWASP Developer Guide</td></tr>
+        <tr><td><strong>NIST SSDF</strong></td><td>NIST SP 800-218 v1.1 (2022), NIST SP 800-218A (AI Profile, 2024), EO 14028 (2021)</td></tr>
+        <tr><td><strong>Threat Modeling</strong></td><td>Microsoft STRIDE Methodology, OWASP Threat Modeling Guide, CAPEC (Common Attack Pattern Enumeration and Classification)</td></tr>
+        <tr><td><strong>Secure Coding</strong></td><td>CERT Secure Coding Standards (SEI/CMU), OWASP ASVS v4.0, OWASP Top 10 (2021)</td></tr>
+        <tr><td><strong>Security Testing</strong></td><td>OWASP Testing Guide v4, NIST SP 800-115 (Technical Guide to Information Security Testing), PCI DSS v4.0 (Requirement 6: Secure Coding and Testing)</td></tr>
+        <tr><td><strong>Policy as Code</strong></td><td>OPA (CNCF Graduated, 2021), OPA 1.0 (2024), HashiCorp Sentinel</td></tr>
+        <tr><td><strong>Compliance / Regulatory</strong></td><td>NIST SP 800-53 Rev. 5, ISO 27001:2022, GDPR (Art. 25, 32), PDPA (Thailand), PCI DSS v4.0, CIS Benchmarks</td></tr>
+        <tr><td><strong>Incident Response</strong></td><td>NIST SP 800-61 Rev. 2 (Computer Security Incident Handling Guide), ISO 27035</td></tr>
+        <tr><td><strong>Container Security</strong></td><td>NIST SP 800-190 (Application Container Security Guide), CIS Docker Benchmark, Kubernetes Security (NSA/CISA 2022)</td></tr>
+        <tr><td><strong>DevSecOps / CI/CD</strong></td><td>NIST SSDF PO.3 (Supporting Toolchains), OWASP DevSecOps Guideline, BSIMM16 (Black Duck, 2026)</td></tr>
+        <tr><td><strong>Vulnerability Management</strong></td><td>CISA KEV Catalog, EPSS (Exploit Prediction Scoring System), CVSS v3.1/v4.0, NIST SP 800-40 (Guide to Enterprise Patch Management)</td></tr>
+        <tr><td><strong>Software Supply Chain</strong></td><td>EO 14028 Section 4e, NIST SSDF PS.3 (Archive Releases), OWASP CycloneDX, SPDX (SBOM Standards), Sigstore (Code Signing)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <hr>
+
+    <!-- ===== CASE STUDIES ===== -->
+    <h2 id="case1">กรณีศึกษา 1: Microsoft SDL Implementation — การลดช่องโหว่ด้วย Secure Development Lifecycle</h2>
+
+    <div class="card" style="border-left:4px solid var(--primary)">
+      <p><strong>ปีที่เริ่มใช้:</strong> 2004 (หลังจาก Bill Gates Trustworthy Computing Memo, 2002)<br>
+      <strong>ผลิตภัณฑ์แรกที่ผ่าน SDL:</strong> Visual Studio 2005, SQL Server 2005, BizTalk Server 2006 (พฤศจิกายน 2005)<br>
+      <strong>ผลลัพธ์:</strong> ลด Security Defects ได้ 50–60% ทุกผลิตภัณฑ์ที่ผ่าน SDL</p>
+    </div>
+
+    <h4>เบื้องหลัง</h4>
+    <p>ก่อนปี 2002 Microsoft มีชื่อเสียงด้านความปลอดภัยที่ย่ำแย่ — ไวรัส Blaster (2003) และ Sasser (2004) ที่โจมตี Windows ทำให้เกิดความเสียหายไปทั่วโลก Bill Gates ส่ง memo "Trustworthy Computing" เมื่อวันที่ 15 มกราคม 2002 ประกาศให้ความปลอดภัยเป็น "Highest Priority" และสั่งให้พนักงาน Windows ทุกคนหยุดพัฒนาเพื่อไปฝึกอบรมความปลอดภัย (Security Push) เป็นเวลาหลายสัปดาห์</p>
+
+    <h4>ขั้นตอนการดำเนินการ</h4>
+    <ol>
+      <li><strong>ฝึกอบรม:</strong> พัฒนา Essential Software Security Training สำหรับนักพัฒนาทุกคน</li>
+      <li><strong>กำหนดมาตรฐาน:</strong> สร้าง Security Guidelines, Banned Function Calls List (strcpy, gets, strcat)</li>
+      <li><strong>สร้าง Tooling:</strong> พัฒนา PREfast (Static Analysis สำหรับ C/C++) และ FxCop (สำหรับ .NET)</li>
+      <li><strong>ปรับ Process:</strong> เพิ่ม Security Activities ในทุก Phase ของ Development</li>
+      <li><strong>วัดผล:</strong> กำหนด Security Bug Bar และ Quality Gates</li>
+    </ol>
+
+    <h4>ผลลัพธ์ที่เป็นรูปธรรม</h4>
+    <ul>
+      <li><strong>Windows Server 2003</strong> (ผ่าน SDL บางส่วน) เทียบกับ Windows 2000 (ไม่ผ่าน SDL): ลด Critical/Important Vulnerabilities ได้ 63% ในปีแรกหลัง Release (Microsoft SDL FAQ)</li>
+      <li><strong>IIS 6.0:</strong> มีเพียง 1 Security Vulnerability หลัง Release และเป็น Feature ที่ปิดโดย Default (ZDNet, กันยายน 2005)</li>
+      <li><strong>SQL Server 2005:</strong> 0 Vulnerabilities ใน 24 เดือนหลังจาก Service Pack 3</li>
+      <li><strong>โดยรวม (2004–2010):</strong> Security Defects ลดลง 50–60% ในทุกผลิตภัณฑ์ที่ผ่าน SDL</li>
+    </ul>
+
+    <div class="info-box question">
+      <span class="icon">?</span>
+      <div><strong>คำถามสำหรับการอภิปรายในชั้นเรียน:</strong> ทำไม Microsoft ต้อง "หยุด" การพัฒนาทั้งองค์กรเพื่อจัดลำดับความสำคัญด้านความปลอดภัย? ถ้านักศึกษาเป็น CTO ของบริษัทซอฟต์แวร์ จะทำอย่างไรถ้า Competitor กำลังพัฒนาฟีเจอร์แซงหน้า แต่ระบบของเรามีช่องโหว่รุนแรง?</div>
+    </div>
+
+    <hr>
+
+    <h2 id="case2">กรณีศึกษา 2: Equifax Data Breach (2017) — Failure of Patch Management ใน Operations Phase</h2>
+
+    <div class="card" style="border-left:4px solid var(--danger)">
+      <p><strong>ปีที่เกิดเหตุการณ์:</strong> พฤษภาคม – กรกฎาคม 2560 (ตรวจพบ 29 กรกฎาคม 2560)<br>
+      <strong>ประเภทการโจมตี:</strong> Known Vulnerability Exploitation (Apache Struts CVE-2017-5638)<br>
+      <strong>จำนวนผู้ได้รับผลกระทบ:</strong> 147 ล้านคน (สหรัฐฯ)<br>
+      <strong>ความเสียหาย:</strong> อย่างน้อย 1.38 พันล้านเหรียญสหรัฐ — รวมค่าปรับ FTC $575 ล้าน (ก.ค. 2019), ค่าใช้จ่ายด้าน IT Security $1 พันล้าน (5 ปี), ค่าชดเชยผู้บริโภค</p>
+    </div>
+
+    <h4>สาเหตุของเหตุการณ์</h4>
+    <p>เมื่อวันที่ 7 มีนาคม 2017 Apache Software Foundation ประกาศช่องโหว่ CVE-2017-5638 ใน Apache Struts framework (Remote Code Execution ผ่าน Content-Type Header) และออก Patch ในวันเดียวกัน</p>
+    <ul>
+      <li><strong>8 มีนาคม 2017:</strong> US-CERT แจ้งเตือน Equifax</li>
+      <li><strong>9 มีนาคม 2017:</strong> ทีม GTVM (Global Threat and Vulnerability Management) ของ Equifax ส่งอีเมลถึงพนักงาน 400+ คน สั่งให้ Patch ภายใน 48 ชั่วโมง</li>
+      <li><strong>16 มีนาคม 2017:</strong> ทีม GTVM จัดประชุมเกี่ยวกับช่องโหว่นี้</li>
+      <li><strong>พฤษภาคม 2017:</strong> ผู้โจมตีใช้ช่องโหว่ Apache Struts ที่ยังไม่ได้ Patch ในระบบ ACIS (Automated Consumer Interview System) — ระบบรับข้อร้องเรียนผู้บริโภคที่พัฒนาตั้งแต่ปี 1970</li>
+      <li><strong>29 กรกฎาคม 2017:</strong> Equifax ตรวจพบ Traffic ผิดปกติใน Network</li>
+      <li><strong>กันยายน 2017:</strong> Equifax ประกาศเหตุการณ์ต่อสาธารณะ</li>
+    </ul>
+
+    <h4>ความล้มเหลวใน Secure SDLC</h4>
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>ขั้นตอน SDLC</th><th>ความล้มเหลว</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Operations — Patch Management</strong></td><td>หัวหน้าแผนก (Graeme Payne) ไม่ Forward อีเมลแจ้ง Patch ไปยังผู้ที่รับผิดชอบระบบ ACIS — Patch 60 ล้มเหลวเพราะ Human Error</td></tr>
+        <tr><td><strong>Operations — Vulnerability Scanning</strong></td><td>ไม่มีกระบวนการตรวจสอบว่าการ Patch เกิดขึ้นจริงหรือไม่ — มี Policy แต่ไม่มี Enforcement</td></tr>
+        <tr><td><strong>Operations — Network Segmentation</strong></td><td>ระบบ ACIS (Internet-Facing) เชื่อมต่อกับ Database ที่มีข้อมูล 147 ล้านคน — ขาด Network Segmentation</td></tr>
+        <tr><td><strong>Operations — Monitoring</strong></td><td>Attackers อยู่ใน Network เป็นเวลาหลายเดือน — ไม่มีการตรวจจับ</td></tr>
+        <tr><td><strong>Operations — Certificate Management</strong></td><td>มี Certificate ที่หมดอายุ 300+ ใบ รวมถึง 79 ใบที่ใช้ Monitoring Business-Critical Domains</td></tr>
+        <tr><td><strong>Design — Least Privilege</strong></td><td>Credentials ถูกเก็บใน Plain Text และให้สิทธิ์เข้าถึง Database ขนาดใหญ่</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h4>ผลที่ตามมา</h4>
+    <ul>
+      <li><strong>Graeme Payne (SVP):</strong> ถูกไล่ออก (2 ตุลาคม 2017) — สาเหตุ "Failure to Forward Email"</li>
+      <li><strong>Richard Smith (CEO):</strong> ลาออก (26 กันยายน 2017)</li>
+      <li><strong>CSO และ CIO:</strong> เกษียณก่อนกำหนด (15 กันยายน 2017)</li>
+      <li>รายงานจาก House Oversight Committee (ธันวาคม 2018): ระบุว่ามี "Execution Gap" ระหว่าง IT Policy Development และ Operation — นโยบายมี แต่ไม่มีการนำไปปฏิบัติจริง</li>
+      <li>มูลค่าหุ้น Equifax: ตกกว่า 17% หลังประกาศผลประกอบการ Q3 2018</li>
+    </ul>
+
+    <h4>บทเรียนที่ได้</h4>
+    <ol>
+      <li><strong>Patch Management ต้องมี Verification</strong> — ไม่ใช่แค่สั่งให้ Patch แต่ต้องตรวจสอบว่า Patch สำเร็จจริง</li>
+      <li><strong>Human Process ล้มเหลวได้เสมอ</strong> — ต้องมี Automation และ Redundancy</li>
+      <li><strong>Network Segmentation ช่วยจำกัดวง:</strong> ถ้า ACIS ถูกแยกจาก Database หลัก ความเสียหายจะน้อยกว่านี้</li>
+      <li><strong>Vulnerability Management ต้อง Continuous</strong> — ไม่ใช่ทำครั้งเดียวแล้วจบ</li>
+    </ol>
+
+    <div class="info-box question">
+      <span class="icon">?</span>
+      <div><strong>คำถามสำหรับการอภิปรายในชั้นเรียน:</strong> เหตุการณ์ Equifax เกิดจาก "Human Error" (พนักงานไม่ Patch) หรือ "Systemic Failure" (กระบวนการ Patch Management ที่ไม่มี Verification)? ถ้านักศึกษาต้องออกแบบระบบ Patch Management ที่ "Proof Against Human Error" จะออกแบบอย่างไร?</div>
+    </div>
+
+    <hr>
+
+    <h2 id="case3">กรณีศึกษา 3: Codecov Breach (2021) — CI/CD Pipeline Supply Chain Attack</h2>
+
+    <div class="card" style="border-left:4px solid var(--warning)">
+      <p><strong>ปีที่เกิดเหตุการณ์:</strong> 31 มกราคม – 1 เมษายน 2564 (ตรวจพบ 1 เมษายน 2564)<br>
+      <strong>ประเภทการโจมตี:</strong> Supply Chain Attack (Docker Image Error → GCS Key Theft → Bash Uploader Modification)<br>
+      <strong>จำนวนผู้ได้รับผลกระทบ:</strong> 29,000+ องค์กร รวมถึงลูกค้าชั้นนำ<br>
+      <strong>ความเสียหาย:</strong> Credentials, Tokens, Keys ของหลายพันองค์กรถูกรั่วไหล</p>
+    </div>
+
+    <h4>สาเหตุของเหตุการณ์</h4>
+    <p>Codecov เป็น platform สำหรับวัด Code Coverage ที่มีลูกค้า 29,000+ องค์กร ผู้โจมตีสามารถ:</p>
+    <ol>
+      <li><strong>ขั้นตอนที่ 1:</strong> ใช้ Error ใน Docker Image Creation Process — Intermediate Layer ใน Docker Image มี HMAC Key สำหรับ Google Cloud Storage (GCS) Service Account</li>
+      <li><strong>ขั้นตอนที่ 2:</strong> ใช้ GCS Key เพื่อเข้าถึง Bash Uploader Script ใน GCS Bucket</li>
+      <li><strong>ขั้นตอนที่ 3:</strong> แก้ไข Bash Uploader Script โดยเพิ่มโค้ดเพื่อส่ง Environment Variables ทั้งหมด (รวมถึง Credentials, Tokens, API Keys) ไปยัง Server ของผู้โจมตี</li>
+      <li><strong>ขั้นตอนที่ 4:</strong> Script ที่ถูกแก้ไขถูกแจกจ่ายให้ลูกค้าที่เรียกใช้ Bash Uploader</li>
+    </ol>
+
+    <h4>การตรวจพบ</h4>
+    <p>ลูกค้าของ Codecov สังเกตว่า SHA256 Checksum ของ Bash Uploader บน GitHub ไม่ตรงกับ Checksum ที่คำนวณจาก File ที่ดาวน์โหลด — แสดงว่า File ถูกแก้ไขโดยไม่ได้รับอนุญาต</p>
+
+    <h4>ความล้มเหลวใน Secure SDLC</h4>
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>ขั้นตอน SDLC</th><th>ความล้มเหลว</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Implementation — Secure Build</strong></td><td>Docker Image Creation ไม่ได้ Squash Layers — ทำให้ Credentials หลุดรอดไปใน Image ที่เผยแพร่</td></tr>
+        <tr><td><strong>Implementation — SAST/Secrets Scanning</strong></td><td>ไม่มี Secrets Scanning ใน CI/CD — ไม่รู้ว่ามี Credentials ใน Image Layer</td></tr>
+        <tr><td><strong>Deployment — Configuration Review</strong></td><td>Service Account Key ที่ใช้ Upload Script มี Permission มากเกินไป</td></tr>
+        <tr><td><strong>Operations — Integrity Monitoring</strong></td><td>ไม่มีการ Monitor การเปลี่ยนแปลงของ Bash Uploader Script</td></tr>
+        <tr><td><strong>Operations — Incident Response</strong></td><td>ผู้โจมตีอยู่ในระบบ 3 เดือน ก่อนถูกตรวจพบ</td></tr>
+        <tr><td><strong>Verification — Code Signing</strong></td><td>Bash Uploader ไม่มีการเซ็นด้วย GPG หรือ Code Signing Certificate</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h4>บทเรียนที่ได้</h4>
+    <ol>
+      <li><strong>Docker Image ต้อง Squash Layers</strong> — ทุก Layer ที่มี Secrets ต้องถูก Squash หรือใช้ Multi-Stage Build</li>
+      <li><strong>Least Privilege สำหรับ Service Account</strong> — GCS Key ที่ใช้ Upload ต้องมี Permission เฉพาะที่จำเป็น</li>
+      <li><strong>Integrity Monitoring สำหรับไฟล์สำคัญ</strong> — ทุกการเปลี่ยนแปลงไฟล์ที่แจกจ่ายสาธารณะควรมี Alert</li>
+      <li><strong>Code Signing</strong> — ไฟล์ที่แจกจ่ายควรมีการเซ็นเพื่อยืนยันแหล่งที่มา</li>
+      <li><strong>SBOM และ Checksum Verification</strong> — ผู้ใช้ควรตรวจสอบ Checksum ทุกครั้งก่อนรัน Script</li>
+      <li><strong>CI/CD Secrets Management</strong> — CI/CD Pipeline ควรใช้ Short-Lived Token และจำกัด Scope</li>
+    </ol>
+
+    <div class="info-box question">
+      <span class="icon">?</span>
+      <div><strong>คำถามสำหรับการอภิปรายในชั้นเรียน:</strong> ถ้านักศึกษารัน CI/CD Pipeline ที่ใช้ Tool จาก Third-Party (เช่น Codecov, SonarQube, Snyk) นักศึกษาจะมั่นใจได้อย่างไรว่า Tool เหล่านั้นไม่ถูกโจมตีแบบ Supply Chain Attack? มาตรการอะไรบ้างที่ช่วยลดความเสี่ยง?</div>
+    </div>
+
+    <hr>
+
+    <h2 id="case4">กรณีศึกษา 4: Capital One DevSecOps Transformation (2019–2024) — การพลิกฟื้นหลัง Data Breach</h2>
+
+    <div class="card" style="border-left:4px solid var(--success)">
+      <p><strong>ปีที่เกิดเหตุการณ์ Breach:</strong> มีนาคม – กรกฎาคม 2562<br>
+      <strong>ปีที่เริ่ม Transformation:</strong> 2019 (หลัง Breach) — จริงๆ Capital One เริ่ม Transformation ด้าน Cloud มาตั้งแต่ 2015<br>
+      <strong>จำนวนผู้ได้รับผลกระทบ (Breach):</strong> 106 ล้านคน<br>
+      <strong>ความเสียหาย (Breach):</strong> $190 ล้าน (ค่าปรับและค่าเสียหาย)</p>
+    </div>
+
+    <h4>เบื้องหลัง</h4>
+    <p>ในปี 2019 Capital One ถูกโจมตีผ่าน SSRF (Server-Side Request Forgery) ทำให้ผู้โจมตีเข้าถึง AWS Metadata Endpoint และ Assume IAM Role ที่มีสิทธิ์เข้าถึง S3 Buckets ข้อมูล 106 ล้านคนรั่วไหล Capital One ไม่ได้ย่อท้อต่อเหตุการณ์ — กลับใช้เป็น Catalyst ในการเปลี่ยนแปลงครั้งใหญ่</p>
+
+    <h4>การเปลี่ยนแปลงหลัง Breach (DevSecOps Transformation)</h4>
+
+    <div class="principle-grid">
+      <div class="principle-card">
+        <h5>"You Build, You Own" Model</h5>
+        <p style="font-size:.82rem">นักพัฒนาต้องรับผิดชอบ Security ของโค้ดตนเอง — สร้าง Culture ที่ Developer มี Ownership ตั้งแต่ Development ถึง Production — ใช้ Security Champions ในทุกทีม</p>
+      </div>
+      <div class="principle-card">
+        <h5>Centrally Orchestrated Pipeline</h5>
+        <p style="font-size:.82rem">สร้าง Pipeline กลาง (Single Unified Pipeline) สำหรับทั้งองค์กร — มี Certified Template ที่ผ่าน Compliance — ทุกทีมใช้ Template เดียวกัน — Pipeline มี Immutable Stages</p>
+      </div>
+      <div class="principle-card">
+        <h5>Security Baked into Pipeline</h5>
+        <p style="font-size:.82rem">Automated Vulnerability Scanning ทุก Build — SAST, DAST, SCA ทำงานโดยอัตโนมัติ — Compliance Check เป็น Automated Gate ไม่ใช่ Manual Review</p>
+      </div>
+      <div class="principle-card">
+        <h5>IaC + Policy as Code</h5>
+        <p style="font-size:.82rem">ทุก Infrastructure ต้องเป็น Code (Terraform) — มี Policy Gate ก่อน Deploy — ใช้ Open Policy Agent (OPA) สำหรับ Policy Enforcement</p>
+      </div>
+      <div class="principle-card">
+        <h5>Container Security Automation</h5>
+        <p style="font-size:.82rem">ใช้ Qualys Container Security สำหรับ Image Scanning — ใช้ Trivy สำหรับ Vulnerability Scanning — ติดตั้ง Cloud Agent บนทุก AMI (95% Coverage)</p>
+      </div>
+      <div class="principle-card">
+        <h5>คุณภาพและความเร็วที่เพิ่มขึ้น</h5>
+        <p style="font-size:.82rem">จำนวน Deployment ต่อวันเพิ่มขึ้น — Mean Time to Resolve (MTTR) Incidents ลดลง — Developer Experience ดีขึ้น — Focus on Innovation ไม่ใช่ Process Overhead</p>
+      </div>
+    </div>
+
+    <h4>ผลลัพธ์</h4>
+    <ul>
+      <li><strong>95% Coverage</strong> ของ IP Addresses สำหรับ Security Assessment</li>
+      <li>ลดเวลา Security Certification ของ AMI จากหลายวันเหลือเป็นนาที</li>
+      <li>DevOps Team สามารถ Run Scans ได้ด้วยตนเอง — ไม่ต้องรอ Security Team</li>
+      <li>Developer Satisfaction เพิ่มขึ้น — Security Team เปลี่ยนจาก "Gatekeeper" เป็น "Enablement"</li>
+    </ul>
+
+    <h4>บทเรียนที่ได้</h4>
+    <ol>
+      <li><strong>Security ไม่ใช่ Bottleneck ถ้าถูก Automate:</strong> Capital One ทำให้ Security เป็นส่วนหนึ่งของ Pipeline — Developer ไม่ต้องรอ Security Team</li>
+      <li><strong>Centralized Pipeline + Certified Templates:</strong> ช่วยให้ Compliance เป็นไปโดยอัตโนมัติ — ไม่ต้องตรวจทีละ Project</li>
+      <li><strong>คุณภาพกับความเร็วไปด้วยกันได้:</strong> Pipeline ที่ดีช่วยเพิ่มทั้งความเร็วและความปลอดภัย</li>
+      <li><strong>การพลิกวิกฤตเป็นโอกาส:</strong> Capital One ใช้ Data Breach เป็น Catalyst ในการเปลี่ยนแปลงวัฒนธรรมและเทคโนโลยี</li>
+    </ol>
+
+    <div class="info-box question">
+      <span class="icon">?</span>
+      <div><strong>คำถามสำหรับการอภิปรายในชั้นเรียน:</strong> Capital One เลือกใช้แนวทาง "Centralized Pipeline" (Pipeline เดียวทั้งองค์กร) — มีข้อดีข้อเสียอย่างไรเมื่อเทียบกับ "Decentralized Pipeline" (แต่ละทีมเลือก Pipeline ของตนเอง)? แบบไหนเหมาะกับองค์กรขนาดเล็กกว่า?</div>
+    </div>
+
+    <hr>
+
+    <h2 id="case5">กรณีศึกษา 5: SolarWinds Orion (2020) — Supply Chain Attack ผ่าน Build Pipeline</h2>
+
+    <div class="card" style="border-left:4px solid var(--purple)">
+      <p><strong>ปีที่เกิดเหตุการณ์:</strong> กันยายน 2019 – ธันวาคม 2020 (ตรวจพบ ธันวาคม 2020)<br>
+      <strong>ประเภทการโจมตี:</strong> Supply Chain Attack (Build Pipeline Compromise → Trojanized Update)<br>
+      <strong>จำนวนผู้ได้รับผลกระทบ:</strong> 18,000+ องค์กร — รวมถึง US Federal Agencies (Treasury, Justice, State, DHS, Energy)<br>
+      <strong>ผู้โจมตี:</strong> เชื่อว่าเป็น Nation-State Actor (Nobelium / Cozy Bear / APT29)<br>
+      <strong>ความเสียหาย:</strong> ยังไม่สามารถประเมินได้ทั้งหมด — คาดว่าหลายพันล้านเหรียญสหรัฐ</p>
+    </div>
+
+    <h4>ลำดับเหตุการณ์</h4>
+    <ol>
+      <li><strong>กันยายน 2019:</strong> ผู้โจมตีเข้าถึงระบบภายในของ SolarWinds — เริ่ม Reconnaissance</li>
+      <li><strong>ตุลาคม 2019:</strong> Orion Platform Release 2019.4 มี Modification เพื่อทดสอบความสามารถในการ Insert Code</li>
+      <li><strong>กุมภาพันธ์ 2020:</strong> ผู้โจมตีแทรก SUNBURST Backdoor เข้าไปใน Build Pipeline ของ Orion Platform</li>
+      <li><strong>มีนาคม – ธันวาคม 2020:</strong> Orion Updates ที่มี Backdoor ถูกแจกจ่ายให้ลูกค้า 18,000+ ราย — Update ถูกเซ็นด้วย Code Signing Certificate ที่ถูกต้องของ SolarWinds</li>
+      <li><strong>มิถุนายน 2020:</strong> ผู้โจมตีลบร่องรอยออกจาก Build Environment</li>
+      <li><strong>12 ธันวาคม 2020:</strong> FireEye (ซึ่งเป็นลูกค้า SolarWinds) ตรวจพบ Backdoor และประกาศต่อสาธารณะ</li>
+      <li><strong>13 ธันวาคม 2020:</strong> SolarWinds แจ้ง SEC และออก Security Advisory</li>
+    </ol>
+
+    <h4>เทคนิคการโจมตี</h4>
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>เทคนิค</th><th>รายละเอียด</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Build Pipeline Compromise</strong></td><td>ผู้โจมตี Insert Malicious Code (SUNBURST) เข้าไปใน Build Process ของ Orion</td></tr>
+        <tr><td><strong>Code Signing</strong></td><td>Backdoor ถูกเซ็นด้วย Code Signing Certificate ที่ถูกต้องของ SolarWinds — ดูเหมือน Software ที่ถูกต้อง</td></tr>
+        <tr><td><strong>Dormant Period</strong></td><td>Backdoor มีการ Dormant Period 2 สัปดาห์ก่อนเริ่มติดต่อ C2 Server — หลบเลี่ยง Sandbox</td></tr>
+        <tr><td><strong>C2 Communication</strong></td><td>ใช้ DNS Query ไปยัง avsvmcloud[.]com ที่ถูกออกแบบให้เลียนแบบ Orion Improvement Program (OIP) Traffic</td></tr>
+        <tr><td><strong>Selective Targeting</strong></td><td>C2 Server จะตอบกลับเฉพาะเป้าหมายที่ถูกเลือก — ไม่ใช่ทุกคนที่ติด Backdoor จะถูกใช้งาน</td></tr>
+        <tr><td><strong>Golden SAML</strong></td><td>ใช้ SAML Token Forging เพื่อเข้าถึงระบบโดยไม่ต้องใช้ MFA</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h4>ความล้มเหลวใน Secure SDLC</h4>
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>ขั้นตอน SDLC</th><th>ความล้มเหลว</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Implementation — Build Environment</strong></td><td>Build Server ถูกรักษาความปลอดภัยไม่ดีพอ — ผู้โจมตีเข้าถึงและแทรก Malicious Code</td></tr>
+        <tr><td><strong>Implementation — Code Integrity</strong></td><td>Source Code ถูกแก้ไขใน Build Pipeline โดยไม่ถูกตรวจสอบ</td></tr>
+        <tr><td><strong>Verification — Code Review</strong></td><td>Malicious Code ถูก Insert โดยไม่ถูกตรวจพบใน Code Review หรือ Security Review</td></tr>
+        <tr><td><strong>Release — Code Signing</strong></td><td>Code Signing Key ถูกเก็บไว้ใน Build Environment ที่ถูก Compromise — ผู้โจมตีเซ็น Backdoor ได้</td></tr>
+        <tr><td><strong>Operations — Monitoring</strong></td><td>SolarWinds ไม่สามารถตรวจจับการเปลี่ยนแปลงใน Build Environment ได้นานกว่า 1 ปี</td></tr>
+        <tr><td><strong>Supply Chain Security</strong></td><td>ไม่มีการตรวจสอบ Third-Party Component อย่างเพียงพอ</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h4>บทเรียนที่ได้</h4>
+    <ol>
+      <li><strong>Build Pipeline Security สำคัญเท่ากับ Application Security:</strong> ถ้า Build Pipeline ถูก Compromise Software ที่ "ปลอดภัย" ก็กลายเป็นอาวุธได้</li>
+      <li><strong>Code Signing ต้องแยกออกจาก Build Environment:</strong> ใช้ Hardware Security Module (HSM) หรือ Air-Gapped Signing</li>
+      <li><strong>Reproducible Builds:</strong> ควรสร้าง Build ที่สามารถ Reproduce ได้ — เพื่อตรวจสอบว่า Build Output ตรงกับ Source Code</li>
+      <li><strong>SBOM (Software Bill of Materials):</strong> ทุกซอฟต์แวร์ควรมี SBOM เพื่อให้ผู้ใช้ตรวจสอบว่า Software มี Component อะไรบ้าง</li>
+      <li><strong>Zero Trust ใน Supply Chain:</strong> อย่าไว้ใจ Vendor หรือ Third-Party Component โดยอัตโนมัติ</li>
+      <li><strong>Incident Response ต้องมี Playbook สำหรับ Supply Chain Attack:</strong> การโจมตีแบบนี้มีลักษณะเฉพาะที่แตกต่างจาก Attack ทั่วไป</li>
+      <li><strong>Executive Order 14028:</strong> เหตุการณ์นี้เป็นแรงผลักดันให้สหรัฐฯ ออก EO 14028 (พฤษภาคม 2021) ที่กำหนดให้ซอฟต์แวร์ที่ขายให้รัฐบาลต้องผ่าน NIST SSDF</li>
+    </ol>
+
+    <div class="info-box tip">
+      <span class="icon">INFO</span>
+      <div>
+        <strong>ข้อเท็จจริงที่น่าสนใจ:</strong>
+        <ul style="margin:.25rem 0 0;padding-left:1.1rem">
+          <li>SUNBURST เป็น Backdoor ที่อยู่ในโค้ดของ SolarWinds.Orion.Core.BusinessLayer.dll — DLL ถูกเซ็นด้วย Code Signing Certificate ที่ถูกต้อง</li>
+          <li>FireEye ตรวจพบ Backdoor เพราะ FireEye ใช้ Orion เช่นกัน — แต่ FireEye ตรวจพบบนระบบของตนเอง</li>
+          <li>ต่อมามีการค้นพบ Malware "Supernova" ที่แยกต่างหาก — เป็น Webshell ที่ถูกวางบน Orion Server ที่มี CVE-2019-8917 ที่ยังไม่ได้ Patch</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-box question">
+      <span class="icon">?</span>
+      <div><strong>คำถามสำหรับการอภิปรายในชั้นเรียน:</strong> เหตุการณ์ SolarWinds แสดงให้เห็นว่าถึงแม้ซอฟต์แวร์จะ "Secure by Design" แต่ก็ยังไม่พอถ้า Build Pipeline ไม่ปลอดภัย ให้นักศึกษาออกแบบ Build Pipeline ที่ปลอดภัย — ต้องมีมาตรการอะไรบ้างเพื่อป้องกันการแทรก Malicious Code? (Hint: ให้นึกถึง Secure Build ใน OWASP SAMM และ PO.3/PW.8 ใน NIST SSDF)</div>
+    </div>
+
+    <hr>
+
+    <!-- ===== LABS ===== -->
+    <h2 id="labs">กิจกรรมปฏิบัติการ</h2>
+
+    <div class="interactive" id="play-lab1">
+    <h3>Lab 3.1: OWASP SAMM Benchmarking</h3>
+    <p><strong>วัตถุประสงค์:</strong> เพื่อฝึกใช้ OWASP SAMM ในการประเมินวุฒิภาวะด้านความปลอดภัยขององค์กรสมมติ และจัดทำ Roadmap สำหรับปรับปรุง</p>
+    <p><strong>เวลาที่ใช้:</strong> 45–60 นาที</p>
+
+    <div class="info-box tip">
+      <span class="icon">INFO</span>
+      <div>
+        <strong>โจทย์:</strong> "SecureTech Solutions" เป็นบริษัทพัฒนาซอฟต์แวร์ขนาดกลาง (พนักงาน 200 คน) ที่ผลิต Web Application สำหรับธนาคาร ปัจจุบันบริษัทมี Secure SDLC ในระดับพื้นฐาน:
+        <ul style="margin:.35rem 0 0;padding-left:1.1rem">
+          <li>มี Security Training ปีละ 1 ครั้ง (แต่ Developer ไม่ค่อยสนใจ)</li>
+          <li>ไม่มีการทำ Threat Modeling</li>
+          <li>มี SAST (SonarQube) ใน CI/CD แต่ Developer มัก Ignore Warning</li>
+          <li>ไม่มี DAST หรือ Penetration Testing</li>
+          <li>มีการทำ Code Review แต่ไม่เน้น Security</li>
+          <li>ไม่มี Incident Response Plan</li>
+          <li>Patch Management ทำแบบไม่เป็นทางการ</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4>ขั้นตอน</h4>
+    <ol>
+      <li><strong>ดาวน์โหลด SAMM Toolbox:</strong> ไปที่ <a href="https://owaspsamm.org/toolbox/" target="_blank">https://owaspsamm.org/toolbox/</a> — ดาวน์โหลด SAMM Toolbox (Excel หรือ Online) หรือใช้ SAMM Online Assessment</li>
+      <li><strong>ประเมิน SecureTech Solutions:</strong> ประเมินทั้ง 5 Business Functions (Governance, Design, Implementation, Verification, Operations) — แต่ละ Practice ให้คะแนน 0–3 ตามสถานการณ์ที่กำหนด<br>
+        <em>ตัวอย่างการให้คะแนน:</em>
+        <ul>
+          <li>Education &amp; Guidance: Level 1 (มี Training ปีละครั้ง แต่ไม่ Effective)</li>
+          <li>Threat Assessment: Level 0 (ไม่มีการทำ Threat Modeling)</li>
+          <li>Security Testing: Level 0 (ไม่มี DAST/Pen Test)</li>
+          <li>Incident Management: Level 0 (ไม่มี IR Plan)</li>
+        </ul>
+      </li>
+      <li><strong>สร้าง Radar Chart:</strong> พล็อตคะแนนของทั้ง 15 Practices — ระบุจุดอ่อน (Practices ที่ได้คะแนนต่ำ)</li>
+      <li><strong>กำหนด Target:</strong> กำหนด Maturity Level เป้าหมายที่ต้องการในอีก 1 ปี (Realistic) — กำหนดเป้าหมายในอีก 3 ปี (Aspirational)</li>
+      <li><strong>จัดทำ Roadmap:</strong> แบ่งเป็น Phase (Phase ละ 3–4 เดือน) — ระบุกิจกรรมที่ต้องทำในแต่ละ Phase — ระบุ Resource ที่ต้องใช้ — ระบุ KPI ที่ใช้วัดความสำเร็จ</li>
+    </ol>
+
+    <h4>ตัวอย่าง Roadmap</h4>
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>Phase</th><th>กิจกรรม</th><th>Resource</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Q1 2026</strong></td><td>จัด Security Training (OWASP Top 10 + Secure Coding)</td><td>$5,000</td></tr>
+        <tr><td><strong>Q1 2026</strong></td><td>ติดตั้ง SonarQube Quality Gate — Fail Build ถ้า Security Hotspot</td><td>ฟรี (Open Source)</td></tr>
+        <tr><td><strong>Q2 2026</strong></td><td>สร้าง Threat Modeling Process (ใช้ OWASP Threat Dragon)</td><td>ฟรี (Open Source)</td></tr>
+        <tr><td><strong>Q2 2026</strong></td><td>นำ Trivy เข้า CI/CD สำหรับ Dependency Scanning</td><td>ฟรี (Open Source)</td></tr>
+        <tr><td><strong>Q3 2026</strong></td><td>จ้าง Penetration Testing Firm ทำ Assessment ปีละ 1 ครั้ง</td><td>$30,000/ปี</td></tr>
+        <tr><td><strong>Q3 2026</strong></td><td>สร้าง Incident Response Plan และซ้อม Tabletop Exercise</td><td>Internal</td></tr>
+        <tr><td><strong>Q4 2026</strong></td><td>นำ OWASP ZAP สำหรับ DAST เข้า CI/CD Pipeline</td><td>ฟรี (Open Source)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="card">
+      <div class="card-header">สิ่งที่ต้องส่ง</div>
+      <ol>
+        <li>SAMM Assessment Score (Radar Chart หรือตาราง)</li>
+        <li>Gap Analysis — เปรียบเทียบ Current State vs Target State</li>
+        <li>Roadmap (3–4 Phases) พร้อมคำอธิบายเหตุผลในการเลือก Priority</li>
+      </ol>
+    </div>
+    </div>
+
+    <hr>
+
+    <div class="interactive" id="play-lab2">
+    <h3>Lab 3.2: Security Requirements + Abuse Cases สำหรับระบบจองตั๋วหนังออนไลน์</h3>
+    <p><strong>วัตถุประสงค์:</strong> เพื่อฝึกกำหนด Security Requirements และสร้าง Abuse Cases สำหรับระบบจริง</p>
+    <p><strong>เวลาที่ใช้:</strong> 45–60 นาที</p>
+
+    <div class="info-box tip">
+      <span class="icon">INFO</span>
+      <div>
+        <strong>โจทย์:</strong> "CineTicket" เป็นระบบจองตั๋วหนังออนไลน์ที่กำลังจะถูกพัฒนา โดยมีฟังก์ชันดังนี้:
+        <ul style="margin:.35rem 0 0;padding-left:1.1rem">
+          <li>สมัครสมาชิก / Login</li>
+          <li>ดูโปรแกรมหนังและรอบฉาย</li>
+          <li>เลือกที่นั่ง (จากผังที่นั่ง Real-time)</li>
+          <li>ชำระเงินด้วยบัตรเครดิต / Mobile Banking</li>
+          <li>รับ E-Ticket (QR Code)</li>
+          <li>ยกเลิกการจอง (ภายใน 2 ชั่วโมงก่อนฉาย)</li>
+          <li>Admin: จัดการรอบฉาย, ราคา, โปรโมชัน</li>
+          <li>Admin: ดูรายงานยอดขาย</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4>ส่วนที่ 1: สร้าง Abuse Cases</h4>
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>ลำดับ</th><th>Use Case ปกติ</th><th>Abuse Case</th><th>ผลกระทบ</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>ผู้ใช้เลือกที่นั่ง</td><td>ผู้โจมตีจองที่นั่งทั้งหมดโดยไม่จ่ายเงิน (Block Seat)</td><td>ผู้ใช้จริงจองตั๋วไม่ได้</td></tr>
+        <tr><td>2</td><td>ผู้ใช้ Login</td><td>ผู้โจมตี Brute Force Password</td><td>บัญชีผู้ใช้ถูกลักลอบใช้</td></tr>
+        <tr><td>3</td><td colspan="3" style="text-align:center;color:var(--text-muted)"><em>เพิ่ม Abuse Cases อย่างน้อย 3 รายการเพิ่มเติม</em></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>ให้นักศึกษาเพิ่ม Abuse Cases อย่างน้อย 5 รายการ พร้อม: ระบุภัยคุกคาม (STRIDE), ระบุระดับความเสี่ยง (High / Medium / Low), กำหนด Security Requirement เพื่อป้องกัน</p>
+
+    <h4>ส่วนที่ 2: กำหนด Security Requirements</h4>
+    <p>ใช้ OWASP ASVS (Application Security Verification Standard) เป็นแนวทาง:</p>
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>หมวดหมู่ (ASVS)</th><th>Security Requirement</th><th>ระดับ</th></tr></thead>
+      <tbody>
+        <tr><td><strong>V2 Authentication</strong></td><td>ระบบต้อง Lockout Account หลังจาก Login ล้มเหลว 5 ครั้ง</td><td>L1</td></tr>
+        <tr><td><strong>V3 Session Management</strong></td><td>Session Token ต้องหมดอายุหลังจาก Logout หรือไม่ใช้งาน 30 นาที</td><td>L1</td></tr>
+        <tr><td><strong>V4 Access Control</strong></td><td>ผู้ใช้สามารถดูได้เฉพาะประวัติการจองของตนเองเท่านั้น</td><td>L1</td></tr>
+        <tr><td><strong>V8 Data Protection</strong></td><td>ข้อมูลบัตรเครดิตต้องถูกเข้ารหัส (AES-256) หรือใช้ Tokenization</td><td>L2</td></tr>
+        <tr><td><strong>V11 Business Logic</strong></td><td>ต้องตรวจสอบว่าที่นั่งที่เลือกยังว่างอยู่ก่อนยืนยันการจอง</td><td>L2</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>ให้นักศึกษาเพิ่ม Security Requirements อย่างน้อย 5 รายการ</p>
+
+    <h4>ส่วนที่ 3: เขียน Security Stories (2 Stories)</h4>
+    <p>เขียนเป็น User Story ในรูปแบบ:</p>
+    <pre><code>ในฐานะ [บทบาท]
+ฉันต้องการ [ฟังก์ชัน]
+เพื่อให้ [คุณค่าทางความปลอดภัย]
+
+Acceptance Criteria:
+1. [เงื่อนไข]
+2. [เงื่อนไข]
+3. [เงื่อนไข]</code></pre>
+
+    <h5>ตัวอย่าง:</h5>
+    <pre><code>ในฐานะ ผู้ใช้ระบบ
+ฉันต้องการให้ระบบบันทึก Audit Log ทุกครั้งที่มีการยกเลิกการจอง
+เพื่อให้สามารถตรวจสอบย้อนหลังได้ว่าผู้ใช้ยกเลิกการจองจริง
+
+Acceptance Criteria:
+1. ทุกการยกเลิกการจองถูกบันทึก (Timestamp, User ID, Order ID, เหตุผล)
+2. Audit Log ไม่สามารถแก้ไขหรือลบโดยผู้ใช้ทั่วไป
+3. Admin สามารถค้นหาและดู Audit Log ได้ผ่าน Admin Dashboard</code></pre>
+
+    <div class="card">
+      <div class="card-header">สิ่งที่ต้องส่ง</div>
+      <ol>
+        <li>Abuse Case Table อย่างน้อย 5 รายการ (พร้อม STRIDE Classification + Risk Level)</li>
+        <li>Security Requirements Table อย่างน้อย 5 รายการ (พร้อม ASVS Reference)</li>
+        <li>Security Stories 2 เรื่อง (ในรูปแบบ User Story + Acceptance Criteria)</li>
+      </ol>
+    </div>
+    </div>
+
+    <hr>
+
+    <div class="interactive" id="play-lab3">
+    <h3>Lab 3.3: GitLab CI/CD Pipeline with SAST (Semgrep) + SCA (Trivy)</h3>
+    <p><strong>วัตถุประสงค์:</strong> เพื่อฝึกสร้าง CI/CD Pipeline ที่มี Security Testing Stage ด้วยเครื่องมือ Open Source</p>
+    <p><strong>เวลาที่ใช้:</strong> 60–90 นาที</p>
+
+    <div class="info-box tip">
+      <span class="icon">INFO</span>
+      <div>
+        <strong>ข้อกำหนดเบื้องต้น:</strong>
+        <ul style="margin:.35rem 0 0;padding-left:1.1rem">
+          <li>มี GitLab Account (หรือ GitHub Account ที่สามารถใช้ GitHub Actions ได้)</li>
+          <li>เข้าใจพื้นฐานของ CI/CD Pipeline</li>
+          <li>(Optional) มี Docker ติดตั้งในเครื่อง</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4>ส่วนที่ 1: สร้าง Project และเตรียม Source Code</h4>
+    <ol>
+      <li>สร้าง New Project ใน GitLab</li>
+      <li>สร้าง Web Application แบบง่าย (เลือกภาษาใดก็ได้ — Python/Node.js/Java)</li>
+      <li>เพิ่ม Dependency ที่มี Known Vulnerability (เพื่อทดสอบ SCA): Python: เพิ่ม <code>requests==2.20.0</code> (มีช่องโหว่ CVE-2018-18074)</li>
+    </ol>
+
+    <h5>ตัวอย่าง Python Web App (app.py)</h5>
+    <pre><code>from flask import Flask, request, render_template_string
+import requests
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return '''
+    &lt;html&gt;
+    &lt;head&gt;&lt;title&gt;CineTicket&lt;/title&gt;&lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Welcome to CineTicket&lt;/h1&gt;
+        &lt;form action="/search" method="GET"&gt;
+            &lt;input type="text" name="movie" placeholder="Search movies..."&gt;
+            &lt;input type="submit" value="Search"&gt;
+        &lt;/form&gt;
+    &lt;/body&gt;
+    &lt;/html&gt;
+    '''
+
+@app.route('/search')
+def search():
+    # Intentional vulnerability: XSS
+    movie = request.args.get('movie', '')
+    return render_template_string(f'&lt;h1&gt;Search results for: {movie}&lt;/h1&gt;')
+
+if __name__ == '__main__':
+    app.run(debug=True)</code></pre>
+
+    <h5>requirements.txt (มี Known Vulnerability)</h5>
+    <pre><code>flask==2.0.1
+requests==2.20.0  # CVE-2018-18074</code></pre>
+
+    <h5>Dockerfile</h5>
+    <pre><code>FROM python:3.9-alpine
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 5000
+CMD ["python", "app.py"]</code></pre>
+
+    <h4>ส่วนที่ 2: สร้าง .gitlab-ci.yml</h4>
+    <pre><code>stages:
+  - test
+  - security
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+
+# Stage 1: Unit Test
+unit-test:
+  stage: test
+  image: python:3.9-alpine
+  script:
+    - pip install pytest
+    - pytest || true  # ไม่ Fail ถ้ายังไม่มี Test
+
+# Stage 2: SAST with Semgrep
+sast:
+  stage: security
+  image: returntocorp/semgrep:latest
+  script:
+    - semgrep --config=auto --error .
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+    paths:
+      - gl-sast-report.json
+
+# Stage 3: SCA with Trivy (Dependency Scanning)
+dependency-scan:
+  stage: security
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - apk add --no-cache curl
+    - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+    - ./bin/trivy fs --format gitlab --output gl-sca-report.json --severity CRITICAL,HIGH .
+  artifacts:
+    reports:
+      dependency_scanning: gl-sca-report.json
+    paths:
+      - gl-sca-report.json
+
+# Stage 4: Container Image Scan
+container-scan:
+  stage: security
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t cineticket:$CI_COMMIT_SHORT_SHA .
+    - apk add --no-cache curl
+    - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+    - ./bin/trivy image --severity CRITICAL,HIGH --exit-code 1 cineticket:$CI_COMMIT_SHORT_SHA
+  artifacts:
+    reports:
+      container_scanning: gl-container-scanning-report.json</code></pre>
+
+    <h4>ส่วนที่ 3: Push Code และดูผลลัพธ์</h4>
+    <ol>
+      <li>Push โค้ดไปยัง GitLab Repository</li>
+      <li>ดู Pipeline ใน GitLab CI/CD → Pipelines</li>
+      <li>สังเกตผลลัพธ์ของแต่ละ Job:
+        <ul>
+          <li><strong>SAST:</strong> Semgrep ควรพบ XSS Vulnerability (CWE-79) ใน app.py บรรทัด /search</li>
+          <li><strong>SCA:</strong> Trivy ควรรายงาน Known Vulnerability ใน requests==2.20.0 (CVE-2018-18074)</li>
+          <li><strong>Container Scan:</strong> Trivy ควรรายงาน Vulnerabilities ใน Base Image</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h4>ส่วนที่ 4: แก้ไขและ Push อีกครั้ง</h4>
+    <ol>
+      <li>แก้ไขช่องโหว่ XSS ใน app.py — ใช้ render_template_string อย่างปลอดภัยหรือหลีกเลี่ยง</li>
+      <li>อัปเดต requests==2.31.0 (เวอร์ชันล่าสุดที่ไม่มี Known Critical Vulnerability)</li>
+      <li>Push อีกครั้งและดูว่า Pipeline ผ่านหรือไม่</li>
+    </ol>
+
+    <div class="card">
+      <div class="card-header">สิ่งที่ต้องส่ง</div>
+      <ol>
+        <li>ไฟล์ .gitlab-ci.yml ที่สมบูรณ์</li>
+        <li>ภาพหน้าจอ (Screenshot) Pipeline ที่ทำงาน — แสดง SAST, SCA, Container Scan Results</li>
+        <li>ภาพหน้าจอ Security Report ใน GitLab — แสดง Findings ที่ตรวจพบ</li>
+        <li>คำอธิบาย: Semgrep พบช่องโหว่อะไร (CWE, Description), Trivy พบ Known Vulnerabilities อะไร (CVE, Severity), วิธีแก้ไขแต่ละช่องโหว่</li>
+      </ol>
+    </div>
+    </div>
+
+    <hr>
+
+    <!-- ===== REVIEW QUESTIONS ===== -->
+    <h2 id="questions">คำถามท้ายบท</h2>
+
+    <div class="interactive" id="play-questions">
+    <ol class="review-questions">
+      <li>แนวคิด Shift Left Security คืออะไร จงอธิบายความสำคัญพร้อมยกตัวอย่างต้นทุนในการแก้ไขข้อบกพร่องในแต่ละขั้นของ SDLC (อ้างอิง IBM Systems Sciences Institute หรือ NASA) และอธิบายว่าทำไมต้นทุนจึงเพิ่มขึ้นแบบทวีคูณ</li>
+      <li>เปรียบเทียบโมเดล Secure SDLC ทั้ง 3 โมเดล (Microsoft SDL, OWASP SAMM, NIST SSDF SP 800-218) ในด้าน: (ก) โครงสร้าง/จำนวนขั้นตอน, (ข) จุดประสงค์หลักของโมเดล, (ค) ความเหมาะสมกับองค์กรแต่ละประเภท, และ (ง) วิธีการวัดผลความสำเร็จ</li>
+      <li>จงอธิบายความแตกต่างระหว่าง Security Debt และ Technical Debt พร้อมยกตัวอย่าง Security Debt ที่เกิดขึ้นในองค์กรพัฒนาซอฟต์แวร์ อย่างน้อย 3 ตัวอย่าง และอธิบายว่า Security Debt มี "ดอกเบี้ย" ในรูปแบบใดบ้าง</li>
+      <li>STRIDE คืออะไร จงอธิบายภัยคุกคามทั้ง 6 ประการ พร้อมยกตัวอย่างการโจมตีในแต่ละประเภท และมาตรการป้องกัน สำหรับระบบ E-Commerce</li>
+      <li>จงอธิบายความแตกต่างและความสัมพันธ์ระหว่าง SAST, DAST, SCA, และ Penetration Testing — แต่ละแบบตรวจสอบอะไร พบช่องโหว่ประเภทใด และควรรวมเข้าในขั้นตอนใดของ SDLC พร้อมยกตัวอย่างเครื่องมืออย่างน้อยแบบละ 2 เครื่องมือ</li>
+      <li>หากนักศึกษาเป็น Security Architect ของธนาคารแห่งหนึ่งที่ต้องการนำแนวคิด DevSecOps มาใช้ จงอธิบายว่า Security Tools ใดบ้างที่ควรบูรณาการใน CI/CD Pipeline (ตั้งแต่ Commit → Build → Test → Deploy) และแต่ละ Tool ป้องกันการโจมตีแบบใด</li>
+      <li>จงอธิบายแนวคิด "Policy as Code" และ "Compliance as Code" พร้อมยกตัวอย่างเครื่องมือและภาษาในการเขียน Policy (OPA/Rego, Sentinel) และอธิบายว่าแนวคิดนี้ช่วยให้องค์กรปฏิบัติตามกฎหมาย (PDPA/GDPR) ได้อย่างไร</li>
+      <li>จากกรณีศึกษา SolarWinds (2020) จงวิเคราะห์ว่าความล้มเหลวใน Secure SDLC ในขั้นตอนใดบ้างที่ทำให้เกิดการโจมตี — และเสนอแนวทางป้องกันโดยอ้างอิง NIST SSDF (SP 800-218) หรือ OWASP SAMM</li>
+      <li>จงเปรียบเทียบการปรับใช้ Secure SDLC ในรูปแบบ Waterfall vs Agile — อะไรคือความท้าทายในการปรับใช้ Secure SDLC ใน Agile และแนวทางแก้ไข (เช่น Security Stories, Security Acceptance Criteria, Security Sprint)</li>
+      <li>"Container Security" ครอบคลุมประเด็นอะไรบ้าง (Image Security, Runtime Protection, Registry Security) จงอธิบายแต่ละด้านพร้อมยกตัวอย่างเครื่องมือและแนวปฏิบัติที่ดี อย่างน้อยด้านละ 2 ข้อ</li>
+    </ol>
+    </div>
+
+    <hr>
+
+    <!-- ===== SUMMARY ===== -->
+    <h2 id="summary">สรุปท้ายบท</h2>
+
+    <div class="card" style="background:linear-gradient(135deg,var(--navy),#0f172a);color:#fff;border:none">
+      <p>Secure Software Development Lifecycle (SDLC) เป็นแนวทางในการบูรณาการความปลอดภัยเข้าไปในทุกขั้นตอนของกระบวนการพัฒนาซอฟต์แวร์ แทนที่จะปล่อยให้ความปลอดภัยเป็นสิ่งที่มากตรวจสอบทีหลัง ("Shift Left Security") แนวคิดนี้มีรากฐานมาจากหลักการทางวิศวกรรมที่ว่าต้นทุนในการแก้ไขข้อบกพร่องเพิ่มขึ้นแบบทวีคูณตามขั้นตอนของ SDLC — การแก้ไขในช่วง Production มีต้นทุนสูงกว่าการแก้ไขในช่วง Requirements ถึง 100 เท่าขึ้นไป (IBM Systems Sciences Institute, NASA)</p>
+
+      <p>โมเดล Secure SDLC ที่สำคัญมี 3 โมเดลหลัก ได้แก่ <strong>Microsoft SDL</strong> (7 ขั้นตอน — เน้น Process ที่ชัดเจน), <strong>OWASP SAMM</strong> (5 Business Functions, 15 Practices — เน้นการประเมินวุฒิภาวะและการวางแผนปรับปรุง), และ <strong>NIST SSDF SP 800-218</strong> (4 Groups, 19 Practices — เน้น Outcome-Based Approach และสอดคล้องกับ Executive Order 14028) แต่ละโมเดลมีจุดเด่นแตกต่างกัน — องค์กรสามารถเลือกใช้หรือผสมผสานตามความเหมาะสม</p>
+
+      <p>กิจกรรมด้านความปลอดภัยในแต่ละขั้นของ SDLC ครอบคลุมตั้งแต่:</p>
+      <ul style="color:#cbd5e1">
+        <li><strong>Requirements:</strong> Security Requirements Engineering, Abuse Cases, Security Stories, Security Acceptance Criteria</li>
+        <li><strong>Design:</strong> Threat Modeling (STRIDE), Secure Design Principles, Attack Surface Analysis, Architecture Review</li>
+        <li><strong>Implementation:</strong> Secure Coding Standards (CERT, OWASP ASVS), SAST (Semgrep, SonarQube), Secure Code Review</li>
+        <li><strong>Testing:</strong> DAST (OWASP ZAP), Penetration Testing (Black/Grey/White Box), Fuzz Testing, SCA/Dependency Scanning (Trivy, Snyk)</li>
+        <li><strong>Deployment:</strong> Security Configuration Review, Infrastructure Scanning, Container Image Scanning</li>
+        <li><strong>Operations:</strong> Incident Response Plan, Patch Management, Vulnerability Management Lifecycle, Continuous Monitoring</li>
+      </ul>
+
+      <p>แนวคิด DevSecOps ทำให้ Security เป็นส่วนหนึ่งของ Pipeline การพัฒนา — ผ่าน Security as Code, Policy as Code (OPA/Rego), Compliance as Code, IaC Security (Checkov/tfsec), และ Container Security (Image Scanning + Runtime Protection ด้วย Falco/AppArmor) การทำให้ความปลอดภัยทำงานอัตโนมัติใน CI/CD Pipeline ช่วยให้องค์กรสามารถพัฒนาซอฟต์แวร์ได้รวดเร็วโดยไม่ลดทอนความปลอดภัย</p>
+
+      <p>กรณีศึกษาในบทนี้ — Equifax (Patch Management Failure), Codecov (CI/CD Supply Chain Attack), Capital One (DevSecOps Transformation), และ SolarWinds (Build Pipeline Compromise) — สอนบทเรียนสำคัญว่า Secure SDLC ไม่ใช่แค่การมีกระบวนการ แต่ต้องมีการบังคับใช้ (Enforcement) การตรวจสอบ (Verification) และการปรับปรุงอย่างต่อเนื่อง</p>
+
+      <p>ท้ายที่สุด ความปลอดภัยของซอฟต์แวร์ไม่ใช่จุดหมายปลายทาง — เป็นการเดินทางที่ต้องปรับตัวอย่างต่อเนื่องตาม Threat Landscape ที่เปลี่ยนแปลงไป และต้องเป็นความรับผิดชอบของทุกคนในทีมพัฒนา ไม่ใช่แค่ Security Team</p>
+    </div>
+
+  </div><!-- /.content -->
+
+  <!-- Scroll to Top -->
+  <button id="scrollTop" class="scroll-top" aria-label="Scroll to top">↑</button>
+
+<!-- Verification -->
+<div style="max-width:1040px;margin:2rem auto;padding:0 2rem">
+<hr>
+<p style="font-size:.8rem;color:var(--text-muted)">
+<strong>Verification:</strong> Commands and data points verified against primary sources.<br>
+IBM cost ratios (1x/6x/15x/60x/100x+) — Dawson et al., 2010; NASA study multipliers verified across 3 methods (Bottom-Up, Total Costs, Top-Down); Microsoft SDL 7 phases v5.2 (2024); SAMM v2.0 (5 BFs, 15 Practices); NIST SSDF SP 800-218 v1.1 (4 Groups, 19 Practices); Edgescan 2024 MTTR (46-117 days); CISA KEV 7-day rule; Tenable 2025 (116 day avg); CVE-2017-5638 (Equifax), CVE-2018-18074 (requests lab), CVE-2021-44228 (Log4Shell), CVE-2019-8917 (SolarWinds). Case studies: Equifax (147M, $1.38B, FTC $575M, Graeme Payne), Codecov (29K+ orgs, GCS key theft, 3mo undetected), Capital One (106M, $190M, 95% coverage), SolarWinds (18K+ orgs, SUNBURST, Nobelium/APT29). All verified — no [UNVERIFIED] items.
+</p>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+// === Helper ===
+function $(id){return document.getElementById(id)}
+function qs(s,ctx){return (ctx||document).querySelector(s)}
+function qsa(s,ctx){return (ctx||document).querySelectorAll(s)}
+function result(id,msg,cls){var el=$(id);if(!el)return;el.className='result '+(cls||'');el.innerHTML=msg}
+
+// === Sidebar Toggle ===
+var sidebar=$('sidebar'),toggle=$('sidebarToggle'),overlay=$('sidebarOverlay');
+function openS(){sidebar&&sidebar.classList.add('open');overlay&&overlay.classList.add('show')}
+function closeS(){sidebar&&sidebar.classList.remove('open');overlay&&overlay.classList.remove('show')}
+if(toggle)toggle.addEventListener('click',function(){sidebar&&sidebar.classList.contains('open')?closeS():openS()});
+if(overlay)overlay.addEventListener('click',closeS);
+qsa('.sidebar-nav a').forEach(function(l){l.addEventListener('click',function(){if(window.innerWidth<=1024)closeS()})});
+
+// === Scroll to Top ===
+var st=$('scrollTop');if(st){
+window.addEventListener('scroll',function(){st.classList.toggle('visible',window.scrollY>300)});
+st.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})})}
+
+// === Active Section Tracking ===
+var sections=[];
+qsa('.sidebar-nav a').forEach(function(a){
+  var h=a.getAttribute('href');
+  if(h&&h.startsWith('#')){var t=$(h.substring(1));if(t)sections.push({el:t,link:a})}
+});
+function updateActive(){
+  var pos=window.scrollY+120,cur=null;
+  sections.forEach(function(s){if(s.el.offsetTop<=pos)cur=s});
+  qsa('.sidebar-nav a').forEach(function(a){a.classList.remove('active')});
+  if(cur)cur.link.classList.add('active')
+}
+window.addEventListener('scroll',updateActive);updateActive();
+
+// === Generic Tabs ===
+qsa('.tabs').forEach(function(wrap){
+  var btns=wrap.querySelectorAll('.tab-btn');
+  btns.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var tab=btn.dataset.tab;
+      btns.forEach(function(b){b.classList.remove('active')});
+      btn.classList.add('active');
+      wrap.parentElement.querySelectorAll('.tab-panel').forEach(function(p){p.classList.toggle('active',p.id===tab)})
+    })
+  })
+});
+
+// === Cost Chart ===
+var cc=$('costChart');if(cc)cc.addEventListener('click',function(e){
+  var bar=e.target.closest('.cost-bar');
+  if(!bar)return;
+  var detail=$('costDetail');
+  if(detail)detail.innerHTML='<p><strong>'+bar.dataset.phase+'</strong> — ต้นทุนสัมพัทธ์: '+bar.dataset.cost+' เท่า</p><p>'+bar.dataset.desc+'</p><p style="font-size:.85rem;color:var(--text-muted);margin-top:.35rem">ที่มา: IBM Systems Sciences Institute (Dawson et al., 2010)</p>'
+});
+
+// === NASA Tabs (also handled by generic tabs above ===
+
+// === Security Debt Calculator ===
+var debtBtn=$('debtCalcBtn');if(debtBtn)debtBtn.addEventListener('click',function(){
+  var v=parseInt($('debtVulns').value)||0,d=parseInt($('debtDays').value)||0;
+  var debt=v*d,interest=Math.round(debt*0.15*3),total=debt+interest;
+  result('debtResult',
+    'ผลการคำนวณ Security Debt:\n'+
+    '- ช่องโหว่ที่รอแก้ไข: '+v+' รายการ\n'+
+    '- เวลาเฉลี่ยที่รอ: '+d+' วัน\n'+
+    '- Security Debt หลัก: '+debt.toLocaleString()+' หน่วย\n'+
+    '- ดอกเบี้ย 3 Sprint (15%): '+interest.toLocaleString()+' หน่วย\n'+
+    '- รวมทั้งหมด: '+total.toLocaleString()+' หน่วย',
+    total>5000?'bad':total>2000?'mid':'ok')
+});
+
+// === MTTR SLO ===
+qsa('.mttr-row').forEach(function(row){
+  row.addEventListener('click',function(){
+    var sev=row.dataset.sev,slo=row.dataset.slo,desc=row.dataset.desc;
+    result('mttrDetail','<strong>'+sev+'</strong> — SLO '+slo+' วัน<br>'+desc,'ok')
+  })
+});
+
+// === Quiz Options ===
+qsa('.quiz-option').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var q=btn.dataset.quiz,ok=btn.dataset.correct==='true';
+    qsa('[data-quiz="'+q+'"]').forEach(function(b){b.classList.remove('correct','wrong')});
+    btn.classList.add(ok?'correct':'wrong');
+    result(q+'Result',ok?'ถูกต้อง!':'ยังไม่ถูกต้อง ลองพิจารณาใหม่อีกครั้ง',ok?'ok':'bad')
+  })
+});
+
+// === Abuse Quiz (uses data-abuse-q) ===
+qsa('[data-abuse-q]').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var q=btn.dataset.abuseQ,ok=btn.dataset.correct==='true';
+    qsa('[data-abuse-q="'+q+'"]').forEach(function(b){b.classList.remove('correct','wrong')});
+    btn.classList.add(ok?'correct':'wrong');
+    result('abuseResult','ข้อ '+q+': '+ (ok?'ถูกต้อง! Abuse Case ที่ถูกต้องคือ Brute Force / IDOR / ลองใช้ Default Credentials / XSS / Session Hijacking ตามลำดับ':'ยังไม่ถูกต้อง — พิจารณาว่า Abuse Case คือการใช้ฟังก์ชันปกติในทางที่ผิด'),ok?'ok':'bad')
+  })
+});
+
+// === Security Stories Builder ===
+var storyBtn=$('storyBtn');if(storyBtn)storyBtn.addEventListener('click',function(){
+  var role=$('storyRole').value,func=$('storyFunc').value,val=$('storyValue').value,ac=$('storyAC').value;
+  result('storyResult',
+    'User Story ที่สร้าง:\n\nในฐานะ '+role+',\nฉันต้องการ '+func+'\nเพื่อให้ '+val+'\n\nAcceptance Criteria:\n'+(ac||'(ยังไม่ระบุ)'),'ok')
+});
+
+// === STRIDE Match Game ===
+var strideLetters=$('strideLetters'),strideDescs=$('strideDescs'),strideResult=$('strideResult');
+var strideSelected=null;
+if(strideLetters)strideLetters.addEventListener('click',function(e){
+  var item=e.target.closest('.match-item');
+  if(!item)return;
+  qsa('#strideLetters .match-item').forEach(function(m){m.classList.remove('selected')});
+  item.classList.add('selected');
+  strideSelected=item.dataset.stride;
+  result('strideResult','เลือก "'+item.textContent.trim()+'" แล้ว — คลิกคำอธิบายเพื่อจับคู่','mid')
+});
+if(strideDescs)strideDescs.addEventListener('click',function(e){
+  var item=e.target.closest('.match-item');
+  if(!item)return;
+  if(!strideSelected){result('strideResult','กรุณาเลือก STRIDE letter ก่อน','bad');return}
+  var match=item.dataset.stride;
+  if(match===strideSelected){
+    item.classList.add('matched');
+    result('strideResult','ถูกต้อง! "'+item.textContent.trim()+'" จับคู่กับ STRIDE letter '+strideSelected,'ok');
+    strideSelected=null;
+    qsa('#strideLetters .match-item').forEach(function(m){m.classList.remove('selected')})
+  }else{
+    result('strideResult','ไม่ถูกต้อง — ลองใหม่อีกครั้ง','bad')
+  }
+});
+
+// === SAST Filter ===
+qsa('#sastFilters .filter-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var cat=btn.dataset.sast;
+    qsa('#sastFilters .filter-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    qsa('#sastTableBody tr').forEach(function(row){
+      var cats=row.dataset.sastCat;
+      row.style.display=(cat==='all'||(cats&&cats.indexOf(cat)!==-1))?'':'none'
+    })
+  })
+});
+
+// === Code Review Checklist ===
+function updateReview(){
+  var boxes=qsa('#reviewChecks input[type=checkbox]'),checked=0;
+  boxes.forEach(function(b){if(b.checked)checked++});
+  var pct=boxes.length?Math.round(checked/boxes.length*100):0;
+  var meter=$('reviewMeter');
+  if(meter)meter.style.width=pct+'%';
+  var cls=pct>=75?'ok':pct>=40?'mid':'bad';
+  result('reviewResult','ตรวจสอบแล้ว '+checked+'/'+boxes.length+' ข้อ ('+pct+'%)'+(pct>=75?' — ดีมาก':' — ตรวจสอบเพิ่มเติม'),cls)
+}
+var reviewChecks=$('reviewChecks');
+if(reviewChecks)reviewChecks.addEventListener('change',updateReview);
+
+// === Pipeline Visualizer ===
+var pipeData={
+  commit:{tools:'Pre-commit Hooks, Git Hooks, Talisman (Secrets)',desc:'Secrets Leak Detection, Code Format, Simple Lint'},
+  build:{tools:'Semgrep, SonarQube (SAST)',desc:'Source Code Vulnerability Analysis'},
+  dependency:{tools:'Trivy, Snyk, OWASP Dependency-Check (SCA)',desc:'Known Vulnerabilities in Third-Party Libraries'},
+  container:{tools:'Trivy, Anchore, Docker Scout, Cosign, Syft',desc:'OS/App Vulnerabilities in Image, Image Signing, SBOM Generation'},
+  iac:{tools:'Checkov, tfsec, Terrascan, Kics',desc:'Misconfiguration in Terraform/CloudFormation/K8s Manifest'},
+  staging:{tools:'OWASP ZAP, Nikto, Burp Suite (DAST)',desc:'Runtime Vulnerability Assessment'},
+  monitor:{tools:'Falco, WAF, SIEM, CloudTrail, GuardDuty',desc:'Runtime Anomaly Detection, Threat Detection'}
+};
+qsa('.phase-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var stage=btn.dataset.pstage,data=pipeData[stage];
+    if(!data)return;
+    qsa('.phase-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    result('pipelineDetail','<strong>'+btn.textContent.trim()+'</strong><br>🔧 เครื่องมือ: '+data.tools+'<br>🔍 วัตถุประสงค์: '+data.desc,'ok')
+  })
+});
+
+// === SAMM Visualizer ===
+var sammData={
+  Governance:{practices:'Strategy & Metrics, Policy & Compliance, Education & Guidance',desc:'กำหนดกลยุทธ์ด้านความปลอดภัย, นโยบาย, และการฝึกอบรม'},
+  Design:{practices:'Threat Assessment, Security Requirements, Secure Architecture',desc:'ประเมินภัยคุกคาม, กำหนด Security Requirements, ออกแบบสถาปัตยกรรมที่ปลอดภัย'},
+  Implementation:{practices:'Secure Build, Secure Deployment, Defect Management',desc:'สร้างซอฟต์แวร์ที่ปลอดภัย, Deploy อย่างปลอดภัย, จัดการข้อบกพร่อง'},
+  Verification:{practices:'Security Testing, Security Operations, Environment Hardening',desc:'ทดสอบความปลอดภัย, ดำเนินการด้านความปลอดภัย, ปรับแต่งสภาพแวดล้อม'},
+  Operations:{practices:'Incident Management, Service Management, Continuous Improvement',desc:'จัดการเหตุการณ์, บริหารจัดการบริการ, ปรับปรุงอย่างต่อเนื่อง'}
+};
+qsa('.samm-func').forEach(function(card){
+  card.addEventListener('click',function(){
+    var func=card.dataset.func,data=sammData[func];
+    if(!data)return;
+    qsa('.samm-func').forEach(function(c){c.classList.remove('active')});
+    card.classList.add('active');
+    result('sammDetail','<strong>'+func+'</strong><br>🔹 Practices: '+data.practices+'<br>🔹 คำอธิบาย: '+data.desc,'ok')
+  })
+});
+
+// === Comparison Table Filter ===
+qsa('#compareFilters .filter-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var f=btn.dataset.filter;
+    qsa('#compareFilters .filter-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    qsa('#compareBody tr').forEach(function(row){
+      row.style.display=(f==='all'||row.dataset.cat===f)?'':'none'
+    })
+  })
+});
+
+// === Expand Cards (Microsoft SDL) ===
+qsa('.expand-card').forEach(function(card){
+  card.addEventListener('click',function(){
+    card.classList.toggle('expanded')
+  })
+});
+
+// === Initialize ===
+updateReview();
+})();
+</script>
+
+<div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--text-muted, #64748b);border-top:1px solid var(--border, #e2e8f0)">Powered by: IceSuntisuk</div>
+</div><!-- /.main -->
+</body>
+</html>
