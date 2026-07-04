@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-4: โครงสร้างพื้นฐานกุญแจสาธารณะ (PKI) และการจัดการ Certificate | วิชา Network Security</title>
+<meta name="description" content="บทที่ 4 วิชา Network Security — PKI และการจัดการ Certificate: X.509, CA, Trust Models, Certificate Lifecycle, CRL, OCSP, CT, ACME, กรณีศึกษา DigiNotar และ Comodo">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "CH-4: โครงสร้างพื้นฐานกุญแจสาธารณะ (PKI) และการจัดการ Certificate",
+  "description": "บทที่ 4 ของวิชา Network Security — ครอบคลุม PKI, CA, RA, VA, HSM, X.509 v3 Certificate, Certificate Chain, Path Validation, Trust Store, Certificate Lifecycle Management, CRL, OCSP, OCSP Stapling, Certificate Transparency, ACME Protocol, การประยุกต์ใช้ PKI ใน TLS/Code Signing/S-MIME/IoT, กรณีศึกษา DigiNotar และ Comodo, ภัยคุกคามต่อ PKI",
+  "educationalLevel": "Undergraduate",
+  "educationalRole": "Instructor",
+  "teaches": [
+    "Public Key Infrastructure (PKI)",
+    "X.509 Certificate Structure",
+    "Certificate Authority (CA)",
+    "Certificate Lifecycle Management",
+    "CRL and OCSP",
+    "Certificate Transparency",
+    "ACME Protocol",
+    "PKI Trust Models",
+    "Post-Quantum Cryptography"
+  ],
+  "inLanguage": "th"
+}
+</script>
+<style>
+
+:root {
+  --primary: #1a3a5c;
+  --primary-dark: #0f2440;
+  --primary-light: #2c5a8c;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --bg: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --text: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --code-bg: #0f172a;
+  --code-text: #e2e8f0;
+  --table-stripe: #f8fafc;
+  --sidebar-bg: #f8fafc;
+  --sidebar-border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --radius: 8px;
+  --radius-sm: 4px;
+  --radius-lg: 12px;
+  --font-thai: 'Sarabun', 'IBM Plex Sans Thai', 'Kanit', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
+  --transition: 0.2s ease;
+  --header-height: 64px;
+  --toc-width: 280px;
+}
+[data-theme="dark"] {
+  --primary: #60a5fa;
+  --primary-dark: #1e3a5f;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --bg: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --border: #334155;
+  --code-bg: #020617;
+  --table-stripe: #1e293b;
+  --sidebar-bg: #1e293b;
+  --sidebar-border: #334155;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+h1,h2,h3,h4,h5,h6{line-height:1.3;font-weight:700;color:var(--text);margin-top:1.5em;margin-bottom:.75em}
+h1{font-size:2.25rem;margin-top:0}
+h2{font-size:1.75rem;border-bottom:2px solid var(--border);padding-bottom:.4em}
+h3{font-size:1.35rem}
+h4{font-size:1.1rem}
+p{margin-bottom:1em}
+hr{border:none;border-top:2px solid var(--border);margin:2.5em 0}
+strong,b{font-weight:700}
+ul,ol{margin-bottom:1em;padding-left:1.5em}
+li{margin-bottom:.35em}
+#loading-screen{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s ease}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-secondary);font-size:1rem}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#818cf8);z-index:9998;width:0%;transition:width .15s ease-out}
+.top-nav{position:fixed;top:3px;left:0;right:0;z-index:9997;height:var(--header-height);background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-nav .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem;color:var(--text);white-space:nowrap}
+.top-nav .logo i{color:var(--accent);font-size:1.3rem}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-actions button,.nav-actions .search-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:1rem}
+.nav-actions button:hover,.nav-actions .search-toggle:hover{background:var(--bg-tertiary);color:var(--text);border-color:var(--text-muted)}
+#sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.search-overlay{position:fixed;inset:0;z-index:9996;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(4px)}
+.search-overlay.active{display:flex}
+.search-panel{background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:90%;max-width:640px;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
+.search-input-wrap{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);gap:.5rem}
+.search-input-wrap i{color:var(--text-muted)}
+.search-input-wrap input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:1rem;font-family:var(--font-thai)}
+.search-input-wrap input::placeholder{color:var(--text-muted)}
+.search-count{font-size:.8rem;color:var(--text-muted);white-space:nowrap;padding:.25rem .5rem;background:var(--bg-tertiary);border-radius:var(--radius-sm)}
+.search-results{overflow-y:auto;padding:.5rem;flex:1;max-height:50vh}
+.search-results .no-results{padding:2rem;text-align:center;color:var(--text-muted)}
+.search-result-item{padding:.75rem;border-radius:var(--radius);cursor:pointer;transition:background .2s ease;border-bottom:1px solid var(--border-light)}
+.search-result-item:hover{background:var(--bg-tertiary)}
+.search-result-item .result-heading{font-weight:600;font-size:.9rem;color:var(--accent);margin-bottom:.2rem}
+.search-result-item .result-snippet{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.search-result-item .result-snippet mark,.highlight{background:#fef08a;color:#1e293b;padding:0 2px;border-radius:2px}
+[data-theme="dark"] .search-result-item .result-snippet mark,[data-theme="dark"] .highlight{background:#854d0e;color:#fef9c3}
+.layout{display:flex;padding-top:calc(var(--header-height) + 3px);min-height:100vh}
+.sidebar{width:var(--toc-width);flex-shrink:0;position:sticky;top:calc(var(--header-height) + 3px);height:calc(100vh - var(--header-height) - 3px);overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:1.25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--text-muted) transparent;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:4px}
+.sidebar-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{margin-bottom:.15rem}
+.toc-link{display:block;padding:.4rem .6rem;border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-secondary);transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;line-height:1.4}
+.toc-link:hover{background:var(--bg-tertiary);color:var(--text);text-decoration:none}
+.toc-link.active{color:var(--accent);background:rgba(37,99,235,.08);border-left-color:var(--accent);font-weight:600}
+.toc-link.sub{padding-left:1.4rem;font-size:.8rem}
+.toc-link.sub2{padding-left:2.2rem;font-size:.78rem}
+.main-content{flex:1;min-width:0;padding:2rem 2.5rem;max-width:calc(100vw - var(--toc-width))}
+.main-content>section{margin-bottom:2.5rem}
+.section-ref{scroll-margin-top:calc(var(--header-height) + 16px)}
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:2.5rem 2rem;border-radius:var(--radius-lg);margin-bottom:2.5rem}
+.hero h1{color:#fff;font-size:2rem;margin-bottom:.5rem}
+.hero .subtitle{color:rgba(255,255,255,.85);font-size:1.1rem;margin-bottom:1.25rem}
+.hero .meta-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.hero .meta-tag{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);padding:.25rem .75rem;border-radius:20px;font-size:.8rem}
+.learning-objectives{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+.learning-objectives h3{margin-top:0;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.learning-objectives ol{margin:.75rem 0 0;padding-left:1.25rem}
+.learning-objectives li{margin-bottom:.5rem;color:var(--text-secondary);font-size:.95rem}
+.table-wrap{overflow-x:auto;margin:1.25em 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}
+thead{background:var(--bg-tertiary)}
+th,td{padding:.6rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}
+th{font-weight:700;color:var(--text)}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+tbody tr:hover{background:var(--bg-tertiary)}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:1.25em 0;position:relative}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+code{background:var(--bg-tertiary);color:var(--accent);padding:.15em .4em;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.85em}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:0}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.expandable{margin:1.25em 0}
+.expandable-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease;user-select:none;font-weight:600;font-size:.95rem}
+.expandable-header:hover{background:var(--border)}
+.expandable-header i{transition:transform .2s ease;font-size:.85rem;color:var(--text-muted)}
+.expandable.expanded .expandable-header i{transform:rotate(180deg)}
+.expandable-content{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;border:1px solid transparent}
+.expandable.expanded .expandable-content{max-height:50000px;padding:1rem;border-color:var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.quiz-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:all .2s ease}
+.quiz-card.revealed{border-left:4px solid #22c55e}
+.quiz-question{display:flex;gap:.75rem;align-items:flex-start}
+.q-number{background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.quiz-question p{margin:0;font-weight:500;color:var(--text);font-size:.95rem}
+.quiz-card .reveal-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-family:var(--font-thai);transition:all .2s ease}
+.quiz-card .reveal-btn:hover{background:var(--accent-hover)}
+.quiz-card.revealed .reveal-btn{background:var(--text-muted)}
+.quiz-answer{margin-top:.75rem;padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border);font-size:.9rem}
+.hidden{display:none}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:9995;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-lg);transition:all .2s ease;opacity:0;visibility:hidden;transform:translateY(10px)}
+#back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+#back-to-top:hover{background:var(--accent-hover);transform:translateY(-2px)}
+.site-footer{margin-top:3rem;padding:1.5rem 2rem;background:var(--bg-secondary);border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+.glossary-term{color:var(--accent);border-bottom:1px dashed var(--accent);cursor:help;position:relative;font-weight:500}
+.glossary-term .tooltip{visibility:hidden;opacity:0;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--primary-dark);color:#fff;padding:.5rem .85rem;border-radius:var(--radius-sm);font-size:.78rem;line-height:1.5;font-weight:400;white-space:normal;z-index:9999;box-shadow:var(--shadow-lg);transition:opacity .2s ease,visibility .2s ease;pointer-events:none;max-width:300px;text-align:center}
+.glossary-term .tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--primary-dark)}
+.glossary-term:hover .tooltip{visibility:visible;opacity:1}
+@media print{
+  .top-nav,.sidebar,#back-to-top,#progress-bar,.copy-btn,.search-overlay,#sidebar-toggle,.nav-actions{display:none!important}
+  .layout{display:block;padding-top:0}
+  .main-content{max-width:100%;padding:0}
+  .hero{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .hero h1,.hero .subtitle{color:#fff!important}
+  table{font-size:.8rem}
+  pre{white-space:pre-wrap;word-break:break-all}
+  .expandable-content{max-height:none!important;padding:1rem!important;border-color:var(--border)!important}
+  .expandable-header i{display:none}
+  .table-wrap{overflow:visible}
+  .quiz-answer.hidden{display:block!important}
+  .quiz-card .reveal-btn{display:none}
+  body{font-size:11pt}
+  section{page-break-inside:avoid}
+  h2,h3{page-break-after:avoid}
+}
+@media(max-width:1024px){:root{--toc-width:240px}.main-content{padding:1.5rem}}
+@media(max-width:768px){
+  :root{--toc-width:0px}
+  #sidebar-toggle{display:flex}
+  .sidebar{position:fixed;left:-280px;top:calc(var(--header-height) + 3px);width:280px;height:calc(100vh - var(--header-height) - 3px);transition:left .3s ease;z-index:9990;box-shadow:var(--shadow-lg)}
+  .sidebar.open{left:0}
+  .sidebar-overlay{position:fixed;inset:0;z-index:9989;background:rgba(0,0,0,.4);display:none}
+  .sidebar-overlay.active{display:block}
+  .main-content{max-width:100%;padding:1rem}
+  .hero{padding:1.5rem 1rem}
+  .hero h1{font-size:1.5rem}
+  h2{font-size:1.4rem}
+  h3{font-size:1.15rem}
+  .top-nav{padding:0 .75rem}
+  .top-nav .logo{font-size:.85rem}
+  table{font-size:.8rem}
+  th,td{padding:.4rem .6rem}
+  .quiz-card{padding:1rem}
+}
+@media(max-width:480px){
+  .nav-actions button,.nav-actions .search-toggle{width:36px;height:36px}
+  #back-to-top{bottom:1rem;right:1rem;width:40px;height:40px}
+  .search-panel{width:95%}
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<div id="loading-screen" role="status" aria-label="กำลังโหลดเนื้อหา">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">กำลังโหลดเนื้อหา...</div>
+</div>
+<div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้าการอ่าน"></div>
+<header class="top-nav" role="banner">
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button id="sidebar-toggle" aria-label="เปิดเมนูสารบัญ" aria-expanded="false">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="logo">
+      <i class="fas fa-lock" aria-hidden="true"></i>
+      <span>Network Security — บทที่ 4</span>
+    </div>
+  </div>
+  <div class="nav-actions">
+    <button class="search-toggle" id="search-toggle-btn" aria-label="ค้นหา" title="ค้นหา (Ctrl+K / &#8984;K)">
+      <i class="fas fa-search" aria-hidden="true"></i>
+    </button>
+    <button id="dark-mode-toggle" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง">
+      <i class="fas fa-moon" aria-hidden="true"></i>
+    </button>
+  </div>
+</header>
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="ค้นหาเนื้อหา">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="ค้นหาในเนื้อหาทั้งหมด..." aria-label="ป้อนคำค้นหา" autocomplete="off">
+      <span class="search-count" id="search-count"></span>
+      <button id="search-close-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;" aria-label="ปิดค้นหา">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="layout">
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-title"><i class="fas fa-list" aria-hidden="true"></i> สารบัญ</div>
+  <ul class="toc-list" id="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#hero-section" data-target="hero-section">บทนำ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section1" data-target="section1">1. ความรู้เบื้องต้นเกี่ยวกับ PKI</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-1" data-target="section1-1">1.1 PKI คืออะไร</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-2" data-target="section1-2">1.2 ความสำคัญของ PKI</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-3" data-target="section1-3">1.3 Trust Models</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section2" data-target="section2">2. องค์ประกอบของ PKI</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-1" data-target="section2-1">2.1 ภาพรวมองค์ประกอบ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-2" data-target="section2-2">2.2 Certificate Authority</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-3" data-target="section2-3">2.3 Registration Authority</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-4" data-target="section2-4">2.4 Hardware Security Module</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-5" data-target="section2-5">2.5 CP vs CPS</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section3" data-target="section3">3. โครงสร้างของ X.509 Certificate</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-1" data-target="section3-1">3.1 รูปแบบการจัดเก็บ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-2" data-target="section3-2">3.2 ฟิลด์ใน X.509 v3</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-3" data-target="section3-3">3.3 คำอธิบายฟิลด์สำคัญ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-4" data-target="section3-4">3.4 Distinguished Name</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-5" data-target="section3-5">3.5 X.509 v3 Extensions</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section4" data-target="section4">4. Certificate Chain และ Path Validation</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-1" data-target="section4-1">4.1 Certificate Chain</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-2" data-target="section4-2">4.2 Path Validation</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-3" data-target="section4-3">4.3 Trust Store</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-4" data-target="section4-4">4.4 Cross-Certification</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section5" data-target="section5">5. Certificate Lifecycle</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-1" data-target="section5-1">5.1 วงจรชีวิต</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-2" data-target="section5-2">5.2 Key Generation</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-3" data-target="section5-3">5.3 CSR</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-4" data-target="section5-4">5.4 Validation</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-5" data-target="section5-5">5.5 การแจกจ่าย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-6" data-target="section5-6">5.6 Renewal</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-7" data-target="section5-7">5.7 Monitoring</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section6" data-target="section6">6. Certificate Revocation</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-1" data-target="section6-1">6.1 เหตุผลที่ต้อง Revoke</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-2" data-target="section6-2">6.2 CRL</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-3" data-target="section6-3">6.3 OCSP</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-4" data-target="section6-4">6.4 OCSP Stapling</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-5" data-target="section6-5">6.5 เปรียบเทียบ CRL/OCSP</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-6" data-target="section6-6">6.6 แนวทางปฏิบัติใน Browser</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section7" data-target="section7">7. Certificate Transparency</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-1" data-target="section7-1">7.1 ปัญหาที่ CT แก้ไข</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-2" data-target="section7-2">7.2 หลักการของ CT</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-3" data-target="section7-3">7.3 CT Log Structure</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-4" data-target="section7-4">7.4 CT ในปัจจุบัน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section8" data-target="section8">8. การประยุกต์ใช้ PKI</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-1" data-target="section8-1">8.1 TLS/SSL</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-2" data-target="section8-2">8.2 Code Signing</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-3" data-target="section8-3">8.3 S/MIME</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-4" data-target="section8-4">8.4 IoT Device Identity</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-5" data-target="section8-5">8.5 Document Signing</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section9" data-target="section9">9. กรณีศึกษา</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-1" data-target="section9-1">9.1 DigiNotar</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-2" data-target="section9-2">9.2 Comodo</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-3" data-target="section9-3">9.3 Let's Encrypt</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section10" data-target="section10">10. ภัยคุกคามต่อ PKI</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section11" data-target="section11">11. สรุปท้ายบท</a></li>
+    <li class="toc-item"><a class="toc-link" href="#review-questions" data-target="review-questions">คำถามทบทวน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#references" data-target="references">เอกสารอ้างอิง</a></li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content" role="main">
+<section id="hero-section" class="hero section-ref">
+  <h1><i class="fas fa-lock" aria-hidden="true"></i> CH-4: โครงสร้างพื้นฐานกุญแจสาธารณะ (PKI) และการจัดการ Certificate</h1>
+  <p class="subtitle">Public Key Infrastructure (PKI) — X.509 Certificate, CA, Trust Models, Certificate Lifecycle, CRL, OCSP, Certificate Transparency, ACME Protocol, และการประยุกต์ใช้ PKI ในเครือข่าย</p>
+  <div class="meta-tags">
+    <span class="meta-tag"><i class="fas fa-graduation-cap" aria-hidden="true"></i> วิชา Network Security</span>
+    <span class="meta-tag"><i class="fas fa-calendar" aria-hidden="true"></i> ภาคเรียนที่ 1/2569</span>
+    <span class="meta-tag"><i class="fas fa-book-open" aria-hidden="true"></i> บทที่ 4</span>
+  </div>
+</section>
+<div class="learning-objectives section-ref" id="learning-objectives">
+  <h3><i class="fas fa-bullseye" aria-hidden="true"></i> วัตถุประสงค์การเรียนรู้ (Learning Objectives)</h3>
+  <p>เมื่อจบบทนี้แล้ว ผู้เรียนสามารถ:</p>
+  <ol>
+    <li>อธิบายองค์ประกอบของ PKI — CA, RA, VA, Certificate Repository, HSM — และ Trust Model (Hierarchical, Mesh, Web of Trust) ได้</li>
+    <li>อธิบายโครงสร้างของ X.509 v3 Certificate ฟิลด์และ Extension ที่สำคัญ พร้อมความแตกต่างระหว่าง DER, PEM, PKCS#12 Encoding ได้</li>
+    <li>อธิบาย Certificate Chain การตรวจสอบความน่าเชื่อถือ (Path Validation ตาม RFC 5280) และบทบาทของ Trust Store ได้</li>
+    <li>อธิบาย Certificate Lifecycle Management — ตั้งแต่ CSR, Issuance, Auto-Enrollment (ACME/SCEP/EST), Renewal, จนถึง Expiration</li>
+    <li>เปรียบเทียบ CRL, Delta CRL, OCSP, และ OCSP Stapling — ข้อดี ข้อเสีย และกรณีการใช้งานที่เหมาะสม</li>
+    <li>อธิบาย Certificate Transparency (CT) — กลไกการตรวจจับ Certificate ปลอม — และประยุกต์ใช้กับกรณีศึกษา DigiNotar และ Comodo</li>
+    <li>อธิบายการประยุกต์ใช้ PKI ใน TLS, Code Signing, S/MIME, IoT Device Identity, และ Document Signing</li>
+    <li>วิเคราะห์ภัยคุกคามต่อ PKI — CA Compromise, Weak Key Generation, SHA-1 Deprecation — และมาตรการป้องกัน</li>
+  </ol>
+</div>
+<hr>
+
+<!-- ========== SECTION 1 ========== -->
+<section id="section1" class="section-ref">
+<h2>1. ความรู้เบื้องต้นเกี่ยวกับ PKI</h2>
+
+<h3 id="section1-1" class="section-ref">1.1 PKI คืออะไร?</h3>
+<p><strong><span class="glossary-term">PKI<span class="tooltip">Public Key Infrastructure — โครงสร้างพื้นฐานกุญแจสาธารณะ ประกอบด้วยนโยบาย มาตรฐาน บุคลากร ฮาร์ดแวร์และซอฟต์แวร์สำหรับจัดการ Digital Certificate</span></span></strong> (Public Key Infrastructure) คือโครงสร้างพื้นฐานที่ประกอบด้วยนโยบาย มาตรฐาน บุคลากร ฮาร์ดแวร์และซอฟต์แวร์ ที่ใช้ในการสร้าง จัดการ แจกจ่าย ใช้งาน จัดเก็บ และเพิกถอน Digital Certificate — เพื่อให้สามารถใช้งาน Public Key Cryptography ได้อย่างน่าเชื่อถือในวงกว้าง</p>
+
+<p>PKI แก้ปัญหาสำคัญของ Asymmetric Cryptography: <strong>"ฉันจะเชื่อถือ Public Key นี้ได้อย่างไรว่ามันเป็นของคนที่ฉันคิดว่าควรจะเป็น"</strong> — PKI ตอบคำถามนี้ด้วยการมี Third Party ที่เชื่อถือได้ (<span class="glossary-term">CA<span class="tooltip">Certificate Authority — หน่วยงานที่ออกและรับรอง Digital Certificate — ถือ Root Key ที่สำคัญที่สุดในระบบ PKI</span></span>) เป็นผู้รับรองความถูกต้องของ Public Key</p>
+
+<h3 id="section1-2" class="section-ref">1.2 ความสำคัญของ PKI ในปัจจุบัน</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>การใช้งาน</th><th>บทบาทของ PKI</th></tr></thead>
+  <tbody>
+    <tr><td><strong>TLS/SSL (HTTPS)</strong></td><td>รับรองตัวตนเว็บเซิร์ฟเวอร์ — เข้ารหัสการสื่อสาร — ป้องกัน MITM</td></tr>
+    <tr><td><strong>Email Security (<span class="glossary-term">S/MIME<span class="tooltip">Secure/Multipurpose Internet Mail Extensions — มาตรฐานการเข้ารหัสและลงนามอีเมลแบบดิจิทัล ใช้ PKI เพื่อรับรองตัวตนผู้ส่ง</span></span>)</strong></td><td>ลงนามและเข้ารหัสอีเมล — ยืนยันตัวตนผู้ส่ง — ป้องกัน Phishing</td></tr>
+    <tr><td><strong><span class="glossary-term">Code Signing<span class="tooltip">การลงนามซอฟต์แวร์ดิจิทัล — ยืนยันแหล่งที่มาและ Integrity ว่าซอฟต์แวร์ไม่ถูกแก้ไข</span></span></strong></td><td>ยืนยันว่าซอฟต์แวร์มาจากผู้พัฒนาจริง — ตรวจสอบว่า Code ไม่ถูกแก้ไข</td></tr>
+    <tr><td><strong>VPN (IPsec, OpenVPN)</strong></td><td>รับรองอุปกรณ์ที่เชื่อมต่อ — แทน PSK (Pre-Shared Key)</td></tr>
+    <tr><td><strong>IoT</strong></td><td>Identity Management สำหรับอุปกรณ์ IoT — การ Onboarding และ Revocation</td></tr>
+    <tr><td><strong>Document Signing</strong></td><td>ลงนามเอกสารดิจิทัล — มีผลทางกฎหมาย (e-Signature)</td></tr>
+    <tr><td><strong>802.1X (Network Access)</strong></td><td>Authentication ของอุปกรณ์ก่อนเชื่อมต่อเครือข่าย (EAP-TLS)</td></tr>
+    <tr><td><strong>Government (National ID, e-Passport)</strong></td><td>รับรองตัวตนประชาชน — ป้องกันการปลอมแปลงเอกสาร</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section1-3" class="section-ref">1.3 Trust Models (แบบจำลองความเชื่อถือ)</h3>
+<p>PKI สามารถจัดโครงสร้างความเชื่อถือได้หลายรูปแบบ:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Trust Model</th><th>โครงสร้าง</th><th>ข้อดี</th><th>ข้อเสีย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Single CA</strong></td><td>CA ตัวเดียวรับรองทุกคน</td><td>ง่าย, จัดการไม่ซับซ้อน</td><td>Single Point of Failure — ถ้า CA ถูกละเมิด ทุกคนเสียหาย</td><td>Enterprise PKI เล็ก</td></tr>
+    <tr><td><strong>Hierarchical CA</strong></td><td><span class="glossary-term">Root CA<span class="tooltip">Certificate Authority ระดับสูงสุดในลำดับชั้น PKI — รับรอง Intermediate CA — เก็บใน HSM แบบ Offline</span></span> → <span class="glossary-term">Intermediate CA<span class="tooltip">Certificate Authority ระดับกลางในลำดับชั้น — รับรอง End Entity Certificates — เชื่อมต่อเครือข่ายได้</span></span>(s) → End Entity</td><td><strong>มาตรฐานจริง</strong> — Root CA Offline (ปลอดภัย), Load Distribution, Policy Separation</td><td>ซับซ้อนกว่า, ต้องจัดการ Chain</td><td><strong>PKI ทั่วโลก (TLS, S/MIME)</strong></td></tr>
+    <tr><td><strong>Mesh / Cross-Certification</strong></td><td>CA หลายตัวรับรองซึ่งกันและกัน</td><td>ไม่ต้องมี CA กลาง, ยืดหยุ่น</td><td>ซับซ้อนมาก, Cross-Certification Path ยาก</td><td>Government PKI (ACES, SAFE)</td></tr>
+    <tr><td><strong>Web of Trust</strong></td><td>ผู้ใช้รับรองกันเอง — ไม่มี CA</td><td>ไม่ต้องมี CA, Decentralized</td><td>Scalability ต่ำ, Trust Model ซับซ้อน</td><td>PGP/GPG</td></tr>
+    <tr><td><strong>Bridge CA</strong></td><td>CA กลางเชื่อมต่อ CA ต่างๆ</td><td>เชื่อม PKI ต่างองค์กรได้</td><td>Single Point of Failure สำหรับ Cross-Cert</td><td>US Federal PKI (FPKI)</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>Hierarchical CA — แบบจำลองที่ใช้ใน TLS:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌─────────────────────────────────────────┐
+│  Root CA (Offline — Air-Gapped)         │
+│  └── ใช้งานเฉพาะการ Sign Intermediate   │
+│  └── เก็บใน HSM หรือ Safe              │
+│  └── อายุ Certificate: 20-30 ปี          │
+└────────────────┬────────────────────────┘
+                 │
+     ┌────────────┴────────────┐
+     │                         │
+     ▼                         ▼
+┌──────────────────┐  ┌──────────────────┐
+│ Intermediate CA 1 │  │ Intermediate CA 2│
+│ (Online)         │  │ (Online)         │
+│ └── ออก Server   │  │ └── ออก Code     │
+│     Certificates │  │     Signing Cert │
+│ อายุ Cert: 3-5 ปี│  │ อายุ Cert: 5 ปี │
+└────────┬─────────┘  └────────┬─────────┘
+         │                     │
+         ▼                     ▼
+    End Entity             End Entity
+    Certificate            Certificate
+    (Server Cert)          (Code Sign)</pre>
+</section>
+<hr>
+
+<!-- ========== SECTION 2 ========== -->
+<section id="section2" class="section-ref">
+<h2>2. องค์ประกอบของ PKI</h2>
+
+<h3 id="section2-1" class="section-ref">2.1 ภาพรวมองค์ประกอบ</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>องค์ประกอบ</th><th>ตัวย่อ</th><th>บทบาทหลัก</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Certificate Authority</strong></td><td><span class="glossary-term">CA<span class="tooltip">Certificate Authority — หน่วยงานที่ออกและรับรอง Digital Certificate — ถือ Root Key ที่สำคัญที่สุดในระบบ PKI</span></span></td><td>ออกและรับรอง Digital Certificate — ถือ Root Key ที่สำคัญที่สุด</td><td>DigiCert, Let's Encrypt, Microsoft AD CS</td></tr>
+    <tr><td><strong><span class="glossary-term">Registration Authority</span></strong></td><td><span class="glossary-term">RA<span class="tooltip">Registration Authority — หน่วยงานที่ตรวจสอบตัวตนผู้ขอ Certificate ก่อนส่งต่อให้ CA เพื่อออก Certificate</span></span></td><td>ตรวจสอบตัวตนผู้ขอ Certificate ก่อนส่งต่อให้ CA</td><td>ส่วนหนึ่งของ CA หรือแยกอิสระ</td></tr>
+    <tr><td><strong>Validation Authority</strong></td><td><span class="glossary-term">VA<span class="tooltip">Validation Authority — หน่วยงานที่ตรวจสอบสถานะ Certificate แบบ Real-time — ให้บริการ OCSP Responder</span></span></td><td>ตรวจสอบสถานะ Certificate แบบ Real-time — ให้บริการ OCSP</td><td>OCSP Responder</td></tr>
+    <tr><td><strong>Certificate Repository</strong></td><td>—</td><td>ที่เก็บ Certificate และ CRL สำหรับให้ Client ดาวน์โหลด</td><td>LDAP Directory, HTTP Server, Public CT Log</td></tr>
+    <tr><td><strong>Hardware Security Module</strong></td><td><span class="glossary-term">HSM<span class="tooltip">Hardware Security Module — ฮาร์ดแวร์เฉพาะทางสำหรับเก็บ Private Key และทำ Cryptographic Operations อย่างปลอดภัย ป้องกันการขโมย Key</span></span></td><td>ฮาร์ดแวร์สำหรับเก็บ Private Key อย่างปลอดภัย — ป้องกันการขโมย</td><td>YubiHSM, Thales Luna, AWS CloudHSM</td></tr>
+    <tr><td><strong>Certificate Policy</strong></td><td>CP</td><td>เอกสารนโยบาย — ระบุกฎเกณฑ์และแนวทางปฏิบัติของ PKI</td><td>"CP for Public TLS Certificates"</td></tr>
+    <tr><td><strong>Certificate Practice Statement</strong></td><td>CPS</td><td>เอกสารรายละเอียดการดำเนินงานของ CA — วิธีปฏิบัติจริง</td><td>DigiCert CPS</td></tr>
+    <tr><td><strong>End Entity</strong></td><td>—</td><td>ผู้ใช้ปลายทางที่ถือ Certificate และ Key Pair</td><td>Web Server, User, Device, Software</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section2-2" class="section-ref">2.2 Certificate Authority (CA)</h3>
+<p>CA คือ <strong>หัวใจของ PKI</strong> — ทำหน้าที่ออกและลงนามใน Digital Certificate โดยใช้ Private Key ของตนเอง</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท CA</th><th>ลักษณะ</th><th>อายุ Certificate</th><th>การรักษาความปลอดภัย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Root CA (Offline)</strong></td><td>ไม่เชื่อมต่อเครือข่าย — ใช้เฉพาะ Sign Intermediate CA</td><td>20-30 ปี</td><td>Air-Gapped, HSM, Multi-Person Access, Safe Deposit</td></tr>
+    <tr><td><strong>Intermediate CA</strong></td><td>เชื่อมต่อเครือข่าย — ออก End Entity Certificates</td><td>3-10 ปี</td><td>HSM หรือ Software Key, Access Control, Logging</td></tr>
+    <tr><td><strong>Public CA</strong></td><td>บริการออก Certificate ให้บุคคล/องค์กรทั่วไป</td><td>ตามนโยบาย</td><td>Audit ตาม WebTrust, CA/Browser Forum</td></tr>
+    <tr><td><strong>Private CA (Enterprise)</strong></td><td>ออก Certificate ภายในองค์กร</td><td>ตามนโยบาย</td><td>องค์กรกำหนดนโยบายเอง</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>การปกป้อง Root CA Private Key — Best Practices:</strong></p>
+<ul>
+  <li><strong>Offline/Air-Gapped</strong> — ไม่เชื่อมต่อเครือข่ายใดๆ</li>
+  <li><strong>เก็บใน HSM</strong> (Hardware Security Module) — ถ้า Key ออกจาก HSM แสดงว่าถูกละเมิด</li>
+  <li><strong>Multi-Person Control</strong> — ต้องมีคน N คน (เช่น 3 in 5) เพื่อใช้งาน Root Key</li>
+  <li><strong>Physical Security</strong> — เก็บใน Safe หรือ Vault ที่มีการควบคุม</li>
+  <li><strong>Limited Use</strong> — ใช้เฉพาะการ Sign Intermediate CA Certificate (ทุก 3-10 ปี)</li>
+</ul>
+
+<h3 id="section2-3" class="section-ref">2.3 Registration Authority (RA)</h3>
+<p>RA ทำหน้าที่ตรวจสอบตัวตนก่อนที่ CA จะออก Certificate — แยก Responsibility ออกจาก CA เพื่อความปลอดภัย:</p>
+
+<p><strong>หน้าที่ของ RA:</strong></p>
+<ol>
+  <li>รับ <span class="glossary-term">CSR<span class="tooltip">Certificate Signing Request — คำขอออก Certificate ที่ประกอบด้วย Public Key + Distinguished Name + Signature เพื่อพิสูจน์ว่าครอบครอง Private Key</span></span> (Certificate Signing Request) จาก End Entity</li>
+  <li>ตรวจสอบตัวตนตามระดับความน่าเชื่อถือ (DV/OV/EV)</li>
+  <li>ตรวจสอบว่า Applicant ครอบครอง Private Key จริง (ผ่าน CSR Signature)</li>
+  <li>อนุมัติหรือปฏิเสธคำขอ</li>
+  <li>ส่งต่อไปยัง CA เพื่อลงนามและออก Certificate</li>
+</ol>
+
+<p><strong>RA Security:</strong></p>
+<ul>
+  <li>กรณี Comodo (2011): ผู้โจมตีเข้าถึง RA Account ได้ → ขอ Certificate ปลอม 9 ใบ</li>
+  <li>RA ที่ปลอดภัยต้องมี: MFA, IP Restriction, Audit Log, Separation of Duties</li>
+</ul>
+
+<h3 id="section2-4" class="section-ref">2.4 Hardware Security Module (HSM)</h3>
+<p>HSM คือฮาร์ดแวร์เฉพาะทางสำหรับเก็บ Private Key และทำ Cryptographic Operations อย่างปลอดภัย:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>HSM (Hardware)</th><th>Software Key Storage</th></tr></thead>
+  <tbody>
+    <tr><td><strong>การเก็บ Key</strong></td><td>Key ไม่สามารถออกจาก HSM ได้ (FIPS 140-2/3)</td><td>Key อยู่ใน Memory หรือ Disk</td></tr>
+    <tr><td><strong>การป้องกัน</strong></td><td>Tamper-Proof — ถ้ามีการงัดแงะ Key จะได้รับการลบ</td><td>ขึ้นอยู่กับ OS Security</td></tr>
+    <tr><td><strong>Performance</strong></td><td>Hardware Acceleration — AES, RSA, ECC เร็วมาก</td><td>ใช้ CPU</td></tr>
+    <tr><td><strong>ราคา</strong></td><td>แพง ($500-$100,000+)</td><td>ฟรี</td></tr>
+    <tr><td><strong>การใช้งาน</strong></td><td>Root CA, Intermediate CA, Code Signing, Payment</td><td>Development, Personal</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section2-5" class="section-ref">2.5 Certificate Policy (CP) vs Certificate Practice Statement (CPS)</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>เอกสาร</th><th>คำอธิบาย</th><th>เปรียบเทียบ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Certificate Policy (CP)</strong></td><td><strong>นโยบาย</strong> — ว่า CA ควรทำอะไร (สูง, นามธรรม)</td><td>"CA ต้องตรวจสอบตัวตนก่อนออก Certificate"</td></tr>
+    <tr><td><strong>CPS</strong></td><td><strong>วิธีปฏิบัติ</strong> — ว่า CA ทำจริงอย่างไร (ละเอียด, ปฏิบัติ)</td><td>"RA ตรวจสอบโดยการโทรศัพท์ยืนยัน + ส่งอีเมล + ตรวจสอบเอกสารราชการ"</td></tr>
+  </tbody>
+</table></div>
+<p>เอกสารทั้งสองเป็นข้อบังคับสำหรับ Public CA ที่ผ่านการ Audit ตาม WebTrust</p>
+</section>
+<hr>
+
+<!-- ========== SECTION 3 ========== -->
+<section id="section3" class="section-ref">
+<h2>3. โครงสร้างของ <span class="glossary-term">X.509<span class="tooltip">มาตรฐาน ITU-T สำหรับโครงสร้าง Digital Certificate — ปัจจุบันใช้เวอร์ชัน v3 — ประกอบด้วย TBS Certificate + Signature + Extensions</span></span> Certificate</h2>
+
+<h3 id="section3-1" class="section-ref">3.1 รูปแบบการจัดเก็บ Certificate</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>รูปแบบ</th><th>ลักษณะ</th><th>Extension</th><th>การใช้งาน</th></tr></thead>
+  <tbody>
+    <tr><td><strong><span class="glossary-term">DER<span class="tooltip">Distinguished Encoding Rules — รูปแบบ Binary ของ Digital Certificate — ใช้ ASN.1 Encoding — ไฟล์ .cer/.crt/.der</span></span> (Distinguished Encoding Rules)</strong></td><td>Binary — ใช้ ASN.1 Encoding</td><td>`.cer`, `.crt`, `.der`</td><td>Windows, Java</td></tr>
+    <tr><td><strong><span class="glossary-term">PEM<span class="tooltip">Privacy Enhanced Mail — รูปแบบ Base64 ของ Certificate — มี Header/Footer — ใช้ใน Linux, OpenSSL, Web Servers</span></span> (Privacy Enhanced Mail)</strong></td><td>Base64 ของ DER — มี Header/Footer</td><td>`.pem`, `.crt`, `.key`</td><td>Linux, OpenSSL, Web Servers</td></tr>
+    <tr><td><strong><span class="glossary-term">PKCS#12<span class="tooltip">รูปแบบ Container สำหรับเก็บ Certificate + Private Key (เข้ารหัส) — ไฟล์ .p12/.pfx — ใช้ใน Windows สำหรับ Import/Export</span></span> / PFX</strong></td><td>Container — เก็บ Certificate + Private Key (เข้ารหัส)</td><td>`.p12`, `.pfx`</td><td>Windows, Import/Export</td></tr>
+    <tr><td><strong>PKCS#7 / P7B</strong></td><td>เก็บเฉพาะ Certificate (Chain) — ไม่มี Private Key</td><td>`.p7b`, `.p7c`</td><td>Windows, Java</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>ตัวอย่าง PEM Certificate:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>-----BEGIN CERTIFICATE-----
+MIIFazCCA1OgAwIBAgIQKj0Gt3mzP7mFk3LQ8X9VzANBgkqhkiG9w0BAQsFADB
+... base64 encoded data ...
+-----END CERTIFICATE-----</pre>
+
+<h3 id="section3-2" class="section-ref">3.2 ฟิลด์ใน X.509 v3 Certificate</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Certificate ::= SEQUENCE {
+    tbsCertificate       TBSCertificate,     -- ข้อมูล Certificate (To Be Signed)
+    signatureAlgorithm   AlgorithmIdentifier, -- Algorithm ของ Signature
+    signatureValue       BIT STRING           -- Digital Signature จาก CA
+}
+
+TBSCertificate ::= SEQUENCE {
+    version         [0]  EXPLICIT INTEGER DEFAULT v1,  -- v1, v2, หรือ v3
+    serialNumber         INTEGER,                      -- เลข Serial (ไม่ซ้ำ)
+    signature            AlgorithmIdentifier,           -- Algorithm ของ Signature
+    issuer               Name,                          -- DN ของผู้ออก
+    validity             Validity,                      -- ระยะเวลา
+    subject              Name,                          -- DN ของเจ้าของ
+    subjectPublicKeyInfo SubjectPublicKeyInfo,           -- Public Key
+    issuerUniqueID  [1]  IMPLICIT BIT STRING OPTIONAL,  -- v2+
+    subjectUniqueID [2]  IMPLICIT BIT STRING OPTIONAL,  -- v2+
+    extensions      [3]  EXPLICIT Extensions OPTIONAL   -- v3+
+}</pre>
+
+<h3 id="section3-3" class="section-ref">3.3 คำอธิบายฟิลด์สำคัญ</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ฟิลด์</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Version</strong></td><td>เวอร์ชันของ X.509 — ปัจจุบันใช้ v3</td><td>v3 (2)</td></tr>
+    <tr><td><strong>Serial Number</strong></td><td>เลขเฉพาะของ Certificate — ไม่ซ้ำกันใน CA เดียวกัน</td><td>`04:9F:3B:...` (20 ไบต์)</td></tr>
+    <tr><td><strong>Signature Algorithm</strong></td><td>Algorithm ที่ CA ใช้ลงนาม Certificate</td><td>sha256WithRSAEncryption, ecdsa-with-SHA384</td></tr>
+    <tr><td><strong>Issuer</strong></td><td>Distinguished Name (DN) ของ CA ที่ออก</td><td>`CN=DigiCert Global CA, O=DigiCert Inc, C=US`</td></tr>
+    <tr><td><strong>Validity: Not Before</strong></td><td>วันที่เริ่มมีผล</td><td>`Jan 1 00:00:00 2025 GMT`</td></tr>
+    <tr><td><strong>Validity: Not After</strong></td><td>วันที่หมดอายุ</td><td>`Jan 1 23:59:59 2026 GMT`</td></tr>
+    <tr><td><strong>Subject</strong></td><td><span class="glossary-term">DN<span class="tooltip">Distinguished Name — ชื่อที่ใช้ระบุตัวตนใน Certificate ประกอบด้วย CN (Common Name), O (Organization), OU (Organizational Unit), L (Locality), ST (State), C (Country)</span></span> ของเจ้าของ Certificate</td><td>`CN=*.example.com, O=Example Corp, L=Bangkok, C=TH`</td></tr>
+    <tr><td><strong>Subject Public Key Info</strong></td><td>Algorithm + Public Key Value</td><td>RSA (2048 bits) หรือ ECDSA (P-256)</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section3-4" class="section-ref">3.4 Distinguished Name (DN)</h3>
+<p>DN ใช้ระบุตัวตนของเจ้าของ Certificate (Subject) หรือผู้ออก Certificate (Issuer):</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Attribute</th><th>ชื่อเต็ม</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>CN</strong></td><td>Common Name</td><td>`www.example.com`, `John Doe`</td></tr>
+    <tr><td><strong>O</strong></td><td>Organization</td><td>`Example Company Ltd.`</td></tr>
+    <tr><td><strong>OU</strong></td><td>Organizational Unit</td><td>`IT Department`, `Security`</td></tr>
+    <tr><td><strong>L</strong></td><td>Locality</td><td>`Bangkok`, `San Francisco`</td></tr>
+    <tr><td><strong>ST</strong></td><td>State / Province</td><td>`Bangkok`, `California`</td></tr>
+    <tr><td><strong>C</strong></td><td>Country (ISO 3166-1 alpha-2)</td><td>`TH`, `US`, `JP`</td></tr>
+    <tr><td><strong>E</strong></td><td>Email Address</td><td>`admin@example.com`</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>ตัวอย่าง:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Subject: CN = *.example.com, O = Example Corp, L = Bangkok, ST = Bangkok, C = TH
+Issuer:  CN = DigiCert Global G2 TLS RSA SHA256 2020 CA1, O = DigiCert Inc, C = US</pre>
+
+<h3 id="section3-5" class="section-ref">3.5 X.509 v3 Extensions</h3>
+<p>Extensions คือส่วนสำคัญที่ทำให้ X.509 v3 มีความยืดหยุ่นและปลอดภัยกว่าเวอร์ชันก่อนหน้า:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Extension</th><th>Critical?</th><th>คำอธิบาย</th><th>ตัวอย่างค่า</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Basic Constraints</strong></td><td>ใช่</td><td>ระบุว่า Certificate นี้เป็น CA หรือไม่ และ Depth ของ Chain</td><td>`CA:TRUE`, `CA:FALSE, pathlen:0`</td></tr>
+    <tr><td><strong>Key Usage</strong></td><td>ใช่</td><td>จำกัดการใช้งาน Key</td><td>`digitalSignature, keyEncipherment, keyCertSign`</td></tr>
+    <tr><td><strong>Extended Key Usage</strong></td><td>ขึ้นอยู่กับ</td><td>ระบุวัตถุประสงค์เฉพาะ</td><td>`serverAuth, clientAuth, codeSigning, emailProtection`</td></tr>
+    <tr><td><strong><span class="glossary-term">Subject Alternative Name (SAN)<span class="tooltip">Subject Alternative Name — Extension ใน X.509 v3 ที่ระบุรายการ Domain/Email/IP ที่ Certificate ใช้ได้ — ปัจจุบันจำเป็นสำหรับ TLS</span></span></strong></td><td>ขึ้นอยู่กับ</td><td>รายการ Domain/Email/IP ที่ Certificate ใช้ได้</td><td>`DNS:*.example.com, DNS:example.com`</td></tr>
+    <tr><td><strong>CRL Distribution Points</strong></td><td>ไม่</td><td>URL สำหรับ Download CRL</td><td>`http://crl.digicert.com/...`</td></tr>
+    <tr><td><strong>Authority Information Access (AIA)</strong></td><td>ไม่</td><td>URL ของ OCSP Responder + Issuer Certificate</td><td>`http://ocsp.digicert.com`</td></tr>
+    <tr><td><strong>Certificate Policies</strong></td><td>ไม่</td><td>นโยบายที่ CA ใช้ในการออก Certificate</td><td>Policy OID</td></tr>
+    <tr><td><strong>Subject Key Identifier</strong></td><td>ไม่</td><td>Hash ของ Public Key — ใช้สร้าง Chain</td><td>`a4:8b:...`</td></tr>
+    <tr><td><strong>Authority Key Identifier</strong></td><td>ไม่</td><td>อ้างอิงถึง Public Key ของ CA ที่ลงนาม</td><td>`keyid:a4:8b:...`</td></tr>
+    <tr><td><strong><span class="glossary-term">SCT<span class="tooltip">Signed Certificate Timestamp — หลักฐานว่า Certificate ได้รับการบันทึกใน CT Log แล้ว — แนบไปกับ Certificate หรือ TLS Extension</span></span> (Signed Certificate Timestamp)</strong></td><td>ไม่</td><td>หลักฐานว่า Certificate ได้รับการบันทึกใน CT Log</td><td>จาก Certificate Transparency</td></tr>
+    <tr><td><strong>OCSP Must-Staple</strong></td><td>ไม่</td><td>บอก Client ว่า Server ต้องส่ง OCSP Stapling</td><td></td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>ความแตกต่าง X.509 v1, v2, v3:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>เวอร์ชัน</th><th>เพิ่มจากเวอร์ชันก่อน</th><th>ปี</th></tr></thead>
+  <tbody>
+    <tr><td><strong>v1</strong></td><td>ฟิลด์พื้นฐาน — Issuer, Subject, Public Key, Validity</td><td>1988</td></tr>
+    <tr><td><strong>v2</strong></td><td>Issuer Unique ID, Subject Unique ID (ไม่ค่อยได้ใช้)</td><td>1993</td></tr>
+    <tr><td><strong>v3</strong></td><td><strong>Extensions</strong> — ทำให้ Certificate มีความยืดหยุ่นและปลอดภัย</td><td>1996</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<!-- ========== SECTION 4 ========== -->
+<section id="section4" class="section-ref">
+<h2>4. Certificate Chain และการตรวจสอบความน่าเชื่อถือ</h2>
+
+<h3 id="section4-1" class="section-ref">4.1 Certificate Chain</h3>
+<p>Certificate Chain (หรือ Certification Path) คือลำดับชั้นของ Certificate ที่เชื่อมต่อจาก End Entity Certificate ไปยัง Root CA Certificate ที่เชื่อถือได้ (<span class="glossary-term">Trust Anchor<span class="tooltip">จุดเริ่มต้นความเชื่อถือใน PKI — Root CA Certificate ที่อยู่ใน Trust Store — เชื่อถือโดยปริยาย</span></span>):</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Root CA Certificate (Self-Signed)
+├── Subject = Issuer (CA รับรองตนเอง)
+├── Basic Constraints: CA:TRUE
+└── อยู่ใน Trust Store ของ OS/Browser
+        ↑ ลงนามโดย (Signature จาก Root CA Private Key)
+Intermediate CA Certificate
+├── Issuer = Root CA Subject
+├── Subject = Intermediate CA
+├── Basic Constraints: CA:TRUE, pathlen:0
+└── Key Usage: keyCertSign
+        ↑ ลงนามโดย (Signature จาก Intermediate CA Private Key)
+End Entity Certificate (Server Certificate)
+├── Issuer = Intermediate CA Subject
+├── Subject = *.example.com
+├── Basic Constraints: CA:FALSE
+├── Key Usage: digitalSignature, keyEncipherment
+├── Extended Key Usage: serverAuth
+└── SAN: DNS:*.example.com, DNS:example.com</pre>
+
+<h3 id="section4-2" class="section-ref">4.2 กระบวนการตรวจสอบ Certificate (<span class="glossary-term">Path Validation<span class="tooltip">กระบวนการตรวจสอบ Certificate Chain ตาม RFC 5280 — ประกอบด้วย 6 ขั้นตอน: Chain Building, Signature Verification, Validity Period, Revocation Check, Policy Check, Name Check</span></span>)</h3>
+<p>ตาม RFC 5280 — การตรวจสอบ Certificate ประกอบด้วย 6 ขั้นตอน:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ขั้นตอน</th><th>รายละเอียด</th><th>ถ้าล้มเหลว</th></tr></thead>
+  <tbody>
+    <tr><td><strong>1. Chain Building</strong></td><td>สร้างเส้นทางจาก End Entity → Root — ต้องหาลำดับที่ถูกต้อง</td><td>Certificate Not Trusted</td></tr>
+    <tr><td><strong>2. Signature Verification</strong></td><td>ตรวจสอบ Signature ในแต่ละระดับ — ใช้ Public Key ของถัดไป</td><td>Invalid Signature</td></tr>
+    <tr><td><strong>3. Validity Period</strong></td><td>ตรวจสอบวันที่ — Certificate ต้องยังไม่หมดอายุและยังไม่เริ่มมีผล</td><td>Certificate Expired</td></tr>
+    <tr><td><strong>4. Revocation Check</strong></td><td>ตรวจสอบว่า Certificate ได้รับการเพิกถอนหรือไม่ (<span class="glossary-term">CRL<span class="tooltip">Certificate Revocation List — รายการ Serial Number ของ Certificate ที่ถูกเพิกถอน — ออกและลงนามโดย CA</span></span>/<span class="glossary-term">OCSP<span class="tooltip">Online Certificate Status Protocol — โปรโทคอลสำหรับตรวจสอบสถานะ Certificate แบบ Real-time — ตอบกลับด้วย Good/Revoked/Unknown</span></span>)</td><td>Revoked Certificate</td></tr>
+    <tr><td><strong>5. Policy Check</strong></td><td>ตรวจสอบ Key Usage, Extended Key Usage — Certificate ใช้ถูกวัตถุประสงค์หรือไม่</td><td>Not Authorized</td></tr>
+    <tr><td><strong>6. Name Check</strong></td><td>ตรวจสอบ Common Name หรือ SAN ตรงกับ Domain Name ที่เรียก</td><td>Name Mismatch</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section4-3" class="section-ref">4.3 <span class="glossary-term">Trust Store<span class="tooltip">ชุดของ Root CA Certificate ที่ระบบปฏิบัติการหรือ Browser เชื่อถือโดยปริยาย — การเพิ่ม/ลบ Root CA มีผลต่อทุก Certificate ที่ CA นั้นรับรอง</span></span></h3>
+<p>Trust Store คือชุดของ Root CA Certificate ที่ระบบปฏิบัติการหรือ Browser เชื่อถือโดยปริยาย (Trust Anchor):</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ระบบ</th><th>ที่เก็บ Trust Store</th><th>จำนวน Root CA (ประมาณ)</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Windows</strong></td><td>Certificate Store (mmc)</td><td>~200</td></tr>
+    <tr><td><strong>macOS / iOS</strong></td><td>Keychain</td><td>~150</td></tr>
+    <tr><td><strong>Linux (Ubuntu/Debian)</strong></td><td>`/etc/ssl/certs/ca-certificates.crt`</td><td>~150</td></tr>
+    <tr><td><strong>Linux (RHEL/CentOS)</strong></td><td>`/etc/pki/tls/certs/ca-bundle.crt`</td><td>~150</td></tr>
+    <tr><td><strong>Android</strong></td><td>`/system/etc/security/cacerts/`</td><td>~120</td></tr>
+    <tr><td><strong>Firefox</strong></td><td>Built-in (อิสระจาก OS)</td><td>~140</td></tr>
+    <tr><td><strong>Chrome</strong></td><td>ใช้ Trust Store ของ OS</td><td>ตาม OS</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>ข้อควรรู้เกี่ยวกับ Trust Store:</strong></p>
+<ul>
+  <li>การเพิ่ม Root CA ลงใน Trust Store = การเชื่อถือ Certificate ทั้งหมดที่ CA นั้นออก</li>
+  <li>การลบ Root CA ออกจาก Trust Store = ทำให้ Certificate ทั้งหมดที่ CA นั้นรับรองไม่น่าเชื่อถือ</li>
+  <li>Windows และ macOS อัปเดต Trust Store ผ่าน Windows Update / macOS Update</li>
+  <li>Firefox จัดการ Trust Store ของตนเอง — อิสระจาก OS</li>
+</ul>
+
+<h3 id="section4-4" class="section-ref">4.4 Cross-Certification</h3>
+<p>Cross-Certification คือการที่ CA หนึ่งรับรอง CA อีกตัว — ทำให้ Certificate จาก PKI ต่างกันสามารถ Trust กันได้:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>CA A (VeriSign) ←──── Cross-Certificate ────→ CA B (GlobalSign)
+                        (CA A รับรอง CA B)
+                             │
+                             ▼
+              Certificate ที่ออกโดย CA B
+              ก็สามารถ Trust ผ่าน CA A ได้</pre>
+
+<p><strong>การใช้งาน:</strong> US Federal PKI (FPKI) ใช้ Bridge CA เพื่อเชื่อมต่อ PKI ของหน่วยงานรัฐต่างๆ</p>
+</section>
+<hr>
+<!-- ========== SECTION 5 ========== -->
+<section id="section5" class="section-ref">
+<h2>5. การบริหารจัดการ Certificate Lifecycle</h2>
+
+<h3 id="section5-1" class="section-ref">5.1 วงจรชีวิตของ Certificate</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>    ┌─────────────────────────────────────────────────────────────┐
+    │                 Certificate Lifecycle                       │
+    │                                                             │
+    │  1. Key Generation ──── 2. CSR ──── 3. Verification        │
+    │       (สร้าง Key Pair)    (ขอ Certificate)   (RA ตรวจสอบ)  │
+    │                                                             │
+    │  4. Issuance ────── 5. Distribution ────── 6. Installation │
+    │  (CA ออก Cert)      (ส่ง Cert กลับ)       (ติดตั้งบนระบบ)  │
+    │                                                             │
+    │  ════════════════════ 7. Usage ═══════════════════════════  │
+    │                                                             │
+    │  8. Monitoring ────── 9. Renewal / Re-key ──── 10. Expiry  │
+    │  (ตรวจสอบ Cert)       (ต่ออายุ / เปลี่ยน Key)  (หมดอายุ)    │
+    │                           │                                │
+    │                           ├── Revocation (ถ้า Key รั่ว)    │
+    │                           │    ├── CRL / OCSP             │
+    │                           │    └── CT Log                 │
+    │                           └── Archive (เก็บประวัติ)       │
+    └─────────────────────────────────────────────────────────────┘</pre>
+
+<h3 id="section5-2" class="section-ref">5.2 Key Generation</h3>
+<p><strong>ข้อควรปฏิบัติในการสร้าง Key Pair:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ข้อควรทำ</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>สร้าง Key บนเครื่องที่จะใช้งาน</strong></td><td>อย่าสร้าง Key ที่เครื่องอื่นแล้วส่งมา — Private Key จะรั่วระหว่างทาง</td></tr>
+    <tr><td><strong>ใช้ Key Size ที่ปลอดภัย</strong></td><td>RSA 2048+ บิต หรือ ECC P-256+</td></tr>
+    <tr><td><strong>ป้องกัน Private Key</strong></td><td>File Permission 600, HSM หรือ TPM สำหรับ Production</td></tr>
+    <tr><td><strong>Backup Private Key</strong></td><td>ถ้า Key หาย → Certificate ใช้งานไม่ได้ — Backup ด้วยความปลอดภัยสูง</td></tr>
+    <tr><td><strong>แยก Key ตามการใช้งาน</strong></td><td>ไม่ใช้ Key เดียวกันสำหรับ TLS, Code Signing, Email</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>คำสั่ง OpenSSL สำหรับสร้าง Key Pair และ CSR:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># สร้าง Private Key (RSA 2048) + CSR ในคำสั่งเดียว
+openssl req -new -newkey rsa:2048 -nodes \
+    -keyout server.key -out server.csr \
+    -subj "/C=TH/ST=Bangkok/L=Bangkok/O=Example Corp/CN=www.example.com"
+
+# สร้าง Private Key ก่อน (ECC P-256)
+openssl ecparam -genkey -name prime256v1 -out server.key
+
+# สร้าง CSR จาก Key ที่มีอยู่
+openssl req -new -key server.key -out server.csr \
+    -subj "/C=TH/O=Example Corp/CN=www.example.com" \
+    -addext "subjectAltName=DNS:www.example.com,DNS:example.com"</pre>
+
+<h3 id="section5-3" class="section-ref">5.3 CSR (Certificate Signing Request)</h3>
+<p>CSR ประกอบด้วยข้อมูลสำคัญ 3 ส่วน:</p>
+<ol>
+  <li><strong>Public Key</strong> — Key ที่ขอให้ CA รับรอง</li>
+  <li><strong>Distinguished Name</strong> — ข้อมูลเจ้าของ (CN, O, OU, L, ST, C)</li>
+  <li><strong>Signature</strong> — ลงนาม CSR ด้วย Private Key (พิสูจน์ว่าครอบครอง Key)</li>
+</ol>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>-----BEGIN CERTIFICATE REQUEST-----
+MIICxjCCAa4CAQAwXjELMAkGA1UEBhMCVEgxEjAQBgNVBAgMCUJhbmdrb2sxCzAJ
+... base64 ...
+-----END CERTIFICATE REQUEST-----</pre>
+
+<p><strong>การตรวจสอบ CSR (โดย RA):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># ดูเนื้อหา CSR
+openssl req -in server.csr -noout -text
+
+# ตรวจสอบว่า CSR ลงนามด้วย Private Key จริงหรือไม่
+openssl req -in server.csr -noout -verify</pre>
+
+<h3 id="section5-4" class="section-ref">5.4 การตรวจสอบตัวตน (Validation)</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ระดับ</th><th>การตรวจสอบ</th><th>ใช้เวลานาน</th><th>ราคาประมาณ/ปี</th><th>การใช้งาน</th></tr></thead>
+  <tbody>
+    <tr><td><strong><span class="glossary-term">DV<span class="tooltip">Domain Validation — การตรวจสอบเพียงว่าเป็นเจ้าของ Domain — ผ่านอีเมล, DNS Record, HTTP Challenge — ระดับพื้นฐาน</span></span> (Domain Validation)</strong></td><td>ตรวจสอบว่าเป็นเจ้าของ Domain — ผ่านอีเมล, DNS Record, HTTP Challenge</td><td>นาที-ชม.</td><td><strong>ฟรี</strong> (Let's Encrypt) หรือ $10-50</td><td>เว็บไซต์ทั่วไป, Blog, SME</td></tr>
+    <tr><td><strong><span class="glossary-term">OV<span class="tooltip">Organization Validation — การตรวจสอบตัวตนองค์กร — DBD, ทะเบียนการค้า, โทรศัพท์ยืนยัน — ระดับกลาง</span></span> (Organization Validation)</strong></td><td>ตรวจสอบตัวตนองค์กร — DBD, ทะเบียนการค้า, โทรศัพท์ยืนยัน</td><td>1-3 วัน</td><td>$50-200</td><td>เว็บไซต์ธุรกิจ</td></tr>
+    <tr><td><strong><span class="glossary-term">EV<span class="tooltip">Extended Validation — การตรวจสอบละเอียด — เอกสารนิติบุคคล, บัตรประชาชน, สถานที่ตั้ง — ระดับสูงสุด ใช้กับธนาคาร</span></span> (Extended Validation)</strong></td><td>ตรวจสอบละเอียด — เอกสารนิติบุคคล, บัตรประชาชน, สถานที่ตั้ง, โทรศัพท์</td><td>3-10 วัน</td><td>$200-800</td><td>ธนาคาร, E-commerce, หน่วยงานรัฐ</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>DV Automation — <span class="glossary-term">ACME<span class="tooltip">Automatic Certificate Management Environment — โปรโทคอล RFC 8555 สำหรับขอ Certificate DV แบบอัตโนมัติ — ใช้โดย Let's Encrypt</span></span> Protocol (Let's Encrypt):</strong></p>
+<p><span class="glossary-term">ACME<span class="tooltip">Automatic Certificate Management Environment — โปรโทคอล RFC 8555 สำหรับขอ Certificate DV แบบอัตโนมัติ — ใช้โดย Let's Encrypt</span></span> (Automatic Certificate Management Environment) — RFC 8555 — เป็นโปรโทคอลที่ทำให้การขอ Certificate DV เป็นแบบอัตโนมัติเต็มรูปแบบ:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Client ───────────── ACME Protocol ──────────→ CA (Let's Encrypt)
+  │                                              │
+  ├── สร้าง Key Pair + CSR                      │
+  ├── POST to New Order ──────────────────────→│
+  │←── Challenges (HTTP-01 หรือ DNS-01) ───────┤
+  ├── แก้ Challenge (วางไฟล์หรือ TXT Record)    │
+  ├── POST to Challenge ──────────────────────→│
+  │←── CA ตรวจสอบ Challenge ──────────────────┤
+  │←── Certificate ────────────────────────────┤
+  └── ติดตั้ง Certificate                        └── Auto-Renewal ทุก 60-90 วัน</pre>
+
+<h3 id="section5-5" class="section-ref">5.5 การแจกจ่ายและการติดตั้ง</h3>
+<p><strong>Certificate Bundle Composition:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Certificate Bundle (chain.pem):
+├── End Entity Certificate (server.crt)        ← ลงนามโดย Intermediate
+├── Intermediate CA Certificate                ← ลงนามโดย Root CA
+└── Root CA Certificate (optional)             ← Self-Signed
+
+การ Config บน Web Server:
+- SSLCertificateFile: chain.pem (หรือ server.crt + intermediate.crt รวมกัน)
+- SSLCertificateKeyFile: server.key (Private Key — ป้องกันด้วย file permission 400)
+
+การตรวจสอบการติดตั้ง:
+openssl s_client -connect example.com:443 -showcerts</pre>
+
+<h3 id="section5-6" class="section-ref">5.6 การต่ออายุ Certificate (Renewal)</h3>
+<p><strong>แนวทางปฏิบัติที่แนะนำ:</strong></p>
+<ul>
+  <li><strong>ต่ออายุก่อนหมดอายุ 30-60 วัน</strong> — ป้องกัน Service Disruption</li>
+  <li><strong>ใช้ Key เดิม (Same Key Renewal)</strong> — CSR ใช้ Public Key เดิม — CA รับรอง Key เดิมอีกครั้ง</li>
+  <li><strong>ใช้ Key ใหม่ (New Key Renewal)</strong> — สร้าง Key Pair ใหม่ — <strong>แนะนำ</strong> เพื่อความปลอดภัย</li>
+  <li><strong>Automated Renewal</strong> — Let's Encrypt (ACME) ต่ออายุอัตโนมัติทุก 60-90 วัน</li>
+</ul>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>วิธี</th><th>คำอธิบาย</th><th>ข้อดี</th><th>ข้อเสีย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Same Key</strong></td><td>ใช้ Key Pair เดิม — CSR เก่า (ถ้ายังไม่หมดอายุ)</td><td>ไม่ต้องเปลี่ยน Key ทุกที่</td><td>ถ้า Key รั่ว ปัญหายังอยู่</td></tr>
+    <tr><td><strong>New Key</strong></td><td>สร้าง Key Pair ใหม่ → CSR ใหม่</td><td>เพิ่มความปลอดภัย (Key Rotation)</td><td>ต้องแจกจ่าย Key ใหม่</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section5-7" class="section-ref">5.7 Certificate Monitoring</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>เครื่องมือ</th><th>ฟังก์ชัน</th><th>รูปแบบ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Certbot (EFF)</strong></td><td>Auto-renewal สำหรับ Let's Encrypt — Apache/Nginx</td><td>CLI</td></tr>
+    <tr><td><strong>acme.sh</strong></td><td>ACME Client Script — รองรับหลาย DNS API</td><td>Bash</td></tr>
+    <tr><td><strong>Caddy</strong></td><td>Web Server ที่ Auto-HTTPS — จัดการ Certificate อัตโนมัติ</td><td>Web Server</td></tr>
+    <tr><td><strong>cert-manager (Kubernetes)</strong></td><td>จัดการ Certificate ใน Kubernetes</td><td>Kubernetes</td></tr>
+    <tr><td><strong>OpenSCAD / Step CA</strong></td><td>Private CA สำหรับองค์กร — ACME Protocol</td><td>CLI + API</td></tr>
+    <tr><td><strong>SSL Labs</strong></td><td>ตรวจสอบการ Config TLS</td><td>Web</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<!-- ========== SECTION 6 ========== -->
+<section id="section6" class="section-ref">
+<h2>6. Certificate Revocation: CRL vs OCSP</h2>
+
+<h3 id="section6-1" class="section-ref">6.1 เหตุผลที่ต้อง Revoke Certificate</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>เหตุผล</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Private Key ถูกเปิดเผย</strong></td><td>Heartbleed — Private Key รั่วจาก Memory Leak</td></tr>
+    <tr><td><strong>Private Key ถูกขโมย</strong></td><td>HSM ถูกขโมย, Laptop หาย</td></tr>
+    <tr><td><strong>เจ้าของ Certificate เปลี่ยนองค์กร</strong></td><td>พนักงานที่ถือ Certificate ของบริษัทลาออก</td></tr>
+    <tr><td><strong>Certificate ออกโดยไม่ถูกต้อง</strong></td><td>DigiNotar — ออก Certificate ปลอม</td></tr>
+    <tr><td><strong>Domain Name เปลี่ยนเจ้าของ</strong></td><td>Domain ขายต่อ — Owner ใหม่ไม่ควรใช้ Certificate เดิม</td></tr>
+    <tr><td><strong>Cessation of Operation</strong></td><td>ระบบปิดตัว — Certificate ไม่จำเป็นอีกต่อไป</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section6-2" class="section-ref">6.2 <span class="glossary-term">CRL<span class="tooltip">Certificate Revocation List — รายการ Serial Number ของ Certificate ที่ถูกเพิกถอน — ออกโดย CA และลงนามด้วย Private Key ของ CA</span></span> (Certificate Revocation List)</h3>
+<p>CRL เป็นลิสต์ของ Serial Number ของ Certificate ที่ได้รับการเพิกถอน — ออกโดย CA และลงนามด้วย Private Key ของ CA:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Certificate Revocation List:
+├── Version
+├── Signature Algorithm (sha256WithRSAEncryption)
+├── Issuer (DN ของ CA)
+├── This Update (วันที่ออก CRL)
+├── Next Update (วันที่ CRL ถัดไป)
+├── Revoked Certificates:
+│   ├── Serial Number: 0x4A3B..., Revocation Date: Jan 15 2025
+│   ├── Serial Number: 0x7C1D..., Revocation Date: Feb 20 2025
+│   └── ... (รายการ Serial Numbers)
+└── Signature (ลงนามโดย CA)
+
+ตัวอย่าง URL: http://crl.digicert.com/DigiCertGlobalCA.crl</pre>
+
+<p><strong>ประเภทของ CRL:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>คำอธิบาย</th><th>ขนาด</th><th>การใช้งาน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Full CRL (Base CRL)</strong></td><td>รายการ Revoked ทั้งหมดตั้งแต่เริ่ม</td><td>ใหญ่</td><td>CA เล็ก</td></tr>
+    <tr><td><strong>Delta CRL</strong></td><td>เฉพาะ Revoked ตั้งแต่ Full CRL ล่าสุด</td><td>เล็ก</td><td>CA ใหญ่ (ประหยัด Bandwidth)</td></tr>
+    <tr><td><strong>Freshest CRL</strong></td><td>ลิงก์ไปยัง Delta CRL</td><td>เล็ก</td><td>ใช้ร่วมกับ Full CRL</td></tr>
+    <tr><td><strong>Indirect CRL</strong></td><td>CRL ที่รวม Revoked จากหลาย CA</td><td>กลาง</td><td>PKI Complex</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>ข้อจำกัดของ CRL:</strong></p>
+<ul>
+  <li><strong>ขนาดใหญ่</strong> — สำหรับ CA ใหญ่ (DigiCert) CRL อาจมีหลาย MB</li>
+  <li><strong>Latency</strong> — CRL อัปเดตตามรอบ (ทุก 6-24 ชม.) — Certificate ที่ได้รับการ Revoke ใหม่ๆ อาจไม่ปรากฏ</li>
+  <li><strong>ไม่ Real-time</strong> — ในช่วงเวลาระหว่างที่ CA ยังไม่ออก CRL ใหม่ Certificate ที่ได้รับการ Revoke อาจยังได้รับการเชื่อถือ</li>
+</ul>
+
+<h3 id="section6-3" class="section-ref">6.3 <span class="glossary-term">OCSP<span class="tooltip">Online Certificate Status Protocol — โปรโทคอล RFC 6960 สำหรับตรวจสอบสถานะ Certificate แบบ Real-time — ตอบกลับด้วยสถานะ Good, Revoked, หรือ Unknown</span></span> (Online Certificate Status Protocol)</h3>
+<p>OCSP — RFC 6960 — เป็นโปรโทคอลที่ใช้ตรวจสอบสถานะ Certificate แบบ Real-time:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Client                               OCSP Responder
+  │                                        │
+  ├── OCSP Request ─────────────────────→ │
+  │   Serial Number: 0x4A3B...             │
+  │   Issuer: CN=DigiCert Global CA...     │
+  │                                        │
+  │←── OCSP Response ────────────────────┤
+  │   Status: Good / Revoked / Unknown     │
+  │   This Update: (เวลาปัจจุบัน)          │
+  │   Next Update: (เวลาที่ Response หมดอายุ)│
+  │   Signature (ลงนามโดย CA)             │
+  │                                        │
+  ถ้า Status = Good → Certificate ยังใช้ได้
+  ถ้า Status = Revoked → Certificate ถูกเพิกถอน
+  ถ้า Status = Unknown → CA ไม่รู้จัก Certificate นี้</pre>
+
+<p><strong>ข้อดีของ OCSP:</strong></p>
+<ul>
+  <li><strong>Real-time</strong> — ข้อมูลทันสมัย</li>
+  <li><strong>ขนาดเล็ก</strong> — ตรวจสอบทีละ Certificate ไม่ต้องดาวน์โหลด CRL ทั้งหมด</li>
+  <li><strong>ประสิทธิภาพ</strong> — ใช้ Bandwidth น้อย</li>
+</ul>
+
+<p><strong>ข้อเสียของ OCSP:</strong></p>
+<ul>
+  <li><strong>ต้องออนไลน์ทุกครั้ง</strong> — ถ้า OCSP Responder ล่ม → ไม่สามารถตรวจสอบได้ (Fail closed vs Fail open)</li>
+  <li><strong>Privacy</strong> — CA รู้ว่าผู้ใช้กำลังเยี่ยมชมเว็บไซต์ใด (Client ส่ง Serial Number → CA รู้ว่ากำลังเข้าถึง domain ใด)</li>
+  <li><strong>ภาระ CA</strong> — ต้องตอบ OCSP Request จำนวนมาก</li>
+  <li><strong>Single Point of Failure</strong> — ถ้า OCSP Responder Down → Client อาจข้ามการตรวจสอบ (Soft-fail)</li>
+</ul>
+
+<h3 id="section6-4" class="section-ref">6.4 <span class="glossary-term">OCSP Stapling<span class="tooltip">เทคนิคที่ Web Server ขอ OCSP Response จาก CA แล้วแนบไปกับ TLS Handshake — แก้ปัญหา Privacy และ Performance ของ OCSP ปกติ</span></span> (RFC 6066, RFC 6961)</h3>
+<p>OCSP Stapling แก้ปัญหาด้าน Privacy และ Performance ของ OCSP โดยให้เว็บเซิร์ฟเวอร์เป็นผู้ขอ OCSP Response จาก CA แล้วแนบไปกับ TLS Handshake:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>แบบปกติ (OCSP):
+Client ─── TLS Handshake ───→ Server
+                                  Client ต้องติดต่อ OCSP Responder แยก → Slow + Privacy Leak
+
+แบบ OCSP Stapling:
+        ───(1) Server ขอ OCSP Response ──→ CA (ทุก 4-48 ชม.)
+        ←──(2) OCSP Response ───────────────┤
+Server ───(3) TLS Handshake + OCSP Response ──→ Client (Client ไม่ต้องติดต่อ CA)
+                                                  ├── เร็วขึ้น (ลด Round Trip)
+                                                  ├── Privacy ดี (CA ไม่รู้ Client)
+                                                  └── Server มี OCSP Response ใน Cache</pre>
+
+<p><strong>ข้อดีของ OCSP Stapling เหนือ OCSP ปกติ:</strong></p>
+<ul>
+  <li><strong>Privacy</strong> — CA ไม่รู้ว่า Client กำลังเข้าถึง domain ใด</li>
+  <li><strong>Performance</strong> — Client ไม่ต้องติดต่อ OCSP Responder — ลด Latency</li>
+  <li><strong>Reliability</strong> — ไม่มี Single Point of Failure ที่ Client side</li>
+</ul>
+
+<p><strong>OCSP Must-Staple (Extension):</strong></p>
+<ul>
+  <li>Certificate Extension ที่บอก Client ว่า "Server <strong>ต้อง</strong>ส่ง OCSP Stapling"</li>
+  <li>ถ้า Server ส่ง TLS Handshake โดยไม่มี OCSP Stapling → Client ปฏิเสธการเชื่อมต่อ</li>
+  <li>ป้องกันการโจมตี Downgrade ที่ Client ข้ามการตรวจสอบ Revocation</li>
+</ul>
+
+<h3 id="section6-5" class="section-ref">6.5 การเปรียบเทียบ CRL, OCSP, OCSP Stapling</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>CRL</th><th>Delta CRL</th><th>OCSP</th><th>OCSP Stapling</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Real-time</strong></td><td>❌ (ทุก 6-24 ชม.)</td><td>❌ แต่ถี่กว่า</td><td>✅</td><td>✅</td></tr>
+    <tr><td><strong>ขนาดข้อมูล</strong></td><td>ใหญ่ (MB)</td><td>เล็ก</td><td>เล็ก (few bytes)</td><td>เล็ก</td></tr>
+    <tr><td><strong>Privacy</strong></td><td>✅ ดี (ไม่ส่ง Serial)</td><td>✅ ดี</td><td>❌ แย่ (CA รู้ Client)</td><td>✅ ดี</td></tr>
+    <tr><td><strong>Offline</strong></td><td>✅ รองรับ</td><td>✅ รองรับ</td><td>❌ ต้องออนไลน์</td><td>✅ (Server Cache)</td></tr>
+    <tr><td><strong>ภาระ CA</strong></td><td>น้อย</td><td>ปานกลาง</td><td><strong>มาก</strong></td><td>ปานกลาง (Server Cache)</td></tr>
+    <tr><td><strong>Latency</strong></td><td>สูง (ต้อง Download)</td><td>ปานกลาง</td><td>ต่ำ</td><td><strong>ต่ำที่สุด</strong></td></tr>
+    <tr><td><strong>การใช้งานจริง</strong></td><td>Legacy</td><td>CA ขนาดใหญ่</td><td>ปัจจุบัน</td><td><strong>แนะนำ</strong></td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section6-6" class="section-ref">6.6 แนวทางปฏิบัติในปัจจุบันสำหรับ Browser</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>Browser</th><th>วิธีตรวจสอบ Revocation</th><th>หมายเหตุ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Chrome</strong></td><td><span class="glossary-term">CRLSet<span class="tooltip">รายการ Revoked Certificate แบบ Compact ที่ Google ส่งให้ Chrome โดยตรง — อัปเดตทุก 30 นาที — แก้ปัญหา Performance ของ CRL/OCSP</span></span> (Google ส่ง CRLSet อัปเดตทุก 30 นาที) + OCSP (Soft-fail)</td><td>CRLSet เป็น Default — OCSP ใช้เมื่อไม่เจอใน CRLSet</td></tr>
+    <tr><td><strong>Firefox</strong></td><td>CRLite (Compact CRL — ดาวน์โหลดทุก 6 ชม.) + OCSP</td><td>CRLite ใหม่กว่า CRLSet</td></tr>
+    <tr><td><strong>Safari</strong></td><td>OCSP (Hard-fail — ถ้า OCSP ไม่ตอบ → ไม่เชื่อมต่อ)</td><td>Privacy Issue — Apple เปลี่ยนเป็น OCSP Stapling มากขึ้น</td></tr>
+    <tr><td><strong>Edge</strong></td><td>CRLSet + OCSP (เหมือน Chrome)</td><td></td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>CRLSet และ CRLite</strong> เป็นวิธีการใหม่ที่ Google และ Mozilla พัฒนาขึ้น — แทนที่การให้ Client ตรวจสอบ Revocation เอง โดย CA ส่งรายการ Revoked Certificate (Compact) ไปยัง Browser โดยตรง</p>
+</section>
+<hr>
+<!-- ========== SECTION 7 ========== -->
+<section id="section7" class="section-ref">
+<h2>7. <span class="glossary-term">Certificate Transparency (CT)<span class="tooltip">Certificate Transparency — ระบบ RFC 6962 ที่ให้ CA ส่ง Certificate ทั้งหมดไปยัง Public CT Log — ตรวจจับ Certificate ปลอม (DigiNotar) ผ่าน Merkle Tree</span></span></h2>
+
+<h3 id="section7-1" class="section-ref">7.1 ปัญหาที่ CT แก้ไข</h3>
+<p>ก่อนมี CT: เมื่อ CA ออก Certificate ไม่ถูกต้อง (เช่น DigiNotar, Comodo) — ไม่มีวิธีตรวจจับอย่างรวดเร็ว</p>
+<ul>
+  <li>CA ถูกบุกรุก → ออก Certificate ปลอม → นำไปใช้ MITM ได้</li>
+  <li>กว่าจะตรวจพบ: อาจใช้เวลาหลายวันถึงหลายเดือน</li>
+  <li>เหยื่อไม่รู้ว่ามี Certificate ของตัวเองถูกออกโดยไม่ได้รับอนุญาต</li>
+</ul>
+
+<h3 id="section7-2" class="section-ref">7.2 หลักการของ Certificate Transparency</h3>
+<p>Certificate Transparency — RFC 6962 — เสนอโดย Ben Laurie, Adam Langley, Emilia Kasper (Google, 2013):</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>1. ทุก Certificate ที่ออกโดย Public CA ต้องถูกบันทึกลงใน Public CT Log
+2. CT Log เป็น Merkle Tree — ตรวจสอบได้ว่า Certificate อยู่ใน Log หรือไม่
+3. CA ส่ง Certificate ไปยัง CT Log → Log ส่ง SCT (Signed Certificate Timestamp) กลับ
+4. CA แนบ SCT ไปกับ Certificate (Extension หรือ TLS Extension)
+5. Client ตรวจสอบ SCT — ถ้าไม่มี → ไม่เชื่อถือ Certificate</pre>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>                           CT Log (Merkle Tree)
+                                │
+     ┌─────────── CA ────────────┤
+     │                           │
+     ▼                           ▼
+Certificate + SCT           Audit ตรวจสอบ
+(แนบ SCT ไปกับ TLS)        (Monitor ว่าไม่มี Cert ปลอม)</pre>
+
+<h3 id="section7-3" class="section-ref">7.3 CT Log Structure</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Merkle Tree (Hash Tree):
+          ┌──── R (Root Hash) ────┐
+          │                        │
+    ┌──── H1 ────┐          ┌──── H2 ────┐
+    │            │          │            │
+  H1_1         H1_2       H2_1         H2_2
+  │            │          │            │
+Cert-1       Cert-2     Cert-3        Cert-4
+
+SCT = Signed Certificate Timestamp
+   ├── Log ID (Public Key ของ CT Log)
+   ├── Timestamp (ตอนที่ถูกบันทึก)
+   ├── Merkle Tree Hash
+   └── Signature (ลงนามโดย CT Log)</pre>
+
+<p><strong>ประโยชน์ของ CT:</strong></p>
+<ul>
+  <li><strong>Detect Rogue Certificate</strong> — Domain Owner สามารถตรวจสอบ CT Log ว่ามี Certificate ของตัวเองถูกออกโดยไม่ได้รับอนุญาตหรือไม่</li>
+  <li><strong>Audit CA</strong> — CA ทุกแห่งต้องส่ง Certificate ไปยัง CT Log — สามารถตรวจสอบการทำงานของ CA ได้</li>
+  <li><strong>Historical Record</strong> — เก็บประวัติ Certificate ทั้งหมด — ใช้ในการสืบสวน</li>
+</ul>
+
+<h3 id="section7-4" class="section-ref">7.4 CT ในปัจจุบัน</h3>
+<ul>
+  <li><strong>Chrome</strong> (2018+): Certificate ที่ไม่มี SCT จะไม่ได้รับการเชื่อถือ</li>
+  <li><strong>Apple (iOS/macOS)</strong> (2018+): บังคับ SCT สำหรับ Certificate ที่ออกหลังตุลาคม 2018</li>
+  <li><strong>CA/Browser Forum</strong>: ข้อบังคับว่า Public CA ต้องส่ง Certificate ทุกใบเข้า CT Log</li>
+</ul>
+</section>
+<hr>
+
+<!-- ========== SECTION 8 ========== -->
+<section id="section8" class="section-ref">
+<h2>8. การประยุกต์ใช้ PKI ในเครือข่าย</h2>
+
+<h3 id="section8-1" class="section-ref">8.1 TLS/SSL (HTTPS)</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>องค์ประกอบ</th><th>Certificate</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Server Certificate</strong></td><td>รับรองตัวตนของเว็บเซิร์ฟเวอร์ — มี SAN=Domain Name — EKU=serverAuth</td></tr>
+    <tr><td><strong>Client Certificate</strong> (<span class="glossary-term">mTLS<span class="tooltip">Mutual TLS — TLS ที่ทั้ง Client และ Server มี Certificate — ใช้ใน API Security, Service Mesh, IoT, Zero Trust</span></span>)</td><td>รับรองตัวตนของผู้ใช้หรืออุปกรณ์ — EKU=clientAuth</td></tr>
+    <tr><td><strong>Root CA</strong></td><td>DigiCert, Let's Encrypt (ISRG), GlobalSign</td></tr>
+    <tr><td><strong>Validation</strong></td><td>CRL / OCSP / OCSP Stapling / CT</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>Mutual TLS (mTLS):</strong></p>
+<ul>
+  <li>ทั้ง Client และ Server มี Certificate</li>
+  <li>ใช้ใน: API Security (Service Mesh — Istio, Linkerd), IoT, Zero Trust</li>
+  <li>ข้อดี: ไม่ต้องใช้ Password หรือ API Key — Authentication ผ่าน Certificate</li>
+</ul>
+
+<h3 id="section8-2" class="section-ref">8.2 Code Signing</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>รายละเอียด</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>วัตถุประสงค์</strong></td><td>ยืนยันว่าซอฟต์แวร์มาจากผู้พัฒนาจริง และไม่ถูกแก้ไข</td></tr>
+    <tr><td><strong>ระบบปฏิบัติการ</strong></td><td>Windows (Authenticode), macOS (Gatekeeper), Android (APK Signing)</td></tr>
+    <tr><td><strong>EKU</strong></td><td>`codeSigning`</td></tr>
+    <tr><td><strong>การทำงาน</strong></td><td>Developer ลงนาม Binary/Installer ด้วย Code Signing Certificate</td></tr>
+    <tr><td><strong>Timestamp</strong></td><td>ลงนาม Timestamp พร้อม Signature — Certificate หมดอายุแล้ว Signature ยังใช้ได้</td></tr>
+    <tr><td><strong>SmartScreen</strong></td><td>Windows Defender SmartScreen ตรวจสอบ Signature ก่อนรัน</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>การโจมตีที่เกี่ยวข้อง:</strong></p>
+<ul>
+  <li>SolarWinds (2020): Malicious DLL ถูก Sign ด้วย Certificate จริง (Supply Chain Attack)</li>
+  <li><strong>Lesson:</strong> Code Signing Certificate ต้องปลอดภัยที่สุด — เก็บใน HSM</li>
+</ul>
+
+<h3 id="section8-3" class="section-ref">8.3 Email Security (S/MIME)</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>S/MIME</th><th>PGP/GPG</th></tr></thead>
+  <tbody>
+    <tr><td><strong>มาตรฐาน</strong></td><td>PKCS#7 / CMS</td><td>OpenPGP (RFC 4880)</td></tr>
+    <tr><td><strong>Trust Model</strong></td><td><strong>Hierarchical PKI</strong> (CA-based)</td><td><strong>Web of Trust</strong></td></tr>
+    <tr><td><strong>การใช้งาน</strong></td><td>Enterprise, Outlook, Apple Mail</td><td>Technical Users, Linux</td></tr>
+    <tr><td><strong>Certificate</strong></td><td>X.509 (ต้องซื้อ/ขอจาก CA)</td><td>PGP Key (สร้างเอง ไม่ต้องมี CA)</td></tr>
+    <tr><td><strong>EKU</strong></td><td>`emailProtection`</td><td>—</td></tr>
+    <tr><td><strong>การออกแบบ</strong></td><td>Sign + Encrypt</td><td>Sign + Encrypt</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>S/MIME Workflow:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Sender:
+├── Sign: Hash(Email) → Sign ด้วย Private Key → Signature
+├── Encrypt: สร้าง Session Key → Encrypt Email → Encrypt Session Key ด้วย Recipient's Public Key
+└── ส่ง: Encrypted Email + Encrypted Session Key + Signature
+
+Recipient:
+├── Decrypt: Decrypt Session Key ด้วย Private Key → Decrypt Email
+├── Verify: Verify Signature ด้วย Sender's Public Key
+└── อ่าน Email → ตรวจสอบว่าเป็นของ Sender จริง</pre>
+
+<h3 id="section8-4" class="section-ref">8.4 IoT Device Identity</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ความท้าทาย</th><th>แนวทางแก้ไขด้วย PKI</th></tr></thead>
+  <tbody>
+    <tr><td><strong>อุปกรณ์นับล้านตัว</strong></td><td>CA + Auto-Provisioning (ACME, EST, CMP)</td></tr>
+    <tr><td><strong>Key อยู่ใน Device</strong></td><td>TPM (Trusted Platform Module) — Key ออกจาก TPM ไม่ได้</td></tr>
+    <tr><td><strong>Revocation</strong></td><td>OCSP Stapling (Device ขอ OCSP Response)</td></tr>
+    <tr><td><strong>อายุอุปกรณ์ 5-10 ปี</strong></td><td>Certificate Renewal อัตโนมัติ</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>IoT PKI Workflow:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>1. Manufacturing: โหลด Device Certificate + Unique Key เข้า TPM
+2. Onboarding: Device เชื่อมต่อ → ส่ง Certificate → Server ตรวจสอบ
+3. Operation: Device ↔ Server สื่อสารผ่าน TLS ด้วย Certificate
+4. Revocation: ถ้า Device ถูกบุกรุก → Revoke Certificate → Block การสื่อสาร</pre>
+
+<h3 id="section8-5" class="section-ref">8.5 Document Signing</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>มาตรฐาน</th><th>การใช้งาน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>PDF Signing (PAdES)</strong></td><td>ลงนาม PDF — รองรับโดย Adobe Acrobat</td></tr>
+    <tr><td><strong>XML Signing (XAdES)</strong></td><td>ลงนามเอกสาร XML — EU e-Signature</td></tr>
+    <tr><td><strong>CMS/PKCS#7 (CAdES)</strong></td><td>ลงนามข้อมูลทั่วไป</td></tr>
+    <tr><td><strong>Timestamp</strong></td><td>RFC 3161 — เพิ่ม Timestamp พร้อม Signature</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<!-- ========== SECTION 9 ========== -->
+<section id="section9" class="section-ref">
+<h2>9. กรณีศึกษา: การโจมตี CA และผลกระทบ</h2>
+
+<div class="expandable expanded" id="section9-1">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-exclamation-triangle" aria-hidden="true"></i> 9.1 DigiNotar (2011) — CA ล้มละลาย</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายการ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>วันที่ตรวจพบ</strong></td><td>19 กรกฎาคม 2011</td></tr>
+    <tr><td><strong>ผู้โจมตี</strong></td><td>Unknown (เชื่อว่าเกี่ยวข้องกับอิหร่าน)</td></tr>
+    <tr><td><strong>ผล</strong></td><td>CA ของเนเธอร์แลนด์ล้มละลาย — Trust ได้รับการเพิกถอนใน 1 เดือน</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>Timeline:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>มิ.ย. 2011 — ผู้โจมตีเจาะระบบ DigiNotar — เข้าถึง Root CA
+                └── Server ที่ไม่มี Patch — Windows Server 2003
+                └── No HSM — Software Key
+                └── No monitoring — ตรวจไม่พบการเข้าถึงผิดปกติ
+   ↓
+19 ก.ค. 2011 — ออก Certificate ปลอมสำหรับ *.google.com
+                └── รวมถึง Yahoo, Skype, Twitter, Facebook, Mozilla
+   ↓
+27 ส.ค. 2011 — Google ตรวจพบ Certificate ปลอม (Certificate Pinning)
+                └── Google แจ้ง DigiNotar + Dutch Gov
+   ↓
+29 ส.ค. 2011 — Mozilla, Microsoft, Apple, Google เพิกถอน Trust
+                └── DigiNotar Root CA ถูกลบออกจาก Trust Store ทั้งหมด
+   ↓
+ก.ย. 2011 — DigiNotar ยื่นล้มละลาย
+                └── บริษัทที่มีอายุ 10 ปี ต้องปิดตัว</pre>
+
+<p><strong>บทเรียนจาก DigiNotar:</strong></p>
+<ol>
+  <li><strong>HSM จำเป็น</strong> — DigiNotar ไม่ใช้ HSM — Private Key อยู่ใน Software — ถูกขโมยได้</li>
+  <li><strong>Air-Gap Root CA</strong> — Root CA ต้องไม่เชื่อมต่อ Internet</li>
+  <li><strong>Monitoring</strong> — ต้องมี IDS/IPS + Audit Log — ตรวจพบการกระทำผิดปกติ</li>
+  <li><strong>Incident Response Plan</strong> — DigiNotar ไม่มีแผน — ตอบสนองช้า</li>
+  <li><strong>Certificate Pinning</strong> — Google ตรวจพบเพราะ Pinning — ไม่ใช่ระบบของ CA</li>
+  <li><strong>CA สูญเสีย Trust = ตาย</strong> — เมื่อ Trust ได้รับการเพิกถอน CA ไม่สามารถอยู่รอด</li>
+</ol>
+  </div>
+</div>
+
+<div class="expandable expanded" id="section9-2">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-user-shield" aria-hidden="true"></i> 9.2 Comodo (2011) — RA Account ถูกบุกรุก</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายการ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>วันที่ตรวจพบ</strong></td><td>15 มีนาคม 2011</td></tr>
+    <tr><td><strong>ผู้โจมตี</strong></td><td>"ComodoHacker" — อ้างว่าอยู่ในอิหร่าน</td></tr>
+    <tr><td><strong>ผล</strong></td><td>Certificate ปลอม 9 ใบ — ตรวจพบเร็ว — Comodo ยังอยู่รอด</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>เหตุการณ์:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>- ผู้โจมตีเจาะ RA Account ของ Comodo (Global Partner)
+- ขอ Certificate ปลอมสำหรับ: mail.google.com, www.google.com, login.yahoo.com, login.skype.com, addons.mozilla.org
+- Comodo ตรวจพบภายในวันเดียวกัน — Revoke Certificate ทันที
+- Browser ยอมรับ Comodo ต่อ — เพราะตอบสนองเร็ว</pre>
+
+<p><strong>บทเรียน:</strong></p>
+<ol>
+  <li><strong>RA Security</strong> — RA Account ต้องมี MFA + IP Restriction</li>
+  <li><strong>Response Time</strong> — ยิ่งเร็ว โอกาสรอดยิ่งสูง</li>
+  <li><strong>CT ไม่มีตอนนั้น</strong> — ถ้ามี CT จะตรวจจับได้ตั้งแต่ Certificate ได้รับการบันทึกลง Log</li>
+</ol>
+  </div>
+</div>
+
+<div class="expandable expanded" id="section9-3">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-leaf" aria-hidden="true"></i> 9.3 Let's Encrypt (2015-Present) — PKI สำหรับทุกคน</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายการ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ก่อตั้ง</strong></td><td>2015 — Internet Security Research Group (ISRG)</td></tr>
+    <tr><td><strong>ภารกิจ</strong></td><td>ให้ DV Certificate <strong>ฟรี</strong> แก่ทุกคน — ทำให้ HTTPS เป็น Default</td></tr>
+    <tr><td><strong>เทคโนโลยี</strong></td><td>ACME Protocol — Auto-Renewal ทุก 60-90 วัน</td></tr>
+    <tr><td><strong>ผลกระทบ</strong></td><td>HTTPS เพิ่มจาก 40% → >90% ของเว็บไซต์ทั่วโลก</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>นวัตกรรมของ Let's Encrypt:</strong></p>
+<ol>
+  <li><strong>ACME Protocol</strong> (RFC 8555) — ขอ Certificate อัตโนมัติเต็มรูปแบบ</li>
+  <li><strong>DV Only</strong> — ตรวจสอบแค่ Domain Ownership — ไม่ตรวจสอบองค์กร</li>
+  <li><strong>Short Lived</strong> — Certificate มีอายุ 90 วัน — ลดผลกระทบถ้า Key รั่ว</li>
+  <li><strong>Auto-Renewal</strong> — Certbot, acme.sh, Caddy — ต่ออายุอัตโนมัติ</li>
+  <li><strong>Free</strong> — ลด Barrier ในการใช้ HTTPS</li>
+</ol>
+  </div>
+</div>
+</section>
+<hr>
+<!-- ========== SECTION 10 ========== -->
+<section id="section10" class="section-ref">
+<h2>10. ภัยคุกคามต่อ PKI และมาตรการป้องกัน</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>ภัยคุกคาม</th><th>คำอธิบาย</th><th>ผลกระทบ</th><th>การป้องกัน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>CA Compromise</strong></td><td>ผู้โจมตีเจาะ CA — ขโมย Private Key</td><td>ออก Certificate ปลอม — MITM</td><td>HSM, Air-Gap, Multi-Person Control, CT</td></tr>
+    <tr><td><strong>Weak Key Generation</strong></td><td>สร้าง Key ที่ไม่สุ่มเพียงพอ (ROCA, Debian Weak Keys)</td><td>ถอดรหัส Private Key ได้</td><td>ใช้ HSM, Random Source ที่ดี, FIPS Validation</td></tr>
+    <tr><td><strong>SHA-1 Collision</strong></td><td>สร้าง Certificate ที่มี SHA-1 Hash เดียวกัน (2017)</td><td>Signature ปลอมจาก SHA-1</td><td><strong>เลิกใช้ SHA-1</strong> — ใช้ SHA-256</td></tr>
+    <tr><td><strong>Rogue CA in Trust Store</strong></td><td>Root CA ที่ไม่น่าเชื่อถือได้รับการรวมใน Trust Store</td><td>Trust CA ปลอม</td><td>CA/Browser Forum, Audit, CT</td></tr>
+    <tr><td><strong>Phishing (Fake Certificate Request)</strong></td><td>ผู้โจมตีขอ DV Certificate สำหรับ Domain ใกล้เคียง</td><td>Phishing Site ที่มี HTTPS</td><td>EV Certificate (ไม่สามารถหลอกได้), Browser Warnings</td></tr>
+    <tr><td><strong>Downgrade Attack (SSL Stripping)</strong></td><td>Downgrade HTTPS → HTTP — Certificate ไม่ได้รับการใช้งาน</td><td>MITM</td><td>HSTS, HSTS Preloading</td></tr>
+    <tr><td><strong>Revocation Bypass</strong></td><td>Client ข้ามการตรวจสอบ CRL/OCSP</td><td>เชื่อถือ Certificate ที่ได้รับการ Revoke</td><td>OCSP Must-Staple, CRLSet, CRLite</td></tr>
+    <tr><td><strong>Quantum Computing</strong></td><td>Shor's Algorithm ทำลาย RSA/ECC</td><td>Public Key Cryptography ล้มเหลว</td><td>Post-Quantum Cryptography (CRYSTALS-Kyber/Dilithium)</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<!-- ========== SECTION 11 ========== -->
+<section id="section11" class="section-ref">
+<h2>11. สรุปท้ายบท (Chapter Summary)</h2>
+
+<h3>11.1 หลักการสำคัญ</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>หัวข้อ</th><th>สรุป</th></tr></thead>
+  <tbody>
+    <tr><td><strong>PKI</strong></td><td>โครงสร้างพื้นฐานสำหรับจัดการ Digital Certificate — แก้ปัญหาการเชื่อถือ Public Key</td></tr>
+    <tr><td><strong>Trust Models</strong></td><td>4 แบบ: Single CA, Hierarchical (มาตรฐาน TLS), Mesh/Cross-Certification, Web of Trust (PGP)</td></tr>
+    <tr><td><strong>X.509 v3</strong></td><td>ประกอบด้วย TBS Certificate + Signature + Extensions — v3 เพิ่ม Extensions (SAN, Key Usage, Basic Constraints)</td></tr>
+    <tr><td><strong>Certificate Chain</strong></td><td>Root CA (Trust Anchor) → Intermediate CA(s) → End Entity — ตรวจสอบ Path Validation 6 ขั้นตอน</td></tr>
+    <tr><td><strong>Lifecycle</strong></td><td>Key Gen → CSR → Verification → Issuance → Distribution → Usage → Renewal → Expiry/Revocation</td></tr>
+    <tr><td><strong>Revocation</strong></td><td>CRL (ใหญ่, ล่าช้า) → Delta CRL → OCSP (Real-time, Privacy Issue) → <strong>OCSP Stapling</strong> (แนะนำ)</td></tr>
+    <tr><td><strong>Certificate Transparency</strong></td><td>ทุก Certificate ต้องบันทึกใน Public CT Log — ตรวจจับ Certificate ปลอม (DigiNotar)</td></tr>
+    <tr><td><strong>ACME / Let's Encrypt</strong></td><td>DV Certificate อัตโนมัติ — HTTPS สำหรับทุกคน — Renewal ทุก 90 วัน</td></tr>
+    <tr><td><strong>CA Security</strong></td><td>HSM + Air-Gap + Multi-Person Control + CT — CA ที่ไม่ปลอดภัย = ล้มละลาย (DigiNotar)</td></tr>
+  </tbody>
+</table></div>
+
+<h3>11.2 ตัวเลขสำคัญที่ควรจำ</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ตัวเลข</th><th>ความหมาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>2048</strong></td><td>ขนาด RSA Key ขั้นต่ำที่แนะนำ (บิต)</td></tr>
+    <tr><td><strong>256</strong></td><td>ขนาด ECC Key ที่แนะนำ (P-256, บิต)</td></tr>
+    <tr><td><strong>20-30 ปี</strong></td><td>อายุ Root CA Certificate</td></tr>
+    <tr><td><strong>90 วัน</strong></td><td>อายุสูงสุดของ Let's Encrypt Certificate</td></tr>
+    <tr><td><strong>27</strong></td><td>จำนวนฟิลด์ใน X.509 v3 Certificate</td></tr>
+    <tr><td><strong>30-60 วัน</strong></td><td>ระยะเวลาควรต่ออายุก่อนหมดอายุ</td></tr>
+    <tr><td><strong>2011</strong></td><td>ปีที่ DigiNotar และ Comodo ถูกโจมตี</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<!-- ========== REVIEW QUESTIONS ========== -->
+<section id="review-questions" class="section-ref">
+<h2><i class="fas fa-question-circle" aria-hidden="true"></i> คำถามทบทวน (Review Questions)</h2>
+<p style="color:var(--text-secondary);margin-bottom:1.5rem;">คลิกปุ่ม <strong>"🔍 ดูเฉลย"</strong> เพื่อเปิดคำตอบ</p>
+
+<div class="quiz-card" data-question="1">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 1</span>
+    <p>PKI ประกอบด้วยองค์ประกอบอะไรบ้าง? จงอธิบายบทบาทของ CA, RA, VA, HSM และความสำคัญของ Trust Model (Hierarchical vs Mesh vs Web of Trust)</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> PKI ประกอบด้วย <strong>CA</strong> (ออก Certificate), <strong>RA</strong> (ตรวจสอบตัวตน), <strong>VA</strong> (ตรวจสอบสถานะ OCSP), <strong>HSM</strong> (เก็บ Private Key), <strong>Certificate Repository</strong>, <strong>CP/CPS</strong>, <strong>End Entity</strong> <strong>Trust Models:</strong> (1) <strong>Hierarchical</strong> — Root CA → Intermediate CA → End Entity — มาตรฐาน TLS: Root CA Offline ปลอดภัย แต่ซับซ้อน; (2) <strong>Mesh/Cross-Certification</strong> — CA รับรองกันเอง — ยืดหยุ่นแต่ซับซ้อนมาก; (3) <strong>Web of Trust</strong> — ผู้ใช้รับรองกันเอง (PGP) — ไม่ต้องมี CA แต่ Scalability ต่ำ</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="2">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 2</span>
+    <p>จงอธิบายความแตกต่างระหว่าง X.509 v1, v2, และ v3 — Extension ใดบ้างที่ Critical และจำเป็นสำหรับ TLS Server Certificate?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>X.509 v1</strong> (1988) — ฟิลด์พื้นฐานเท่านั้น; <strong>v2</strong> (1993) — เพิ่ม Issuer/Subject Unique ID (ไม่ค่อยได้ใช้); <strong>v3</strong> (1996) — เพิ่ม Extensions <strong>Extensions ที่ Critical สำหรับ TLS:</strong> Basic Constraints (CA:TRUE/FALSE), Key Usage (digitalSignature, keyEncipherment), Extended Key Usage (serverAuth), SAN (Subject Alternative Name) — ปัจจุบัน SAN จำเป็นต้องมีใน TLS Certificate</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="3">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 3</span>
+    <p>Certificate Chain Building และ Path Validation ตาม RFC 5280 มีกี่ขั้นตอน? อะไรบ้าง? จงอธิบาย</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> Path Validation ตาม RFC 5280 มี <strong>6 ขั้นตอน:</strong> (1) <strong>Chain Building</strong> — สร้างเส้นทาง End Entity → Root; (2) <strong>Signature Verification</strong> — ตรวจสอบ Signature แต่ละระดับ; (3) <strong>Validity Period</strong> — ตรวจสอบวันที่; (4) <strong>Revocation Check</strong> — ตรวจสอบ CRL/OCSP; (5) <strong>Policy Check</strong> — ตรวจสอบ Key Usage; (6) <strong>Name Check</strong> — ตรวจสอบ CN/SAN ตรงกับ Domain</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="4">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 4</span>
+    <p>เปรียบเทียบข้อดีข้อเสียระหว่าง CRL, Delta CRL, OCSP, OCSP Stapling — แนวทางใดที่แนะนำสำหรับ Web Server ในปัจจุบัน? เพราะเหตุใด?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>CRL</strong> — ใหญ่, ไม่ Real-time, แต่ Privacy ดี; <strong>Delta CRL</strong> — เล็กกว่า CRL เต็ม แต่ยังไม่ Real-time; <strong>OCSP</strong> — Real-time, ขนาดเล็ก แต่มี Privacy Issue (CA รู้ Client), ต้อง Online; <strong>OCSP Stapling</strong> — Real-time, Privacy ดี, Performance ดีที่สุด, Server Cache OCSP Response <strong>แนะนำ: OCSP Stapling</strong> เพราะแก้ปัญหาทั้ง Privacy, Performance, Reliability ของ OCSP และ CRL</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="5">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 5</span>
+    <p>Certificate Transparency (CT) แก้ปัญหาอะไร? กลไกการทำงานของ SCT (Signed Certificate Timestamp) และ Merkle Tree เป็นอย่างไร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> CT แก้ปัญหาการออก Certificate ปลอมโดย CA ที่ถูกบุกรุก (เช่น DigiNotar) — ทำให้ทุก Certificate ถูกบันทึกใน Public Log <strong>SCT (Signed Certificate Timestamp)</strong> คือหลักฐานที่ CT Log ส่งกลับไปยัง CA หลังจากบันทึก Certificate ลงใน Merkle Tree — SCT ประกอบด้วย Log ID, Timestamp, Merkle Tree Hash, Signature <strong>Merkle Tree</strong> เป็น Hash Tree ที่ให้ตรวจสอบว่า Certificate อยู่ใน Log หรือไม่โดยไม่ต้อง Download ทั้ง Log — Root Hash ใช้ยืนยัน Integrity</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="6">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 6</span>
+    <p>จงอธิบายวงจรชีวิตของ Certificate — ตั้งแต่ Key Generation ไปจนถึง Expiration — พร้อมคำสั่ง OpenSSL สำหรับสร้าง CSR</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> วงจรชีวิต: (1) Key Generation → (2) CSR → (3) RA Verification → (4) CA Issuance → (5) Distribution → (6) Installation → (7) Usage → (8) Monitoring → (9) Renewal/Re-key → (10) Expiry/Revocation <strong>คำสั่ง OpenSSL สร้าง CSR:</strong> <code>openssl req -new -newkey rsa:2048 -nodes -keyout server.key -out server.csr -subj "/C=TH/O=Example Corp/CN=www.example.com" -addext "subjectAltName=DNS:www.example.com"</code></p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="7">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 7</span>
+    <p>DV, OV, และ EV Certificate แตกต่างกันอย่างไร? ACME Protocol และ Let's Encrypt ทำให้ DV Certificate เปลี่ยนแปลงอุตสาหกรรม PKI อย่างไร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>DV</strong> — ตรวจสอบ Domain Ownership (นาที-ชม.); <strong>OV</strong> — ตรวจสอบองค์กร (1-3 วัน); <strong>EV</strong> — ตรวจสอบละเอียด (3-10 วัน) <strong>ACME Protocol (RFC 8555)</strong> ทำให้ DV Certificate เป็นแบบอัตโนมัติเต็มรูปแบบ — สร้าง Key Pair, ส่ง CSR, แก้ Challenge (HTTP-01/DNS-01), รับ Certificate <strong>ผลกระทบ:</strong> Let's Encrypt ใช้ ACME ให้ DV Certificate ฟรี — HTTPS เพิ่มจาก 40% เป็น >90% ของเว็บไซต์ทั่วโลก — Certificate อายุ 90 วันพร้อม Auto-Renewal</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="8">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 8</span>
+    <p>วิเคราะห์กรณี DigiNotar (2011) — สาเหตุการถูกโจมตี ผลกระทบ และบทเรียน — ถ้ามี CT ในตอนนั้นจะช่วยได้อย่างไร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>สาเหตุ:</strong> เจาะระบบ DigiNotar — Server ไม่มี Patch (Windows Server 2003), No HSM (Software Key), No Monitoring <strong>ผลกระทบ:</strong> Certificate ปลอม *.google.com และอื่นๆ → Trust ถูกลบจาก Browser ทั้งหมด → DigiNotar ล้มละลาย <strong>บทเรียน:</strong> HSM จำเป็น, Air-Gap Root CA, Monitoring, Incident Response Plan <strong>ถ้ามี CT:</strong> Certificate ปลอมจะถูกบันทึกลง Public CT Log ทันทีที่ออก — Domain Owner (Google) จะตรวจพบภายในไม่กี่นาทีถึงชั่วโมง แทนที่จะเป็นเดือน — สามารถ Revoke Certificate และแจ้ง Browser ได้เร็วกว่ามาก</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="9">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 9</span>
+    <p>PKI ได้รับการนำไปใช้ใน TLS, Code Signing, S/MIME, IoT Identity อย่างไรบ้าง? จงยกตัวอย่างแต่ละประเภท</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> (1) <strong>TLS/SSL</strong> — Server Certificate รับรองเว็บไซต์, mTLS สำหรับ API Security (Service Mesh); (2) <strong>Code Signing</strong> — Windows Authenticode, macOS Gatekeeper — ลงนาม Binary ด้วย Certificate; (3) <strong>S/MIME</strong> — ลงนามและเข้ารหัสอีเมลใน Enterprise; (4) <strong>IoT Identity</strong> — Factory-flash Certificate ใน TPM, Auto-Provisioning ด้วย ACME, Revocation เมื่อ Device ถูกบุกรุก</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="10">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 10</span>
+    <p>Quantum Computing มีผลกระทบต่อ PKI อย่างไร? มาตรการรับมือ (Post-Quantum Cryptography) มีอะไรบ้าง?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>ผลกระทบ:</strong> Shor's Algorithm ของ Quantum Computer สามารถทำลาย RSA และ ECC ที่ใช้ใน PKI ปัจจุบัน — ถอดรหัส Private Key จาก Public Key ได้ — ทำให้ Digital Signature และ Encryption ทั้งหมดปลอดภัย <strong>มาตรการรับมือ:</strong> Post-Quantum Cryptography (PQC) — NIST เลือก CRYSTALS-Kyber (Key Encapsulation), CRYSTALS-Dilithium (Digital Signature), FALCON, SPHINCS+ — คาดว่าจะมีการเปลี่ยนผ่าน (Migration) ไปใช้ PQC ใน PKI ภายใน 10-20 ปี ขณะนี้มีการ Hybrid Certificates (Classic + PQC) ทดลองใช้แล้ว</p>
+  </div>
+</div>
+</section>
+
+<hr>
+
+<!-- ========== REFERENCES ========== -->
+<section id="references" class="section-ref">
+<h2><i class="fas fa-book" aria-hidden="true"></i> เอกสารอ้างอิง (References)</h2>
+
+<h3>มาตรฐานและ RFC</h3>
+<ol>
+  <li>IETF RFC 5280. (2008). <em>Internet X.509 Public Key Infrastructure Certificate and CRL Profile</em>.</li>
+  <li>IETF RFC 6960. (2013). <em>X.509 Internet Public Key Infrastructure Online Certificate Status Protocol (OCSP)</em>.</li>
+  <li>IETF RFC 6962. (2013). <em>Certificate Transparency</em>.</li>
+  <li>IETF RFC 8555. (2019). <em>Automatic Certificate Management Environment (ACME)</em>.</li>
+  <li>IETF RFC 6066. (2011). <em>Transport Layer Security (TLS) Extensions: Extension Definitions</em> (OCSP Stapling).</li>
+  <li>IETF RFC 4210. (2005). <em>Internet X.509 Public Key Infrastructure Certificate Management Protocol (CMP)</em>.</li>
+  <li>ITU-T X.509. (2019). <em>Information Technology — Open Systems Interconnection — The Directory: Public-Key and Attribute Certificate Frameworks</em>.</li>
+</ol>
+
+<h3>ตำราหลัก</h3>
+<ol start="8">
+  <li>Stallings, W. (2022). <em>Cryptography and Network Security: Principles and Practice</em> (8th ed.). Pearson.</li>
+  <li>Ferguson, N., Schneier, B., &amp; Kohno, T. (2010). <em>Cryptography Engineering</em>. Wiley.</li>
+</ol>
+
+<h3>รายงานและกรณีศึกษา</h3>
+<ol start="10">
+  <li>NIST SP 800-32. (2001). <em>Introduction to Public Key Technology and the Federal PKI Infrastructure</em>.</li>
+  <li>CA/Browser Forum. (2024). <em>Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates</em>.</li>
+  <li>Fox-IT. (2011). <em>Black Tulip: Report of the Investigation into the DigiNotar Certificate Authority Breach</em>.</li>
+  <li>Comodo. (2011). <em>Comodo Report of Incident on 15-MAR-2011</em>.</li>
+  <li>Google Security Blog. (2024). <em>Certificate Transparency in Chrome</em>.</li>
+</ol>
+
+<h3>แหล่งข้อมูลเพิ่มเติม</h3>
+<ol start="15">
+  <li>Let's Encrypt — https://letsencrypt.org/</li>
+  <li>SSL Labs — https://www.ssllabs.com/</li>
+  <li>Certificate Transparency Log — https://crt.sh/</li>
+  <li>OpenSSL Documentation — https://www.openssl.org/docs/</li>
+  <li>NIST Post-Quantum Cryptography — https://csrc.nist.gov/projects/post-quantum-cryptography</li>
+</ol>
+</section>
+</main>
+</div> <!-- .layout -->
+
+<footer class="site-footer" role="contentinfo">
+  <hr class="footer-divider">
+  <p><i class="fas fa-lock" aria-hidden="true"></i> รายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+  <p style="margin-top:0.5rem;font-size:0.8rem;">เอกสารนี้เป็นส่วนหนึ่งของรายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+</footer>
+
+<button id="back-to-top" aria-label="กลับไปด้านบน" title="กลับไปด้านบน">
+  <i class="fas fa-arrow-up" aria-hidden="true"></i>
+</button>
+
+<script>
+// ====== Loading Screen ======
+window.addEventListener('load', function() {
+  document.getElementById('loading-screen').classList.add('hidden');
+});
+
+// ====== Progress Bar ======
+window.addEventListener('scroll', function() {
+  var scrollTop = window.scrollY;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progress-bar').style.width = progress + '%';
+  document.getElementById('progress-bar').setAttribute('aria-valuenow', Math.round(progress));
+});
+
+// ====== Dark Mode ======
+(function() {
+  var toggle = document.getElementById('dark-mode-toggle');
+  var icon = toggle.querySelector('i');
+  var theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    icon.className = 'fas fa-sun';
+  }
+  toggle.addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    if (current === 'dark') {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      icon.className = 'fas fa-moon';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      icon.className = 'fas fa-sun';
+    }
+  });
+})();
+
+// ====== Sidebar Toggle (mobile) ======
+(function() {
+  var btn = document.getElementById('sidebar-toggle');
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  if (!btn || !sidebar || !overlay) return;
+  btn.addEventListener('click', function() {
+    var open = sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+    btn.setAttribute('aria-expanded', open);
+  });
+  overlay.addEventListener('click', function() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+    btn.setAttribute('aria-expanded', 'false');
+  });
+})();
+
+// ====== Scroll Spy ======
+(function() {
+  var tocLinks = document.querySelectorAll('.toc-link');
+  var sections = [];
+  tocLinks.forEach(function(link) {
+    var targetId = link.getAttribute('data-target');
+    var el = document.getElementById(targetId);
+    if (el) sections.push({ id: targetId, el: el, link: link });
+  });
+  
+  function updateActive() {
+    var scrollPos = window.scrollY + 120;
+    var currentId = null;
+    for (var i = 0; i < sections.length; i++) {
+      var s = sections[i];
+      if (s.el.offsetTop <= scrollPos) {
+        currentId = s.id;
+      }
+    }
+    tocLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (currentId) {
+      var activeLink = document.querySelector('.toc-link[data-target="' + currentId + '"]');
+      if (activeLink) {
+        activeLink.classList.add('active');
+        var sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+          var itemTop = activeLink.offsetTop - sidebar.offsetTop;
+          var itemBottom = itemTop + activeLink.offsetHeight;
+          var sidebarScrollTop = sidebar.scrollTop;
+          var sidebarHeight = sidebar.clientHeight;
+          if (itemTop < sidebarScrollTop) {
+            activeLink.scrollIntoView({ block: 'nearest' });
+          } else if (itemBottom > sidebarScrollTop + sidebarHeight) {
+            activeLink.scrollIntoView({ block: 'nearest' });
+          }
+        }
+      }
+    }
+  }
+  
+  window.addEventListener('scroll', updateActive);
+  window.addEventListener('load', updateActive);
+  setTimeout(updateActive, 500);
+})();
+
+// ====== Smooth scroll for TOC links ======
+document.querySelectorAll('.toc-link').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    var targetId = this.getAttribute('data-target');
+    var target = document.getElementById(targetId);
+    if (target) {
+      var offset = 80;
+      var targetPos = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: targetPos, behavior: 'smooth' });
+    }
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebar-overlay');
+    if (sidebar && sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      document.getElementById('sidebar-toggle').setAttribute('aria-expanded', 'false');
+    }
+  });
+});
+
+// ====== Back to Top ======
+(function() {
+  var btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 400) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  });
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+
+// ====== Copy Code ======
+function copyCode(btn) {
+  var pre = btn.closest('pre');
+  var code = pre.textContent;
+  code = code.replace(/คัดลอก/g, '').trim();
+  navigator.clipboard.writeText(code).then(function() {
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i> คัดลอก';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(function() {
+    var textarea = document.createElement('textarea');
+    textarea.value = code;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i> คัดลอก';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ====== Expandable Sections ======
+function toggleExpand(header) {
+  var expandable = header.closest('.expandable');
+  if (!expandable) return;
+  var isExpanded = expandable.classList.toggle('expanded');
+  header.setAttribute('aria-expanded', isExpanded);
+}
+
+// ====== Reveal Answer (Quiz) ======
+function revealAnswer(btn) {
+  var card = btn.closest('.quiz-card');
+  if (!card) return;
+  card.classList.add('revealed');
+  var answer = card.querySelector('.quiz-answer');
+  if (answer) {
+    answer.classList.remove('hidden');
+  }
+  btn.textContent = '✅ ดูเฉลยแล้ว';
+  btn.disabled = true;
+}
+
+// ====== Search ======
+(function() {
+  var searchToggle = document.getElementById('search-toggle-btn');
+  var searchOverlay = document.getElementById('search-overlay');
+  var searchInput = document.getElementById('search-input');
+  var searchResults = document.getElementById('search-results');
+  var searchCount = document.getElementById('search-count');
+  var searchClose = document.getElementById('search-close-btn');
+  
+  var mainContent = document.getElementById('main-content');
+  var searchData = [];
+  
+  function buildSearchIndex() {
+    searchData = [];
+    var sections = mainContent.querySelectorAll('h2, h3, h4, p, li, td, th, pre');
+    sections.forEach(function(el) {
+      var text = el.textContent.trim();
+      if (text.length > 10) {
+        var heading = '';
+        var parent = el.parentElement;
+        while (parent && parent !== mainContent) {
+          var prevHeading = parent.querySelector('h2, h3, h4');
+          if (prevHeading) { heading = prevHeading.textContent.trim(); break; }
+          parent = parent.parentElement;
+        }
+        searchData.push({
+          text: text,
+          heading: heading || 'เนื้อหา',
+          element: el
+        });
+      }
+    });
+  }
+  
+  buildSearchIndex();
+  
+  function performSearch(query) {
+    if (!query || query.length < 2) {
+      searchResults.innerHTML = '<div class="no-results">กรุณาป้อนคำค้นหาอย่างน้อย 2 ตัวอักษร</div>';
+      searchCount.textContent = '';
+      return;
+    }
+    
+    var q = query.toLowerCase();
+    var results = [];
+    var totalMatches = 0;
+    
+    searchData.forEach(function(item) {
+      var lower = item.text.toLowerCase();
+      var idx = lower.indexOf(q);
+      if (idx !== -1) {
+        var count = 0;
+        var pos = -1;
+        while ((pos = lower.indexOf(q, pos + 1)) !== -1) count++;
+        totalMatches += count;
+        
+        var snippet = item.text.substring(Math.max(0, idx - 60), idx + q.length + 120);
+        if (idx > 60) snippet = '...' + snippet;
+        if (idx + q.length + 120 < item.text.length) snippet = snippet + '...';
+        
+        snippet = snippet.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        snippet = snippet.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'), '<mark>$1</mark>');
+        
+        results.push({
+          heading: item.heading,
+          snippet: snippet,
+          element: item.element,
+          count: count
+        });
+      }
+    });
+    
+    if (results.length > 50) results = results.slice(0, 50);
+    
+    searchCount.textContent = totalMatches + ' ผลลัพธ์';
+    
+    if (results.length === 0) {
+      searchResults.innerHTML = '<div class="no-results">ไม่พบผลลัพธ์สำหรับ "' + query + '"</div>';
+      return;
+    }
+    
+    var html = '';
+    results.forEach(function(r) {
+      html += '<div class="search-result-item" data-heading="' + r.heading.replace(/"/g, '&quot;') + '">';
+      html += '<div class="result-heading">' + r.heading + '</div>';
+      html += '<div class="result-snippet">' + r.snippet + '</div>';
+      html += '</div>';
+    });
+    searchResults.innerHTML = html;
+    
+    searchResults.querySelectorAll('.search-result-item').forEach(function(item, i) {
+      item.addEventListener('click', function() {
+        var el = results[i].element;
+        if (el) {
+          var offset = 100;
+          var pos = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: pos, behavior: 'smooth' });
+          searchOverlay.classList.remove('active');
+          el.style.transition = 'background 0.5s ease';
+          el.style.background = 'var(--bg-tertiary)';
+          setTimeout(function() {
+            el.style.background = '';
+          }, 1500);
+        }
+      });
+    });
+  }
+  
+  var searchTimeout = null;
+  searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      performSearch(searchInput.value);
+    }, 300);
+  });
+  
+  searchToggle.addEventListener('click', function() {
+    searchOverlay.classList.add('active');
+    setTimeout(function() { searchInput.focus(); }, 100);
+  });
+  
+  searchClose.addEventListener('click', function() {
+    searchOverlay.classList.remove('active');
+    searchInput.value = '';
+    searchResults.innerHTML = '';
+    searchCount.textContent = '';
+  });
+  
+  searchOverlay.addEventListener('click', function(e) {
+    if (e.target === searchOverlay) {
+      searchOverlay.classList.remove('active');
+      searchInput.value = '';
+      searchResults.innerHTML = '';
+      searchCount.textContent = '';
+    }
+  });
+  
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      searchToggle.click();
+    }
+    if (e.key === 'Escape') {
+      searchOverlay.classList.remove('active');
+    }
+  });
+})();
+
+// ====== Ensure all expandable sections start expanded ======
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.expandable.expanded').forEach(function(el) {
+    var header = el.querySelector('.expandable-header');
+    if (header) header.setAttribute('aria-expanded', 'true');
+  });
+});
+</script>
+</body>
+</html>
