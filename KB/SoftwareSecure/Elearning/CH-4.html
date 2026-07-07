@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บทที่ 4: Threat Modeling และการวิเคราะห์ความเสี่ยงด้านความปลอดภัยของซอฟต์แวร์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+:root{--primary:#1a56db;--primary-dark:#1340a0;--primary-light:#e8effc;--navy:#1e293b;--navy-light:#334155;--success:#059669;--success-light:#d1fae5;--danger:#dc2626;--danger-light:#fee2e2;--warning:#d97706;--warning-light:#fef3c7;--purple:#7c3aed;--purple-light:#ede9fe;--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--radius:12px;--radius-sm:8px;--sidebar-w:292px;--font-thai:'Sarabun',sans-serif;--font-mono:'IBM Plex Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.8;display:flex;min-height:100vh}a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);height:100vh;background:var(--navy);color:#fff;overflow-y:auto;z-index:100;transition:transform .3s}.sidebar-header{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}.sidebar-header h1{font-size:1rem;font-weight:600;color:#fff;line-height:1.4}.sidebar-header .sub{font-size:.75rem;color:#94a3b8;margin-top:.25rem}.sidebar-nav{padding:.75rem 0}.sidebar-nav a{display:block;padding:.5rem 1.25rem;color:#cbd5e1;font-size:.84rem;transition:all .15s;border-left:3px solid transparent}.sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--primary);text-decoration:none}.sidebar-nav .section-label{padding:.6rem 1.25rem .25rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#64748b;font-weight:600}.sidebar-nav .sub-link{padding-left:2.35rem;font-size:.78rem}.sidebar-toggle{display:none;position:fixed;top:.75rem;left:.75rem;z-index:200;background:var(--navy);color:#fff;border:none;width:44px;height:44px;border-radius:var(--radius-sm);cursor:pointer;font-size:1.5rem;align-items:center;justify-content:center}.sidebar-overlay{display:none}.main{flex:1;margin-left:var(--sidebar-w);max-width:100%;padding:0}.topbar{position:sticky;top:0;z-index:50;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between}.topbar-title{font-size:.85rem;color:var(--text-muted)}.topbar-title strong{color:var(--text);font-weight:600}.topbar-progress{font-size:.8rem;color:var(--text-muted)}.topbar-home{color:var(--text-muted);font-size:.85rem;text-decoration:none;margin-right:.75rem;transition:color.15s;white-space:nowrap}.topbar-home:hover{color:var(--primary);text-decoration:none}.content{padding:2rem;max-width:1040px;margin:0 auto}.content>h2{font-size:1.75rem;color:var(--navy);margin:3rem 0 1.5rem;padding-bottom:.75rem;border-bottom:3px solid var(--primary);font-weight:700}.content>h2:first-of-type{margin-top:0}.content h3{font-size:1.35rem;color:var(--navy);margin:2rem 0 1rem;font-weight:600}.content h4{font-size:1.1rem;color:var(--navy-light);margin:1.5rem 0 .75rem;font-weight:600}.content p{margin:.75rem 0}.content ul,.content ol{padding-left:1.5rem;margin:.75rem 0}.content li{margin-bottom:.35rem}.card{background:var(--bg-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;margin-bottom:1.5rem;border:1px solid var(--border)}.card-header{font-weight:600;font-size:1.05rem;margin-bottom:.75rem;color:var(--navy);display:flex;align-items:center;gap:.5rem}
+.info-box{border-radius:var(--radius-sm);padding:1rem 1.25rem;margin:1rem 0;display:flex;gap:.75rem;align-items:flex-start}.info-box .icon{font-weight:700;font-size:.8rem;flex-shrink:0;min-width:2rem;height:2rem;display:inline-flex;align-items:center;justify-content:center;border-radius:6px}.info-box p{font-size:.92rem;margin:0}.info-box.remember{background:var(--primary-light);border-left:4px solid var(--primary)}.info-box.remember .icon{background:var(--primary);color:#fff}.info-box.warning{background:var(--danger-light);border-left:4px solid var(--danger)}.info-box.warning .icon{background:var(--danger);color:#fff}.info-box.tip{background:var(--success-light);border-left:4px solid var(--success)}.info-box.tip .icon{background:var(--success);color:#fff}.info-box.question{background:var(--warning-light);border-left:4px solid var(--warning)}.info-box.question .icon{background:var(--warning);color:#fff}
+.example-box{border:2px solid var(--primary);border-radius:var(--radius);padding:1.25rem;margin:1rem 0;background:linear-gradient(135deg,var(--primary-light),#fff)}.example-box .example-label{font-weight:700;color:var(--primary);font-size:.85rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.table-wrap{overflow-x:auto;margin:1rem 0}table{width:100%;border-collapse:collapse;font-size:.9rem;border-radius:var(--radius-sm);overflow:hidden}thead{background:var(--navy);color:#fff}th{padding:.75rem 1rem;text-align:left;font-weight:600;font-size:.85rem}td{padding:.65rem 1rem;border-bottom:1px solid var(--border);vertical-align:top}tbody tr:nth-child(even){background:#f1f5f9}tbody tr:hover{background:#e2e8f0}tbody tr:last-child td{border-bottom:none}
+code{font-family:var(--font-mono);font-size:.85rem;background:#f1f5f9;padding:.15em .4em;border-radius:4px;color:var(--danger)}pre{background:#1e293b;color:#e2e8f0;border-radius:var(--radius-sm);padding:1rem;overflow-x:auto;margin:1rem 0;font-family:var(--font-mono);font-size:.85rem;line-height:1.6}pre code{background:none;color:inherit;padding:0;font-size:inherit}
+.keywords-wrap{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}.keyword{display:inline-flex;align-items:center;gap:.4rem;background:var(--primary-light);color:var(--primary);padding:.35rem .85rem;border-radius:50px;font-size:.82rem;font-weight:500;border:1px solid rgba(26,86,219,.2)}
+.case-card{background:var(--bg-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;margin-bottom:1.5rem;border-top:4px solid var(--primary)}.case-card .meta{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}.case-card .meta span{background:#f1f5f9;padding:.25rem .75rem;border-radius:50px;font-size:.78rem;color:var(--text-muted)}.case-card .meta .year{background:var(--navy);color:#fff}.case-card .meta .type{background:var(--danger-light);color:var(--danger)}.case-card h4{margin-top:0;color:var(--primary)}.case-card .lessons{margin-top:1rem;padding-left:1.25rem}.case-card .lessons li{margin-bottom:.5rem}
+.lab-section{margin:1.5rem 0;padding:1rem;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border)}.lab-section h5{color:var(--primary);margin-top:0}
+.risk-low{background:#dcfce7!important;color:#166534;font-weight:600;text-align:center}.risk-med{background:#fef3c7!important;color:#92400e;font-weight:600;text-align:center}.risk-high{background:#fee2e2!important;color:#991b1b;font-weight:600;text-align:center}.risk-critical{background:#7f1d1d!important;color:#fff;font-weight:700;text-align:center}
+.status-pill{display:inline-block;border-radius:50px;padding:.2rem .65rem;font-size:.78rem;font-weight:600}.status-open{background:var(--danger-light);color:var(--danger)}.status-progress{background:var(--warning-light);color:var(--warning)}.status-done{background:var(--success-light);color:var(--success)}
+.interactive{background:linear-gradient(135deg,#fff,var(--primary-light));border:1px solid rgba(26,86,219,.25);border-radius:var(--radius);padding:1.25rem;margin:1.25rem 0;box-shadow:var(--shadow)}.interactive h4{margin-top:0;color:var(--primary)}
+.control-row{display:flex;flex-wrap:wrap;gap:.75rem;margin:.75rem 0}.control-row input,.control-row select,.control-row textarea{font-family:var(--font-thai);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.6rem .75rem;min-width:220px;background:#fff}.control-row input{min-width:160px}.control-row textarea{width:100%;min-height:80px}
+.btn{border:none;border-radius:999px;padding:.55rem 1rem;cursor:pointer;background:var(--primary);color:#fff;font-family:var(--font-thai);font-weight:600;box-shadow:var(--shadow)}.btn:hover{background:var(--primary-dark)}.btn.secondary{background:var(--navy-light)}.btn.safe{background:var(--success)}.btn.warn{background:var(--warning)}
+.result{border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:.75rem;background:#fff;border:1px solid var(--border)}.result.ok{background:var(--success-light);border-color:var(--success);color:#064e3b}.result.bad{background:var(--danger-light);border-color:var(--danger);color:#7f1d1d}.result.mid{background:var(--warning-light);border-color:var(--warning);color:#78350f}
+.tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0}.tab-btn{border:1px solid var(--border);background:#fff;color:var(--text);border-radius:999px;padding:.45rem .85rem;cursor:pointer;font-family:var(--font-thai)}.tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}.tab-panel{display:none}.tab-panel.active{display:block}
+.quiz-option{display:block;width:100%;text-align:left;border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);padding:.7rem .85rem;margin:.45rem 0;cursor:pointer;font-family:var(--font-thai)}.quiz-option.correct{border-color:var(--success);background:var(--success-light)}.quiz-option.wrong{border-color:var(--danger);background:var(--danger-light)}
+.meter{background:#e2e8f0;border-radius:50px;height:12px;margin:.75rem 0;overflow:hidden}.meter-fill{height:100%;border-radius:50px;background:var(--primary);width:0;transition:width .4s}.checklist label{display:block;padding:.35rem 0;cursor:pointer;font-size:.92rem}.checklist input{margin-right:.5rem}
+.stepper{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}.step-btn{border:2px solid var(--border);background:#fff;border-radius:999px;padding:.5rem .85rem;cursor:pointer;font-family:var(--font-thai);font-size:.85rem;transition:all .2s;font-weight:500}.step-btn.active{border-color:var(--primary);background:var(--primary);color:#fff}.step-content{display:none;padding:1rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--border);margin:.5rem 0}.step-content.active{display:block}
+.stride-card-explorer{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin:.5rem 0;cursor:pointer;transition:all .2s;border-left:4px solid var(--primary)}.stride-card-explorer:hover{box-shadow:var(--shadow)}.stride-card-explorer .letter{display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;margin-right:.5rem;font-size:.85rem}.stride-card-explorer .stride-detail{display:none;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border)}.stride-card-explorer.open .stride-detail{display:block}
+.tree-node{margin:.25rem 0}.tree-node .node-label{display:inline-flex;align-items:center;gap:.4rem;cursor:pointer;padding:.35rem .7rem;border-radius:6px;background:var(--primary-light);color:var(--primary);font-weight:500;font-size:.9rem;border:1px solid rgba(26,86,219,.2)}.tree-node .node-label:hover{background:var(--primary);color:#fff}.tree-node .node-children{margin-left:1.75rem;padding-left:.75rem;border-left:2px solid var(--border);display:none}.tree-node.open>.node-children{display:block}.tree-node .toggle-icon{display:inline-block;width:1rem;text-align:center;font-weight:700}
+.dfd-element-btn{display:inline-block;border:2px solid var(--primary);background:var(--primary-light);border-radius:var(--radius-sm);padding:.5rem .85rem;margin:.3rem;cursor:pointer;font-family:var(--font-thai);font-weight:600;font-size:.85rem;transition:all .15s}.dfd-element-btn:hover,.dfd-element-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.risk-register-table{width:100%;font-size:.82rem}.risk-register-table th{font-size:.75rem;padding:.4rem .5rem}.risk-register-table td{padding:.4rem .5rem;font-size:.8rem}
+.cvss-bar{display:flex;height:32px;border-radius:6px;overflow:hidden;margin:.75rem 0;cursor:pointer}.cvss-seg{flex:1;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:600;color:#fff;transition:all .2s}.cvss-seg:hover{transform:scaleY(1.15)}.cvss-seg.none{background:#94a3b8}.cvss-seg.low{background:#22c55e}.cvss-seg.med{background:#eab308;color:#1e293b}.cvss-seg.high{background:#f97316}.cvss-seg.crit{background:#ef4444}
+.toggle-box{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin:.5rem 0}.toggle-box summary{cursor:pointer;font-weight:600;color:var(--primary);padding:.25rem 0}
+.tree-node .node-leaf{display:block;padding:.25rem .7rem;margin:.15rem 0;font-size:.85rem;color:var(--text);background:#f1f5f9;border-radius:4px}
+.cine-row{cursor:pointer;transition:background .15s}.cine-row:hover{background:var(--primary-light)!important}
+@media(max-width:1024px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sidebar-toggle{display:flex}.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}.sidebar-overlay.show{display:block}.main{margin-left:0}.content{padding:1.25rem}.topbar{padding:.75rem 1rem}}@media(max-width:640px){h2{font-size:1.35rem}h3{font-size:1.15rem}.content{padding:1rem}.card{padding:1rem}.topbar-title{font-size:.75rem}.topbar-progress{display:none}.control-row input,.control-row select,.control-row textarea{width:100%;min-width:0}}@media print{.sidebar,.sidebar-toggle,.sidebar-overlay,.topbar,.scroll-top,.interactive button,.interactive select,.interactive input{display:none!important}.main{margin-left:0}.content{max-width:100%;padding:0}.interactive{break-inside:avoid}}
+.scroll-top{position:fixed;bottom:2rem;right:2rem;width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;border:none;cursor:pointer;font-size:1.25rem;box-shadow:var(--shadow-lg);z-index:50;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .3s}.scroll-top.visible{opacity:1;visibility:visible}.scroll-top:hover{background:var(--primary)}
+</style>
+</head>
+<body>
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="เปิดเมนู">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-header"><h1>Threat Modeling และ Risk Analysis</h1><div class="sub">บทที่ 4 · Interactive Learning</div></div>
+  <div class="sidebar-nav">
+    <div class="section-label">เนื้อหา</div>
+    <a href="#s1">4.1 ภาพรวม Threat Modeling</a><a href="#s1-1" class="sub-link">4.1.1 ความสำคัญ</a><a href="#s1-2" class="sub-link">4.1.2 ผลลัพธ์</a>
+    <a href="#s2">4.2 คำศัพท์สำคัญ</a><a href="#s2-1" class="sub-link">4.2.1 แยกคำศัพท์</a><a href="#s2-2" class="sub-link">4.2.2 TM vs RA vs VS</a>
+    <a href="#s3">4.3 กระบวนการ 7 ขั้น</a><a href="#s3-1" class="sub-link">4.3.1 Scope</a><a href="#s3-2" class="sub-link">4.3.2 Asset</a><a href="#s3-3" class="sub-link">4.3.3 Assumption</a>
+    <a href="#s4">4.4 DFD และ Trust Boundary</a>
+    <a href="#s5">4.5 STRIDE Framework</a>
+    <a href="#s6">4.6 Attack Tree</a>
+    <a href="#s7">4.7 Risk Assessment</a><a href="#s7-1" class="sub-link">NIST SP 800-30</a><a href="#s7-2" class="sub-link">Risk Matrix</a><a href="#s7-3" class="sub-link">ISO 27005</a>
+    <a href="#s8">4.8 Risk Register</a>
+    <a href="#s9">4.9 CVSS v4.0</a>
+    <a href="#s10">4.10 DREAD</a>
+    <a href="#s11">4.11 เปรียบเทียบวิธี TM</a>
+    <a href="#s12">4.12 เครื่องมือ</a>
+    <a href="#s13">4.13 กรณีศึกษา</a>
+    <a href="#s14">4.14 CineTicket</a>
+    <a href="#s15">4.15 SDLC/DevSecOps</a>
+    <a href="#s16">4.16 Checklist</a>
+    <div class="section-label">Interactive</div>
+    <a href="#play-owasp">OWASP 4 คำถาม</a><a href="#play-match">จับคู่คำศัพท์</a><a href="#play-compare">เปรียบเทียบกิจกรรม</a><a href="#play-stepper">7 ขั้นตอน</a><a href="#play-asset">Asset Checklist</a><a href="#play-dfd">DFD Builder</a><a href="#play-stride2">STRIDE Explorer</a><a href="#play-threat-stmt">Threat Statement</a><a href="#play-attacktree">Attack Tree</a><a href="#play-riskmat">Risk Matrix</a><a href="#play-treatment">Risk Treatment</a><a href="#play-register">Risk Register</a><a href="#play-cvss">CVSS Range</a><a href="#play-cvss-risk">CVSS vs Risk</a>
+    <div class="section-label">กิจกรรม</div>
+    <a href="#labs">Labs</a><a href="#questions">คำถามท้ายบท</a><a href="#summary">สรุปท้ายบท</a><a href="#refs">เอกสารอ้างอิง</a>
+  </div>
+</nav>
+<div class="main">
+  <header class="topbar"><a href="index.html" class="topbar-home" aria-label="กลับหน้าแรก">← HOME</a><div class="topbar-title"><strong>บทที่ 4</strong> · Threat Modeling และการวิเคราะห์ความเสี่ยง</div><div class="topbar-progress" id="readingProgress">Software Security</div></header>
+  <div class="content">
+    <div style="text-align:center;padding:2rem 0 1rem"><span style="display:inline-block;background:var(--primary);color:#fff;padding:.25rem 1rem;border-radius:50px;font-size:.85rem;margin-bottom:1rem">บทที่ 4</span><h1 style="font-size:2.25rem;color:var(--navy);margin-bottom:.5rem;border:none">Threat Modeling และการวิเคราะห์ความเสี่ยงด้านความปลอดภัยของซอฟต์แวร์</h1><p style="color:var(--text-muted);font-size:1rem">บรรยาย 2 ชม. + ปฏิบัติการ 2 ชม. | รวม 4 ชม.</p></div>
+
+    <div class="card" style="background:linear-gradient(135deg,var(--navy),#0f172a);color:#fff;border:none"><div class="card-header" style="color:#fff">วัตถุประสงค์การเรียนรู้</div><ol style="color:#cbd5e1;padding-left:1.25rem"><li>อธิบายความแตกต่างระหว่าง Threat, Vulnerability, Risk, Threat Modeling, Risk Assessment และ Vulnerability Scoring ได้</li><li>กำหนดขอบเขต สินทรัพย์ สมมติฐานและข้อจำกัดของการทำ Threat Modeling</li><li>สร้าง DFD และ Trust Boundary เพื่อวิเคราะห์ภัยคุกคาม</li><li>ใช้ STRIDE Framework วิเคราะห์ภัยคุกคามและเลือก Security Controls</li><li>ประเมินความเสี่ยงด้วย Likelihood, Impact, Risk Matrix และ Risk Register</li><li>ใช้ CVSS v4.0 และอธิบายว่า CVSS ไม่ใช่คะแนนความเสี่ยงทางธุรกิจทั้งหมด</li></ol></div>
+
+    <div class="info-box warning"><div class="icon">INFO</div><p><strong>ข้อควรทราบ:</strong> เนื้อหาทั้งหมดในหน้านี้เป็นตัวอย่างเพื่อการศึกษา การทำ Threat Modeling และ Risk Assessment ต้องทำในสภาพแวดล้อมที่ได้รับอนุญาตและมีข้อตกลงกับผู้มีส่วนเกี่ยวข้อง</p></div>
+
+    <h2 id="s1">4.1 ภาพรวมของ Threat Modeling และ Risk Analysis</h2>
+    <p>Threat Modeling เป็นกิจกรรมสำคัญของ Secure SDLC ที่ควรเกิดตั้งแต่ขั้นตอน Requirements และ Design ช่วยให้ทีมมองเห็นปัญหาเชิงสถาปัตยกรรมตั้งแต่ต้น เช่น การไม่ตรวจสิทธิ์ระหว่างบริการ การส่งข้อมูลสำคัญผ่านช่องทางที่ไม่เข้ารหัส หรือการออกแบบที่ทำให้ผู้ใช้ทั่วไปเข้าถึงฟังก์ชันของผู้ดูแลระบบได้</p>
+    <p>OWASP อธิบาย Threat Modeling ผ่านคำถามหลัก 4 ข้อ:</p>
+
+    <div class="interactive" id="play-owasp"><h4>Interactive: OWASP 4 คำถามของ Threat Modeling</h4><p>คลิกแต่ละคำถามเพื่อดูคำอธิบาย</p>
+    <div class="toggle-box"><details><summary>1. เรากำลังสร้างอะไร (What are we building?)</summary><p>การเข้าใจระบบ ขอบเขต สินทรัพย์ สถาปัตยกรรม และผู้เกี่ยวข้อง ก่อนวิเคราะห์ภัยคุกคาม ผลลัพธ์ที่ได้: System Scope, DFD, Asset List</p></details></div>
+    <div class="toggle-box"><details><summary>2. อะไรอาจผิดพลาดได้ (What can go wrong?)</summary><p>การค้นหาภัยคุกคาม Abuse Case และ Attack Vector ผ่านกรอบเช่น STRIDE, Attack Tree, Kill Chain ผลลัพธ์ที่ได้: Threat List, STRIDE Analysis, Attack Tree</p></details></div>
+    <div class="toggle-box"><details><summary>3. เราจะจัดการกับสิ่งที่ผิดพลาดอย่างไร (What are we going to do about it?)</summary><p>การเลือก Risk Treatment และ Security Controls เพื่อลดความเสี่ยง เช่น MFA, RBAC, Prepared Statement ผลลัพธ์ที่ได้: Risk Register, Security Requirements</p></details></div>
+    <div class="toggle-box"><details><summary>4. เราตรวจสอบได้อย่างไรว่าทำงานถูกต้อง (Did we do a good job?)</summary><p>การตรวจสอบว่ามาตรการที่เลือกใช้ได้ผลจริง ผ่าน Verification Plan, Test Cases, Security Review ผลลัพธ์ที่ได้: Test Cases, Verification Plan, Monitoring</p></details></div>
+    </div>
+
+    <p>คำถาม 4 ข้อนี้ทำให้ Threat Modeling เป็นกระบวนการคิดอย่างเป็นระบบ ตั้งแต่เข้าใจระบบ ค้นหาภัยคุกคาม ตัดสินใจลดความเสี่ยง และตรวจสอบว่ามาตรการได้ผล</p>
+
+    <h3 id="s1-1">4.1.1 ทำไม Threat Modeling จึงสำคัญต่อ Software Security</h3>
+    <p>ซอฟต์แวร์จำนวนมากล้มเหลวเพราะออกแบบผิดตั้งแต่แรก เช่น API ให้ Client ส่ง user_id มาหรือไม่ตรวจสอบ, Microservices เชื่อใจกันเองภายใน, Payment Callback ไม่ตรวจ Digital Signature ปัญหาเหล่านี้เป็น design flaw ที่ unit test ไม่พบ</p>
+    <div class="table-wrap"><table><thead><tr><th>ปัญหาเชิงออกแบบ</th><th>สิ่งที่อาจเกิดขึ้น</th><th>Threat Modeling ช่วยถาม</th></tr></thead><tbody>
+    <tr><td>Client ส่งราคาเอง</td><td>ผู้ใช้แก้ราคาก่อนชำระเงิน</td><td>ข้อมูลใดไม่ควรเชื่อจาก client</td></tr>
+    <tr><td>Service ภายในไม่ยืนยันตัวตน</td><td>ผู้โจมตี pivot ในระบบ</td><td>จุดข้าม trust boundary</td></tr>
+    <tr><td>Admin API ซ่อนด้วย UI</td><td>ผู้ใช้เรียก API โดยตรง</td><td>Authorization อยู่ backend หรือไม่</td></tr>
+    <tr><td>Webhook ไม่ตรวจ signature</td><td>ปลอมสถานะชำระเงินสำเร็จ</td><td>เชื่อ third-party อย่างไร</td></tr>
+    </tbody></table></div>
+    <div class="info-box question"><div class="icon">Q</div><p><strong>คำถาม:</strong> หากระบบผ่าน test ทั้งหมดแต่ไม่ตรวจ object-level authorization ระบบ "ทำงานถูกต้อง" หรือ "ปลอดภัย" เพราะเหตุใด</p></div>
+
+    <h3 id="s1-2">4.1.2 ผลลัพธ์ที่ควรได้จาก Threat Modeling</h3>
+    <div class="table-wrap"><table><thead><tr><th>ผลลัพธ์</th><th>ใช้ทำอะไรต่อ</th></tr></thead><tbody>
+    <tr><td>System Scope</td><td>ป้องกันวิเคราะห์กว้างหรือแคบเกินไป</td></tr>
+    <tr><td>Asset List</td><td>จัดลำดับสิ่งที่ต้องปกป้อง</td></tr>
+    <tr><td>DFD</td><td>ค้นหา attack surface และ trust boundary</td></tr>
+    <tr><td>Threat List</td><td>สร้าง security requirement และ risk register</td></tr>
+    <tr><td>Control Recommendations</td><td>แปลงเป็น design change หรือ implementation task</td></tr>
+    <tr><td>Verification Plan</td><td>สร้าง API test, abuse test, log review</td></tr>
+    </tbody></table></div>
+    <div class="info-box remember"><div class="icon">TM</div><p><strong>ข้อควรจำ:</strong> Threat Model ที่ดีต้องนำไปปฏิบัติได้ ถ้าไม่ทำให้เกิด Security Requirements, Design Changes, Test Cases แสดงว่ายังไม่เกิดคุณค่าจริง</p></div>
+
+    <h2 id="s2">4.2 แยกคำสำคัญ: Threat, Vulnerability, Risk, Severity</h2>
+    <p>ก่อนเริ่มวิเคราะห์ ต้องแยกคำศัพท์ให้ชัด ความสับสนทำให้จัดลำดับความสำคัญผิดพลาดได้</p>
+
+    <div class="interactive" id="play-match"><h4>Interactive: จับคู่คำศัพท์กับความหมาย</h4><p>คลิกคำศัพท์แล้วคลิกความหมายที่ตรงกัน</p>
+    <div style="display:flex;flex-wrap:wrap;gap:1rem"><div style="flex:1;min-width:180px"><p><strong>คำศัพท์:</strong></p>
+    <button class="quiz-option tm-term" data-term="asset">Asset</button>
+    <button class="quiz-option tm-term" data-term="threat">Threat</button>
+    <button class="quiz-option tm-term" data-term="vuln">Vulnerability</button>
+    <button class="quiz-option tm-term" data-term="impact">Impact</button>
+    <button class="quiz-option tm-term" data-term="likelihood">Likelihood</button>
+    <button class="quiz-option tm-term" data-term="risk">Risk</button>
+    <button class="quiz-option tm-term" data-term="severity">Severity</button>
+    </div><div style="flex:1;min-width:180px"><p><strong>ความหมาย:</strong></p>
+    <button class="quiz-option tm-def" data-def="a">สิ่งที่มีคุณค่าต่อองค์กร</button>
+    <button class="quiz-option tm-def" data-def="b">เหตุการณ์ที่อาจสร้างความเสียหาย</button>
+    <button class="quiz-option tm-def" data-def="c">จุดอ่อนที่อาจถูกใช้โจมตี</button>
+    <button class="quiz-option tm-def" data-def="d">ผลกระทบเมื่อเหตุการณ์เกิดขึ้น</button>
+    <button class="quiz-option tm-def" data-def="e">โอกาสที่เหตุการณ์จะเกิดขึ้น</button>
+    <button class="quiz-option tm-def" data-def="f">การรวม Threat, Vulnerability, Likelihood, Impact</button>
+    <button class="quiz-option tm-def" data-def="g">ความรุนแรงเชิงเทคนิคของช่องโหว่</button>
+    </div></div>
+    <div id="matchStatus" class="result">เลือกคำศัพท์ 1 คำ แล้วเลือกความหมาย</div></div>
+
+    <div class="table-wrap"><table><thead><tr><th>คำศัพท์</th><th>ความหมาย</th><th>ตัวอย่างระบบจองตั๋ว</th></tr></thead><tbody>
+    <tr><td>Asset</td><td>สิ่งที่มีคุณค่าต่อองค์กร</td><td>บัญชีผู้ใช้, ประวัติการจอง, สถานะชำระเงิน</td></tr>
+    <tr><td>Threat</td><td>เหตุการณ์ที่อาจสร้างความเสียหาย</td><td>ผู้โจมตีเดา booking_id เพื่อดูข้อมูลผู้อื่น</td></tr>
+    <tr><td>Vulnerability</td><td>จุดอ่อนที่อาจถูกใช้โจมตี</td><td>API ตรวจแค่ login ไม่ตรวจ owner ของ booking</td></tr>
+    <tr><td>Impact</td><td>ผลกระทบเมื่อเหตุการณ์เกิดขึ้น</td><td>ข้อมูลส่วนบุคคลรั่วไหล, ค่าปรับ, เสียชื่อเสียง</td></tr>
+    <tr><td>Risk</td><td>ความเสี่ยงจากโอกาสเกิดรวมกับผลกระทบ</td><td>ความเสี่ยง IDOR ใน Booking History</td></tr>
+    <tr><td>Severity</td><td>ความรุนแรงเชิงเทคนิคของช่องโหว่</td><td>CVSS ระดับ High</td></tr>
+    </tbody></table></div>
+
+    <h3 id="s2-1">4.2.1 ตัวอย่างการแยกคำศัพท์</h3>
+    <div class="example-box"><div class="example-label">ระบบ <code>/api/bookings/{booking_id}</code> แบบ ID เรียงลำดับ</div><ul>
+    <li><strong>Asset:</strong> ข้อมูลการจองและข้อมูลผู้ใช้</li>
+    <li><strong>Threat:</strong> ผู้ใช้ทั่วไปเดา booking_id ของผู้อื่น</li>
+    <li><strong>Vulnerability:</strong> ไม่มี Object-level Authorization Check</li>
+    <li><strong>Impact:</strong> ข้อมูลส่วนบุคคลและประวัติการจองรั่วไหล</li>
+    <li><strong>Likelihood:</strong> สูง เพราะ ID เดาง่ายและ endpoint เปิดให้เรียก</li>
+    <li><strong>Control:</strong> ตรวจ owner, ใช้ UUID, เพิ่ม Audit Log</li>
+    </ul></div>
+
+    <h3 id="s2-2">4.2.2 ความแตกต่างระหว่าง Threat Modeling, Risk Assessment, Vulnerability Scoring</h3>
+    <div class="interactive" id="play-compare"><h4>Interactive: เปรียบเทียบกิจกรรม</h4>
+    <div class="tabs" data-tabs="compare"><button class="tab-btn active" data-tab="tm-tab">Threat Modeling</button><button class="tab-btn" data-tab="ra-tab">Risk Assessment</button><button class="tab-btn" data-tab="vs-tab">Vulnerability Scoring</button></div>
+    <div id="tm-tab" class="tab-panel active"><p><strong>คำถามหลัก:</strong> อะไรอาจผิดพลาดได้</p><p><strong>ผลลัพธ์:</strong> Threat list และ control</p><p><strong>กรอบ:</strong> STRIDE, PASTA, Attack Tree</p></div>
+    <div id="ra-tab" class="tab-panel"><p><strong>คำถามหลัก:</strong> ความเสี่ยงสำคัญแค่ไหน</p><p><strong>ผลลัพธ์:</strong> Risk Register, Risk Treatment</p><p><strong>กรอบ:</strong> NIST SP 800-30, ISO/IEC 27005</p></div>
+    <div id="vs-tab" class="tab-panel"><p><strong>คำถามหลัก:</strong> ช่องโหว่รุนแรงแค่ไหน</p><p><strong>ผลลัพธ์:</strong> Severity Score</p><p><strong>กรอบ:</strong> CVSS v4.0</p></div></div>
+    <div class="info-box warning"><div class="icon">!</div><p><strong>ข้อควรจำ:</strong> CVSS เป็นคะแนนความรุนแรงของช่องโหว่ ไม่ใช่คะแนนความเสี่ยงทางธุรกิจทั้งหมด ช่องโหว่ CVSS สูงในระบบภายในที่แยกเครือข่ายดีอาจมีความเสี่ยงต่ำกว่าช่องโหว่ CVSS กลางที่เปิดอินเทอร์เน็ตและมีข้อมูลส่วนบุคคลจำนวนมาก</p></div>
+
+    <h2 id="s3">4.3 ขั้นตอนการทำ Threat Modeling</h2>
+    <p>กระบวนการ 7 ขั้นที่เหมาะกับทีมพัฒนาและห้องเรียน:</p>
+
+    <div class="interactive" id="play-stepper"><h4>Interactive: 7 ขั้นตอน</h4><p>คลิกแต่ละขั้นเพื่อดูรายละเอียด</p>
+    <div class="stepper" id="tmStepper">
+    <button class="step-btn active" data-step="0">1. Scope</button>
+    <button class="step-btn" data-step="1">2. Asset</button>
+    <button class="step-btn" data-step="2">3. DFD</button>
+    <button class="step-btn" data-step="3">4. Trust Boundary</button>
+    <button class="step-btn" data-step="4">5. STRIDE</button>
+    <button class="step-btn" data-step="5">6. Risk</button>
+    <button class="step-btn" data-step="6">7. Control</button>
+    </div>
+    <div class="step-content active" data-step="0"><h5>1. กำหนด Scope</h5><p>ขอบเขตการวิเคราะห์ ครอบคลุมอะไร ไม่ครอบคลุมอะไร ระบุผู้ใช้ ข้อมูลสำคัญ และข้อจำกัด</p></div>
+    <div class="step-content" data-step="1"><h5>2. ระบุ Asset</h5><p>ข้อมูล บริการ กระบวนการที่ต้องปกป้อง แต่ละ Asset มี Security Objective เช่น Confidentiality, Integrity, Availability</p></div>
+    <div class="step-content" data-step="2"><h5>3. สร้าง DFD</h5><p>แผนภาพการไหลของข้อมูล เริ่มจาก Context Diagram แล้วแตก Level 1</p></div>
+    <div class="step-content" data-step="3"><h5>4. Trust Boundary</h5><p>จุดข้ามเขตความไว้วางใจ ต้องมี Authentication, Authorization, Validation, Encryption</p></div>
+    <div class="step-content" data-step="4"><h5>5. STRIDE</h5><p>ตั้งคำถามครบ 6 มุม: Spoofing, Tampering, Repudiation, Info Disclosure, DoS, EoP</p></div>
+    <div class="step-content" data-step="5"><h5>6. จัดลำดับ Risk</h5><p>ใช้ Likelihood + Impact ใน Risk Matrix บันทึก Risk Register พร้อมเจ้าของ</p></div>
+    <div class="step-content" data-step="6"><h5>7. Control</h5><p>เลือก Treatment (Mitigate/Transfer/Accept/Avoid) ระบุ Owner Due Date และ Residual Risk</p></div></div>
+
+    <h3 id="s3-1">4.3.1 กำหนด Scope และ Business Context</h3>
+    <div class="example-box"><div class="example-label">Scope ระบบ E-Commerce</div><ul>
+    <li><strong>ครอบคลุม:</strong> สมัครสมาชิก, เข้าสู่ระบบ, ตะกร้าสินค้า, ชำระเงิน, ประวัติคำสั่งซื้อ</li>
+    <li><strong>ไม่ครอบคลุม:</strong> ระบบคลังสินค้าภายใน, ระบบบัญชีหลังบ้าน, ระบบ CRM</li>
+    <li><strong>ผู้ใช้หลัก:</strong> ลูกค้า, ผู้ดูแลร้าน, Payment Gateway, Email Service</li>
+    <li><strong>ข้อมูลสำคัญ:</strong> ข้อมูลส่วนบุคคล, ที่อยู่จัดส่ง, Order History, Payment Token</li>
+    <li><strong>ข้อจำกัด:</strong> ไม่เก็บเลขบัตรเครดิตเต็ม ใช้ Token จาก Payment Gateway</li>
+    </ul></div>
+
+    <h3 id="s3-2">4.3.2 ระบุ Asset และ Security Objective</h3>
+    <div class="interactive" id="play-asset"><h4>Interactive: ตรวจสอบ Asset</h4><p>ติ๊กรายการที่ระบุครบแล้ว</p>
+    <div class="checklist" id="assetChecks">
+    <label><input type="checkbox"> ข้อมูลบัญชีผู้ใช้ (Confidentiality, Integrity)</label>
+    <label><input type="checkbox"> Order Record (Integrity, Accountability)</label>
+    <label><input type="checkbox"> Payment Token (Confidentiality)</label>
+    <label><input type="checkbox"> Admin Function (Authorization, Accountability)</label>
+    <label><input type="checkbox"> Service Availability (Availability)</label>
+    <label><input type="checkbox"> Audit Log (Integrity, Non-repudiation)</label>
+    </div>
+    <div class="meter"><div class="meter-fill" id="assetMeter"></div></div>
+    <div id="assetResult" class="result">ติ๊กรายการเพื่อดูความพร้อม</div></div>
+
+    <div class="table-wrap"><table><thead><tr><th>Asset</th><th>Security Objective</th><th>ตัวอย่างภัยคุกคาม</th></tr></thead><tbody>
+    <tr><td>ข้อมูลบัญชีผู้ใช้</td><td>Confidentiality, Integrity</td><td>Account Takeover, Data Leakage</td></tr>
+    <tr><td>Order Record</td><td>Integrity, Accountability</td><td>แก้ไขยอดคำสั่งซื้อ</td></tr>
+    <tr><td>Payment Token</td><td>Confidentiality</td><td>Token Leakage</td></tr>
+    <tr><td>Admin Function</td><td>Authorization, Accountability</td><td>Privilege Escalation</td></tr>
+    <tr><td>Audit Log</td><td>Integrity, Non-repudiation</td><td>ลบหรือแก้ Log</td></tr>
+    </tbody></table></div>
+
+    <h3 id="s3-3">4.3.3 ระบุ Assumption และ Constraint</h3>
+    <p><strong>Assumption:</strong> สิ่งที่ทีมเชื่อว่าเป็นจริง เช่น Database ไม่เปิดสู่อินเทอร์เน็ต, Admin ใช้ MFA, HTTPS เสมอ</p>
+    <p><strong>Constraint:</strong> ข้อจำกัดที่มีผลต่อการเลือก Control เช่น เวลา 2 Sprint, รองรับ 10,000 คน, ปฏิบัติตาม PDPA</p>
+    <div class="info-box warning"><div class="icon">A</div><p><strong>ตัวอย่าง Assumption ที่อันตราย:</strong> ทีมเชื่อว่า API ถูกเรียกผ่าน Frontend เท่านั้น จึงไม่ตรวจ Authorization ที่ Backend แต่ผู้โจมตีเรียก API โดยตรงได้</p></div>
+
+    <h2 id="s4">4.4 Data Flow Diagram และ Trust Boundary</h2>
+    <p>DFD ช่วยให้ทีมเห็นว่าใครส่งข้อมูลอะไร ไปที่ไหน ผ่านกระบวนการใด และข้อมูลถูกเก็บตรงไหน</p>
+
+    <div class="interactive" id="play-dfd"><h4>Interactive: DFD Element Explorer</h4><p>คลิกแต่ละองค์ประกอบเพื่อดูรายละเอียด</p>
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0">
+    <button class="dfd-element-btn" data-dfd="ext">External Entity</button>
+    <button class="dfd-element-btn" data-dfd="proc">Process</button>
+    <button class="dfd-element-btn" data-dfd="store">Data Store</button>
+    <button class="dfd-element-btn" data-dfd="flow">Data Flow</button>
+    <button class="dfd-element-btn" data-dfd="bound">Trust Boundary</button>
+    </div>
+    <div id="dfdDisplay" class="result">คลิกองค์ประกอบเพื่อดูรายละเอียด</div></div>
+
+    <div class="table-wrap"><table><thead><tr><th>องค์ประกอบ</th><th>ตัวอย่าง</th></tr></thead><tbody>
+    <tr><td>External Entity</td><td>Customer, Admin, Payment Gateway</td></tr>
+    <tr><td>Process</td><td>Auth Service, Order Service, Payment Service</td></tr>
+    <tr><td>Data Store</td><td>User DB, Order DB, Object Storage</td></tr>
+    <tr><td>Data Flow</td><td>Login Request, Payment Callback, Order Query</td></tr>
+    <tr><td>Trust Boundary</td><td>Internet↔Backend, App↔Database, Company↔Third-party</td></tr>
+    </tbody></table></div>
+
+    <pre><code>[Customer Browser]
+    -> Login Request -> [Web Frontend]
+    -> API Request -> [Backend API]
+    -> Query User -> [User Database]
+    -> Create Order -> [Order Service]
+    -> Payment Request -> [Payment Gateway]
+    <- Payment Callback <- [Payment Gateway]
+    -> Send Email -> [Email Service]</code></pre>
+
+    <p><strong>Trust Boundary ที่ควรระบุ:</strong></p>
+    <ol><li>Customer Browser ↔ Web Frontend: จากอุปกรณ์ผู้ใช้เข้าสู่ระบบองค์กร</li>
+    <li>Web Frontend ↔ Backend API: Presentation Layer ไป Application Layer</li>
+    <li>Backend API ↔ Database: Application Layer ไป Data Layer</li>
+    <li>Backend API ↔ Payment Gateway: องค์กรไป Third-party</li></ol>
+
+    <p><strong>วิธีอ่าน DFD เพื่อหาภัยคุกคาม:</strong> ถามซ้ำทุก data flow: ผู้ส่งเป็นใครและพิสูจน์ตัวตนอย่างไร มีสิทธิ์หรือไม่ ข้อมูลถูกแก้ไขระหว่างทางได้หรือไม่ ถูกเปิดเผยใน response/log หรือไม่ ปลายทางตรวจ input หรือเชื่อทันที มีหลักฐานตรวจสอบย้อนหลังหรือไม่</p>
+
+    <div class="table-wrap"><table><thead><tr><th>ข้อผิดพลาด DFD</th><th>ผลกระทบ</th><th>วิธีแก้</th></tr></thead><tbody>
+    <tr><td>วาดเฉพาะ UI</td><td>มองไม่เห็น API/DB</td><td>วาด Process และ Data Store</td></tr>
+    <tr><td>ไม่ใส่ Third-party</td><td>มองข้าม Supply Chain</td><td>ใส่ Payment, Email, Analytics, CDN</td></tr>
+    <tr><td>ไม่ระบุ Trust Boundary</td><td>ไม่รู้จุดตรวจสิทธิ์</td><td>วาดเส้นแบ่งความไว้วางใจ</td></tr>
+    <tr><td>ไม่ระบุทิศทางข้อมูล</td><td>วิเคราะห์ยาก</td><td>ใส่ลูกศรทุกเส้น</td></tr>
+    </tbody></table></div>
+
+    <h2 id="s5">4.5 STRIDE Framework</h2>
+    <p>STRIDE แบ่งภัยคุกคามเป็น 6 หมวด:</p>
+
+    <div class="table-wrap"><table><thead><tr><th>ตัว</th><th>ภัยคุกคาม</th><th>กระทบ</th><th>คำถามสำคัญ</th></tr></thead><tbody>
+    <tr><td>S</td><td>Spoofing</td><td>Authentication</td><td>ใครปลอมตัวเป็นผู้ใช้หรือบริการอื่นได้</td></tr>
+    <tr><td>T</td><td>Tampering</td><td>Integrity</td><td>ข้อมูลถูกแก้ไขโดยไม่ได้รับอนุญาตได้หรือไม่</td></tr>
+    <tr><td>R</td><td>Repudiation</td><td>Non-repudiation</td><td>ผู้ใช้ปฏิเสธการกระทำเพราะไม่มีหลักฐานได้หรือไม่</td></tr>
+    <tr><td>I</td><td>Information Disclosure</td><td>Confidentiality</td><td>ข้อมูลรั่วสู่ผู้ไม่มีสิทธิ์ได้หรือไม่</td></tr>
+    <tr><td>D</td><td>Denial of Service</td><td>Availability</td><td>ระบบถูกทำให้ใช้การไม่ได้หรือไม่</td></tr>
+    <tr><td>E</td><td>Elevation of Privilege</td><td>Authorization</td><td>ผู้ใช้ได้สิทธิ์สูงกว่าที่ควรหรือไม่</td></tr>
+    </tbody></table></div>
+
+    <div class="interactive" id="play-stride2"><h4>Interactive: STRIDE Explorer</h4><p>คลิกแต่ละหมวดเพื่อดูตัวอย่างและ Control</p>
+    <div class="stride-card-explorer" data-stride="S"><div><span class="letter">S</span><strong>Spoofing — การปลอมตัวตน</strong></div><div class="stride-detail"><p><strong>ตัวอย่าง:</strong> ขโมย Session Token, ปลอม API Key, Phishing, ไม่มี mTLS</p><p><strong>Control:</strong> MFA, Mutual TLS, Signed JWT, Credential Rotation</p></div></div>
+    <div class="stride-card-explorer" data-stride="T"><div><span class="letter">T</span><strong>Tampering — การแก้ไขข้อมูล</strong></div><div class="stride-detail"><p><strong>ตัวอย่าง:</strong> แก้ราคาใน request, ปลอม Payment Callback, แก้ Log</p><p><strong>Control:</strong> Server-side Validation, HMAC, Immutable Log</p></div></div>
+    <div class="stride-card-explorer" data-stride="R"><div><span class="letter">R</span><strong>Repudiation — ปฏิเสธความรับผิดชอบ</strong></div><div class="stride-detail"><p><strong>ตัวอย่าง:</strong> ปฏิเสธว่าไม่ได้ยกเลิก booking, Admin ปฏิเสธว่าไม่ได้เปลี่ยนสิทธิ์</p><p><strong>Control:</strong> Audit Log (User ID, Timestamp, Action), Log Integrity, NTP Sync</p></div></div>
+    <div class="stride-card-explorer" data-stride="I"><div><span class="letter">I</span><strong>Information Disclosure — เปิดเผยข้อมูล</strong></div><div class="stride-detail"><p><strong>ตัวอย่าง:</strong> API ส่ง password_hash, Error แสดง Stack Trace, Object Storage Public</p><p><strong>Control:</strong> Data Minimization, Encryption, Secret Redaction, Secure Error Handling</p></div></div>
+    <div class="stride-card-explorer" data-stride="D"><div><span class="letter">D</span><strong>Denial of Service — ปฏิเสธบริการ</strong></div><div class="stride-detail"><p><strong>ตัวอย่าง:</strong> Request จำนวนมากไป CPU-heavy endpoint, อัปโหลดไฟล์ใหญ่ล้นพื้นที่</p><p><strong>Control:</strong> Rate Limit, Quota, Timeout, Circuit Breaker, Autoscaling</p></div></div>
+    <div class="stride-card-explorer" data-stride="E"><div><span class="letter">E</span><strong>Elevation of Privilege — ยกระดับสิทธิ์</strong></div><div class="stride-detail"><p><strong>ตัวอย่าง:</strong> ผู้ใช้เรียก Admin API, JWT role=admin ไม่ตรวจ, Container root</p><p><strong>Control:</strong> Least Privilege, RBAC, Backend Authorization, Container Hardening</p></div></div></div>
+
+    <h3>4.5.1 Spoofing</h3>
+    <p><strong>ตัวอย่าง:</strong> ขโมย Session Token, ปลอม API Key, Phishing, Service ไม่มี mTLS <strong>Control:</strong> MFA, Session Token ที่ปลอดภัย, Mutual TLS, Signed JWT, Credential Rotation</p>
+    <h3>4.5.2 Tampering</h3>
+    <p><strong>ตัวอย่าง:</strong> แก้ราคาใน request, ปลอม Payment Callback, แก้ Log <strong>Control:</strong> Server-side Validation, HMAC, Immutable Log, Database Constraint</p>
+    <h3>4.5.3 Repudiation</h3>
+    <p><strong>ตัวอย่าง:</strong> ปฏิเสธว่าไม่ได้ยกเลิก booking, Admin เปลี่ยนสิทธิ์ไม่มีหลักฐาน <strong>Control:</strong> Audit Log (User ID, Timestamp, Action), Log Integrity, NTP Sync</p>
+    <h3>4.5.4 Information Disclosure</h3>
+    <p><strong>ตัวอย่าง:</strong> API ส่ง password_hash, Error แสดง SQL/Stack Trace, Log เก็บ Token <strong>Control:</strong> Data Minimization, Field-level Access Control, Encryption, Secret Redaction</p>
+    <h3>4.5.5 Denial of Service</h3>
+    <p><strong>ตัวอย่าง:</strong> Request ท่วม CPU-heavy endpoint, อัปโหลดใหญ่ล้นพื้นที่ <strong>Control:</strong> Rate Limit, Request Size Limit, Timeout, Circuit Breaker, Queue, DDoS Protection</p>
+    <h3>4.5.6 Elevation of Privilege</h3>
+    <p><strong>ตัวอย่าง:</strong> ผู้ใช้เรียก Admin API, JWT role=admin ไม่ตรวจลายเซ็น <strong>Control:</strong> Least Privilege, RBAC/ABAC, Backend Authorization, Container Hardening</p>
+
+    <h3>4.5.7 STRIDE ตาม DFD</h3>
+    <div class="table-wrap"><table><thead><tr><th>องค์ประกอบ DFD</th><th>STRIDE ที่เกี่ยวข้อง</th></tr></thead><tbody>
+    <tr><td>External Entity</td><td>Spoofing, Repudiation</td></tr>
+    <tr><td>Process</td><td>Tampering, Repudiation, Info Disclosure, DoS, EoP</td></tr>
+    <tr><td>Data Store</td><td>Tampering, Info Disclosure, DoS</td></tr>
+    <tr><td>Data Flow</td><td>Tampering, Info Disclosure, DoS</td></tr>
+    <tr><td>Trust Boundary</td><td>จุดบังคับตรวจทุกประเภท</td></tr>
+    </tbody></table></div>
+
+    <div class="interactive" id="play-threat-stmt"><h4>Interactive: Threat Statement Builder</h4><p>เลือก dropdown เพื่อสร้าง Threat Statement</p>
+    <div class="control-row">
+    <select id="tsAttacker"><option value="ผู้ใช้ทั่วไป">ผู้ใช้ทั่วไป</option><option value="ผู้โจมตีภายนอก">ผู้โจมตีภายนอก</option><option value="ผู้ดูแลระบบ">ผู้ดูแลระบบ</option><option value="ผู้ให้บริการภายนอก">ผู้ให้บริการภายนอก</option></select>
+    <select id="tsAction"><option value="อ่านข้อมูล">อ่านข้อมูล</option><option value="แก้ไขข้อมูล">แก้ไขข้อมูล</option><option value="ลบข้อมูล">ลบข้อมูล</option><option value="ปลอมคำสั่ง">ปลอมคำสั่ง</option></select>
+    <select id="tsChannel"><option value="API endpoint">API endpoint</option><option value="Webhook/Callback">Webhook/Callback</option><option value="File Upload">File Upload</option><option value="Login Form">Login Form</option></select>
+    <select id="tsVuln"><option value="ไม่มี Object-level AuthZ">ไม่มี Object-level AuthZ</option><option value="ไม่มี Rate Limit">ไม่มี Rate Limit</option><option value="ไม่ตรวจ Digital Signature">ไม่ตรวจ Digital Signature</option><option value="ไม่มี Input Validation">ไม่มี Input Validation</option></select>
+    <select id="tsImpact"><option value="ข้อมูลรั่วไหล">ข้อมูลรั่วไหล</option><option value="บริการหยุดทำงาน">บริการหยุดทำงาน</option><option value="สิทธิ์ถูกยกระดับ">สิทธิ์ถูกยกระดับ</option><option value="ข้อมูลเสียหาย">ข้อมูลเสียหาย</option></select>
+    </div>
+    <button class="btn" id="tsBtn">สร้าง Threat Statement</button>
+    <div id="tsResult" class="result">เลือกตัวเลือกแล้วกดสร้าง</div>
+    <p><small>รูปแบบ: ผู้โจมตี [ประเภท] อาจ [การกระทำ] ผ่าน [ช่องทาง] เนื่องจาก [ช่องโหว่] ส่งผลให้ [ผลกระทบ]</small></p></div>
+
+    <h2 id="s6">4.6 Attack Surface และ Attack Tree</h2>
+    <p>Attack Surface คือช่องทางที่ผู้โจมตีสามารถโต้ตอบกับระบบได้ ยิ่งมาก ความเสี่ยงยิ่งสูง</p>
+
+    <div class="table-wrap"><table><thead><tr><th>Attack Surface</th><th>ตัวอย่าง</th><th>ภัยคุกคาม</th></tr></thead><tbody>
+    <tr><td>Public API</td><td>/login, /orders, /payments</td><td>Injection, Broken Access Control, DoS</td></tr>
+    <tr><td>File Upload</td><td>รูปสินค้า, เอกสาร</td><td>Malware Upload, Storage Exhaustion</td></tr>
+    <tr><td>Admin Portal</td><td>Dashboard</td><td>Privilege Escalation, Account Takeover</td></tr>
+    <tr><td>Third-party Callback</td><td>Payment Webhook</td><td>Spoofing, Tampering, Replay</td></tr>
+    <tr><td>CI/CD Pipeline</td><td>Build Script</td><td>Supply Chain Attack</td></tr>
+    </tbody></table></div>
+
+    <div class="interactive" id="play-attacktree"><h4>Interactive: Attack Tree — ขโมยข้อมูลลูกค้า</h4><p>คลิกโหนดเพื่อขยาย/ยุบ</p>
+    <div class="tree-node open"><div class="node-label" data-tree="root"><span class="toggle-icon">▼</span> เป้าหมาย: ขโมยข้อมูลลูกค้า (OR)</div>
+    <div class="node-children">
+    <div class="tree-node"><div class="node-label" data-tree="n1"><span class="toggle-icon">▶</span> 1. เข้าถึงฐานข้อมูลโดยตรง (AND)</div>
+    <div class="node-children"><div class="node-leaf">- ได้ credential ของ database</div><div class="node-leaf">- เข้าถึง network ภายในได้</div></div></div>
+    <div class="tree-node"><div class="node-label" data-tree="n2"><span class="toggle-icon">▶</span> 2. ใช้ช่องโหว่ API (OR)</div>
+    <div class="node-children"><div class="node-leaf">- IDOR ใน /customers/{id}</div><div class="node-leaf">- SQL Injection ใน search API</div></div></div>
+    <div class="tree-node"><div class="node-label" data-tree="n3"><span class="toggle-icon">▶</span> 3. ขโมยบัญชี Admin (AND)</div>
+    <div class="node-children"><div class="node-leaf">- หลอก Phishing รหัสผ่าน</div><div class="node-leaf">- ไม่มี MFA</div></div></div>
+    <div class="tree-node"><div class="node-label" data-tree="n4"><span class="toggle-icon">▶</span> 4. ขโมย Backup File (AND)</div>
+    <div class="node-children"><div class="node-leaf">- Object Storage ตั้งค่า Public</div><div class="node-leaf">- Backup ไม่เข้ารหัส</div></div></div>
+    </div></div>
+    <div class="info-box remember"><div class="icon">AT</div><p><strong>ประโยชน์:</strong> เห็นเส้นทางโจมตีหลายทาง เลือก control ที่ลดความเสี่ยงหลายเส้นทาง สื่อสารกับผู้บริหารได้ดี</p></div>
+    </div>
+
+    <h2 id="s7">4.7 Risk Assessment ตาม NIST SP 800-30 Rev.1</h2>
+    <p>NIST SP 800-30 Rev.1 ชื่อ <em>Guide for Conducting Risk Assessments</em> เผยแพร่เดือนกันยายน 2012 เป็นเอกสารสำคัญสำหรับการประเมินความเสี่ยงด้านความมั่นคงปลอดภัยสารสนเทศ</p>
+
+    <h3 id="s7-1">4.7.1 องค์ประกอบหลักของ Risk Assessment</h3>
+    <div class="table-wrap"><table><thead><tr><th>องค์ประกอบ</th><th>ความหมาย</th><th>ตัวอย่าง</th></tr></thead><tbody>
+    <tr><td>Threat Source</td><td>แหล่งที่มาของภัยคุกคาม</td><td>External Attacker, Insider, Malware</td></tr>
+    <tr><td>Threat Event</td><td>เหตุการณ์ที่อาจเกิด</td><td>ใช้ Credential รั่วไหลเข้าสู่ระบบ</td></tr>
+    <tr><td>Vulnerability</td><td>จุดอ่อน</td><td>ไม่มี MFA, Password Reuse</td></tr>
+    <tr><td>Predisposing Condition</td><td>เงื่อนไขที่ทำให้เสี่ยงขึ้น</td><td>ระบบเปิดอินเทอร์เน็ต, ไม่มี Rate Limit</td></tr>
+    <tr><td>Likelihood</td><td>โอกาสเกิด</td><td>สูง ถ้ามี credential stuffing และไม่มี MFA</td></tr>
+    <tr><td>Impact</td><td>ผลกระทบ</td><td>ข้อมูลรั่วไหล, ระบบหยุดทำงาน</td></tr>
+    <tr><td>Risk</td><td>ระดับความเสี่ยง</td><td>High หรือ Critical</td></tr>
+    </tbody></table></div>
+
+    <h3 id="s7-2">4.7.2 Risk Matrix</h3>
+    <div class="interactive" id="play-riskmat"><h4>Interactive: Risk Matrix Simulator</h4><p>เลือก Likelihood และ Impact เพื่อดู Risk Level</p>
+    <div class="control-row">
+    <select id="rmLikelihood"><option value="low">Likelihood: Low</option><option value="med">Likelihood: Medium</option><option value="high">Likelihood: High</option></select>
+    <select id="rmImpact"><option value="low">Impact: Low</option><option value="med">Impact: Medium</option><option value="high">Impact: High</option></select>
+    <button class="btn" id="rmBtn">คำนวณ</button></div>
+    <div id="rmResult" class="result">เลือก Likelihood และ Impact แล้วกดคำนวณ</div></div>
+
+    <div class="table-wrap"><table><thead><tr><th>Impact \ Likelihood</th><th>Low</th><th>Medium</th><th>High</th></tr></thead><tbody>
+    <tr><td><strong>Low</strong></td><td class="risk-low">Low</td><td class="risk-low">Low</td><td class="risk-med">Medium</td></tr>
+    <tr><td><strong>Medium</strong></td><td class="risk-low">Low</td><td class="risk-med">Medium</td><td class="risk-high">High</td></tr>
+    <tr><td><strong>High</strong></td><td class="risk-med">Medium</td><td class="risk-high">High</td><td class="risk-critical">Critical</td></tr>
+    </tbody></table></div>
+
+    <div class="info-box tip"><div class="icon">R</div><p><strong>ตัวอย่าง:</strong> IDOR ระบบเปิดสาธารณะมีข้อมูลส่วนบุคคล = High×High = Critical | Stack Trace ในระบบภายในไม่มีข้อมูลสำคัญ = Medium×Low = Low</p></div>
+    <div class="info-box question"><div class="icon">Q</div><p><strong>ข้อควรจำ:</strong> Risk Matrix เป็นเครื่องมือช่วยตัดสินใจ ไม่ใช่ความจริงทางคณิตศาสตร์ ต้องใช้บริบทร่วมด้วย</p></div>
+
+    <h3 id="s7-3">4.7.3 ISO/IEC 27005:2022 และ Risk Treatment</h3>
+    <p>ISO/IEC 27005:2022 เป็น Edition 4 ของมาตรฐานแนวทางการจัดการความเสี่ยงด้านความมั่นคงปลอดภัยสารสนเทศ เชื่อมโยงกับ ISO/IEC 27001</p>
+    <p><strong>วงจร:</strong> Establish Context → Risk Assessment → Risk Treatment → Risk Acceptance → Risk Communication → Risk Monitoring</p>
+
+    <div class="interactive" id="play-treatment"><h4>Interactive: Risk Treatment Selector</h4><p>ระบบ E-Commerce เก็บข้อมูลบัตรเครดิตเพื่อชำระเงินซ้ำ เสี่ยงสูงหากฐานข้อมูลรั่ว</p>
+    <button class="quiz-option" data-quiz="treatment" data-correct="false">Mitigate: เข้ารหัสข้อมูลบัตรให้แน่นขึ้น</button>
+    <button class="quiz-option" data-quiz="treatment" data-correct="false">Transfer: ซื้อประกันภัยไซเบอร์</button>
+    <button class="quiz-option" data-quiz="treatment" data-correct="true">Avoid: ไม่เก็บข้อมูลบัตร ใช้ Token จาก Payment Gateway แทน</button>
+    <button class="quiz-option" data-quiz="treatment" data-correct="false">Accept: ยอมรับความเสี่ยง</button>
+    <div id="treatmentResult" class="result">เลือกคำตอบเพื่อดูเหตุผล</div></div>
+
+    <div class="table-wrap"><table><thead><tr><th>Treatment</th><th>ความหมาย</th><th>ตัวอย่าง</th></tr></thead><tbody>
+    <tr><td>Mitigate</td><td>ลดโอกาสเกิดหรือลดผลกระทบ</td><td>MFA, แก้ AuthZ, เข้ารหัส</td></tr>
+    <tr><td>Transfer</td><td>โอนความเสี่ยงบางส่วน</td><td>Cyber Insurance, ผู้ให้บริการร่วมรับผิดชอบ</td></tr>
+    <tr><td>Accept</td><td>ยอมรับความเสี่ยงคงเหลือ</td><td>Low Risk ที่ต้นทุนแก้สูงกว่าผลกระทบ</td></tr>
+    <tr><td>Avoid</td><td>หลีกเลี่ยงความเสี่ยง</td><td>ยกเลิกฟีเจอร์ที่เก็บข้อมูลอ่อนไหว</td></tr>
+    </tbody></table></div>
+
+    <p><strong>Residual Risk:</strong> ความเสี่ยงหลังใช้ Control เช่น Account Takeover เดิม High → ใช้ MFA, Rate Limit → Residual Risk = Medium (ยังมี Social Engineering, Session Theft)</p>
+
+    <h2 id="s8">4.8 Risk Register</h2>
+    <p>เอกสารติดตามความเสี่ยงให้มีเจ้าของและสถานะชัดเจน</p>
+
+    <div class="interactive" id="play-register"><h4>Interactive: Risk Register Builder</h4><p>เพิ่มรายการความเสี่ยงลงทะเบียน</p>
+    <div class="control-row"><input id="rrThreat" placeholder="Threat (เช่น IDOR)"><input id="rrAsset" placeholder="Asset"><input id="rrOwner" placeholder="Owner"></div>
+    <div class="control-row">
+    <select id="rrLike"><option value="Low">Like: Low</option><option value="Medium">Like: Medium</option><option value="High">Like: High</option></select>
+    <select id="rrImpact"><option value="Low">Impact: Low</option><option value="Medium">Impact: Medium</option><option value="High">Impact: High</option></select>
+    <button class="btn" id="rrBtn">เพิ่ม</button>
+    <button class="btn secondary" id="rrClear">ล้าง</button></div>
+    <div class="table-wrap"><table class="risk-register-table"><thead><tr><th>ID</th><th>Threat</th><th>Asset</th><th>Like</th><th>Impact</th><th>Level</th><th>Owner</th></tr></thead><tbody id="rrBody"></tbody></table></div></div>
+
+    <div class="table-wrap"><table><thead><tr><th>Field</th><th>คำอธิบาย</th></tr></thead><tbody>
+    <tr><td>Risk ID</td><td>รหัส R-001</td></tr>
+    <tr><td>Threat Statement</td><td>ข้อความภัยคุกคาม</td></tr>
+    <tr><td>Likelihood/Impact</td><td>Low/Medium/High</td></tr>
+    <tr><td>Risk Level</td><td>Low/Medium/High/Critical</td></tr>
+    <tr><td>Treatment/Control</td><td>Mitigate/Transfer/Accept/Avoid</td></tr>
+    <tr><td>Owner/Status</td><td>ผู้รับผิดชอบและสถานะ</td></tr>
+    <tr><td>Residual Risk</td><td>ความเสี่ยงหลัง Control</td></tr>
+    </tbody></table></div>
+
+    <h2 id="s9">4.9 CVSS v4.0: ใช้ให้ถูกบริบท</h2>
+    <p>CVSS (Common Vulnerability Scoring System) เป็นมาตรฐานเปิดของ FIRST สำหรับให้คะแนนความรุนแรงของช่องโหว่ เวอร์ชัน v4.0 ใช้คะแนน 0.0 ถึง 10.0 มี Metric Group: Base, Threat, Environmental, Supplemental</p>
+
+    <div class="interactive" id="play-cvss"><h4>Interactive: ระดับ CVSS v4.0</h4><p>คลิกแต่ละช่วงเพื่อดูรายละเอียด</p>
+    <div class="cvss-bar">
+    <div class="cvss-seg none" data-cvss="none" style="flex:0.5">None<br>0.0</div>
+    <div class="cvss-seg low" data-cvss="low" style="flex:2">Low<br>0.1-3.9</div>
+    <div class="cvss-seg med" data-cvss="med" style="flex:2">Medium<br>4.0-6.9</div>
+    <div class="cvss-seg high" data-cvss="high" style="flex:2">High<br>7.0-8.9</div>
+    <div class="cvss-seg crit" data-cvss="crit" style="flex:1.5">Critical<br>9.0-10.0</div>
+    </div>
+    <div id="cvssResult" class="result">คลิกที่ช่วงคะแนน</div></div>
+
+    <div class="interactive" id="play-cvss-risk"><h4>Interactive: CVSS vs Risk Quiz</h4>
+    <p><strong>สถานการณ์:</strong> RCE ในระบบทดสอบแยกเครือข่าย ไม่มีข้อมูลจริง ปิดจากอินเทอร์เน็ต CVSS = 9.8 (Critical) ความเสี่ยงทางธุรกิจจริงคือ?</p>
+    <button class="quiz-option" data-quiz="cvssrisk" data-correct="false">Critical — CVSS เป็น Critical</button>
+    <button class="quiz-option" data-quiz="cvssrisk" data-correct="false">High — ต้องรีบแก้ไข</button>
+    <button class="quiz-option" data-quiz="cvssrisk" data-correct="true">Medium — ไม่มีข้อมูลจริง แยกเครือข่าย แต่ยังเป็น RCE ควรมีแผน</button>
+    <button class="quiz-option" data-quiz="cvssrisk" data-correct="false">Low — ไม่ต้องสนใจ</button>
+    <div id="cvssriskResult" class="result">เลือกคำตอบ</div></div>
+
+    <div class="table-wrap"><table><thead><tr><th>ระดับ</th><th>คะแนน</th></tr></thead><tbody>
+    <tr><td>None</td><td>0.0</td></tr>
+    <tr><td>Low</td><td>0.1 - 3.9</td></tr>
+    <tr><td>Medium</td><td>4.0 - 6.9</td></tr>
+    <tr><td>High</td><td>7.0 - 8.9</td></tr>
+    <tr><td>Critical</td><td>9.0 - 10.0</td></tr>
+    </tbody></table></div>
+
+    <div class="table-wrap"><table><thead><tr><th>ช่องโหว่</th><th>CVSS</th><th>บริบท</th><th>Risk จริง</th></tr></thead><tbody>
+    <tr><td>RCE ในระบบทดสอบแยกเครือข่าย</td><td>Critical</td><td>ไม่มีข้อมูลจริง ปิดจากอินเทอร์เน็ต</td><td>Medium</td></tr>
+    <tr><td>Broken Access Control ระบบลูกค้า</td><td>High</td><td>เปิดสาธารณะ มี PII จำนวนมาก</td><td>Critical</td></tr>
+    <tr><td>Information Disclosure Debug Endpoint</td><td>Medium</td><td>แสดง Secret และ Token จริง</td><td>High</td></tr>
+    </tbody></table></div>
+    <div class="info-box warning"><div class="icon">CVSS</div><p><strong>สรุป:</strong> CVSS บอกความรุนแรงทางเทคนิค แต่ Risk ต้องรวม Asset, Exposure, Business Impact, Existing Controls</p></div>
+
+    <h2 id="s10">4.10 DREAD: ประโยชน์และข้อจำกัด</h2>
+    <p>DREAD ประกอบด้วย 5 ปัจจัย: <strong>Damage</strong> (ความเสียหาย), <strong>Reproducibility</strong> (ทำซ้ำ), <strong>Exploitability</strong> (โจมตีง่าย), <strong>Affected Users</strong> (ผู้ใช้ที่กระทบ), <strong>Discoverability</strong> (ค้นพบง่าย)</p>
+
+    <div class="table-wrap"><table><thead><tr><th>Threat</th><th>D</th><th>R</th><th>E</th><th>A</th><th>D</th><th>รวม</th></tr></thead><tbody>
+    <tr><td>IDOR อ่าน booking ผู้อื่น</td><td>8</td><td>9</td><td>8</td><td>7</td><td>8</td><td>40</td></tr>
+    <tr><td>ไม่มี Rate Limit หน้า Login</td><td>6</td><td>9</td><td>7</td><td>8</td><td>9</td><td>39</td></tr>
+    <tr><td>Stack Trace แสดงรายละเอียด</td><td>4</td><td>6</td><td>3</td><td>3</td><td>7</td><td>23</td></tr>
+    </tbody></table></div>
+    <div class="info-box remember"><div class="icon">D</div><p><strong>ข้อจำกัด:</strong> คะแนนขึ้นกับผู้ประเมินสูง, Discoverability ทำให้สับสน, ไม่เชื่อมบริบทธุรกิจ ใช้ฝึกอภิปราย แต่ใช้ Risk Matrix/Risk Register ในการจัดลำดับจริง</p></div>
+
+    <h2 id="s11">4.11 เปรียบเทียบวิธี Threat Modeling</h2>
+    <div class="table-wrap"><table><thead><tr><th>วิธี</th><th>จุดเด่น</th><th>เหมาะกับ</th></tr></thead><tbody>
+    <tr><td>STRIDE</td><td>เข้าใจง่าย ผูก DFD</td><td>ทีมพัฒนา ผู้เริ่มต้น</td></tr>
+    <tr><td>PASTA</td><td>Risk-centric เชื่อมธุรกิจ</td><td>ระบบสำคัญระดับองค์กร</td></tr>
+    <tr><td>LINDDUN</td><td>Privacy Threat</td><td>ระบบที่ประมวลผล PII</td></tr>
+    <tr><td>Trike</td><td>Permission/Role focus</td><td>ระบบควบคุมสิทธิ์ละเอียด</td></tr>
+    <tr><td>VAST</td><td>รองรับองค์กรใหญ่ Agile</td><td>หลายทีม หลายระบบ</td></tr>
+    </tbody></table></div>
+    <h3>PASTA 7 ขั้นตอน</h3>
+    <p>PASTA หรือ Process for Attack Simulation and Threat Analysis มี 7 ขั้นตอน:</p>
+    <ol>
+    <li>Define Business Objectives</li>
+    <li>Define Technical Scope</li>
+    <li>Decompose the Application</li>
+    <li>Threat Analysis</li>
+    <li>Vulnerability Analysis</li>
+    <li>Attack Modeling and Simulation</li>
+    <li>Risk and Impact Analysis</li>
+    </ol>
+    <p>PASTA เหมาะกับระบบที่ต้องการเชื่อมความเสี่ยงทางเทคนิคกับผลกระทบทางธุรกิจ เช่น ระบบธนาคาร ระบบชำระเงิน ระบบสุขภาพ หรือระบบโครงสร้างพื้นฐานสำคัญ</p>
+    <h3>LINDDUN สำหรับ Privacy Threat Modeling</h3>
+    <p>LINDDUN เหมาะกับระบบที่ประมวลผลข้อมูลส่วนบุคคล พิจารณาภัยคุกคามด้านความเป็นส่วนตัว เช่น Linkability, Identifiability, Non-repudiation, Detectability, Disclosure of Information, Unawareness และ Non-compliance</p>
+
+    <h2 id="s12">4.12 เครื่องมือสำหรับ Threat Modeling</h2>
+    <div class="table-wrap"><table><thead><tr><th>เครื่องมือ</th><th>จุดเด่น</th></tr></thead><tbody>
+    <tr><td>Microsoft Threat Modeling Tool</td><td>STRIDE + รายงานจาก DFD</td></tr>
+    <tr><td>OWASP Threat Dragon</td><td>Open Source, DFD</td></tr>
+    <tr><td>draw.io / diagrams.net</td><td>ยืดหยุ่น เริ่มเร็ว</td></tr>
+    <tr><td>Miro / FigJam</td><td>Collaboration Workshop</td></tr>
+    <tr><td>Jira / GitHub Issues</td><td>ติดตาม Risk และ Control</td></tr>
+    </tbody></table></div>
+    <div class="info-box warning"><div class="icon">T</div><p><strong>ข้อควรระวัง:</strong> เครื่องมือช่วยจัดรูปแบบแต่ไม่รับประกันภัยคุกคามครบ ถ้า DFD ผิด ผลลัพธ์ก็ผิด ต้องอัปเดตเมื่อระบบเปลี่ยน</p></div>
+
+    <h2 id="s13">4.13 กรณีศึกษาจริง</h2>
+
+    <div class="case-card"><div class="meta"><span class="year">2017</span><span class="type">Patch management</span></div>
+    <h4>Equifax Data Breach</h4>
+    <p>ถูกโจมตีผ่าน Apache Struts มีผู้ได้รับผลกระทบประมาณ 147 ล้านคน ข้อตกลงปี 2019 มูลค่าอย่างน้อย 575 ล้านดอลลาร์สหรัฐ อาจสูงถึง 700 ล้านดอลลาร์สหรัฐ</p>
+    <ul class="lessons"><li>Patch Management เป็นส่วนหนึ่งของ Risk Treatment</li><li>การไม่แบ่งส่วนเครือข่ายทำให้ผลกระทบขยายวง</li><li>Threat Modeling ควรมองเส้นทางจากระบบสาธารณะไปยังข้อมูลสำคัญ</li></ul></div>
+
+    <div class="case-card"><div class="meta"><span class="year">2020</span><span class="type">Cloud risk assessment</span></div>
+    <h4>Capital One Cloud Breach</h4>
+    <p>สำนักงานผู้ควบคุมเงินตราสหรัฐปรับ Capital One จำนวน 80 ล้านดอลลาร์สหรัฐ ปัญหาเกี่ยวกับกระบวนการประเมินความเสี่ยงก่อนย้ายงานขึ้นคลาวด์</p>
+    <ul class="lessons"><li>Cloud Architecture ต้องทำ Threat Modeling เฉพาะบริบท</li><li>Least Privilege ต้องตรวจจริง ไม่ใช่แค่เขียนนโยบาย</li><li>ทดสอบสมมติฐานสถาปัตยกรรม เช่น "ระบบภายในปลอดภัย"</li></ul></div>
+
+    <div class="case-card"><div class="meta"><span class="year">2020</span><span class="type">Supply chain attack</span></div>
+    <h4>SolarWinds SUNBURST</h4>
+    <p>ผู้โจมตีแทรกโค้ดอันตรายในกระบวนการอัปเดตซอฟต์แวร์ ทำให้ประมาณ 18,000 องค์กรได้รับผลกระทบผ่านซอฟต์แวร์ที่เชื่อถือ</p>
+    <ul class="lessons"><li>Threat Modeling ต้องรวม CI/CD Pipeline และ Build System</li><li>Attack Surface รวม build, dependency, signing key, release pipeline</li><li>Code Signing ไม่พอถ้า Build Pipeline ถูก compromise ก่อนเซ็น</li></ul></div>
+
+    <div class="case-card"><div class="meta"><span class="year">2023</span><span class="type">Internet-facing file transfer</span></div>
+    <h4>MOVEit Transfer</h4>
+    <p>CISA ระบุกลุ่ม Cl0p ใช้ SQL Injection ใน MOVEit Transfer เริ่มโจมตีวันที่ 27 พฤษภาคม 2023 CISA เผยแพร่คำแนะนำวันที่ 7 มิถุนายน 2023</p>
+    <ul class="lessons"><li>Internet-facing File Transfer ต้องอยู่ใน Risk Register ระดับสูง</li><li>ต้องมี Monitoring สำหรับดาวน์โหลดผิดปกติ</li><li>ถามว่า "ถ้าระบบนี้ถูกเจาะ ผู้โจมตีเข้าถึงข้อมูลใดได้บ้าง"</li></ul></div>
+
+    <div class="case-card"><div class="meta"><span class="year">2021</span><span class="type">Dependency risk</span></div>
+    <h4>Log4Shell (CVE-2021-44228)</h4>
+    <p>ช่องโหว่ร้ายแรงใน Log4j กระทบระบบ Java ทั่วโลก ได้คะแนน CVSS 10.0 จาก NVD</p>
+    <ul class="lessons"><li>Dependency เป็นส่วนหนึ่งของ Attack Surface</li><li>SBOM ช่วยระบุระบบที่ได้รับผลกระทบ</li><li>Risk Analysis ต้องครอบคลุม Third-party Dependency</li></ul></div>
+
+    <h2 id="s14">4.14 ตัวอย่าง End-to-End: CineTicket</h2>
+    <p>ระบบจองตั๋วภาพยนตร์ออนไลน์ ตั้งแต่ Scope → DFD → STRIDE → Risk Register → Requirement → Test Case</p>
+
+    <h3>4.14.1 System Scope</h3>
+    <div class="table-wrap"><table><thead><tr><th>อยู่ในขอบเขต</th><th>นอกขอบเขต</th></tr></thead><tbody>
+    <tr><td>สมัครสมาชิก, เข้าสู่ระบบ, เลือกที่นั่ง, ชำระเงิน, ประวัติการจอง, Admin</td><td>บัญชีภายใน, ระบบพนักงาน, ภายใน Payment Gateway</td></tr>
+    </tbody></table></div>
+
+    <h3>4.14.2 DFD</h3>
+    <pre><code>[Customer] -> Login/Register -> [Auth Service] -> [User DB]
+    -> Search Movie -> [Movie Service] -> [Movie DB]
+    -> Select Seat -> [Booking Service] -> [Seat DB]
+    -> Pay -> [Payment Service] -> [Payment Gateway]
+    <- Payment Callback <- [Payment Gateway]
+    -> View Booking -> [Booking Service] -> [Booking DB]
+[Admin] -> Manage Movie -> [Admin API] -> [Movie DB]</code></pre>
+
+    <h3>4.14.3 Threat List</h3>
+    <div class="interactive"><h4>Interactive: CineTicket Threats</h4><p>คลิกแถวเพื่อดูรายละเอียด</p>
+    <div class="table-wrap"><table><thead><tr><th>ID</th><th>STRIDE</th><th>จุด</th></tr></thead><tbody>
+    <tr class="cine-row" data-cine="t1"><td>T-001</td><td>Spoofing</td><td>Auth Service — Credential Stuffing</td></tr>
+    <tr class="cine-row" data-cine="t2"><td>T-002</td><td>Tampering</td><td>Booking API — แก้ราคา request</td></tr>
+    <tr class="cine-row" data-cine="t3"><td>T-003</td><td>Repudiation</td><td>Cancel Booking — ปฏิเสธว่าไม่ได้ยกเลิก</td></tr>
+    <tr class="cine-row" data-cine="t4"><td>T-004</td><td>Information Disclosure</td><td>Booking History — IDOR ดูของผู้อื่น</td></tr>
+    <tr class="cine-row" data-cine="t5"><td>T-005</td><td>DoS</td><td>Seat Hold — lock ที่นั่งจำนวนมาก</td></tr>
+    <tr class="cine-row" data-cine="t6"><td>T-006</td><td>EoP</td><td>Admin API — ผู้ใช้เรียกโดยตรง</td></tr>
+    <tr class="cine-row" data-cine="t7"><td>T-007</td><td>Tampering</td><td>Payment Callback — ปลอม callback</td></tr>
+    <tr class="cine-row" data-cine="t8"><td>T-008</td><td>Information Disclosure</td><td>Log Pipeline — เก็บ Token</td></tr>
+    </tbody></table></div>
+    <div id="cineDetail" class="result">คลิกแถวเพื่อดูรายละเอียด</div></div>
+
+    <h3>4.14.4 Security Requirements</h3>
+    <div class="table-wrap"><table><thead><tr><th>ID</th><th>Requirement</th><th>Threat</th></tr></thead><tbody>
+    <tr><td>SR-001</td><td>ตรวจ owner booking_id ทุกครั้ง</td><td>T-004</td></tr>
+    <tr><td>SR-002</td><td>Payment Callback ต้องมี HMAC + timestamp</td><td>T-007</td></tr>
+    <tr><td>SR-003</td><td>Admin API ต้อง MFA + RBAC</td><td>T-006</td></tr>
+    <tr><td>SR-004</td><td>Seat Hold หมดอายุอัตโนมัติ</td><td>T-005</td></tr>
+    <tr><td>SR-005</td><td>Log ไม่เก็บ Token หรือ PII เต็ม</td><td>T-008</td></tr>
+    </tbody></table></div>
+
+    <h2 id="s15">4.15 การเชื่อม Threat Modeling กับ SDLC และ DevSecOps</h2>
+    <div class="table-wrap"><table><thead><tr><th>SDLC Phase</th><th>Activity</th><th>Output</th></tr></thead><tbody>
+    <tr><td>Requirements</td><td>ระบุ Asset, Abuse Case</td><td>Security Requirements</td></tr>
+    <tr><td>Design</td><td>DFD, Trust Boundary, STRIDE</td><td>Threat Model, Controls</td></tr>
+    <tr><td>Implementation</td><td>แปลง Threat เป็น Secure Coding Task</td><td>Code Changes</td></tr>
+    <tr><td>Testing</td><td>Security Test Cases จาก Threat</td><td>API Security Test, Abuse Test</td></tr>
+    <tr><td>Deployment</td><td>ตรวจ Config และ Secret</td><td>Deployment Gate, IaC Scan</td></tr>
+    <tr><td>Operations</td><td>Monitor Threat และ Residual Risk</td><td>Alert, Incident Playbook</td></tr>
+    </tbody></table></div>
+
+    <p><strong>Security Gate:</strong> ฟีเจอร์เพิ่ม public endpoint → Threat Review, ฟีเจอร์ที่แตะ PII → Privacy Threat Review, Critical/High Threat → มีเจ้าของก่อน production, Residual Risk High → Risk Owner อนุมัติ</p>
+
+    <h2 id="s16">4.16 Checklist สำหรับ Threat Modeling Review</h2>
+    <div class="interactive" id="play-checklist"><h4>Interactive: Checklists</h4><p>ติ๊กรายการที่ตรวจสอบครบ</p>
+
+    <div class="card"><div class="card-header">Scope Checklist</div>
+    <div class="checklist" id="chkScope">
+    <label><input type="checkbox"> ระบุระบบในขอบเขต</label><label><input type="checkbox"> ระบุนอกขอบเขต</label>
+    <label><input type="checkbox"> ระบุผู้ใช้และระบบภายนอก</label><label><input type="checkbox"> ระบุ Asset</label>
+    <label><input type="checkbox"> ระบุ Assumption และ Constraint</label></div>
+    <div class="meter"><div class="meter-fill" id="meterScope"></div></div></div>
+
+    <div class="card"><div class="card-header">DFD Checklist</div>
+    <div class="checklist" id="chkDfd">
+    <label><input type="checkbox"> External Entity ครบ</label><label><input type="checkbox"> Process หลักครบ</label>
+    <label><input type="checkbox"> Data Store ครบ</label><label><input type="checkbox"> Data Flow มีทิศทาง</label>
+    <label><input type="checkbox"> Trust Boundary ชัดเจน</label><label><input type="checkbox"> Third-party และ callback แสดง</label></div>
+    <div class="meter"><div class="meter-fill" id="meterDfd"></div></div></div>
+
+    <div class="card"><div class="card-header">Threat Checklist</div>
+    <div class="checklist" id="chkThreat">
+    <label><input type="checkbox"> STRIDE ครบตามองค์ประกอบ</label><label><input type="checkbox"> Threat Statement ชัดเจน</label>
+    <label><input type="checkbox"> ภัยคุกคามสำคัญมี Control</label><label><input type="checkbox"> ไม่มี Threat คลุมเครือ</label>
+    <label><input type="checkbox"> มี Abuse Case</label></div>
+    <div class="meter"><div class="meter-fill" id="meterThreat"></div></div></div>
+
+    <div class="card"><div class="card-header">Risk Checklist</div>
+    <div class="checklist" id="chkRiskChk">
+    <label><input type="checkbox"> High/Critical ใน Risk Register</label><label><input type="checkbox"> มี Owner และ Due Date</label>
+    <label><input type="checkbox"> มี Treatment ชัดเจน</label><label><input type="checkbox"> ประเมิน Residual Risk</label>
+    <label><input type="checkbox"> Risk ที่ Accept มีผู้อนุมัติ</label></div>
+    <div class="meter"><div class="meter-fill" id="meterRiskChk"></div></div></div>
+
+    <div class="card"><div class="card-header">Verification Checklist</div>
+    <div class="checklist" id="chkVer">
+    <label><input type="checkbox"> Control สำคัญมี Test Case</label><label><input type="checkbox"> Authorization Test ครอบคลุม object-level</label>
+    <label><input type="checkbox"> Logging และ alert ทดสอบแล้ว</label><label><input type="checkbox"> Security Test ผูก CI/CD</label>
+    <label><input type="checkbox"> Threat Model ถูกเก็บ เข้าถึง และอัปเดตได้</label></div>
+    <div class="meter"><div class="meter-fill" id="meterVer"></div></div></div></div>
+
+    <h3>4.16.1 ข้อผิดพลาดที่พบบ่อย</h3>
+    <div class="table-wrap"><table><thead><tr><th>ข้อผิดพลาด</th><th>แนวทางแก้</th></tr></thead><tbody>
+    <tr><td>ทำ TM หลังระบบเสร็จ</td><td>ทำตั้งแต่ Requirements/Design</td></tr>
+    <tr><td>Security Team ทำฝ่ายเดียว</td><td>Workshop ร่วม Dev, QA, DevOps, Product</td></tr>
+    <tr><td>สนใจเทคนิคไม่ดูธุรกิจ</td><td>ระบุ Asset, Business Impact, Risk Owner</td></tr>
+    <tr><td>ไม่มี Risk Register</td><td>แปลง Threat เป็น Risk + Backlog</td></tr>
+    <tr><td>ใช้ CVSS เป็นคำตอบสุดท้าย</td><td>ใช้ CVSS คู่กับ Exposure, Asset, Controls</td></tr>
+    <tr><td>ลืม Third-party</td><td>ใส่ทุก Third-party ใน DFD</td></tr>
+    <tr><td>ไม่ทดสอบ Control</td><td>สร้าง Test Case และ Monitoring จาก Threat Model</td></tr>
+    </tbody></table></div>
+    <div class="info-box question"><div class="icon">Q</div><p><strong>อภิปราย:</strong> ถ้ามีเวลาจำกัด ควรทำ TM แบบย่อ 30 นาทีอย่างไร ขั้นตอนใดห้ามตัด</p></div>
+
+    <h2 id="labs">กิจกรรมปฏิบัติการ</h2>
+    <div class="lab-section"><h5>Lab 4.1: สร้าง DFD และ Trust Boundary (45-60 นาที)</h5>
+    <ol><li>เลือก 1 ระบบจาก E-Commerce, CineTicket, Mobile Banking, ระบบรับส่งไฟล์</li><li>ระบุ External Entity, Process, Data Store, Data Flow, Trust Boundary อย่างน้อย 3 จุด</li><li>เขียน Assumption อย่างน้อย 5 ข้อ และ Asset List อย่างน้อย 5 รายการ</li><li>ส่ง DFD พร้อมตาราง Asset List และรายการ Trust Boundary</li></ol></div>
+
+    <div class="lab-section"><h5>Lab 4.2: วิเคราะห์ภัยคุกคามด้วย STRIDE (60 นาที)</h5>
+    <ol><li>ใช้ DFD จาก Lab 4.1 เลือก 8 จุดขึ้นไป</li><li>วิเคราะห์ STRIDE ที่เกี่ยวข้องกับแต่ละจุด</li><li>เขียน Threat Statement อย่างน้อย 12 รายการตามรูปแบบที่แนะนำ</li><li>เสนอ Control อย่างน้อย 1 รายการต่อ Threat</li></ol></div>
+
+    <div class="lab-section"><h5>Lab 4.3: Risk Register และ Risk Treatment (60 นาที)</h5>
+    <ol><li>เลือกภัยคุกคาม 8 รายการจาก Lab 4.2</li><li>ประเมิน Likelihood และ Impact กำหนด Risk Level ด้วย Matrix</li><li>เลือก Treatment (Mitigate/Transfer/Accept/Avoid)</li><li>ระบุ Control, Owner, Due Date, Status และ Residual Risk</li></ol></div>
+
+    <div class="lab-section"><h5>Lab 4.4: CVSS เทียบ Business Risk (45-60 นาที)</h5>
+    <ol><li>เลือกช่องโหว่ 3 รายการ (IDOR, SQL Injection, Missing Rate Limit)</li><li>จัดลำดับด้วย CVSS อย่างเดียว</li><li>จัดลำดับใหม่ด้วย Business Risk (รวมบริบท Asset, Exposure)</li><li>อธิบายว่าลำดับเปลี่ยนหรือไม่ เพราะเหตุใด ส่งสรุป 1 หน้า</li></ol></div>
+
+    <h2 id="questions">คำถามท้ายบท</h2>
+    <ol>
+    <li>Threat Modeling แตกต่างจาก Risk Assessment และ Vulnerability Scoring อย่างไร</li>
+    <li>เหตุใด DFD และ Trust Boundary จึงเป็นพื้นฐานสำคัญของ Threat Modeling</li>
+    <li>อธิบาย STRIDE ทั้ง 6 หมวด พร้อมตัวอย่างภัยคุกคามและ Control</li>
+    <li>เขียน Threat Statement สำหรับ "ผู้ใช้ดูข้อมูลคำสั่งซื้อของผู้อื่นได้"</li>
+    <li>Risk Matrix มีข้อดีและข้อจำกัดอย่างไร</li>
+    <li>CVSS v4.0 มี Metric Group ใดบ้าง และเหตุใด CVSS จึงไม่เท่ากับ Risk</li>
+    <li>DREAD มีประโยชน์และข้อจำกัดอะไรในการเรียน Threat Modeling</li>
+    <li>เปรียบเทียบ STRIDE กับ PASTA</li>
+    <li>จากกรณี Equifax 2017 การทำ TM และ Risk Register ช่วยลดความเสี่ยงใดได้บ้าง</li>
+    <li>จากกรณี SolarWinds 2020 Attack Surface ของซอฟต์แวร์รวมอะไรบ้างนอกเหนือจากตัวแอป</li>
+    </ol>
+
+    <h2 id="summary">สรุปท้ายบท</h2>
+    <div class="card"><div class="card-header">สาระสำคัญของบทที่ 4</div>
+    <p>Threat Modeling ช่วยให้ทีมเห็นภัยคุกคามตั้งแต่ช่วงออกแบบ ไม่ใช่รอให้พบช่องโหว่หลังระบบเสร็จ DFD และ Trust Boundary ช่วยให้เห็นจุดที่ต้องตรวจตัวตน ตรวจสิทธิ์ เข้ารหัส และบันทึกหลักฐาน</p>
+    <p>STRIDE เป็นกรอบถามคำถามครบ 6 มุม ได้แก่ Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service และ Elevation of Privilege เมื่อจับคู่กับ DFD จะลดโอกาสตกหล่น</p>
+    <p>Risk Assessment จัดลำดับด้วย Likelihood และ Impact บันทึกใน Risk Register ที่มีเจ้าของ Due Date Treatment และ Residual Risk CVSS v4.0 ช่วยสื่อสารความรุนแรงของช่องโหว่ แต่ไม่ใช่คะแนน Risk ทางธุรกิจทั้งหมด</p>
+    <p>กรณีศึกษา Equifax, Capital One, SolarWinds, MOVEit, Log4Shell แสดงว่า TM และ Risk Analysis ป้องกันความเสียหายจริง Threat Modeling ไม่ใช่งาน Security Team เท่านั้น แต่เป็นกิจกรรมร่วมของ Developer, Architect, QA, DevOps, Product Owner และผู้บริหาร</p></div>
+
+    <h2 id="refs">เอกสารอ้างอิงหลัก</h2>
+    <ol>
+    <li>OWASP Threat Modeling: <a href="https://owasp.org/www-community/Threat_Modeling">https://owasp.org/www-community/Threat_Modeling</a></li>
+    <li>OWASP Threat Modeling Cheat Sheet: <a href="https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html</a></li>
+    <li>Microsoft SDL Threat Modeling: <a href="https://www.microsoft.com/en-us/securityengineering/sdl/threatmodeling">https://www.microsoft.com/en-us/securityengineering/sdl/threatmodeling</a></li>
+    <li>NIST SP 800-30 Rev.1: <a href="https://csrc.nist.gov/pubs/sp/800/30/r1/final">https://csrc.nist.gov/pubs/sp/800/30/r1/final</a></li>
+    <li>ISO/IEC 27005:2022: <a href="https://www.iso.org/standard/80585.html">https://www.iso.org/standard/80585.html</a></li>
+    <li>FIRST CVSS v4.0: <a href="https://www.first.org/cvss/v4.0/specification-document">https://www.first.org/cvss/v4.0/specification-document</a></li>
+    <li>CISA MOVEit Transfer Advisory: <a href="https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-158a">https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-158a</a></li>
+    <li>FTC Equifax Settlement: <a href="https://www.ftc.gov/enforcement/refunds/equifax-data-breach-settlement">https://www.ftc.gov/enforcement/refunds/equifax-data-breach-settlement</a></li>
+    <li>OCC Capital One Penalty 2020: <a href="https://www.occ.gov/news-issuances/news-releases/2020/nr-occ-2020-101.html">https://www.occ.gov/news-issuances/news-releases/2020/nr-occ-2020-101.html</a></li>
+    </ol>
+  </div>
+</div>
+<button class="scroll-top" id="scrollTopBtn" aria-label="กลับด้านบน">↑</button>
+<script>
+(function(){
+var sidebar=document.getElementById('sidebar'),toggle=document.getElementById('sidebarToggle'),overlay=document.getElementById('sidebarOverlay');
+function openSidebar(){sidebar.classList.add('open');overlay.classList.add('show')}
+function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('show')}
+if(toggle)toggle.addEventListener('click',function(){sidebar.classList.contains('open')?closeSidebar():openSidebar()});
+if(overlay)overlay.addEventListener('click',closeSidebar);
+document.querySelectorAll('.sidebar-nav a').forEach(function(link){link.addEventListener('click',function(){if(window.innerWidth<=1024)closeSidebar()})});
+var scrollBtn=document.getElementById('scrollTopBtn');
+window.addEventListener('scroll',function(){if(window.scrollY>300)scrollBtn.classList.add('visible');else scrollBtn.classList.remove('visible')});
+if(scrollBtn)scrollBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+var sections=[],anchors=document.querySelectorAll('.sidebar-nav a');anchors.forEach(function(a){var href=a.getAttribute('href');if(href&&href.startsWith('#')){var target=document.getElementById(href.substring(1));if(target)sections.push({el:target,link:a})}});
+function updateActive(){var pos=window.scrollY+120,current=null;sections.forEach(function(s){if(s.el.offsetTop<=pos)current=s});anchors.forEach(function(a){a.classList.remove('active')});if(current)current.link.classList.add('active')}
+window.addEventListener('scroll',updateActive);updateActive();
+
+function setResult(id,msg,cls){var el=document.getElementById(id);if(!el)return;el.className='result '+(cls||'');el.textContent=msg}
+function setHTML(id,html,cls){var el=document.getElementById(id);if(!el)return;el.className='result '+(cls||'');el.innerHTML=html}
+
+document.querySelectorAll('.tab-btn').forEach(function(btn){btn.addEventListener('click',function(){var wrap=btn.closest('.tabs'),tab=btn.dataset.tab,panelIds=[];wrap.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');panelIds.push(b.dataset.tab)});btn.classList.add('active');panelIds.forEach(function(id){var p=document.getElementById(id);if(p)p.classList.toggle('active',id===tab)})})});
+
+// OWASP 4 questions - details/summary is built-in HTML, no extra JS needed
+
+// Term matching quiz
+var selTerm=null,selDef=null,matchScore=0,totalPairs=7,matches={};
+document.querySelectorAll('.tm-term').forEach(function(b){b.addEventListener('click',function(){selTerm=this;document.querySelectorAll('.tm-term').forEach(function(x){x.classList.remove('correct','wrong')})})});
+document.querySelectorAll('.tm-def').forEach(function(b){b.addEventListener('click',function(){if(!selTerm){setResult('matchStatus','กรุณาเลือกคำศัพท์ก่อน','');return}
+var term=selTerm.dataset.term,def=this.dataset.def;var correctMap={asset:'a',threat:'b',vuln:'c',impact:'d',likelihood:'e',risk:'f',severity:'g'};
+var ok=correctMap[term]===def;selTerm.classList.add(ok?'correct':'wrong');this.classList.add(ok?'correct':'wrong');
+if(ok&&!matches[term]){matches[term]=true;matchScore=Object.keys(matches).length}
+var msg=ok?'ถูกต้อง! จับคู่ '+(matchScore)+'/'+totalPairs:'ไม่ตรงกัน ลองใหม่';
+setResult('matchStatus',msg,ok?'ok':'bad');selTerm=null})});
+
+// Stepper
+var stepBtns=document.querySelectorAll('.step-btn'),stepContents=document.querySelectorAll('.step-content');
+stepBtns.forEach(function(b){b.addEventListener('click',function(){var s=parseInt(this.dataset.step);
+stepBtns.forEach(function(x){x.classList.toggle('active',parseInt(x.dataset.step)===s)});
+stepContents.forEach(function(x){x.classList.toggle('active',parseInt(x.dataset.step)===s)})})});
+
+// Asset checklist meter
+function updateAssetMeter(){var boxes=document.querySelectorAll('#assetChecks input'),checked=0;boxes.forEach(function(b){if(b.checked)checked++});var pct=boxes.length?Math.round(checked/boxes.length*100):0;document.getElementById('assetMeter').style.width=pct+'%';var cls=pct>=80?'ok':pct>=50?'mid':'bad';setResult('assetResult','Asset ระบุแล้ว: '+checked+'/'+boxes.length+' ('+pct+'%)'+(pct>=80?' ครบถ้วนดี':pct>=50?' ควรเพิ่ม':' ยังไม่ครบ'),cls)}
+document.getElementById('assetChecks').addEventListener('change',updateAssetMeter);updateAssetMeter();
+
+// DFD Element Explorer
+var dfdData={ext:{title:'External Entity',desc:'ผู้ใช้หรือระบบภายนอกที่ติดต่อระบบ',ex:'Customer, Admin, Payment Gateway'},proc:{title:'Process',desc:'ส่วนที่ประมวลผลข้อมูล',ex:'Auth Service, Order Service, Payment Service'},store:{title:'Data Store',desc:'ที่เก็บข้อมูล',ex:'User DB, Order DB, Object Storage'},flow:{title:'Data Flow',desc:'เส้นทางการส่งข้อมูล',ex:'Login Request, Payment Callback, Order Query'},bound:{title:'Trust Boundary',desc:'เส้นแบ่งระดับความเชื่อถือ - ทุกจุดข้าม boundary ต้องมี Auth, AuthZ, Encryption',ex:'Internet↔Backend, App↔DB, Company↔Third-party'}};
+document.querySelectorAll('.dfd-element-btn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.dfd-element-btn').forEach(function(x){x.classList.remove('active')});this.classList.add('active');var d=dfdData[this.dataset.dfd];setHTML('dfdDisplay','<strong>'+d.title+'</strong><br>'+d.desc+'<br><em>ตัวอย่าง: '+d.ex+'</em>','ok')})});
+
+// STRIDE Explorer
+document.querySelectorAll('.stride-card-explorer').forEach(function(c){c.addEventListener('click',function(){this.classList.toggle('open')})});
+
+// Threat Statement Builder
+document.getElementById('tsBtn').addEventListener('click',function(){var a=document.getElementById('tsAttacker').value,ac=document.getElementById('tsAction').value,ch=document.getElementById('tsChannel').value,v=document.getElementById('tsVuln').value,im=document.getElementById('tsImpact').value;setResult('tsResult','ผู้โจมตี '+a+' อาจ '+ac+' ผ่าน '+ch+' เนื่องจาก '+v+' ส่งผลให้ '+im,'ok')});
+
+// Attack Tree toggle
+document.querySelectorAll('[data-tree]').forEach(function(b){b.addEventListener('click',function(){var p=this.closest('.tree-node');if(p){p.classList.toggle('open');var icon=this.querySelector('.toggle-icon');if(icon)icon.textContent=p.classList.contains('open')?'▼':'▶'}})});
+
+// Risk Matrix calculator
+document.getElementById('rmBtn').addEventListener('click',function(){var l=document.getElementById('rmLikelihood').value,i=document.getElementById('rmImpact').value;var map={low:0,med:1,high:2};var li=map[l],im=map[i];var mx=[['Low','Low','Medium'],['Low','Medium','High'],['Medium','High','Critical']];var level=mx[im][li];var cls={'Low':'ok','Medium':'mid','High':'bad','Critical':'bad'}[level];cls=level==='Critical'?'bad':level==='High'?'bad':level==='Medium'?'mid':'ok';setResult('rmResult','Risk Level: '+level+(level==='Critical'||level==='High'?' ต้องมีแผนจัดการ':level==='Medium'?' ควรมีเจ้าของและแผน':' ยอมรับได้'),cls)});
+
+// Risk Treatment quiz
+document.querySelectorAll('[data-quiz="treatment"]').forEach(function(b){b.addEventListener('click',function(){var ok=this.dataset.correct==='true';document.querySelectorAll('[data-quiz="treatment"]').forEach(function(x){x.classList.remove('correct','wrong')});this.classList.add(ok?'correct':'wrong');
+var msg=ok?'ถูกต้อง! Avoid โดยไม่เก็บข้อมูลบัตรและใช้ Token แทน เป็นการกำจัดความเสี่ยงที่ต้นเหตุ':'พิจารณาใหม่: การไม่เก็บข้อมูลบัตร (Avoid) เป็นวิธีที่ปลอดภัยที่สุด เพราะตัดความเสี่ยงเรื่องการรั่วไหลของฐานข้อมูล';
+setResult('treatmentResult',msg,ok?'ok':'bad')})});
+
+// Risk Register Builder
+var rrCount=0;function getRiskLevel(l,i){var map={Low:0,Medium:1,High:2};var mx=[['Low','Low','Medium'],['Low','Medium','High'],['Medium','High','Critical']];return mx[map[i]][map[l]]}
+document.getElementById('rrBtn').addEventListener('click',function(){var t=document.getElementById('rrThreat').value.trim(),a=document.getElementById('rrAsset').value.trim(),o=document.getElementById('rrOwner').value.trim();if(!t||!a||!o){setResult('rrBtn','กรุณากรอกข้อมูลให้ครบ','bad');return}
+var l=document.getElementById('rrLike').value,i=document.getElementById('rrImpact').value,level=getRiskLevel(l,i);rrCount++;var row=document.createElement('tr');row.innerHTML='<td>R-'+String(rrCount).padStart(3,'0')+'</td><td>'+t+'</td><td>'+a+'</td><td>'+l+'</td><td>'+i+'</td><td>'+level+'</td><td>'+o+'</td>';document.getElementById('rrBody').appendChild(row);setResult('rrBtn','เพิ่มรายการ R-'+String(rrCount).padStart(3,'0')+' เรียบร้อย','ok');document.getElementById('rrThreat').value='';document.getElementById('rrAsset').value='';document.getElementById('rrOwner').value=''});
+document.getElementById('rrClear').addEventListener('click',function(){document.getElementById('rrBody').innerHTML='';rrCount=0;setResult('rrBtn','ล้างตารางเรียบร้อย','mid')});
+
+// CVSS range display
+document.querySelectorAll('.cvss-seg').forEach(function(b){b.addEventListener('click',function(){var v=this.dataset.cvss;var msg={'none':'None (0.0): ไม่มีผลกระทบเชิงความรุนแรง','low':'Low (0.1-3.9): กระทบจำกัดหรือโจมตียาก','med':'Medium (4.0-6.9): ควรจัดการตามรอบปกติ','high':'High (7.0-8.9): ควรเร่งจัดการ โดยเฉพาะระบบสำคัญ','crit':'Critical (9.0-10.0): ต้องประเมินการแก้ไขเร่งด่วน'}[v];setResult('cvssResult',msg,'ok')})});
+
+// CVSS vs Risk quiz
+document.querySelectorAll('[data-quiz="cvssrisk"]').forEach(function(b){b.addEventListener('click',function(){var ok=this.dataset.correct==='true';document.querySelectorAll('[data-quiz="cvssrisk"]').forEach(function(x){x.classList.remove('correct','wrong')});this.classList.add(ok?'correct':'wrong');
+var msg=ok?'ถูกต้อง! CVSS Critical ไม่ได้แปลว่า Risk Critical เสมอไป ต้องดูบริบทระบบด้วย':'ไม่ถูกต้อง: RCE ในระบบทดสอบที่แยกเครือข่ายไม่มีข้อมูลจริง แม้ CVSS จะ Critical แต่ Risk จริงคือ Medium';
+setResult('cvssriskResult',msg,ok?'ok':'bad')})});
+
+// Checklist meters
+['chkScope','chkDfd','chkThreat','chkRiskChk','chkVer'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',function(){updateChecklistMeter(id)})});
+function updateChecklistMeter(prefix){var meterId='';if(prefix==='chkScope')meterId='meterScope';else if(prefix==='chkDfd')meterId='meterDfd';else if(prefix==='chkThreat')meterId='meterThreat';else if(prefix==='chkRiskChk')meterId='meterRiskChk';else if(prefix==='chkVer')meterId='meterVer';var boxes=document.querySelectorAll('#'+prefix+' input'),checked=0;boxes.forEach(function(b){if(b.checked)checked++});var pct=boxes.length?Math.round(checked/boxes.length*100):0;var m=document.getElementById(meterId);if(m)m.style.width=pct+'%'}
+
+// CineTicket threat details
+var cineDetails={'t1':'Threat: Credential Stuffing ที่ Auth Service<br>Control: MFA, Rate Limit, Breached Password Check','t2':'Threat: ผู้ใช้แก้ราคาตั๋วใน request ที่ Booking API<br>Control: คำนวณราคาที่ Server เท่านั้น, ตรวจ Promotion Rule','t3':'Threat: ผู้ใช้ปฏิเสธว่าไม่ได้ยกเลิกการจอง<br>Control: Audit Log (User ID, Timestamp), Confirmation Step','t4':'Threat: ผู้ใช้เดา booking_id ดูข้อมูลของผู้อื่น<br>Control: Object-level Authorization, ใช้ UUID','t5':'Threat: ผู้โจมตี hold ที่นั่งจำนวนมากโดยไม่จ่ายเงิน<br>Control: Seat Hold Timeout, User Quota','t6':'Threat: ผู้ใช้ทั่วไปเรียก Admin API โดยตรง<br>Control: RBAC, MFA, Backend Authorization','t7':'Threat: ผู้โจมตีปลอม Payment Callback ว่าสำเร็จ<br>Control: HMAC Signature, Replay Protection, Timestamp','t8':'Threat: ระบบบันทึก Token หรือ PII ใน Log<br>Control: Log Redaction, Data Classification Policy'};
+document.querySelectorAll('.cine-row').forEach(function(r){r.addEventListener('click',function(){var id=this.dataset.cine;setHTML('cineDetail',cineDetails[id]||'ไม่มีข้อมูล','ok')})});
+})();
+</script>
+<div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--text-muted, #64748b);border-top:1px solid var(--border, #e2e8f0)">Powered by: IceSuntisuk</div></body>
+</html>
