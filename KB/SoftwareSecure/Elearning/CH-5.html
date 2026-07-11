@@ -1,0 +1,2215 @@
+<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-5: โพรโทคอลเพื่อการสื่อสารที่ปลอดภัย | วิชา Network Security</title>
+<meta name="description" content="บทที่ 5 วิชา Network Security — โพรโทคอลเพื่อการสื่อสารที่ปลอดภัย: SSL/TLS, IPsec, SSH, การเปรียบเทียบโพรโทคอล, การโจมตี SSL/TLS, Best Practices">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "CH-5: โพรโทคอลเพื่อการสื่อสารที่ปลอดภัย",
+  "description": "บทที่ 5 ของวิชา Network Security — ครอบคลุม OSI Model Security Layers, SSL/TLS (TLS 1.2/1.3), IPsec (AH, ESP, IKEv2), SSH, การเปรียบเทียบโพรโทคอลความปลอดภัย, การโจมตี SSL/TLS ในประวัติศาสตร์, Best Practices และแนวทางการกำหนดค่าที่ปลอดภัย",
+  "educationalLevel": "Undergraduate",
+  "educationalRole": "Instructor",
+  "teaches": [
+    "OSI Model Security Layers",
+    "SSL/TLS Protocol",
+    "TLS 1.2 Handshake",
+    "TLS 1.3 Handshake",
+    "Cipher Suite Structure",
+    "TLS Record Protocol",
+    "DTLS",
+    "IPsec AH and ESP",
+    "IPsec Transport and Tunnel Modes",
+    "IKEv2 Key Exchange",
+    "SSH Architecture",
+    "SSH Authentication Methods",
+    "WireGuard VPN",
+    "SSL/TLS Attacks",
+    "HTTPS, FTPS, SFTP, SMTPS",
+    "DNS Security (DNSSEC, DoH, DoT)",
+    "Mozilla SSL Configuration",
+    "HSTS, CAA, DANE"
+  ],
+  "inLanguage": "th"
+}
+</script>
+<style>
+:root {
+  --primary: #1a3a5c;
+  --primary-dark: #0f2440;
+  --primary-light: #2c5a8c;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --bg: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --text: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --code-bg: #0f172a;
+  --code-text: #e2e8f0;
+  --table-stripe: #f8fafc;
+  --sidebar-bg: #f8fafc;
+  --sidebar-border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --radius: 8px;
+  --radius-sm: 4px;
+  --radius-lg: 12px;
+  --font-thai: 'Sarabun', 'IBM Plex Sans Thai', 'Kanit', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
+  --transition: 0.2s ease;
+  --header-height: 64px;
+  --toc-width: 280px;
+}
+[data-theme="dark"] {
+  --primary: #60a5fa;
+  --primary-dark: #1e3a5f;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --bg: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --border: #334155;
+  --code-bg: #020617;
+  --table-stripe: #1e293b;
+  --sidebar-bg: #1e293b;
+  --sidebar-border: #334155;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+h1,h2,h3,h4,h5,h6{line-height:1.3;font-weight:700;color:var(--text);margin-top:1.5em;margin-bottom:.75em}
+h1{font-size:2.25rem;margin-top:0}
+h2{font-size:1.75rem;border-bottom:2px solid var(--border);padding-bottom:.4em}
+h3{font-size:1.35rem}
+h4{font-size:1.1rem}
+p{margin-bottom:1em}
+hr{border:none;border-top:2px solid var(--border);margin:2.5em 0}
+strong,b{font-weight:700}
+ul,ol{margin-bottom:1em;padding-left:1.5em}
+li{margin-bottom:.35em}
+#loading-screen{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s ease}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-secondary);font-size:1rem}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#818cf8);z-index:9998;width:0%;transition:width .15s ease-out}
+.top-nav{position:fixed;top:3px;left:0;right:0;z-index:9997;height:var(--header-height);background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-nav .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem;color:var(--text);white-space:nowrap}
+.top-nav .logo i{color:var(--accent);font-size:1.3rem}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-actions button,.nav-actions .search-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:1rem}
+.nav-actions button:hover,.nav-actions .search-toggle:hover{background:var(--bg-tertiary);color:var(--text);border-color:var(--text-muted)}
+#sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.search-overlay{position:fixed;inset:0;z-index:9996;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(4px)}
+.search-overlay.active{display:flex}
+.search-panel{background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:90%;max-width:640px;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
+.search-input-wrap{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);gap:.5rem}
+.search-input-wrap i{color:var(--text-muted)}
+.search-input-wrap input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:1rem;font-family:var(--font-thai)}
+.search-input-wrap input::placeholder{color:var(--text-muted)}
+.search-count{font-size:.8rem;color:var(--text-muted);white-space:nowrap;padding:.25rem .5rem;background:var(--bg-tertiary);border-radius:var(--radius-sm)}
+.search-results{overflow-y:auto;padding:.5rem;flex:1;max-height:50vh}
+.search-results .no-results{padding:2rem;text-align:center;color:var(--text-muted)}
+.search-result-item{padding:.75rem;border-radius:var(--radius);cursor:pointer;transition:background .2s ease;border-bottom:1px solid var(--border-light)}
+.search-result-item:hover{background:var(--bg-tertiary)}
+.search-result-item .result-heading{font-weight:600;font-size:.9rem;color:var(--accent);margin-bottom:.2rem}
+.search-result-item .result-snippet{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.search-result-item .result-snippet mark,.highlight{background:#fef08a;color:#1e293b;padding:0 2px;border-radius:2px}
+[data-theme="dark"] .search-result-item .result-snippet mark,[data-theme="dark"] .highlight{background:#854d0e;color:#fef9c3}
+.layout{display:flex;padding-top:calc(var(--header-height) + 3px);min-height:100vh}
+.sidebar{width:var(--toc-width);flex-shrink:0;position:sticky;top:calc(var(--header-height) + 3px);height:calc(100vh - var(--header-height) - 3px);overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:1.25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--text-muted) transparent;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:4px}
+.sidebar-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{margin-bottom:.15rem}
+.toc-link{display:block;padding:.4rem .6rem;border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-secondary);transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;line-height:1.4}
+.toc-link:hover{background:var(--bg-tertiary);color:var(--text);text-decoration:none}
+.toc-link.active{color:var(--accent);background:rgba(37,99,235,.08);border-left-color:var(--accent);font-weight:600}
+.toc-link.sub{padding-left:1.4rem;font-size:.8rem}
+.toc-link.sub2{padding-left:2.2rem;font-size:.78rem}
+.main-content{flex:1;min-width:0;padding:2rem 2.5rem;max-width:calc(100vw - var(--toc-width))}
+.main-content>section{margin-bottom:2.5rem}
+.section-ref{scroll-margin-top:calc(var(--header-height) + 16px)}
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:2.5rem 2rem;border-radius:var(--radius-lg);margin-bottom:2.5rem}
+.hero h1{color:#fff;font-size:2rem;margin-bottom:.5rem}
+.hero .subtitle{color:rgba(255,255,255,.85);font-size:1.1rem;margin-bottom:1.25rem}
+.hero .meta-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.hero .meta-tag{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);padding:.25rem .75rem;border-radius:20px;font-size:.8rem}
+.learning-objectives{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+.learning-objectives h3{margin-top:0;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.learning-objectives ol{margin:.75rem 0 0;padding-left:1.25rem}
+.learning-objectives li{margin-bottom:.5rem;color:var(--text-secondary);font-size:.95rem}
+.table-wrap{overflow-x:auto;margin:1.25em 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}
+thead{background:var(--bg-tertiary)}
+th,td{padding:.6rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}
+th{font-weight:700;color:var(--text)}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+tbody tr:hover{background:var(--bg-tertiary)}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:1.25em 0;position:relative}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+code{background:var(--bg-tertiary);color:var(--accent);padding:.15em .4em;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.85em}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:0}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.expandable{margin:1.25em 0}
+.expandable-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease;user-select:none;font-weight:600;font-size:.95rem}
+.expandable-header:hover{background:var(--border)}
+.expandable-header i{transition:transform .2s ease;font-size:.85rem;color:var(--text-muted)}
+.expandable.expanded .expandable-header i{transform:rotate(180deg)}
+.expandable-content{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;border:1px solid transparent}
+.expandable.expanded .expandable-content{max-height:50000px;padding:1rem;border-color:var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.quiz-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:all .2s ease}
+.quiz-card.revealed{border-left:4px solid #22c55e}
+.quiz-question{display:flex;gap:.75rem;align-items:flex-start}
+.q-number{background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.quiz-question p{margin:0;font-weight:500;color:var(--text);font-size:.95rem}
+.quiz-card .reveal-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-family:var(--font-thai);transition:all .2s ease}
+.quiz-card .reveal-btn:hover{background:var(--accent-hover)}
+.quiz-card.revealed .reveal-btn{background:var(--text-muted)}
+.quiz-answer{margin-top:.75rem;padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border);font-size:.9rem}
+.hidden{display:none}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:9995;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-lg);transition:all .2s ease;opacity:0;visibility:hidden;transform:translateY(10px)}
+#back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+#back-to-top:hover{background:var(--accent-hover);transform:translateY(-2px)}
+.site-footer{margin-top:3rem;padding:1.5rem 2rem;background:var(--bg-secondary);border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+.glossary-term{color:var(--accent);border-bottom:1px dashed var(--accent);cursor:help;position:relative;font-weight:500}
+.glossary-term .tooltip{visibility:hidden;opacity:0;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--primary-dark);color:#fff;padding:.5rem .85rem;border-radius:var(--radius-sm);font-size:.78rem;line-height:1.5;font-weight:400;white-space:normal;z-index:9999;box-shadow:var(--shadow-lg);transition:opacity .2s ease,visibility .2s ease;pointer-events:none;max-width:300px;text-align:center}
+.glossary-term .tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--primary-dark)}
+.glossary-term:hover .tooltip{visibility:visible;opacity:1}
+@media print{
+  .top-nav,.sidebar,#back-to-top,#progress-bar,.copy-btn,.search-overlay,#sidebar-toggle,.nav-actions{display:none!important}
+  .layout{display:block;padding-top:0}
+  .main-content{max-width:100%;padding:0}
+  .hero{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .hero h1,.hero .subtitle{color:#fff!important}
+  table{font-size:.8rem}
+  pre{white-space:pre-wrap;word-break:break-all}
+  .expandable-content{max-height:none!important;padding:1rem!important;border-color:var(--border)!important}
+  .expandable-header i{display:none}
+  .table-wrap{overflow:visible}
+  .quiz-answer.hidden{display:block!important}
+  .quiz-card .reveal-btn{display:none}
+  body{font-size:11pt}
+  section{page-break-inside:avoid}
+  h2,h3{page-break-after:avoid}
+}
+@media(max-width:1024px){:root{--toc-width:240px}.main-content{padding:1.5rem}}
+@media(max-width:768px){
+  :root{--toc-width:0px}
+  #sidebar-toggle{display:flex}
+  .sidebar{position:fixed;left:-280px;top:calc(var(--header-height) + 3px);width:280px;height:calc(100vh - var(--header-height) - 3px);transition:left .3s ease;z-index:9990;box-shadow:var(--shadow-lg)}
+  .sidebar.open{left:0}
+  .sidebar-overlay{position:fixed;inset:0;z-index:9989;background:rgba(0,0,0,.4);display:none}
+  .sidebar-overlay.active{display:block}
+  .main-content{max-width:100%;padding:1rem}
+  .hero{padding:1.5rem 1rem}
+  .hero h1{font-size:1.5rem}
+  h2{font-size:1.4rem}
+  h3{font-size:1.15rem}
+  .top-nav{padding:0 .75rem}
+  .top-nav .logo{font-size:.85rem}
+  table{font-size:.8rem}
+  th,td{padding:.4rem .6rem}
+  .quiz-card{padding:1rem}
+}
+@media(max-width:480px){
+  .nav-actions button,.nav-actions .search-toggle{width:36px;height:36px}
+  #back-to-top{bottom:1rem;right:1rem;width:40px;height:40px}
+  .search-panel{width:95%}
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<div id="loading-screen" role="status" aria-label="กำลังโหลดเนื้อหา">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">กำลังโหลดเนื้อหา...</div>
+</div>
+<div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้าการอ่าน"></div>
+<header class="top-nav" role="banner">
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button id="sidebar-toggle" aria-label="เปิดเมนูสารบัญ" aria-expanded="false">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="logo">
+      <i class="fas fa-shield-halved" aria-hidden="true"></i>
+      <span>Network Security — บทที่ 5</span>
+    </div>
+  </div>
+  <div class="nav-actions">
+    <button class="search-toggle" id="search-toggle-btn" aria-label="ค้นหา" title="ค้นหา (Ctrl+K / ⌘K)">
+      <i class="fas fa-search" aria-hidden="true"></i>
+    </button>
+    <button id="dark-mode-toggle" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง">
+      <i class="fas fa-moon" aria-hidden="true"></i>
+    </button>
+  </div>
+</header>
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="ค้นหาเนื้อหา">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="ค้นหาในเนื้อหาทั้งหมด..." aria-label="ป้อนคำค้นหา" autocomplete="off">
+      <span class="search-count" id="search-count"></span>
+      <button id="search-close-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;" aria-label="ปิดค้นหา">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="layout">
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-title"><i class="fas fa-list" aria-hidden="true"></i> สารบัญ</div>
+  <ul class="toc-list" id="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#hero-section" data-target="hero-section">บทนำ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#learning-objectives" data-target="learning-objectives">วัตถุประสงค์การเรียนรู้</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section1" data-target="section1">1. OSI Model Security Layers</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-1" data-target="section1-1">1.1 OSI Model และตำแหน่งของ Security Protocol</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-2" data-target="section1-2">1.2 การรักษาความปลอดภัยในแต่ละ Layer</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-3" data-target="section1-3">1.3 การเลือก Layer</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section2" data-target="section2">2. SSL/TLS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-1" data-target="section2-1">2.1 วิวัฒนาการของ SSL/TLS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-2" data-target="section2-2">2.2 TLS Handshake Protocol</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-2-1" data-target="section2-2-1">2.2.1 TLS 1.2 Handshake</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-2-2" data-target="section2-2-2">2.2.2 TLS 1.3 Handshake</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-2-3" data-target="section2-2-3">2.2.3 TLS 1.2 vs 1.3</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-3" data-target="section2-3">2.3 โครงสร้างของ Cipher Suite</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-4" data-target="section2-4">2.4 TLS Record Protocol</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-5" data-target="section2-5">2.5 TLS Extensions</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-6" data-target="section2-6">2.6 DTLS</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section3" data-target="section3">3. IPsec</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-1" data-target="section3-1">3.1 ภาพรวมของ IPsec</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-2" data-target="section3-2">3.2 สถาปัตยกรรม IPsec</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-3" data-target="section3-3">3.3 SA และ SPD</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-4" data-target="section3-4">3.4 Authentication Header</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-5" data-target="section3-5">3.5 Encapsulating Security Payload</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-6" data-target="section3-6">3.6 IPsec Modes: Transport vs Tunnel</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-7" data-target="section3-7">3.7 IKE และ IKEv2</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-8" data-target="section3-8">3.8 IPsec vs TLS</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section4" data-target="section4">4. SSH</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-1" data-target="section4-1">4.1 ความรู้เบื้องต้น</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-2" data-target="section4-2">4.2 สถาปัตยกรรม SSH แบบ 3 ชั้น</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-3" data-target="section4-3">4.3 SSH Key Exchange Algorithms</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-4" data-target="section4-4">4.4 การใช้งาน SSH ในระบบเครือข่าย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-5" data-target="section4-5">4.5 Hardening SSH</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section5" data-target="section5">5. การเปรียบเทียบความปลอดภัย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-1" data-target="section5-1">5.1 HTTP → HTTPS → QUIC</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-2" data-target="section5-2">5.2 FTP → FTPS → SFTP</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-3" data-target="section5-3">5.3 SMTP → SMTPS → STARTTLS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-4" data-target="section5-4">5.4 DNS Security</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-5" data-target="section5-5">5.5 WireGuard</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-6" data-target="section5-6">5.6 ตารางเปรียบเทียบรวม</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section6" data-target="section6">6. การโจมตี SSL/TLS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-1" data-target="section6-1">6.1 ไทม์ไลน์การโจมตี</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-2" data-target="section6-2">6.2 การโจมตีแต่ละประเภท</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-3" data-target="section6-3">6.3 Cipher Suite ที่ปลอดภัย/ไม่ปลอดภัย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-4" data-target="section6-4">6.4 เครื่องมือตรวจสอบ SSL/TLS</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section7" data-target="section7">7. Best Practices</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-1" data-target="section7-1">7.1 Mozilla SSL Configuration</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-2" data-target="section7-2">7.2 CAA</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-3" data-target="section7-3">7.3 DANE</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-4" data-target="section7-4">7.4 HSTS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-5" data-target="section7-5">7.5 Certificate Transparency</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-6" data-target="section7-6">7.6 IPsec/IKEv2 Best Practices</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-7" data-target="section7-7">7.7 SSH Hardening Checklist</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section8" data-target="section8">8. สรุปท้ายบท</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-1" data-target="section8-1">8.1 สาระสำคัญและ Mind Map</a></li>
+    <li class="toc-item"><a class="toc-link" href="#review-questions" data-target="review-questions">คำถามทบทวน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#references" data-target="references">เอกสารอ้างอิง</a></li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content" role="main">
+
+<section id="hero-section" class="hero section-ref">
+  <h1><i class="fas fa-shield-halved" aria-hidden="true"></i> CH-5: โพรโทคอลเพื่อการสื่อสารที่ปลอดภัย</h1>
+  <p class="subtitle">Secure Communication Protocols — SSL/TLS, IPsec, SSH, การเปรียบเทียบโพรโทคอลความปลอดภัย การโจมตี SSL/TLS และแนวทางปฏิบัติที่ดีที่สุด</p>
+  <div class="meta-tags">
+    <span class="meta-tag"><i class="fas fa-graduation-cap" aria-hidden="true"></i> วิชา Network Security</span>
+    <span class="meta-tag"><i class="fas fa-calendar" aria-hidden="true"></i> ภาคเรียนที่ 1/2569</span>
+    <span class="meta-tag"><i class="fas fa-book-open" aria-hidden="true"></i> บทที่ 5</span>
+  </div>
+</section>
+<div class="learning-objectives section-ref" id="learning-objectives">
+  <h3><i class="fas fa-bullseye" aria-hidden="true"></i> วัตถุประสงค์การเรียนรู้ (Learning Objectives)</h3>
+  <p>เมื่อจบบทนี้แล้ว ผู้เรียนสามารถ:</p>
+  <ol>
+    <li>อธิบายหลักการรักษาความปลอดภัยในแต่ละ Layer ของ OSI Model และระบุโพรโทคอลที่เกี่ยวข้องได้</li>
+    <li>อธิบายการทำงานของ TLS Handshake Protocol ทั้ง TLS 1.2 และ TLS 1.3 พร้อมเปรียบเทียบข้อแตกต่างได้</li>
+    <li>วิเคราะห์โครงสร้างของ Cipher Suite และอธิบายบทบาทของแต่ละองค์ประกอบได้</li>
+    <li>อธิบายสถาปัตยกรรมของ IPsec เปรียบเทียบ AH และ ESP รวมถึง Transport Mode และ Tunnel Mode ได้</li>
+    <li>อธิบายกระบวนการเข้ารหัสของ SSH และเปรียบเทียบวิธีการรับรองตัวตนรูปแบบต่างๆ ได้</li>
+    <li>เปรียบเทียบจุดแข็งและจุดอ่อนด้านความปลอดภัยระหว่างโพรโทคอล HTTPS, FTPS, SFTP, SMTPS, DNS over HTTPS/TLS และ WireGuard ได้</li>
+    <li>วิเคราะห์กลไกการโจมตี SSL/TLS ที่สำคัญในประวัติศาสตร์ และออกแบบมาตรการป้องกันได้</li>
+    <li>กำหนดค่าโพรโทคอลความปลอดภัยตามมาตรฐาน Mozilla SSL Configuration Guidelines และ OWASP Transport Layer Protection ได้</li>
+  </ol>
+</div>
+<hr>
+<section id="section1" class="section-ref">
+<h2>1. หลักการรักษาความปลอดภัยในแต่ละ Layer ของ OSI Model</h2>
+
+<h3 id="section1-1" class="section-ref">1.1 OSI Model และตำแหน่งของ Security Protocol</h3>
+<p>การทำความเข้าใจ <span class="glossary-term">OSI Model<span class="tooltip">Open Systems Interconnection Model — โมเดลอ้างอิง 7 ชั้นที่ใช้อธิบายการทำงานของเครือข่ายคอมพิวเตอร์ ตั้งแต่ Physical Layer จนถึง Application Layer</span></span> 7 ชั้นมีความสำคัญต่อการออกแบบระบบรักษาความปลอดภัยในเครือข่าย เนื่องจากโพรโทคอลความปลอดภัยแต่ละชนิดทำงานใน Layer ที่แตกต่างกัน ซึ่งมีข้อดีและข้อจำกัดต่างกันไป</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌───────────────┬──────────────────────┬─────────────────────────────────────┐
+│ OSI Layer     │ โพรโทคอลความปลอดภัย  │ ฟังก์ชันความปลอดภัย                    │
+├───────────────┼──────────────────────┼─────────────────────────────────────┤
+│ 7.Application │ HTTPS, SMTPS, FTPS,  │ รักษาความปลอดภัยเฉพาะแอปพลิเคชัน       │
+│               │ SFTP, SSH, DNSSEC    │                                     │
+│ 6.Presentation│ TLS/SSL              │ เข้ารหัสข้อมูลก่อนส่งไปยัง Session    │
+│ 5.Session     │ SSH, SOCKS5, TLS     │ จัดการ Session อย่างปลอดภัย           │
+│ 4.Transport   │ TLS, DTLS, QUIC      │ รักษาความปลอดภัยของ Segment          │
+│ 3.Network     │ IPsec, WireGuard     │ รักษาความปลอดภัยของ Packet           │
+│ 2.Data Link   │ MACsec, 802.1X       │ รักษาความปลอดภัยของ Frame            │
+│ 1.Physical    │ —                    │ ความปลอดภัยทางกายภาพ                 │
+└───────────────┴──────────────────────┴─────────────────────────────────────┘</pre>
+
+<h3 id="section1-2" class="section-ref">1.2 การรักษาความปลอดภัยในแต่ละ Layer: ข้อดีและข้อเสีย</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Layer</th><th>รูปแบบการป้องกัน</th><th>ข้อดี</th><th>ข้อเสีย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Application Layer</strong></td><td>เข้ารหัสที่ระดับแอปพลิเคชัน (HTTPS, SMTPS)</td><td>ควบคุมความปลอดภัยเฉพาะ Application ได้, รู้จักโครงสร้างข้อมูล</td><td>ต้อง implement ทุก Application แยกกัน</td></tr>
+    <tr><td><strong>Transport Layer</strong></td><td>TLS, DTLS — เข้ารหัส Segment</td><td>โปร่งใสต่อ Application, ใช้กับหลายโพรโทคอล</td><td>ไม่ปกปิด IP Header, ต้องจัดการ Certificate</td></tr>
+    <tr><td><strong>Network Layer</strong></td><td>IPsec — เข้ารหัส Packet ทั้งหมด</td><td>ป้องกันทุกอย่างตั้งแต่ Layer 3 ขึ้นไป</td><td>ซับซ้อน, Performance Overhead สูง</td></tr>
+    <tr><td><strong>Data Link Layer</strong></td><td>MACsec, 802.1X — เข้ารหัส Frame</td><td>เร็วมาก, เหมาะกับ LAN/Link-local</td><td>ไม่รองรับ Routing ข้ามเครือข่าย</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section1-3" class="section-ref">1.3 การเลือก Layer สำหรับรักษาความปลอดภัย</h3>
+<p>หลักการสำคัญในการเลือก Layer:</p>
+<ol>
+  <li><strong>ยิ่ง Layer ต่ำ ยิ่งครอบคลุมกว้าง</strong> — Network Layer Security (IPsec) ป้องกันทุก Application ที่ใช้ IP</li>
+  <li><strong>ยิ่ง Layer สูง ยิ่งควบคุมละเอียด</strong> — Application Layer Security รู้จักข้อมูลและสามารถใช้ Policy ตามเนื้อหาได้</li>
+  <li><strong>End-to-End vs Link-by-Link</strong> — TLS ให้ End-to-End Security (ระหว่าง Client และ Server) ส่วน IPsec ใน Tunnel Mode ให้ Site-to-Site Security</li>
+  <li><strong>Protocol Overhead</strong> — การเข้ารหัสใน Layer ต่ำ (Data Link) มี Overhead น้อยกว่า Layer สูง</li>
+</ol>
+</section>
+<hr>
+<section id="section2" class="section-ref">
+<h2>2. <span class="glossary-term">SSL/TLS<span class="tooltip">Secure Sockets Layer / Transport Layer Security — โพรโทคอลสำหรับรักษาความปลอดภัยในการสื่อสารบนอินเทอร์เน็ต ให้บริการ Encryption, Authentication และ Integrity</span></span> (Secure Sockets Layer / Transport Layer Security)</h2>
+
+<h3 id="section2-1" class="section-ref">2.1 วิวัฒนาการของ SSL/TLS</h3>
+<p><span class="glossary-term">SSL<span class="tooltip">Secure Sockets Layer — โพรโทคอลความปลอดภัยรุ่นแรกพัฒนาโดย Netscape ในปี 1995 ถูกแทนที่ด้วย TLS</span></span>/<span class="glossary-term">TLS<span class="tooltip">Transport Layer Security — โพรโทคอลความปลอดภัยที่พัฒนาต่อจาก SSL เป็นมาตรฐาน IETF ที่ใช้กันอย่างแพร่หลายที่สุดสำหรับการสื่อสารบนอินเทอร์เน็ต</span></span> เป็นโพรโทคอลความปลอดภัยที่ใช้กันอย่างแพร่หลายที่สุดสำหรับการสื่อสารบนอินเทอร์เน็ต พัฒนาโดย Netscape ในปี 1995 และต่อมาได้รับการนำไปกำหนดเป็นมาตรฐานโดย IETF ในชื่อ TLS</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>เวอร์ชัน</th><th>ปี</th><th>สถานะปัจจุบัน</th><th>ช่องโหว่สำคัญ</th></tr></thead>
+  <tbody>
+    <tr><td>SSL 1.0</td><td>—</td><td>ไม่เคยเผยแพร่ต่อสาธารณะ</td><td>—</td></tr>
+    <tr><td>SSL 2.0</td><td>1995</td><td><strong>ยกเลิก</strong> — RFC 6176</td><td>Weak MAC, ไม่ป้องกัน Padding</td></tr>
+    <tr><td>SSL 3.0</td><td>1996</td><td><strong>ยกเลิก</strong> — RFC 7568</td><td>POODLE (CVE-2014-3566)</td></tr>
+    <tr><td>TLS 1.0</td><td>1999</td><td><strong>ยกเลิก</strong> — RFC 8996 (2021)</td><td>BEAST, Lucky13</td></tr>
+    <tr><td>TLS 1.1</td><td>2006</td><td><strong>ยกเลิก</strong> — RFC 8996 (2021)</td><td>CBC Timing Attacks</td></tr>
+    <tr><td>TLS 1.2</td><td>2008</td><td><strong>ปลอดภัย</strong> (ใช้งานแพร่หลาย)</td><td>ขึ้นอยู่กับ Cipher Suite ที่เลือก</td></tr>
+    <tr><td>TLS 1.3</td><td>2018</td><td><strong>ปลอดภัยที่สุด</strong> — แนะนำให้ใช้</td><td>0-RTT Replay (ในบางกรณี)</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section2-2" class="section-ref">2.2 <span class="glossary-term">TLS Handshake<span class="tooltip">กระบวนการที่ Client และ Server ตกลงกันเกี่ยวกับพารามิเตอร์ความปลอดภัย (Cipher Suite, Session Key) ก่อนเริ่มการสื่อสารที่เข้ารหัส</span></span> Protocol — กลไกการสร้างการเชื่อมต่อที่ปลอดภัย</h3>
+<p>TLS Handshake เป็นกระบวนการที่ Client และ Server ตกลงกันเกี่ยวกับพารามิเตอร์ความปลอดภัย ก่อนเริ่มการสื่อสารที่เข้ารหัส</p>
+
+<h4 id="section2-2-1" class="section-ref">2.2.1 TLS 1.2 Handshake (2-RTT)</h4>
+<p>TLS 1.2 Handshake ใช้เวลา 2 Round Trip Times (RTT) ก่อนเริ่มส่งข้อมูล:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Client                                      Server
+  │                                           │
+  │──── ClientHello ────────────────────────→│  RTT 1
+  │   (Protocol Version: 1.2                 │
+  │    Cipher Suites: 30+ options             │
+  │    Random: r_client                       │
+  │    Session ID / Session Ticket            │
+  │    Extensions: SNI, ALPN, etc.)          │
+  │                                           │
+  │←── ServerHello ──────────────────────────│
+  │   (Selected Cipher Suite:                 │
+  │    TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384  │
+  │    Random: r_server                       │
+  │    Session ID)                            │
+  │                                           │
+  │←── Certificate ──────────────────────────│
+  │   (Server's Certificate Chain)            │
+  │                                           │
+  │←── ServerKeyExchange ────────────────────│
+  │   (ECDHE Public Key, Signature)           │
+  │                                           │
+  │←── ServerHelloDone ──────────────────────│
+  │                                           │
+  │── ClientKeyExchange ────────────────────→│  RTT 2
+  │   (Client ECDHE Public Key)               │
+  │                                           │
+  │── ChangeCipherSpec ─────────────────────→│
+  │── Finished ─────────────────────────────→│
+  │   (Encrypted Handshake Messages)          │
+  │                                           │
+  │←── ChangeCipherSpec ─────────────────────│
+  │←── Finished ─────────────────────────────│
+  │                                           │
+  │══════ Secure Data (Record Protocol) ══════│</pre>
+
+<p><strong>ขั้นตอน TLS 1.2 Handshake โดยละเอียด:</strong></p>
+<ol>
+  <li><strong>ClientHello</strong> — Client ส่งเวอร์ชัน TLS ที่รองรับ, รายการ Cipher Suite ที่รองรับ, Random Number, Session ID (ถ้ามี), และ Extensions (SNI, ALPN)</li>
+  <li><strong>ServerHello</strong> — Server เลือก Cipher Suite, ส่ง Random Number และ Session ID</li>
+  <li><strong>Certificate</strong> — Server ส่ง Certificate Chain (Server Certificate + Intermediate CA)</li>
+  <li><strong>ServerKeyExchange</strong> — Server ส่ง ECDHE Public Key และ Digital Signature เพื่อยืนยัน</li>
+  <li><strong>ServerHelloDone</strong> — Server บอกว่า "ส่งข้อมูลครบแล้ว"</li>
+  <li><strong>ClientKeyExchange</strong> — Client ส่ง ECDHE Public Key</li>
+  <li><strong>ChangeCipherSpec</strong> — ทั้งสองฝ่ายเปลี่ยนไปใช้ Cipher Parameters ที่ตกลงกัน</li>
+  <li><strong>Finished</strong> — ส่งข้อความที่เข้ารหัสแล้วเพื่อยืนยัน Handshake สมบูรณ์</li>
+</ol>
+
+<h4 id="section2-2-2" class="section-ref">2.2.2 TLS 1.3 Handshake (1-RTT)</h4>
+<p>TLS 1.3 ปฏิรูป Handshake Protocol ใหม่ทั้งหมด ลดจาก 2 RTT เหลือ 1 RTT และเพิ่ม 0-RTT สำหรับการ Resume Session:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Client                                      Server
+  │                                           │
+  │──── ClientHello ────────────────────────→│  RTT 1
+  │   (Protocol Version: 1.3                 │  (ลดเหลือ 1 RTT)
+  │    Key Share: ECDHE Public Key           │
+  │    Cipher Suites: 5 options (AEAD only)  │
+  │    Random: r_client                       │
+  │    Extensions: SNI, ALPN, PSK, etc.)     │
+  │                                           │
+  │←── ServerHello ──────────────────────────│
+  │   (Selected Cipher Suite:                 │
+  │    TLS_AES_256_GCM_SHA384                 │
+  │    Key Share: ECDHE Public Key            │
+  │    Random: r_server)                      │
+  │                                           │
+  │←── EncryptedExtensions ──────────────────│
+  │←── Certificate ──────────────────────────│
+  │←── CertificateVerify ────────────────────│
+  │←── Finished ─────────────────────────────│
+  │                                           │
+  │── Finished ─────────────────────────────→│
+  │                                           │
+  │══════ Secure Data (Record Protocol) ══════│</pre>
+
+<p><strong>การปรับปรุงที่สำคัญใน TLS 1.3:</strong></p>
+<ul>
+  <li><strong>1-RTT Handshake</strong> — รวม Key Exchange ใน ClientHello/ServerHello ทันทีโดยใช้ Key Share</li>
+  <li><strong>0-RTT (Early Data)</strong> — Client สามารถส่งข้อมูล Application ใน ClientHello ได้ทันทีสำหรับ Session Resume (มีความเสี่ยง Replay Attack)</li>
+  <li><strong>ลบ Algorithm ที่ไม่ปลอดภัย</strong> — RSA Key Exchange, CBC Mode, RC4, 3DES, SHA-1 ได้รับการตัดออกทั้งหมด</li>
+  <li><strong><span class="glossary-term">Cipher Suite<span class="tooltip">ชุดของ Algorithm ที่ทำงานร่วมกันใน TLS ประกอบด้วย Key Exchange, Authentication, Bulk Encryption, และ PRF/MAC</span></span> ลดลง</strong> — จาก 30+ เหลือเพียง 5 Cipher Suite (AEAD เท่านั้น)</li>
+  <li><strong>EncryptedExtensions</strong> — ส่วนขยายได้รับการเข้ารหัส (SNI, ALPN ได้รับการซ่อนจากผู้โจมตี)</li>
+  <li><strong>Certificate Encryption</strong> — Certificate ได้รับการเข้ารหัสในการส่ง (Privacy improvement)</li>
+</ul>
+
+<h4 id="section2-2-3" class="section-ref">2.2.3 TLS 1.2 vs TLS 1.3 เปรียบเทียบโดยละเอียด</h4>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>TLS 1.2</th><th>TLS 1.3</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Round Trip</strong></td><td>2 RTT</td><td>1 RTT (0-RTT สำหรับ Resume)</td></tr>
+    <tr><td><strong>Cipher Suite</strong></td><td>30+ ตัวเลือก</td><td>5 ตัวเลือก (AEAD เท่านั้น)</td></tr>
+    <tr><td><strong><span class="glossary-term">Perfect Forward Secrecy (PFS)<span class="tooltip">คุณสมบัติที่ทำให้ Session Key ที่ใช้เข้ารหัสไม่สามารถถูกถอดรหัสย้อนหลังได้แม้ Private Key ของ Server จะถูกขโมย — ทำได้โดยใช้ Ephemeral Key Exchange เช่น ECDHE</span></span></strong></td><td>Optional (ต้องเลือก ECDHE/DHE)</td><td><strong>บังคับ</strong></td></tr>
+    <tr><td><strong>Key Exchange</strong></td><td>RSA, DH, ECDH, DHE, ECDHE</td><td>เฉพาะ ECDHE, DHE</td></tr>
+    <tr><td><strong>Symmetric Cipher</strong></td><td>AES-CBC, AES-GCM, ChaCha20, RC4, 3DES</td><td>เฉพาะ AEAD: AES-GCM, ChaCha20-Poly1305, AES-CCM</td></tr>
+    <tr><td><strong>Hash</strong></td><td>MD5, SHA-1, SHA-224, SHA-256, SHA-384</td><td>SHA-256, SHA-384</td></tr>
+    <tr><td><strong>Handshake Encryption</strong></td><td>หลังจาก ChangeCipherSpec</td><td><strong>ทั้ง Handshake (EncryptedExtensions)</strong></td></tr>
+    <tr><td><strong>0-RTT</strong></td><td>ไม่มี</td><td>มี (Replay Risk)</td></tr>
+    <tr><td><strong>Session Resumption</strong></td><td>Session ID, Session Ticket</td><td>PSK (Pre-Shared Key) + 0-RTT</td></tr>
+    <tr><td><strong>Algorithm Negotiation</strong></td><td>Server เลือกจาก Client รายการ</td><td>Server เลือก, Client ต้องส่ง Key Share ล่วงหน้า</td></tr>
+    <tr><td><strong>Downgrade Protection</strong></td><td>SCSV</td><td>Downgrade SCSV + Message</td></tr>
+  </tbody>
+</table></div>
+
+
+<h3 id="section2-3" class="section-ref">2.3 โครงสร้างของ Cipher Suite</h3>
+<p>Cipher Suite คือชุดของ Algorithm ที่ทำงานร่วมกันใน TLS โดยแต่ละ Cipher Suite ประกอบด้วย 4 ส่วนหลัก:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>  TLS     _ ECDHE   _ RSA   _ WITH   _ AES_256_GCM   _ SHA384
+  │          │         │                │               │
+  └───┬───   └──┬──    └──┬──           └──┬──          └──┬──
+Protocol  Key Exch.  Auth.        Bulk Encryption      PRF / MAC
+(TLS)    (ECDHE)    (RSA)        (AES-256-GCM)        (SHA-384)</pre>
+
+<h4>2.3.1 องค์ประกอบของ Cipher Suite</h4>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>องค์ประกอบ</th><th>หน้าที่</th><th>ตัวอย่าง Algorithm</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Key Exchange</strong></td><td>ใช้ตกลง Session Key ระหว่าง Client-Server อย่างปลอดภัย</td><td>RSA, DHE, ECDHE, PSK</td></tr>
+    <tr><td><strong>Authentication</strong></td><td>ใช้ยืนยันตัวตนของ Server (และ Client ใน mTLS)</td><td>RSA, ECDSA, EdDSA</td></tr>
+    <tr><td><strong>Bulk Encryption</strong></td><td>ใช้เข้ารหัสข้อมูลจำนวนมากระหว่าง Session</td><td>AES-GCM, AES-CCM, ChaCha20-Poly1305</td></tr>
+    <tr><td><strong>PRF / MAC</strong></td><td>ใช้สร้าง Key Material และตรวจสอบ Integrity</td><td>SHA-256, SHA-384, HMAC</td></tr>
+  </tbody>
+</table></div>
+
+<h4>2.3.2 การถอดรหัสชื่อ Cipher Suite</h4>
+<p>ตัวอย่าง Cipher Suite 5 ตัวที่ TLS 1.3 กำหนด (RFC 8446):</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Cipher Suite (Hex)</th><th>ชื่อเต็ม</th></tr></thead>
+  <tbody>
+    <tr><td><code>0x1301</code></td><td>TLS_AES_128_GCM_SHA256</td></tr>
+    <tr><td><code>0x1302</code></td><td>TLS_AES_256_GCM_SHA384</td></tr>
+    <tr><td><code>0x1303</code></td><td>TLS_CHACHA20_POLY1305_SHA256</td></tr>
+    <tr><td><code>0x1304</code></td><td>TLS_AES_128_CCM_SHA256</td></tr>
+    <tr><td><code>0x1305</code></td><td>TLS_AES_128_CCM_8_SHA256</td></tr>
+  </tbody>
+</table></div>
+<p><strong>โน้ต:</strong> ใน TLS 1.3 Key Exchange และ Authentication ได้รับการแยกออกจาก Cipher Suite — ทุกรายการใช้ ECDHE หรือ DHE เท่านั้น</p>
+
+<h3 id="section2-4" class="section-ref">2.4 TLS Record Protocol</h3>
+<p>TLS Record Protocol เป็นชั้นที่อยู่ใต้ Handshake Protocol และเหนือ Transport Layer (TCP) ทำหน้าที่รับข้อมูลจากชั้นบน (Handshake, Alert, Application Data) และเข้ารหัสก่อนส่งไปยัง TCP:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌──────────────────────────────────────────────────────────┐
+│                     Application Data                       │
+├──────────────────────────────────────────────────────────┤
+│                                                          │
+│   TLS Record Protocol                                     │
+│   ┌──────────────────────────────────────────────────┐   │
+│   │ 1. Fragment — ตัดข้อมูลเป็น Record (16KB สูงสุด)  │   │
+│   │ 2. Compress (Optional — ไม่ใช้ใน TLS 1.3)        │   │
+│   │ 3. MAC (TLS 1.2) / AEAD (TLS 1.3)               │   │
+│   │ 4. Encrypt — เข้ารหัสด้วย Cipher ที่ตกลง          │   │
+│   │ 5. Record Header — Content Type, Version, Length │   │
+│   └──────────────────────────────────────────────────┘   │
+├──────────────────────────────────────────────────────────┤
+│                        TCP                                │
+└──────────────────────────────────────────────────────────┘</pre>
+
+<p><strong>รูปแบบ TLS Record:</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌─────────┬─────────┬──────────────────┬──────────────────┐
+│ 1 byte  │ 2 bytes │ 2 bytes          │ Variable          │
+├─────────┼─────────┼──────────────────┼──────────────────┤
+│ Type    │ Version │ Length           │ Data (เข้ารหัส)    │
+└─────────┴─────────┴──────────────────┴──────────────────┘</pre>
+
+<p><strong>Content Type ที่สำคัญ:</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ค่า</th><th>ประเภท</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><code>0x14</code></td><td>ChangeCipherSpec</td><td>แจ้งเปลี่ยน Cipher Parameters (TLS 1.2 เท่านั้น)</td></tr>
+    <tr><td><code>0x15</code></td><td>Alert</td><td>แจ้งเตือนข้อผิดพลาดหรือปิดการเชื่อมต่อ</td></tr>
+    <tr><td><code>0x16</code></td><td>Handshake</td><td>ข้อมูล Handshake (Certificate, Key Exchange, ฯลฯ)</td></tr>
+    <tr><td><code>0x17</code></td><td>Application Data</td><td>ข้อมูล Application ที่เข้ารหัสแล้ว</td></tr>
+    <tr><td><code>0x18</code></td><td>Heartbeat</td><td>Heartbeat Extension (ได้รับการใช้ใน Heartbleed)</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section2-5" class="section-ref">2.5 TLS Extensions ที่สำคัญ</h3>
+<p>TLS Extensions ช่วยเพิ่มฟังก์ชันการทำงานให้กับ TLS:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Extension</th><th>หน้าที่</th><th>ความสำคัญ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>SNI (Server Name Indication)</strong></td><td>Client บอกชื่อ Hostname ที่ต้องการเชื่อมต่อ</td><td>รองรับ Virtual Hosting (หลาย Certificate บน IP เดียว)</td></tr>
+    <tr><td><strong>ALPN (Application-Layer Protocol Negotiation)</strong></td><td>Client และ Server ตกลง Protocol ชั้นบน (HTTP/2, HTTP/3)</td><td>จำเป็นสำหรับ HTTP/2 และ HTTP/3</td></tr>
+    <tr><td><strong>Key Share</strong></td><td>Client ส่ง ECDHE Public Key ล่วงหน้า (TLS 1.3)</td><td>ลด RTT</td></tr>
+    <tr><td><strong>PSK (Pre-Shared Key)</strong></td><td>Resume Session โดยใช้ PSK (TLS 1.3)</td><td>รองรับ 0-RTT</td></tr>
+    <tr><td><strong>Supported Groups</strong></td><td>Client แจ้ง Elliptic Curves ที่รองรับ</td><td>ปลอดภัยขึ้น (Curve25519, P-256)</td></tr>
+    <tr><td><strong>Certificate Transparency</strong></td><td>ส่ง SCT (Signed Certificate Timestamp)</td><td>ตรวจสอบ Certificate ว่าไม่ได้รับการออกโดยมิชอบ</td></tr>
+    <tr><td><strong>OCSP Stapling</strong></td><td>Server ส่ง OCSP Response พร้อม Certificate</td><td>ผู้ใช้ไม่ต้องเชื่อมต่อ OCSP Server แยก</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section2-6" class="section-ref">2.6 <span class="glossary-term">DTLS<span class="tooltip">Datagram Transport Layer Security — TLS ที่ปรับให้ทำงานบน UDP (Datagram) แทน TCP ใช้สำหรับ WebRTC, VoIP, และ IoT</span></span> (Datagram TLS)</h3>
+<p>DTLS เป็น TLS ที่ปรับให้ทำงานบน UDP (Datagram) แทน TCP:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>TLS</th><th>DTLS</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Transport</strong></td><td>TCP</td><td>UDP</td></tr>
+    <tr><td><strong>Sequence</strong></td><td>TCP จัดลำดับเอง</td><td>ต้องจัดการ Sequence Number เอง</td></tr>
+    <tr><td><strong>Packet Loss</strong></td><td>TCP จัดการ</td><td>ต้องจัดการเอง (Retransmission)</td></tr>
+    <tr><td><strong>MTU</strong></td><td>TCP จัดการ Segmentation</td><td>ต้องจัดการ Fragment เอง</td></tr>
+    <tr><td><strong>Latency</strong></td><td>สูงกว่า (TCP Overhead)</td><td>ต่ำกว่า (UDP)</td></tr>
+    <tr><td><strong>การใช้งาน</strong></td><td>HTTPS, SMTPS, FTPS</td><td>WebRTC, VoIP, IoT, VPN (OpenVPN Data Channel)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>DTLS เวอร์ชันปัจจุบัน:</strong> DTLS 1.2 (RFC 6347) และ DTLS 1.3 (RFC 9147)</p>
+</section>
+<hr>
+<section id="section3" class="section-ref">
+<h2>3. <span class="glossary-term">IPsec<span class="tooltip">Internet Protocol Security — ชุดโพรโทคอลสำหรับรักษาความปลอดภัยในระดับ Network Layer (Layer 3) ให้บริการ Authentication, Encryption, Integrity และ Anti-Replay</span></span> (Internet Protocol Security)</h2>
+
+<h3 id="section3-1" class="section-ref">3.1 ภาพรวมของ IPsec</h3>
+<p>IPsec เป็นชุดโพรโทคอลสำหรับรักษาความปลอดภัยในระดับ Network Layer (Layer 3) ของ OSI Model ให้บริการ 4 ด้าน:</p>
+<ol>
+  <li><strong>Authentication</strong> — ยืนยันว่า Packet มาจากแหล่งที่ถูกต้อง</li>
+  <li><strong>Encryption</strong> — เข้ารหัสข้อมูลใน Packet</li>
+  <li><strong>Integrity</strong> — ตรวจสอบว่า Packet ไม่ได้รับการเปลี่ยนแปลงระหว่างทาง</li>
+  <li><strong>Anti-Replay</strong> — ป้องกันการส่ง Packet ซ้ำ (Replay Attack)</li>
+</ol>
+
+<h3 id="section3-2" class="section-ref">3.2 สถาปัตยกรรม IPsec</h3>
+<p>IPsec ประกอบด้วยองค์ประกอบหลักหลายส่วนที่ทำงานร่วมกัน:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌────────────────────────────────────────────────────┐
+│                    IPsec System                      │
+├────────────┬───────────┬─────────────┬─────────────┤
+│   AH       │    ESP    │    IKE      │   SA/SAD    │
+│ (Auth.     │ (Auth. +  │ (Key Mgmt)  │ (Security   │
+│  Header)   │  Encrypt) │             │  Assoc.)    │
+├────────────┴───────────┴─────────────┴─────────────┤
+│              SPD (Security Policy Database)          │
+│     → กำหนดว่า Traffic ไหนต้องเข้ารหัส/ข้าม/Block     │
+└────────────────────────────────────────────────────┘</pre>
+
+<h3 id="section3-3" class="section-ref">3.3 Security Association (SA) และ Security Policy Database (SPD)</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>องค์ประกอบ</th><th>หน้าที่</th></tr></thead>
+  <tbody>
+    <tr><td><strong>SA (Security Association)</strong></td><td>ความสัมพันธ์ด้านความปลอดภัยระหว่าง 2 ฝ่าย — กำหนด Algorithm, Key, SPI</td></tr>
+    <tr><td><strong>SAD (SA Database)</strong></td><td>ตารางเก็บ SA ที่ใช้งานอยู่ทั้งหมด</td></tr>
+    <tr><td><strong>SPD (Security Policy Database)</strong></td><td>ตาราง Policy กำหนดว่า Traffic ไหนต้องทำอะไร (IPsec/Bypass/Discard)</td></tr>
+    <tr><td><strong>SPI (Security Parameters Index)</strong></td><td>ตัวเลข 32-bit ที่ใช้ระบุ SA ใน SAD</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section3-4" class="section-ref">3.4 <span class="glossary-term">Authentication Header (AH)<span class="tooltip">โพรโทคอลใน IPsec ที่ให้บริการ Authentication และ Integrity แต่ไม่มีการเข้ารหัสข้อมูล — Protocol Number 51</span></span></h3>
+<p>AH (Protocol Number 51) ให้บริการ Authentication และ Integrity แต่ <strong>ไม่มีการเข้ารหัสข้อมูล</strong>:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Packet Structure (Transport Mode):
+┌──────────┬────────────┬──────────────────────────┐
+│ IP Header│ AH Header  │ Payload (TCP/UDP, Plain) │
+└──────────┴────────────┴──────────────────────────┘
+         └───── Authenticated (ICV covers entire packet) ─────┘</pre>
+
+<p><strong>AH Header ประกอบด้วย:</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button> 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+├────────────────────────────────────────────────────────────────┤
+│ Next Header    │ Payload Length │          RESERVED             │
+├────────────────────────────────────────────────────────────────┤
+│                  Security Parameters Index (SPI)                │
+├────────────────────────────────────────────────────────────────┤
+│                    Sequence Number                              │
+├────────────────────────────────────────────────────────────────┤
+│                                                               │
+│              Integrity Check Value (ICV) — HMAC-SHA256         │
+│                                                               │
+├────────────────────────────────────────────────────────────────┤</pre>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ฟิลด์</th><th>ขนาด</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td>Next Header</td><td>8 bits</td><td>ประเภทของ Payload ที่ตามมา (TCP=6, UDP=17)</td></tr>
+    <tr><td>Payload Length</td><td>8 bits</td><td>ความยาวของ AH Header</td></tr>
+    <tr><td>RESERVED</td><td>16 bits</td><td>สำรอง (ตั้งค่าเป็น 0)</td></tr>
+    <tr><td>SPI</td><td>32 bits</td><td>ระบุ SA สำหรับ Packet นี้</td></tr>
+    <tr><td>Sequence Number</td><td>32 bits</td><td>ป้องกัน Replay Attack</td></tr>
+    <tr><td>ICV</td><td>Variable</td><td>HMAC (HMAC-SHA256-128 หรือ HMAC-SHA1-96)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ข้อควรระวัง:</strong> AH ไม่สามารถใช้งานกับ NAT ได้ เนื่องจาก AH ตรวจสอบความถูกต้องของ (authenticate) IP Header รวมถึง Source/Destination IP ซึ่ง NAT ต้องเปลี่ยนแปลง</p>
+
+<h3 id="section3-5" class="section-ref">3.5 <span class="glossary-term">Encapsulating Security Payload (ESP)<span class="tooltip">โพรโทคอลใน IPsec ที่ให้บริการ Authentication + Integrity + Encryption — Protocol Number 50 ใช้กันอย่างแพร่หลายมากกว่า AH</span></span></h3>
+<p>ESP (Protocol Number 50) ให้บริการ Authentication + Integrity + Encryption:</p>
+
+<p><strong>Packet Structure (Transport Mode):</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌──────────┬──────────────┬───────────────────┬──────────────┬──────────────┐
+│ IP Header │ ESP Header   │ Payload           │ ESP Trailer   │ ESP Auth     │
+│          │ (SPI, Seq#)  │ (TCP/UDP,         │ (Padding,     │ (ICV —       │
+│          │              │  เข้ารหัส)         │  Pad Length,  │  HMAC)       │
+│          │              │                   │  Next Header) │              │
+└──────────┴──────────────┴───────────────────┴──────────────┴──────────────┘
+                         ├── Encrypted ────────┤
+                         ├────────── Authenticated ───────────┤</pre>
+
+<ul>
+  <li><strong>Encrypted:</strong> Payload + ESP Trailer (Padding, Pad Length, Next Header)</li>
+  <li><strong>Authenticated:</strong> ESP Header + Payload + ESP Trailer + ESP Auth</li>
+</ul>
+
+
+<h3 id="section3-6" class="section-ref">3.6 IPsec Modes: Transport vs Tunnel</h3>
+
+<h4>3.6.1 Transport Mode</h4>
+<p>ใช้สำหรับเชื่อมต่อแบบ Host-to-Host โดยตรง (เช่น ผู้ใช้เชื่อมต่อไปยัง Server โดยตรง):</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ก่อน IPsec:
+[IP Header: src=PC, dst=Server] [TCP] [Data]
+
+หลัง IPsec — Transport Mode:
+[IP Header: src=PC, dst=Server] [ESP/AH] [TCP] [Data]
+                                  └─────── Protected ────────┘</pre>
+<p><strong>ลักษณะ:</strong> IP Header ดั้งเดิมไม่ได้รับการเข้ารหัส (ใช้ Routing ได้ตามปกติ) มีเฉพาะ Payload ที่ได้รับการป้องกัน</p>
+
+<h4>3.6.2 Tunnel Mode</h4>
+<p>ใช้สำหรับ Site-to-Site VPN (Gateway-to-Gateway):</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ก่อน IPsec:
+[IP Header: src=PC1, dst=PC2] [TCP] [Data]
+
+หลัง IPsec — Tunnel Mode:
+[New IP Header: src=GW1, dst=GW2] [ESP/AH] [Orig IP Header] [TCP] [Data]
+                                     └──────── Entire Packet Protected ────────┘</pre>
+<p><strong>ลักษณะ:</strong> Packet ดั้งเดิมทั้งหมด (รวม IP Header ต้นทาง) ได้รับการเข้ารหัสและใส่ใน IP Header ใหม่</p>
+
+<h4>3.6.3 เปรียบเทียบ Transport Mode vs Tunnel Mode</h4>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>Transport Mode</th><th>Tunnel Mode</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Payload Protection</strong></td><td>เข้ารหัสเฉพาะ Payload</td><td>เข้ารหัสทั้ง Packet ดั้งเดิม</td></tr>
+    <tr><td><strong>IP Header</strong></td><td>IP Header ดั้งเดิม (ไม่เข้ารหัส)</td><td>IP Header ใหม่สำหรับ Gateway</td></tr>
+    <tr><td><strong>การใช้งานหลัก</strong></td><td>Host-to-Host โดยตรง</td><td>Site-to-Site VPN, Remote Access VPN</td></tr>
+    <tr><td><strong>Performance</strong></td><td>ดีกว่า (Overhead น้อยกว่า)</td><td>Overhead มากกว่า (Header เพิ่ม)</td></tr>
+    <tr><td><strong>Routing</strong></td><td>Routing ตาม IP ดั้งเดิม</td><td>Routing ตาม Gateway IP</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section3-7" class="section-ref">3.7 <span class="glossary-term">IKE (Internet Key Exchange)<span class="tooltip">โพรโทคอลสำหรับสร้าง Security Association (SA) ระหว่างฝ่าย IPsec โดยอัตโนมัติ IKEv2 (RFC 7296) เป็นเวอร์ชันปัจจุบัน</span></span> และ IKEv2</h3>
+<p>IKE เป็นโพรโทคอลสำหรับสร้าง Security Association (SA) ระหว่างฝ่าย IPsec โดยอัตโนมัติ IKEv2 (RFC 7296) เป็นเวอร์ชันปัจจุบันที่ปรับปรุงจาก IKEv1:</p>
+
+<p><strong>ขั้นตอน IKEv2 โดยละเอียด:</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Phase 1: IKE_SA_INIT (2 messages)
+───────────────┬──────────────────────────────────────┬──────────────
+Initiator      │                                     │ Responder
+               │──── HDR, SAi1, KEi, Ni ────────────→│
+               │←── HDR, SAr1, KEr, Nr, [CERTREQ] ──│
+               │                                     │
+               ⇒ IKE SA Established (Diffie-Hellman) ⇐
+
+Phase 2: IKE_AUTH (2 messages)
+───────────────┬──────────────────────────────────────┬──────────────
+               │──── HDR, SK {IDi, [CERT,] AUTH,      │
+               │         SAi2, TSi, TSr} ────────────→│
+               │←── HDR, SK {IDr, [CERT,] AUTH,       │
+               │         SAr2, TSi, TSr} ─────────────│
+               │                                     │
+               ⇒ First IPsec SA (Child SA) Established ⇐
+
+Phase 3: CREATE_CHILD_SA (2 messages, optional)
+───────────────┬──────────────────────────────────────┬──────────────
+               │──── HDR, SK {SA, Ni, KEi, TSi,      │
+               │         TSr} ──────────────────────→│
+               │←── HDR, SK {SA, Nr, KEr, TSi,      │
+               │         TSr} ───────────────────────│
+               │                                     │
+               ⇒ Additional Child SA Established       ⇐</pre>
+
+<p><strong>คุณสมบัติเด่นของ IKEv2:</strong></p>
+<ul>
+  <li><strong>MOBIKE (Mobility and Multihoming)</strong> — รองรับการเปลี่ยน Network Interface (เช่น จาก Wi-Fi → Mobile Data)</li>
+  <li><strong>Dead Peer Detection (DPD)</strong> — ตรวจสอบ Peer ที่หายไปได้รวดเร็วกว่า</li>
+  <li><strong>Faster Rekeying</strong> — ลดจำนวน Message ในการ Renew Key</li>
+  <li><strong>NAT Traversal (NAT-T)</strong> — รองรับ IPsec ผ่าน NAT ได้ดีกว่า</li>
+</ul>
+
+<h3 id="section3-8" class="section-ref">3.8 IPsec vs TLS</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>IPsec</th><th>TLS</th></tr></thead>
+  <tbody>
+    <tr><td><strong>OSI Layer</strong></td><td>Network (Layer 3)</td><td>Transport/Presentation (Layer 4-6)</td></tr>
+    <tr><td><strong>การใช้งานหลัก</strong></td><td>VPN (Site-to-Site, Remote Access)</td><td>HTTPS, SMTP, FTP</td></tr>
+    <tr><td><strong>Application Transparency</strong></td><td>โปร่งใส — ไม่ต้องแก้ Application</td><td>Application ต้องรองรับ</td></tr>
+    <tr><td><strong>Encryption Scope</strong></td><td>ทั้ง Packet (Tunnel Mode)</td><td>เฉพาะ Payload</td></tr>
+    <tr><td><strong>Authentication</strong></td><td>Machine-based (Certificate/PSK)</td><td>Server/Client Certificate</td></tr>
+    <tr><td><strong>Performance</strong></td><td>Overhead สูงกว่า</td><td>Overhead ปานกลาง</td></tr>
+    <tr><td><strong>NAT Compatibility</strong></td><td>ต้องใช้ NAT-T</td><td>ปกติไม่มีปัญหา</td></tr>
+    <tr><td><strong>Remote Access</strong></td><td>ต้องติดตั้ง Client Software</td><td>ใช้ Browser ได้ทันที</td></tr>
+    <tr><td><strong>Perfect Forward Secrecy</strong></td><td>รองรับ (ผ่าน IKE/DH)</td><td>รองรับ (ผ่าน ECDHE)</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+<section id="section4" class="section-ref">
+<h2>4. <span class="glossary-term">SSH<span class="tooltip">Secure Shell — โพรโทคอลสำหรับเชื่อมต่อ Remote Shell และ Service อย่างปลอดภัย ทำงานบน Port TCP/22 พัฒนาโดย Tatu Ylönen ในปี 1995</span></span> (Secure Shell)</h2>
+
+<h3 id="section4-1" class="section-ref">4.1 ความรู้เบื้องต้น</h3>
+<p>SSH เป็นโพรโทคอลสำหรับการเชื่อมต่อ Remote Shell และ Service อย่างปลอดภัย ทำงานบน Port TCP/22 พัฒนาโดย Tatu Ylönen ในปี 1995 เพื่อแทนที่ Telnet, rlogin, rsh, และ rcp ที่ไม่มีความปลอดภัย</p>
+
+<h3 id="section4-2" class="section-ref">4.2 สถาปัตยกรรม SSH แบบ 3 ชั้น</h3>
+<p>SSH ประกอบด้วย 3 Layer ที่ทำงานซ้อนกัน:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌──────────────────────────────────────────────────────────┐
+│              Connection Layer (SSH-CONN)                   │
+│  — Channel Management (Session, Port Forwarding, X11)    │
+├──────────────────────────────────────────────────────────┤
+│              User Authentication Layer (SSH-AUTH)         │
+│  — ตรวจสอบตัวตนผู้ใช้ (Password, Public Key, GSSAPI)      │
+├──────────────────────────────────────────────────────────┤
+│              Transport Layer (SSH-TRANS)                  │
+│  — Key Exchange (DH/ECDH), Encryption, Integrity, MAC    │
+├──────────────────────────────────────────────────────────┤
+│                        TCP                                │
+└──────────────────────────────────────────────────────────┘</pre>
+
+<h4>4.2.1 Transport Layer (SSH-TRANS)</h4>
+<p>กระบวนการ Key Exchange และการสร้าง Session:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Client                                      Server
+  │                                           │
+  │──── TCP Connection (Port 22) ────────────→│
+  │                                           │
+  │──── SSH Protocol Version ────────────────→│
+  │   (SSH-2.0-OpenSSH_9.3)                   │
+  │←── SSH Protocol Version ──────────────────│
+  │   (SSH-2.0-OpenSSH_9.3)                   │
+  │                                           │
+  │==== Key Exchange (DH/ECDH) ===============│
+  │                                           │
+  │──── Key Exchange Init ──────────────────→│
+  │   (Algorithms: curve25519-sha256,          │
+  │    aes256-ctr, hmac-sha2-256)             │
+  │←── Key Exchange Reply ────────────────────│
+  │   (Selected Algorithms, Host Key)          │
+  │                                           │
+  │==== DH Key Exchange ======================│
+  │                                           │
+  │──── DH Init (e = g^x mod p) ────────────→│
+  │←── DH Reply (f = g^y mod p, H, signature)│
+  │                                           │
+  │⇒ Shared Secret K = g^{xy} mod p           │
+  │⇒ Session ID = Hash(K || H)               │
+  │⇒ Encryption Key = Derived from K          │
+  │                                           │
+  │==== Secure Channel (Encrypted) ===========│
+  │                                           │
+  │──── Service Request: ssh-userauth ───────→│
+  │←── Service Accept ────────────────────────│
+  │                                           │
+  │==== User Authentication Layer Starts =====│</pre>
+
+<h4>4.2.2 User Authentication Layer (SSH-AUTH)</h4>
+<p>SSH รองรับวิธีการรับรองตัวตนผู้ใช้หลายรูปแบบ ตรวจสอบตามลำดับที่กำหนดใน Server Configuration:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>วิธีการ</th><th>คำอธิบาย</th><th>ระดับความปลอดภัย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Password Authentication</strong></td><td>ใช้ Username + Password ปกติ</td><td><strong>ต่ำ</strong> — เสี่ยง Brute Force, Phishing</td></tr>
+    <tr><td><strong>Public Key Authentication</strong></td><td>ใช้ RSA/ECDSA/Ed25519 Key Pair</td><td><strong>สูง</strong> — แนะนำให้ใช้</td></tr>
+    <tr><td><strong>Keyboard-Interactive</strong></td><td>ตอบคำถาม (รวมถึง OTP, TOTP, 2FA)</td><td><strong>สูงมาก</strong> — เมื่อใช้กับ 2FA</td></tr>
+    <tr><td><strong>Host-Based Authentication</strong></td><td>ตรวจสอบ Hostname และ Public Key ของเครื่องที่เชื่อมต่อ</td><td><strong>ปานกลาง</strong> — ใช้ในระบบ Trusted Host</td></tr>
+    <tr><td><strong>GSSAPI Authentication</strong></td><td>ใช้ Kerberos authentication</td><td><strong>สูง</strong> — สำหรับ Enterprise Environment</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>Public Key Authentication (กลไกการทำงาน):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>1. Client เสนอ Public Key ให้ Server (ssh-rsa AAA...)
+2. Server ตรวจสอบ Public Key ใน ~/.ssh/authorized_keys
+3. Server ส่ง Challenge (Random Number) ที่เข้ารหัสด้วย Public Key
+4. Client ถอดรหัสด้วย Private Key และส่ง Response กลับ
+5. Server ตรวจสอบ Response → ยอมรับหรือปฏิเสธ</pre>
+
+<h4>4.2.3 Connection Layer (SSH-CONN)</h4>
+<p>เมื่อ Authentication เสร็จสมบูรณ์ Connection Layer จะจัดการ Channel ต่างๆ:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Channel Type</th><th>หน้าที่</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Session</strong></td><td>Shell Session ปกติ</td></tr>
+    <tr><td><strong>direct-tcpip</strong></td><td>Local Port Forwarding</td></tr>
+    <tr><td><strong>tcpip-forward</strong></td><td>Remote Port Forwarding</td></tr>
+    <tr><td><strong>x11</strong></td><td>X11 Forwarding (GUI Application ระยะไกล)</td></tr>
+    <tr><td><strong>subsystem</strong></td><td>SFTP, SCP subsystems</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section4-3" class="section-ref">4.3 SSH Key Exchange Algorithms</h3>
+<p>SSH รองรับ Key Exchange Algorithm หลายประเภท โดยเรียงตามความปลอดภัย:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Algorithm</th><th>Curve/Basis</th><th>ความปลอดภัย</th><th>ปีที่แนะนำ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>curve25519-sha256</strong></td><td>Curve25519</td><td><strong>สูงมาก</strong></td><td>2014</td></tr>
+    <tr><td><strong>ecdh-sha2-nistp256</strong></td><td>NIST P-256</td><td>สูง</td><td>2010</td></tr>
+    <tr><td><strong>ecdh-sha2-nistp384</strong></td><td>NIST P-384</td><td>สูง</td><td>2010</td></tr>
+    <tr><td><strong>diffie-hellman-group16-sha512</strong></td><td>4096-bit MODP</td><td>สูง</td><td>2015</td></tr>
+    <tr><td><strong>diffie-hellman-group14-sha256</strong></td><td>2048-bit MODP</td><td>ปานกลาง</td><td>2006</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>คำแนะนำสำหรับการตั้งค่า OpenSSH Server (<code>/etc/ssh/sshd_config</code>):</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># Key Exchange Algorithms
+KexAlgorithms curve25519-sha256,ecdh-sha2-nistp256,ecdh-sha2-nistp384,diffie-hellman-group16-sha512
+
+# Ciphers
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com
+
+# MACs
+MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com
+
+# Host Key Algorithms
+HostKeyAlgorithms ssh-ed25519,rsa-sha2-512,ecdsa-sha2-nistp256
+
+# Authentication
+PubkeyAuthentication yes
+PasswordAuthentication no
+PermitRootLogin prohibit-password</pre>
+
+
+<h3 id="section4-4" class="section-ref">4.4 การใช้งาน SSH ในระบบเครือข่าย</h3>
+
+<h4>4.4.1 Port Forwarding (Tunneling)</h4>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>คำสั่ง</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Local Port Forwarding</strong></td><td><code>ssh -L 8080:internal:80 user@gateway</code></td><td>ส่ง Port Local → Remote</td></tr>
+    <tr><td><strong>Remote Port Forwarding</strong></td><td><code>ssh -R 8080:localhost:80 user@gateway</code></td><td>ส่ง Port Remote → Local</td></tr>
+    <tr><td><strong>Dynamic Port Forwarding</strong></td><td><code>ssh -D 1080 user@gateway</code></td><td>SOCKS Proxy Tunnel</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>Local Port Forwarding — แผนภาพ:</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌──────────────┐              ┌──────────────┐          ┌──────────────┐
+│    Client    │              │   SSH Server  │          │  Internal    │
+│              │              │   (Gateway)   │          │   Server     │
+│ localhost:   │── SSH Tunnel─→│              │──TCP───→│ internal:80  │
+│ 8080         │              │  forward:     │          │              │
+└──────────────┘              │  localhost:80 │          └──────────────┘
+                              └──────────────┘</pre>
+
+<h4>4.4.2 SSH File Transfer</h4>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>วิธีการ</th><th>โพรโทคอลพื้นฐาน</th><th>Port</th><th>จุดเด่น</th></tr></thead>
+  <tbody>
+    <tr><td><strong>SCP</strong></td><td>SSH</td><td>22</td><td>ง่าย, เร็ว (legacy)</td></tr>
+    <tr><td><strong>SFTP</strong></td><td>SSH (SSH-CONN Subsystem)</td><td>22</td><td>มีฟังก์ชันจัดการไฟล์ (resume, list, delete)</td></tr>
+    <tr><td><strong>rsync over SSH</strong></td><td>SSH</td><td>22</td><td>ส่งเฉพาะส่วนที่เปลี่ยนแปลง (delta)</td></tr>
+  </tbody>
+</table></div>
+
+<h4>4.4.3 SSH Agent และ Key Management</h4>
+<p><strong>ssh-agent</strong> เป็นโปรแกรมที่เก็บ Private Key ใน Memory เพื่อไม่ต้องป้อน Passphrase ทุกครั้ง:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># เริ่ม ssh-agent และเพิ่ม Key
+eval $(ssh-agent -s)
+ssh-add ~/.ssh/id_ed25519
+
+# Forward Agent (เชื่อมต่อข้าม Hop โดยไม่ต้องเก็บ Key)
+ssh -A user@gateway</pre>
+
+<h3 id="section4-5" class="section-ref">4.5 Hardening SSH</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>การตั้งค่า</th><th>ค่าแนะนำ</th><th>เหตุผล</th></tr></thead>
+  <tbody>
+    <tr><td><code>Port</code></td><td>22 (หรือเปลี่ยน)</td><td>เปลี่ยน Port ช่วยลด Automated Scan</td></tr>
+    <tr><td><code>PermitRootLogin</code></td><td>prohibit-password หรือ no</td><td>ป้องกันการเข้าถึง Root โดยตรง</td></tr>
+    <tr><td><code>PasswordAuthentication</code></td><td>no</td><td>ใช้ Public Key Authentication เท่านั้น</td></tr>
+    <tr><td><code>PubkeyAuthentication</code></td><td>yes</td><td>เปิดใช้งาน Key Authentication</td></tr>
+    <tr><td><code>AllowUsers</code></td><td>user1 user2</td><td>จำกัดผู้ใช้ที่สามารถ SSH ได้</td></tr>
+    <tr><td><code>MaxAuthTries</code></td><td>3</td><td>จำกัดจำนวนครั้งลอง Authentication</td></tr>
+    <tr><td><code>ClientAliveInterval</code></td><td>300</td><td>ตรวจสอบ Idle Connection ทุก 5 นาที</td></tr>
+    <tr><td><code>UsePAM</code></td><td>yes</td><td>เปิด PAM สำหรับ 2FA</td></tr>
+    <tr><td><code>LogLevel</code></td><td>VERBOSE</td><td>บันทึกประวัติการเข้าถึงละเอียดขึ้น</td></tr>
+    <tr><td><code>Banner</code></td><td>/etc/ssh/banner</td><td>แสดงข้อความเตือนทางกฎหมาย</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+<section id="section5" class="section-ref">
+<h2>5. การเปรียบเทียบความปลอดภัยระหว่างโพรโทคอล</h2>
+
+<h3 id="section5-1" class="section-ref">5.1 HTTP → HTTPS → HTTP/3 (QUIC)</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>HTTP/1.1</th><th>HTTPS (HTTP/1.1 + TLS)</th><th>HTTP/2 (+ TLS)</th><th>HTTP/3 (QUIC + TLS 1.3)</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Port</strong></td><td>TCP 80</td><td>TCP 443</td><td>TCP 443</td><td>UDP 443</td></tr>
+    <tr><td><strong>Encryption</strong></td><td>❌ ไม่มี</td><td>✅ TLS</td><td>✅ TLS</td><td>✅ TLS 1.3 (Built-in)</td></tr>
+    <tr><td><strong>Transport</strong></td><td>TCP</td><td>TCP</td><td>TCP</td><td><strong>QUIC (UDP + TLS 1.3)</strong></td></tr>
+    <tr><td><strong>Multiplexing</strong></td><td>❌ (1 req/conn)</td><td>❌ (1 req/conn)</td><td>✅ Multiplexed</td><td>✅ Multiplexed (ไม่มี Head-of-Line Blocking)</td></tr>
+    <tr><td><strong>Connection Setup</strong></td><td>1 RTT (TCP)</td><td>3 RTT (TCP + TLS 1.2)</td><td>3 RTT</td><td><strong>1 RTT</strong> (QUIC + TLS 1.3)</td></tr>
+    <tr><td><strong>0-RTT</strong></td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+    <tr><td><strong>Head-of-Line Blocking</strong></td><td>TCP Level</td><td>TCP Level</td><td>TCP Level</td><td><strong>ไม่มี</strong> (QUIC)</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>HTTP/3 (QUIC) — การเชื่อมต่อ:</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>QUIC Connection Setup (1 RTT):
+Client                                      Server
+  │                                           │
+  │──── Initial (ClientHello, Version,       │
+  │         CRYPTO Frame) ──────────────────→│  RTT 1
+  │←── Initial + Handshake (ServerHello,     │
+  │         Certificate, Finished) ──────────│
+  │                                           │
+  │══════ Secure Data Transfer (HTTP/3 Frames) ════│</pre>
+
+<p><strong>0-RTT (Session Resume):</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Client                                      Server
+  │                                           │
+  │──── 0-RTT (HTTP Request, Early Data) ───→│  RTT 0
+  │←── Server Response ──────────────────────│
+  │                                           │
+  │══════ Continue Normal Communication ══════│</pre>
+
+<h3 id="section5-2" class="section-ref">5.2 FTP → FTPS → SFTP</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>FTP</th><th>FTPS (FTP over TLS)</th><th>SFTP</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Port</strong></td><td>TCP 21</td><td>TCP 990 (Implicit) / 21 (Explicit)</td><td>TCP 22</td></tr>
+    <tr><td><strong>Protocol Basis</strong></td><td>FTP พื้นฐาน</td><td>FTP + TLS</td><td>SSH</td></tr>
+    <tr><td><strong>Encryption</strong></td><td>❌ ไม่มี</td><td>✅ TLS</td><td>✅ SSH Encryption</td></tr>
+    <tr><td><strong>Authentication</strong></td><td>Username/Password</td><td>Certificate + Password</td><td>Public Key + Password</td></tr>
+    <tr><td><strong>Data Channel</strong></td><td>แยก Control/Data</td><td>แยก Control/Data</td><td><strong>รวมใน Channel เดียว</strong></td></tr>
+    <tr><td><strong>Firewall Friendly</strong></td><td>❌ (ต้องเปิดหลายพอร์ต)</td><td>❌</td><td>✅ (ใช้พอร์ตเดียว)</td></tr>
+    <tr><td><strong>NAT Compatible</strong></td><td>❌ (Active Mode)</td><td>❌</td><td>✅</td></tr>
+    <tr><td><strong>Directory Listing</strong></td><td>แยก Channel</td><td>แยก Channel</td><td><strong>ใน Channel เดียว</strong></td></tr>
+    <tr><td><strong>Resume Transfer</strong></td><td>✅</td><td>✅</td><td>✅</td></tr>
+    <tr><td><strong>Permission Management</strong></td><td>❌</td><td>❌</td><td>✅ (Unix Permissions)</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>รูปแบบ Active vs Passive FTP (ผลต่อความปลอดภัย):</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Active Mode:
+Client:1025 ←───── Server:21 (Control)
+Client:1025 ─────→ Server:20 (Data)  ← Client ต้องรับการเชื่อมต่อจาก Server
+
+Passive Mode:
+Client:1025 ←───── Server:21 (Control)
+Client:1026 ─────→ Server:30000 (Data)  ← Client เชื่อมต่อไปยัง Server</pre>
+
+<h3 id="section5-3" class="section-ref">5.3 SMTP → SMTPS → STARTTLS</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>SMTP (Plain)</th><th>SMTPS (SMTP over TLS)</th><th>STARTTLS</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Port</strong></td><td>TCP 25</td><td>TCP 465</td><td>TCP 587</td></tr>
+    <tr><td><strong>Encryption Method</strong></td><td>❌ ไม่มี</td><td>✅ TLS ตั้งแต่เริ่มเชื่อมต่อ</td><td>🔄 Upgrade: Plain → TLS</td></tr>
+    <tr><td><strong>การใช้งานหลัก</strong></td><td>Server-to-Server Relay</td><td>Submission (Deprecated)</td><td>Submission (RFC 6409)</td></tr>
+    <tr><td><strong>Authentication</strong></td><td>ไม่บังคับ</td><td>Required</td><td>Required</td></tr>
+    <tr><td><strong>Downgrade Risk</strong></td><td>—</td><td>ต่ำ</td><td><strong>สูง</strong> — STRIPTLS Attack</td></tr>
+    <tr><td><strong>MTA-STS</strong></td><td>—</td><td>—</td><td>ใช้ MTA-STS ป้องกัน Downgrade</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>MTA-STS (SMTP MTA Strict Transport Security, RFC 8461):</strong></p>
+<p>MTA-STS เป็นกลไกป้องกันการโจมตี STRIPTLS สำหรับ SMTP:</p>
+<ol>
+  <li>เจ้าของ Domain เผยแพร่ Policy ที่ <code>mta-sts.example.com</code></li>
+  <li>Server ส่ง TLS Report ให้ผู้ส่งตรวจสอบ</li>
+  <li>ถ้า TLS ล้มเหลว → ไม่ส่ง (Reject) แทนที่จะ Fallback เป็น Plaintext</li>
+</ol>
+
+<h3 id="section5-4" class="section-ref">5.4 DNS Security: DNSSEC, DNS over TLS, DNS over HTTPS</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>DNSSEC</th><th>DNS over TLS (DoT)</th><th>DNS over HTTPS (DoH)</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Port</strong></td><td>UDP/TCP 53</td><td>TCP 853</td><td>TCP 443</td></tr>
+    <tr><td><strong>Encryption</strong></td><td>❌ (เฉพาะ Signature)</td><td>✅ TLS</td><td>✅ TLS (HTTPS)</td></tr>
+    <tr><td><strong>Integrity</strong></td><td>✅ Digital Signature</td><td>✅ TLS</td><td>✅ TLS</td></tr>
+    <tr><td><strong>Authentication</strong></td><td>✅ Chain of Trust</td><td>❌ (Certificate-Based)</td><td>❌ (Certificate-Based)</td></tr>
+    <tr><td><strong>Privacy</strong></td><td>❌ (ข้อมูลเปิด)</td><td>✅ (เข้ารหัส)</td><td>✅ (เข้ารหัส)</td></tr>
+    <tr><td><strong>Performance</strong></td><td>Slow (Signature Verification)</td><td>ดี</td><td>ดี</td></tr>
+    <tr><td><strong>Adoption</strong></td><td>ต่ำ (ซับซ้อน)</td><td>ปานกลาง</td><td><strong>สูง</strong> (Cloudflare 1.1.1.1, Google 8.8.8.8)</td></tr>
+    <tr><td><strong>Standard</strong></td><td>RFC 4033-4035</td><td>RFC 7858</td><td>RFC 8484</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>DNS Security Stack — ควรรวมทุกชั้น:</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌─────────────────────────────────────────────┐
+│  Application (Browser/OS)                    │
+├─────────────────────────────────────────────┤
+│  DNS over HTTPS (DoH) / DNS over TLS (DoT)   │  ← Privacy + Integrity
+├─────────────────────────────────────────────┤
+│  DNSSEC Validation                           │  ← Authentication + Integrity
+├─────────────────────────────────────────────┤
+│  Authoritative DNS Server                    │
+└─────────────────────────────────────────────┘</pre>
+
+<h3 id="section5-5" class="section-ref">5.5 <span class="glossary-term">WireGuard<span class="tooltip">โพรโทคอล VPN สมัยใหม่ที่มี Codebase เล็ก (~4,000 บรรทัด) ใช้ ChaCha20-Poly1305 และ Curve25519 เป็นค่าเริ่มต้น เร็วกว่าและตั้งค่าง่ายกว่า IPsec</span></span> — โพรโทคอล VPN สมัยใหม่</h3>
+<p>WireGuard เป็นโพรโทคอล VPN ที่ออกแบบมาให้เรียบง่าย ปลอดภัย และมีประสิทธิภาพสูง:</p>
+
+<p><strong>จุดเด่นของ WireGuard เทียบกับ IPsec:</strong></p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>IPsec (IKEv2)</th><th>WireGuard</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Codebase</strong></td><td>&gt;100,000 บรรทัด (strongSwan)</td><td>~4,000 บรรทัด</td></tr>
+    <tr><td><strong>Cipher</strong></td><td>กำหนดเองได้</td><td><strong>ChaCha20-Poly1305 (บังคับ)</strong></td></tr>
+    <tr><td><strong>Key Exchange</strong></td><td>IKEv2 (DH/ECDH)</td><td><strong>Noise Protocol (Curve25519)</strong></td></tr>
+    <tr><td><strong>Authentication</strong></td><td>Certificate, PSK</td><td><strong>Public Key (Static)</strong></td></tr>
+    <tr><td><strong>Handshake</strong></td><td>4-6 messages</td><td><strong>1-RTT (Noise IK)</strong></td></tr>
+    <tr><td><strong>Perfect Forward Secrecy</strong></td><td>✅</td><td>✅</td></tr>
+    <tr><td><strong>Kernel Integration</strong></td><td>มี (บางระบบ)</td><td>✅ <strong>Built-in Linux Kernel 5.6+</strong></td></tr>
+    <tr><td><strong>Roaming</strong></td><td>MOBIKE (ซับซ้อน)</td><td><strong>Built-in (No Re-handshake)</strong></td></tr>
+    <tr><td><strong>Configuration</strong></td><td>ซับซ้อน (หลาย Parameter)</td><td><strong>ง่าย (Key + Endpoint เท่านั้น)</strong></td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>WireGuard Configuration — ตัวอย่างการตั้งค่า:</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># /etc/wireguard/wg0.conf
+[Interface]
+PrivateKey = gN65BqVyI5dy3EY...  # Private Key (Curve25519)
+Address = 10.0.0.1/24
+ListenPort = 51820
+
+[Peer]
+PublicKey = xTIBAOD+z6Gj6P...  # Public Key ของ Peer
+AllowedIPs = 10.0.0.2/32, 192.168.1.0/24
+Endpoint = peer.example.com:51820
+PersistentKeepalive = 25</pre>
+
+<h3 id="section5-6" class="section-ref">5.6 ตารางเปรียบเทียบความปลอดภัยแบบรวม</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>โพรโทคอล</th><th>Port</th><th>Encryption</th><th>Authentication</th><th>Integrity</th><th>PFS</th><th>OSI Layer</th></tr></thead>
+  <tbody>
+    <tr><td><strong>HTTPS</strong> (TLS 1.3)</td><td>443</td><td>✅ AES-GCM / ChaCha20</td><td>✅ Certificate</td><td>✅ AEAD</td><td>✅</td><td>Transport/App</td></tr>
+    <tr><td><strong>FTPS</strong> (TLS)</td><td>990</td><td>✅ TLS</td><td>✅ Cert + PW</td><td>✅</td><td>✅*</td><td>Transport/App</td></tr>
+    <tr><td><strong>SFTP</strong></td><td>22</td><td>✅ SSH</td><td>✅ Public Key</td><td>✅ HMAC</td><td>✅</td><td>Transport/App</td></tr>
+    <tr><td><strong>SMTPS</strong> (TLS)</td><td>465</td><td>✅ TLS</td><td>✅ Certificate</td><td>✅</td><td>✅*</td><td>Transport/App</td></tr>
+    <tr><td><strong>IMAPS</strong> (TLS)</td><td>993</td><td>✅ TLS</td><td>✅ Certificate</td><td>✅</td><td>✅*</td><td>Transport/App</td></tr>
+    <tr><td><strong>POP3S</strong> (TLS)</td><td>995</td><td>✅ TLS</td><td>✅ Certificate</td><td>✅</td><td>✅*</td><td>Transport/App</td></tr>
+    <tr><td><strong>IPsec</strong> (ESP)</td><td>50, 4500</td><td>✅ AES</td><td>✅ PSK/Cert</td><td>✅ HMAC</td><td>✅</td><td>Network</td></tr>
+    <tr><td><strong>WireGuard</strong></td><td>51820</td><td>✅ ChaCha20</td><td>✅ Public Key</td><td>✅ Poly1305</td><td>✅</td><td>Network</td></tr>
+    <tr><td><strong>SSH</strong></td><td>22</td><td>✅ AES-CTR</td><td>✅ Public Key</td><td>✅ HMAC</td><td>✅</td><td>Transport/App</td></tr>
+    <tr><td><strong>DNSSEC</strong></td><td>53</td><td>❌</td><td>✅ Signature</td><td>✅ Signature</td><td>❌</td><td>Application</td></tr>
+  </tbody>
+</table></div>
+<p><small>*PFS ขึ้นอยู่กับ Cipher Suite ที่เลือก (ต้องใช้ ECDHE)</small></p>
+</section>
+<hr>
+<section id="section6" class="section-ref">
+<h2>6. การโจมตี SSL/TLS ในประวัติศาสตร์</h2>
+<p>SSL/TLS ผ่านการโจมตีที่รุนแรงมากมายตลอดประวัติศาสตร์ การทำความเข้าใจการโจมตีเหล่านี้ช่วยให้เข้าใจจุดอ่อนของโพรโทคอลและการป้องกันที่ถูกต้อง</p>
+
+<h3 id="section6-1" class="section-ref">6.1 ไทม์ไลน์การโจมตี SSL/TLS</h3>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>1995 ─ SSL 2.0 — Weak MAC, Protocol Downgrade
+1996 ─ SSL 3.0 Released
+1999 ─ TLS 1.0 Released
+
+2009 ────┬── BEAST (CBC Predictable IV)
+2011 ────├── CRIME (Compression Oracle)
+          ├── WinShock (Schannel)
+2013 ────├── Lucky13 (CBC Timing)
+          ├── RC4 Biases (Plaintext Recovery)
+2014 ────├── Heartbleed (CVE-2014-0160)
+          ├── POODLE (SSL 3.0 CBC)
+          ├── POODLE TLS (TLS CBC)
+2015 ────├── FREAK (Export-Grade RSA)
+          ├── LOGJAM (Export-Grade DH)
+2016 ────├── DROWN (Cross-Protocol, CVE-2016-0800)
+          ├── Sweet32 (3DES Birthday)
+2017 ────├── ROBOT (Bleichenbacher Oracle)
+          ├── KRACK (WPA2 — ไม่ใช่ TLS)
+2018 ────├── TLS 1.3 Released
+2019 ────├── ALPACA (Cross-Protocol, CVE-2021-36222)
+          ├── Raccoon Attack (CVE-2020-1968)
+2020 ────├── TLStorm (CVE-2022-26320, UPS/Firmware)
+          └── TLS 1.3 Adoption > 50%</pre>
+
+
+<h3 id="section6-2" class="section-ref">6.2 การโจมตีแต่ละประเภทโดยละเอียด</h3>
+
+<div class="expandable" id="expand-beast">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-bug" aria-hidden="true"></i> 6.2.1 BEAST (CVE-2011-3389)</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายละเอียด</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ปีที่พบ</strong></td><td>2011 (Juliano Rizzo, Thai Duong)</td></tr>
+    <tr><td><strong>เป้าหมาย</strong></td><td>TLS 1.0 CBC Mode Cipher</td></tr>
+    <tr><td><strong>หลักการ</strong></td><td>ใช้ IV ที่สามารถคาดเดาได้ใน CBC Mode เพื่อถอดรหัส Cookie ทีละ byte</td></tr>
+    <tr><td><strong>เงื่อนไข</strong></td><td>ผู้โจมตีต้องสามารถ MITM และ inject JavaScript ได้</td></tr>
+    <tr><td><strong>ผลกระทบ</strong></td><td>ถอดรหัส Cookie ใน HTTPS Session ได้</td></tr>
+  </tbody>
+</table></div>
+<p><strong>การป้องกัน:</strong> อัปเกรดเป็น TLS 1.1+ (CBC ใช้ Explicit IV) — <strong>ปัจจุบัน: ใช้ TLS 1.2+ กับ AEAD Cipher</strong></p>
+  </div>
+</div>
+
+<div class="expandable" id="expand-crime">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-bug" aria-hidden="true"></i> 6.2.2 CRIME (CVE-2012-4929)</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายละเอียด</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ปีที่พบ</strong></td><td>2012</td></tr>
+    <tr><td><strong>เป้าหมาย</strong></td><td>TLS Compression</td></tr>
+    <tr><td><strong>หลักการ</strong></td><td>ใช้ Compression Oracle — ถ้าเดา Cookie ถูก ข้อมูลจะบีบอัดได้ดีขึ้น ส่งผลให้ขนาดเล็กลง</td></tr>
+    <tr><td><strong>ผลกระทบ</strong></td><td>ถอดรหัส Session Cookie ได้</td></tr>
+    <tr><td><strong>การป้องกัน</strong></td><td>ปิด TLS Compression (RFC 3749)</td></tr>
+  </tbody>
+</table></div>
+  </div>
+</div>
+
+<div class="expandable" id="expand-heartbleed">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-heartbeat" aria-hidden="true"></i> 6.2.3 Heartbleed (CVE-2014-0160)</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายละเอียด</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ปีที่พบ</strong></td><td>2014 (Google Security, Codenomicon)</td></tr>
+    <tr><td><strong>เป้าหมาย</strong></td><td>OpenSSL 1.0.1 ถึง 1.0.1f (Heartbeat Extension)</td></tr>
+    <tr><td><strong>หลักการ</strong></td><td>Buffer Over-read — ส่ง Heartbeat Request ความยาว 64KB แต่บอก Length เป็น 64KB → Server อ่าน Memory เกินขนาด</td></tr>
+    <tr><td><strong>ผลกระทบ</strong></td><td>รั่วไหลของ Private Key, Session Key, Password, และข้อมูลใน Memory</td></tr>
+    <tr><td><strong>จำนวนที่ได้รับผลกระทบ</strong></td><td>เซิร์ฟเวอร์กว่า 500,000 เครื่อง (17% ของ HTTPS Servers ในปี 2014)</td></tr>
+  </tbody>
+</table></div>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Heartbleed — การทำงาน:
+1. ผู้โจมตีส่ง Heartbeat Request:
+   [Type=1][Payload Length=0xFFFF][Payload="hi"]
+   
+2. Server ตอบ Heartbeat Response โดยใช้ Length ที่ผู้โจมตีส่ง:
+   [Type=1][Payload Length=0xFFFF][Payload="hi" + Private_Key + Session_Keys + ...]
+                                                              └── Memory Leak (64KB)</pre>
+
+<p><strong>การป้องกัน:</strong></p>
+<ul>
+  <li>อัปเกรด OpenSSL เป็น 1.0.1g หรือสูงกว่า</li>
+  <li>Revoke Certificate ที่เคยอยู่บนเซิร์ฟเวอร์ที่ได้รับผลกระทบ</li>
+  <li>เปลี่ยน Session Key และ Password ทั้งหมด</li>
+</ul>
+  </div>
+</div>
+
+<div class="expandable" id="expand-poodle">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-bug" aria-hidden="true"></i> 6.2.4 POODLE (CVE-2014-3566)</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายละเอียด</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ปีที่พบ</strong></td><td>2014 (Google)</td></tr>
+    <tr><td><strong>เป้าหมาย</strong></td><td>SSL 3.0 (CBC Mode)</td></tr>
+    <tr><td><strong>หลักการ</strong></td><td>Padding Oracle Attack — บังคับให้ Client Downgrade ไปใช้ SSL 3.0 ที่ไม่มี padding verification ที่ถูกต้อง</td></tr>
+  </tbody>
+</table></div>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>POODLE Attack — ขั้นตอน:
+1. MITM บล็อก TLS 1.2 Handshake
+2. Client Fallback → SSL 3.0
+3. SSL 3.0 CBC → Padding Byte ไม่ถูกตรวจสอบ
+4. ผู้โจมตีสามารถเดา Plaintext ทีละ byte โดยสังเกตว่าการเข้ารหัสสำเร็จหรือไม่</pre>
+
+<p><strong>การป้องกัน:</strong></p>
+<ul>
+  <li>ปิดการใช้งาน SSL 3.0 และ TLS 1.0</li>
+  <li>TLS_FALLBACK_SCSV (Signaling Cipher Suite Value for Downgrade Protection)</li>
+  <li><strong>ปัจจุบัน: ใช้ TLS 1.2+ เท่านั้น</strong></li>
+</ul>
+  </div>
+</div>
+
+<div class="expandable" id="expand-freak">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-bug" aria-hidden="true"></i> 6.2.5 FREAK (CVE-2015-0204)</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายละเอียด</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ปีที่พบ</strong></td><td>2015</td></tr>
+    <tr><td><strong>เป้าหมาย</strong></td><td>Export-Grade RSA (512-bit)</td></tr>
+    <tr><td><strong>หลักการ</strong></td><td>ผู้โจมตีบังคับให้ Server/Client ใช้ RSA Export Key (512-bit) ซึ่งสามารถ Factor ได้</td></tr>
+  </tbody>
+</table></div>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>FREAK Attack:
+1. Client สนับสนุน RSA แต่ผู้โจมตี MITM → แก้ ClientHello เป็น "RSA_EXPORT"
+2. Server ส่ง RSA Export Certificate (512-bit)
+3. ผู้โจมตี Factoring RSA-512 → ถอดรหัส Pre-Master Secret
+4. Session Key ถูกถอดรหัส → HTTPS Traffic เปิด</pre>
+
+<p><strong>การป้องกัน:</strong></p>
+<ul>
+  <li>ปิดการใช้งาน EXPORT Cipher Suite ทั้งหมด</li>
+  <li>อัปเดต OpenSSL และ Secure Transport (Apple)</li>
+</ul>
+  </div>
+</div>
+
+<div class="expandable" id="expand-logjam">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-bug" aria-hidden="true"></i> 6.2.6 LOGJAM (CVE-2015-4000)</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายละเอียด</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ปีที่พบ</strong></td><td>2015</td></tr>
+    <tr><td><strong>เป้าหมาย</strong></td><td>Export-Grade Diffie-Hellman (512-bit, 768-bit)</td></tr>
+    <tr><td><strong>หลักการ</strong></td><td>ผู้โจมตี Downgrade DH Parameter ให้เหลือ 512-bit → Precompute Discrete Log</td></tr>
+  </tbody>
+</table></div>
+<p><strong>การป้องกัน:</strong> ใช้ DH Parameter ≥ 2048-bit, ใช้ ECDHE แทน DHE</p>
+  </div>
+</div>
+
+<div class="expandable" id="expand-drown">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-bug" aria-hidden="true"></i> 6.2.7 DROWN (CVE-2016-0800)</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายละเอียด</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ปีที่พบ</strong></td><td>2016</td></tr>
+    <tr><td><strong>เป้าหมาย</strong></td><td>Cross-Protocol Attack (SSLv2 → TLS)</td></tr>
+    <tr><td><strong>หลักการ</strong></td><td>ใช้ SSLv2 ที่เปิดอยู่บน Server เดียวกันเพื่อถอดรหัส TLS Connection</td></tr>
+  </tbody>
+</table></div>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>DROWN Attack:
+1. Server รัน HTTPS (TLS) พอร์ต 443
+2. Server เดียวกันรัน SSLv2 พอร์ตอื่น (SMTP, POP3, IMAP) ที่ใช้ Certificate เดียวกัน
+3. ผู้โจมตีใช้ SSLv2 Weakness ถอดรหัส Pre-Master Secret ของ TLS Connection</pre>
+
+<p><strong>ผลกระทบ:</strong> 33% ของ HTTPS Servers เสี่ยงต่อ DROWN ในปี 2016</p>
+<p><strong>การป้องกัน:</strong> ปิด SSLv2 ทั้งหมด, ใช้ Certificate ที่แตกต่างกันสำหรับ Service ต่างๆ (Key Separation)</p>
+  </div>
+</div>
+
+<div class="expandable" id="expand-robot">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-bug" aria-hidden="true"></i> 6.2.8 ROBOT (CVE-2017-17382)</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายละเอียด</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ปีที่พบ</strong></td><td>2017</td></tr>
+    <tr><td><strong>เป้าหมาย</strong></td><td>RSA Encryption (PKCS#1 v1.5)</td></tr>
+    <tr><td><strong>หลักการ</strong></td><td>Bleichenbacher Oracle — Server บอกว่า PKCS#1 v1.5 padding ถูกต้องหรือไม่ → ถอดรหัส Pre-Master Secret</td></tr>
+    <tr><td><strong>ผลกระทบ</strong></td><td>ถอดรหัส Session Key ได้ใน TLS ที่ใช้ RSA Key Exchange</td></tr>
+  </tbody>
+</table></div>
+<p><strong>การป้องกัน:</strong> ใช้ ECDHE Key Exchange (Perfect Forward Secrecy), ใช้ TLS 1.3 (ไม่รองรับ RSA Key Exchange)</p>
+  </div>
+</div>
+
+<div class="expandable" id="expand-alpaca">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-bug" aria-hidden="true"></i> 6.2.9 ALPACA (CVE-2021-36222)</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายละเอียด</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ปีที่พบ</strong></td><td>2021</td></tr>
+    <tr><td><strong>เป้าหมาย</strong></td><td>Cross-Protocol Attack (HTTPS ↔ FTP, SMTP, etc.)</td></tr>
+    <tr><td><strong>หลักการ</strong></td><td>ผู้โจมตีทำให้ Browser ส่ง HTTPS Request ไปยัง FTP/SMTP Server ที่มี Certificate ถูกต้อง</td></tr>
+  </tbody>
+</table></div>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ALPACA Attack:
+1. ผู้โจมตีควบคุม FTP Server ที่มี Certificate ถูกต้อง (หรือใช้ self-signed)
+2. ผู้ใช้เปิด Browser → ไปที่ https://attacker-ftp.com
+3. Browser ส่ง HTTP Request ไปยัง FTP Server
+4. Cookie และ Authentication Token รั่วไหล</pre>
+
+<p><strong>การป้องกัน:</strong> ใช้ ALPN extension (Application-Layer Protocol Negotiation), ตรวจสอบว่า Certificate SAN ตรงกับ Service Protocol</p>
+  </div>
+</div>
+
+<div class="expandable" id="expand-raccoon">
+  <div class="expandable-header" onclick="toggleExpand(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+    <span><i class="fas fa-bug" aria-hidden="true"></i> 6.2.10 Raccoon Attack (CVE-2020-1968)</span>
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </div>
+  <div class="expandable-content">
+<div class="table-wrap"><table>
+  <thead><tr><th>รายละเอียด</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ปีที่พบ</strong></td><td>2020</td></tr>
+    <tr><td><strong>เป้าหมาย</strong></td><td>DH Key Exchange ใน TLS</td></tr>
+    <tr><td><strong>หลักการ</strong></td><td>Timing Side-channel ใน DH Key Exchange — ถ้า DH Secret มี Leading Zero จะมีการคำนวณที่ไม่สม่ำเสมอ</td></tr>
+  </tbody>
+</table></div>
+<p><strong>การป้องกัน:</strong> ใช้ ECDHE แทน DHE, ใช้ TLS 1.3</p>
+  </div>
+</div>
+
+<h3 id="section6-3" class="section-ref">6.3 สรุป: Cipher Suite ที่ปลอดภัยและไม่ปลอดภัย</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Algorithm</th><th>สถานะ</th><th>ปัญหา</th></tr></thead>
+  <tbody>
+    <tr><td><strong>RC4</strong></td><td>❌ ไม่ปลอดภัย</td><td>Biases, Plaintext Recovery</td></tr>
+    <tr><td><strong>3DES</strong></td><td>❌ ไม่ปลอดภัย</td><td>Sweet32 (Birthday Attack ที่ 32GB)</td></tr>
+    <tr><td><strong>CBC Mode (TLS 1.0)</strong></td><td>❌ ไม่ปลอดภัย</td><td>BEAST, Lucky13</td></tr>
+    <tr><td><strong>RSA Key Exchange</strong></td><td>❌ ไม่ปลอดภัย</td><td>ROBOT, ไม่มี PFS</td></tr>
+    <tr><td><strong>DHE &lt; 2048-bit</strong></td><td>❌ ไม่ปลอดภัย</td><td>LOGJAM</td></tr>
+    <tr><td><strong>AES-GCM</strong></td><td>✅ ปลอดภัย</td><td>AEAD, Recommended</td></tr>
+    <tr><td><strong>ChaCha20-Poly1305</strong></td><td>✅ ปลอดภัย</td><td>AEAD, Mobile-optimized</td></tr>
+    <tr><td><strong>ECDHE + AES-GCM</strong></td><td>✅ ปลอดภัยที่สุด</td><td>PFS + AEAD</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section6-4" class="section-ref">6.4 เครื่องมือตรวจสอบความปลอดภัย SSL/TLS</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>เครื่องมือ</th><th>คำอธิบาย</th><th>การใช้งาน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>SSL Labs (Qualys)</strong></td><td>ให้ Grade A+ สำหรับ HTTPS</td><td>https://www.ssllabs.com/ssltest/</td></tr>
+    <tr><td><strong>testssl.sh</strong></td><td>Command-line SSL Scanner</td><td><code>testssl.sh example.com</code></td></tr>
+    <tr><td><strong>tlspretense</strong></td><td>TLS Test Framework</td><td>ทดสอบ Cipher Suite, Protocol Version</td></tr>
+    <tr><td><strong>zmap + tls-scan</strong></td><td>สแกน TLS ทั้ง subnet</td><td>สแกนแบบ Mass Scan</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+<section id="section7" class="section-ref">
+<h2>7. Best Practices สำหรับการกำหนดค่าโพรโทคอลความปลอดภัย</h2>
+
+<h3 id="section7-1" class="section-ref">7.1 Mozilla SSL Configuration Generator</h3>
+<p>Mozilla ให้คำแนะนำการตั้งค่า TLS สำหรับ Server 3 ระดับ:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ระดับ</th><th>คำอธิบาย</th><th>เหมาะกับ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Modern</strong></td><td>TLS 1.3 only, AEAD only</td><td>บริการที่ต้องการความปลอดภัยสูงสุด</td></tr>
+    <tr><td><strong>Intermediate</strong></td><td>TLS 1.2 + 1.3, AEAD + ปลอดภัย</td><td>ทั่วไป (แนะนำ)</td></tr>
+    <tr><td><strong>Old</strong></td><td>รองรับ legacy client</td><td>ระบบเก่าที่ต้องรองรับ Client รุ่นเก่า</td></tr>
+  </tbody>
+</table></div>
+
+<p><strong>ตัวอย่าง Nginx Configuration (Intermediate):</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>server {
+    listen 443 ssl http2;
+    server_name example.com;
+
+    # Certificate
+    ssl_certificate /etc/ssl/certs/example.com.pem;
+    ssl_certificate_key /etc/ssl/private/example.com.key;
+
+    # Protocol
+    ssl_protocols TLSv1.2 TLSv1.3;
+    
+    # Cipher Suites (Intermediate)
+    ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384';
+    
+    # DH Parameters
+    ssl_dhparam /etc/ssl/dhparam.pem;
+    
+    # OCSP Stapling
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    resolver 1.1.1.1 8.8.8.8;
+    
+    # HSTS
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+    
+    # Security Headers
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options DENY;
+}</pre>
+
+
+<h3 id="section7-2" class="section-ref">7.2 CAA (DNS Certification Authority Authorization)</h3>
+<p>CAA Resource Record (RFC 6844, RFC 8659) กำหนดว่า CA ใดบ้างที่สามารถออก Certificate สำหรับ Domain ได้:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>example.com.    IN  CAA 0 issue "letsencrypt.org"
+example.com.    IN  CAA 0 issuewild ";"       ; No wildcard certificates
+example.com.    IN  CAA 0 iodef "mailto:security@example.com"</pre>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>ฟิลด์</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>issue</strong></td><td>CA ที่ได้รับอนุญาตให้ออก Certificate สำหรับ Domain นี้</td></tr>
+    <tr><td><strong>issuewild</strong></td><td>CA ที่ได้รับอนุญาตให้ออก Wildcard Certificate</td></tr>
+    <tr><td><strong>iodef</strong></td><td>URL/Email สำหรับรายงานการละเมิดนโยบาย</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section7-3" class="section-ref">7.3 DANE (DNS-Based Authentication of Named Entities)</h3>
+<p>DANE (RFC 6698) ใช้ DNSSEC เพื่อระบุ Certificate ที่ถูกต้องสำหรับ Service โดยตรง โดยไม่ต้องพึ่ง CA:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>_443._tcp.example.com. IN TLSA 3 1 1 (
+    abcd1234... )  ; SHA-256 Hash ของ Certificate</pre>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>DANE Parameter</th><th>ค่าที่ใช้</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Certificate Usage</strong></td><td>0 = CA Constraint, 1 = Service Certificate, 2 = Trust Anchor, 3 = Domain-Issued</td></tr>
+    <tr><td><strong>Selector</strong></td><td>0 = Full Certificate, 1 = SubjectPublicKeyInfo</td></tr>
+    <tr><td><strong>Matching Type</strong></td><td>0 = Full, 1 = SHA-256, 2 = SHA-512</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section7-4" class="section-ref">7.4 HSTS (HTTP Strict Transport Security)</h3>
+<p>HSTS (RFC 6797) บอก Browser ว่า Domain นี้ <strong>ต้องใช้ HTTPS เท่านั้น</strong>:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Strict-Transport-Security: max-age=63072000; includeSubDomains; preload</pre>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>พารามิเตอร์</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>max-age</strong></td><td>ระยะเวลา (วินาที) ที่ Browser จำว่า Domain นี้ต้องใช้ HTTPS — แนะนำ 2 ปี (63072000)</td></tr>
+    <tr><td><strong>includeSubDomains</strong></td><td>ใช้กับ Subdomain ทั้งหมด</td></tr>
+    <tr><td><strong>preload</strong></td><td>ขอให้ Browser รวม Domain ใน HSTS Preload List (Chrome, Firefox, Safari)</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section7-5" class="section-ref">7.5 Certificate Transparency (CT) Monitoring</h3>
+<p>Certificate Transparency (RFC 6962) บังคับให้ CA ทุกรายต้องส่ง Certificate ที่ออกทั้งหมดไปยัง Public Log:</p>
+
+<p><strong>การตรวจสอบ CT:</strong></p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># ตรวจสอบ SCT (Signed Certificate Timestamp) ใน Certificate ด้วย openssl
+openssl s_client -connect example.com:443 -servername example.com </dev/null 2>/dev/null \
+  | openssl x509 -text -noout | grep -A 10 "Signed Certificate Timestamp"
+
+# ตรวจสอบ Certificate ใน CT Log
+curl -s "https://crt.sh/?q=example.com&output=json" | jq .</pre>
+
+<h3 id="section7-6" class="section-ref">7.6 IPsec/IKEv2 Best Practices</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>การตั้งค่า</th><th>ค่าแนะนำ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>IKE Encryption</strong></td><td>AES-256-GCM</td></tr>
+    <tr><td><strong>IKE Integrity</strong></td><td>SHA-256</td></tr>
+    <tr><td><strong>IKE DH Group</strong></td><td>Group 14 (2048-bit) หรือ Group 19 (256-bit ECP)</td></tr>
+    <tr><td><strong>IPsec Encryption</strong></td><td>AES-256-GCM</td></tr>
+    <tr><td><strong>IPsec PFS</strong></td><td>DH Group 14 หรือ 19</td></tr>
+    <tr><td><strong>Lifetime</strong></td><td>IKE SA: 24 ชม., IPsec SA: 1 ชม. (หรือ 2.5 GB)</td></tr>
+    <tr><td><strong>DPD</strong></td><td>Dead Peer Detection — ทุก 10 วินาที</td></tr>
+    <tr><td><strong>NAT-T</strong></td><td>เปิด (UDP 4500)</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section7-7" class="section-ref">7.7 SSH Hardening Checklist</h3>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># SSH Hardening — /etc/ssh/sshd_config
+Protocol 2
+Port 22                                    # หรือเปลี่ยนพอร์ต
+AddressFamily inet                         # IPv4 only
+
+# Authentication
+PermitRootLogin prohibit-password          # ห้าม Root Login ด้วย Password
+PubkeyAuthentication yes
+PasswordAuthentication no                  # ใช้ Key เท่านั้น
+AuthenticationMethods publickey            # หรือ publickey,keyboard-interactive
+
+# Key Exchange
+KexAlgorithms curve25519-sha256,diffie-hellman-group16-sha512
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
+MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com
+HostKeyAlgorithms ssh-ed25519
+
+# Session
+ClientAliveInterval 300
+ClientAliveCountMax 0
+MaxAuthTries 3
+MaxSessions 10
+
+# Logging
+LogLevel VERBOSE
+SyslogFacility AUTH</pre>
+</section>
+<hr>
+<section id="section8" class="section-ref">
+<h2>8. สรุปท้ายบท (Chapter Summary)</h2>
+
+<h3 id="section8-1" class="section-ref">8.1 สาระสำคัญของบทนี้</h3>
+
+<ol>
+  <li><strong>การรักษาความปลอดภัยในแต่ละ Layer ของ OSI Model</strong> — แต่ละ Layer มีโพรโทคอลความปลอดภัยที่แตกต่างกัน ตั้งแต่ Application Layer (HTTPS, SMTPS) ไปจนถึง Network Layer (IPsec, WireGuard) และ Data Link Layer (MACsec, 802.1X)</li>
+  <li><strong>SSL/TLS</strong> — เป็นโพรโทคอลความปลอดภัยที่ใช้กันแพร่หลายที่สุด ปัจจุบันควรใช้ TLS 1.3 ซึ่งลด Handshake จาก 2 RTT เหลือ 1 RTT ตัด Algorithm ที่ไม่ปลอดภัยออกทั้งหมด และบังคับใช้ Perfect Forward Secrecy</li>
+  <li><strong>IPsec</strong> — ให้ความปลอดภัยระดับ Network Layer (Layer 3) ประกอบด้วย AH (Authentication + Integrity), ESP (Authentication + Integrity + Encryption), และ IKE สำหรับจัดการ Key โดยรองรับ 2 โหมดการทำงานคือ Transport Mode (Host-to-Host) และ Tunnel Mode (Site-to-Site VPN)</li>
+  <li><strong>SSH</strong> — เป็นโพรโทคอลสำหรับ Remote Administration และ File Transfer อย่างปลอดภัย มีสถาปัตยกรรม 3 ชั้น (Transport, Authentication, Connection) รองรับการ Public Key Authentication, Port Forwarding, และ Tunneling</li>
+  <li><strong>WireGuard</strong> — โพรโทคอล VPN สมัยใหม่ที่มี Codebase เล็ก (~4,000 บรรทัด) ใช้ Curve25519 และ ChaCha20-Poly1305 เป็นค่าเริ่มต้น เร็วกว่าและตั้งค่าง่ายกว่า IPsec</li>
+  <li><strong>การโจมตี SSL/TLS</strong> — การโจมตีที่สำคัญตลอดประวัติศาสตร์ ได้แก่ BEAST, POODLE, Heartbleed, FREAK, LOGJAM, DROWN, ROBOT, และ ALPACA ทุกการโจมตีสามารถป้องกันได้ด้วยการกำหนดค่าที่ถูกต้อง — ใช้ TLS 1.3, AEAD Cipher, ECDHE Key Exchange, และปิด Algorithm ที่ไม่ปลอดภัย</li>
+  <li><strong>Best Practices</strong> — การตั้งค่าที่แนะนำ: Mozilla Intermediate Profile, HSTS, CAA Record, DANE, Certificate Transparency Monitoring, และ OCSP Stapling</li>
+</ol>
+
+<h3>Mind Map ของบทนี้</h3>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>                        ┌── Layer 2: MACsec, 802.1X
+                        ├── Layer 3: IPsec, WireGuard
+        OSI Security ───├── Layer 4: TLS, DTLS
+                        ├── Layer 5-6: SSH, TLS
+                        └── Layer 7: HTTPS, SMTPS, FTPS
+
+                        ┌── TLS 1.2: 2-RTT Handshake
+                        ├── TLS 1.3: 1-RTT Handshake (+0-RTT)
+        SSL/TLS ────────├── Cipher Suite: KEX + Auth + Cipher + MAC
+                        ├── DTLS: TLS over UDP (IoT, VoIP)
+                        └── TLS Attacks: BEAST → POODLE → Heartbleed → DROWN → ROBOT
+
+                        ┌── AH: Authentication + Integrity (No Encrypt)
+        IPsec ──────────├── ESP: Authentication + Integrity + Encryption
+                        ├── Transport Mode (Host-to-Host)
+                        ├── Tunnel Mode (Site-to-Site VPN)
+                        └── IKEv2: Key Exchange (4 messages)
+
+                        ┌── 3-Layer Architecture: TRANS → AUTH → CONN
+        SSH ────────────├── Public Key Authentication (Ed25519)
+                        ├── Port Forwarding: Local, Remote, Dynamic
+                        ├── SFTP / SCP / rsync
+                        └── Hardening: No Password, Key Only
+
+                        ┌── HTTPS (TLS) → Web
+        Protocol ───────├── FTPS/SFTP → File Transfer
+        Comparison ─────├── SMTPS/STARTTLS → Email
+                        ├── DoH/DoT → DNS Privacy
+                        └── WireGuard → Modern VPN
+
+                        ┌── BEAST (TLS 1.0 CBC)
+                        ├── CRIME (Compression)
+                        ├── Heartbleed (OpenSSL Bug)
+        TLS Attacks ────├── POODLE (SSL 3.0 CBC)
+                        ├── FREAK (Export RSA)
+                        ├── LOGJAM (Export DH)
+                        ├── DROWN (Cross-Protocol SSLv2)
+                        ├── ROBOT (Bleichenbacher)
+                        └── ALPACA (Protocol Confusion)
+
+                        ┌── TLS 1.3 + AEAD + ECDHE
+        Best ───────────├── HSTS + CAA + DANE
+        Practices ──────├── CT Monitoring + OCSP Stapling
+                        └── Mozilla SSL Configuration Generator</pre>
+</section>
+<hr>
+
+
+<section id="review-questions" class="section-ref">
+<h2><i class="fas fa-question-circle" aria-hidden="true"></i> คำถามทบทวน (Review Questions)</h2>
+<p style="color:var(--text-secondary);margin-bottom:1.5rem;">คลิกปุ่ม <strong>"🔍 ดูเฉลย"</strong> เพื่อเปิดคำตอบ</p>
+
+<div class="quiz-card" data-question="1">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 1</span>
+    <p>จงอธิบายความแตกต่างระหว่าง TLS Handshake ใน TLS 1.2 และ TLS 1.3 — TLS 1.3 ลด RTT ได้อย่างไร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> TLS 1.2 ใช้เวลา 2 RTT ในการทำ Handshake โดยใน RTT แรก Client ส่ง ClientHello → Server ส่ง ServerHello, Certificate, ServerKeyExchange, ServerHelloDone และใน RTT ที่สอง Client ส่ง ClientKeyExchange, ChangeCipherSpec, Finished → Server ส่ง ChangeCipherSpec, Finished ส่วน TLS 1.3 ลดเหลือเพียง 1 RTT โดยการรวม Key Share (ECDHE Public Key) ไว้ใน ClientHello ตั้งแต่แรก ทำให้ Server สามารถตอบกลับพร้อม Key Share และ Certificate ที่เข้ารหัสได้ในครั้งเดียว นอกจากนี้ TLS 1.3 ยังรองรับ 0-RTT (Early Data) สำหรับการ Resume Session ที่ Client สามารถส่งข้อมูล Application ไปพร้อมกับ ClientHello ได้ทันที การปรับปรุงที่สำคัญอื่นๆ ได้แก่ การบังคับใช้ Perfect Forward Secrecy, การลด Cipher Suite จาก 30+ เหลือ 5 ตัวเลือก (AEAD เท่านั้น), การลบ Algorithm ที่ไม่ปลอดภัย (RSA Key Exchange, CBC Mode, RC4, 3DES, SHA-1), และการเข้ารหัส Handshake Messages (EncryptedExtensions) เพื่อปกปิด SNI และ ALPN จากผู้โจมตี</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="2">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 2</span>
+    <p>IPsec ทำงานใน Layer ใดของ OSI Model? จงอธิบายความแตกต่างระหว่าง Transport Mode และ Tunnel Mode พร้อมยกตัวอย่างการใช้งาน</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> IPsec ทำงานใน Network Layer (Layer 3) ของ OSI Model <strong>Transport Mode:</strong> ใช้สำหรับเชื่อมต่อแบบ Host-to-Host โดยตรง — IP Header ดั้งเดิมไม่ได้รับการเข้ารหัส มีเฉพาะ Payload ที่ได้รับการป้องกัน ตัวอย่าง: ผู้ใช้เชื่อมต่อไปยัง Server โดยตรงเพื่อเข้าถึงแอปพลิเคชัน <strong>Tunnel Mode:</strong> ใช้สำหรับ Site-to-Site VPN (Gateway-to-Gateway) — Packet ดั้งเดิมทั้งหมด (รวม IP Header ต้นทาง) ได้รับการเข้ารหัสและใส่ใน IP Header ใหม่ ตัวอย่าง: การเชื่อมต่อระหว่างสำนักงานสาขากับสำนักงานใหญ่ผ่าน VPN Gateway โดย Tunnel Mode มี Overhead มากกว่าแต่ให้ความปลอดภัยที่ครอบคลุมมากกว่า เนื่องจากปกปิดข้อมูลต้นทางและปลายทางที่แท้จริง</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="3">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 3</span>
+    <p>เปรียบเทียบความแตกต่างของ AH และ ESP ใน IPsec — เมื่อใดควรใช้ AH และเมื่อใดควรใช้ ESP?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>AH (Authentication Header — Protocol 51):</strong> ให้บริการ Authentication และ Integrity แต่ไม่มีการเข้ารหัสข้อมูล — ใช้ ICV (Integrity Check Value) เพื่อตรวจสอบว่าข้อมูลไม่ถูกเปลี่ยนแปลง รวมถึงตรวจสอบ IP Header ทั้งหมด (Source/Destination IP) ทำให้ AH ไม่สามารถใช้งานกับ NAT ได้เนื่องจาก NAT ต้องเปลี่ยนแปลง IP Header ปัจจุบันไม่ค่อยได้ใช้งานแล้ว <strong>ESP (Encapsulating Security Payload — Protocol 50):</strong> ให้บริการ Authentication + Integrity + Encryption — เข้ารหัส Payload และ ESP Trailer ส่วน ESP Header และ ESP Auth ใช้สำหรับ Authentication ปัจจุบัน ESP เป็นตัวเลือกที่นิยมใช้มากกว่าเพราะให้ทั้งความลับและความถูกต้องของข้อมูล <strong>ข้อแนะนำ:</strong> ควรใช้ ESP ในทุกกรณี ยกเว้นในกรณีที่ต้องการเฉพาะการตรวจสอบความถูกต้องโดยไม่ต้องการเข้ารหัส (พบได้ยาก) — และในทางปฏิบัติจริง ESP มักถูกใช้แทนที่ AH อย่างสมบูรณ์</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="4">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 4</span>
+    <p>SSH ใช้หลักการใดในการรักษาความปลอดภัย? จงอธิบาย 3 ชั้นสถาปัตยกรรมของ SSH</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> SSH ใช้สถาปัตยกรรมแบบ 3 ชั้น (Three-Layer Architecture) ที่ทำงานซ้อนกัน: (1) <strong>Transport Layer (SSH-TRANS):</strong> ชั้นล่างสุดที่รับผิดชอบการแลกเปลี่ยนคีย์ (Key Exchange) (DH/ECDH), การเข้ารหัส (Encryption), การตรวจสอบความถูกต้อง (Integrity/MAC) และการบีบอัดข้อมูล — ทำหน้าที่สร้าง Secure Channel ระหว่าง Client และ Server โดยใช้ Algorithm เช่น curve25519-sha256 สำหรับ Key Exchange, aes256-ctr สำหรับ Encryption, hmac-sha2-256 สำหรับ MAC (2) <strong>User Authentication Layer (SSH-AUTH):</strong> ชั้นกลางที่รับผิดชอบการตรวจสอบตัวตนผู้ใช้ — รองรับหลายวิธีการ ได้แก่ Password Authentication (ความปลอดภัยต่ำ), Public Key Authentication (แนะนำให้ใช้ — RSA/ECDSA/Ed25519), Keyboard-Interactive (OTP, 2FA), Host-Based Authentication, และ GSSAPI (Kerberos) (3) <strong>Connection Layer (SSH-CONN):</strong> ชั้นบนสุดที่จัดการ Channel ต่างๆ หลังจาก Authentication เสร็จสมบูรณ์ — รวมถึง Session (Shell ปกติ), direct-tcpip (Local Port Forwarding), tcpip-forward (Remote Port Forwarding), x11 (GUI Forwarding), และ subsystem (SFTP, SCP)</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="5">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 5</span>
+    <p>เปรียบเทียบข้อดีข้อเสียของ FTPS และ SFTP — ถ้าคุณต้องออกแบบระบบรับส่งไฟล์สำหรับองค์กร คุณจะเลือกใช้โพรโทคอลใด? เพราะเหตุใด?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>FTPS (FTP over TLS):</strong> ข้อดี — รองรับ Certificate-Based Authentication, ใช้ TLS ซึ่งเป็นมาตรฐานที่รู้จักกันดี ข้อเสีย — ต้องแยก Control และ Data Channel ทำให้มีปัญหากับ Firewall (ต้องเปิดหลายพอร์ต), ไม่เป็นมิตรกับ NAT, การตั้งค่าซับซ้อน <strong>SFTP (SSH File Transfer Protocol):</strong> ข้อดี — ใช้พอร์ตเดียว (TCP 22) ทำให้เป็นมิตรกับ Firewall, รองรับ Public Key Authentication (ปลอดภัยกว่า), มีฟังก์ชันจัดการไฟล์ (Resume, List, Delete, Rename, Permission Management), NAT Friendly ข้อเสีย — Performance อาจช้ากว่า FTPS เล็กน้อยในบางกรณี <strong>คำแนะนำ:</strong> เลือกใช้ <strong>SFTP</strong> เพราะเป็นมิตรกับ Firewall (ใช้พอร์ตเดียว), รองรับ Public Key Authentication (ไม่ต้องจัดการ Certificate เหมือน FTPS), มีฟังก์ชันจัดการไฟล์ที่ครบถ้วนกว่า, และทำงานร่วมกับ NAT ได้ดี — โดยเฉพาะในองค์กรที่มีโครงสร้างเครือข่ายซับซ้อน</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="6">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 6</span>
+    <p>อธิบายการโจมตี Heartbleed (CVE-2014-0160) — หลักการทำงาน, ผลกระทบ, และแนวทางการป้องกัน</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>หลักการทำงาน:</strong> Heartbleed เป็น Buffer Over-read vulnerability ใน OpenSSL เวอร์ชัน 1.0.1 ถึง 1.0.1f ที่เกิดจาก Heartbeat Extension (RFC 6520) — ผู้โจมตีส่ง Heartbeat Request ที่มี Payload Length เกินจริง (เช่น ระบุ Length = 64KB ทั้งที่ Payload จริงคือ "hi" ความยาว 2 bytes) Server จะตอบกลับโดยอ่าน Memory เกินขนาดที่กำหนด ส่งผลให้ข้อมูลใน Memory Server (Private Key, Session Key, Password, Cookie) รั่วไหลออกมา <strong>ผลกระทบ:</strong> เซิร์ฟเวอร์กว่า 500,000 เครื่องได้รับผลกระทบ (17% ของ HTTPS Servers ในปี 2014) — Private Key ของเว็บไซต์สำคัญรั่วไหล <strong>การป้องกัน:</strong> (1) อัปเกรด OpenSSL เป็น 1.0.1g หรือสูงกว่า, (2) Revoke Certificate ที่เคยอยู่บนเซิร์ฟเวอร์ที่ได้รับผลกระทบ, (3) เปลี่ยน Session Key และ Password ทั้งหมด, (4) ใช้ Hardware Security Module (HSM) สำหรับเก็บ Private Key</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="7">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 7</span>
+    <p>จงอธิบายความแตกต่างระหว่างการโจมตี POODLE และ DROWN — เป้าหมายและวิธีการโจมตีต่างกันอย่างไร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>POODLE (Padding Oracle On Downgraded Legacy Encryption — CVE-2014-3566):</strong> เป็น Padding Oracle Attack ที่โจมตี SSL 3.0 CBC Mode โดยผู้โจมตี (MITM) บล็อก TLS 1.2 Handshake เพื่อบังคับให้ Client Fallback ไปใช้ SSL 3.0 ซึ่งไม่มี padding verification ที่ถูกต้อง ทำให้ผู้โจมตีสามารถเดา Plaintext ทีละ byte ได้ การป้องกัน: ปิด SSL 3.0 และใช้ TLS_FALLBACK_SCSV <strong>DROWN (Decrypting RSA with Obsolete and Weakened eNcryption — CVE-2016-0800):</strong> เป็น Cross-Protocol Attack ที่ใช้ SSLv2 ที่เปิดอยู่บน Service อื่น (เช่น SMTP, POP3, IMAP) ที่ใช้ Certificate เดียวกันกับ HTTPS Server เพื่อถอดรหัส TLS Connection — ผู้โจมตีใช้ Weakness ของ SSLv2 (Export-Grade Cipher) เพื่อถอดรหัส Pre-Master Secret ของ TLS Connection การป้องกัน: ปิด SSLv2 ทั้งหมด, ใช้ Certificate ที่แตกต่างกันสำหรับ Service ต่างๆ (Key Separation) <strong>ความแตกต่าง:</strong> POODLE โจมตี Protocol Version (SSL 3.0) โดยตรงผ่าน MITM Downgrade ในขณะที่ DROWN โจมตีข้าม Protocol (SSLv2 → TLS) โดยอาศัย Certificate ร่วมกัน</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="8">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 8</span>
+    <p>WireGuard แตกต่างจาก IPsec อย่างไรบ้าง? จุดเด่นของ WireGuard ที่ทำให้ได้รับความนิยมเพิ่มขึ้นคืออะไร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>ความแตกต่างหลัก:</strong> (1) Codebase — IPsec (strongSwan) มีมากกว่า 100,000 บรรทัด ส่วน WireGuard มีเพียง ~4,000 บรรทัด ทำให้ง่ายต่อการตรวจสอบและ Audit (2) Cipher — IPsec กำหนด Cipher เองได้ (อาจเลือกไม่ปลอดภัย) ส่วน WireGuard บังคับใช้ ChaCha20-Poly1305 ซึ่งปลอดภัยและผ่านการตรวจสอบแล้ว (3) Key Exchange — IPsec ใช้ IKEv2 (โปรซับซ้อน) ส่วน WireGuard ใช้ Noise Protocol Framework กับ Curve25519 (4) Handshake — IPsec ใช้ 4-6 messages ส่วน WireGuard ใช้ 1-RTT (Noise IK) (5) Kernel Integration — WireGuard ถูก Built-in ใน Linux Kernel 5.6+ <strong>จุดเด่นของ WireGuard:</strong> (1) ตั้งค่าง่าย — แค่ Public Key + Endpoint เท่านั้น, (2) Built-in Roaming — ไม่ต้อง Re-handshake เมื่อเปลี่ยน Network, (3) Performance สูง — Encryption ล้ำสมัย (ChaCha20-Poly1305), (4) Cryptography ที่ปลอดภัย — ใช้เฉพาะ Algorithm ที่ปลอดภัยที่สุด, (5) No Attack Surface — Codebase เล็กมากลดความเสี่ยง, (6) Cross-Platform — Windows, macOS, Linux, iOS, Android</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="9">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 9</span>
+    <p>จงอธิบายกลไกของ HSTS, CAA, และ DANE — ทั้ง 3 อย่างนี้ช่วยเพิ่มความปลอดภัยให้กับ HTTPS ได้อย่างไร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>HSTS (HTTP Strict Transport Security — RFC 6797):</strong> สั่งให้ Browser จำว่า Domain นี้ต้องใช้ HTTPS เท่านั้นตลอดระยะเวลาที่กำหนด (max-age) — ป้องกัน SSL Stripping Attack (เช่น SSLstrip) และ Downgrade Attack โดย Browser จะไม่ยอมเชื่อมต่อผ่าน HTTP เลย <strong>CAA (DNS Certification Authority Authorization — RFC 6844):</strong> กำหนด DNS Resource Record เพื่อระบุว่า CA ใดบ้างที่ได้รับอนุญาตให้ออก Certificate สำหรับ Domain — ป้องกัน Certificate Mis-issuance เช่น กรณีที่ CA ปลอมหรือถูกบุกรุกออก Certificate โดยไม่ได้รับอนุญาต, กรณี Comodo และ DigiNotar ที่ถูกบุกรุก <strong>DANE (DNS-Based Authentication of Named Entities — RFC 6698):</strong> ใช้ DNSSEC เพื่อระบุ Certificate ที่ถูกต้องสำหรับ Service โดยตรง — ไม่ต้องพึ่ง CA Third-Party (ลดความเสี่ยงจาก CA ที่ไม่น่าเชื่อถือ), ใช้ TLSA Record ใน DNS ที่ Sign ด้วย DNSSEC เพื่อบอกว่า Certificate ใดถูกต้องสำหรับ Service นั้นๆ <strong>สรุป:</strong> HSTS ป้องกัน Downgrade Attack, CAA ป้องกัน Mis-issuance, DANE ลดการพึ่งพา CA — ทั้งสามอย่างเสริมกันเพื่อเพิ่มความปลอดภัยให้กับ HTTPS</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="10">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 10</span>
+    <p>ถ้าเป็นผู้ดูแลระบบที่ต้องกำหนดค่า TLS สำหรับเว็บเซิร์ฟเวอร์ จงเลือก Cipher Suite และการตั้งค่าที่ปลอดภัย (ตาม Mozilla Intermediate Profile) พร้อมอธิบายเหตุผล</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">🔍 ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> การตั้งค่า TLS ตาม Mozilla Intermediate Profile (แนะนำสำหรับทั่วไป): <strong>Protocol:</strong> TLSv1.2 TLSv1.3 — TLS 1.2 รองรับ Client เก่า, TLS 1.3 ให้ความปลอดภัยสูงสุด <strong>Cipher Suites (เลือกเฉพาะ AEAD + ECDHE):</strong> ECDHE-ECDSA-AES128-GCM-SHA256, ECDHE-RSA-AES128-GCM-SHA256, ECDHE-ECDSA-AES256-GCM-SHA384, ECDHE-RSA-AES256-GCM-SHA384, ECDHE-ECDSA-CHACHA20-POLY1305, ECDHE-RSA-CHACHA20-POLY1305, DHE-RSA-AES128-GCM-SHA256, DHE-RSA-AES256-GCM-SHA384 <strong>เหตุผล:</strong> (1) ใช้ ECDHE/DHE เพื่อให้มี Perfect Forward Secrecy (PFS) — ถ้า Private Key ถูกขโมย Session Key ในอดีตยังปลอดภัย, (2) ใช้เฉพาะ AEAD (GCM, ChaCha20-Poly1305) ซึ่งให้ทั้ง Encryption และ Authentication ในขั้นตอนเดียว — ป้องกัน BEAST, Lucky13, Padding Oracle Attacks, (3) ChaCha20-Poly1305 เหมาะสำหรับ Mobile Device ที่ไม่มี AES Hardware Acceleration, (4) ไม่รวม Cipher ที่ไม่ปลอดภัย: RC4, 3DES, CBC Mode, RSA Key Exchange <strong>การตั้งค่าเพิ่มเติม:</strong> HSTS (max-age=63072000), OCSP Stapling, DH Parameter (≥ 2048-bit), Security Headers (X-Content-Type-Options, X-Frame-Options)</p>
+  </div>
+</div>
+</section>
+
+<hr>
+<section id="references" class="section-ref">
+<h2><i class="fas fa-book" aria-hidden="true"></i> เอกสารอ้างอิง (References)</h2>
+
+<ol>
+  <li>IETF RFC 8446. (2018). <em>The Transport Layer Security (TLS) Protocol Version 1.3</em>. https://datatracker.ietf.org/doc/rfc8446/</li>
+  <li>IETF RFC 4301. (2005). <em>Security Architecture for the Internet Protocol</em>. https://datatracker.ietf.org/doc/rfc4301/</li>
+  <li>IETF RFC 7296. (2014). <em>Internet Key Exchange Protocol Version 2 (IKEv2)</em>. https://datatracker.ietf.org/doc/rfc7296/</li>
+  <li>IETF RFC 4251. (2006). <em>The Secure Shell (SSH) Protocol Architecture</em>. https://datatracker.ietf.org/doc/rfc4251/</li>
+  <li>IETF RFC 4253. (2006). <em>The Secure Shell (SSH) Transport Layer Protocol</em>. https://datatracker.ietf.org/doc/rfc4253/</li>
+  <li>IETF RFC 5246. (2008). <em>The Transport Layer Security (TLS) Protocol Version 1.2</em>. https://datatracker.ietf.org/doc/rfc5246/</li>
+  <li>IETF RFC 6797. (2012). <em>HTTP Strict Transport Security (HSTS)</em>. https://datatracker.ietf.org/doc/rfc6797/</li>
+  <li>IETF RFC 6962. (2013). <em>Certificate Transparency</em>. https://datatracker.ietf.org/doc/rfc6962/</li>
+  <li>IETF RFC 6844. (2013). <em>DNS Certification Authority Authorization (CAA) Resource Record</em>. https://datatracker.ietf.org/doc/rfc6844/</li>
+  <li>IETF RFC 6698. (2012). <em>The DNS-Based Authentication of Named Entities (DANE) Transport Layer Security (TLS) Protocol</em>. https://datatracker.ietf.org/doc/rfc6698/</li>
+  <li>IETF RFC 7858. (2016). <em>Specification for DNS over Transport Layer Security (TLS)</em>. https://datatracker.ietf.org/doc/rfc7858/</li>
+  <li>IETF RFC 8484. (2018). <em>DNS Queries over HTTPS (DoH)</em>. https://datatracker.ietf.org/doc/rfc8484/</li>
+  <li>IETF RFC 9000. (2021). <em>QUIC: A UDP-Based Multiplexed and Secure Transport</em>. https://datatracker.ietf.org/doc/rfc9000/</li>
+  <li>IETF RFC 9001. (2021). <em>Using TLS to Secure QUIC</em>. https://datatracker.ietf.org/doc/rfc9001/</li>
+  <li>IETF RFC 9147. (2021). <em>The Datagram Transport Layer Security (DTLS) Protocol Version 1.3</em>. https://datatracker.ietf.org/doc/rfc9147/</li>
+  <li>Donenfeld, J. A. (2017). <em>WireGuard: Next Generation Kernel Network Tunnel</em>. Proceedings of the 2017 Network and Distributed System Security Symposium (NDSS). https://www.wireguard.com/papers/wireguard.pdf</li>
+  <li>Stallings, W. (2022). <em>Cryptography and Network Security: Principles and Practice</em> (8th ed.). Pearson.</li>
+  <li>Rescorla, E. (2018). <em>SSL and TLS: Designing and Building Secure Systems</em>. Addison-Wesley.</li>
+  <li>Mozilla. (2024). <em>Mozilla SSL Configuration Generator</em>. https://ssl-config.mozilla.org/</li>
+  <li>OWASP. (2024). <em>Transport Layer Protection Cheat Sheet</em>. https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html</li>
+  <li>AlFardan, N. J., &amp; Paterson, K. G. (2013). <em>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</em>. IEEE Symposium on Security and Privacy.</li>
+  <li>Bock, H., et al. (2019). <em>The ALPACA Attack: Breaking TLS through Application-Layer Protocol Confusion</em>. USENIX Security Symposium.</li>
+  <li>Aviram, N., et al. (2016). <em>DROWN: Breaking TLS using SSLv2</em>. USENIX Security Symposium.</li>
+  <li>US-CERT. (2014). <em>Heartbleed Vulnerability (CVE-2014-0160)</em>. https://www.cisa.gov/news-events/alerts/2014/04/08/openssl-heartbleed-vulnerability</li>
+  <li>CISA. (2023). <em>Transport Layer Security (TLS) Best Practices</em>. https://www.cisa.gov/resources-tools/resources/transport-layer-security-tls-best-practices</li>
+</ol>
+</section>
+</main>
+</div> <!-- .layout -->
+
+<footer class="site-footer" role="contentinfo">
+  <hr class="footer-divider">
+  <p><i class="fas fa-shield-halved" aria-hidden="true"></i> รายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+  <p style="margin-top:0.5rem;font-size:0.8rem;">เอกสารนี้เป็นส่วนหนึ่งของรายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+</footer>
+
+<button id="back-to-top" aria-label="กลับไปด้านบน" title="กลับไปด้านบน">
+  <i class="fas fa-arrow-up" aria-hidden="true"></i>
+</button>
+
+<script>
+// ====== Loading Screen ======
+window.addEventListener('load', function() {
+  document.getElementById('loading-screen').classList.add('hidden');
+});
+
+// ====== Progress Bar ======
+window.addEventListener('scroll', function() {
+  var scrollTop = window.scrollY;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progress-bar').style.width = progress + '%';
+  document.getElementById('progress-bar').setAttribute('aria-valuenow', Math.round(progress));
+});
+
+// ====== Dark Mode ======
+(function() {
+  var toggle = document.getElementById('dark-mode-toggle');
+  var icon = toggle.querySelector('i');
+  var theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    icon.className = 'fas fa-sun';
+  }
+  toggle.addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    if (current === 'dark') {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      icon.className = 'fas fa-moon';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      icon.className = 'fas fa-sun';
+    }
+  });
+})();
+
+// ====== Sidebar Toggle (mobile) ======
+(function() {
+  var btn = document.getElementById('sidebar-toggle');
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  if (!btn || !sidebar || !overlay) return;
+  btn.addEventListener('click', function() {
+    var open = sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+    btn.setAttribute('aria-expanded', open);
+  });
+  overlay.addEventListener('click', function() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+    btn.setAttribute('aria-expanded', 'false');
+  });
+})();
+
+// ====== Scroll Spy ======
+(function() {
+  var tocLinks = document.querySelectorAll('.toc-link');
+  var sections = [];
+  tocLinks.forEach(function(link) {
+    var targetId = link.getAttribute('data-target');
+    var el = document.getElementById(targetId);
+    if (el) sections.push({ id: targetId, el: el, link: link });
+  });
+  
+  function updateActive() {
+    var scrollPos = window.scrollY + 120;
+    var currentId = null;
+    for (var i = 0; i < sections.length; i++) {
+      var s = sections[i];
+      if (s.el.offsetTop <= scrollPos) {
+        currentId = s.id;
+      }
+    }
+    tocLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (currentId) {
+      var activeLink = document.querySelector('.toc-link[data-target="' + currentId + '"]');
+      if (activeLink) {
+        activeLink.classList.add('active');
+        var sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+          var itemTop = activeLink.offsetTop - sidebar.offsetTop;
+          var itemBottom = itemTop + activeLink.offsetHeight;
+          var sidebarScrollTop = sidebar.scrollTop;
+          var sidebarHeight = sidebar.clientHeight;
+          if (itemTop < sidebarScrollTop) {
+            activeLink.scrollIntoView({ block: 'nearest' });
+          } else if (itemBottom > sidebarScrollTop + sidebarHeight) {
+            activeLink.scrollIntoView({ block: 'nearest' });
+          }
+        }
+      }
+    }
+  }
+  
+  window.addEventListener('scroll', updateActive);
+  window.addEventListener('load', updateActive);
+  setTimeout(updateActive, 500);
+})();
+
+// ====== Smooth scroll for TOC links ======
+document.querySelectorAll('.toc-link').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    var targetId = this.getAttribute('data-target');
+    var target = document.getElementById(targetId);
+    if (target) {
+      var offset = 80;
+      var targetPos = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: targetPos, behavior: 'smooth' });
+    }
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebar-overlay');
+    if (sidebar && sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      document.getElementById('sidebar-toggle').setAttribute('aria-expanded', 'false');
+    }
+  });
+});
+
+// ====== Back to Top ======
+(function() {
+  var btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 400) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  });
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+
+// ====== Copy Code ======
+function copyCode(btn) {
+  var pre = btn.closest('pre');
+  var code = pre.textContent;
+  code = code.replace(/คัดลอก/g, '').trim();
+  navigator.clipboard.writeText(code).then(function() {
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i> คัดลอก';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(function() {
+    var textarea = document.createElement('textarea');
+    textarea.value = code;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i> คัดลอก';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ====== Expandable Sections ======
+function toggleExpand(header) {
+  var expandable = header.closest('.expandable');
+  if (!expandable) return;
+  var isExpanded = expandable.classList.toggle('expanded');
+  header.setAttribute('aria-expanded', isExpanded);
+}
+
+// ====== Reveal Answer (Quiz) ======
+function revealAnswer(btn) {
+  var card = btn.closest('.quiz-card');
+  if (!card) return;
+  card.classList.add('revealed');
+  var answer = card.querySelector('.quiz-answer');
+  if (answer) {
+    answer.classList.remove('hidden');
+  }
+  btn.textContent = '✅ ดูเฉลยแล้ว';
+  btn.disabled = true;
+}
+
+// ====== Search ======
+(function() {
+  var searchToggle = document.getElementById('search-toggle-btn');
+  var searchOverlay = document.getElementById('search-overlay');
+  var searchInput = document.getElementById('search-input');
+  var searchResults = document.getElementById('search-results');
+  var searchCount = document.getElementById('search-count');
+  var searchClose = document.getElementById('search-close-btn');
+  
+  var mainContent = document.getElementById('main-content');
+  var searchData = [];
+  
+  function buildSearchIndex() {
+    searchData = [];
+    var sections = mainContent.querySelectorAll('h2, h3, h4, p, li, td, th, pre');
+    sections.forEach(function(el) {
+      var text = el.textContent.trim();
+      if (text.length > 10) {
+        var heading = '';
+        var parent = el.parentElement;
+        while (parent && parent !== mainContent) {
+          var prevHeading = parent.querySelector('h2, h3, h4');
+          if (prevHeading) { heading = prevHeading.textContent.trim(); break; }
+          parent = parent.parentElement;
+        }
+        searchData.push({
+          text: text,
+          heading: heading || 'เนื้อหา',
+          element: el
+        });
+      }
+    });
+  }
+  
+  buildSearchIndex();
+  
+  function performSearch(query) {
+    if (!query || query.length < 2) {
+      searchResults.innerHTML = '<div class="no-results">กรุณาป้อนคำค้นหาอย่างน้อย 2 ตัวอักษร</div>';
+      searchCount.textContent = '';
+      return;
+    }
+    
+    var q = query.toLowerCase();
+    var results = [];
+    var totalMatches = 0;
+    
+    searchData.forEach(function(item) {
+      var lower = item.text.toLowerCase();
+      var idx = lower.indexOf(q);
+      if (idx !== -1) {
+        var count = 0;
+        var pos = -1;
+        while ((pos = lower.indexOf(q, pos + 1)) !== -1) count++;
+        totalMatches += count;
+        
+        var snippet = item.text.substring(Math.max(0, idx - 60), idx + q.length + 120);
+        if (idx > 60) snippet = '...' + snippet;
+        if (idx + q.length + 120 < item.text.length) snippet = snippet + '...';
+        
+        snippet = snippet.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        snippet = snippet.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'), '<mark>$1</mark>');
+        
+        results.push({
+          heading: item.heading,
+          snippet: snippet,
+          element: item.element,
+          count: count
+        });
+      }
+    });
+    
+    if (results.length > 50) results = results.slice(0, 50);
+    
+    searchCount.textContent = totalMatches + ' ผลลัพธ์';
+    
+    if (results.length === 0) {
+      searchResults.innerHTML = '<div class="no-results">ไม่พบผลลัพธ์สำหรับ "' + query + '"</div>';
+      return;
+    }
+    
+    var html = '';
+    results.forEach(function(r) {
+      html += '<div class="search-result-item" data-heading="' + r.heading.replace(/"/g, '&quot;') + '">';
+      html += '<div class="result-heading">' + r.heading + '</div>';
+      html += '<div class="result-snippet">' + r.snippet + '</div>';
+      html += '</div>';
+    });
+    searchResults.innerHTML = html;
+    
+    searchResults.querySelectorAll('.search-result-item').forEach(function(item, i) {
+      item.addEventListener('click', function() {
+        var el = results[i].element;
+        if (el) {
+          var offset = 100;
+          var pos = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: pos, behavior: 'smooth' });
+          searchOverlay.classList.remove('active');
+          el.style.transition = 'background 0.5s ease';
+          el.style.background = 'var(--bg-tertiary)';
+          setTimeout(function() {
+            el.style.background = '';
+          }, 1500);
+        }
+      });
+    });
+  }
+  
+  var searchTimeout = null;
+  searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      performSearch(searchInput.value);
+    }, 300);
+  });
+  
+  searchToggle.addEventListener('click', function() {
+    searchOverlay.classList.add('active');
+    setTimeout(function() { searchInput.focus(); }, 100);
+  });
+  
+  searchClose.addEventListener('click', function() {
+    searchOverlay.classList.remove('active');
+    searchInput.value = '';
+    searchResults.innerHTML = '';
+    searchCount.textContent = '';
+  });
+  
+  searchOverlay.addEventListener('click', function(e) {
+    if (e.target === searchOverlay) {
+      searchOverlay.classList.remove('active');
+      searchInput.value = '';
+      searchResults.innerHTML = '';
+      searchCount.textContent = '';
+    }
+  });
+  
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      searchToggle.click();
+    }
+    if (e.key === 'Escape') {
+      searchOverlay.classList.remove('active');
+    }
+  });
+})();
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.expandable.expanded').forEach(function(el) {
+    var header = el.querySelector('.expandable-header');
+    if (header) header.setAttribute('aria-expanded', 'true');
+  });
+});
+</script>
+</body>
+</html>
