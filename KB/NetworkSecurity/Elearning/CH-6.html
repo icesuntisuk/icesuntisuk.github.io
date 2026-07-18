@@ -1,0 +1,1512 @@
+﻿<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-6: เทคโนโลยี Firewall และการแบ่งส่วนเครือข่าย | วิชา Network Security</title>
+<meta name="description" content="บทที่ 6 วิชา Network Security — เทคโนโลยี Firewall และการแบ่งส่วนเครือข่าย: Packet Filter, Stateful Inspection, Proxy Firewall, NGFW, สถาปัตยกรรม DMZ, Network Segmentation, VLAN, Micro-segmentation, Security Policy, ACL, Firewall Rule Management">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "CH-6: เทคโนโลยี Firewall และการแบ่งส่วนเครือข่าย",
+  "description": "บทที่ 6 ของวิชา Network Security — ครอบคลุม วิวัฒนาการ Firewall (Packet Filter, Stateful Inspection, Proxy, NGFW), สถาปัตยกรรม Firewall (Bastion Host, Screened Subnet, DMZ), Network Segmentation (VLAN, DMZ Design, Micro-segmentation), Security Policy และ ACL, การบริหารจัดการ Firewall Rules, และกรณีศึกษา",
+  "educationalLevel": "Undergraduate",
+  "educationalRole": "Instructor",
+  "teaches": ["Packet Filter Firewall","Stateful Inspection Firewall","Proxy Firewall","Next-Generation Firewall (NGFW)","Application Awareness (App-ID)","User Identification (User-ID)","SSL/TLS Decryption","Bastion Host","Screened Subnet (DMZ)","Multi-Tier Architecture","Network Segmentation","VLAN","Micro-segmentation","Security Policy","Access Control List (ACL)","Firewall Rule Management","Change Management"],
+  "inLanguage": "th"
+}
+</script>
+<style>
+:root{--primary:#1a3a5c;--primary-dark:#0f2440;--primary-light:#2c5a8c;--accent:#2563eb;--accent-hover:#1d4ed8;--bg:#ffffff;--bg-secondary:#f8fafc;--bg-tertiary:#f1f5f9;--text:#1e293b;--text-secondary:#475569;--text-muted:#94a3b8;--border:#e2e8f0;--border-light:#f1f5f9;--code-bg:#0f172a;--code-text:#e2e8f0;--table-stripe:#f8fafc;--sidebar-bg:#f8fafc;--sidebar-border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);--radius:8px;--radius-sm:4px;--radius-lg:12px;--font-thai:'Sarabun','IBM Plex Sans Thai','Kanit','Noto Sans Thai',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--font-mono:'JetBrains Mono','Fira Code','Cascadia Code','Source Code Pro','Menlo','Consolas',monospace;--transition:0.2s ease;--header-height:64px;--toc-width:280px}
+[data-theme="dark"]{--primary:#60a5fa;--primary-dark:#1e3a5f;--accent:#3b82f6;--accent-hover:#60a5fa;--bg:#0f172a;--bg-secondary:#1e293b;--bg-tertiary:#334155;--text:#f1f5f9;--text-secondary:#cbd5e1;--text-muted:#64748b;--border:#334155;--code-bg:#020617;--table-stripe:#1e293b;--sidebar-bg:#1e293b;--sidebar-border:#334155;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+h1,h2,h3,h4,h5,h6{line-height:1.3;font-weight:700;color:var(--text);margin-top:1.5em;margin-bottom:.75em}
+h1{font-size:2.25rem;margin-top:0}
+h2{font-size:1.75rem;border-bottom:2px solid var(--border);padding-bottom:.4em}
+h3{font-size:1.35rem}
+h4{font-size:1.1rem}
+p{margin-bottom:1em}
+hr{border:none;border-top:2px solid var(--border);margin:2.5em 0}
+strong,b{font-weight:700}
+ul,ol{margin-bottom:1em;padding-left:1.5em}
+li{margin-bottom:.35em}
+#loading-screen{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s ease}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-secondary);font-size:1rem}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#818cf8);z-index:9998;width:0%;transition:width .15s ease-out}
+.top-nav{position:fixed;top:3px;left:0;right:0;z-index:9997;height:var(--header-height);background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-nav .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem;color:var(--text);white-space:nowrap}
+.top-nav .logo i{color:var(--accent);font-size:1.3rem}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-actions button,.nav-actions .search-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:1rem}
+.nav-actions button:hover,.nav-actions .search-toggle:hover{background:var(--bg-tertiary);color:var(--text);border-color:var(--text-muted)}
+#sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.search-overlay{position:fixed;inset:0;z-index:9996;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(4px)}
+.search-overlay.active{display:flex}
+.search-panel{background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:90%;max-width:640px;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
+.search-input-wrap{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);gap:.5rem}
+.search-input-wrap i{color:var(--text-muted)}
+.search-input-wrap input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:1rem;font-family:var(--font-thai)}
+.search-input-wrap input::placeholder{color:var(--text-muted)}
+.search-count{font-size:.8rem;color:var(--text-muted);white-space:nowrap;padding:.25rem .5rem;background:var(--bg-tertiary);border-radius:var(--radius-sm)}
+.search-results{overflow-y:auto;padding:.5rem;flex:1;max-height:50vh}
+.search-results .no-results{padding:2rem;text-align:center;color:var(--text-muted)}
+.search-result-item{padding:.75rem;border-radius:var(--radius);cursor:pointer;transition:background .2s ease;border-bottom:1px solid var(--border-light)}
+.search-result-item:hover{background:var(--bg-tertiary)}
+.search-result-item .result-heading{font-weight:600;font-size:.9rem;color:var(--accent);margin-bottom:.2rem}
+.search-result-item .result-snippet{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.search-result-item .result-snippet mark,.highlight{background:#fef08a;color:#1e293b;padding:0 2px;border-radius:2px}
+[data-theme="dark"] .search-result-item .result-snippet mark,[data-theme="dark"] .highlight{background:#854d0e;color:#fef9c3}
+.layout{display:flex;padding-top:calc(var(--header-height) + 3px);min-height:100vh}
+.sidebar{width:var(--toc-width);flex-shrink:0;position:sticky;top:calc(var(--header-height) + 3px);height:calc(100vh - var(--header-height) - 3px);overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:1.25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--text-muted) transparent;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:4px}
+.sidebar-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{margin-bottom:.15rem}
+.toc-link{display:block;padding:.4rem .6rem;border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-secondary);transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;line-height:1.4}
+.toc-link:hover{background:var(--bg-tertiary);color:var(--text);text-decoration:none}
+.toc-link.active{color:var(--accent);background:rgba(37,99,235,.08);border-left-color:var(--accent);font-weight:600}
+.toc-link.sub{padding-left:1.4rem;font-size:.8rem}
+.toc-link.sub2{padding-left:2.2rem;font-size:.78rem}
+.main-content{flex:1;min-width:0;padding:2rem 2.5rem;max-width:calc(100vw - var(--toc-width))}
+.main-content>section{margin-bottom:2.5rem}
+.section-ref{scroll-margin-top:calc(var(--header-height) + 16px)}
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:2.5rem 2rem;border-radius:var(--radius-lg);margin-bottom:2.5rem}
+.hero h1{color:#fff;font-size:2rem;margin-bottom:.5rem}
+.hero .subtitle{color:rgba(255,255,255,.85);font-size:1.1rem;margin-bottom:1.25rem}
+.hero .meta-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.hero .meta-tag{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);padding:.25rem .75rem;border-radius:20px;font-size:.8rem}
+.learning-objectives{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+.learning-objectives h3{margin-top:0;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.learning-objectives ol{margin:.75rem 0 0;padding-left:1.25rem}
+.learning-objectives li{margin-bottom:.5rem;color:var(--text-secondary);font-size:.95rem}
+.table-wrap{overflow-x:auto;margin:1.25em 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}
+thead{background:var(--bg-tertiary)}
+th,td{padding:.6rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}
+th{font-weight:700;color:var(--text)}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+tbody tr:hover{background:var(--bg-tertiary)}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:1.25em 0;position:relative}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+code{background:var(--bg-tertiary);color:var(--accent);padding:.15em .4em;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.85em}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:0}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.expandable{margin:1.25em 0}
+.expandable-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease;user-select:none;font-weight:600;font-size:.95rem}
+.expandable-header:hover{background:var(--border)}
+.expandable-header i{transition:transform .2s ease;font-size:.85rem;color:var(--text-muted)}
+.expandable.expanded .expandable-header i{transform:rotate(180deg)}
+.expandable-content{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;border:1px solid transparent}
+.expandable.expanded .expandable-content{max-height:50000px;padding:1rem;border-color:var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.quiz-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:all .2s ease}
+.quiz-card.revealed{border-left:4px solid #22c55e}
+.quiz-question{display:flex;gap:.75rem;align-items:flex-start}
+.q-number{background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.quiz-question p{margin:0;font-weight:500;color:var(--text);font-size:.95rem}
+.quiz-card .reveal-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-family:var(--font-thai);transition:all .2s ease}
+.quiz-card .reveal-btn:hover{background:var(--accent-hover)}
+.quiz-card.revealed .reveal-btn{background:var(--text-muted)}
+.quiz-answer{margin-top:.75rem;padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border);font-size:.9rem}
+.hidden{display:none}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:9995;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-lg);transition:all .2s ease;opacity:0;visibility:hidden;transform:translateY(10px)}
+#back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+#back-to-top:hover{background:var(--accent-hover);transform:translateY(-2px)}
+.site-footer{margin-top:3rem;padding:1.5rem 2rem;background:var(--bg-secondary);border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+.glossary-term{color:var(--accent);border-bottom:1px dashed var(--accent);cursor:help;position:relative;font-weight:500}
+.glossary-term .tooltip{visibility:hidden;opacity:0;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--primary-dark);color:#fff;padding:.5rem .85rem;border-radius:var(--radius-sm);font-size:.78rem;line-height:1.5;font-weight:400;white-space:normal;z-index:9999;box-shadow:var(--shadow-lg);transition:opacity .2s ease,visibility .2s ease;pointer-events:none;max-width:300px;text-align:center}
+.glossary-term .tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--primary-dark)}
+.glossary-term:hover .tooltip{visibility:visible;opacity:1}
+@media print{.top-nav,.sidebar,#back-to-top,#progress-bar,.copy-btn,.search-overlay,#sidebar-toggle,.nav-actions{display:none!important}.layout{display:block;padding-top:0}.main-content{max-width:100%;padding:0}.hero{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hero h1,.hero .subtitle{color:#fff!important}table{font-size:.8rem}pre{white-space:pre-wrap;word-break:break-all}.expandable-content{max-height:none!important;padding:1rem!important;border-color:var(--border)!important}.expandable-header i{display:none}.table-wrap{overflow:visible}.quiz-answer.hidden{display:block!important}.quiz-card .reveal-btn{display:none}body{font-size:11pt}section{page-break-inside:avoid}h2,h3{page-break-after:avoid}}
+@media(max-width:1024px){:root{--toc-width:240px}.main-content{padding:1.5rem}}
+@media(max-width:768px){:root{--toc-width:0px}#sidebar-toggle{display:flex}.sidebar{position:fixed;left:-280px;top:calc(var(--header-height) + 3px);width:280px;height:calc(100vh - var(--header-height) - 3px);transition:left .3s ease;z-index:9990;box-shadow:var(--shadow-lg)}.sidebar.open{left:0}.sidebar-overlay{position:fixed;inset:0;z-index:9989;background:rgba(0,0,0,.4);display:none}.sidebar-overlay.active{display:block}.main-content{max-width:100%;padding:1rem}.hero{padding:1.5rem 1rem}.hero h1{font-size:1.5rem}h2{font-size:1.4rem}h3{font-size:1.15rem}.top-nav{padding:0 .75rem}.top-nav .logo{font-size:.85rem}table{font-size:.8rem}th,td{padding:.4rem .6rem}.quiz-card{padding:1rem}}
+@media(max-width:480px){.nav-actions button,.nav-actions .search-toggle{width:36px;height:36px}#back-to-top{bottom:1rem;right:1rem;width:40px;height:40px}.search-panel{width:95%}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<div id="loading-screen" role="status" aria-label="กำลังโหลดเนื้อหา">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">กำลังโหลดเนื้อหา...</div>
+</div>
+<div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้าการอ่าน"></div>
+<header class="top-nav" role="banner">
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button id="sidebar-toggle" aria-label="เปิดเมนูสารบัญ" aria-expanded="false"><i class="fas fa-bars"></i></button>
+    <div class="logo"><i class="fas fa-shield-halved" aria-hidden="true"></i><span>Network Security — บทที่ 6</span></div>
+  </div>
+  <div class="nav-actions">
+    <button class="search-toggle" id="search-toggle-btn" aria-label="ค้นหา" title="ค้นหา (Ctrl+K / ⌘K)"><i class="fas fa-search" aria-hidden="true"></i></button>
+    <button id="dark-mode-toggle" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง"><i class="fas fa-moon" aria-hidden="true"></i></button>
+  </div>
+</header>
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="ค้นหาเนื้อหา">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="ค้นหาในเนื้อหาทั้งหมด..." aria-label="ป้อนคำค้นหา" autocomplete="off">
+      <span class="search-count" id="search-count"></span>
+      <button id="search-close-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;" aria-label="ปิดค้นหา"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="layout">
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-title"><i class="fas fa-list" aria-hidden="true"></i> สารบัญ</div>
+  <ul class="toc-list" id="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#hero-section" data-target="hero-section">บทนำ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#learning-objectives" data-target="learning-objectives">วัตถุประสงค์การเรียนรู้</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section1" data-target="section1">1. ภาพรวมของ Firewall</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-1" data-target="section1-1">1.1 Firewall คืออะไร</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-2" data-target="section1-2">1.2 บทบาทของ Firewall ในองค์กร</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-3" data-target="section1-3">1.3 ตารางเปรียบเทียบ Firewall แต่ละรุ่น</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section2" data-target="section2">2. Packet Filter Firewall</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-1" data-target="section2-1">2.1 หลักการทำงาน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-2" data-target="section2-2">2.2 Stateless Nature</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-3" data-target="section2-3">2.3 ACL ตัวอย่าง</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-4" data-target="section2-4">2.4 ข้อดีและข้อจำกัด</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section3" data-target="section3">3. Stateful Inspection Firewall</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-1" data-target="section3-1">3.1 หลักการทำงาน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-2" data-target="section3-2">3.2 การติดตาม State</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-3" data-target="section3-3">3.3 เปรียบเทียบ Packet Filter vs Stateful</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-4" data-target="section3-4">3.4 State Table และ Firewall Policy</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section4" data-target="section4">4. Proxy Firewall</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-1" data-target="section4-1">4.1 หลักการทำงาน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-2" data-target="section4-2">4.2 ประเภทของ Proxy</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-3" data-target="section4-3">4.3 Application-Level Filtering</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-4" data-target="section4-4">4.4 ข้อดีและข้อจำกัด</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section5" data-target="section5">5. Next-Generation Firewall (NGFW)</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-1" data-target="section5-1">5.1 ความเป็นมา</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-2" data-target="section5-2">5.2 Application Awareness (App-ID)</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-3" data-target="section5-3">5.3 User Identification (User-ID)</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-4" data-target="section5-4">5.4 SSL/TLS Decryption</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-5" data-target="section5-5">5.5 NGFW Architecture</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section6" data-target="section6">6. สถาปัตยกรรม Firewall</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-1" data-target="section6-1">6.1 Bastion Host</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-2" data-target="section6-2">6.2 Screened Subnet (DMZ)</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-3" data-target="section6-3">6.3 แนวทางการออกแบบ DMZ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-4" data-target="section6-4">6.4 Multi-Tier Architecture</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section7" data-target="section7">7. Network Segmentation</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-1" data-target="section7-1">7.1 แนวคิด Network Segmentation</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-2" data-target="section7-2">7.2 VLAN</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-3" data-target="section7-3">7.3 DMZ Design ระดับองค์กร</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-4" data-target="section7-4">7.4 Micro-segmentation</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section8" data-target="section8">8. Security Policy และ ACL</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-1" data-target="section8-1">8.1 หลักการสร้าง Security Policy</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-2" data-target="section8-2">8.2 องค์ประกอบของ ACL Rule</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-3" data-target="section8-3">8.3 Best Practices สำหรับ ACL</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-4" data-target="section8-4">8.4 Rule Lifecycle Management</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-5" data-target="section8-5">8.5 การตรวจสอบคุณภาพ Rule Set</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section9" data-target="section9">9. การบริหารจัดการ Firewall Rules</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-1" data-target="section9-1">9.1 Change Management Process</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-2" data-target="section9-2">9.2 Rule Audit และ Cleanup</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-3" data-target="section9-3">9.3 Firewall Rule Base Optimization</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section10" data-target="section10">10. กรณีศึกษา</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-1" data-target="section10-1">10.1 ความต้องการองค์กร</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-2" data-target="section10-2">10.2 การออกแบบเครือข่าย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-3" data-target="section10-3">10.3 Security Policy ตัวอย่าง</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-4" data-target="section10-4">10.4 บทเรียนจากกรณีศึกษา</a></li>
+    <li class="toc-item"><a class="toc-link" href="#summary" data-target="summary">สรุปท้ายบท</a></li>
+    <li class="toc-item"><a class="toc-link" href="#review-questions" data-target="review-questions">คำถามทบทวน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#references" data-target="references">เอกสารอ้างอิง</a></li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content" role="main">
+
+<section id="hero-section" class="hero section-ref">
+  <h1><i class="fas fa-shield-halved" aria-hidden="true"></i> CH-6: เทคโนโลยี Firewall และการแบ่งส่วนเครือข่าย</h1>
+  <p class="subtitle">Firewall Technology and Network Segmentation — Packet Filter, Stateful Inspection, Proxy Firewall, NGFW, DMZ Architecture, Network Segmentation, VLAN, Micro-segmentation, Security Policy, ACL, Firewall Rule Management</p>
+  <div class="meta-tags">
+    <span class="meta-tag"><i class="fas fa-graduation-cap" aria-hidden="true"></i> วิชา Network Security</span>
+    <span class="meta-tag"><i class="fas fa-calendar" aria-hidden="true"></i> ภาคเรียนที่ 1/2569</span>
+    <span class="meta-tag"><i class="fas fa-book-open" aria-hidden="true"></i> บทที่ 6</span>
+  </div>
+</section>
+<div class="learning-objectives section-ref" id="learning-objectives">
+  <h3><i class="fas fa-bullseye" aria-hidden="true"></i> วัตถุประสงค์การเรียนรู้ (Learning Objectives)</h3>
+  <p>เมื่อจบบทนี้แล้ว ผู้เรียนสามารถ:</p>
+  <ol>
+    <li>อธิบายวิวัฒนาการของ <span class="glossary-term">Firewall<span class="tooltip">ระบบรักษาความปลอดภัยเครือข่ายที่ทำหน้าที่กรอง Traffic ระหว่างเครือข่ายที่มีระดับความน่าเชื่อถือต่างกัน โดยตัดสินใจอนุญาต (Allow) หรือปฏิเสธ (Deny) ตามกฎที่กำหนดไว้ล่วงหน้า</span></span> ตั้งแต่ Packet Filter จนถึง NGFW และเปรียบเทียบข้อดีข้อเสียของแต่ละรุ่นได้</li>
+    <li>ออกแบบสถาปัตยกรรม Firewall (<span class="glossary-term">Bastion Host<span class="tooltip">ระบบคอมพิวเตอร์ที่ตั้งอยู่บนเครือข่ายสาธารณะ (หรือ DMZ) ได้รับการ Hardened เป็นพิเศษ ทำหน้าที่เป็นจุดเข้าสู่เครือข่ายภายในอย่างปลอดภัย</span></span>, Screened Subnet, <span class="glossary-term">DMZ<span class="tooltip">Demilitarized Zone — เครือข่ายย่อยที่ทำหน้าที่เป็น Buffer Zone ระหว่างเครือข่ายภายใน (Internal) และเครือข่ายภายนอก (External) โดยทั่วไปมี Firewall สองตัวคุ้มครอง</span></span>) สำหรับองค์กรได้</li>
+    <li>สร้าง <span class="glossary-term">Security Policy<span class="tooltip">ชุดกฎที่กำหนดว่า Traffic ใดได้รับอนุญาตและ Traffic ใดได้รับการปฏิเสธ โดยยึดหลัก Default Deny และ Least Privilege</span></span> และ <span class="glossary-term">ACL<span class="tooltip">Access Control List — ชุดกฎที่กำหนดการอนุญาตหรือปฏิเสธ Traffic ตาม Protocol, Source, Destination, Port โดย Firewall ประมวลผลจากบนลงล่าง (First Match)</span></span> ตามหลัก Least Privilege และ Default Deny ได้</li>
+    <li>อธิบายแนวคิด <span class="glossary-term">Network Segmentation<span class="tooltip">การแบ่งเครือข่ายออกเป็นส่วนย่อย (Segment) เพื่อจำกัดพื้นผิวการโจมตี ควบคุม Traffic และปฏิบัติตาม Compliance</span></span>, VLAN, DMZ, และ <span class="glossary-term">Micro-segmentation<span class="tooltip">การแบ่งเครือข่ายในระดับ Workload (VM, Container, Pod) โดยใช้นโยบาย granular ที่กำหนด Traffic ระหว่าง Workload แต่ละตัว</span></span> ได้</li>
+    <li>อธิบายความสามารถของ <span class="glossary-term">NGFW<span class="tooltip">Next-Generation Firewall — Firewall รุ่นที่ 4 ที่มี Application Awareness, User Identification, Integrated IPS, และ SSL/TLS Decryption นอกเหนือจาก Stateful Inspection</span></span> ในด้าน Application Awareness, User Identification, และ SSL Decryption ได้</li>
+    <li>จัดการ Firewall Rules ตามแนวทาง Best Practices — Rule Ordering, Rule Audit, Change Management</li>
+    <li>วิเคราะห์และออกแบบเครือข่ายองค์กรที่มี DMZ จากกรณีศึกษาได้</li>
+  </ol>
+</div>
+<hr>
+<section id="section1" class="section-ref">
+<h2>1. ภาพรวมของ <span class="glossary-term">Firewall<span class="tooltip">ระบบรักษาความปลอดภัยเครือข่ายที่ทำหน้าที่กรอง Traffic ระหว่างเครือข่ายที่มีระดับความน่าเชื่อถือต่างกัน โดยตัดสินใจอนุญาต (Allow) หรือปฏิเสธ (Deny) ตามกฎที่กำหนดไว้ล่วงหน้า</span></span></h2>
+
+<h3 id="section1-1" class="section-ref">1.1 Firewall คืออะไร</h3>
+<p><span class="glossary-term">Firewall<span class="tooltip">ระบบรักษาความปลอดภัยเครือข่ายที่ทำหน้าที่กรอง Traffic ระหว่างเครือข่ายที่มีระดับความน่าเชื่อถือต่างกัน โดยตัดสินใจอนุญาต (Allow) หรือปฏิเสธ (Deny) ตามกฎที่กำหนดไว้ล่วงหน้า</span></span> คือระบบรักษาความปลอดภัยเครือข่ายที่ทำหน้าที่กรอง Traffic ระหว่างเครือข่ายที่มีระดับความน่าเชื่อถือต่างกัน โดยทั่วไปคือระหว่าง Internal Network (น่าเชื่อถือ) และ External Network (ไม่น่าเชื่อถือ เช่น อินเทอร์เน็ต) หลักการพื้นฐานของ Firewall คือ <strong>การตัดสินใจอนุญาต (Allow) หรือปฏิเสธ (Deny)</strong> การรับส่งข้อมูลตามกฎที่กำหนดไว้ล่วงหน้า</p>
+<p>Firewall เป็นแนวป้องกันแรก (First Line of Defense) ในสถาปัตยกรรมความปลอดภัยเครือข่าย ทำหน้าที่เป็นจุดตรวจสอบเพียงจุดเดียว (Choke Point) ที่ Traffic ทั้งหมดต้องผ่านก่อนเข้าสู่ระบบภายใน</p>
+
+<h3 id="section1-2" class="section-ref">1.2 บทบาทของ Firewall ในองค์กร</h3>
+<ul>
+  <li><strong>Network Perimeter Security:</strong> ปกป้องขอบเขตเครือข่ายองค์กรจากภัยคุกคามภายนอก</li>
+  <li><strong>Access Control:</strong> ควบคุมการเข้าถึงทรัพยากรเครือข่ายตามนโยบายความปลอดภัย</li>
+  <li><strong>Traffic Filtering:</strong> กรอง Traffic ที่ไม่พึงประสงค์หรือเป็นอันตราย</li>
+  <li><strong>Logging และ Audit:</strong> บันทึกประวัติการรับส่งข้อมูลเพื่อการตรวจสอบ</li>
+  <li><strong>NAT (Network Address Translation):</strong> ซ่อนโครงสร้างเครือข่ายภายใน</li>
+  <li><strong>VPN Termination:</strong> เป็นจุดสิ้นสุดของการเชื่อมต่อ VPN สำหรับ Remote Access</li>
+</ul>
+
+<h3 id="section1-3" class="section-ref">1.3 ตารางเปรียบเทียบ Firewall แต่ละรุ่น</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณลักษณะ</th><th><span class="glossary-term">Packet Filter<span class="tooltip">Firewall รุ่นที่ 1 ที่ทำงานใน Layer 3-4 โดยตรวจสอบเฉพาะ Header ของแต่ละ Packet อย่างอิสระ ไม่พิจารณาความสัมพันธ์ระหว่าง Packet — เรียกว่า Stateless Firewall</span></span></th><th><span class="glossary-term">Stateful Inspection<span class="tooltip">Firewall รุ่นที่ 2 ที่ติดตามสถานะ (State) ของทุก Connection ผ่าน State Table ทำให้รู้ว่า Packet เป็นส่วนหนึ่งของการเชื่อมต่อที่ถูกต้องหรือไม่</span></span></th><th><span class="glossary-term">Proxy Firewall<span class="tooltip">Firewall รุ่นที่ 3 ที่ทำงานใน Layer 7 (Application Layer) โดยทำหน้าที่เป็นตัวกลาง (Intermediary) ระหว่าง Client และ Server ตรวจสอบ Content ใน Application Layer ได้</span></span></th><th><span class="glossary-term">NGFW<span class="tooltip">Next-Generation Firewall — Firewall รุ่นที่ 4 ที่มี Application Awareness, User Identification, Integrated IPS, และ SSL/TLS Decryption นอกเหนือจาก Stateful Inspection</span></span></th></tr></thead>
+  <tbody>
+    <tr><td>ตรวจสอบ Layer 3-4</td><td>&#10004;</td><td>&#10004;</td><td>&#10004;</td><td>&#10004;</td></tr>
+    <tr><td>ตรวจสอบ State ของ Connection</td><td>&#10008;</td><td>&#10004;</td><td>&#10004;</td><td>&#10004;</td></tr>
+    <tr><td>ตรวจสอบ Payload Layer 7</td><td>&#10008;</td><td>&#10008;</td><td>&#10004;</td><td>&#10004;</td></tr>
+    <tr><td>Application Awareness</td><td>&#10008;</td><td>&#10008;</td><td>จำกัด</td><td>&#10004;</td></tr>
+    <tr><td>User Identification</td><td>&#10008;</td><td>&#10008;</td><td>&#10008;</td><td>&#10004;</td></tr>
+    <tr><td>SSL Decryption</td><td>&#10008;</td><td>&#10008;</td><td>จำกัด</td><td>&#10004;</td></tr>
+    <tr><td>IPS บูรณาการ</td><td>&#10008;</td><td>&#10008;</td><td>&#10008;</td><td>&#10004;</td></tr>
+    <tr><td>ประสิทธิภาพ</td><td>สูงมาก</td><td>สูง</td><td>ต่ำ</td><td>ปานกลาง-สูง</td></tr>
+    <tr><td>ความปลอดภัย</td><td>ต่ำ</td><td>ปานกลาง</td><td>สูง</td><td>สูงมาก</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+<section id="section2" class="section-ref">
+<h2>2. <span class="glossary-term">Packet Filter Firewall<span class="tooltip">Firewall รุ่นที่ 1 ที่ทำงานใน Layer 3-4 โดยตรวจสอบเฉพาะ Header ของแต่ละ Packet อย่างอิสระ ไม่พิจารณาความสัมพันธ์ระหว่าง Packet — เรียกว่า Stateless Firewall</span></span> — รุ่นที่ 1</h2>
+
+<h3 id="section2-1" class="section-ref">2.1 หลักการทำงาน</h3>
+<p><span class="glossary-term">Packet Filter Firewall<span class="tooltip">Firewall รุ่นที่ 1 ที่ทำงานใน Layer 3-4 โดยตรวจสอบเฉพาะ Header ของแต่ละ Packet อย่างอิสระ ไม่พิจารณาความสัมพันธ์ระหว่าง Packet — เรียกว่า Stateless Firewall</span></span> ทำงานใน Layer 3 (Network) และ Layer 4 (Transport) ของ OSI Model โดยตรวจสอบเฉพาะ Header ของแต่ละ Packet อย่างอิสระ โดยไม่พิจารณาความสัมพันธ์ระหว่าง Packet</p>
+<p><strong>ข้อมูลที่ใช้ในการตัดสินใจ:</strong></p>
+<ul>
+  <li>Source IP Address</li>
+  <li>Destination IP Address</li>
+  <li>Source Port Number</li>
+  <li>Destination Port Number</li>
+  <li>Protocol Type (TCP, UDP, ICMP)</li>
+  <li>TCP Flags (SYN, ACK, FIN, RST)</li>
+  <li>ICMP Type และ Code</li>
+</ul>
+
+<h3 id="section2-2" class="section-ref">2.2 Stateless Nature</h3>
+<p>Packet Filter ถูกเรียกว่า <strong>Stateless Firewall</strong> เพราะตรวจสอบแต่ละ Packet โดยไม่จดจำสถานะของการเชื่อมต่อ ตัวอย่างข้อจำกัด:</p>
+<ul>
+  <li>ถ้า Rule อนุญาต Traffic ขาออก (Outbound) บน Port 80/TCP, Firewall จะอนุญาต Packet ขากลับ (Inbound) ที่มี Port 80 เช่นกัน — แม้ Packet นั้นจะไม่ได้เป็นส่วนหนึ่งของการเชื่อมต่อที่ถูกต้องก็ตาม</li>
+  <li>ผู้โจมตีสามารถส่ง Packet ที่มี Flag ACK เพื่อหลอก Firewall ให้คิดว่าเป็นส่วนหนึ่งของการเชื่อมต่อที่ถูกตั้งขึ้นแล้ว (ACK Scanning)</li>
+</ul>
+
+<h3 id="section2-3" class="section-ref">2.3 <span class="glossary-term">ACL<span class="tooltip">Access Control List — ชุดกฎที่กำหนดการอนุญาตหรือปฏิเสธ Traffic ตาม Protocol, Source, Destination, Port โดย Firewall ประมวลผลจากบนลงล่าง (First Match)</span></span> ตัวอย่าง</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>! ตัวอย่าง ACL บน Router (Cisco IOS)
+!
+! deny any traffic from malicious network
+access-list 101 deny ip 203.0.113.0 0.0.0.255 any
+!
+! allow established connections (ACK flag set)
+access-list 101 permit tcp any any established
+!
+! allow specific services
+access-list 101 permit tcp any any eq 80
+access-list 101 permit tcp any any eq 443
+access-list 101 permit udp any any eq 53
+!
+! deny everything else
+access-list 101 deny ip any any</pre>
+
+<h3 id="section2-4" class="section-ref">2.4 ข้อดีและข้อจำกัด</h3>
+<p><strong>ข้อดี:</strong></p>
+<ul>
+  <li>ประสิทธิภาพสูง — ทำงานเร็วเนื่องจากประมวลผลน้อย</li>
+  <li>ไม่ต้องการทรัพยากรเครื่องมาก</li>
+  <li>เหมาะสำหรับเครือข่ายความเร็วสูง</li>
+  <li>ต้นทุนต่ำ (ทำงานบน Router ทั่วไปได้)</li>
+</ul>
+<p><strong>ข้อจำกัด:</strong></p>
+<ul>
+  <li>ไม่ตรวจสอบ Payload — ไม่สามารถป้องกันการโจมตีใน Layer 7</li>
+  <li>ไม่เข้าใจ State ของ Connection — เสี่ยงต่อ Packet Spoofing</li>
+  <li>ไม่ป้องกัน Fragment Attacks</li>
+  <li>บริหารจัดการยากเมื่อมีกฎจำนวนมาก</li>
+  <li>ไม่สามารถกรองตาม Application หรือ User</li>
+</ul>
+</section>
+<hr>
+<section id="section3" class="section-ref">
+<h2>3. <span class="glossary-term">Stateful Inspection Firewall<span class="tooltip">Firewall รุ่นที่ 2 ที่ติดตามสถานะ (State) ของทุก Connection ผ่าน State Table ทำให้รู้ว่า Packet เป็นส่วนหนึ่งของการเชื่อมต่อที่ถูกต้องหรือไม่ พัฒนาโดย Check Point Software ในปี 1994</span></span> — รุ่นที่ 2</h2>
+
+<h3 id="section3-1" class="section-ref">3.1 หลักการทำงาน</h3>
+<p>Stateful Inspection Firewall (หรือ Stateful Firewall) ได้รับการพัฒนาขึ้นโดย Check Point Software ในปี 1994 ด้วยเทคโนโลยีที่เรียกว่า Stateful Multi-Layer Inspection (SMLI) Firewall ชนิดนี้จะติดตาม <strong>สถานะ (State)</strong> ของทุก Connection ที่ผ่านเข้า-ออก โดยสร้าง <strong>State Table</strong> เพื่อเก็บข้อมูล</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>State Table Entry Example:
++-----------------------------------------------------------+
+| Source IP: 10.0.0.10:45012                                  |
+| Dest IP:   93.184.216.34:443                                |
+| Protocol:  TCP                                              |
+| State:     ESTABLISHED                                      |
+| Sequence:  0x8A3F2B1C                                       |
+| Window:    65535                                            |
+| Timeout:   3600s                                            |
++-----------------------------------------------------------+</pre>
+
+<h3 id="section3-2" class="section-ref">3.2 การติดตาม State ของ Connection</h3>
+<p>Stateful Firewall จดจำสถานะของ Connection TCP โดยอ้างอิงตาม State Diagram:</p>
+<ol>
+  <li><strong>SYN_SENT</strong> — เครื่องภายในส่ง SYN ออกไป</li>
+  <li><strong>SYN_RECEIVED</strong> — ได้รับ SYN-ACK กลับมา</li>
+  <li><strong>ESTABLISHED</strong> — Three-Way Handshake เสร็จสมบูรณ์</li>
+  <li><strong>FIN_WAIT</strong> — ฝ่ายใดฝ่ายหนึ่งเริ่มปิด Connection</li>
+  <li><strong>CLOSED</strong> — Connection ปิดแล้ว</li>
+</ol>
+<p>สำหรับ UDP (ซึ่งเป็น Stateless Protocol) Firewall จะจำลอง State โดยใช้ Source/Destination IP:Port และ Timeout</p>
+
+<h3 id="section3-3" class="section-ref">3.3 เปรียบเทียบ Packet Filter vs Stateful Firewall</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th><span class="glossary-term">Packet Filter<span class="tooltip">Firewall รุ่นที่ 1 ที่ทำงานใน Layer 3-4 โดยตรวจสอบเฉพาะ Header ของแต่ละ Packet อย่างอิสระ ไม่พิจารณาความสัมพันธ์ระหว่าง Packet — เรียกว่า Stateless Firewall</span></span></th><th><span class="glossary-term">Stateful Inspection<span class="tooltip">Firewall รุ่นที่ 2 ที่ติดตามสถานะ (State) ของทุก Connection ผ่าน State Table ทำให้รู้ว่า Packet เป็นส่วนหนึ่งของการเชื่อมต่อที่ถูกต้องหรือไม่</span></span></th></tr></thead>
+  <tbody>
+    <tr><td>ตรวจสอบแต่ละ Packet อิสระ</td><td>&#10004;</td><td>&#10008;</td></tr>
+    <tr><td>ติดตาม State Connection</td><td>&#10008;</td><td>&#10004;</td></tr>
+    <tr><td>อนุญาต Return Traffic อัตโนมัติ</td><td>&#10008; (ต้องเขียน Rule)</td><td>&#10004;</td></tr>
+    <tr><td>ป้องกัน IP Spoofing</td><td>ต่ำ</td><td>ปานกลาง</td></tr>
+    <tr><td>หน่วยความจำที่ใช้</td><td>น้อย</td><td>ปานกลาง</td></tr>
+    <tr><td>ประสิทธิภาพ</td><td>สูงมาก</td><td>สูง</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section3-4" class="section-ref">3.4 State Table และ Firewall Policy</h3>
+<p>Stateful Firewall ใช้ <strong>State Table</strong> ร่วมกับ <strong>Access Control Rules</strong>:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Algorithm:
+1. Packet arrives at firewall
+2. Lookup State Table:
+   - If matching entry found -> Allow (bypass rule check)
+   - If NOT found -> Forward to Rule Engine
+3. Rule Engine checks ACL:
+   - If Allow -> Create State Table entry, Forward packet
+   - If Deny -> Drop packet, Log (optional)</pre>
+<p>ข้อดีคือทำให้กฎกระชับขึ้น — ไม่ต้องเขียนกฎสำหรับ Return Traffic แยกต่างหาก</p>
+</section>
+<hr>
+<section id="section4" class="section-ref">
+<h2>4. <span class="glossary-term">Proxy Firewall<span class="tooltip">Firewall รุ่นที่ 3 ที่ทำงานใน Layer 7 (Application Layer) โดยทำหน้าที่เป็นตัวกลาง (Intermediary) ระหว่าง Client และ Server ตรวจสอบ Content ใน Application Layer ได้ เรียกอีกชื่อว่า Application Gateway</span></span> — รุ่นที่ 3</h2>
+
+<h3 id="section4-1" class="section-ref">4.1 หลักการทำงาน</h3>
+<p>Proxy Firewall (หรือ Application Gateway) ทำงานใน Layer 7 (Application Layer) โดยทำหน้าที่เป็น <strong>ตัวกลาง (Intermediary)</strong> ระหว่าง Client และ Server Client ไม่ได้เชื่อมต่อไปยัง Server โดยตรง แต่เชื่อมต่อไปยัง Proxy ก่อน แล้ว Proxy จึงเชื่อมต่อไปยัง Server แทน</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Client -> [Proxy Firewall] -> Server
+     (1) Client เชื่อมต่อ Proxy
+     (2) Proxy ตรวจสอบ Content
+     (3) Proxy สร้าง Connection ใหม่ไปยัง Server
+     (4) Server เห็น IP ของ Proxy ไม่ใช่ IP ของ Client</pre>
+
+<h3 id="section4-2" class="section-ref">4.2 ประเภทของ Proxy</h3>
+<p><strong>Forward Proxy:</strong></p>
+<ul>
+  <li>ใช้สำหรับ Client ภายในที่ต้องการเข้าถึงอินเทอร์เน็ต</li>
+  <li>ซ่อน IP จริงของ Client</li>
+  <li>สามารถ Cache Content เพื่อเพิ่มประสิทธิภาพ</li>
+  <li>ใช้กรอง Content ตามนโยบายองค์กร</li>
+</ul>
+<p><strong>Reverse Proxy:</strong></p>
+<ul>
+  <li>วางอยู่หน้า Web Server เพื่อรับ Traffic จากภายนอก</li>
+  <li>ปกปิดโครงสร้าง Server ภายใน</li>
+  <li>ทำ Load Balancing และ SSL Termination</li>
+  <li>ป้องกันการโจมตีระดับ Application (WAF)</li>
+</ul>
+<p><strong>Transparent Proxy:</strong></p>
+<ul>
+  <li>Client ไม่ต้องตั้งค่า Proxy — Traffic ถูก Intercept โดยอัตโนมัติ</li>
+  <li>ใช้ในองค์กรเพื่อบังคับใช้นโยบายโดยผู้ใช้ไม่ทราบ</li>
+  <li>ต้องใช้เทคนิค Interception (WCCP, Policy-Based Routing)</li>
+</ul>
+
+<h3 id="section4-3" class="section-ref">4.3 Application-Level Filtering</h3>
+<p>Proxy Firewall สามารถตรวจสอบ Content ใน Layer 7 ได้ เช่น:</p>
+<ul>
+  <li><strong>HTTP Proxy:</strong> ตรวจสอบ Method (GET, POST), URL, Headers, Body</li>
+  <li><strong>SMTP Proxy:</strong> ตรวจสอบ Email Content, Attachment, Header</li>
+  <li><strong>FTP Proxy:</strong> ตรวจสอบ Command (GET, PUT), Filename</li>
+  <li><strong>DNS Proxy:</strong> ตรวจสอบ Query Type, Domain Name</li>
+</ul>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ตัวอย่าง HTTP Proxy Inspection:
+--------------------------------------
+Request:  GET /../../../etc/passwd HTTP/1.1
+Result:   ❌ BLOCKED — Path Traversal detected
+
+Request:  GET /wp-admin/admin-ajax.php HTTP/1.1
+Result:   ❌ BLOCKED — Admin interface exposed
+
+Request:  GET /products/category?id=1 UNION SELECT * FROM users HTTP/1.1
+Result:   ❌ BLOCKED — SQL Injection detected</pre>
+
+<h3 id="section4-4" class="section-ref">4.4 ข้อดีและข้อจำกัด</h3>
+<p><strong>ข้อดี:</strong></p>
+<ul>
+  <li>ความปลอดภัยสูง — Server ไม่เห็น Client โดยตรง</li>
+  <li>ตรวจสอบ Content ใน Application Layer ได้</li>
+  <li>สามารถทำ Content Filtering และ Caching</li>
+  <li>ป้องกัน Protocol-Based Attacks</li>
+  <li>Audit Trail ระดับ Application</li>
+</ul>
+<p><strong>ข้อจำกัด:</strong></p>
+<ul>
+  <li>ประสิทธิภาพต่ำ — ต้องสร้าง Connection ใหม่ทุกครั้ง</li>
+  <li>ต้องมี Proxy แยกสำหรับแต่ละ Protocol</li>
+  <li>ไม่รองรับ Protocol ที่ไม่ใช่ TCP/IP (หรือรองรับได้จำกัด)</li>
+  <li>การ Scale ทำได้ยาก</li>
+  <li>การตั้งค่าซับซ้อน</li>
+</ul>
+</section>
+<hr>
+<section id="section5" class="section-ref">
+<h2>5. Next-Generation Firewall (<span class="glossary-term">NGFW<span class="tooltip">Next-Generation Firewall — Firewall รุ่นที่ 4 ที่มี Application Awareness, User Identification, Integrated IPS, และ SSL/TLS Decryption นอกเหนือจาก Stateful Inspection ได้รับการนิยามโดย Gartner ในปี 2009</span></span>) — รุ่นที่ 4</h2>
+
+<h3 id="section5-1" class="section-ref">5.1 ความเป็นมา</h3>
+<p>NGFW ได้รับการนิยามโดย Gartner ในปี 2009 โดยมีคุณสมบัติหลักนอกเหนือจาก Stateful Inspection:</p>
+<ol>
+  <li><strong>Application Awareness</strong> — ระบุและควบคุม Application ได้แม้ใช้ Port ผิด</li>
+  <li><strong>User Identification</strong> — กำหนด Policy ตามตัวตนผู้ใช้ ไม่ใช่แค่ IP</li>
+  <li><strong>Integrated IPS</strong> — มีระบบป้องกันการบุกรุกในตัว</li>
+  <li><strong>SSL/TLS Decryption</strong> — ตรวจสอบ Traffic ที่เข้ารหัส</li>
+</ol>
+<p>ผู้ผลิตรายใหญ่: Palo Alto Networks, Fortinet, Cisco (Firepower), Check Point, Juniper (SRX)</p>
+
+<h3 id="section5-2" class="section-ref">5.2 Application Awareness (App-ID)</h3>
+<p>หัวใจของ NGFW คือความสามารถในการระบุ Application ที่ทำงานบนเครือข่าย โดยไม่พึ่งพา Port Number เพียงอย่างเดียว:</p>
+<p><strong>เทคนิคการระบุ Application:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Multi-Layer Identification:
++-- Layer 3-4: IP Address, Port, Protocol
++-- Layer 7:
+|   +-- SSL/TLS Certificate: Common Name (CN), Subject Alternative Name (SAN)
+|   +-- HTTP Header: User-Agent, Host, Referer
+|   +-- Protocol Decoding: SIP, RTP, FTP Control
+|   +-- Behavior Analysis: Packet Inter-arrival Time, Packet Size
++-- Cloud Lookup (App-ID Cloud)</pre>
+
+<p><strong>ตัวอย่างการระบุ Application:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Traffic</th><th>Port</th><th>Device Type</th><th>Application Identified</th></tr></thead>
+  <tbody>
+    <tr><td>HTTPS 443</td><td>443</td><td>NGFW</td><td>facebook-base (Facebook)</td></tr>
+    <tr><td>HTTPS 443</td><td>443</td><td>NGFW</td><td>youtube-base (YouTube)</td></tr>
+    <tr><td>HTTPS 443</td><td>443</td><td>NGFW</td><td>office365-base (Outlook)</td></tr>
+    <tr><td>TCP 443</td><td>443</td><td>Packet Filter</td><td>HTTPS (ไม่รู้ว่าเป็น App อะไร)</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section5-3" class="section-ref">5.3 User Identification (User-ID)</h3>
+<p>NGFW สามารถกำหนด Policy ตามตัวตนผู้ใช้ แทนการใช้ IP Address ซึ่งเปลี่ยนไปมาได้:</p>
+<p><strong>กลไกการระบุตัวตน:</strong></p>
+<ul>
+  <li><strong>Active Directory / LDAP Integration:</strong> ดึงข้อมูลผู้ใช้จาก Domain Controller</li>
+  <li><strong>Captive Portal:</strong> ให้ผู้ใช้ล็อกอินผ่าน Web Portal</li>
+  <li><strong>X-Forwarded-For:</strong> อ่านจาก HTTP Header</li>
+  <li><strong>Terminal Services Agent:</strong> ติดตั้ง Agent บน Server องค์กร</li>
+</ul>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ตัวอย่าง Policy ที่ใช้ User-ID:
+-----------------------------------
+Rule 1: Allow  user=hr_department  app=workday     -> Permit
+Rule 2: Allow  user=engineering    app=github       -> Permit
+Rule 3: Allow  user=any            app=dns          -> Permit
+Rule 4: Deny   user=intern         app=ssh-outbound -> Deny
+Rule 5: Deny   user=any            app=tor         -> Deny</pre>
+
+<h3 id="section5-4" class="section-ref">5.4 SSL/TLS Decryption</h3>
+<p>เนื่องจากการรับส่งผ่าน HTTPS ได้รับการเข้ารหัส (ประมาณ 95% ของ Traffic อินเทอร์เน็ตในปี 2024) NGFW ต้องสามารถถอดรหัสเพื่อตรวจสอบ Content ได้:</p>
+<p><strong>การทำงานของ SSL Forward Proxy (Outbound Inspection):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Client -> NGFW (ถอดรหัส -> ตรวจสอบ -> เข้ารหัสใหม่) -> Internet
+                |
+         ตรวจสอบหา Malware, C2 Communication,
+         Data Exfiltration, Policy Violation</pre>
+
+<p><strong>กระบวนการ:</strong></p>
+<ol>
+  <li>Client ส่ง ClientHello ไปยัง Server</li>
+  <li>NGFW Intercept — สร้าง Connection ไปยัง Server แทน</li>
+  <li>Server ส่ง Certificate ของตนเอง</li>
+  <li>NGFW สร้าง Signed Certificate (ลงนามโดย CA ขององค์กร) ส่งให้ Client</li>
+  <li>Client เชื่อถือ Certificate ของ NGFW (เพราะ CA องค์กรได้รับการ Trusted)</li>
+</ol>
+
+<p><strong>ข้อควรระวัง:</strong></p>
+<ul>
+  <li>ต้องติดตั้ง CA Certificate ขององค์กรบนอุปกรณ์ผู้ใช้ทุกเครื่อง</li>
+  <li>การถอดรหัสต้องเป็นไปตามนโยบายและกฎหมาย (PDPA, พ.ร.บ. ไซเบอร์)</li>
+  <li>ผลต่อประสิทธิภาพ — SSL Decryption ใช้ทรัพยากร CPU สูง</li>
+  <li>บาง Application ใช้ Certificate Pinning — ทำให้ไม่สามารถถอดรหัส (Decrypt) ได้ (iOS Apps, Banking Apps)</li>
+</ul>
+
+<h3 id="section5-5" class="section-ref">5.5 NGFW Architecture</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>                     +--------------------------+
+                     |     Management Plane      |
+                     |  (GUI, CLI, API, Logging) |
+                     +------------+--------------+
+                                  |
++---------------------------------+--------------------------------+
+|                   Control Plane                               |
+|  (Routing, Session Setup, Policy Lookup, User-ID, App-ID)    |
++---------------------------------+--------------------------------+
+|                   Data Plane                                  |
+|  (Packet Forwarding, SSL Decrypt, IPS, NAT, QoS)             |
+|  +----------+ +----------+ +----------+ +----------+          |
+|  | CPU Core | | CPU Core | | CPU Core | | CPU Core |  <- Parallel
+|  +----------+ +----------+ +----------+ +----------+          |
+|  +----------+ +----------+ +----------+ +----------+          |
+|  | ASIC/FPGA for Packet Processing                           |
+|  +----------+                                                 |
++--------------------------------------------------------------+</pre>
+<p>การแยก Control Plane และ Data Plane ช่วยให้ NGFW มีประสิทธิภาพสูง — Control Plane จัดการ Policy Lookup และ Session Setup, Data Plane จัดการ Packet Forwarding ด้วย Hardware Acceleration</p>
+</section>
+<hr>
+<section id="section6" class="section-ref">
+<h2>6. สถาปัตยกรรม Firewall</h2>
+
+<h3 id="section6-1" class="section-ref">6.1 <span class="glossary-term">Bastion Host<span class="tooltip">ระบบคอมพิวเตอร์ที่ตั้งอยู่บนเครือข่ายสาธารณะ (หรือ DMZ) ได้รับการ Hardened เป็นพิเศษ ทำหน้าที่เป็นจุดเข้าสู่เครือข่ายภายในอย่างปลอดภัย ติดตั้งเฉพาะซอฟต์แวร์ที่จำเป็นเท่านั้น</span></span></h3>
+<p>Bastion Host คือระบบคอมพิวเตอร์ที่ตั้งอยู่บนเครือข่ายสาธารณะ (หรือ DMZ) ทำหน้าที่เป็นจุดเข้าสู่เครือข่ายภายในอย่างปลอดภัย โดยได้รับการ Hardened เป็นพิเศษ:</p>
+<p><strong>ลักษณะของ Bastion Host:</strong></p>
+<ul>
+  <li>ระบบปฏิบัติการได้รับการ Hardened — ลบบริการที่ไม่จำเป็นออกทั้งหมด</li>
+  <li>ใช้การพิสูจน์ตัวตนแบบหลายปัจจัย (MFA)</li>
+  <li>มีระบบ Logging และ Monitoring เข้มงวด</li>
+  <li>ติดตั้งเฉพาะซอฟต์แวร์ที่จำเป็นเท่านั้น</li>
+  <li>อัปเดตความปลอดภัยสม่ำเสมอ</li>
+</ul>
+<p><strong>การประยุกต์ใช้:</strong></p>
+<ul>
+  <li>SSH Jump Server (Jump Box) สำหรับผู้ดูแลระบบ</li>
+  <li>VPN Gateway</li>
+  <li>Remote Desktop Gateway</li>
+</ul>
+
+<h3 id="section6-2" class="section-ref">6.2 Screened Subnet (<span class="glossary-term">DMZ<span class="tooltip">Demilitarized Zone — เครือข่ายย่อยที่ทำหน้าที่เป็น Buffer Zone ระหว่างเครือข่ายภายใน (Internal) และเครือข่ายภายนอก (External) โดยทั่วไปมี Firewall สองตัวคุ้มครอง</span></span>)</h3>
+<p>DMZ (Demilitarized Zone) คือเครือข่ายย่อยที่ทำหน้าที่เป็น Buffer Zone ระหว่างเครือข่ายภายใน (Internal) และเครือข่ายภายนอก (External) โดยทั่วไปจะมี Firewall สองตัว:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>                    +------------------------+
+                    |       Internet         |
+                    +------------+-----------+
+                                 |
+                    +------------v-----------+
+                    |   External Firewall     |
+                    |   (Front-end/ACL)       |
+                    +------------+-----------+
+                                 |
+               +-----------------v------------------+
+               |           DMZ Network              |
+               |  +-----+ +-----+ +-----+          |
+               |  | Web | | Mail| | DNS |          |
+               |  +-----+ +-----+ +-----+          |
+               +-----------------+------------------+
+                                 |
+                    +------------v-----------+
+                    |   Internal Firewall     |
+                    |   (Back-end/Policy)     |
+                    +------------+-----------+
+                                 |
+                    +------------v-----------+
+                    |     Internal Network    |
+                    |   (Users, Databases)    |
+                    +------------------------+</pre>
+
+<p><strong>หลักการทำงานของ DMZ:</strong></p>
+<ul>
+  <li>External Firewall: อนุญาต Traffic จากอินเทอร์เน็ตไปยัง DMZ Services (Web, Mail, DNS)</li>
+  <li>Internal Firewall: อนุญาตเฉพาะ Traffic ที่จำเป็นจาก DMZ ไปยัง Internal (เช่น DB Query จาก Web Server)</li>
+  <li>การโจมตีที่เจาะ Web Server สำเร็จจะสามารถเข้าถึงได้เฉพาะ DMZ — ไม่สามารถเข้าถึง Internal Network ได้โดยตรง</li>
+  <li>Internal Firewall เป็นด่านที่สองที่ป้องกันการเข้าถึงเครือข่ายภายใน</li>
+</ul>
+
+<h3 id="section6-3" class="section-ref">6.3 แนวทางการออกแบบ DMZ</h3>
+<p><strong>Best Practices:</strong></p>
+<ol>
+  <li><strong>ใช้หลาย DMZ Zone:</strong> Public DMZ (Web, Mail), Private DMZ (Application Server), Management DMZ</li>
+  <li><strong>Default Deny:</strong> ทุก Traffic ได้รับการปฏิเสธโดยค่าเริ่มต้น — อนุญาตเฉพาะที่จำเป็น</li>
+  <li><strong>Stateful Inspection:</strong> Firewall ทุกตัวควรเป็น Stateful</li>
+  <li><strong>Separation of Services:</strong> แยก Web Server, App Server, Database Server คนละ Zone</li>
+  <li><strong>Outbound-Only DMZ:</strong> DMZ Servers ไม่ควรเริ่ม Connection ไปยัง Internal</li>
+</ol>
+
+<h3 id="section6-4" class="section-ref">6.4 Multi-Tier Architecture</h3>
+<p>สำหรับองค์กรขนาดใหญ่ ใช้สถาปัตยกรรมแบบหลายชั้น:</p>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Internet
+    |
+    v
++-------------+     +-------------+     +-------------+
+|  Web Tier   |---->|  App Tier   |---->|   DB Tier   |
+| (DMZ)       |     | (Private DMZ)|     | (Internal)  |
+| HTTP, HTTPS |     | App Logic   |     | SQL, Oracle |
++-------------+     +-------------+     +-------------+
+    |                     |                     |
+    v                     v                     v
++-----------------------------------------------------+
+|                    Firewall Rules                     |
+| W->Web: 80,443   Web->App: App Port   App->DB: SQL   |
++-----------------------------------------------------+</pre>
+<p><strong>ข้อดี:</strong> หาก Web Server ถูกเจาะ ผู้โจมตีไม่สามารถเข้าถึง Database โดยตรง — ต้องเจาะ App Server ก่อน (Defense in Depth)</p>
+</section>
+<hr>
+<section id="section7" class="section-ref">
+<h2>7. <span class="glossary-term">Network Segmentation<span class="tooltip">การแบ่งเครือข่ายออกเป็นส่วนย่อย (Segment) เพื่อจำกัดพื้นผิวการโจมตี ควบคุม Traffic ระหว่าง Segment ตามนโยบาย และปฏิบัติตาม Compliance</span></span></h2>
+
+<h3 id="section7-1" class="section-ref">7.1 แนวคิด Network Segmentation</h3>
+<p><span class="glossary-term">Network Segmentation<span class="tooltip">การแบ่งเครือข่ายออกเป็นส่วนย่อย (Segment) เพื่อจำกัดพื้นผิวการโจมตี ควบคุม Traffic ระหว่าง Segment ตามนโยบาย และปฏิบัติตาม Compliance</span></span> คือการแบ่งเครือข่ายออกเป็นส่วนย่อย (Segment) เพื่อ:</p>
+<ol>
+  <li><strong>จำกัดพื้นผิวการโจมตี (Attack Surface)</strong> — การบุกรุกที่เกิดขึ้นใน Segment หนึ่ง ไม่แพร่กระจายไปทั้งเครือข่าย</li>
+  <li><strong>ควบคุม Traffic</strong> — กรอง Traffic ระหว่าง Segment ตามนโยบาย</li>
+  <li><strong>ปฏิบัติตาม Compliance</strong> — PCI DSS, HIPAA, PDPA กำหนดให้แยกเครือข่ายของข้อมูลสำคัญ</li>
+  <li><strong>เพิ่มประสิทธิภาพ</strong> — ลด Broadcast Domain, ลด Collision</li>
+</ol>
+
+<h3 id="section7-2" class="section-ref">7.2 VLAN (Virtual LAN)</h3>
+<p>VLAN แบ่งเครือข่าย Layer 2 โดยไม่ต้องเปลี่ยนโครงสร้างทางกายภาพ:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>+-----------------------------------------------------------+
+|                    Switch (Trunk)                          |
+|  +--------+  +--------+  +--------+  +--------+           |
+|  | VLAN 10 |  | VLAN 20 |  | VLAN 30 |  | VLAN 99 |        |
+|  |Employees|  |  Guest   |  | Servers |  |Management|      |
+|  | 10.0.10 |  |10.0.20.0|  |10.0.30.0|  |10.0.99.0|      |
+|  +--------+  +--------+  +--------+  +--------+           |
++-----------------------------------------------------------+
+                        |
+         +--------------v--------------+
+         |        Router-on-a-Stick     |
+         |  (Inter-VLAN Routing + ACL)  |
+         +-----------------------------+</pre>
+<p><strong>ข้อควรระวัง:</strong> VLAN เพียงอย่างเดียวไม่ใช่ Security Control — การโจมตี VLAN Hopping (Double Tagging, Switch Spoofing) สามารถข้าม VLAN ได้หากไม่ได้กำหนดค่าความปลอดภัยที่ถูกต้อง</p>
+
+<h3 id="section7-3" class="section-ref">7.3 DMZ Design ระดับองค์กร</h3>
+<p>องค์กรขนาดใหญ่มักมี DMZ หลายประเภท:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท DMZ</th><th>การเข้าถึง</th><th>ตัวอย่าง Services</th><th>ระดับความปลอดภัย</th></tr></thead>
+  <tbody>
+    <tr><td>Public DMZ</td><td>อินเทอร์เน็ต &#8594;</td><td>Web Server, Mail Gateway, DNS</td><td>ต่ำ</td></tr>
+    <tr><td>Partner DMZ</td><td>คู่ค้าทางธุรกิจ &#8594;</td><td>API Gateway, EDI, B2B Portal</td><td>ปานกลาง</td></tr>
+    <tr><td>Internal DMZ</td><td>พนักงาน &#8594;</td><td>Application Server, File Server</td><td>สูง</td></tr>
+    <tr><td>Management DMZ</td><td>ผู้ดูแลระบบ &#8594;</td><td>SSH Jump Host, VPN Gateway</td><td>สูงมาก</td></tr>
+    <tr><td>PCI DMZ</td><td>เฉพาะระบบที่เกี่ยวข้อง</td><td>Payment Gateway, Tokenization</td><td>สูงสุด (Isolated)</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section7-4" class="section-ref">7.4 <span class="glossary-term">Micro-segmentation<span class="tooltip">การแบ่งเครือข่ายในระดับ Workload (VM, Container, Pod) โดยใช้นโยบาย granular ที่กำหนด Traffic ระหว่าง Workload แต่ละตัว ช่วยลด Blast Radius และสนับสนุน Zero Trust Network</span></span></h3>
+<p>Micro-segmentation คือการแบ่งเครือข่ายในระดับ Workload (VM, Container, Pod) โดยใช้นโยบาย granular ที่กำหนด Traffic ระหว่าง Workload แต่ละตัว:</p>
+<p><strong>เทคโนโลยีที่ใช้:</strong></p>
+<ul>
+  <li><strong>SDN (Software-Defined Networking):</strong> VMware NSX, Cisco ACI</li>
+  <li><strong>Network Policy ใน Kubernetes:</strong> กำหนดว่า Pod ใดสื่อสารกับ Pod ใดได้</li>
+  <li><strong>Host-Based Firewall:</strong> Windows Firewall, iptables, nftables</li>
+  <li><strong>Service Mesh:</strong> Istio, Linkerd (Sidecar Proxy)</li>
+</ul>
+
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ตัวอย่าง Micro-segmentation ใน Kubernetes:
+----------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: api-allow
+spec:
+  podSelector:
+    matchLabels:
+      app: api-server
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: frontend
+    ports:
+    - protocol: TCP
+      port: 8080</pre>
+
+<p><strong>ประโยชน์ของ Micro-segmentation:</strong></p>
+<ul>
+  <li>ลด Blast Radius — การโจมตี Container หนึ่งไม่กระจายไปยัง Container อื่น</li>
+  <li>Zero Trust Network — ทุกการสื่อสารต้องได้รับอนุญาตอย่างชัดเจน</li>
+  <li>Compliance — ตอบสนองข้อกำหนด PCI DSS, HIPAA เรื่อง Network Segmentation</li>
+</ul>
+</section>
+<hr>
+<section id="section8" class="section-ref">
+<h2>8. <span class="glossary-term">Security Policy<span class="tooltip">ชุดกฎที่กำหนดว่า Traffic ใดได้รับอนุญาตและ Traffic ใดได้รับการปฏิเสธ โดยยึดหลัก Default Deny และ Least Privilege</span></span> และ <span class="glossary-term">ACL<span class="tooltip">Access Control List — ชุดกฎที่กำหนดการอนุญาตหรือปฏิเสธ Traffic ตาม Protocol, Source, Destination, Port โดย Firewall ประมวลผลจากบนลงล่าง (First Match)</span></span></h2>
+
+<h3 id="section8-1" class="section-ref">8.1 หลักการสร้าง Security Policy</h3>
+<p><span class="glossary-term">Security Policy<span class="tooltip">ชุดกฎที่กำหนดว่า Traffic ใดได้รับอนุญาตและ Traffic ใดได้รับการปฏิเสธ โดยยึดหลัก Default Deny และ Least Privilege</span></span> คือชุดกฎที่กำหนดว่า Traffic ใดได้รับอนุญาตและ Traffic ใดได้รับการปฏิเสธ โดยมีหลักการสำคัญ:</p>
+<p><strong>1. Default Deny (Closed Policy):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># ตัวอย่าง Default Deny
+Rule 100: Allow specific traffic -> Permit
+Rule 999: Deny all traffic       -> Drop (Implicit)</pre>
+
+<p><strong>2. Default Allow (Open Policy):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># ตัวอย่าง Default Allow (ไม่ปลอดภัย -- ไม่แนะนำ)
+Rule 100: Deny specific traffic  -> Drop
+Rule 999: Allow all traffic      -> Permit (Implicit)</pre>
+
+<p><strong>3. Least Privilege:</strong></p>
+<ul>
+  <li>อนุญาตเฉพาะ Traffic ที่จำเป็นต่อการทำงานเท่านั้น</li>
+  <li>ใช้หลักการ "Deny by default, Allow by exception"</li>
+</ul>
+
+<h3 id="section8-2" class="section-ref">8.2 องค์ประกอบของ ACL Rule</h3>
+<p>ACL Rule มาตรฐานประกอบด้วย:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>[Sequence] [Action] [Protocol] [Source] [Destination] [Port] [Logging]
+
+ตัวอย่าง:
+Rule 10    Permit   TCP        10.0.0.0/8     any         80,443    Log</pre>
+
+<p><strong>ลำดับความสำคัญ (Rule Ordering):</strong></p>
+<ul>
+  <li>Firewall ประมวลผล Rule จากบนลงล่าง (First Match)</li>
+  <li>Rule ที่ละเอียดและเฉพาะเจาะจงควรอยู่บนสุด</li>
+  <li>Rule ทั่วไป (Broad Rule) ควรอยู่ล่าง</li>
+  <li>มี Implicit Deny ต่อท้ายเสมอ</li>
+</ul>
+
+<h3 id="section8-3" class="section-ref">8.3 Best Practices สำหรับ ACL</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>DO:
+- ใช้ Group Objects สำหรับ IP/Port ที่ซ้ำกัน
+- ระบุ Source และ Destination ให้แคบที่สุด
+- ใช้ Comments อธิบายวัตถุประสงค์ของแต่ละ Rule
+- ตรวจสอบ Shadow Rules (Rule ที่ได้รับการครอบคลุมโดย Rule อื่นก่อน)
+- Audit Rules ทุก 6 เดือน
+- ใช้ Change Management สำหรับทุกการเปลี่ยนแปลง
+
+DON'T:
+- ใช้ "any any" โดยไม่จำเป็น
+- ใช้ Rule "Permit any any" เป็นบรรทัดเดียวกับ Production
+- เก็บ Rule ที่ไม่ได้ใช้แล้ว (Stale Rules)
+- ใช้ IP Address โดยตรง -- ใช้ Group Objects แทน
+- แก้ไข Firewall Rules โดยไม่ผ่าน Change Management</pre>
+
+<h3 id="section8-4" class="section-ref">8.4 Rule Lifecycle Management</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>+----------+     +----------+     +----------+     +----------+
+| Request  |---->|  Review  |---->|  Approve |---->|Implement |
+|  (RFC)   |     |  (Peer)  |     | (Manager)|     | (Change) |
++----------+     +----------+     +----------+     +----------+
+                                                     |
+               +----------+     +----------+         |
+               |  Audit   |<----|  Retire  |<--------+
+               |(Quarterly)|    |(Clean up)|
+               +----------+     +----------+</pre>
+
+<h3 id="section8-5" class="section-ref">8.5 การตรวจสอบคุณภาพของ Rule Set</h3>
+<p>ปัญหาที่พบบ่อยใน Firewall Rule Base:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ปัญหา</th><th>คำอธิบาย</th><th>ผลกระทบ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Shadow Rules</strong></td><td>Rule ที่ไม่เคยถูก Match (ตรงกับ Traffic) เพราะ Rule ก่อนหน้าครอบคลุมอยู่แล้ว</td><td>เพิ่มความซับซ้อนโดยไม่จำเป็น</td></tr>
+    <tr><td><strong>Redundant Rules</strong></td><td>Rule ที่เหมือนกันทุกประการ</td><td>สิ้นเปลืองทรัพยากร</td></tr>
+    <tr><td><strong>Orphan Rules</strong></td><td>Rule ที่อ้างถึง Object ที่ได้รับการลบแล้ว</td><td>ทำให้เกิด Error</td></tr>
+    <tr><td><strong>Overly Permissive</strong></td><td>Rule ที่ใช้ Source/Destination กว้างเกินไป</td><td>เสี่ยงด้านความปลอดภัย</td></tr>
+    <tr><td><strong>No Hit Rules</strong></td><td>Rule ที่ไม่เคยถูก Match (ตรงกับ Traffic) เลยในช่วงเวลาที่กำหนด</td><td>ควรตรวจสอบและลบ</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+<section id="section9" class="section-ref">
+<h2>9. การบริหารจัดการ Firewall Rules</h2>
+
+<h3 id="section9-1" class="section-ref">9.1 Change Management Process</h3>
+<p>ทุกการเปลี่ยนแปลง Firewall Rules ควรผ่านกระบวนการ Change Management:</p>
+<ol>
+  <li><strong>Submit Request:</strong> ผู้ขอกรอกข้อมูล (Change Request Form)
+    <ul>
+      <li>เหตุผลที่ต้องเปลี่ยนแปลง</li>
+      <li>รายละเอียด Traffic ที่ต้องการ Allow/Deny</li>
+      <li>ระยะเวลาที่ต้องการ (Permanent/Temporary)</li>
+      <li>ผลกระทบหากเปลี่ยนแปลง</li>
+    </ul>
+  </li>
+  <li><strong>Technical Review:</strong> ผู้ดูแลระบบตรวจสอบ
+    <ul>
+      <li>ตรวจสอบผลกระทบต่อกฎที่มีอยู่</li>
+      <li>ตรวจสอบ Shadow/Redundant Rules</li>
+      <li>ประเมินความเสี่ยง</li>
+    </ul>
+  </li>
+  <li><strong>Change Advisory Board (CAB):</strong> อนุมัติ
+    <ul>
+      <li>กรณีเร่งด่วน (Emergency Change) — อนุมัติภายหลัง</li>
+    </ul>
+  </li>
+  <li><strong>Implementation:</strong> ทำการเปลี่ยนแปลง
+    <ul>
+      <li>ดำเนินการในช่วงเวลาที่กำหนด (Change Window)</li>
+      <li>ติดตามผล — ตรวจสอบว่า Traffic ทำงานถูกต้อง</li>
+    </ul>
+  </li>
+  <li><strong>Verification:</strong> ยืนยันผล
+    <ul>
+      <li>ตรวจสอบ Connection</li>
+      <li>ตรวจสอบว่ากฎใหม่ไม่ Conflict กับกฎที่มีอยู่</li>
+      <li>Update Documentation</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="section9-2" class="section-ref">9.2 Rule Audit และ Cleanup</h3>
+<p>แนวทางการตรวจสอบ Firewall Rules:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Tier 1 -- รายสัปดาห์ (Automated):
++-- ตรวจสอบ Rule ที่มี Hit Count = 0
++-- ตรวจสอบ Object ที่ไม่ได้รับการอ้างถึง
++-- แจ้งเตือน Shadow Rules
+
+Tier 2 -- รายเดือน (Manual Review):
++-- ตรวจสอบ Compliance (PCI DSS, SOX)
++-- ตรวจสอบ Rule Permissions
++-- ทบทวน Change Log
+
+Tier 3 -- ราย 6 เดือน (Full Audit):
++-- Clean up Rules และ Objects
++-- Optimize Rule Order
++-- Review Architecture
++-- Update Documentation</pre>
+
+<h3 id="section9-3" class="section-ref">9.3 Firewall Rule Base Optimization</h3>
+<p>เทคนิคการเพิ่มประสิทธิภาพ Rule Base:</p>
+<ol>
+  <li><strong>Object Grouping:</strong> รวม IP/Port/Service ที่เกี่ยวข้องเป็น Group</li>
+  <li><strong>Rule Consolidation:</strong> รวม Rule ที่มี Action และ Destination เดียวกัน</li>
+  <li><strong>Rule Reordering:</strong> จัดลำดับ Rule ที่ได้รับการใช้บ่อยให้อยู่ด้านบน</li>
+  <li><strong>Remove Stale Rules:</strong> ลบกฎที่ไม่ได้ใช้</li>
+  <li><strong>Policy Optimization Tools:</strong> ใช้เครื่องมืออย่าง AlgoSec, Tufin, FireMon</li>
+</ol>
+</section>
+<hr>
+<section id="section10" class="section-ref">
+<h2>10. กรณีศึกษา: การออกแบบเครือข่ายองค์กรที่มี DMZ</h2>
+
+<h3 id="section10-1" class="section-ref">10.1 ความต้องการขององค์กร</h3>
+<p>บริษัทขนาดกลาง (พนักงาน 500 คน) มีความต้องการ:</p>
+<ul>
+  <li>เว็บไซต์องค์กรที่ให้บริการทั้งพนักงานและลูกค้า</li>
+  <li>อีเมลเซิร์ฟเวอร์สำหรับพนักงาน</li>
+  <li>ระบบ ERP และ Database สำหรับพนักงานภายใน</li>
+  <li>VPN สำหรับพนักงานที่ทำงานนอกสถานที่</li>
+  <li>การเข้าถึงอินเทอร์เน็ตสำหรับพนักงานที่ควบคุมได้</li>
+  <li>ระบบ POS สำหรับสาขาย่อย 20 แห่ง</li>
+</ul>
+
+<h3 id="section10-2" class="section-ref">10.2 การออกแบบเครือข่าย</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>                    +---------------------------------------+
+                    |              INTERNET                 |
+                    |    (ISP1: 500 Mbps + ISP2: 100 Mbps)  |
+                    +------------------+--------------------+
+                                       |
+                    +------------------v--------------------+
+                    |        Edge Router (BGP + NAT)        |
+                    |   ISP1 Primary, ISP2 Backup (failover) |
+                    +------------------+--------------------+
+                                       |
+              +------------------------+------------------------+
+              |                        |                         |
+              v                        v                         v
+   +-------------------+  +-------------------+  +-------------------+
+   |  NGFW Cluster     |  |  WAF (Web App     |  |  DDoS Protection  |
+   | (Active-Passive)  |  |   Firewall)       |  |  (Cloud-Based)    |
+   +--------+----------+  +-------------------+  +-------------------+
+            |
+            v
++---------------------------------------------------------------+
+|                     PUBLIC DMZ (10.0.10.0/24)                  |
+|  +--------------+  +--------------+  +--------------+          |
+|  | Web Server    |  | Mail Gateway |  | DNS Server    |         |
+|  | 10.0.10.10   |  | 10.0.10.20  |  | 10.0.10.30   |         |
+|  | (Nginx + TLS) |  | (Postfix)    |  | (Bind9 + DNSSEC)       |
+|  +--------------+  +--------------+  +--------------+          |
++---------------------------------------------------------------+
+            |
+            v
++---------------------------------------------------------------+
+|                  INTERNAL FIREWALL (NGFW)                      |
+|          Rules: Web->App, Mail->Internal, VPN->Internal        |
++---------------------------------------------------------------+
+            |
+            v
++---------------------------------------------------------------+
+|               APPLICATION DMZ (10.0.20.0/24)                   |
+|  +--------------+  +--------------+  +--------------+          |
+|  | App Server    |  | API Gateway  |  | VPN Gateway   |         |
+|  | 10.0.20.10   |  | 10.0.20.20  |  | 10.0.20.30   |         |
+|  | (ERP System)  |  | (REST API)   |  | (WireGuard)   |         |
+|  +--------------+  +--------------+  +--------------+          |
++---------------------------------------------------------------+
+            |
+            v
++---------------------------------------------------------------+
+|                     INTERNAL NETWORK                           |
+|  +--------------+  +--------------+  +--------------+          |
+|  | VLAN 10: HR  |  | VLAN 20: Eng|  | VLAN 30: Fin |          |
+|  | 10.0.30.0/24 |  |10.0.40.0/24 |  | 10.0.50.0/24 |         |
+|  +--------------+  +--------------+  +--------------+          |
+|  +--------------+  +--------------+                            |
+|  | VLAN 99: Mgmt|  | DB Server     |                           |
+|  | 10.0.99.0/24 |  | 10.0.60.10  |                           |
+|  +--------------+  +--------------+                            |
++---------------------------------------------------------------+
+            |
+            v
++---------------------------------------------------------------+
+|                    BRANCH OFFICES (20 sites)                    |
+|  Site-to-Site VPN (IPsec) Tunnel from SG3000 at each site     |
++---------------------------------------------------------------+</pre>
+
+<h3 id="section10-3" class="section-ref">10.3 Security Policy ตัวอย่าง</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>=== EXTERNAL FIREWALL POLICY ===
+--------------------------------------
+Rule    Source       Dest           Service      Action  Log
+----    ------       ----           -------      ------  ---
+10      INTERNET     DMZ-Web        HTTPS        Permit  Yes
+20      INTERNET     DMZ-Mail       SMTP, SMTPS  Permit  Yes
+30      INTERNET     DMZ-DNS        DNS          Permit  Yes
+40      DMZ-Web      INTERNET       HTTPS        Permit  Yes
+50      --           --             --           --      --
+999     ANY          ANY            ANY          Deny    Yes
+--------------------------------------
+
+=== INTERNAL FIREWALL POLICY ===
+--------------------------------------
+Rule    Source       Dest           Service      Action  Log
+----    ------       ----           -------      ------  ---
+10      DMZ-Web      APP-DMZ        HTTP:8080    Permit  Yes
+20      DMZ-Web      APP-DMZ        HTTPS:9443   Permit  Yes
+30      DMZ-Mail     INT-DB         SMTP         Permit  Yes
+40      APP-DMZ      INT-DB         MYSQL:3306   Permit  Yes
+50      VPN-POOL     INT-LAN        RDP, SSH     Permit  Yes
+60      INTERNAL     INTERNET       HTTP,HTTPS   Permit  Yes
+70      INTERNAL     DMZ-Web        HTTPS        Permit  Yes
+80      --           --             --           --      --
+999     ANY          ANY            ANY          Deny    Yes
+--------------------------------------
+
+=== MANAGEMENT ACCESS POLICY ===
+--------------------------------------
+Rule    Source       Dest           Service      Action  Log
+----    ------       ----           -------      ------  ---
+10      MGT-JUMP     ALL-DEVICES    SSH           Permit  Yes
+20      MGT-JUMP     FW-CLUSTER     HTTPS:443     Permit  Yes
+30      MGT-JUMP     SWITCHES       SSH           Permit  Yes
+40      --           --             --           --      --
+999     ANY          ANY            ANY           Deny   Yes
+--------------------------------------</pre>
+
+<h3 id="section10-4" class="section-ref">10.4 บทเรียนจากกรณีศึกษา</h3>
+<ol>
+  <li><strong>Defense in Depth:</strong> ใช้ Firewall หลายชั้น — DDoS Protection &#8594; WAF &#8594; NGFW &#8594; Internal Firewall</li>
+  <li><strong>Segregation of Duties:</strong> DMZ Services ไม่ควรเข้าถึง Database โดยตรง ต้องผ่าน App Server</li>
+  <li><strong>Management Isolation:</strong> การจัดการอุปกรณ์ทั้งหมดต้องผ่าน Management Network ที่แยกต่างหาก</li>
+  <li><strong>Redundancy:</strong> Active-Passive Cluster สำหรับ High Availability</li>
+  <li><strong>Logging Centralization:</strong> Log จาก Firewall ทั้งหมดถูกส่งไปยัง SIEM</li>
+</ol>
+</section>
+<hr>
+<section id="summary" class="section-ref">
+<h2><i class="fas fa-list-check" aria-hidden="true"></i> สรุปท้ายบท (Chapter Summary)</h2>
+<ol>
+  <li><strong>Firewall มี 4 รุ่นหลัก:</strong> <span class="glossary-term">Packet Filter<span class="tooltip">Firewall รุ่นที่ 1 ที่ทำงานใน Layer 3-4 โดยตรวจสอบเฉพาะ Header ของแต่ละ Packet อย่างอิสระ ไม่พิจารณาความสัมพันธ์ระหว่าง Packet — เรียกว่า Stateless Firewall</span></span> (Stateless, Layer 3-4), <span class="glossary-term">Stateful Inspection<span class="tooltip">Firewall รุ่นที่ 2 ที่ติดตามสถานะ (State) ของทุก Connection ผ่าน State Table ทำให้รู้ว่า Packet เป็นส่วนหนึ่งของการเชื่อมต่อที่ถูกต้องหรือไม่</span></span> (ติดตาม Connection State), <span class="glossary-term">Proxy Firewall<span class="tooltip">Firewall รุ่นที่ 3 ที่ทำงานใน Layer 7 (Application Layer) โดยทำหน้าที่เป็นตัวกลาง (Intermediary) ระหว่าง Client และ Server</span></span> (ตรวจสอบ Layer 7), และ <span class="glossary-term">NGFW<span class="tooltip">Next-Generation Firewall — Firewall รุ่นที่ 4 ที่มี Application Awareness, User Identification, Integrated IPS, และ SSL/TLS Decryption</span></span> (App-ID, User-ID, SSL Decryption, IPS ในตัว)</li>
+  <li><strong>Stateful Firewall</strong> เป็นมาตรฐานขั้นต่ำสำหรับองค์กรในปัจจุบัน — ติดตาม State ของ Connection ผ่าน State Table</li>
+  <li><strong>Proxy Firewall</strong> ให้ความปลอดภัยสูงสุดในระดับ Application แต่มีข้อจำกัดด้านประสิทธิภาพและความซับซ้อน</li>
+  <li><strong>NGFW</strong> เป็นมาตรฐานที่แนะนำในปัจจุบัน — รวมความสามารถหลายอย่างในอุปกรณ์เดียว รวมถึง Application Awareness, User Identification, และ SSL Decryption</li>
+  <li><strong>สถาปัตยกรรม DMZ</strong> ที่ถูกต้อง (Screened Subnet, Firewall สองตัว) ช่วยปกป้องเครือข่ายภายใน แม้ว่า Service ใน DMZ จะถูกโจมตี</li>
+  <li><strong><span class="glossary-term">Network Segmentation<span class="tooltip">การแบ่งเครือข่ายออกเป็นส่วนย่อย (Segment) เพื่อจำกัดพื้นผิวการโจมตี ควบคุม Traffic และปฏิบัติตาม Compliance</span></span></strong> ด้วย VLAN, DMZ, และ Micro-segmentation ช่วยจำกัดพื้นผิวการโจมตีและปฏิบัติตามข้อกำหนด Compliance</li>
+  <li><strong><span class="glossary-term">Security Policy<span class="tooltip">ชุดกฎที่กำหนดว่า Traffic ใดได้รับอนุญาตและ Traffic ใดได้รับการปฏิเสธ โดยยึดหลัก Default Deny และ Least Privilege</span></span></strong> ควรยึดหลัก Default Deny และ Least Privilege — Rule ควรถูกตรวจสอบ (Audit) เป็นประจำ</li>
+  <li><strong>การบริหารจัดการ Firewall</strong> ต้องมีกระบวนการ Change Management, Rule Review, และ Cleanup ที่เป็นระบบ</li>
+</ol>
+</section>
+<hr>
+<section id="review-questions" class="section-ref">
+<h2><i class="fas fa-question-circle" aria-hidden="true"></i> คำถามทบทวน (Review Questions)</h2>
+<p style="color:var(--text-secondary);margin-bottom:1.5rem;">คลิกปุ่ม <strong>"ดูเฉลย"</strong> เพื่อเปิดคำตอบ</p>
+
+<div class="quiz-card" data-question="1">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 1</span>
+    <p>จงอธิบายความแตกต่างระหว่าง Packet Filter Firewall และ Stateful Inspection Firewall พร้อมยกตัวอย่างข้อได้เปรียบของ Stateful Firewall</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> Packet Filter Firewall ทำงานใน Layer 3-4 โดยตรวจสอบเฉพาะ Header ของแต่ละ Packet อย่างอิสระ ไม่จดจำสถานะการเชื่อมต่อ (Stateless) ทำให้มีประสิทธิภาพสูงแต่เสี่ยงต่อ Packet Spoofing ส่วน Stateful Inspection Firewall ติดตามสถานะ (State) ของทุก Connection ผ่าน State Table ทำให้รู้ว่า Packet เป็นส่วนหนึ่งของการเชื่อมต่อที่ถูกต้องหรือไม่ ข้อได้เปรียบของ Stateful Firewall ได้แก่: (1) อนุญาต Return Traffic อัตโนมัติโดยไม่ต้องเขียน Rule แยก, (2) ป้องกัน IP Spoofing ได้ดีกว่า, (3) สามารถตรวจสอบ TCP State (SYN_SENT, ESTABLISHED, FIN_WAIT) ทำให้รู้ว่า Packet เป็นส่วนหนึ่งของการเชื่อมต่อที่ถูกต้อง</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="2">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 2</span>
+    <p>จงอธิบายหลักการทำงานของ Proxy Firewall และความแตกต่างระหว่าง Forward Proxy กับ Reverse Proxy</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> Proxy Firewall (Application Gateway) ทำงานใน Layer 7 โดยทำหน้าที่เป็นตัวกลางระหว่าง Client และ Server — Client เชื่อมต่อกับ Proxy ก่อน แล้ว Proxy จึงเชื่อมต่อกับ Server แทน ทำให้ Server เห็น IP ของ Proxy ไม่ใช่ IP ของ Client <strong>Forward Proxy:</strong> ใช้สำหรับ Client ภายในที่ต้องการเข้าถึงอินเทอร์เน็ต — ซ่อน IP จริงของ Client, Cache Content, กรอง Content ตามนโยบายองค์กร <strong>Reverse Proxy:</strong> วางอยู่หน้า Web Server เพื่อรับ Traffic จากภายนอก — ปกปิดโครงสร้าง Server ภายใน, ทำ Load Balancing, SSL Termination, ป้องกันการโจมตีระดับ Application (WAF)</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="3">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 3</span>
+    <p>NGFW มีคุณสมบัติที่แตกต่างจาก Firewall รุ่นก่อนหน้าอย่างไรบ้าง จงอธิบาย App-ID, User-ID, และ SSL Decryption</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> NGFW ได้รับการนิยามโดย Gartner ในปี 2009 มีคุณสมบัติหลัก 4 ประการนอกเหนือจาก Stateful Inspection: (1) <strong>App-ID:</strong> ระบุ Application ได้แม้ใช้ Port ผิด โดยใช้เทคนิค Multi-Layer Identification ทั้ง SSL Certificate, HTTP Header, Protocol Decoding, Behavior Analysis และ Cloud Lookup (2) <strong>User-ID:</strong> กำหนด Policy ตามตัวตนผู้ใช้ แทนการใช้ IP Address โดยเชื่อมต่อกับ Active Directory/LDAP, Captive Portal, X-Forwarded-For (3) <strong>SSL/TLS Decryption:</strong> ตรวจสอบ Traffic ที่เข้ารหัส (95% ของ Traffic อินเทอร์เน็ต) โดยใช้ SSL Forward Proxy สร้าง Certificate ใหม่สำหรับ Client เพื่อตรวจสอบ Content หา Malware, C2 Communication, Data Exfiltration</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="4">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 4</span>
+    <p>จากสถาปัตยกรรม Screened Subnet (Dual Firewall) จงอธิบายว่าหาก Web Server ใน DMZ ถูกโจมตีสำเร็จ ผู้โจมตียังไม่สามารถเข้าถึง Database Server ใน Internal Network ได้อย่างไร</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> ในสถาปัตยกรรม Screened Subnet (Dual Firewall) จะมี External Firewall ด้านหน้าและ Internal Firewall ด้านหลัง DMZ: (1) ผู้โจมตีที่เจาะ Web Server ใน DMZ สำเร็จจะเข้าถึงได้เฉพาะ DMZ Network เท่านั้น (2) Internal Firewall ด่านที่สองจะไม่อนุญาตให้ DMZ เข้าถึง Internal Network โดยตรง — อนุญาตเฉพาะ Traffic ที่จำเป็น เช่น Web Server ส่ง SQL Query ไปยัง Database บน App Server (เท่านั้น) (3) Architecture แบบ Multi-Tier ที่ถูกต้องจะบังคับให้ Web Server ต้องผ่าน App Server ก่อนไปถึง Database (Defense in Depth) (4) Internal Firewall ใช้ Rule ที่เข้มงวดกว่า — อนุญาตเฉพาะ Port/Protocol ที่จำเป็นเท่านั้น</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="5">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 5</span>
+    <p>จงออกแบบ VLAN Segmentation สำหรับองค์กรที่มี 4 แผนก (HR, Finance, IT, Sales) และมีระบบ POS ที่ต้องเชื่อมต่อกับสาขาย่อย 10 แห่ง</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> การออกแบบ VLAN สำหรับองค์กร: <strong>VLAN 10 (HR):</strong> 10.0.10.0/24 — แผนกทรัพยากรบุคคล เข้าถึงระบบ HR, -Mail <strong>VLAN 20 (Finance):</strong> 10.0.20.0/24 — แผนกการเงิน เข้าถึงระบบ ERP, บัญชี <strong>VLAN 30 (IT):</strong> 10.0.30.0/24 — แผนก IT เข้าถึงระบบจัดการ Network, Server <strong>VLAN 40 (Sales):</strong> 10.0.40.0/24 — แผนกขาย เข้าถึง CRM <strong>VLAN 50 (POS):</strong> 10.0.50.0/24 — ระบบ POS สาขาย่อย Site-to-Site VPN <strong>VLAN 99 (Management):</strong> 10.0.99.0/24 — จัดการอุปกรณ์เครือข่าย แยกจาก Traffic ทั่วไป <strong>หลักการออกแบบ:</strong> (1) ใช้ Inter-VLAN Routing + ACL บน Router/Firewall, (2) POS VLAN ต้อง isolation กับ VLAN อื่น, (3) Management VLAN ต้องเข้าถึงได้เฉพาะ IT, (4) ใช้ Default Deny ระหว่าง VLAN</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="6">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 6</span>
+    <p>จงอธิบายความแตกต่างระหว่าง Micro-segmentation และ VLAN พร้อมยกตัวอย่างเทคโนโลยีที่ใช้ในแต่ละแนวทาง</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>VLAN:</strong> แบ่งเครือข่ายในระดับ Layer 2 โดยใช้ Switch Port — ใช้ VLAN ID (802.1Q) ในการแยก Broadcast Domain เทคโนโลยีที่ใช้: Managed Switch, Router-on-a-Stick, Inter-VLAN Routing ACL <strong>Micro-segmentation:</strong> แบ่งเครือข่ายในระดับ Workload (VM, Container, Pod) โดยใช้นโยบาย granular ที่กำหนด Traffic ระหว่าง Workload แต่ละตัว เทคโนโลยีที่ใช้: VMware NSX, Cisco ACI (SDN), Kubernetes NetworkPolicy, Host-Based Firewall (iptables/nftables), Service Mesh (Istio/Linkerd) <strong>ความแตกต่าง:</strong> VLAN ทำงานที่ Layer 2 (-switch level) แบ่งตามเครือข่าย/แผนก Micro-segmentation ทำงานที่ Layer 3-7 (workload level) แบ่งตามแอปพลิเคชัน/บริการ VLAN ป้องกัน Broadcast Storm Micro-segmentation ป้องกัน Lateral Movement ใน Zero Trust Architecture</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="7">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 7</span>
+    <p>จงเขียน ACL (ในรูปแบบ Cisco IOS หรือ NGFW Policy) สำหรับข้อกำหนดต่อไปนี้: อนุญาต HTTP/HTTPS จาก Internal ไปยัง Internet, อนุญาต SSH จาก DMZ ไปยัง Internal Management Network, ปฏิเสธ Telnet ทั้งหมด, อนุญาต DNS Query จาก Internal ไปยัง Internet, Default Deny</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> ตัวอย่าง Cisco IOS ACL:<br><code>! Rule 10: อนุญาต HTTP/HTTPS จาก Internal ไปยัง Internet<br>access-list 101 permit tcp 10.0.0.0 0.255.255.255 any eq 80<br>access-list 101 permit tcp 10.0.0.0 0.255.255.255 any eq 443<br>! Rule 20: อนุญาต SSH จาก DMZ ไปยัง Internal Management Network<br>access-list 101 permit tcp 10.0.10.0 0.0.0.255 10.0.99.0 0.0.0.255 eq 22<br>! Rule 30: ปฏิเสธ Telnet ทั้งหมด<br>access-list 101 deny tcp any any eq 23<br>! Rule 40: อนุญาต DNS Query จาก Internal ไปยัง Internet<br>access-list 101 permit udp 10.0.0.0 0.255.255.255 any eq 53<br>access-list 101 permit tcp 10.0.0.0 0.255.255.255 any eq 53<br>! Rule 999: Default Deny<br>access-list 101 deny ip any any log</code></p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="8">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 8</span>
+    <p>Shadow Rules คืออะไร และมีผลกระทบอย่างไรต่อความปลอดภัยเครือข่าย จงอธิบายพร้อมยกตัวอย่าง</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> Shadow Rules คือ Rule ที่ไม่เคยถูก Match (ตรงกับ Traffic) เพราะ Rule ก่อนหน้าครอบคลุมอยู่แล้ว — ตัวอย่าง: Rule 10: Permit TCP 10.0.0.0/8 any any, Rule 20: Permit TCP 10.0.1.0/24 192.168.1.0/24 eq 80 — Rule 20 จะไม่เคยถูก Match เพราะ Rule 10 ที่อยู่ก่อนหน้าครอบคลุม Traffic จาก 10.0.0.0/8 ทั้งหมดแล้ว <strong>ผลกระทบ:</strong> (1) เพิ่มความซับซ้อนของ Rule Base โดยไม่จำเป็น (2) ทำให้การ Audit .Rule Base ทำได้ยาก (3) ซ่อน Rule ที่อาจมีเจตนาเฉพาะเจาะจงแต่ไม่ได้ทำงานจริง (4) สิ้นเปลืองทรัพยากร Firewall ในการประมวลผล Rule ที่ไม่ได้ใช้งาน <strong>การแก้ไข:</strong> ใช้เครื่องมือ Firewall Policy Analysis (AlgoSec, Tufin) ตรวจสอบ Rule ที่ไม่มี Hit Count หรือ Audit ทุก 6 เดือน</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="9">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 9</span>
+    <p>จงอธิบายกระบวนการ Change Management สำหรับการเพิ่ม Firewall Rule ใหม่ และอธิบายว่าเหตุใดจึงต้องมีกระบวนการดังกล่าว</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> กระบวนการ Change Management สำหรับ Firewall Rules: (1) <strong>Submit Request:</strong> ผู้ขอกรอก Change Request Form ระบุเหตุผล, Traffic ที่ต้องการ Allow/Deny, ระยะเวลา, ผลกระทบ (2) <strong>Technical Review:</strong> ผู้ดูแลระบบตรวจสอบผลกระทบต่อกฎที่มีอยู่, ตรวจสอบ Shadow/Redundant Rules, ประเมินความเสี่ยง (3) <strong>Change Advisory Board (CAB):</strong> อนุมัติ — กรณีเร่งด่วนอนุมัติภายหลัง (4) <strong>Implementation:</strong> ดำเนินการใน Change Window, ติดตามผล (5) <strong>Verification:</strong> ตรวจสอบ Connection, ตรวจสอบว่ากฎใหม่ไม่ Conflict, Update Documentation <strong>เหตุผลที่ต้องมี:</strong> (1) ป้องกัน Rule ที่อาจเปิดช่องโหว่ความปลอดภัยโดยไม่ตั้งใจ (2) ตรวจสอบว่า Rule ใหม่ไม่ขัดแย้งกับ Rule ที่มีอยู่ (3) สร้าง Audit Trail สำหรับ Compliance (4) รับประกันว่ามีคนตรวจสอบก่อนเปลี่ยนแปลง</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="10">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 10</span>
+    <p>จากกรณีศึกษาในบทนี้ จงวิเคราะห์ว่าหากบริษัทนี้ไม่มี WAF และ DDoS Protection จะมีความเสี่ยงอะไรบ้าง และเสนอแนวทางการลดความเสี่ยงโดยใช้เฉพาะ NGFW</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>ความเสี่ยงหากไม่มี WAF:</strong> (1) ไม่สามารถป้องกันการโจมตีระดับ Application (SQL Injection, XSS, Path Traversal) ได้อย่างมีประสิทธิภาพ (2) ไม่สามารถกรอง HTTP Traffic ตาม Rule ที่เฉพาะเจาะจงกับ Application ได้ <strong>ความเสี่ยงหากไม่มี DDoS Protection:</strong> (1) ไม่สามารถรับมือ DDoS ขนาดใหญ่ (Volume-based) ที่เกินขีดความสามารถของ NGFW (2) Website และ Service จะไม่สามารถใช้งานได้ในช่วงถูกโจมตี <strong>แนวทางลดความเสี่ยงโดยใช้เฉพาะ NGFW:</strong> (1) ใช้ NGFW ที่มี IPS ในตัวสำหรับป้องกัน Application Attacks (2) ใช้ Rate Limiting และ Geo-blocking บน NGFW (3) ใช้ SSL Decryption เพื่อตรวจสอบ HTTPS Traffic (4) ตั้งค่า NGFW ให้ทำ Load Balancing (5) จำกัด Bandwidth ต่อ IP (6) ใช้ Reputation-based Filtering — <strong>ข้อจำกัด:</strong> NGFW เพียงอย่างเดียวไม่สามารถรับมือ DDoS ขนาดใหญ่ได้ เนื่องจากมีทรัพยากรจำกัด ควรใช้ Cloud-Based DDoS Protection ร่วมด้วย</p>
+  </div>
+</div>
+</section>
+<hr>
+<section id="references" class="section-ref">
+<h2><i class="fas fa-book" aria-hidden="true"></i> เอกสารอ้างอิง (References)</h2>
+<ol>
+  <li>Stallings, W. (2022). <em>Cryptography and Network Security: Principles and Practice</em> (8th ed.). Chapter 20: Firewalls. Pearson.</li>
+  <li>Whitman, M. E., &amp; Mattord, H. J. (2021). <em>Principles of Information Security</em> (7th ed.). Chapter 7: Firewall Technologies. Cengage Learning.</li>
+  <li>Palo Alto Networks. (2024). <em>Next-Generation Firewall Administrator's Guide</em>. Retrieved from https://docs.paloaltonetworks.com/</li>
+  <li>NIST Special Publication 800-41 Rev. 1. (2014). <em>Guidelines on Firewalls and Firewall Policy</em>. National Institute of Standards and Technology.</li>
+  <li>NIST Special Publication 800-125B. (2016). <em>Secure Network Design: Firewall and DMZ Architecture</em>. National Institute of Standards and Technology.</li>
+  <li>Cisco Systems. (2023). <em>Cisco Secure Firewall Configuration Guide</em>. Retrieved from https://www.cisco.com/</li>
+  <li>Gartner. (2009). <em>Defining the Next-Generation Firewall</em>. Gartner Research.</li>
+  <li>IEEE 802.1Q. (2022). <em>IEEE Standard for Local and Metropolitan Area Networks-Bridges and Bridged Networks</em> (VLAN Tagging).</li>
+  <li>Kubernetes Documentation. (2024). <em>Network Policies</em>. Retrieved from https://kubernetes.io/docs/concepts/services-networking/network-policies/</li>
+  <li>Stallings, W. (2021). <em>Network Security Essentials: Applications and Standards</em> (6th ed.). Chapter 8: Firewalls. Pearson.</li>
+</ol>
+</section>
+</main>
+</div> <!-- .layout -->
+
+<footer class="site-footer" role="contentinfo">
+  <hr class="footer-divider">
+  <p><i class="fas fa-shield-halved" aria-hidden="true"></i> รายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+  <p style="margin-top:0.5rem;font-size:0.8rem;">เอกสารนี้เป็นส่วนหนึ่งของรายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+</footer>
+
+<button id="back-to-top" aria-label="กลับไปด้านบน" title="กลับไปด้านบน">
+  <i class="fas fa-arrow-up" aria-hidden="true"></i>
+</button>
+
+<script>
+// ====== Loading Screen ======
+window.addEventListener('load', function() {
+  document.getElementById('loading-screen').classList.add('hidden');
+});
+
+// ====== Progress Bar ======
+window.addEventListener('scroll', function() {
+  var scrollTop = window.scrollY;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progress-bar').style.width = progress + '%';
+  document.getElementById('progress-bar').setAttribute('aria-valuenow', Math.round(progress));
+});
+
+// ====== Dark Mode ======
+(function() {
+  var toggle = document.getElementById('dark-mode-toggle');
+  var icon = toggle.querySelector('i');
+  var theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    icon.className = 'fas fa-sun';
+  }
+  toggle.addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    if (current === 'dark') {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      icon.className = 'fas fa-moon';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      icon.className = 'fas fa-sun';
+    }
+  });
+})();
+
+// ====== Sidebar Toggle (mobile) ======
+(function() {
+  var btn = document.getElementById('sidebar-toggle');
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  if (!btn || !sidebar || !overlay) return;
+  btn.addEventListener('click', function() {
+    var open = sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+    btn.setAttribute('aria-expanded', open);
+  });
+  overlay.addEventListener('click', function() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+    btn.setAttribute('aria-expanded', 'false');
+  });
+})();
+
+// ====== Scroll Spy ======
+(function() {
+  var tocLinks = document.querySelectorAll('.toc-link');
+  var sections = [];
+  tocLinks.forEach(function(link) {
+    var targetId = link.getAttribute('data-target');
+    var el = document.getElementById(targetId);
+    if (el) sections.push({ id: targetId, el: el, link: link });
+  });
+  
+  function updateActive() {
+    var scrollPos = window.scrollY + 120;
+    var currentId = null;
+    for (var i = 0; i < sections.length; i++) {
+      var s = sections[i];
+      if (s.el.offsetTop <= scrollPos) {
+        currentId = s.id;
+      }
+    }
+    tocLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (currentId) {
+      var activeLink = document.querySelector('.toc-link[data-target="' + currentId + '"]');
+      if (activeLink) {
+        activeLink.classList.add('active');
+        var sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+          var itemTop = activeLink.offsetTop - sidebar.offsetTop;
+          var itemBottom = itemTop + activeLink.offsetHeight;
+          var sidebarScrollTop = sidebar.scrollTop;
+          var sidebarHeight = sidebar.clientHeight;
+          if (itemTop < sidebarScrollTop) {
+            activeLink.scrollIntoView({ block: 'nearest' });
+          } else if (itemBottom > sidebarScrollTop + sidebarHeight) {
+            activeLink.scrollIntoView({ block: 'nearest' });
+          }
+        }
+      }
+    }
+  }
+  
+  window.addEventListener('scroll', updateActive);
+  window.addEventListener('load', updateActive);
+  setTimeout(updateActive, 500);
+})();
+
+// ====== Smooth scroll for TOC links ======
+document.querySelectorAll('.toc-link').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    var targetId = this.getAttribute('data-target');
+    var target = document.getElementById(targetId);
+    if (target) {
+      var offset = 80;
+      var targetPos = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: targetPos, behavior: 'smooth' });
+    }
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebar-overlay');
+    if (sidebar && sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      document.getElementById('sidebar-toggle').setAttribute('aria-expanded', 'false');
+    }
+  });
+});
+
+// ====== Back to Top ======
+(function() {
+  var btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 400) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  });
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+
+// ====== Copy Code ======
+function copyCode(btn) {
+  var pre = btn.closest('pre');
+  var code = pre.textContent;
+  code = code.replace(/คัดลอก/g, '').trim();
+  navigator.clipboard.writeText(code).then(function() {
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i> คัดลอก';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(function() {
+    var textarea = document.createElement('textarea');
+    textarea.value = code;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i> คัดลอก';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ====== Expandable Sections ======
+function toggleExpand(header) {
+  var expandable = header.closest('.expandable');
+  if (!expandable) return;
+  var isExpanded = expandable.classList.toggle('expanded');
+  header.setAttribute('aria-expanded', isExpanded);
+}
+
+// ====== Reveal Answer (Quiz) ======
+function revealAnswer(btn) {
+  var card = btn.closest('.quiz-card');
+  if (!card) return;
+  card.classList.add('revealed');
+  var answer = card.querySelector('.quiz-answer');
+  if (answer) {
+    answer.classList.remove('hidden');
+  }
+  btn.textContent = 'ดูเฉลยแล้ว';
+  btn.disabled = true;
+}
+
+// ====== Search ======
+(function() {
+  var searchToggle = document.getElementById('search-toggle-btn');
+  var searchOverlay = document.getElementById('search-overlay');
+  var searchInput = document.getElementById('search-input');
+  var searchResults = document.getElementById('search-results');
+  var searchCount = document.getElementById('search-count');
+  var searchClose = document.getElementById('search-close-btn');
+  
+  var mainContent = document.getElementById('main-content');
+  var searchData = [];
+  
+  function buildSearchIndex() {
+    searchData = [];
+    var sections = mainContent.querySelectorAll('h2, h3, h4, p, li, td, th, pre');
+    sections.forEach(function(el) {
+      var text = el.textContent.trim();
+      if (text.length > 10) {
+        var heading = '';
+        var parent = el.parentElement;
+        while (parent && parent !== mainContent) {
+          var prevHeading = parent.querySelector('h2, h3, h4');
+          if (prevHeading) { heading = prevHeading.textContent.trim(); break; }
+          parent = parent.parentElement;
+        }
+        searchData.push({
+          text: text,
+          heading: heading || 'เนื้อหา',
+          element: el
+        });
+      }
+    });
+  }
+  
+  buildSearchIndex();
+  
+  function performSearch(query) {
+    if (!query || query.length < 2) {
+      searchResults.innerHTML = '<div class="no-results">กรุณาป้อนคำค้นหาอย่างน้อย 2 ตัวอักษร</div>';
+      searchCount.textContent = '';
+      return;
+    }
+    
+    var q = query.toLowerCase();
+    var results = [];
+    var totalMatches = 0;
+    
+    searchData.forEach(function(item) {
+      var lower = item.text.toLowerCase();
+      var idx = lower.indexOf(q);
+      if (idx !== -1) {
+        var count = 0;
+        var pos = -1;
+        while ((pos = lower.indexOf(q, pos + 1)) !== -1) count++;
+        totalMatches += count;
+        
+        var snippet = item.text.substring(Math.max(0, idx - 60), idx + q.length + 120);
+        if (idx > 60) snippet = '...' + snippet;
+        if (idx + q.length + 120 < item.text.length) snippet = snippet + '...';
+        
+        snippet = snippet.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        snippet = snippet.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'), '<mark>$1</mark>');
+        
+        results.push({
+          heading: item.heading,
+          snippet: snippet,
+          element: item.element,
+          count: count
+        });
+      }
+    });
+    
+    if (results.length > 50) results = results.slice(0, 50);
+    
+    searchCount.textContent = totalMatches + ' ผลลัพธ์';
+    
+    if (results.length === 0) {
+      searchResults.innerHTML = '<div class="no-results">ไม่พบผลลัพธ์สำหรับ "' + query + '"</div>';
+      return;
+    }
+    
+    var html = '';
+    results.forEach(function(r) {
+      html += '<div class="search-result-item" data-heading="' + r.heading.replace(/"/g, '&quot;') + '">';
+      html += '<div class="result-heading">' + r.heading + '</div>';
+      html += '<div class="result-snippet">' + r.snippet + '</div>';
+      html += '</div>';
+    });
+    searchResults.innerHTML = html;
+    
+    searchResults.querySelectorAll('.search-result-item').forEach(function(item, i) {
+      item.addEventListener('click', function() {
+        var el = results[i].element;
+        if (el) {
+          var offset = 100;
+          var pos = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: pos, behavior: 'smooth' });
+          searchOverlay.classList.remove('active');
+          el.style.transition = 'background 0.5s ease';
+          el.style.background = 'var(--bg-tertiary)';
+          setTimeout(function() {
+            el.style.background = '';
+          }, 1500);
+        }
+      });
+    });
+  }
+  
+  var searchTimeout = null;
+  searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      performSearch(searchInput.value);
+    }, 300);
+  });
+  
+  searchToggle.addEventListener('click', function() {
+    searchOverlay.classList.add('active');
+    setTimeout(function() { searchInput.focus(); }, 100);
+  });
+  
+  searchClose.addEventListener('click', function() {
+    searchOverlay.classList.remove('active');
+    searchInput.value = '';
+    searchResults.innerHTML = '';
+    searchCount.textContent = '';
+  });
+  
+  searchOverlay.addEventListener('click', function(e) {
+    if (e.target === searchOverlay) {
+      searchOverlay.classList.remove('active');
+      searchInput.value = '';
+      searchResults.innerHTML = '';
+      searchCount.textContent = '';
+    }
+  });
+  
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      searchToggle.click();
+    }
+    if (e.key === 'Escape') {
+      searchOverlay.classList.remove('active');
+    }
+  });
+})();
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.expandable.expanded').forEach(function(el) {
+    var header = el.querySelector('.expandable-header');
+    if (header) header.setAttribute('aria-expanded', 'true');
+  });
+});
+</script>
+</body>
+</html>
