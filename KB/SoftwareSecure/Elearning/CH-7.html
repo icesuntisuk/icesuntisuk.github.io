@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บทที่ 7: Access Control และ Authorization</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#1a56db;--primary-dark:#1340a0;--primary-light:#e8effc;--navy:#1e293b;--navy-light:#334155;--success:#059669;--success-light:#d1fae5;--danger:#dc2626;--danger-light:#fee2e2;--warning:#d97706;--warning-light:#fef3c7;--purple:#7c3aed;--purple-light:#ede9fe;--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--radius:12px;--radius-sm:8px;--sidebar-w:292px;--font-thai:'Sarabun',sans-serif;--font-mono:'IBM Plex Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.8;display:flex;min-height:100vh}a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);height:100vh;background:var(--navy);color:#fff;overflow-y:auto;z-index:100;transition:transform .3s}.sidebar-header{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}.sidebar-header h1{font-size:1rem;font-weight:600;color:#fff;line-height:1.4}.sidebar-header .sub{font-size:.75rem;color:#94a3b8;margin-top:.25rem}.sidebar-nav{padding:.75rem 0}.sidebar-nav a{display:block;padding:.5rem 1.25rem;color:#cbd5e1;font-size:.84rem;transition:all .15s;border-left:3px solid transparent}.sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--primary);text-decoration:none}.sidebar-nav .section-label{padding:.6rem 1.25rem .25rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;font-weight:600}.sidebar-nav .sub-link{padding-left:2.35rem;font-size:.78rem}.sidebar-toggle{display:none;position:fixed;top:.75rem;left:.75rem;z-index:200;background:var(--navy);color:#fff;border:none;width:44px;height:44px;border-radius:var(--radius-sm);cursor:pointer;font-size:1.5rem;align-items:center;justify-content:center}.sidebar-overlay{display:none}.main{flex:1;margin-left:var(--sidebar-w);max-width:100%;padding:0}.topbar{position:sticky;top:0;z-index:50;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between}.topbar-title{font-size:.85rem;color:var(--text-muted)}.topbar-title strong{color:var(--text);font-weight:600}.topbar-progress{font-size:.8rem;color:var(--text-muted)}.topbar-home{color:var(--text-muted);font-size:.85rem;text-decoration:none;margin-right:.75rem;transition:color.15s;white-space:nowrap}.topbar-home:hover{color:var(--primary);text-decoration:none}.content{padding:2rem;max-width:1040px;margin:0 auto}.content h2{margin:2.5rem 0 1rem;padding-bottom:.5rem;border-bottom:2px solid var(--primary);color:var(--navy);font-size:1.45rem}.content h3{margin:1.75rem 0 .75rem;color:var(--navy);font-size:1.2rem}.content h4{margin:1.25rem 0 .5rem;color:var(--navy);font-size:1.05rem}.content p,.content li{font-size:.95rem;color:var(--text)}.content ul,.content ol{padding-left:1.5rem;margin:.5rem 0}.content li{margin:.2rem 0}.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1.25rem 0;box-shadow:var(--shadow)}.card-header{font-weight:600;font-size:1.05rem;margin-bottom:.75rem;color:var(--navy)}.card ol,.card ul{padding-left:1.25rem}.card li{margin:.3rem 0;font-size:.92rem}.table-wrap{overflow-x:auto;margin:.75rem 0;border-radius:var(--radius-sm);border:1px solid var(--border)}.table-wrap table{width:100%;border-collapse:collapse;font-size:.85rem}.table-wrap th,.table-wrap td{padding:.6rem .75rem;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}.table-wrap th{background:var(--navy);color:#fff;font-weight:600;white-space:nowrap}.table-wrap tr:last-child td{border-bottom:none}.table-wrap tr:nth-child(even){background:var(--bg)}.table-wrap table td:first-child{font-weight:500;white-space:nowrap}.info-box{background:var(--primary-light);border-left:4px solid var(--primary);border-radius:var(--radius-sm);padding:1rem 1.25rem;margin:1rem 0;display:flex;gap:.75rem;align-items:flex-start}.info-box.warning{background:var(--warning-light);border-left-color:var(--warning)}.info-box.danger{background:var(--danger-light);border-left-color:var(--danger)}.info-box .icon{font-size:1.2rem;font-weight:700;min-width:1.5rem;color:var(--primary)}.info-box.warning .icon{color:#b45309}.info-box.danger .icon{color:#b91c1c}.info-box p{flex:1;font-size:.9rem;color:var(--text);margin:0}code{font-family:var(--font-mono);font-size:.83rem;background:#f1f5f9;padding:.15rem .35rem;border-radius:4px;color:#c7254e}pre{background:#1e293b;color:#e2e8f0;padding:1rem;border-radius:var(--radius-sm);overflow-x:auto;margin:.75rem 0;font-size:.82rem;line-height:1.6;position:relative}pre code{background:transparent;padding:0;color:inherit;font-size:inherit}.interactive{background:var(--bg-card);border:2px solid var(--primary);border-radius:var(--radius);padding:1.25rem;margin:1.25rem 0;box-shadow:var(--shadow)}.interactive h4{margin:0 0 .5rem;color:var(--navy)}.interactive p{font-size:.88rem;color:var(--text);margin-bottom:.75rem}.control-row{display:flex;gap:.5rem;margin:.5rem 0;flex-wrap:wrap;align-items:center}.control-row input,.control-row select{flex:1;min-width:140px;padding:.45rem .65rem;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-thai);font-size:.88rem;background:var(--bg)}.control-row input:focus,.control-row select:focus{outline:2px solid var(--primary);outline-offset:-1px;border-color:var(--primary)}.btn{display:inline-flex;align-items:center;gap:.35rem;padding:.45rem 1.1rem;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font-thai);font-size:.88rem;font-weight:500;cursor:pointer;transition:background .15s;white-space:nowrap}.btn:hover{background:var(--primary-dark)}.btn-outline{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}.btn-outline:hover{background:var(--primary-light)}.result{padding:.75rem 1rem;background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-sm);margin:.5rem 0;font-size:.88rem;min-height:2.5rem}.result.ok{background:var(--success-light);border-color:var(--success);color:#064e3b}.result.mid{background:var(--warning-light);border-color:var(--warning);color:#78350f}.result.bad{background:var(--danger-light);border-color:var(--danger);color:#7f1d1d}.tabs{display:flex;gap:0;margin:1rem 0 0;border-bottom:2px solid var(--border);flex-wrap:wrap}.tab-btn{padding:.5rem 1.1rem;background:transparent;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:var(--font-thai);font-size:.88rem;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .15s}.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary)}.tab-btn:hover{color:var(--primary)}.tab-panel{display:none;padding:.75rem 0}.tab-panel.active{display:block}.checklist{display:flex;flex-direction:column;gap:.35rem;margin:.5rem 0}.checklist label{display:flex;align-items:center;gap:.5rem;font-size:.88rem;cursor:pointer;padding:.25rem .5rem;border-radius:var(--radius-sm);transition:background .15s}.checklist label:hover{background:var(--primary-light)}.checklist input[type=checkbox]{width:18px;height:18px;accent-color:var(--primary);cursor:pointer;flex-shrink:0}.meter{height:10px;background:#e2e8f0;border-radius:50px;margin:.5rem 0;overflow:hidden}.meter-fill{height:100%;background:var(--primary);border-radius:50px;transition:width .4s;width:0%}.flow-text{background:var(--primary-light);border:1px solid var(--primary);border-radius:var(--radius);padding:1rem;font-family:var(--font-mono);font-size:.82rem;line-height:2;margin:.75rem 0}.timeline{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.25rem 0}.timeline .step{flex:1;min-width:130px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;text-align:center;font-size:.82rem;position:relative}.timeline .step strong{display:block;color:var(--primary);margin-bottom:.25rem}.timeline .step span{color:var(--text-muted)}.case-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin:1rem 0;box-shadow:var(--shadow)}.case-card .meta{display:flex;gap:.5rem;margin-bottom:.5rem}.case-card .meta .year{display:inline-block;background:var(--primary);color:#fff;padding:.1rem .55rem;border-radius:50px;font-size:.75rem;font-weight:600}.case-card .meta .type{display:inline-block;background:var(--purple-light);color:var(--purple);padding:.1rem .55rem;border-radius:50px;font-size:.75rem;font-weight:600}.case-card h4{margin:.25rem 0 .5rem;color:var(--navy);font-size:1.05rem}.case-card ul,.case-card ol{padding-left:1.25rem}.case-card li{font-size:.88rem;margin:.15rem 0}.case-card p{font-size:.9rem}.lab-section{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin:1rem 0;box-shadow:var(--shadow)}.lab-section h4{color:var(--primary);margin-bottom:.5rem}.lab-section p{font-size:.9rem;margin:.25rem 0}.lab-section ol,.lab-section ul{padding-left:1.25rem;margin:.5rem 0}.lab-section li{font-size:.88rem;margin:.2rem 0}.btn-group{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}.tag{display:inline-block;padding:.15rem .5rem;border-radius:50px;font-size:.75rem;font-weight:600}.tag.secure{background:var(--success-light);color:#047857}.tag.vuln{background:var(--danger-light);color:#b91c1c}.scroll-top{position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--navy);color:#fff;border:none;font-size:1.5rem;cursor:pointer;box-shadow:var(--shadow-lg);display:none;align-items:center;justify-content:center;z-index:99;transition:all .2s}.scroll-top.visible{display:flex}.scroll-top:hover{background:var(--navy-light)}.tree-visual{padding:.5rem 0;font-family:var(--font-mono);font-size:.85rem;line-height:2;white-space:pre}.tree-visual .tree-node{cursor:pointer;user-select:none}.tree-visual .tree-node:hover{color:var(--primary)}.tree-visual .tree-children{padding-left:1.5rem}.tree-visual .tree-toggle{display:inline-block;width:1.2rem;text-align:center;color:var(--text-muted)}.badge{display:inline-block;padding:.1rem .45rem;border-radius:50px;font-size:.72rem;font-weight:600}.badge.allow{background:var(--success-light);color:#047857}.badge.deny{background:var(--danger-light);color:#b91c1c}.badge.cond{background:var(--warning-light);color:#b45309}.split-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0}@media(max-width:1024px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sidebar-toggle{display:flex}.sidebar-overlay.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}.main{margin-left:0}.content{padding:1.25rem}.split-col{grid-template-columns:1fr}}@media(max-width:640px){.content{padding:1rem}.topbar{padding:.6rem 1rem;flex-direction:column;gap:.25rem}.topbar-title{font-size:.8rem}.control-row{flex-direction:column}.control-row input,.control-row select{width:100%;min-width:0}}
+</style>
+</head>
+<body>
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="เปิดเมนู">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-header"><h1>Access Control และ Authorization</h1><div class="sub">บทที่ 7 · Interactive Learning</div></div>
+  <div class="sidebar-nav">
+    <div class="section-label">เนื้อหา</div>
+    <a href="#s1">7.1 พื้นฐานและประเภทของ Access Control</a><a href="#s1-1" class="sub-link">DAC</a><a href="#s1-2" class="sub-link">MAC</a><a href="#s1-3" class="sub-link">RBAC</a><a href="#s1-4" class="sub-link">ABAC</a><a href="#s1-5" class="sub-link">Rule-Based</a><a href="#s1-6" class="sub-link">เปรียบเทียบ DAC/MAC/RBAC/ABAC</a>
+    <a href="#s2">7.2 หลักการออกแบบ Authorization</a><a href="#s2-1" class="sub-link">Least Privilege</a><a href="#s2-2" class="sub-link">Separation of Duties</a><a href="#s2-3" class="sub-link">Default Deny</a><a href="#s2-4" class="sub-link">Permission Creep</a><a href="#s2-5" class="sub-link">API และ Data Level</a>
+    <a href="#s3">7.3 OWASP A01: Broken Access Control</a><a href="#s3-1" class="sub-link">IDOR</a><a href="#s3-2" class="sub-link">Missing Function Level</a><a href="#s3-3" class="sub-link">Path Traversal</a><a href="#s3-4" class="sub-link">Privilege Escalation</a><a href="#s3-5" class="sub-link">Mass Assignment</a>
+    <a href="#s4">7.4 API และ Microservices Authorization</a><a href="#s4-1" class="sub-link">OAuth 2.0 Scopes</a><a href="#s4-2" class="sub-link">API Keys vs Access Tokens</a><a href="#s4-3" class="sub-link">OPA</a><a href="#s4-4" class="sub-link">Centralized Auth</a><a href="#s4-5" class="sub-link">Gateway Level Auth</a>
+    <a href="#s5">7.5 กรณีศึกษา</a><a href="#s5-1" class="sub-link">Cambridge Analytica</a><a href="#s5-2" class="sub-link">Capital One</a><a href="#s5-3" class="sub-link">GitHub</a><a href="#s5-4" class="sub-link">Parler</a>
+    <a href="#s6">7.6 สรุปและแนวทางปฏิบัติ</a><a href="#s6-1" class="sub-link">ASVS V4</a><a href="#s6-2" class="sub-link">OWASP Top 10 A01</a><a href="#s6-3" class="sub-link">Security Requirements</a><a href="#s6-4" class="sub-link">PR Checklist</a>
+    <div class="section-label">Interactive</div>
+    <a href="#play-compare">Access Control Model Comparator</a><a href="#play-rbac">RBAC Role Hierarchy</a><a href="#play-idor">IDOR Vulnerability Demo</a><a href="#play-mass">Mass Assignment Checker</a><a href="#play-opa">OPA Policy Simulator</a><a href="#play-quiz">Access Control Quiz</a><a href="#play-asvs">ASVS V4 Checklist</a>
+    <div class="section-label">กิจกรรม</div>
+    <a href="#labs">Labs</a>     <a href="#keywords">Keywords</a><a href="#labs">Labs</a><a href="#questions">คำถามท้ายบท</a><a href="#summary">สรุปท้ายบท</a><a href="#verify">Verification</a><a href="#refs">เอกสารอ้างอิง</a>
+  </div>
+</nav>
+<div class="main">
+  <header class="topbar"><a href="index.html" class="topbar-home" aria-label="กลับหน้าแรก">← HOME</a><div class="topbar-title"><strong>บทที่ 7</strong> · Access Control และ Authorization</div><div class="topbar-progress" id="readingProgress">Software Security</div></header>
+  <div class="content">
+
+    <div style="text-align:center;padding:2rem 0 1rem"><span style="display:inline-block;background:var(--primary);color:#fff;padding:.25rem 1rem;border-radius:50px;font-size:.85rem;margin-bottom:1rem">บทที่ 7</span><h1 style="font-size:2.25rem;color:var(--navy);margin-bottom:.5rem;border:none">Access Control และ Authorization</h1><p style="color:var(--text-muted);font-size:1rem">บรรยาย 2 ชม. + ปฏิบัติการ 2 ชม. | รวม 4 ชม.</p></div>
+
+    <div class="card" style="background:var(--navy-light);color:#fff;border:1px solid rgba(255,255,255,.15);box-shadow:0 4px 20px rgba(247, 245, 245, 0.25)"><div class="card-header" style="color:#fff">วัตถุประสงค์การเรียนรู้</div><ol style="color:#fff;padding-left:1.25rem">
+      <li>อธิบายและเปรียบเทียบโมเดล Access Control ทั้ง 5 ประเภท (DAC, MAC, RBAC, ABAC, Rule-Based) ในแง่การบริหารจัดการ ความยืดหยุ่น ระดับความปลอดภัย และกรณีการใช้งาน</li>
+      <li>ออกแบบ Role Hierarchy และ Permission Matrix ตามโมเดล RBAC ของ NIST โดยใช้หลักการ Core RBAC และ Role Hierarchy พร้อมระบุข้อกำหนด Separation of Duty</li>
+      <li>ประยุกต์ใช้หลักการออกแบบ Authorization (Least Privilege, Separation of Duties, Default Deny, Permission Review) ในการออกแบบระบบควบคุมการเข้าถึง</li>
+      <li>ระบุและอธิบาย Broken Access Control แต่ละประเภท (IDOR, Missing Function Level Access Control, Path Traversal, Privilege Escalation, Mass Assignment) พร้อมแนวทางป้องกันและการเขียนโค้ดที่ปลอดภัย</li>
+      <li>วิเคราะห์และตรวจสอบ IDOR Vulnerability ในเว็บแอปพลิเคชัน และแก้ไขโดยใช้ Indirect Reference Map ร่วมกับ Authorization Check</li>
+      <li>อธิบายแนวคิด API Authorization รวมถึง OAuth 2.0 Scopes, ความแตกต่างระหว่าง API Keys และ Access Tokens, และสถาปัตยกรรม Policy-Based Access Control (OPA / Casbin)</li>
+      <li>ออกแบบนโยบาย (Policy) ของ Policy-Based Access Control โดยใช้ Rego Language ของ Open Policy Agent</li>
+      <li>วิเคราะห์กรณีศึกษา Broken Access Control ในโลกจริง (Cambridge Analytica, Capital One, GitHub) และสรุปบทเรียนด้านการออกแบบสิทธิ์</li>
+      <li>ตรวจสอบตนเองโดยใช้ OWASP ASVS V4 Access Control Checklist และ OWASP Top 10 2025 A01 Checklist</li>
+      <li>แปลงความรู้ด้าน Authorization Security เป็น Security Requirements และ Test Cases ในกระบวนการพัฒนาซอฟต์แวร์</li>
+    </ol></div>
+
+    <div class="info-box warning"><div class="icon">SAFE</div><p><strong>ข้อกำหนดด้านจริยธรรม:</strong> บทนี้ครอบคลุมหลักการออกแบบ Access Control และ Authorization ที่ปลอดภัย เนื้อหามีตัวอย่างช่องโหว่ Broken Access Control เพื่อการเรียนรู้เชิงป้องกันเท่านั้น กิจกรรมปฏิบัติการทั้งหมดต้องทำในสภาพแวดล้อมที่ได้รับอนุญาต เช่น เครื่องของนักศึกษาเอง เซิร์ฟเวอร์ทดลอง หรือแอปพลิเคชันตัวอย่างที่อาจารย์จัดให้เท่านั้น Broken Access Control เป็นอันดับ 1 ใน OWASP Top 10 2025 โดย 100% ของแอปพลิเคชันที่ทดสอบพบช่องโหว่ด้านนี้บางรูปแบบ ห้ามนำเทคนิคในบทนี้ไปใช้กับระบบของบุคคลอื่นหรือระบบที่ไม่ได้รับอนุญาตเป็นลายลักษณ์อักษรโดยเด็ดขาด</p></div>
+
+    <h2 id="plan">แผนการเรียนรู้สำหรับ 4 ชั่วโมง</h2><div class="table-wrap"><table><thead><tr><th>ช่วงเวลา</th><th>หัวข้อ</th><th>เป้าหมายการเรียนรู้</th><th>กิจกรรมในชั้นเรียน</th></tr></thead><tbody>
+      <tr><td>ชั่วโมงที่ 1</td><td>พื้นฐาน Access Control และหลักการออกแบบ</td><td>เข้าใจ DAC, MAC, RBAC, ABAC, Rule-Based และหลัก Least Privilege, Separation of Duties, Default Deny</td><td>เปรียบเทียบโมเดล Access Control และวิเคราะห์ตัวอย่าง Policy</td></tr>
+      <tr><td>ชั่วโมงที่ 2</td><td>OWASP A01 Broken Access Control และ API Authorization</td><td>เข้าใจ IDOR, Missing Function Level, Path Traversal, Privilege Escalation, Mass Assignment และ OAuth Scopes, OPA</td><td>วิเคราะห์โค้ดที่มีช่องโหว่ IDOR และออกแบบ Authorization Policy</td></tr>
+      <tr><td>ชั่วโมงที่ 3</td><td>Lab 7.1 และ Lab 7.2</td><td>ฝึกวิเคราะห์และแก้ไข IDOR และออกแบบ RBAC Model สำหรับระบบ EHR</td><td>แก้ไขช่องโหว่ IDOR และออกแบบ Role Hierarchy + Permission Matrix</td></tr>
+      <tr><td>ชั่วโมงที่ 4</td><td>Lab 7.3 และ Lab 7.4</td><td>ฝึก Implement Policy-Based Access Control และตรวจจับ Broken Access Control</td><td>เขียน Rego Policy และทดสอบด้วย Burp Suite/ZAP</td></tr>
+    </tbody></table></div>
+
+    <h2 id="s1">7.1 พื้นฐานและประเภทของ Access Control</h2>
+    <p>Access Control (การควบคุมการเข้าถึง) เป็นกลไกที่กำหนดว่าใคร (Who) สามารถทำอะไร (What) กับทรัพยากรใด (Which Resource) ได้บ้างภายใต้เงื่อนไขใด (Under What Conditions) การเลือกโมเดล Access Control ที่เหมาะสมส่งผลโดยตรงต่อความปลอดภัยและประสิทธิภาพการบริหารจัดการของระบบ</p>
+
+    <h3 id="s1-1">7.1.1 DAC (Discretionary Access Control)</h3>
+    <p>DAC เป็นโมเดลที่ให้ <strong>เจ้าของทรัพยากร (Owner)</strong> เป็นผู้กำหนดสิทธิ์การเข้าถึงทรัพยากรของตนเอง เจ้าของสามารถให้สิทธิ์ แก้ไข หรือเพิกถอนสิทธิ์แก่ผู้ใช้อื่นได้ตามดุลยพินิจ</p>
+    <p><strong>ตัวอย่างที่คุ้นเคย: UNIX File Permissions</strong></p>
+    <p>ระบบ UNIX/Linux ใช้ DAC ในรูปแบบ permission bits 3 กลุ่ม ได้แก่ Owner, Group, Others และ 3 สิทธิ์ ได้แก่ Read (r), Write (w), Execute (x)</p>
+    <pre><code># ตัวอย่าง: แสดงสิทธิ์ไฟล์ใน UNIX
+$ ls -l /etc/passwd
+-rw-r--r--  1 root  wheel  1234 Jan 15 10:30 /etc/passwd
+# เจ้าของ (root): rw- (อ่าน+เขียน)
+# กลุ่ม (wheel): r-- (อ่านอย่างเดียว)
+# อื่นๆ (others): r-- (อ่านอย่างเดียว)
+
+# เปลี่ยนสิทธิ์
+$ chmod 600 secret.txt      # เจ้าของอ่าน+เขียนได้เท่านั้น
+$ chown alice:devteam file   # เปลี่ยนเจ้าของและกลุ่ม</code></pre>
+    <p><strong>ข้อดีของ DAC:</strong> ยืดหยุ่นสูง — เจ้าของทรัพยากรตัดสินใจเองได้; ใช้งานง่าย — ผู้ใช้ทั่วไปเข้าใจแนวคิดเจ้าของและสิทธิ์; ไม่ต้องมีผู้ดูแลระบบส่วนกลางตลอดเวลา</p>
+    <p><strong>ข้อเสียของ DAC:</strong> เสี่ยงข้อมูลรั่ว — ผู้ใช้ที่ไม่ระมัดระวังอาจให้สิทธิ์กว้างเกินจำเป็น; ควบคุมยากในองค์กรใหญ่ — ไม่มีนโยบายกลางที่บังคับใช้ทั่วทั้งระบบ; Malware ที่รันในบริบทของผู้ใช้สามารถเข้าถึงไฟล์ที่ผู้ใช้เป็นเจ้าของได้; ไม่สามารถป้องกันการโอนสิทธิ์ (Trojan Horse) — โปรแกรมที่ผู้ใช้รันสามารถอ่านข้อมูลและส่งออกได้</p>
+
+    <h3 id="s1-2">7.1.2 MAC (Mandatory Access Control)</h3>
+    <p>MAC เป็นโมเดลที่ <strong>ระบบหรือนโยบายกลาง</strong> เป็นผู้กำหนดสิทธิ์การเข้าถึง ผู้ใช้และเจ้าของทรัพยากรไม่สามารถเปลี่ยนแปลงสิทธิ์ได้ด้วยตนเอง ตรงข้ามกับ DAC โดยสิ้นเชิง</p>
+    <p><strong>หลักการทำงาน:</strong> ทุก Entity (Subject และ Object) ถูกติด Label ความปลอดภัย (Security Label / Classification); ระบบเปรียบเทียบ Label ของ Subject (เช่น clearance level) กับ Label ของ Object (เช่น classification level); Subject สามารถอ่าน Object ได้เมื่อ clearance >= classification (ใน Bell-LaPadula Model)</p>
+    <div class="table-wrap"><table><thead><tr><th>ระบบ</th><th>รายละเอียด</th></tr></thead><tbody>
+      <tr><td><strong>SELinux</strong> (Security-Enhanced Linux)</td><td>พัฒนาโดย NSA, บังคับใช้นโยบาย (Policy) ทั่วทั้งระบบปฏิบัติการ</td></tr>
+      <tr><td><strong>AppArmor</strong></td><td>ใช้ Profile จำกัดความสามารถของแต่ละโปรแกรม</td></tr>
+      <tr><td><strong>Windows Mandatory Integrity Control</strong></td><td>ใช้ Integrity Level (Low, Medium, High, System)</td></tr>
+    </tbody></table></div>
+    <pre><code># ดู SELinux context ของไฟล์
+$ ls -Z /var/www/html/index.html
+system_u:object_r:httpd_sys_content_t:s0 /var/www/html/index.html
+
+# ดู SELinux mode
+$ getenforce
+Enforcing
+
+# ดู SELinux boolean
+$ getsebool httpd_enable_homedirs
+httpd_enable_homedirs --> off</code></pre>
+    <p><strong>ข้อดีของ MAC:</strong> ปลอดภัยสูง — ผู้ใช้ไม่สามารถ bypass นโยบายกลางได้; ป้องกันการโจมตีแบบ privilege escalation ได้ดี; บังคับใช้นโยบายทั่วทั้งระบบอย่างสม่ำเสมอ; ลดความเสี่ยงจาก insider threat ที่เจตนารั่วไหลข้อมูล</p>
+    <p><strong>ข้อเสียของ MAC:</strong> ซับซ้อนในการบริหารจัดการ — ต้องมีผู้เชี่ยวชาญในการออกแบบนโยบาย; ยืดหยุ่นต่ำ — ผู้ใช้ไม่สามารถแชร์ทรัพยากรได้สะดวก; ค่าใช้จ่ายในการดูแลสูง; อาจมีปัญหา compatibility กับซอฟต์แวร์บางประเภท</p>
+    <p><strong>กรณีการใช้งานที่เหมาะสม:</strong> หน่วยงาน military, government intelligence, ระบบที่ต้องปฏิบัติตามมาตรฐานความปลอดภัยสูง</p>
+
+    <h3 id="s1-3">7.1.3 RBAC (Role-Based Access Control)</h3>
+    <p>RBAC เป็นโมเดลที่ <strong>กำหนดสิทธิ์ตามบทบาท (Role)</strong> ของผู้ใช้ในองค์กร แทนที่จะกำหนดสิทธิ์ให้กับผู้ใช้โดยตรง ผู้ใช้จะได้รับสิทธิ์ผ่านบทบาทที่ได้รับมอบหมาย</p>
+    <p><strong>NIST RBAC Reference Model (ANSI INCITS 359-2012):</strong> โมเดล RBAC ประกอบด้วย 4 ระดับ (RBAC0 - RBAC3)</p>
+    <div class="table-wrap"><table><thead><tr><th>ระดับ</th><th>ชื่อ</th><th>คุณสมบัติ</th></tr></thead><tbody>
+      <tr><td>RBAC0</td><td>Core RBAC</td><td>User, Role, Permission, Session</td></tr>
+      <tr><td>RBAC1</td><td>Hierarchical RBAC</td><td>RBAC0 + Role Hierarchy (สืบทอดสิทธิ์)</td></tr>
+      <tr><td>RBAC2</td><td>Constrained RBAC</td><td>RBAC0 + Separation of Duty (SSD/DSD)</td></tr>
+      <tr><td>RBAC3</td><td>Consolidated RBAC</td><td>RBAC1 + RBAC2 รวม Hierarchy และ Constraints</td></tr>
+    </tbody></table></div>
+    <p><strong>Core RBAC Components:</strong></p>
+    <ul>
+      <li><strong>User</strong> — บุคคลที่เข้าถึงระบบ (อาจแทนด้วย human user หรือ service account)</li>
+      <li><strong>Role</strong> — หน้าที่หรืองานในองค์กร เช่น "พยาบาล", "แพทย์", "ผู้ดูแลระบบ"</li>
+      <li><strong>Permission</strong> — การอนุญาตให้ดำเนินการกับ resource ใด resource หนึ่ง (operation + object)</li>
+      <li><strong>Session</strong> — ความสัมพันธ์ชั่วคราวระหว่าง user กับ subset ของ roles ที่ได้รับมอบหมาย</li>
+      <li><strong>User-Role Assignment</strong> — การมอบหมายบทบาทให้ผู้ใช้</li>
+      <li><strong>Role-Permission Assignment</strong> — การกำหนดสิทธิ์ให้บทบาท</li>
+    </ul>
+    <p><strong>Role Hierarchy:</strong> Role Hierarchy ช่วยให้สิทธิ์ถูกสืบทอดผ่านโครงสร้างบทบาท</p>
+    <pre><code>Manager
+  ├── Senior Engineer    (สืบทอด: Reviewer, Developer)
+  │     ├── Reviewer     (สืบทอด: Developer)
+  │     └── Developer    (สืบทอด: Tester)
+  └── Tester</code></pre>
+    <p>ในตัวอย่างนี้ Senior Engineer มีสิทธิ์ทุกอย่างของ Reviewer และ Developer โดยอัตโนมัติ ส่วน Manager มีสิทธิ์ทุกอย่างของทั้ง Senior Engineer และ Tester</p>
+    <p><strong>Separation of Duty (SoD):</strong> SoD ป้องกันไม่ให้บุคคลคนเดียวมีสิทธิ์ที่ขัดแย้งกัน ซึ่งอาจนำไปสู่การทุจริต</p>
+    <div class="table-wrap"><table><thead><tr><th>ประเภท</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead><tbody>
+      <tr><td><strong>Static Separation of Duty (SSD)</strong></td><td>ห้ามมอบหมายบทบาทที่ขัดแย้งให้ผู้ใช้คนเดียวกัน</td><td>บุคคลคนเดียวไม่สามารถเป็นทั้ง "ผู้ขอซื้อ" และ "ผู้อนุมัติซื้อ" ได้พร้อมกัน</td></tr>
+      <tr><td><strong>Dynamic Separation of Duty (DSD)</strong></td><td>ภายใน session เดียวกัน ห้าม activate บทบาทที่ขัดแย้งพร้อมกัน</td><td>คนเดียวกันสามารถเป็นทั้ง "พนักงานขาย" และ "ผู้จัดการ" ได้ แต่ activate พร้อมกันใน session เดียวไม่ได้</td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่างการออกแบบ RBAC สำหรับระบบธนาคาร:</strong></p>
+    <pre><code># ตัวอย่างโครงสร้าง RBAC ใน Python
+roles_permissions = {
+    "teller": [
+        "transaction:create",
+        "account:view_own_branch",
+        "customer:view_basic"
+    ],
+    "loan_officer": [
+        "loan:create",
+        "loan:approve_up_to_100k",
+        "customer:view_full_profile",
+        "account:view_customer_accounts"
+    ],
+    "branch_manager": [
+        "loan:approve_up_to_1m",
+        "employee:manage",
+        "report:view_branch",
+        "audit:initiate"
+    ],
+    "compliance_officer": [
+        "audit:view_all",
+        "transaction:investigate",
+        "report:view_enterprise"
+    ]
+}
+
+# SSD: teller และ compliance_officer ต้องไม่ใช่คนเดียวกัน
+# DSD: loan_officer และ loan_approver เป็นบทบาทที่ activate พร้อมกันไม่ได้</code></pre>
+    <p><strong>ข้อดีของ RBAC:</strong> ลดความซับซ้อนในการจัดการสิทธิ์ — เปลี่ยน role แทนการแก้ permission ทีละคน; สอดคล้องกับโครงสร้างองค์กร; รองรับการตรวจสอบ (audit) — รู้ว่าบทบาทใดมีสิทธิ์อะไร; สนับสนุนการสืบทอดสิทธิ์ผ่าน Role Hierarchy</p>
+    <p><strong>ข้อเสียของ RBAC:</strong> Role Explosion — เมื่อองค์กรใหญ่ขึ้น จำนวน role อาจเพิ่มขึ้นมาก (role creep); ไม่ยืดหยุ่นพอสำหรับเงื่อนไขละเอียด — เช่น "ให้สิทธิ์เฉพาะวันจันทร์-ศุกร์"; การปรับ role ทุกครั้งต้องแก้ code หรือ configuration</p>
+
+    <h3 id="s1-4">7.1.4 ABAC (Attribute-Based Access Control)</h3>
+    <p>ABAC ตามนิยามของ <strong>NIST SP 800-162</strong> คือโมเดลที่ตัดสินใจให้สิทธิ์โดยการ <strong>ประเมินคุณลักษณะ (Attributes)</strong> ของ Subject, Object, Environment และ Policy Rules</p>
+    <div class="table-wrap"><table><thead><tr><th>ประเภท Attribute</th><th>ตัวอย่าง</th></tr></thead><tbody>
+      <tr><td><strong>Subject Attributes</strong></td><td>ตำแหน่ง, แผนก, clearance level, สัญชาติ, อายุงาน</td></tr>
+      <tr><td><strong>Object Attributes</strong></td><td>ระดับความลับ (classification), เจ้าของ, แผนกเจ้าของ, ประเภทข้อมูล</td></tr>
+      <tr><td><strong>Environment Attributes</strong></td><td>เวลา, สถานที่, อุปกรณ์, เครือข่าย, ระดับความเสี่ยงปัจจุบัน</td></tr>
+      <tr><td><strong>Action Attributes</strong></td><td>ประเภท operation (read/write/delete/export)</td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่าง Policy Rule ใน ABAC:</strong></p>
+    <pre><code>Rule: "พนักงานสามารถดูเอกสารของแผนกตนเองได้เฉพาะในเวลาทำงาน"
+IF
+  subject.department == object.department
+  AND subject.employment_status == "active"
+  AND environment.time BETWEEN "09:00" AND "17:00"
+  AND environment.day_of_week IN ["Monday","Tuesday","Wednesday","Thursday","Friday"]
+THEN
+  PERMIT action.read</code></pre>
+    <p><strong>ข้อดีของ ABAC:</strong> ยืดหยุ่นสูง — สามารถกำหนดเงื่อนไขละเอียดได้ตามบริบท; ไม่เกิด Role Explosion — ใช้ attribute แทนการสร้าง role ใหม่ทุกครั้ง; รองรับการเปลี่ยนแปลงแบบ real-time — เช่น ตัดสิทธิ์ทันทีเมื่อพนักงานลาออก; สามารถ implement DAC และ MAC ได้ภายใต้กรอบ ABAC เดียวกัน</p>
+    <p><strong>ข้อเสียของ ABAC:</strong> ซับซ้อนในการออกแบบ — ต้องเข้าใจ business logic อย่างลึกซึ้ง; ประสิทธิภาพ — การประเมินหลาย attribute ทุก request อาจช้า; ต้องมี Attribute Management ที่ robust; ทดสอบยาก — จำนวน combinations ของ attributes มีมหาศาล</p>
+    <p><strong>เมื่อไรควรใช้ ABAC:</strong> ระบบที่มีเงื่อนไขการเข้าถึงหลากหลายและเปลี่ยนแปลงบ่อย; ระบบที่ต้องควบคุมการเข้าถึงตามบริบท (เวลา สถานที่ อุปกรณ์); องค์กรขนาดใหญ่ที่มีโครงสร้างซับซ้อน; ระบบคลาวด์ที่ต้องการ fine-grained access control</p>
+
+    <h3 id="s1-5">7.1.5 Rule-Based Access Control</h3>
+    <p>Rule-Based Access Control กำหนดการเข้าถึงโดยใช้ <strong>กฎเงื่อนไข (Rules)</strong> ที่ตายตัว เช่น ACLs (Access Control Lists) ในไฟร์วอลล์หรือเราเตอร์</p>
+    <p><strong>ความแตกต่างจาก ABAC:</strong> Rule-Based ใช้กฎที่ตายตัวและไม่พิจารณา context attributes เปลี่ยนแปลงยาก ABAC ใช้ attributes ที่ยืดหยุ่นและ dynamic กว่า</p>
+    <pre><code># iptables Rule (Linux Firewall)
+iptables -A INPUT -p tcp --dport 22 -s 192.168.1.0/24 -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -j DROP
+
+# AWS S3 Bucket Policy (Rule-Based)
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::public-bucket/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    }
+  ]
+}</code></pre>
+
+    <h3 id="s1-6">7.1.6 การเปรียบเทียบ DAC/MAC/RBAC/ABAC</h3>
+    <div class="table-wrap"><table><thead><tr><th>มิติการเปรียบเทียบ</th><th>DAC</th><th>MAC</th><th>RBAC</th><th>ABAC</th></tr></thead><tbody>
+      <tr><td><strong>ผู้ควบคุมสิทธิ์</strong></td><td>เจ้าของทรัพยากร</td><td>ระบบ / นโยบายกลาง</td><td>ผู้ดูแลระบบตาม role</td><td>Policy Engine ตาม attributes</td></tr>
+      <tr><td><strong>ความซับซ้อนในการบริหารจัดการ</strong></td><td>ต่ำ</td><td>สูงมาก</td><td>ปานกลาง</td><td>สูง</td></tr>
+      <tr><td><strong>ความยืดหยุ่น</strong></td><td>สูง</td><td>ต่ำมาก</td><td>ปานกลาง</td><td>สูงมาก</td></tr>
+      <tr><td><strong>ระดับความปลอดภัย</strong></td><td>ต่ำ-ปานกลาง</td><td>สูงมาก</td><td>ปานกลาง-สูง</td><td>สูง</td></tr>
+      <tr><td><strong>การปรับขนาด (Scalability)</strong></td><td>ไม่เหมาะกับองค์กรใหญ่</td><td>ปานกลาง</td><td>ดี</td><td>ดีมาก</td></tr>
+      <tr><td><strong>การรองรับเงื่อนไขบริบท</strong></td><td>ไม่มี</td><td>ไม่มี</td><td>ไม่มีโดยตรง</td><td>มี (Environment Attributes)</td></tr>
+      <tr><td><strong>การตรวจสอบ (Audit)</strong></td><td>ยาก</td><td>ง่าย</td><td>ง่าย</td><td>ปานกลาง</td></tr>
+      <tr><td><strong>กรณีใช้งานที่เหมาะสม</strong></td><td>เครื่องส่วนตัว, ไฟล์ส่วนตัว</td><td>Military, Government</td><td>องค์กรทั่วไป, ERP, HR</td><td>คลาวด์, ระบบที่มีเงื่อนไขซับซ้อน</td></tr>
+      <tr><td><strong>ตัวอย่างเทคโนโลยี</strong></td><td>UNIX permissions, NTFS</td><td>SELinux, AppArmor</td><td>Keycloak Roles, Spring Security</td><td>OPA, AWS IAM, Azure RBAC</td></tr>
+    </tbody></table></div>
+
+    <div class="interactive" id="play-compare"><h4>Interactive: Access Control Model Comparator</h4><p>เลือกโมเดล Access Control เพื่อดูคำอธิบาย ข้อดี ข้อเสีย และกรณีการใช้งาน</p>
+    <div class="control-row"><select id="modelSelect"><option value="">-- เลือกโมเดล --</option><option value="dac">DAC (Discretionary Access Control)</option><option value="mac">MAC (Mandatory Access Control)</option><option value="rbac">RBAC (Role-Based Access Control)</option><option value="abac">ABAC (Attribute-Based Access Control)</option></select><button class="btn" id="modelBtn">แสดงข้อมูล</button></div>
+    <div id="modelResult" class="result">เลือกโมเดลแล้วกดแสดงข้อมูล</div></div>
+
+    <div class="interactive" id="play-rbac"><h4>Interactive: RBAC Role Hierarchy Builder</h4><p>คลิกที่บทบาทเพื่อขยาย/ยุบดู Role Hierarchy และสิทธิ์ที่สืบทอด</p>
+    <div id="rbacTree" class="tree-visual" style="font-size:.85rem;line-height:2">
+      <div class="tree-node" data-expand="manager"><span class="tree-toggle">▶</span> Manager</div>
+      <div class="tree-children" id="ch-manager" style="display:none;padding-left:1.5rem">
+        <div class="tree-node" data-expand="senior"><span class="tree-toggle">▶</span> Senior Engineer (สืบทอด: Reviewer, Developer)</div>
+        <div class="tree-children" id="ch-senior" style="display:none;padding-left:1.5rem">
+          <div class="tree-node" data-expand="reviewer"><span class="tree-toggle">▶</span> Reviewer (สืบทอด: Developer)</div>
+          <div class="tree-children" id="ch-reviewer" style="display:none;padding-left:1.5rem">
+            <div style="color:var(--text-muted)">· read:code<br>· review:pull_request</div>
+          </div>
+          <div>· Developer (สืบทอด: Tester)</div>
+          <div class="tree-children" style="padding-left:1.5rem">
+            <div style="color:var(--text-muted)">· write:code<br>· commit:feature_branch</div>
+          </div>
+        </div>
+        <div>· Tester</div>
+        <div style="padding-left:1.5rem;color:var(--text-muted)">· read:test_cases<br>· write:bug_report</div>
+      </div>
+      <div style="margin-top:.5rem;padding:.5rem;background:var(--primary-light);border-radius:var(--radius-sm);font-size:.82rem">
+        <strong>สิทธิ์ที่สืบทอด:</strong><br>
+        Manager = Senior Engineer + Tester + Reviewer + Developer<br>
+        Senior Engineer = Reviewer + Developer + Tester<br>
+        Reviewer = Developer + Tester
+      </div>
+    </div></div>
+
+    <h2 id="s2">7.2 หลักการออกแบบ Authorization</h2>
+
+    <h3 id="s2-1">7.2.1 Principle of Least Privilege (สิทธิ์น้อยที่สุด)</h3>
+    <p><strong>หลักการ:</strong> ผู้ใช้ โปรแกรม หรือกระบวนการ ควรได้รับสิทธิ์เท่าที่จำเป็นต่อการปฏิบัติหน้าที่เท่านั้น และต้องถูกเพิกถอนเมื่อไม่จำเป็นอีกต่อไป</p>
+    <p><strong>แนวทางการ Implement:</strong></p>
+    <ol>
+      <li><strong>เริ่มจาก Zero แล้วค่อยเพิ่ม:</strong> ตั้งค่า Default Deny แล้วเพิ่มสิทธิ์ทีละน้อยตามความจำเป็น</li>
+      <li><strong>แยกบัญชีตามหน้าที่:</strong> ไม่ใช้บัญชีเดียวกับทุกบทบาท</li>
+      <li><strong>จำกัดเวลาและขอบเขต:</strong> สิทธิ์ชั่วคราว (Just-In-Time Privilege)</li>
+    </ol>
+    <p><strong>ตัวอย่าง: การสร้าง Database User ด้วย Least Privilege</strong></p>
+    <pre><code>-- ไม่ปลอดภัย: ให้สิทธิ์ admin ทั้งหมด
+GRANT ALL PRIVILEGES ON *.* TO 'app_user'@'%';
+
+-- ปลอดภัย: ให้สิทธิ์เฉพาะ table และ operation ที่จำเป็น
+CREATE USER 'app_readonly'@'10.0.0.0/255.255.255.0'
+  IDENTIFIED BY 'strong_password';
+GRANT SELECT ON orders_db.orders TO 'app_readonly'@'10.0.0.0/255.255.255.0';
+GRANT SELECT, INSERT, UPDATE ON orders_db.order_items
+  TO 'app_readonly'@'10.0.0.0/255.255.255.0';
+-- ไม่ให้ DELETE หรือ DROP</code></pre>
+    <p><strong>ตัวอย่าง: Service Account ที่ปลอดภัย</strong></p>
+    <pre><code># ไม่ปลอดภัย: ใช้ Admin Credentials ทุกอย่าง
+aws_access_key_id = "AKIAIOSFODNN7EXAMPLE"
+aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+# คีย์นี้มีสิทธิ์ Admin — ถ้ารั่วหายนะ!
+
+# ปลอดภัย: ใช้ IAM Role ที่มีสิทธิ์จำกัด
+# Policy ที่แนบกับ EC2 Role:
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::my-app-bucket/uploads/*"
+    }
+  ]
+}
+# EC2 instance นี้ upload/download ได้เฉพาะ bucket/uploads/ เท่านั้น</code></pre>
+
+    <h3 id="s2-2">7.2.2 Principle of Separation of Duties (การแยกหน้าที่)</h3>
+    <p><strong>หลักการ:</strong> หน้าที่ที่สำคัญและมีความขัดแย้งทางผลประโยชน์ต้องแยกให้บุคคลหลายคนรับผิดชอบ เพื่อป้องกันการทุจริต (Fraud) โดยบุคคลเดียว</p>
+    <p><strong>ตัวอย่างในระบบ Payment:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>บทบาท</th><th>หน้าที่</th><th>ข้อห้าม</th></tr></thead><tbody>
+      <tr><td><strong>Requestor</strong></td><td>ขอจัดซื้อ/เบิกจ่าย</td><td>ไม่อนุมัติคำขอของตนเอง</td></tr>
+      <tr><td><strong>Approver</strong></td><td>อนุมัติคำขอ</td><td>ไม่ใช่คนเดียวกับ Requestor</td></tr>
+      <tr><td><strong>Processor</strong></td><td>ดำเนินการจ่ายเงิน</td><td>ไม่อนุมัติหรือขอเบิก</td></tr>
+      <tr><td><strong>Auditor</strong></td><td>ตรวจสอบธุรกรรม</td><td>ไม่มีสิทธิ์สร้าง/แก้ไข/ลบธุรกรรม</td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่างการ Implement ใน Code:</strong></p>
+    <pre><code># Separation of Duty Check
+def can_approve_payment(approver_id, payment_request):
+    """ตรวจสอบว่า approver ไม่ใช่คนเดียวกับ requestor"""
+    if approver_id == payment_request.requestor_id:
+        raise AuthorizationError(
+            "ผู้ขอและผู้อนุมัติต้องไม่ใช่บุคคลเดียวกัน (SoD violation)"
+        )
+
+    # ตรวจสอบว่าบุคคลนี้มีบทบาท Approver
+    if not user_has_role(approver_id, "payment_approver"):
+        raise AuthorizationError(
+            "เฉพาะผู้ที่มีบทบาท payment_approver เท่านั้นที่อนุมัติได้"
+        )
+
+    # ตรวจสอบ SSD constraint
+    if roles_conflict(approver_id, "payment_approver", "payment_processor"):
+        raise AuthorizationError(
+            "บุคคลนี้มีบทบาทที่ขัดแย้ง (SSD violation)"
+        )
+
+    return True</code></pre>
+
+    <h3 id="s2-3">7.2.3 Default Deny (Fail Safe Defaults)</h3>
+    <p><strong>หลักการ:</strong> การเข้าถึงทุกอย่างถูก <strong>ปฏิเสธเป็นค่าเริ่มต้น</strong> เว้นแต่จะได้รับอนุญาตอย่างชัดแจ้ง (Explicit Grant)</p>
+    <pre><code># ไม่ปลอดภัย: อนุญาตโดยปริยาย
+def view_document(user, document_id):
+    document = get_document(document_id)
+    # ถ้าไม่มี check ใดๆ — ผู้ใช้ทุกคนเห็นเอกสารทั้งหมด!
+    return document
+
+# ปลอดภัย: Default Deny + Explicit Grant
+def view_document(user, document_id):
+    # ขั้นตอนที่ 1: ตรวจสอบ Authentication
+    if not user.is_authenticated:
+        raise AuthenticationError("โปรดล็อกอินก่อน")
+
+    # ขั้นตอนที่ 2: Default Deny — เริ่มต้นด้วยการปฏิเสธ
+    authorized = False
+
+    # ขั้นตอนที่ 3: Explicit Grant — ตรวจสอบสิทธิ์ทีละกรณี
+    if user.has_permission("document:view_all"):
+        authorized = True
+    elif user.has_permission("document:view_own") and \
+         document.owner_id == user.id:
+        authorized = True
+    elif user.has_role("manager") and \
+         document.department == user.department:
+        authorized = True
+
+    # ขั้นตอนที่ 4: ถ้าไม่ได้รับอนุญาต — ปฏิเสธ
+    if not authorized:
+        log_access_denied(user, document_id)
+        raise AuthorizationError("คุณไม่มีสิทธิ์เข้าถึงเอกสารนี้")
+
+    return document</code></pre>
+    <p><strong>ข้อควรจำ:</strong> ถ้าลืมเขียน authorization check — Default Deny จะปกป้องระบบ ตรงข้ามกับ Default Allow ที่จะเปิดช่องโหว่ทันที</p>
+
+    <h3 id="s2-4">7.2.4 Permission Creep และการทบทวนสิทธิ์</h3>
+    <p><strong>Permission Creep</strong> คือปรากฏการณ์ที่พนักงานสะสมสิทธิ์เพิ่มขึ้นเรื่อยๆ เมื่อเปลี่ยนบทบาทหรือหน้าที่ โดยสิทธิ์เก่าไม่ถูกเพิกถอน ทำให้พนักงานมีสิทธิ์เกินความจำเป็น</p>
+    <p><strong>ตัวอย่างปัญหา:</strong></p>
+    <pre><code>Alice เริ่มงานเป็น Developer (มีสิทธิ์: read code, commit to dev branch)
+Alice เลื่อนเป็น Senior Developer (เพิ่มสิทธิ์: merge to staging, access CI/CD)
+Alice เลื่อนเป็น Tech Lead (เพิ่มสิทธิ์: merge to production, manage secrets)
+Alice โอนย้ายเป็น Product Manager (เพิ่มสิทธิ์: view roadmap, manage backlog)
+---
+สิทธิ์สะสมของ Alice ณ ปัจจุบัน = ALL (Developer + Senior + Tech Lead + PM)
+Alice มีสิทธิ์ merge code สู่ production แม้ไม่ใช่หน้าที่แล้ว!</code></pre>
+    <p><strong>แนวทางจัดการ Permission Creep:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>มาตรการ</th><th>รายละเอียด</th></tr></thead><tbody>
+      <tr><td><strong>Periodic Access Review</strong></td><td>ทุก 3-6 เดือน ทบทวนสิทธิ์ของพนักงานทุกคน</td></tr>
+      <tr><td><strong>Role-Based Cleanup</strong></td><td>เปลี่ยนบทบาท — เพิกถอนสิทธิ์ของบทบาทเก่าโดยอัตโนมัติ</td></tr>
+      <tr><td><strong>Just-In-Time Privilege</strong></td><td>ให้สิทธิ์ชั่วคราวเมื่อจำเป็นเท่านั้น (PIM/PAM)</td></tr>
+      <tr><td><strong>Separation of Duties Review</strong></td><td>ตรวจสอบว่าไม่มี SoD violation</td></tr>
+      <tr><td><strong>Access Certification</strong></td><td>ผู้จัดการต้อง certify สิทธิ์ของลูกน้องทุกปี</td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่าง Identity Governance Process:</strong></p>
+    <ol>
+      <li>พนักงานย้ายแผนก — HR System แจ้ง IAM</li>
+      <li>IAM System เพิกถอนบทบาทเก่าทั้งหมดอัตโนมัติ</li>
+      <li>IAM System มอบหมายบทบาทใหม่ตามโครงสร้างองค์กร</li>
+      <li>ผู้จัดการใหม่ได้รับการแจ้งเตือนให้ certify สิทธิ์ภายใน 30 วัน</li>
+      <li>ถ้าไม่ certify ภายใน 30 วัน — สิทธิ์ถูกระงับอัตโนมัติ</li>
+    </ol>
+
+    <h3 id="s2-5">7.2.5 Authorization ที่ระดับ API Endpoint และระดับ Data</h3>
+    <p>การตรวจสอบ Authorization ต้องทำ <strong>ทุกระดับ</strong> ไม่ใช่แค่หน้า Login</p>
+    <p><strong>แนวคิด: Two-Level Authorization</strong></p>
+    <pre><code># Level 1: API Endpoint Authorization (ใครสามารถเรียก endpoint นี้ได้)
+@app.route("/api/orders/&lt;order_id&gt;", methods=["GET"])
+@jwt_required
+@requires_permission("orders:view")  # มีสิทธิ์ดู orders หรือไม่?
+def get_order(order_id):
+
+    # Level 2: Data-Level Authorization (คนนี้มีสิทธิ์ดู order นี้ไหม?)
+    order = Order.query.get(order_id)
+
+    # ตรวจสอบ Data Ownership
+    if not can_access_order(current_user.id, order):
+        log_unauthorized_access(current_user.id, order_id)
+        return {"error": "Forbidden"}, 403
+
+    return order.to_dict()
+
+def can_access_order(user_id, order):
+    """ตรวจสอบว่าผู้ใช้มีสิทธิ์เข้าถึง order นี้หรือไม่"""
+    # Case 1: เจ้าของ order
+    if order.customer_id == user_id:
+        return True
+
+    # Case 2: พนักงานที่รับผิดชอบ
+    if order.assignee_id == user_id:
+        return True
+
+    # Case 3: Admin/Supervisor
+    if user_has_role(user_id, "order_admin"):
+        return True
+
+    # Case 4: ผู้จัดการแผนก
+    if user_has_role(user_id, "department_manager") and \
+       order.department == get_user_department(user_id):
+        return True
+
+    # Default: Deny
+    return False</code></pre>
+    <p><strong>ข้อควรระวัง:</strong> Data-Level Authorization มักถูกลืมในการพัฒนา — นักพัฒนามักตรวจสอบแค่ว่า "ผู้ใช้ล็อกอินหรือไม่" และ "มีสิทธิ์เรียก endpoint หรือไม่" แต่ลืมตรวจว่า "มีสิทธิ์เข้าถึง resource นี้หรือไม่"</p>
+
+    <h2 id="s3">7.3 OWASP A01: Broken Access Control</h2>
+    <p>Broken Access Control เป็นอันดับ 1 ใน OWASP Top 10 ทั้งปี 2021 และ 2025 โดย 100% ของแอปพลิเคชันที่ถูกทดสอบพบช่องโหว่ด้านนี้บางรูปแบบ มี CWE ที่เกี่ยวข้อง 40 รายการ และมีจำนวน occurrences มากที่สุด 1,839,701 ครั้งจากข้อมูลที่รวบรวม</p>
+
+    <h3 id="s3-1">7.3.1 Insecure Direct Object Reference (IDOR)</h3>
+    <p>IDOR (CWE-639) เกิดเมื่อแอปพลิเคชันเปิดเผย reference โดยตรงของ internal object (เช่น ID, คีย์, filename) และไม่ตรวจสอบว่าผู้ใช้มีสิทธิ์เข้าถึง object นั้นหรือไม่</p>
+    <p><strong>ตัวอย่างช่องโหว่:</strong></p>
+    <pre><code># ไม่ปลอดภัย: IDOR Vulnerability
+@app.route("/api/user/profile/&lt;user_id&gt;")
+@jwt_required
+def get_user_profile(user_id):
+    # ปัญหา: ไม่ตรวจสอบว่า current_user มีสิทธิ์ดู profile ของ user_id นี้หรือไม่
+    user = User.query.get(user_id)
+    return user.to_dict()
+
+# ผู้โจมตีเปลี่ยน user_id ใน URL:
+# GET /api/user/profile/102 — ดูข้อมูล user 102 (ของตัวเอง)
+# GET /api/user/profile/103 — ดูข้อมูล user 103 (ของคนอื่น!)
+# GET /api/user/profile/999 — ดูข้อมูล user 999</code></pre>
+    <p><strong>แนวทางแก้ไข 1: Authorization Check ก่อนเข้าถึง object</strong></p>
+    <pre><code># ปลอดภัย: ตรวจสอบว่าผู้ใช้มีสิทธิ์เข้าถึง object
+@app.route("/api/user/profile/&lt;user_id&gt;")
+@jwt_required
+def get_user_profile(user_id):
+    # ตรวจสอบ Authorization
+    if current_user.id != int(user_id) and \
+       not current_user.has_role("admin"):
+        log_unauthorized_access(current_user.id, "view_profile", user_id)
+        return {"error": "Forbidden"}, 403
+
+    user = User.query.get(user_id)
+    return user.to_dict()</code></pre>
+    <p><strong>แนวทางแก้ไข 2: Indirect Reference Map</strong></p>
+    <pre><code># ปลอดภัย: ใช้ Indirect Reference Map
+import uuid
+
+# สร้าง mapping จาก ID จริง ไปยัง UUID ที่สุ่ม
+user_reference_map = {}  # ในระบบจริงใช้ database หรือ cache
+
+def get_user_by_ref(ref_id):
+    """แปลง indirect reference เป็น user ID"""
+    user_id = user_reference_map.get(ref_id)
+    if not user_id:
+        return None
+    return User.query.get(user_id)
+
+@app.route("/api/user/profile/&lt;ref_id&gt;")
+@jwt_required
+def get_user_profile(ref_id):
+    user = get_user_by_ref(ref_id)
+    if not user:
+        return {"error": "Not found"}, 404
+
+    # ตรวจสอบ Authorization (ยังต้องมี!)
+    if current_user.id != user.id and \
+       not current_user.has_role("admin"):
+        return {"error": "Forbidden"}, 403
+
+    return user.to_dict()</code></pre>
+
+    <div class="interactive" id="play-idor"><h4>Interactive: IDOR Vulnerability Demo</h4><p>เปรียบเทียบโค้ดที่มีช่องโหว่ IDOR กับโค้ดที่ปลอดภัย — กดปุ่มเพื่อสลับดู</p>
+    <div class="btn-group"><button class="btn" id="idorVulnBtn">ดูโค้ดที่มีช่องโหว่</button><button class="btn btn-outline" id="idorSafeBtn">ดูโค้ดที่ปลอดภัย</button></div>
+    <div id="idorCodeDisplay"><pre><code># ไม่ปลอดภัย: IDOR Vulnerability
+@app.route("/api/user/profile/&lt;user_id&gt;")
+@jwt_required
+def get_user_profile(user_id):
+    # ปัญหา: ไม่ตรวจสอบว่า current_user
+    # มีสิทธิ์ดู profile ของ user_id นี้หรือไม่
+    user = User.query.get(user_id)
+    return user.to_dict()
+
+# ผู้โจมตีเปลี่ยน user_id ใน URL:
+# GET /api/user/profile/102 — ดูข้อมูล user 102
+# GET /api/user/profile/103 — ดูข้อมูล user 103!</code></pre></div>
+    <div id="idorResult" class="result">กดปุ่มเพื่อดูโค้ดตัวอย่าง</div></div>
+
+    <h3 id="s3-2">7.3.2 Missing Function Level Access Control</h3>
+    <p>ช่องโหว่นี้เกิดเมื่อแอปพลิเคชันมีฟังก์ชันที่ sensitive (เช่น admin panel, user management, system configuration) แต่ไม่ได้ตรวจสอบระดับสิทธิ์ก่อนให้เข้าถึง</p>
+    <pre><code># ไม่ปลอดภัย: Admin Function ที่ไม่มี Access Control
+@app.route("/admin/delete-user/&lt;user_id&gt;", methods=["DELETE"])
+@jwt_required
+def admin_delete_user(user_id):
+    # ปัญหา: ไม่มีการตรวจสอบว่า current_user เป็น admin หรือไม่
+    user = User.query.get(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    return {"message": "User deleted"}
+
+# ผู้โจมตีเรียก:
+# DELETE /admin/delete-user/42
+# ถ้ามี JWT token ใดๆ ก็สามารถลบผู้ใช้คนอื่นได้!</code></pre>
+    <p><strong>แนวทางแก้ไข:</strong></p>
+    <pre><code># ปลอดภัย: Role Check ทุก Function
+from functools import wraps
+
+def admin_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not current_user.has_role("admin"):
+            log_unauthorized_access(current_user.id, "admin_function")
+            return {"error": "Forbidden"}, 403
+        return f(*args, **kwargs)
+    return decorated
+
+@app.route("/admin/delete-user/&lt;user_id&gt;", methods=["DELETE"])
+@jwt_required
+@admin_required  # &lt;-- เพิ่ม Authorization Check
+def admin_delete_user(user_id):
+    user = User.query.get(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    log_admin_action(current_user.id, "delete_user", user_id)
+    return {"message": "User deleted"}</code></pre>
+    <p><strong>หลักการสำคัญ:</strong> Function-Level Access Control ต้องตรวจสอบทุกรายการ ไม่ใช่เฉพาะที่ "มองเห็น" ใน UI ผู้โจมตีสามารถ force browse หรือ guess URL ได้เสมอ</p>
+
+    <h3 id="s3-3">7.3.3 Path Traversal</h3>
+    <p>Path Traversal (CWE-22) เกิดเมื่อแอปพลิเคชันใช้ข้อมูลผู้ใช้เพื่อสร้าง path ไปยังไฟล์โดยไม่ตรวจสอบอย่างปลอดภัย ทำให้ผู้โจมตีสามารถเข้าถึงไฟล์นอก directory ที่อนุญาต</p>
+    <pre><code># ไม่ปลอดภัย: Path Traversal
+@app.route("/files/&lt;filename&gt;")
+@jwt_required
+def get_file(filename):
+    # ปัญหา: ใช้ filename จากผู้ใช้โดยตรง
+    file_path = os.path.join(UPLOAD_DIR, filename)
+    return send_file(file_path)
+
+# ผู้โจมตีส่ง:
+# GET /files/../../../etc/passwd
+# — file_path = /var/uploads/../../../etc/passwd = /etc/passwd</code></pre>
+    <p><strong>แนวทางแก้ไข: Canonicalization + Allowlist</strong></p>
+    <pre><code>import os.path
+
+# ปลอดภัย: Canonicalization + Path Validation
+UPLOAD_DIR = "/var/www/app/uploads/"
+
+@app.route("/files/&lt;filename&gt;")
+@jwt_required
+def get_file(filename):
+    # ขั้นตอนที่ 1: สร้าง absolute path
+    requested_path = os.path.normpath(
+        os.path.join(UPLOAD_DIR, filename)
+    )
+
+    # ขั้นตอนที่ 2: Canonicalization
+    real_path = os.path.realpath(requested_path)
+
+    # ขั้นตอนที่ 3: ตรวจสอบว่า path อยู่ใน allowed directory
+    if not real_path.startswith(os.path.realpath(UPLOAD_DIR)):
+        log_unauthorized_access(current_user.id, "path_traversal", filename)
+        return {"error": "Forbidden"}, 403
+
+    # ขั้นตอนที่ 4: ตรวจสอบว่าไฟล์มีอยู่
+    if not os.path.isfile(real_path):
+        return {"error": "Not found"}, 404
+
+    return send_file(real_path)</code></pre>
+    <p><strong>Allowlist Approach (ปลอดภัยกว่า):</strong></p>
+    <pre><code># ใช้ allowlist ของชื่อไฟล์ที่อนุญาต
+ALLOWED_FILES = {
+    "report-q1-2025.pdf",
+    "report-q2-2025.pdf",
+    "user-guide-v3.pdf"
+}
+
+@app.route("/files/&lt;filename&gt;")
+@jwt_required
+def get_file(filename):
+    if filename not in ALLOWED_FILES:
+        return {"error": "File not found"}, 404
+    return send_file(os.path.join(UPLOAD_DIR, filename))</code></pre>
+
+    <h3 id="s3-4">7.3.4 Privilege Escalation</h3>
+    <p>Privilege Escalation คือการที่ผู้ใช้ได้รับสิทธิ์ที่สูงกว่าหรือแตกต่างจากที่ควรจะเป็น มี 2 ประเภท:</p>
+    <div class="table-wrap"><table><thead><tr><th>ประเภท</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead><tbody>
+      <tr><td><strong>Horizontal Privilege Escalation</strong></td><td>เข้าถึง resource ของผู้ใช้ระดับเดียวกันแต่ต่างคน</td><td>ผู้ใช้ A เห็นข้อมูลบัตรเครดิตของผู้ใช้ B</td></tr>
+      <tr><td><strong>Vertical Privilege Escalation</strong></td><td>เข้าถึงฟังก์ชันหรือข้อมูลที่ต้องใช้สิทธิ์สูงกว่า</td><td>ผู้ใช้ทั่วไปเข้าถึง Admin Panel</td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่าง Horizontal Privilege Escalation:</strong></p>
+    <pre><code># ไม่ปลอดภัย: Horizontal PE
+@app.route("/api/orders/&lt;order_id&gt;")
+@jwt_required
+def get_order(order_id):
+    # ผู้ใช้คนใดก็ได้ที่ล็อกอินสามารถดู order ใดก็ได้
+    order = Order.query.get(order_id)
+    return order.to_dict()
+
+# ผู้ใช้ A ส่ง: GET /api/orders/ORDER-1001 — เห็น order ของผู้ใช้ B</code></pre>
+    <p><strong>ตัวอย่าง Vertical Privilege Escalation:</strong></p>
+    <pre><code>// ไม่ปลอดภัย: แสดง Admin Button เฉพาะเมื่อ user.role == "admin"
+// แต่ backend ไม่ตรวจสอบ!
+if (user.role === "admin") {
+    document.getElementById('adminPanel').style.display = 'block';
+}
+
+// ผู้โจมตีส่ง request โดยตรง:
+// POST /api/admin/deleteUser
+// Backend ไม่ได้ตรวจสอบ role — คำสั่งสำเร็จ!</code></pre>
+    <p><strong>แนวทางป้องกัน:</strong></p>
+    <pre><code># 1. ตรวจสอบ Data Ownership (ป้องกัน Horizontal PE)
+def get_order(order_id):
+    order = Order.query.get(order_id)
+
+    # ตรวจสอบ: ผู้ใช้ต้องเป็นเจ้าของ order หรือมี role เฉพาะ
+    if order.user_id != current_user.id and \
+       not current_user.has_permission("orders:view_all"):
+        return {"error": "Forbidden"}, 403
+
+    return order.to_dict()
+
+# 2. ตรวจสอบ Role/Permission ทุกครั้ง (ป้องกัน Vertical PE)
+def delete_user(user_id):
+    if not current_user.has_role("admin"):
+        return {"error": "Forbidden"}, 403
+
+    # Admin function logic here
+    pass</code></pre>
+
+    <h3 id="s3-5">7.3.5 Mass Assignment / Object Injection</h3>
+    <p>Mass Assignment (หรือที่เรียกว่า Object Injection, Autobinding) เกิดเมื่อ framework อัตโนมัติ map parameters จาก request ไปยัง object fields โดยไม่จำกัดเฉพาะ fields ที่ควรจะแก้ไขได้</p>
+    <p><strong>แนวทางแก้ไข: DTO Pattern (Data Transfer Object)</strong></p>
+    <pre><code>from pydantic import BaseModel
+
+class UserUpdateDTO(BaseModel):
+    """DTO: กำหนดเฉพาะ fields ที่ผู้ใช้แก้ไขได้"""
+    display_name: str
+    email: str
+    phone_number: str | None = None
+    # ไม่มี field: role, is_admin, account_balance
+
+@app.route("/api/users/&lt;user_id&gt;", methods=["PATCH"])
+@jwt_required
+def update_user(user_id):
+    # ตรวจสอบสิทธิ์
+    if current_user.id != int(user_id):
+        return {"error": "Forbidden"}, 403
+
+    # รับเฉพาะ fields ที่ DTO กำหนด
+    data = UserUpdateDTO(**request.json)
+
+    # อัปเดตเฉพาะ fields ที่ได้รับอนุญาต
+    user = User.query.get(user_id)
+    user.display_name = data.display_name
+    user.email = data.email
+    user.phone_number = data.phone_number
+    db.session.commit()
+
+    return user.to_dict()</code></pre>
+
+    <div class="interactive" id="play-mass"><h4>Interactive: Mass Assignment Checker</h4><p>เลือก field binding ว่าปลอดภัยหรือไม่ปลอดภัย — ระบบจะบอกว่าควรอนุญาตหรือไม่</p>
+    <div class="checklist" id="massChecks">
+      <label><input type="checkbox" class="mass-field" data-safe="true"> display_name (String) — <span class="tag secure">ปลอดภัย</span></label>
+      <label><input type="checkbox" class="mass-field" data-safe="true"> email (String) — <span class="tag secure">ปลอดภัย</span></label>
+      <label><input type="checkbox" class="mass-field" data-safe="false"> role (String) — <span class="tag vuln">ไม่ปลอดภัย!</span></label>
+      <label><input type="checkbox" class="mass-field" data-safe="false"> is_admin (Boolean) — <span class="tag vuln">ไม่ปลอดภัย!</span></label>
+      <label><input type="checkbox" class="mass-field" data-safe="true"> phone_number (String) — <span class="tag secure">ปลอดภัย</span></label>
+      <label><input type="checkbox" class="mass-field" data-safe="false"> account_balance (Number) — <span class="tag vuln">ไม่ปลอดภัย!</span></label>
+    </div>
+    <button class="btn" id="massBtn">ตรวจสอบ Field Binding</button>
+    <div id="massResult" class="result">เลือก field ที่ต้องการ bind แล้วกดตรวจสอบ</div></div>
+
+    <h2 id="s4">7.4 API และ Microservices Authorization</h2>
+
+    <h3 id="s4-1">7.4.1 OAuth 2.0 Scopes</h3>
+    <p>ใน OAuth 2.0, <strong>Scope</strong> เป็นกลไกที่ใช้จำกัดขอบเขตการทำงานของ Access Token แทนการให้สิทธิ์แบบ all-or-nothing</p>
+    <div class="table-wrap"><table><thead><tr><th>Scope</th><th>ความหมาย</th><th>การใช้งาน</th></tr></thead><tbody>
+      <tr><td><code>read:users</code></td><td>อ่านข้อมูลผู้ใช้</td><td>GET /api/users</td></tr>
+      <tr><td><code>write:users</code></td><td>สร้าง/แก้ไขข้อมูลผู้ใช้</td><td>POST/PUT /api/users</td></tr>
+      <tr><td><code>delete:users</code></td><td>ลบผู้ใช้</td><td>DELETE /api/users</td></tr>
+      <tr><td><code>read:orders</code></td><td>อ่านข้อมูลคำสั่งซื้อ</td><td>GET /api/orders</td></tr>
+      <tr><td><code>write:orders</code></td><td>สร้าง/แก้ไขคำสั่งซื้อ</td><td>POST/PUT /api/orders</td></tr>
+      <tr><td><code>email</code></td><td>อ่านอีเมลผู้ใช้</td><td>UserInfo Endpoint</td></tr>
+    </tbody></table></div>
+    <p><strong>การ Validate Scope ที่ Resource Server:</strong></p>
+    <pre><code>from functools import wraps
+
+def requires_scope(required_scope):
+    """Decorator: ตรวจสอบ scope ใน Access Token"""
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            token = get_jwt_token()
+
+            # ตรวจสอบ scope
+            token_scopes = token.get("scope", "").split()
+            if required_scope not in token_scopes:
+                log_insufficient_scope(
+                    token.get("sub"),
+                    required_scope
+                )
+                return {
+                    "error": "insufficient_scope",
+                    "message": f"ต้องการ scope: {required_scope}"
+                }, 403
+
+            return f(*args, **kwargs)
+        return decorated
+    return decorator
+
+# การใช้งาน
+@app.route("/api/users/&lt;user_id&gt;")
+@jwt_required
+@requires_scope("read:users")
+def get_user(user_id):
+    user = User.query.get(user_id)
+    return user.to_dict()
+
+@app.route("/api/users/&lt;user_id&gt;", methods=["DELETE"])
+@jwt_required
+@requires_scope("delete:users")
+def delete_user(user_id):
+    user = User.query.get(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    return {"message": "Deleted"}</code></pre>
+
+    <h3 id="s4-2">7.4.2 API Keys vs Access Tokens</h3>
+    <div class="table-wrap"><table><thead><tr><th>ประเด็น</th><th>API Keys</th><th>Access Tokens</th></tr></thead><tbody>
+      <tr><td><strong>วัตถุประสงค์หลัก</strong></td><td>ระบุ client (identification)</td><td>แทน authorization grant</td></tr>
+      <tr><td><strong>รูปแบบ</strong></td><td>String คงที่ อายุยาว</td><td>มักเป็น JWT มีอายุสั้น</td></tr>
+      <tr><td><strong>อายุ</strong></td><td>ไม่หมดอายุ (หรือนานเป็นปี)</td><td>สั้น (5-60 นาที)</td></tr>
+      <tr><td><strong>Revocation</strong></td><td>ยาก — ต้อง regenerate</td><td>ง่าย — short expiry + refresh token</td></tr>
+      <tr><td><strong>Scope Limitation</strong></td><td>จำกัดยาก มัก all-or-nothing</td><td>รองรับ fine-grained scopes</td></tr>
+      <tr><td><strong>Who</strong></td><td>ระบุ client/application</td><td>ระบุ user + authorization</td></tr>
+      <tr><td><strong>ความเสี่ยง</strong></td><td>ถ้ารั่ว — ใช้ได้นาน</td><td>ถ้ารั่ว — หมดอายุเร็ว</td></tr>
+    </tbody></table></div>
+    <p><strong>API Keys เหมาะกับ:</strong> Service-to-service communication ที่ไม่เกี่ยวข้องกับ user context; Public API สำหรับ third-party developers (เช่น Stripe, Twilio); Rate limiting และ usage tracking</p>
+    <p><strong>Access Tokens เหมาะกับ:</strong> การดำเนินการในนามของผู้ใช้ (delegated authorization); ระบบที่ต้องการ fine-grained scope control; ระบบที่ต้องการ short-lived credentials</p>
+    <pre><code># ไม่ปลอดภัย: ใช้ API key แทนการตรวจสอบสิทธิ์ผู้ใช้
+@app.route("/api/orders")
+def get_orders():
+    api_key = request.headers.get("X-API-Key")
+    client = validate_api_key(api_key)
+    if not client:
+        return {"error": "Invalid API Key"}, 401
+
+    # ปัญหา: API key ใช้ระบุ client เท่านั้น
+    # แต่ไม่ได้บอกว่าเป็น order ของใคร!
+    orders = Order.query.all()  # สั่ง order ทั้งหมด!
+    return orders
+
+# ปลอดภัย: Access Token + Scope Check
+@app.route("/api/orders")
+@jwt_required
+@requires_scope("read:orders")
+def get_orders():
+    # รู้ว่าเป็นคำขอของผู้ใช้คนใด (จาก JWT sub claim)
+    user_id = get_jwt_identity()
+    orders = Order.query.filter_by(customer_id=user_id).all()
+    return [o.to_dict() for o in orders]</code></pre>
+
+    <h3 id="s4-3">7.4.3 Policy-Based Access Control (OPA — Open Policy Agent)</h3>
+    <p>OPA (Open Policy Agent) เป็น Open Source Policy Engine ที่แยก authorization logic ออกจาก application code ใช้ภาษา <strong>Rego</strong> ในการเขียน policy</p>
+    <p><strong>แนวคิด:</strong></p>
+    <ul>
+      <li>Application ส่ง request data (input) ไปยัง OPA</li>
+      <li>OPA ประเมิน policy และตอบว่า allow หรือ deny</li>
+      <li>Application บังคับตามคำตอบของ OPA</li>
+    </ul>
+    <p><strong>ตัวอย่าง Rego Policy:</strong></p>
+    <pre><code>package app.authz
+
+# ค่าเริ่มต้น: ปฏิเสธทุกอย่าง
+default allow = false
+
+# อนุญาตให้ admin ทำอะไรก็ได้
+allow {
+    input.user.roles[_] == "admin"
+}
+
+# อนุญาตให้เจ้าของเอกสารดูเอกสารของตนเอง
+allow {
+    input.action == "read"
+    input.resource.type == "document"
+    input.resource.owner == input.user.id
+}
+
+# อนุญาตให้พนักงานแผนกเดียวกันดูเอกสารของกันและกัน
+allow {
+    input.action == "read"
+    input.resource.type == "document"
+    input.resource.department == input.user.department
+    input.user.employment_status == "active"
+}
+
+# อนุญาตให้ผู้จัดการดูเอกสารทุกฉบับในแผนกที่ดูแล
+allow {
+    input.action == "read"
+    input.resource.type == "document"
+    input.resource.department == input.user.managed_departments[_]
+    input.user.roles[_] == "manager"
+}</code></pre>
+    <p><strong>การ Integrate OPA ใน Python:</strong></p>
+    <pre><code>import requests
+import json
+
+OPA_URL = "http://localhost:8181/v1/data/app/authz/allow"
+
+def check_authorization(user, action, resource):
+    """ส่ง request ไปยัง OPA เพื่อตรวจสอบ authorization"""
+    input_data = {
+        "input": {
+            "user": {
+                "id": user.id,
+                "roles": user.roles,
+                "department": user.department,
+                "employment_status": user.employment_status,
+                "managed_departments": user.managed_departments
+            },
+            "action": action,
+            "resource": {
+                "type": resource.type,
+                "id": resource.id,
+                "owner": resource.owner_id,
+                "department": resource.department
+            }
+        }
+    }
+
+    response = requests.post(OPA_URL, json=input_data)
+    result = response.json()
+
+    return result.get("result", False)
+
+# การใช้งาน
+@app.route("/api/documents/&lt;doc_id&gt;")
+@jwt_required
+def get_document(doc_id):
+    doc = Document.query.get(doc_id)
+
+    # ถาม OPA
+    if not check_authorization(current_user, "read", doc):
+        return {"error": "Forbidden"}, 403
+
+    return doc.to_dict()</code></pre>
+    <p><strong>ข้อดีของ OPA:</strong> แยก Policy ออกจาก Code — เปลี่ยน policy โดยไม่ต้อง deploy application ใหม่; Policy ตรวจสอบได้ (auditable) — Rego policy เป็น declarative; ใช้ร่วมกันหลาย service — centralized policy engine; รองรับ context-aware decisions</p>
+
+    <div class="interactive" id="play-opa"><h4>Interactive: OPA Policy Simulator</h4><p>เลือกกรณีทดสอบเพื่อจำลองการ Query OPA Policy ด้วย Rego</p>
+    <div class="control-row"><select id="opaScenario">
+      <option value="">-- เลือกกรณีทดสอบ --</option>
+      <option value="admin">Admin อ่านเอกสารใดก็ได้</option>
+      <option value="owner">เจ้าของเอกสารอ่านเอกสารตนเอง</option>
+      <option value="same_dept">พนักงานแผนกเดียวกันอ่านเอกสารกัน</option>
+      <option value="manager_dept">ผู้จัดการอ่านเอกสารในแผนกที่ดูแล</option>
+      <option value="outsider">บุคคลภายนอกแผนกอ่านเอกสาร (ควร Deny)</option>
+    </select><button class="btn" id="opaBtn">ทดสอบ Policy</button></div>
+    <div id="opaResult" class="result">เลือกกรณีทดสอบแล้วกดทดสอบ</div>
+    <div style="margin-top:.5rem;padding:.5rem;background:#f1f5f9;border-radius:var(--radius-sm);font-size:.82rem" id="opaDetail"></div></div>
+
+    <h3 id="s4-4">7.4.4 Centralized Authorization Service</h3>
+    <p>ในสถาปัตยกรรม Microservices, การมี Authorization กระจายอยู่ทุก service ทำให้ยากต่อการบริหารและตรวจสอบ แนวทางที่ดีคือการมี <strong>Centralized Authorization Service</strong> ตามโมเดลของ NIST และ XACML:</p>
+    <div class="table-wrap"><table><thead><tr><th>Component</th><th>ชื่อเต็ม</th><th>หน้าที่</th></tr></thead><tbody>
+      <tr><td><strong>PEP</strong></td><td>Policy Enforcement Point</td><td>จุดที่ request เข้ามา — ส่ง request ไปยัง PDP และบังคับผล</td></tr>
+      <tr><td><strong>PDP</strong></td><td>Policy Decision Point</td><td>จุดตัดสินใจ — ประเมิน policy และตอบ allow/deny</td></tr>
+      <tr><td><strong>PAP</strong></td><td>Policy Administration Point</td><td>จุดจัดการ policy — สร้าง แก้ไข ลบ policy</td></tr>
+      <tr><td><strong>PIP</strong></td><td>Policy Information Point</td><td>จุดดึง attribute — ดึงข้อมูลจาก external sources</td></tr>
+      <tr><td><strong>PRP</strong></td><td>Policy Retrieval Point</td><td>จัดเก็บและ retrieve policies</td></tr>
+    </tbody></table></div>
+    <p><strong>สถาปัตยกรรม:</strong></p>
+    <div class="flow-text">
+Client Request<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+┌─────────────────┐<br>
+│&nbsp;&nbsp;PEP (Gateway)&nbsp;&nbsp;│&nbsp;&nbsp;← Policy Enforcement Point<br>
+└────────┬────────┘<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ ส่ง request attributes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+┌─────────────────┐&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌─────────────────┐<br>
+│&nbsp;&nbsp;PDP (Policy&nbsp;&nbsp;&nbsp;&nbsp;)│────→│&nbsp;&nbsp;PAP (Policy&nbsp;&nbsp;&nbsp;&nbsp;)│<br>
+│&nbsp;&nbsp;&nbsp;Decision)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;Admin)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+└────────┬────────┘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─────────────────┘<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌─────────────────┐<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;PIP (Info)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+┌─────────────────┐&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;- LDAP/AD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+│&nbsp;&nbsp;Response&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;- Database&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+│&nbsp;&nbsp;Allow / Deny&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;- APIs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+└─────────────────┘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─────────────────┘</div>
+    <p><strong>ตัวอย่าง PEP/PDP ใน Python Microservice:</strong></p>
+    <pre><code># PEP — Policy Enforcement Point (ใน API Gateway)
+class AuthorizationMiddleware:
+    def __init__(self, pdp_url="http://authz-service:8181"):
+        self.pdp_url = pdp_url
+
+    def authorize(self, request):
+        """PEP: ส่ง request ไปยัง PDP เพื่อตัดสิน"""
+        # สร้าง decision request
+        decision_request = {
+            "subject": {
+                "id": request.user_id,
+                "roles": request.user_roles
+            },
+            "resource": {
+                "type": request.resource_type,
+                "id": request.resource_id
+            },
+            "action": request.method,
+            "environment": {
+                "ip": request.remote_addr,
+                "time": datetime.utcnow().isoformat()
+            }
+        }
+
+        # ส่งไปยัง PDP
+        response = requests.post(
+            f"{self.pdp_url}/v1/data/authz/allow",
+            json={"input": decision_request}
+        )
+
+        result = response.json()
+
+        # PEP: บังคับตามการตัดสินใจของ PDP
+        if not result.get("result", False):
+            raise AuthorizationError("Forbidden")
+
+        return True</code></pre>
+
+    <h3 id="s4-5">7.4.5 Gateway Level Authorization</h3>
+    <p>API Gateway เป็นจุดที่เหมาะสมที่สุดในการตรวจสอบ Authorization ระดับต้น (coarse-grained) ก่อนที่ request จะถึง backend service</p>
+    <p><strong>ตัวอย่าง: Kong API Gateway Authorization Plugin:</strong></p>
+    <pre><code># Kong Gateway Configuration
+plugins:
+  - name: oauth2
+    config:
+      scopes:
+        - read:users
+        - write:users
+        - delete:users
+      mandatory_scope: true
+      token_expiration: 3600
+      provision_key: "your_provision_key"
+      enable_authorization_code: true
+      enable_client_credentials: true
+
+  - name: rate-limiting
+    config:
+      minute: 100
+      hour: 1000
+      policy: local</code></pre>
+    <p><strong>ข้อควรระวัง:</strong> Gateway-Level Authorization ควรทำ coarse-grained check (เช่น scope, role) เท่านั้น Fine-grained authorization (เช่น data ownership) ต้องทำที่ service level ด้วยเสมอ</p>
+
+    <div class="interactive" id="play-quiz"><h4>Interactive: Access Control Quiz — จับคู่ช่องโหว่</h4><p>จับคู่ประเภท Broken Access Control กับคำอธิบายที่ถูกต้อง</p>
+    <div class="control-row"><select id="quizSelect"><option value="">-- เลือกช่องโหว่ --</option><option value="idor">IDOR</option><option value="missing">Missing Function Level Access Control</option><option value="path">Path Traversal</option><option value="priv">Privilege Escalation</option></select><span style="padding:0 .5rem;line-height:2.5">→</span><select id="quizDesc"><option value="">-- เลือกคำอธิบาย --</option><option value="idor">เปิดเผย reference โดยตรงของ internal object โดยไม่ตรวจสอบสิทธิ์</option><option value="missing">ฟังก์ชัน sensitive ที่ไม่มี authorization check</option><option value="path">ใช้ input จากผู้ใช้สร้าง path โดยไม่ตรวจสอบ</option><option value="priv">ผู้ใช้ได้รับสิทธิ์ที่สูงกว่าที่ควรจะเป็น</option></select><button class="btn" id="quizBtn">ตรวจสอบ</button></div>
+    <div id="quizResult" class="result">เลือกช่องโหว่และคำอธิบายที่ตรงกัน</div></div>
+
+    <h2 id="s5">7.5 กรณีศึกษา (Case Studies)</h2>
+
+    <div class="case-card"><div class="meta"><span class="year">2018</span><span class="type">Privacy</span></div><h4 id="s5-1">Facebook / Cambridge Analytica (2018)</h4>
+    <p><strong>รายละเอียดเหตุการณ์:</strong> Cambridge Analytica เป็นบริษัทที่ปรึกษาทางการเมืองของสหราชอาณาจักร ได้รับข้อมูลของ Facebook users ผ่าน app ที่ชื่อ "thisisyourdigitallife" (แบบทดสอบบุคลิกภาพ) ข้อมูลที่ถูกเก็บ: Facebook User ID, เพศ, วันเกิด, ที่ตั้ง, friends list, likes <strong>จำนวนผู้ได้รับผลกระทบ:</strong> สูงถึง 87 ล้าน users FTC ปรับ Facebook เป็นจำนวน <strong>5,000 ล้านดอลลาร์สหรัฐ</strong> ในเดือนกรกฎาคม 2019</p>
+    <p><strong>สาเหตุด้าน Broken Access Control:</strong></p>
+    <ol>
+      <li><strong>OAuth Scope Misconfiguration:</strong> Facebook Graph API v1 อนุญาตให้ developer app เก็บข้อมูลของ friends ของผู้ใช้ที่ติดตั้ง app ได้ โดยไม่ต้องขออนุญาตจาก friends เหล่านั้น</li>
+      <li><strong>Missing Data-Level Access Control:</strong> เมื่อ Facebook เปลี่ยนเป็น Graph API v2 ในเดือนเมษายน 2014 ที่ปิดช่องนี้ แต่ app เดิมมีเวลา 1 ปี (ถึงเมษายน 2015) ก่อนที่ข้อจำกัดจะมีผล</li>
+      <li><strong>Insufficient Enforcement:</strong> Facebook ไม่ได้บังคับใช้นโยบายการตรวจสอบ app developers อย่างสม่ำเสมอ</li>
+    </ol>
+    <p><strong>บทเรียน:</strong> OAuth scopes ต้องถูกออกแบบอย่างรัดกุม — ไม่อนุญาตให้ app เข้าถึงข้อมูลของ third-party โดยไม่ได้รับ consent ที่ชัดเจน; API version upgrade ต้องพิจารณาผลกระทบด้าน access control; การตรวจสอบและบังคับใช้นโยบาย access control ต้องทำอย่างต่อเนื่อง</p>
+    </div>
+
+    <div class="case-card"><div class="meta"><span class="year">2019</span><span class="type">Data Breach</span></div><h4 id="s5-2">Capital One Breach (2019)</h4>
+    <p><strong>รายละเอียดเหตุการณ์:</strong> เหตุการณ์เกิดขึ้นระหว่างเดือนมีนาคมถึงกรกฎาคม 2019 (ตรวจพบในเดือนกรกฎาคม 2019) ผู้โจมตีคือ Paige Thompson (AKA "Erratic") อดีตพนักงาน AWS <strong>จำนวนผู้ได้รับผลกระทบ:</strong> ประมาณ 100 ล้าน customers ข้อมูลที่ถูกขโมย: ชื่อ, ที่อยู่, รหัสไปรษณีย์, เบอร์โทร, อีเมล, วันเกิด, รายงานเครดิต Capital One ถูกปรับ 80 ล้านดอลลาร์สหรัฐจาก federal bank regulators</p>
+    <p><strong>สาเหตุด้าน Broken Access Control:</strong></p>
+    <ol>
+      <li><strong>SSRF Vulnerability (CWE-918):</strong> ผู้โจมตีใช้ SSRF ผ่าน Web Application Firewall (ModSecurity) ที่มีช่องโหว่ เพื่อเข้าถึง AWS EC2 Metadata Service ที่ IP <code>169.254.169.254</code></li>
+      <li><strong>Over-Provisioned IAM Role:</strong> IAM Role ที่ใช้กับ WAF instance ("WAF-Role") มีสิทธิ์เกินความจำเป็น — สามารถ list S3 buckets และอ่านข้อมูลจาก S3 ได้</li>
+      <li><strong>Missing Condition in IAM Policy:</strong> IAM role ไม่มี Condition ที่จำกัดการใช้ credentials จาก network ของ Capital One เท่านั้น ทำให้ attacker ใช้ credentials จากนอกเครือข่ายได้</li>
+    </ol>
+    <p><strong>เส้นทางการโจมตี:</strong></p>
+    <div class="flow-text">
+1. SSRF — เข้าถึง Metadata Service (http://169.254.169.254)<br>
+2. ขโมย IAM Credentials ของ WAF-Role<br>
+3. ใช้ AWS CLI: aws s3 ls (list 700+ S3 buckets)<br>
+4. aws s3 cp s3://capitalone-bucket (ขโมยข้อมูล 30GB)<br>
+5. อัปโหลดข้อมูลบางส่วนขึ้น GitHub</div>
+    <p><strong>บทเรียน:</strong> Least Privilege สำหรับ IAM Roles สำคัญที่สุด — WAF ไม่จำเป็นต้องมีสิทธิ์อ่าน S3; ใช้ Condition key ใน IAM Policy เพื่อจำกัด source IP หรือ VPC endpoint; IMDSv2 (session-oriented) ปลอดภัยกว่า IMDSv1; CloudTrail monitoring ต้องมีการแจ้งเตือนเมื่อ credentials ถูกใช้จากนอกเครือข่าย</p>
+    </div>
+
+    <div class="case-card"><div class="meta"><span class="year">2022</span><span class="type">Supply Chain</span></div><h4 id="s5-3">GitHub OAuth Token Theft (2022)</h4>
+    <p><strong>รายละเอียดเหตุการณ์:</strong> ตรวจพบเมื่อวันที่ 12 เมษายน 2022 โดย GitHub Security ผู้โจมตีขโมย OAuth user tokens ที่ออกให้ Heroku และ Travis CI เป็นการโจมตีแบบเจาะจง (targeted attack) ต่อหลายองค์กร รวมถึง npm ผู้โจมตี clone private repositories และขโมย secrets (รวมถึง AWS access keys)</p>
+    <p><strong>สาเหตุด้าน Broken Access Control:</strong></p>
+    <ol>
+      <li><strong>OAuth Token Theft:</strong> ผู้โจมตีเจาะ Heroku database และขโมย OAuth tokens ที่ Heroku เก็บไว้</li>
+      <li><strong>OAuth Scope ที่กว้างเกินไป:</strong> OAuth tokens ที่ Heroku และ Travis CI ถือครองมี scope ที่ให้สิทธิ์เข้าถึง private repositories</li>
+      <li><strong>Token Reuse:</strong> OAuth tokens ที่ถูกขโมยไปใช้ได้จนกว่าจะถูก revoke</li>
+    </ol>
+    <p><strong>เส้นทางการโจมตี:</strong></p>
+    <div class="flow-text">
+1. Heroku database ถูกเจาะ — OAuth tokens ถูกขโมย<br>
+2. ใช้ tokens เพื่อ authenticate ผ่าน GitHub API<br>
+3. List organizations — เลือกเป้าหมาย<br>
+4. List private repositories — Clone repositories<br>
+5. ขุด secrets จากโค้ดที่ cloned — Pivot ไปยังระบบอื่น (รวมถึง npm)</div>
+    <p><strong>บทเรียน:</strong> OAuth tokens ต้องมี scope ที่แคบที่สุดเท่าที่จำเป็น (principle of least privilege); ต้องเข้ารหัส OAuth tokens ที่เก็บใน database; ใช้ short-lived tokens + refresh token rotation; GitHub App (installation token) ปลอดภัยกว่า OAuth App (user token) เนื่องจาก scope จำกัดกว่า</p>
+    </div>
+
+    <div class="case-card"><div class="meta"><span class="year">2021</span><span class="type">Data Scraping</span></div><h4 id="s5-4">Parler Data Scraping (2021)</h4>
+    <p><strong>รายละเอียดเหตุการณ์:</strong> หลังการจลาจลที่ Capitol Hill ในสหรัฐ เมื่อวันที่ 6 มกราคม 2021 นักวิจัย scraping ข้อมูลจาก Parler social network ผ่าน API ที่มี IDOR แม้ content จะเป็น public แต่ผู้ใช้ตั้งใจให้เป็น private — API ไม่มี authorization check ข้อมูลกว่า 99 TB ถูกดึงออกมา รวมถึงวิดีโอและ metadata ที่ผู้ใช้ลบไปแล้ว</p>
+    <p><strong>บทเรียน:</strong> API endpoint ที่เปิดเผยข้อมูลต้องมี data-level access control แม้ users จะยินยอมให้ app เข้าถึงก็ตาม</p>
+    </div>
+
+    <h2 id="s6">7.6 สรุปและแนวทางปฏิบัติ</h2>
+
+    <h3 id="s6-1">7.6.1 OWASP ASVS V4 — V4 Access Control</h3>
+    <p><strong>ASVS Version 4.0.3 — V4: Access Control Verification Requirements:</strong></p>
+    <p><strong>V4.1 General Access Control Design:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ข้อ</th><th>รายการ</th><th>L1</th><th>L2</th><th>L3</th><th>CWE</th></tr></thead><tbody>
+      <tr><td>4.1.1</td><td>บังคับ access control rules ที่ trusted service layer (server-side) — อย่าเชื่อ client-side control</td><td>✓</td><td>✓</td><td>✓</td><td>602</td></tr>
+      <tr><td>4.1.2</td><td>ตรวจสอบว่า user และ data attributes ที่ใช้ใน access control ไม่ถูกปลอมแปลงโดยผู้ใช้</td><td>✓</td><td>✓</td><td>✓</td><td>639</td></tr>
+      <tr><td>4.1.3</td><td>ใช้ Principle of Least Privilege — ผู้ใช้เข้าถึงได้เฉพาะ functions/data ที่ได้รับอนุญาต</td><td>✓</td><td>✓</td><td>✓</td><td>285</td></tr>
+      <tr><td>4.1.5</td><td>Access controls fail securely — เมื่อเกิด exception ต้อง deny access</td><td>✓</td><td>✓</td><td>✓</td><td>285</td></tr>
+    </tbody></table></div>
+    <p><strong>V4.2 Operation Level Access Control:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ข้อ</th><th>รายการ</th><th>L1</th><th>L2</th><th>L3</th><th>CWE</th></tr></thead><tbody>
+      <tr><td>4.2.1</td><td>ป้องกัน IDOR ทั้ง CRUD operations</td><td>✓</td><td>✓</td><td>✓</td><td>639</td></tr>
+      <tr><td>4.2.2</td><td>บังคับ anti-CSRF สำหรับ authenticated functionality</td><td>✓</td><td>✓</td><td>✓</td><td>352</td></tr>
+    </tbody></table></div>
+    <p><strong>V4.3 Other Access Control Considerations:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ข้อ</th><th>รายการ</th><th>L1</th><th>L2</th><th>L3</th><th>CWE</th></tr></thead><tbody>
+      <tr><td>4.3.1</td><td>Admin interfaces ต้องมี MFA</td><td>✓</td><td>✓</td><td>✓</td><td>419</td></tr>
+      <tr><td>4.3.2</td><td>ปิด directory browsing และไม่เปิดเผย metadata (.git, .DS_Store, .svn)</td><td>✓</td><td>✓</td><td>✓</td><td>548</td></tr>
+      <tr><td>4.3.3</td><td>มี additional authorization หรือ step-up auth สำหรับ high-value applications</td><td></td><td>✓</td><td>✓</td><td>732</td></tr>
+    </tbody></table></div>
+
+    <div class="interactive" id="play-asvs"><h4>Interactive: ASVS V4 Access Control Checklist</h4><p>ติ๊กรายการ ASVS V4 Verification Requirements ที่ทีมของคุณได้ implement แล้วเพื่อดูคะแนนความพร้อม</p>
+    <div class="checklist" id="asvsChecks">
+      <label><input type="checkbox" class="asvs-v4"> V4.1.1 — Access control rules ที่ server-side (อย่าเชื่อ client-side)</label>
+      <label><input type="checkbox" class="asvs-v4"> V4.1.2 — User/data attributes ไม่ถูกปลอมแปลง</label>
+      <label><input type="checkbox" class="asvs-v4"> V4.1.3 — Principle of Least Privilege</label>
+      <label><input type="checkbox" class="asvs-v4"> V4.1.5 — Fail securely — exception = deny</label>
+      <label><input type="checkbox" class="asvs-v4"> V4.2.1 — ป้องกัน IDOR ทุก CRUD operations</label>
+      <label><input type="checkbox" class="asvs-v4"> V4.2.2 — Anti-CSRF สำหรับ authenticated functionality</label>
+      <label><input type="checkbox" class="asvs-v4"> V4.3.1 — Admin interfaces มี MFA</label>
+      <label><input type="checkbox" class="asvs-v4"> V4.3.2 — ปิด directory browsing, ไม่เปิดเผย metadata</label>
+      <label><input type="checkbox" class="asvs-v4"> V4.3.3 — Step-up auth สำหรับ high-value applications</label>
+    </div>
+    <div class="meter"><div class="meter-fill" id="asvsMeter"></div></div>
+    <div id="asvsResult" class="result">ติ๊กรายการที่ implement แล้วเพื่อดูคะแนน</div></div>
+
+    <h3 id="s6-2">7.6.2 OWASP Top 10 2025 — A01 Broken Access Control Checklist</h3>
+    <p><strong>รายการตรวจสอบสำหรับ A01:</strong></p>
+    <div class="checklist">
+      <label><input type="checkbox"> ใช้ Principle of Least Privilege — ทุกคนได้สิทธิ์เท่าที่จำเป็นเท่านั้น</label>
+      <label><input type="checkbox"> ใช้ Default Deny — ปฏิเสธทุกอย่างยกเว้นที่ได้รับอนุญาตอย่างชัดแจ้ง</label>
+      <label><input type="checkbox"> สร้าง access control mechanism แบบ centralized และ reuse ข้าม application</label>
+      <label><input type="checkbox"> ทุก API endpoint (GET, POST, PUT, DELETE) มี authorization check</label>
+      <label><input type="checkbox"> Data-level access control — ตรวจสอบ record ownership และ scope</label>
+      <label><input type="checkbox"> Indirect reference map — ไม่ใช้ ID จริง (auto-increment) ใน URL</label>
+      <label><input type="checkbox"> ป้องกัน Mass Assignment — ใช้ DTO pattern หรือ allowlist binding</label>
+      <label><input type="checkbox"> ป้องกัน Path Traversal — ใช้ canonicalization + allowlist</label>
+      <label><input type="checkbox"> Log access control failures และแจ้ง admin เมื่อมี repeated failures</label>
+      <label><input type="checkbox"> Rate limiting สำหรับ API endpoints</label>
+      <label><input type="checkbox"> ปิด directory listing และลบ metadata files ออกจาก web root</label>
+      <label><input type="checkbox"> ใช้ short-lived JWT และ refresh token rotation</label>
+      <label><input type="checkbox"> CORS ถูกต้อง — ไม่เปิดกว้างเกินจำเป็น</label>
+      <label><input type="checkbox"> SSRF protection — ตรวจสอบ URL จากผู้ใช้ จำกัด internal IP ranges</label>
+    </div>
+
+    <h3 id="s6-3">7.6.3 การแปลงความรู้เป็น Security Requirements และ Test Cases</h3>
+    <p><strong>ตัวอย่าง Security Requirements สำหรับ Authorization:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>Requirement ID</th><th>Security Requirement</th><th>ช่องโหว่ที่เกี่ยวข้อง</th><th>Acceptance Criteria</th></tr></thead><tbody>
+      <tr><td>SR-AC-001</td><td>ทุก API endpoint ต้องมี authorization check ที่ server-side ก่อนเข้าถึง resource</td><td>IDOR, Missing Function Level</td><td>request ที่ไม่มี token หรือมี token ไม่มีสิทธิ์ถูกปฏิเสธ 401/403</td></tr>
+      <tr><td>SR-AC-002</td><td>ใช้ Indirect Reference Map (UUID) แทน auto-increment ID ใน URL</td><td>IDOR</td><td>URL ใช้ UUID ไม่ใช่ ID ที่เดาหรือคาดเดาได้</td></tr>
+      <tr><td>SR-AC-003</td><td>ใช้ DTO pattern — รับเฉพาะ fields ที่ผู้ใช้แก้ไขได้เท่านั้น</td><td>Mass Assignment</td><td>field ที่ sensitive (role, is_admin) ไม่ถูก bind จาก request</td></tr>
+      <tr><td>SR-AC-004</td><td>ใช้ Default Deny — access control ต้อง fail อย่างปลอดภัยเมื่อเกิด exception</td><td>Missing Function Level</td><td>endpoint ที่ไม่มี explicit rule ต้อง deny</td></tr>
+      <tr><td>SR-AC-005</td><td>แยกหน้าที่ตาม Separation of Duties — บุคคลเดียวมีสิทธิ์ขัดแย้งกันไม่ได้</td><td>Fraud, Insider Threat</td><td>ระบบตรวจสอบ SSD/DSD constraints ก่อน assign role</td></tr>
+      <tr><td>SR-AC-006</td><td>ทุก admin interface ต้องมี MFA</td><td>Vertical Privilege Escalation</td><td>admin login ที่ไม่มี MFA ถูกปฏิเสธ</td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่าง Security Test Cases:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>Test ID</th><th>Test Case</th><th>Expected Result</th><th>วิธีทดสอบ</th></tr></thead><tbody>
+      <tr><td>ST-AC-001</td><td>เปลี่ยน user_id ใน URL เป็นของคนอื่นโดยไม่ได้รับอนุญาต</td><td>403 Forbidden</td><td>Manual test / Automation</td></tr>
+      <tr><td>ST-AC-002</td><td>เรียก admin endpoint ด้วย user token ที่ไม่มี role admin</td><td>403 Forbidden</td><td>API test</td></tr>
+      <tr><td>ST-AC-003</td><td>ส่ง field role ใน request body ตอน update profile</td><td>ไม่ถูกอัปเดต (role คงเดิม)</td><td>Integration test</td></tr>
+      <tr><td>ST-AC-004</td><td>ลอง path traversal ใน filename parameter</td><td>403 Forbidden หรือ 404</td><td>Security test</td></tr>
+      <tr><td>ST-AC-005</td><td>ตรวจสอบว่า user ที่เปลี่ยน role เก่า ถูกลบ role เก่า (permission creep)</td><td>role เก่าถูกเพิกถอน</td><td>Integration test</td></tr>
+      <tr><td>ST-AC-006</td><td>ส่ง request ไปยัง endpoint ที่ไม่มี explicit access control</td><td>403 Forbidden (default deny)</td><td>API test</td></tr>
+      <tr><td>ST-AC-007</td><td>ตรวจสอบว่าผู้ใช้ที่ถูกลบ session หมดอายุ (logout) แล้วยังใช้ token เดิมได้</td><td>401 Unauthorized</td><td>Security test</td></tr>
+    </tbody></table></div>
+
+    <h3 id="s6-4">7.6.4 Pull Request Checklist สำหรับ Access Control</h3>
+    <p>ใช้ checklist นี้ในการ review pull request ที่เกี่ยวข้องกับการเข้าถึงข้อมูลหรือฟังก์ชัน:</p>
+    <div class="checklist">
+      <label><input type="checkbox"> มี authorization check ที่ server-side ทุก endpoint หรือไม่ (อย่าเชื่อ client-side control)</label>
+      <label><input type="checkbox"> ใช้ Default Deny หรือไม่ (ไม่ใช่ Default Allow)</label>
+      <label><input type="checkbox"> มี data-level access control หรือไม่ (ไม่ใช่แค่ endpoint check)</label>
+      <label><input type="checkbox"> ใช้ Indirect Reference Map หรือ UUID แทน auto-increment ID หรือไม่</label>
+      <label><input type="checkbox"> มีการป้องกัน Mass Assignment — ใช้ DTO หรือ allowlist binding หรือไม่</label>
+      <label><input type="checkbox"> มีการป้องกัน Path Traversal — ใช้ canonicalization / allowlist หรือไม่</label>
+      <label><input type="checkbox"> มี Rate Limiting สำหรับ API endpoints หรือไม่</label>
+      <label><input type="checkbox"> มีการ Log access control failures หรือไม่</label>
+      <label><input type="checkbox"> CORS configuration ถูกต้องหรือไม่</label>
+      <label><input type="checkbox"> JWT validation ตรวจสอบ exp, iss, aud claims หรือไม่</label>
+      <label><input type="checkbox"> Role/Permission checks ถูก implement เป็น centralized mechanism หรือไม่</label>
+      <label><input type="checkbox"> มี test cases ที่ครอบคลุม authorization scenarios หรือไม่</label>
+      <label><input type="checkbox"> มี Separation of Duties review หรือไม่</label>
+    </div>
+
+    <h2 id="keywords" style="margin-top:2rem">Keywords</h2>
+    <div class="card"><div class="card-header">คำศัพท์สำคัญในบทนี้</div>
+    <p style="line-height:2">Authorization, Access Control, DAC, MAC, RBAC, ABAC, Rule-Based Access Control, Least Privilege, Separation of Duties, Default Deny, Fail Safe Defaults, Permission Creep, Identity Governance, IDOR, Insecure Direct Object Reference, Missing Function Level Access Control, Path Traversal, CWE-22, CWE-639, Privilege Escalation, Horizontal Privilege Escalation, Vertical Privilege Escalation, Mass Assignment, Object Injection, DTO Pattern, OAuth 2.0 Scopes, API Keys, Access Tokens, Open Policy Agent, OPA, Rego, Policy-Based Access Control, PDP, PEP, PAP, PIP, Centralized Authorization Service, API Gateway Authorization, OWASP ASVS V4, OWASP Top 10 A01, Broken Access Control, Cambridge Analytica, Capital One Breach, GitHub OAuth Token Theft, Parler Data Scraping, RBAC0, RBAC1, RBAC2, RBAC3, Role Hierarchy, Static Separation of Duty, Dynamic Separation of Duty, Permission Matrix, NIST SP 800-162, NIST RBAC Model, CWE-285, CWE-352, CWE-918, SSRF, Indirect Reference Map, Canonicalization, Allowlist</p>
+    </div>
+
+    <h2 id="labs">กิจกรรมปฏิบัติการ</h2>
+    <div class="info-box warning"><div class="icon">SAFE</div><p><strong>ข้อควรจำ:</strong> กิจกรรมทั้งหมดต้องทำในเครื่องของนักศึกษาเองหรือในสภาพแวดล้อมที่ได้รับอนุญาตเท่านั้น ห้ามทดสอบกับระบบจริงของบุคคลอื่นโดยไม่ได้รับอนุญาต</p></div>
+
+    <div class="lab-section"><h4>Lab 7.1: IDOR Vulnerability — วิเคราะห์และแก้ไขใน Web Application</h4>
+    <p><strong>วัตถุประสงค์:</strong> เข้าใจและสามารถระบุ IDOR Vulnerability ใน Web Application และแก้ไขด้วย Authorization Check + Indirect Reference Map</p>
+    <p><strong>เวลาที่ใช้:</strong> 45-60 นาที</p>
+    <p><strong>เครื่องมือ:</strong> Python + Flask, Postman หรือ curl, Web Browser</p>
+    <p><strong>ขั้นตอน:</strong></p>
+    <ol>
+      <li>สร้าง Flask app ที่มีช่องโหว่ IDOR:<pre><code>from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+users = {
+    1: {"id": 1, "username": "alice", "email": "alice@example.com", "role": "user"},
+    2: {"id": 2, "username": "bob", "email": "bob@example.com", "role": "user"},
+    3: {"id": 3, "username": "admin", "email": "admin@example.com", "role": "admin"}
+}
+
+@app.route("/api/users/&lt;int:user_id&gt;")
+def get_user(user_id):
+    # ช่องโหว่: ไม่มีการตรวจสอบสิทธิ์
+    user = users.get(user_id)
+    if not user:
+        return jsonify({"error": "Not found"}), 404
+    return jsonify(user)</code></pre></li>
+      <li>ทดสอบ IDOR ด้วย curl:<pre><code>curl http://localhost:5000/api/users/1
+curl http://localhost:5000/api/users/2
+curl http://localhost:5000/api/users/3</code></pre></li>
+      <li>แก้ไขช่องโหว่ด้วย Authorization Check + Indirect Reference Map</li>
+      <li>ทดสอบอีกครั้ง — เปลี่ยน ref_id เป็นของคนอื่นต้องถูกปฏิเสธ</li>
+    </ol>
+    <p><strong>สิ่งที่ต้องส่ง:</strong></p>
+    <ol>
+      <li>โค้ดที่มีช่องโหว่และโค้ดที่แก้ไขแล้ว</li>
+      <li>ภาพหรือ log การทดสอบที่แสดง IDOR (ก่อนแก้) และการถูกปฏิเสธ (หลังแก้)</li>
+      <li>คำอธิบายว่าเหตุใด Indirect Reference Map + Authorization Check จึงปลอดภัยกว่าใช้ ID โดยตรง</li>
+    </ol>
+    </div>
+
+    <div class="lab-section"><h4>Lab 7.2: RBAC Model Design — Role Hierarchy และ Permission Matrix สำหรับระบบ EHR</h4>
+    <p><strong>วัตถุประสงค์:</strong> ออกแบบ Role-Based Access Control สำหรับระบบ Electronic Health Record (EHR) ของโรงพยาบาล โดยใช้ Role Hierarchy, Permission Matrix และ Separation of Duties</p>
+    <p><strong>เวลาที่ใช้:</strong> 45-60 นาที</p>
+    <p><strong>เครื่องมือ:</strong> เอกสารหรือตาราง, draw.io (optional), Python (optional)</p>
+    <p><strong>ขั้นตอน:</strong></p>
+    <ol>
+      <li>กำหนดบทบาท (Roles) ในระบบ EHR: Doctor, Nurse, Pharmacist, Lab Technician, Medical Records Clerk, Billing Staff, Hospital Administrator, Compliance Officer</li>
+      <li>กำหนด Resource Types: Patient Demographics, Medical History, Lab Results, Prescriptions, Medication Administration Records, Billing Records, Audit Logs</li>
+      <li>สร้าง Permission Matrix (8 roles x 7 resource types)</li>
+      <li>ออกแบบ Role Hierarchy</li>
+      <li>กำหนด Separation of Duties Constraints (SSD/DSD)</li>
+      <li>Implement ใน Python (ถ้ามีเวลา)</li>
+    </ol>
+    <p><strong>สิ่งที่ต้องส่ง:</strong></p>
+    <ol>
+      <li>Role Definitions (8 roles) พร้อมคำอธิบายหน้าที่</li>
+      <li>Permission Matrix (8 roles x 7 resource types)</li>
+      <li>Role Hierarchy Diagram</li>
+      <li>SSD/DSD Constraints พร้อมเหตุผล</li>
+      <li>โค้ด RBAC Implementation (ถ้ามี)</li>
+    </ol>
+    </div>
+
+    <div class="lab-section"><h4>Lab 7.3: Policy-Based Access Control — Implement OPA</h4>
+    <p><strong>วัตถุประสงค์:</strong> เรียนรู้การเขียน Policy ในรูปแบบ Declarative (Rego) และ Integrate กับ Web Application</p>
+    <p><strong>เวลาที่ใช้:</strong> 45-60 นาที</p>
+    <p><strong>เครื่องมือ:</strong> OPA (Open Policy Agent) Docker, Python + Flask, curl</p>
+    <p><strong>ขั้นตอน:</strong></p>
+    <ol>
+      <li>รัน OPA ด้วย Docker:<pre><code>docker run -d --name opa -p 8181:8181 openpolicyagent/opa run --server</code></pre></li>
+      <li>สร้าง Rego Policy File (<code>authz.rego</code>) ที่มีเงื่อนไข: admin ทำได้ทุกอย่าง, user อ่าน profile ตัวเองได้, พนักงานแผนกเดียวกันดูเอกสารกันได้, manager อนุมัติ purchase request ไม่เกิน $10,000</li>
+      <li>อัปโหลด Policy ไปยัง OPA:<pre><code>curl -X PUT --data-binary @authz.rego http://localhost:8181/v1/policies/app/authz</code></pre></li>
+      <li>ทดสอบ Policy ด้วย curl อย่างน้อย 4 กรณี</li>
+      <li>Integrate กับ Flask Application</li>
+    </ol>
+    <p><strong>สิ่งที่ต้องส่ง:</strong></p>
+    <ol>
+      <li>Rego Policy File ที่สมบูรณ์</li>
+      <li>ผลลัพธ์จากการทดสอบ Policy (อย่างน้อย 4 test cases)</li>
+      <li>โค้ด Integration กับ Flask</li>
+      <li>คำอธิบายว่า OPA แยก authorization logic ออกจาก application code อย่างไร</li>
+    </ol>
+    </div>
+
+    <div class="lab-section"><h4>Lab 7.4: Broken Access Control Detection ด้วย Burp Suite / ZAP</h4>
+    <p><strong>วัตถุประสงค์:</strong> ฝึกตรวจจับ Broken Access Control vulnerabilities ด้วยเครื่องมือ Proxy และเขียน Authorization Test</p>
+    <p><strong>เวลาที่ใช้:</strong> 45-60 นาที</p>
+    <p><strong>เครื่องมือ:</strong> Burp Suite Community Edition หรือ OWASP ZAP, Web Browser, Toy Application</p>
+    <p><strong>ขั้นตอน:</strong></p>
+    <ol>
+      <li>ตั้งค่า Proxy และให้ Browser ส่ง traffic ผ่าน Proxy</li>
+      <li>เปิด Toy Application ที่มีช่องโหว่ (WebGoat หรือที่อาจารย์จัดให้)</li>
+      <li>ทดสอบ IDOR: เปลี่ยน parameter (user_id, order_id) แล้วสังเกต response</li>
+      <li>ทดสอบ Missing Function Level: เรียก admin endpoint โดยตรง (force browsing)</li>
+      <li>ทดสอบ Mass Assignment: ส่ง field พิเศษใน request body เช่น "role": "admin"</li>
+      <li>บันทึก Findings ในรูปแบบ Report</li>
+    </ol>
+    <p><strong>สิ่งที่ต้องส่ง:</strong></p>
+    <ol>
+      <li>ภาพหรือ log การทดสอบที่พบช่องโหว่</li>
+      <li>Finding Report อย่างน้อย 2 รายการ (IDOR + Missing Function Level)</li>
+      <li>คำอธิบายแนวทางแก้ไขสำหรับแต่ละ finding</li>
+      <li>Authorization Test Cases (อย่างน้อย 3 test cases)</li>
+    </ol>
+    </div>
+
+    <h2 id="questions">คำถามท้ายบท</h2>
+    <ol>
+      <li>จงเปรียบเทียบ DAC, MAC, RBAC และ ABAC ในแง่ผู้ควบคุมสิทธิ์ ความยืดหยุ่น ระดับความปลอดภัย และกรณีการใช้งานที่เหมาะสม</li>
+      <li>Core RBAC Components ประกอบด้วยอะไรบ้าง และ RBAC0, RBAC1, RBAC2, RBAC3 แตกต่างกันอย่างไร</li>
+      <li>Static Separation of Duty (SSD) และ Dynamic Separation of Duty (DSD) แตกต่างกันอย่างไร จงยกตัวอย่าง</li>
+      <li>Principle of Least Privilege คืออะไร และมีแนวทางการ Implement ในระบบฐานข้อมูลอย่างไร</li>
+      <li>Permission Creep คืออะไร เกิดขึ้นได้อย่างไร และมีแนวทางป้องกันอย่างไรบ้าง</li>
+      <li>IDOR (Insecure Direct Object Reference) คืออะไร จงยกตัวอย่างโค้ดที่มีช่องโหว่และวิธีการแก้ไข 2 วิธี</li>
+      <li>Missing Function Level Access Control แตกต่างจาก IDOR อย่างไร</li>
+      <li>Path Traversal (CWE-22) ป้องกันอย่างไร จงอธิบายบทบาทของ Canonicalization ในการป้องกัน</li>
+      <li>Horizontal Privilege Escalation แตกต่างจาก Vertical Privilege Escalation อย่างไร จงยกตัวอย่าง</li>
+      <li>Mass Assignment / Object Injection คืออะไร และ DTO Pattern ช่วยป้องกันได้อย่างไร</li>
+      <li>จงอธิบายความแตกต่างระหว่าง API Keys และ Access Tokens พร้อมข้อควรระวังในการใช้งานแต่ละแบบ</li>
+      <li>OAuth 2.0 Scopes คืออะไร และมีวิธีการ Validate Scope ที่ Resource Server อย่างไร</li>
+      <li>Open Policy Agent (OPA) ทำงานอย่างไร และ Rego Policy แตกต่างจาก Authorization Logic ใน Code อย่างไร</li>
+      <li>Policy Enforcement Point (PEP) และ Policy Decision Point (PDP) แตกต่างกันอย่างไรใน Centralized Authorization Service</li>
+      <li>จากกรณีศึกษา Capital One Breach 2019 จงอธิบายว่าช่องโหว่ SSRF และ IAM Role Over-Provisioning ส่งผลต่อกันอย่างไร</li>
+      <li>จากกรณีศึกษา Cambridge Analytica 2018 จงอธิบายว่า OAuth Scope Misconfiguration ทำให้ข้อมูล 87 ล้าน users รั่วไหลได้อย่างไร</li>
+      <li>จากกรณีศึกษา GitHub 2022 จงอธิบายว่าเหตุใด OAuth Token Scope ที่กว้างเกินไปจึงเป็นความเสี่ยง และแนวทางป้องกันคืออะไร</li>
+      <li>OWASP ASVS V4 ข้อ 4.1.1 และ 4.2.1 กำหนดอะไรบ้าง และเกี่ยวข้องกับการป้องกัน Broken Access Control อย่างไร</li>
+      <li>จงออกแบบ Security Requirement สำหรับระบบที่ป้องกัน IDOR และ Mass Assignment พร้อม Acceptance Criteria</li>
+      <li>จงออกแบบ Test Case สำหรับตรวจสอบว่า Vertical Privilege Escalation เกิดขึ้นได้หรือไม่ในระบบที่กำหนด</li>
+      <li>Default Deny (Fail Safe Defaults) สำคัญอย่างไร และทำไมการตั้ง Default Allow จึงเป็นอันตราย</li>
+      <li>Role Explosion คืออะไร และ ABAC ช่วยแก้ปัญหานี้ได้อย่างไร</li>
+      <li>Gateway-Level Authorization มีข้อจำกัดอะไรบ้าง และทำไมยังต้องมี Data-Level Authorization ที่ Service Level</li>
+      <li>จากกรณี Parler Data Scraping 2021 จงอธิบายว่า IDOR ใน API ทำให้ข้อมูลส่วนตัวรั่วไหลได้อย่างไรทั้งที่ข้อมูลถูกตั้งเป็น private</li>
+      <li>Pull Request Checklist สำหรับ Access Control ควรมีรายการตรวจสอบอะไรบ้าง (อย่างน้อย 10 ข้อ)</li>
+    </ol>
+
+    <h2 id="summary">สรุปท้ายบท</h2>
+    <div class="card"><div class="card-header">สาระสำคัญของบทที่ 7</div>
+    <p>Access Control และ Authorization เป็นรากฐานสำคัญของความปลอดภัยซอฟต์แวร์ Broken Access Control ยังคงเป็นอันดับ 1 ใน OWASP Top 10 2025 โดย 100% ของแอปพลิเคชันที่ทดสอบพบช่องโหว่ด้านนี้บางรูปแบบ</p>
+    <p>โมเดล Access Control มี 5 ประเภทหลัก ได้แก่ DAC (เจ้าของกำหนดสิทธิ์), MAC (ระบบกำหนดตาม Label), RBAC (สิทธิ์ตามบทบาท), ABAC (สิทธิ์ตามคุณลักษณะ) และ Rule-Based Access Control การเลือกโมเดลที่เหมาะสมขึ้นอยู่กับขนาดองค์กร ระดับความปลอดภัยที่ต้องการ และความยืดหยุ่นในการบริหารจัดการ</p>
+    <p>หลักการออกแบบ Authorization ที่สำคัญ ได้แก่ Least Privilege (ให้สิทธิ์เท่าที่จำเป็น), Separation of Duties (แยกหน้าที่ที่ขัดแย้งกัน), Default Deny (ปฏิเสธเป็นค่าเริ่มต้น) และการจัดการ Permission Creep (สิทธิ์สะสม) การตรวจสอบ Authorization ต้องทำทุกระดับตั้งแต่ API Endpoint จนถึงระดับ Data</p>
+    <p>OWASP A01 Broken Access Control ครอบคลุมช่องโหว่ 5 ประเภทหลัก ได้แก่ IDOR, Missing Function Level Access Control, Path Traversal, Privilege Escalation (แนวนอนและแนวตั้ง) และ Mass Assignment/Object Injection การป้องกันแต่ละประเภทต้องใช้เทคนิคเฉพาะ เช่น Authorization Check ทุก request, Indirect Reference Map, Canonicalization, DTO Pattern และ Role/Permission Check ทุก function</p>
+    <p>ในสถาปัตยกรรม API และ Microservices, การจัดการ Authorization ที่ดีต้องใช้ OAuth 2.0 Scopes เพื่อจำกัดขอบเขต Access Token, เข้าใจความแตกต่างระหว่าง API Keys และ Access Tokens, และใช้ Policy-Based Access Control (OPA/Casbin) เพื่อแยก Authorization Logic ออกจาก Application Code โมเดล PEP/PDP/PAP/PIP ช่วยให้การจัดการ Authorization เป็น centralized และตรวจสอบได้</p>
+    <p>กรณีศึกษา Cambridge Analytica (2018), Capital One (2019), GitHub (2022) และ Parler (2021) แสดงให้เห็นว่าช่องโหว่ด้าน Access Control สร้างความเสียหายระดับโลกได้ — ตั้งแต่ข้อมูล 87 ล้าน users รั่วไหล ค่าปรับ 5,000 ล้านดอลลาร์สหรัฐ ไปจนถึงข้อมูลทางการเงิน 100 ล้าน customers ถูกขโมย</p>
+    <p>OWASP ASVS V4 (V4 Access Control) และ OWASP Top 10 2025 A01 Checklist เป็นเครื่องมือสำคัญในการตรวจสอบตนเอง การแปลงความรู้เป็น Security Requirements และ Test Cases ที่วัดผลได้ช่วยให้องค์กรสามารถป้องกัน Broken Access Control ได้อย่างเป็นระบบ</p>
+    </div>
+
+    <h2 id="verify">Verification</h2>
+    <div class="card"><div class="card-header">การตรวจสอบข้อมูล</div>
+    <ul style="padding-left:1.25rem">
+      <li><strong>Research process:</strong> ใช้ websearch ตรวจสอบข้อมูลประกอบจากแหล่งอ้างอิงหลักก่อนปรับปรุงเนื้อหา</li>
+      <li><strong>OWASP Top 10 2025 A01 Broken Access Control:</strong> ยืนยันอันดับ 1, 100% ของแอปพลิเคชันพบช่องโหว่, 40 CWEs, 1,839,701 occurrences, 32,654 CVEs</li>
+      <li><strong>OWASP ASVS v4.0.3 V4 Access Control:</strong> ยืนยัน V4.1 General Access Control Design, V4.2 Operation Level Access Control, V4.3 Other Access Control Considerations</li>
+      <li><strong>NIST SP 800-162:</strong> ยืนยันนิยาม ABAC, องค์ประกอบ Subject/Object/Environment Attributes, Policy Rules</li>
+      <li><strong>NIST RBAC Model (ANSI INCITS 359-2012):</strong> ยืนยัน RBAC0-RBAC3, Core RBAC Components, Role Hierarchy, SSD/DSD</li>
+      <li><strong>Facebook/Cambridge Analytica 2018:</strong> ยืนยัน 87 ล้าน users, FTC fine $5 billion (July 2019)</li>
+      <li><strong>Capital One Breach 2019:</strong> ยืนยัน SSRF (CWE-918), IAM Role Over-Provisioning, 100 ล้าน customers, $80 million fine, Paige Thompson (Erratic), IMDSv1</li>
+      <li><strong>GitHub OAuth Token Theft April 2022:</strong> ยืนยัน OAuth tokens from Heroku + Travis CI, targeted attack, npm, private repositories cloned</li>
+      <li><strong>Parler Data Scraping January 2021:</strong> ยืนยัน 99 TB data scraped, API IDOR, Capitol Hill riot context</li>
+      <li><strong>OWASP Top 10 2021/2025 A01:</strong> ยืนยัน Broken Access Control ยังคงอันดับ 1</li>
+      <li><strong>CWE Mappings:</strong> ยืนยัน CWE-22 (Path Traversal), CWE-285 (Improper Authorization), CWE-352 (CSRF), CWE-602 (Client-Side Enforcement), CWE-639 (IDOR), CWE-918 (SSRF)</li>
+      <li><strong>Safety boundary:</strong> Labs ระบุให้ทำในเครื่องของนักศึกษาเองหรือสภาพแวดล้อมที่ได้รับอนุญาตเท่านั้น</li>
+      <li><strong>Status:</strong> ตรวจสอบข้อมูลหลักแล้ว ไม่มีรายการที่ตั้งใจปล่อยไว้เป็น [UNVERIFIED]</li>
+    </ul>
+    </div>
+
+    <h2 id="refs">เอกสารอ้างอิงหลัก</h2>
+    <ol>
+      <li>OWASP Top 10 2025 — A01 Broken Access Control: <a href="https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/">https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/</a></li>
+      <li>OWASP ASVS v4.0.3 — V4 Access Control: <a href="https://asvs.dev/v4.0.3/V4-Access-Control/">https://asvs.dev/v4.0.3/V4-Access-Control/</a></li>
+      <li>OWASP Access Control Cheat Sheet: <a href="https://cheatsheetseries.owasp.org/cheatsheets/Access_Control_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Access_Control_Cheat_Sheet.html</a></li>
+      <li>OWASP Authorization Testing: <a href="https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/">https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/</a></li>
+      <li>NIST SP 800-162 — Guide to ABAC Definition and Considerations: <a href="https://nvlpubs.nist.gov/nistpubs/specialpublications/NIST.sp.800-162.pdf">https://nvlpubs.nist.gov/nistpubs/specialpublications/NIST.sp.800-162.pdf</a></li>
+      <li>NIST RBAC Model (ANSI INCITS 359-2012): <a href="https://csrc.nist.gov/projects/role-based-access-control">https://csrc.nist.gov/projects/role-based-access-control</a></li>
+      <li>OWASP Mass Assignment Prevention: <a href="https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html</a></li>
+      <li>OWASP IDOR Prevention: <a href="https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html</a></li>
+      <li>Open Policy Agent (OPA) Documentation: <a href="https://www.openpolicyagent.org/docs/latest/">https://www.openpolicyagent.org/docs/latest/</a></li>
+      <li>OPA Rego Language Reference: <a href="https://www.openpolicyagent.org/docs/latest/policy-language/">https://www.openpolicyagent.org/docs/latest/policy-language/</a></li>
+      <li>OAuth 2.0 Scopes — RFC 6749 Section 3.3: <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-3.3">https://datatracker.ietf.org/doc/html/rfc6749#section-3.3</a></li>
+      <li>FTC — Cambridge Analytica Settlement (July 2019): <a href="https://www.ftc.gov/news-events/news/press-releases/2019/07/ftc-imposes-5-billion-penalty-sweeping-new-privacy-restrictions-facebook">https://www.ftc.gov/news-events/news/press-releases/2019/07/ftc-imposes-5-billion-penalty-sweeping-new-privacy-restrictions-facebook</a></li>
+      <li>Capital One Indictment — DOJ (July 2019): <a href="https://www.justice.gov/usao-wdwa/pr/former-aws-employee-charged-data-theft-capital-one">https://www.justice.gov/usao-wdwa/pr/former-aws-employee-charged-data-theft-capital-one</a></li>
+      <li>GitHub Security Alert (April 2022): <a href="https://github.blog/2022-04-15-security-alert-stolen-oauth-user-tokens/">https://github.blog/2022-04-15-security-alert-stolen-oauth-user-tokens/</a></li>
+      <li>Heroku Incident Review (June 2022): <a href="https://heroku.com/blog/april-2022-incident-review">https://heroku.com/blog/april-2022-incident-review</a></li>
+      <li>CWE-22 — Path Traversal: <a href="https://cwe.mitre.org/data/definitions/22.html">https://cwe.mitre.org/data/definitions/22.html</a></li>
+      <li>CWE-639 — Insecure Direct Object Reference: <a href="https://cwe.mitre.org/data/definitions/639.html">https://cwe.mitre.org/data/definitions/639.html</a></li>
+      <li>CWE-285 — Improper Authorization: <a href="https://cwe.mitre.org/data/definitions/285.html">https://cwe.mitre.org/data/definitions/285.html</a></li>
+      <li>CWE-918 — Server-Side Request Forgery: <a href="https://cwe.mitre.org/data/definitions/918.html">https://cwe.mitre.org/data/definitions/918.html</a></li>
+      <li>MITRE ATT&CK — T1068 Exploitation for Privilege Escalation: <a href="https://attack.mitre.org/techniques/T1068/">https://attack.mitre.org/techniques/T1068/</a></li>
+      <li>AWS IAM Best Practices: <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html">https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html</a></li>
+      <li>Kong API Gateway — OAuth 2.0 Authentication: <a href="https://docs.konghq.com/hub/kong-inc/oauth2/">https://docs.konghq.com/hub/kong-inc/oauth2/</a></li>
+      <li>OWASP Cheat Sheet Series: <a href="https://cheatsheetseries.owasp.org/">https://cheatsheetseries.owasp.org/</a></li>
+      <li>NVD — CVE Details Search: <a href="https://nvd.nist.gov/vuln/search">https://nvd.nist.gov/vuln/search</a></li>
+    </ol>
+  </div>
+</div>
+<button class="scroll-top" id="scrollTopBtn" aria-label="กลับด้านบน">↑</button>
+<script>
+(function(){
+// === Sidebar ===
+var s=document.getElementById('sidebar'),t=document.getElementById('sidebarToggle'),o=document.getElementById('sidebarOverlay');
+function op(){s.classList.add('open');o.classList.add('show')}
+function cl(){s.classList.remove('open');o.classList.remove('show')}
+if(t)t.addEventListener('click',function(){s.classList.contains('open')?cl():op()});
+if(o)o.addEventListener('click',cl);
+document.querySelectorAll('.sidebar-nav a').forEach(function(l){l.addEventListener('click',function(){if(window.innerWidth<=1024)cl()})});
+
+// === Scroll to Top ===
+var sb=document.getElementById('scrollTopBtn');
+window.addEventListener('scroll',function(){if(window.scrollY>300)sb.classList.add('visible');else sb.classList.remove('visible')});
+if(sb)sb.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+
+// === Active Section Highlight ===
+var secs=[],anc=document.querySelectorAll('.sidebar-nav a');
+anc.forEach(function(a){var h=a.getAttribute('href');if(h&&h.startsWith('#')){var el=document.getElementById(h.substring(1));if(el)secs.push({el:el,link:a})}});
+function upAct(){var pos=window.scrollY+120,cur=null;secs.forEach(function(s){if(s.el.offsetTop<=pos)cur=s});anc.forEach(function(a){a.classList.remove('active')});if(cur)cur.link.classList.add('active')}
+window.addEventListener('scroll',upAct);upAct();
+
+// === Helper ===
+function setRes(id,msg,cls){var el=document.getElementById(id);if(!el)return;el.className='result '+(cls||'');el.textContent=msg}
+
+// === Access Control Model Comparator ===
+var modelBtn=document.getElementById('modelBtn');
+if(modelBtn)modelBtn.addEventListener('click',function(){
+  var v=document.getElementById('modelSelect').value;
+  if(!v){setRes('modelResult','โปรดเลือกโมเดล','mid');return}
+  var data={
+    dac:{desc:'DAC (Discretionary Access Control) — เจ้าของทรัพยากรกำหนดสิทธิ์เอง',pros:'ยืดหยุ่นสูง ใช้งานง่าย ไม่ต้องมีผู้ดูแลตลอดเวลา',cons:'เสี่ยงข้อมูลรั่ว ควบคุมยากในองค์กรใหญ่ ไม่ป้องกัน Trojan Horse',use:'เครื่องส่วนตัว ไฟล์ส่วนตัว UNIX permissions'},
+    mac:{desc:'MAC (Mandatory Access Control) — ระบบหรือนโยบายกลางกำหนดสิทธิ์',pros:'ปลอดภัยสูง ป้องกัน privilege escalation บังคับนโยบายสม่ำเสมอ',cons:'ซับซ้อน ยืดหยุ่นต่ำ ค่าใช้จ่ายสูง',use:'Military Government Intelligence ระบบความปลอดภัยสูง'},
+    rbac:{desc:'RBAC (Role-Based Access Control) — สิทธิ์ตามบทบาทในองค์กร',pros:'ลดความซับซ้อน สอดคล้องโครงสร้างองค์กร รองรับ audit',cons:'Role Explosion ไม่ยืดหยุ่นพอสำหรับเงื่อนไขละเอียด',use:'องค์กรทั่วไป ERP HR ระบบธนาคาร'},
+    abac:{desc:'ABAC (Attribute-Based Access Control) — สิทธิ์ตามคุณลักษณะ',pros:'ยืดหยุ่นสูง ไม่เกิด Role Explosion รองรับ real-time',cons:'ซับซ้อน ประสิทธิภาพอาจช้า ทดสอบยาก',use:'คลาวด์ ระบบเงื่อนไขซับซ้อน องค์กรใหญ่'}
+  };
+  var d=data[v];
+  setRes('modelResult','โมเดล: '+d.desc+' | ข้อดี: '+d.pros+' | ข้อเสีย: '+d.cons+' | กรณีการใช้งาน: '+d.use,'ok')
+});
+
+// === RBAC Role Hierarchy ===
+document.querySelectorAll('.tree-node').forEach(function(node){
+  node.addEventListener('click',function(e){
+    e.stopPropagation();
+    var key=node.dataset.expand;
+    if(key){
+      var ch=document.getElementById('ch-'+key);
+      if(ch){
+        var tog=node.querySelector('.tree-toggle');
+        if(ch.style.display==='none'||!ch.style.display){ch.style.display='block';if(tog)tog.textContent='▼'}
+        else{ch.style.display='none';if(tog)tog.textContent='▶'}
+      }
+    }
+  });
+});
+
+// === IDOR Vulnerability Demo ===
+var idorVuln=document.getElementById('idorVulnBtn');
+var idorSafe=document.getElementById('idorSafeBtn');
+var idorDisplay=document.getElementById('idorCodeDisplay');
+if(idorVuln)idorVuln.addEventListener('click',function(){
+  idorDisplay.innerHTML='<pre><code># ไม่ปลอดภัย: IDOR Vulnerability\n@app.route("/api/user/profile/&lt;user_id&gt;")\n@jwt_required\ndef get_user_profile(user_id):\n    # ปัญหา: ไม่ตรวจสอบว่า current_user\n    # มีสิทธิ์ดู profile ของ user_id นี้หรือไม่\n    user = User.query.get(user_id)\n    return user.to_dict()\n\n# ผู้โจมตีเปลี่ยน user_id ใน URL:\n# GET /api/user/profile/102 — ดูข้อมูล user 102\n# GET /api/user/profile/103 — ดูข้อมูล user 103!</code></pre>';
+  setRes('idorResult','แสดงโค้ดที่มีช่องโหว่ IDOR — ผู้โจมตีสามารถเปลี่ยน user_id ใน URL เพื่อเข้าถึงข้อมูลของผู้อื่น','bad')
+});
+if(idorSafe)idorSafe.addEventListener('click',function(){
+  idorDisplay.innerHTML='<pre><code># ปลอดภัย: Authorization Check\n@app.route("/api/user/profile/&lt;user_id&gt;")\n@jwt_required\ndef get_user_profile(user_id):\n    # ตรวจสอบ Authorization\n    if current_user.id != int(user_id) and \\\n       not current_user.has_role("admin"):\n        log_unauthorized_access(current_user.id, "view_profile", user_id)\n        return {"error": "Forbidden"}, 403\n    \n    user = User.query.get(user_id)\n    return user.to_dict()</code></pre>';
+  setRes('idorResult','แสดงโค้ดที่ปลอดภัย — มี Authorization Check ก่อนเข้าถึง object ป้องกัน IDOR','ok')
+});
+
+// === Mass Assignment Checker ===
+var massBtn=document.getElementById('massBtn');
+if(massBtn)massBtn.addEventListener('click',function(){
+  var checked=document.querySelectorAll('.mass-field:checked');
+  var safe=true;
+  checked.forEach(function(cb){
+    if(cb.dataset.safe==='false')safe=false;
+  });
+  var total=checked.length;
+  if(total===0){setRes('massResult','กรุณาเลือก field อย่างน้อย 1 รายการ','mid');return}
+  var unsafeFields=[];
+  checked.forEach(function(cb){
+    if(cb.dataset.safe==='false')unsafeFields.push(cb.parentElement.textContent.trim().split(' —')[0]);
+  });
+  if(unsafeFields.length>0){
+    setRes('massResult','พบ field ที่ไม่ปลอดภัย: '+unsafeFields.join(', ')+' — ควรใช้ DTO Pattern เพื่อไม่ให้ field เหล่านี้ถูก bind จาก request','bad');
+  }else{
+    setRes('massResult','field ที่เลือกทุกรายการปลอดภัย — ใช้ DTO Pattern กำหนดเฉพาะ fields ที่ผู้ใช้แก้ไขได้','ok');
+  }
+});
+
+// === OPA Policy Simulator ===
+var opaBtn=document.getElementById('opaBtn');
+if(opaBtn)opaBtn.addEventListener('click',function(){
+  var v=document.getElementById('opaScenario').value;
+  if(!v){setRes('opaResult','กรุณาเลือกกรณีทดสอบ','mid');document.getElementById('opaDetail').textContent='';return}
+  var detail=document.getElementById('opaDetail');
+  var r,msg,d;
+  switch(v){
+    case 'admin':
+      r='allow';msg='Admin — อนุญาต';d='Rego rule: allow { input.user.roles[_] == "admin" } => Admin มีสิทธิ์ทำอะไรก็ได้';
+      setRes('opaResult','ALLOW — '+msg,'ok');break;
+    case 'owner':
+      r='allow';msg='เจ้าของเอกสาร — อนุญาต';d='Rego rule: allow { input.action == "read" AND input.resource.owner == input.user.id } => เจ้าของอ่านเอกสารตัวเอง';
+      setRes('opaResult','ALLOW — '+msg,'ok');break;
+    case 'same_dept':
+      r='allow';msg='พนักงานแผนกเดียวกัน — อนุญาต';d='Rego rule: allow { input.resource.department == input.user.department AND input.user.employment_status == "active" }';
+      setRes('opaResult','ALLOW — '+msg,'ok');break;
+    case 'manager_dept':
+      r='allow';msg='ผู้จัดการแผนก — อนุญาต';d='Rego rule: allow { input.resource.department == input.user.managed_departments[_] AND input.user.roles[_] == "manager" }';
+      setRes('opaResult','ALLOW — '+msg,'ok');break;
+    case 'outsider':
+      r='deny';msg='บุคคลภายนอกแผนก — ปฏิเสธ';d='ค่าเริ่มต้น default allow = false => ไม่ตรงตามเงื่อนไขใดๆ => DENY';
+      setRes('opaResult','DENY — '+msg,'bad');break;
+    default: return;
+  }
+  if(detail)detail.innerHTML='<strong>ผลลัพธ์จาก Rego Policy:</strong> '+d;
+});
+
+// === Access Control Quiz ===
+var quizBtn=document.getElementById('quizBtn');
+if(quizBtn)quizBtn.addEventListener('click',function(){
+  var t=document.getElementById('quizSelect').value,d=document.getElementById('quizDesc').value;
+  if(!t||!d){setRes('quizResult','โปรดเลือกทั้งช่องโหว่และคำอธิบาย','mid');return}
+  if(t===d)setRes('quizResult','ถูกต้อง! "'+t+'" จับคู่ถูกต้อง','ok');else setRes('quizResult','ยังไม่ตรง — ลองจับคู่ใหม่','bad')
+});
+
+// === ASVS V4 Checklist ===
+function updateASVS(){
+  var boxes=document.querySelectorAll('#asvsChecks input'),c=0;
+  boxes.forEach(function(b){if(b.checked)c++});
+  var pct=boxes.length?Math.round(c/boxes.length*100):0;
+  document.getElementById('asvsMeter').style.width=pct+'%';
+  var cls=pct>=75?'ok':pct>=40?'mid':'bad';
+  var label=pct>=75?'ดี (ควรทดสอบต่อเนื่อง)':pct>=40?'พอใช้ (ควรเพิ่ม control หลัก)':'ต่ำ (ควรดำเนินการทันที)';
+  setRes('asvsResult','ASVS V4 Compliance: '+pct+'% — '+label,cls)
+}
+var asvsBox=document.getElementById('asvsChecks');if(asvsBox)asvsBox.addEventListener('change',updateASVS);
+
+})();
+</script>
+<div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--text-muted, #64748b);border-top:1px solid var(--border, #e2e8f0)">Powered by: IceSuntisuk</div></body>
+</html>

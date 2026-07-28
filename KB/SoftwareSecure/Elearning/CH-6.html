@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บทที่ 6: Authentication และ Session Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#1a56db;--primary-dark:#1340a0;--primary-light:#e8effc;--navy:#1e293b;--navy-light:#334155;--success:#059669;--success-light:#d1fae5;--danger:#dc2626;--danger-light:#fee2e2;--warning:#d97706;--warning-light:#fef3c7;--purple:#7c3aed;--purple-light:#ede9fe;--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--radius:12px;--radius-sm:8px;--sidebar-w:292px;--font-thai:'Sarabun','Thonburi','Noto Sans Thai','Noto Sans Thai Looped',sans-serif;--font-mono:'IBM Plex Mono','SF Mono','Menlo',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.8;display:flex;min-height:100vh}a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);height:100vh;background:var(--navy);color:#fff;overflow-y:auto;z-index:100;transition:transform .3s}.sidebar-header{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}.sidebar-header h1{font-size:1rem;font-weight:600;color:#fff;line-height:1.4}.sidebar-header .sub{font-size:.75rem;color:#94a3b8;margin-top:.25rem}.sidebar-nav{padding:.75rem 0}.sidebar-nav a{display:block;padding:.5rem 1.25rem;color:#cbd5e1;font-size:.84rem;transition:all .15s;border-left:3px solid transparent}.sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--primary);text-decoration:none}.sidebar-nav .section-label{padding:.6rem 1.25rem .25rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#64748b;font-weight:600}.sidebar-nav .sub-link{padding-left:2.35rem;font-size:.78rem}.sidebar-toggle{display:none;position:fixed;top:.75rem;left:.75rem;z-index:200;background:var(--navy);color:#fff;border:none;width:44px;height:44px;border-radius:var(--radius-sm);cursor:pointer;font-size:1.5rem;align-items:center;justify-content:center}.sidebar-overlay{display:none}.main{flex:1;margin-left:var(--sidebar-w);max-width:100%;padding:0}.topbar{position:sticky;top:0;z-index:50;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between}.topbar-title{font-size:.85rem;color:var(--text-muted)}.topbar-title strong{color:var(--text);font-weight:600}.topbar-progress{font-size:.8rem;color:var(--text-muted)}.topbar-home{color:var(--text-muted);font-size:.85rem;text-decoration:none;margin-right:.75rem;transition:color.15s;white-space:nowrap}.topbar-home:hover{color:var(--primary);text-decoration:none}.content{padding:2rem;max-width:1040px;margin:0 auto}.content h2{font-size:1.6rem;font-weight:700;color:var(--navy);margin:2rem 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--primary-light)}.content h3{font-size:1.2rem;font-weight:600;color:var(--navy);margin:1.5rem 0 .5rem}.content h4{font-size:1.05rem;font-weight:600;color:var(--navy-light);margin:1rem 0 .4rem}.content p{margin:.6rem 0;color:#334155;font-size:.95rem}.content ul,.content ol{padding-left:1.5rem;margin:.5rem 0;font-size:.95rem;color:#334155}.content li{margin:.3rem 0}.card{background:var(--bg-card);border-radius:var(--radius);padding:1.25rem;margin:1rem 0;box-shadow:var(--shadow);border:1px solid var(--border)}.card-header{font-weight:600;margin-bottom:.5rem;color:var(--navy);font-size:1rem}.table-wrap{overflow-x:auto;margin:.75rem 0}.table-wrap table{width:100%;border-collapse:collapse;font-size:.88rem;background:var(--bg-card);border-radius:var(--radius-sm);overflow:hidden;box-shadow:var(--shadow)}.table-wrap th{background:var(--navy);color:#fff;padding:.65rem .75rem;text-align:left;font-weight:600;white-space:nowrap}.table-wrap td{padding:.6rem .75rem;border-bottom:1px solid var(--border);color:#334155}.table-wrap tr:nth-child(even){background:#f1f5f9}.table-wrap tr:hover{background:var(--primary-light)}code{font-family:var(--font-mono);background:#f1f5f9;padding:.15rem .4rem;border-radius:4px;font-size:.84rem;color:#b91c1c}pre{position:relative;background:#0f172a;color:#e2e8f0;padding:1rem;border-radius:var(--radius-sm);overflow-x:auto;font-family:var(--font-mono);font-size:.84rem;line-height:1.6;margin:.75rem 0}pre code{background:transparent;color:inherit;padding:0;border-radius:0;font-size:inherit}.info-box{display:flex;align-items:flex-start;gap:.75rem;background:var(--primary-light);border-left:4px solid var(--primary);border-radius:var(--radius-sm);padding:.85rem 1rem;margin:.75rem 0}.info-box .icon{flex-shrink:0;background:var(--primary);color:#fff;font-weight:700;font-size:.7rem;padding:.15rem .55rem;border-radius:50px;letter-spacing:.03em}.info-box.warning{background:var(--warning-light);border-left-color:var(--warning)}.info-box.warning .icon{background:var(--warning);color:#fff}.info-box.tip{background:var(--success-light);border-left-color:var(--success)}.info-box.tip .icon{background:var(--success);color:#fff}.interactive{background:linear-gradient(135deg,#fff,var(--primary-light));border:1px solid rgba(26,86,219,.25);border-radius:var(--radius);padding:1.25rem;margin:1.25rem 0;box-shadow:var(--shadow)}.interactive h4{margin-top:0;color:var(--primary)}.control-row{display:flex;flex-wrap:wrap;gap:.75rem;margin:.75rem 0}.control-row input,.control-row select,.control-row textarea{font-family:var(--font-thai);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.6rem .75rem;min-width:220px;background:#fff}.control-row textarea{width:100%;min-height:92px}.btn{border:none;border-radius:999px;padding:.55rem 1rem;cursor:pointer;background:var(--primary);color:#fff;font-family:var(--font-thai);font-weight:600;box-shadow:var(--shadow-sm)}.btn:hover{background:var(--primary-dark)}.btn.secondary{background:var(--navy-light)}.btn.safe{background:var(--success)}.btn.warn{background:var(--warning)}.result{border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:.75rem;background:#fff;border:1px solid var(--border)}.result.ok{background:var(--success-light);border-color:var(--success);color:#064e3b}.result.bad{background:var(--danger-light);border-color:var(--danger);color:#7f1d1d}.result.mid{background:var(--warning-light);border-color:var(--warning);color:#78350f}.tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0}.tab-btn{border:1px solid var(--border);background:#fff;color:var(--text);border-radius:999px;padding:.45rem .85rem;cursor:pointer;font-family:var(--font-thai)}.tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}.tab-panel{display:none}.tab-panel.active{display:block}.quiz-option{display:block;width:100%;text-align:left;border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);padding:.7rem .85rem;margin:.45rem 0;cursor:pointer;font-family:var(--font-thai)}.quiz-option.correct{border-color:var(--success);background:var(--success-light)}.quiz-option.wrong{border-color:var(--danger);background:var(--danger-light)}.checklist{display:flex;flex-direction:column;gap:.45rem;margin:.75rem 0}.checklist label{display:flex;align-items:center;gap:.6rem;padding:.4rem .65rem;background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:.9rem;transition:all .15s}.checklist label:has(input:checked){background:var(--success-light);border-color:var(--success)}.checklist input[type=checkbox]{width:20px;height:20px;cursor:pointer;accent-color:var(--primary)}.meter{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin:.6rem 0}.meter-fill{height:100%;background:var(--danger);border-radius:999px;transition:width .4s ease;width:0%}.meter-fill.ok{background:var(--success)}.meter-fill.mid{background:var(--warning)}.lab-section{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin:1rem 0;box-shadow:var(--shadow)}.lab-section h4{color:var(--primary);margin-bottom:.5rem;font-size:1rem}.lab-section ol{padding-left:1.25rem;font-size:.9rem}.lab-section li{margin:.35rem 0}.visual-compare{display:flex;flex-wrap:wrap;gap:1rem;margin:.75rem 0}.visual-compare .vc-item{flex:1;min-width:140px;text-align:center;padding:.75rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:#fff}.visual-compare .vc-item .vc-bar{height:6px;border-radius:999px;margin:.5rem auto;max-width:80px;transition:width .5s}.visual-compare .vc-item .vc-label{font-size:.78rem;color:var(--text-muted);font-weight:500}.visual-compare .vc-item .vc-value{font-size:.85rem;font-weight:600;color:var(--navy)}.flow-text{font-family:var(--font-mono);font-size:.82rem;background:#0f172a;color:#e2e8f0;padding:.75rem 1rem;border-radius:var(--radius-sm);margin:.5rem 0;white-space:pre-wrap;word-break:break-word;line-height:1.7}.scroll-top{position:fixed;bottom:1.5rem;right:1.5rem;width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;border:none;font-size:1.5rem;cursor:pointer;box-shadow:var(--shadow-lg);z-index:150;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .3s}.scroll-top.visible{opacity:1;visibility:visible}@media(max-width:1024px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sidebar-toggle{display:flex}.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}.sidebar-overlay.show{display:block}.main{margin-left:0}.content{padding:1.25rem}.topbar{padding:.75rem 1rem}}@media(max-width:640px){h2{font-size:1.35rem}h3{font-size:1.15rem}.content{padding:1rem}.card{padding:1rem}.topbar-title{font-size:.75rem}.topbar-progress{display:none}.control-row input,.control-row select{width:100%;min-width:0}}@media print{.sidebar,.sidebar-toggle,.sidebar-overlay,.topbar,.scroll-top,.interactive button{display:none!important}.main{margin-left:0}.content{max-width:100%;padding:0}.interactive{break-inside:avoid}}
+</style>
+</head>
+<body>
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="เปิดเมนู">☐</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-header"><h1>Authentication และ Session Management</h1><div class="sub">บทที่ 6 · Interactive Learning</div></div>
+  <div class="sidebar-nav">
+    <div class="section-label">เนื้อหา</div>
+    <a href="#s1">6.1 Password-Based Authentication</a><a href="#s1-1" class="sub-link">NIST SP 800-63B</a><a href="#s1-2" class="sub-link">Password Hashing</a><a href="#s1-3" class="sub-link">Salt และ Pepper</a><a href="#s1-4" class="sub-link">Timing Attack</a><a href="#s1-5" class="sub-link">WebAuthn/Passkeys</a><a href="#s1-6" class="sub-link">Credential Stuffing</a>
+    <a href="#s2">6.2 Multi-Factor Authentication</a><a href="#s2-1" class="sub-link">ปัจจัยทั้งสาม</a><a href="#s2-2" class="sub-link">TOTP vs HOTP</a><a href="#s2-3" class="sub-link">FIDO2/WebAuthn</a><a href="#s2-4" class="sub-link">Adaptive Auth</a><a href="#s2-5" class="sub-link">MFA Bypass</a><a href="#s2-6" class="sub-link">MFA ตาม NIST AAL</a>
+    <a href="#s3">6.3 Session Management</a><a href="#s3-1" class="sub-link">Session ID</a><a href="#s3-2" class="sub-link">Session Lifecycle</a><a href="#s3-3" class="sub-link">Cookie Security</a><a href="#s3-4" class="sub-link">Fixation/Hijacking</a><a href="#s3-5" class="sub-link">JWT</a>
+    <a href="#s4">6.4 SSO และ Federated Identity</a><a href="#s4-1" class="sub-link">OAuth 2.0</a><a href="#s4-2" class="sub-link">OpenID Connect</a><a href="#s4-3" class="sub-link">SAML 2.0</a><a href="#s4-4" class="sub-link">Common SSO Attacks</a><a href="#s4-5" class="sub-link">เลือก SSO</a>
+    <a href="#s5">6.5 กรณีศึกษา</a><a href="#s5-1" class="sub-link">SolarWinds</a><a href="#s5-2" class="sub-link">Okta</a><a href="#s5-3" class="sub-link">Password Breaches</a><a href="#s5-4" class="sub-link">Apple SIWA</a><a href="#s5-5" class="sub-link">MFA Fatigue</a>
+    <a href="#s6">6.6 สรุปและแนวทางปฏิบัติ</a><a href="#s6-1" class="sub-link">ASVS V2/V3</a><a href="#s6-2" class="sub-link">OWASP Top 10 2025</a><a href="#s6-3" class="sub-link">Microsoft Identity</a><a href="#s6-4" class="sub-link">NIST 800-63B-4 ใหม่</a><a href="#s6-5" class="sub-link">Security Req/Test</a>
+    <div class="section-label">Interactive</div>
+    <a href="#play-hashing">Password Hashing Comparator</a><a href="#play-timing">Timing Attack Demo</a><a href="#play-mfa-quiz">MFA CISA Ranking Quiz</a><a href="#play-session">Session ID Generator</a><a href="#play-cookie">Cookie Security Builder</a><a href="#play-bypass">MFA Bypass Matching</a><a href="#play-asvs">OWASP ASVS Checklist</a><a href="#play-jwt">JWT Claims Check</a>
+    <div class="section-label">กิจกรรม</div>
+    <a href="#labs">Labs</a><a href="#questions">คำถามท้ายบท</a><a href="#summary">สรุปท้ายบท</a><a href="#refs">เอกสารอ้างอิง</a>
+  </div>
+</nav>
+<div class="main">
+  <header class="topbar"><a href="index.html" class="topbar-home" aria-label="กลับหน้าแรก">← HOME</a><div class="topbar-title"><strong>บทที่ 6</strong> · Authentication และ Session Management</div><div class="topbar-progress" id="readingProgress">Software Security</div></header>
+  <div class="content">
+
+    <div style="text-align:center;padding:2rem 0 1rem"><span style="display:inline-block;background:var(--primary);color:#fff;padding:.25rem 1rem;border-radius:50px;font-size:.85rem;margin-bottom:1rem">บทที่ 6</span><h1 style="font-size:2.25rem;color:var(--navy);margin-bottom:.5rem;border:none">Authentication และ Session Management</h1><p style="color:var(--text-muted);font-size:1rem">บรรยาย 2 ชม. + ปฏิบัติการ 2 ชม. | รวม 4 ชม.</p></div>
+    <div class="card" style="background:linear-gradient(135deg,var(--navy),#0f172a);color:#fff;border:none"><div class="card-header" style="color:#fff">วัตถุประสงค์การเรียนรู้</div><ol style="color:#cbd5e1;padding-left:1.25rem"><li>อธิบายหลักการของ Password-Based Authentication ตามมาตรฐาน NIST SP 800-63B Rev 4 รวมถึงการเลือกใช้ Password Hashing Algorithm (Argon2id, scrypt, bcrypt, PBKDF2) และการป้องกัน Timing Attack ได้อย่างถูกต้อง</li><li>เปรียบเทียบปัจจัย MFA ทั้งสามประเภทและเลือกใช้ MFA ที่เหมาะสมตามระดับความปลอดภัย (NIST AAL) พร้อมอธิบายเทคนิคการหลบเลี่ยง MFA และแนวทางป้องกัน</li><li>ออกแบบระบบ Session Management ที่ปลอดภัยตั้งแต่การสร้าง Session ID ด้วย CSPRNG การควบคุมอายุ Session (Idle Timeout และ Absolute Timeout) การตั้งค่า Cookie Security Attributes และการใช้ JWT อย่างถูกต้อง</li><li>อธิบายความแตกต่างระหว่าง OAuth 2.0, OpenID Connect และ SAML 2.0 พร้อมเลือกใช้ SSO Solution ที่เหมาะสมกับบริบทขององค์กร</li><li>ระบุเทคนิคการโจมตีที่เกี่ยวข้องกับ Authentication และ Session Management (Credential Stuffing, Session Hijacking, SAML Token Forgery, MFA Fatigue) พร้อมมาตรการป้องกัน</li><li>แปลงความรู้ด้าน Authentication Security เป็น Security Requirements และ Test Cases ในกระบวนการพัฒนาซอฟต์แวร์</li></ol></div>
+    <div class="info-box warning"><div class="icon">SAFE</div><p><strong>ข้อกำหนดด้านจริยธรรม:</strong> บทนี้ครอบคลุมหลักการออกแบบระบบ Authentication และ Session Management ที่ปลอดภัย เนื้อหามีตัวอย่างโค้ดเพื่อการเรียนรู้และทำความเข้าใจเทคนิคการป้องกันเท่านั้น กิจกรรมปฏิบัติการทั้งหมดต้องทำในสภาพแวดล้อมที่ได้รับอนุญาต เช่น เครื่องของนักศึกษาเอง เซิร์ฟเวอร์ทดลอง หรือบัญชีทดสอบของบริการคลาวด์ที่อาจารย์จัดให้เท่านั้น ห้ามนําเทคนิคในบทนี้ไปทดสอบกับระบบของบุคคลอื่นโดยไม่ได้รับอนุญาตเป็นลายลักษณ์อักษร</p></div>
+    <h2 id="plan">แผนการเรียนรู้สำหรับ 4 ชั่วโมง</h2><div class="table-wrap"><table><thead><tr><th>ช่วงเวลา</th><th>หัวข้อ</th><th>เป้าหมายการเรียนรู้</th><th>กิจกรรมในชั้นเรียน</th></tr></thead><tbody><tr><td>ชั่วโมงที่ 1</td><td>Password-Based Authentication และ MFA</td><td>เข้าใจ NIST SP 800-63B, Password Hashing Algorithms, ปัจจัย MFA และ FIDO2/WebAuthn</td><td>เปรียบเทียบ Password Hashing Algorithms และจัดอันดับ MFA ตาม CISA</td></tr><tr><td>ชั่วโมงที่ 2</td><td>Session Management, SSO และ Federated Identity</td><td>เข้าใจ Session Lifecycle, JWT, OAuth 2.0 + PKCE, OIDC, SAML 2.0 และการป้องกัน Common SSO Attacks</td><td>วิเคราะห์ JWT Claims และ OAuth Flow Diagram</td></tr><tr><td>ชั่วโมงที่ 3</td><td>Lab 6.1 และ Lab 6.2</td><td>ฝึกเปรียบเทียบ Hashing Algorithms และ Implement Session Management ด้วย JWT</td><td>เขียนโค้ด Hash รหัสผ่านและสร้าง JWT Access + Refresh Token</td></tr><tr><td>ชั่วโมงที่ 4</td><td>Lab 6.3 และ Lab 6.4</td><td>ฝึกจําลอง Brute Force Attack และลอง OAuth 2.0 Flow</td><td>Implement Rate Limiting และทดลอง Authorization Code Flow</td></tr></tbody></table></div>
+    <h2 id="s1">6.1 Password-Based Authentication</h2><p>ระบบพิสูจน์ตัวตนด้วยรหัสผ่านเป็นวิธีการที่แพร่หลายที่สุด แต่ก็เป็นเป้าหมายหลักของการโจมตีเช่นกัน การออกแบบระบบ Authentication ที่ปลอดภัยต้องเริ่มจากมาตรฐานการจัดการรหัสผ่าน การเก็บรหัสผ่านที่ถูกต้อง และการป้องกันการโจมตีรูปแบบต่างๆ</p>
+    <h3 id="s1-1">6.1.1 NIST SP 800-63B — มาตรฐานการจัดการรหัสผ่าน</h3><p>NIST Special Publication 800-63B Revision 4 (เผยแพร่ครั้งสุดท้าย July 2025) เป็นมาตรฐานหลักที่กําหนดแนวทางการจัดการรหัสผ่านและ Authentication Assurance Levels (AAL) 3 ระดับ ได้แก่ AAL1, AAL2, AAL3</p><p><strong>ข้อกําหนดสําคัญด้าน Memorized Secrets (รหัสผ่าน) จาก NIST SP 800-63B-4:</strong></p><div class="table-wrap"><table><thead><tr><th>หัวข้อ</th><th>ข้อกําหนด</th></tr></thead><tbody><tr><td>ความยาวขั้นต่ํา (ผู้ใช้เลือกเอง)</td><td>อย่างน้อย 8 ตัวอักษร</td></tr><tr><td>ความยาวขั้นต่ํา (ระบบสุ่มให้)</td><td>อย่างน้อย 6 ตัวอักษร (สามารถเป็นตัวเลขล้วน)</td></tr><tr><td>ความยาวสูงสุดที่ควรอนุญาต</td><td>อย่างน้อย 64 ตัวอักษร</td></tr><tr><td>การตัดทอน (Truncation)</td><td><strong>ห้ามทํา</strong> — ต้องนํารหัสผ่านทั้งหมดไปแฮช</td></tr><tr><td>การบังคับความซับซ้อน</td><td><strong>ไม่ควรบังคับ</strong> — ไม่ต้องผสมตัวพิมพ์ใหญ่/เล็ก/ตัวเลข/สัญลักษณ์</td></tr><tr><td>การบังคับเปลี่ยนรหัสผ่านตามรอบ</td><td><strong>ไม่ควรบังคับ</strong> — ยกเว้นมีหลักฐานการถูกเจาะ</td></tr><tr><td>Password Managers</td><td><strong>สนับสนุน</strong> ให้ผู้ใช้ใช้ Password Managers เพื่อสร้างรหัสผ่านที่ยาวและสุ่ม</td></tr><tr><td>การตรวจสอบรหัสผ่านรั่วไหล</td><td>ต้องตรวจสอบกับ Blocklist ของรหัสผ่านที่เคยรั่วไหล</td></tr></tbody></table></div><p><strong>ประเด็นสําคัญ:</strong> NIST ฉบับนี้แนะนําให้เลิกใช้แนวปฏิบัติเดิมที่บังคับความซับซ้อนของรหัสผ่านและการเปลี่ยนรหัสผ่านทุก 90 วัน เนื่องจากงานวิจัยพบว่าการปฏิบัติเหล่านี้ไม่ได้เพิ่มความปลอดภัยแต่กลับทําให้ผู้ใช้เลือกรหัสผ่านที่คาดเดาได้ง่ายขึ้น</p>
+    <h3 id="s1-2">6.1.2 การเก็บรหัสผ่านที่ปลอดภัย — Password Hashing Algorithms</h3><p><strong>หลักการพื้นฐาน:</strong></p><ul><li>ต้องเก็บรหัสผ่านในรูปแบบ <strong>Hash</strong> เท่านั้น ห้ามเก็บ Plaintext เด็ดขาด</li><li>ห้ามใช้ Hash algorithms ทั่วไป (MD5, SHA-1, SHA-256) โดยตรงเพราะมีความเร็วสูงจึงถูกนํามาใช้ในการแคร็ก</li><li>ต้องใช้ <strong>Password Hashing Functions</strong> ที่ออกแบบมาให้ช้า (Memory-hard / CPU-hard)</li></ul><p><strong>ตารางเปรียบเทียบอัลกอริทึมตาม OWASP Password Storage Cheat Sheet:</strong></p><div class="table-wrap"><table><thead><tr><th>อัลกอริทึม</th><th>ลําดับแนะนํา</th><th>การตั้งค่าขั้นต่ํา</th><th>ข้อดี/ข้อควรระวัง</th></tr></thead><tbody><tr><td><strong>Argon2id</strong></td><td>1 (ดีที่สุด)</td><td>m=19456 (19 MiB), t=2, p=1</td><td>ป้องกันทั้ง Side-channel และ GPU attacks; ชนะเลิศ Password Hashing Competition 2015</td></tr><tr><td><strong>scrypt</strong></td><td>2 (สํารอง)</td><td>N=2^17 (128 MiB), r=8, p=1</td><td>Memory-hard; ใช้เมื่อ Argon2id ไม่พร้อมใช้งาน</td></tr><tr><td><strong>bcrypt</strong></td><td>3 (ระบบเก่า)</td><td>Work factor ≥ 10</td><td>นิยมใช้มากที่สุด; มีข้อจํากัด input สูงสุด 72 bytes</td></tr><tr><td><strong>PBKDF2</strong></td><td>4 (FIPS)</td><td>600,000 iterations (HMAC-SHA-256)</td><td>NIST แนะนํา; มี FIPS-140 validated implementations</td></tr></tbody></table></div><p><strong>ลําดับความปลอดภัย:</strong> Argon2id &gt; scrypt &gt; bcrypt &gt; PBKDF2</p><p><strong>รายละเอียดการตั้งค่า Argon2id (เลือกอย่างใดอย่างหนึ่ง):</strong></p><ul><li>m=47104 (46 MiB), t=1, p=1</li><li>m=19456 (19 MiB), t=2, p=1</li><li>m=12288 (12 MiB), t=3, p=1</li><li>m=9216 (9 MiB), t=4, p=1</li><li>m=7168 (7 MiB), t=5, p=1</li></ul><p><strong>ตัวอย่างการใช้ Argon2id ใน Python:</strong></p><div class="tabs" data-tabs="hash"><button class="tab-btn active" data-tab="hash-code">รหัส Argon2id</button><button class="tab-btn" data-tab="hash-compare">Interactive: Hashing Comparator</button></div><div id="hash-code" class="tab-panel active"><pre><code>from argon2 import PasswordHasher
+
+ph = PasswordHasher(
+    time_cost=2,        # t
+    memory_cost=19456,  # m (19 MiB)
+    parallelism=1,      # p
+    hash_len=32,
+    salt_len=16
+)
+
+# การแฮชรหัสผ่าน
+hash = ph.hash("secure_password_123")
+
+# การตรวจสอบรหัสผ่าน
+try:
+    ph.verify(hash, "secure_password_123")
+    # รหัสผ่านถูกต้อง
+except VerifyMismatchError:
+    # รหัสผ่านไม่ถูกต้อง
+    pass</code></pre></div>
+    <div id="hash-compare" class="tab-panel"><div class="interactive" id="play-hashing"><h4>Interactive: Password Hashing Comparator</h4><p>ป้อนรหัสผ่านเพื่อจําลองเวลา Hash และเปรียบเทียบความเร็วของแต่ละอัลกอริทึม (ตัวเลขเป็นค่าจําลองเพื่อการศึกษา)</p><div class="control-row"><input type="password" id="hashInput" placeholder="ป้อนรหัสผ่านจําลอง"><button class="btn" id="hashBtn">เปรียบเทียบ</button></div><div class="table-wrap" style="margin-top:.75rem"><table><thead><tr><th>อัลกอริทึม</th><th>เวลา Hash</th><th>ความปลอดภัย</th></tr></thead><tbody><tr><td>MD5</td><td id="t-md5">—</td><td class="bad">ต่ํามาก</td></tr><tr><td>SHA-256</td><td id="t-sha256">—</td><td class="bad">ต่ํา</td></tr><tr><td>bcrypt (10)</td><td id="t-bcrypt">—</td><td class="mid">ปานกลาง</td></tr><tr><td>Argon2id</td><td id="t-argon2">—</td><td class="ok">สูง</td></tr></tbody></table></div><div id="hashResult" class="result">ป้อนรหัสผ่านและกดเปรียบเทียบ</div></div></div>
+    <h3 id="s1-3">6.1.3 Salt และ Pepper</h3><p><strong>Salt:</strong></p><ul><li>Salt คือค่าสุ่มที่เพิ่มเข้าไปในรหัสผ่านก่อนแฮช <strong>ไม่ซํ้ากันในแต่ละผู้ใช้</strong></li><li>ป้องกันการโจมตีแบบ <strong>Rainbow Table</strong> และทําให้รหัสผ่านที่เหมือนกันได้ค่าแฮชที่ต่างกัน</li><li>อัลกอริทึมสมัยใหม่ (Argon2id, bcrypt, PBKDF2) จัดการ Salt อัตโนมัติโดยไม่ต้องเขียนโค้ดเพิ่ม</li><li>NIST กําหนดให้ Salt มีความยาวอย่างน้อย <strong>32 บิต</strong></li></ul><p><strong>Pepper:</strong></p><ul><li>Pepper คือค่าความลับระดับระบบที่ใช้ร่วมกันทุกบัญชี (ต่างจาก Salt ที่ไม่ซํ้ากัน)</li><li><strong>เก็บแยกจากฐานข้อมูล</strong> — เช่น ใน Hardware Security Module (HSM), Key Management Service (KMS), หรือ Secret Vault</li><li>ไม่เปิดเผยต่อสาธารณะ — ต่อให้แฮกเกอร์ขโมยฐานข้อมูลไปก็ยังไม่สามารถแคร็กแฮชได้</li><li>ควรมีความยาวอย่างน้อย 32 ตัวอักษร และควรมีกลยุทธ์การหมุนเวียน (Rotation)</li></ul><p><strong>แนวคิดการทํางานของ Salt และ Pepper:</strong></p><pre><code>Hash = PasswordHashingFunction(Password + Salt + Pepper)</code></pre><p>โดยที่เก็บเฉพาะ Hash และ Salt ในฐานข้อมูล ส่วน Pepper เก็บแยกต่างหากในระบบที่ปลอดภัย</p>
+    <h3 id="s1-4">6.1.4 Timing Attack Prevention — Constant-time Comparison</h3><p><strong>ปัญหา:</strong> ฟังก์ชันเปรียบเทียบสตริงทั่วไป (เช่น <code>memcmp()</code> ใน C, <code>==</code> ใน Python, <code>===</code> ใน JavaScript) จะ return ทันทีเมื่อเจอตัวอักษรที่ไม่ตรงกัน ทําให้เวลาที่ใช้ในการเปรียบเทียบแตกต่างกันไปตามจํานวนตัวอักษรที่ตรงกัน</p><p><strong>การโจมตี:</strong> แฮกเกอร์สามารถวัดเวลาตอบสนองของเซิร์ฟเวอร์เพื่อเดาทีละตัวอักษร (bit-by-bit) จนได้ค่าความลับทั้งหมด</p><p><strong>การป้องกัน:</strong> ใช้ <strong>Constant-time Comparison</strong> — ฟังก์ชันที่ใช้เวลาเท่ากันเสมอไม่ว่าข้อมูลจะตรงกันกี่ตําแหน่ง:</p><div class="table-wrap"><table><thead><tr><th>ภาษา</th><th>ฟังก์ชัน</th></tr></thead><tbody><tr><td>Python</td><td><code>secrets.compare_digest(a, b)</code></td></tr><tr><td>Node.js</td><td><code>crypto.timingSafeEqual(a, b)</code></td></tr><tr><td>PHP</td><td><code>hash_equals()</code></td></tr><tr><td>Java</td><td><code>MessageDigest.isEqual()</code></td></tr></tbody></table></div>
+    <p><strong>ตัวอย่างการใช้งานใน Python:</strong></p><pre><code>import secrets
+
+# ไม่ปลอดภัย: timing-dependent comparison
+if user_input == stored_hash:
+    print("Verified")
+
+# ปลอดภัย: constant-time comparison
+if secrets.compare_digest(user_input, stored_hash):
+    print("Verified")</code></pre><div class="interactive" id="play-timing"><h4>Interactive: Constant-time Comparison Demo</h4><p>ป้อนข้อความสองค่าเพื่อดูจําลองเวลาที่ใช้ในการเปรียบเทียบแบบปกติ vs constant-time</p><div class="control-row"><input id="ta-input-a" placeholder="ค่า A (เช่น Token จริง)"><input id="ta-input-b" placeholder="ค่า B (เช่น Token ที่ส่งมา)"><button class="btn" id="taBtn">เปรียบเทียบ</button></div><div id="taResult" class="result">ป้อนค่าสองค่าแล้วกดเปรียบเทียบ</div></div>
+    <h3 id="s1-5">6.1.5 Passwordless Authentication — WebAuthn, Passkeys</h3><p><strong>ภาพรวม:</strong></p><ul><li><strong>WebAuthn</strong> (W3C Recommendation) และ <strong>FIDO2</strong> (FIDO Alliance) เป็นมาตรฐาน Passwordless Authentication</li><li><strong>Passkeys</strong> คือ WebAuthn credentials ที่ sync ข้ามอุปกรณ์ได้ ถูกนํามาใช้โดย Apple, Google, Microsoft</li><li>ใช้ <strong>Public Key Cryptography</strong> — เว็บไซต์เก็บ Public Key ส่วน Private Key อยู่ในอุปกรณ์ผู้ใช้</li></ul><p><strong>สถิติจาก FIDO Alliance State of Passkeys 2026:</strong></p><ul><li><strong>5 พันล้าน</strong> Passkeys ถูกใช้งานทั่วโลก</li><li><strong>90%</strong> ของผู้บริโภคคุ้นเคยกับ Passkeys</li><li><strong>75%</strong> ได้เปิดใช้ Passkeys แล้วในบางบัญชี</li><li><strong>68%</strong> ขององค์กรกําลัง deploy, pilot, หรือ rollout Passkeys สําหรับพนักงาน</li></ul><p><strong>Magic Links:</strong></p><ul><li>ส่งลิงก์ครั้งเดียว (One-time use) ทางอีเมล</li><li>ต้องมี PKCE เพื่อป้องกันการโจมตี</li><li>เสี่ยงต่อ Token Leakage ผ่าน Referrer Header, Email Clients ที่ prefetch URL</li><li>อายุสั้น — แนะนําให้หมดอายุภายใน 10-15 นาที</li></ul>
+    <h3 id="s1-6">6.1.6 Credential Stuffing และ Brute Force Protection</h3><p><strong>Credential Stuffing:</strong></p><ul><li>การใช้ Username/Password ที่รั่วไหลจากเว็บอื่นมาไล่ล็อกอินในเว็บเป้าหมาย</li><li>อาวุธ: Automated tools, Combo lists (เช่น Collection #1 ที่มี 2.7 พันล้านคู่)</li><li>ผลกระทบ: การใช้รหัสผ่านซํ้า (Password Reuse) คือสาเหตุหลัก</li></ul><p><strong>Brute Force:</strong></p><ul><li>การสุ่มเดารหัสผ่านทีละคู่ (อาจใช้ Dictionary หรือ exhaustive search)</li><li>Online attack — เดาผ่านฟอร์มล็อกอิน</li><li>Offline attack — เดาจาก Hash Database ที่รั่วไหล</li></ul><p><strong>มาตรการป้องกัน (จาก OWASP Authentication Cheat Sheet และ ASVS):</strong></p><div class="table-wrap"><table><thead><tr><th>มาตรการ</th><th>รายละเอียด</th></tr></thead><tbody><tr><td><strong>Rate Limiting</strong></td><td>จํากัดจํานวนครั้งที่ล็อกอินผิดพลาด — ASVS V2.2.1: ไม่เกิน 100 ครั้งต่อชั่วโมงต่อบัญชี; ใช้ Progressive Delay</td></tr><tr><td><strong>Account Lockout</strong></td><td>ล็อกบัญชีชั่วคราว (Soft lockout) เมื่อล็อกอินผิดพลาดหลายครั้ง</td></tr><tr><td><strong>CAPTCHA</strong></td><td>ใช้กับฟอร์มล็อกอินที่ต้องใส่รหัสผ่านผิดบ่อย</td></tr><tr><td><strong>Breached Password Detection</strong></td><td>ตรวจสอบรหัสผ่านที่ผู้ใช้ตั้งกับฐานข้อมูลรหัสผ่านรั่วไหล (Have I Been Pwned API); ASVS 2.1.7: ต้องตรวจสอบกับ top 3,000+ passwords</td></tr><tr><td><strong>MFA</strong></td><td>วิธีที่มีประสิทธิภาพที่สุดในการหยุด Credential Stuffing</td></tr></tbody></table></div>
+    <h2 id="s2">6.2 Multi-Factor Authentication (MFA)</h2><p>MFA ใช้ปัจจัยอย่างน้อย 2 ใน 3 ปัจจัยเพื่อยืนยันตัวตน ทําให้การโจมตีเพียงปัจจัยเดียวไม่เพียงพอในการเข้าถึงระบบ</p>
+    <h3 id="s2-1">6.2.1 ปัจจัยทั้งสาม</h3><div class="table-wrap"><table><thead><tr><th>ปัจจัย</th><th>ตัวอย่าง</th><th>ความเสี่ยง</th></tr></thead><tbody><tr><td><strong>Something You Know</strong> (สิ่งที่คุณรู้)</td><td>Password, PIN</td><td>ถูกขโมยผ่าน Phishing, Keylogger</td></tr><tr><td><strong>Something You Have</strong> (สิ่งที่คุณมี)</td><td>โทรศัพท์, Hardware Token, Security Key</td><td>ถูกขโมย device, SIM swapping</td></tr><tr><td><strong>Something You Are</strong> (สิ่งที่คุณเป็น)</td><td>ลายนิ้วมือ, Face ID, Iris Scan</td><td>ปลอมแปลงได้ทางเทคนิค</td></tr></tbody></table></div>
+    <h3 id="s2-2">6.2.2 OTP: TOTP vs HOTP</h3><div class="table-wrap"><table><thead><tr><th>คุณสมบัติ</th><th>TOTP (Time-based) — RFC 6238</th><th>HOTP (HMAC-based) — RFC 4226</th></tr></thead><tbody><tr><td>กลไก</td><td>ใช้เวลาปัจจุบัน + Secret Key</td><td>ใช้ Counter + Secret Key</td></tr><tr><td>รหัส</td><td>เปลี่ยนแปลงทุก 30-60 วินาที</td><td>เปลี่ยนแปลงเมื่อถูกขอเท่านั้น</td></tr><tr><td>อายุสูงสุด</td><td>30 วินาที</td><td>ไม่มี (จนกว่าจะถูกใช้)</td></tr><tr><td>การ Sync</td><td>ปัญหาถ้าเวลาไม่ตรง</td><td>ปัญหาถ้า Counter ไม่ตรง</td></tr></tbody></table></div><p>NIST SP 800-63B-4 กําหนดว่า OTP ต้องมีอายุสูงสุด 30 วินาที (TOTP) หรือ 10 นาที (Out-of-band) และ Secret Keys ต้องถูกป้องกันด้วย HSM หรือวิธีการที่เทียบเท่า</p>
+    <h3 id="s2-3">6.2.3 FIDO2 / WebAuthn Standard</h3><p><strong>FIDO2</strong> = WebAuthn (W3C) + CTAP (Client to Authenticator Protocol, FIDO Alliance)</p><p><strong>สถาปัตยกรรม:</strong></p><ol><li><strong>WebAuthn API</strong> — ทํางานใน Browser สําหรับ Register และ Authenticate</li><li><strong>CTAP</strong> — สื่อสารระหว่าง Browser กับ Authenticator (Security Key, Phone, etc.)</li><li><strong>Authenticator</strong> — สร้าง Key Pair; Private Key ไม่เคยออกจากอุปกรณ์</li></ol><p><strong>ข้อดีด้านความปลอดภัย:</strong></p><ul><li><strong>Phishing-resistant</strong>: ผูกกับ Origin (domain) — ถ้าเป็นเว็บปลอม WebAuthn จะไม่ยอมส่ง credential</li><li><strong>No shared secrets</strong>: ใช้ Public Key Cryptography — ไม่มีรหัสผ่านให้ขโมย</li><li><strong>Device-bound</strong> (สําหรับ hardware keys) หรือ <strong>Synced</strong> (ผ่าน cloud services)</li></ul>
+    <p><strong>CISA จัดอันดับ MFA จากปลอดภัยที่สุดไปน้อยที่สุด:</strong></p><div class="table-wrap"><table><thead><tr><th>อันดับ</th><th>วิธีการ MFA</th><th>คําอธิบาย</th></tr></thead><tbody><tr><td>1</td><td>Security Key (FIDO2)</td><td>ปลอดภัยที่สุด กัน Phishing</td></tr><tr><td>2</td><td>Authenticator App + Number Matching</td><td>ผู้ใช้ป้อนตัวเลขตรงกับหน้าจอ</td></tr><tr><td>3</td><td>Authenticator App + OTP</td><td>รหัส OTP หมุนทุก 30 วินาที</td></tr><tr><td>4</td><td>Biometrics</td><td>ลายนิ้วมือ ใบหน้า</td></tr><tr><td>5</td><td>SMS / Email OTP</td><td>อ่อนแอที่สุด เสี่ยง SIM Swapping</td></tr></tbody></table></div>
+    <h3 id="s2-4">6.2.4 Adaptive / Risk-based Authentication</h3><p>Adaptive Authentication (หรือ Risk-based Authentication) เป็นระบบที่ปรับระดับการยืนยันตัวตนตามปัจจัยเสี่ยงต่างๆ:</p><ul><li><strong>Location</strong>: พิกัดทางภูมิศาสตร์, IP Address, ประเทศ</li><li><strong>Device</strong>: อุปกรณ์ที่เคยรู้จักหรือใหม่</li><li><strong>Behavior</strong>: รูปแบบการใช้งาน, เวลาที่ล็อกอิน</li><li><strong>Network</strong>: VPN, Tor, Network anonymizer</li><li><strong>User Profile</strong>: ระดับสิทธิ์, ประวัติกิจกรรม</li></ul><p><strong>ตัวอย่างการทํางาน:</strong></p><ul><li>ล็อกอินจากบ้าน (อุปกรณ์เดิม, IP เดิม) → ผ่านโดยไม่ต้อง MFA</li><li>ล็อกอินจากประเทศอื่น (อุปกรณ์ใหม่) → ขอ MFA</li><li>ล็อกอิน + เปลี่ยนข้อมูลสําคัญ → ขอยืนยันตัวตนอีกครั้ง (Step-up Authentication)</li></ul>
+    <h3 id="s2-5">6.2.5 MFA Bypass Techniques และการป้องกัน</h3><div class="table-wrap"><table><thead><tr><th>เทคนิคโจมตี</th><th>คําอธิบาย</th><th>การป้องกัน</th></tr></thead><tbody><tr><td><strong>MFA Fatigue / Bombing</strong></td><td>ส่ง Push Notification รัวๆ ให้เหยื่อกดยอมรับ</td><td>Number Matching, FIDO2</td></tr><tr><td><strong>Phishing</strong></td><td>หลอกให้กรอกรหัสผ่าน + OTP ในหน้าเว็บปลอม</td><td>FIDO2/WebAuthn (Phishing-resistant)</td></tr><tr><td><strong>SIM Swapping</strong></td><td>ยึดเบอร์โทรศัพท์เหยื่อเพื่อรับ SMS OTP</td><td>หลีกเลี่ยง SMS; ใช้ Hardware Token</td></tr><tr><td><strong>Man-in-the-Middle</strong></td><td>ดักจับ Traffic ระหว่างผู้ใช้กับเซิร์ฟเวอร์</td><td>TLS, FIDO2, Certificate Pinning</td></tr><tr><td><strong>Session Hijacking</strong></td><td>ขโมย Session Token หลัง MFA ผ่านแล้ว</td><td>Session Binding (IP, Device Fingerprint)</td></tr><tr><td><strong>SAML Token Forgery</strong></td><td>ปลอม SAML Assertion เพื่อเลี่ยง MFA</td><td>Validate Signature, Certificate Pinning</td></tr><tr><td><strong>Social Engineering</strong></td><td>หลอก Help Desk ให้รีเซ็ต MFA</td><td>Identity Verification Process</td></tr></tbody></table></div>
+    <div class="interactive" id="play-bypass"><h4>Interactive: MFA Bypass Matching</h4><p>จับคู่เทคนิคโจมตี MFA กับคําอธิบายที่ถูกต้อง</p><div class="control-row"><select id="bypassSelect"><option value="">-- เลือกเทคนิค --</option><option value="fatigue">MFA Fatigue / Bombing</option><option value="phish">Phishing</option><option value="sim">SIM Swapping</option><option value="mitm">Man-in-the-Middle</option></select><span style="padding:0 .5rem;line-height:2.5">→</span><select id="bypassDesc"><option value="">-- เลือกคําอธิบาย --</option><option value="fatigue">ส่ง Push Notification รัวๆ ให้เหยื่อกดยอมรับ</option><option value="phish">หลอกให้กรอกรหัสผ่าน + OTP ในหน้าเว็บปลอม</option><option value="sim">ยึดเบอร์โทรศัพท์เหยื่อเพื่อรับ SMS OTP</option><option value="mitm">ดักจับ Traffic ระหว่างผู้ใช้กับเซิร์ฟเวอร์</option></select><button class="btn" id="bypassBtn">ตรวจสอบ</button></div><div id="bypassResult" class="result">เลือกเทคนิคและคําอธิบายที่ตรงกัน</div></div>
+    <h3 id="s2-6">6.2.6 การเลือก MFA ตาม NIST AAL</h3><div class="table-wrap"><table><thead><tr><th>AAL Level</th><th>MFA Requirements</th><th>ตัวอย่าง</th></tr></thead><tbody><tr><td><strong>AAL1</strong></td><td>Single-factor หรือ MFA (optional)</td><td>Password อย่างเดียว</td></tr><tr><td><strong>AAL2</strong></td><td>MFA บังคับ (อย่างน้อย 2 ปัจจัย)</td><td>Password + TOTP, Password + Push</td></tr><tr><td><strong>AAL3</strong></td><td>MFA + Phishing-resistant</td><td>Password + FIDO2 Key, หรือ FIDO2 อย่างเดียว</td></tr></tbody></table></div><p><strong>คําแนะนําของ CISA:</strong></p><ul><li><strong>Phishing-resistant MFA (FIDO2/Passkeys)</strong> — Gold standard — ควรเป็นเป้าหมายสูงสุด</li><li><strong>Number Matching</strong> — ทางเลือกระหว่างทางที่ดีกว่า Push Notification ธรรมดา</li><li><strong>SMS/Email OTP</strong> — ใช้เท่าที่จําเป็น เพราะเสี่ยง SIM Swapping และ Phishing</li><li><strong>Any MFA is better than no MFA</strong> — เริ่มจากอะไรก็ได้ก่อน แล้วค่อยยกระดับ</li></ul>
+    <div class="interactive" id="play-mfa-quiz"><h4>Interactive: MFA CISA Ranking Quiz</h4><p>จัดอันดับวิธีการ MFA ตาม CISA จากปลอดภัยที่สุด (1) ไปน้อยที่สุด (5)</p><div class="control-row"><select id="mfaRank1"><option value="0">--</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><span style="padding:0 .5rem;line-height:2.5">Security Key (FIDO2)</span></div><div class="control-row"><select id="mfaRank2"><option value="0">--</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><span style="padding:0 .5rem;line-height:2.5">Authenticator App + Number Matching</span></div><div class="control-row"><select id="mfaRank3"><option value="0">--</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><span style="padding:0 .5rem;line-height:2.5">Authenticator App + OTP</span></div><div class="control-row"><select id="mfaRank4"><option value="0">--</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><span style="padding:0 .5rem;line-height:2.5">Biometrics</span></div><div class="control-row"><select id="mfaRank5"><option value="0">--</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><span style="padding:0 .5rem;line-height:2.5">SMS / Email OTP</span></div><button class="btn" id="mfaQuizBtn">ตรวจคําตอบ</button><div id="mfaQuizResult" class="result">จัดอันดับแล้วกดตรวจสอบ</div></div>
+    <h2 id="s3">6.3 Session Management ที่ปลอดภัย</h2><p>Session Management เป็นกลไกที่ทําให้เซิร์ฟเวอร์รู้ว่าคําขอที่เข้ามาเป็นของผู้ใช้คนใด การออกแบบที่ไม่ปลอดภัยอาจนําไปสู่การปลอมแปลงหรือขโมย Session</p>
+    <h3 id="s3-1">6.3.1 Session ID Generation</h3><p><strong>ข้อกําหนดตาม OWASP Session Management Cheat Sheet และ ASVS V3:</strong></p><p><strong>Entropy (การสุ่ม):</strong></p><ul><li>Session ID ต้องมี <strong>อย่างน้อย 64 bits</strong> ของ Entropy</li><li>ใน Hexadecimal: ต้องมีความยาวอย่างน้อย 16 ตัวอักษร (16 chars x 4 bits = 64 bits)</li><li>ทางปฏิบัติแนะนํา 128-256 bits (32-64 hex chars)</li></ul><p><strong>CSPRNG (Cryptographically Secure Pseudorandom Number Generator):</strong></p><ul><li>ต้องใช้ฟังก์ชันสุ่มที่ปลอดภัย เช่น:</li></ul><div class="table-wrap"><table><thead><tr><th>ภาษา</th><th>ฟังก์ชันที่แนะนํา</th><th>ห้ามใช้</th></tr></thead><tbody><tr><td>Python</td><td><code>secrets.token_hex(32)</code>, <code>os.urandom(32)</code></td><td><code>random.random()</code>, <code>time.time()</code></td></tr><tr><td>Node.js</td><td><code>crypto.randomBytes(32).toString('hex')</code></td><td><code>Math.random()</code>, <code>Date.now()</code></td></tr><tr><td>Java</td><td><code>java.security.SecureRandom</code></td><td><code>java.util.Random</code>, <code>System.currentTimeMillis()</code></td></tr></tbody></table></div><p><strong>การคํานวณเวลา Brute Force:</strong></p><ul><li>ด้วย 64-bit entropy และ 1,000 guessing ต่อวินาที: ประมาณ <strong>584 ล้านปี</strong> ก่อนจะถูกสุ่มเจอ</li></ul>
+    <div class="interactive" id="play-session"><h4>Interactive: Session ID Generator</h4><p>สร้าง Session ID ที่ปลอดภัยด้วย CSPRNG และตรวจสอบ Entropy</p><div class="control-row"><label>Entropy: <select id="sessionBits"><option value="64">64 bits (16 hex)</option><option value="128" selected>128 bits (32 hex) — แนะนํา</option><option value="256">256 bits (64 hex)</option></select></label><button class="btn" id="sessionBtn">สร้าง Session ID</button></div><div id="sessionOutput" class="result" style="font-family:var(--font-mono);word-break:break-all">กดปุ่มเพื่อสร้าง Session ID</div></div>
+    <h3 id="s3-2">6.3.2 Session Lifecycle</h3><p><strong>Creation:</strong></p><ul><li>Session ID ถูกสร้างเมื่อผู้ใช้เริ่มต้นเชื่อมต่อ (ก่อนล็อกอิน)</li><li><strong>ต้องสร้าง Session ID ใหม่</strong> ทุกครั้งที่ล็อกอินสําเร็จ (ป้องกัน Session Fixation)</li><li>ASVS 3.2.1: Verify generates new session token on authentication</li></ul><p><strong>Maintenance:</strong></p><ul><li>Session ถูกเก็บรักษาไว้ตลอดช่วงการใช้งาน</li><li>ต้องป้องกันไม่ให้ Session ID รั่วไหล (ผ่าน Secure, HttpOnly cookies)</li><li>ASVS 3.2.3: Only store in secure methods (secured cookies or HTML5 session storage)</li></ul><p><strong>Termination:</strong></p><ul><li><strong>Idle Timeout</strong>: หมดอายุเมื่อไม่มีการใช้งาน (แนะนํา 15-30 นาที สําหรับ L2-L3)</li><li><strong>Absolute Timeout</strong>: หมดอายุตามเวลาสูงสุดนับจากเริ่ม (30 วันสําหรับ L1)</li><li><strong>Session Invalidation</strong>: เมื่อ Logout ต้องทําลาย Session ทั้งฝั่งเซิร์ฟเวอร์และลบ Cookie</li><li>ASVS 3.3.1: Logout และ Expiration ต้อง invalidate session token</li></ul><p><strong>ตาราง Session Timeout ตาม ASVS:</strong></p><div class="table-wrap"><table><thead><tr><th>ASVS Level</th><th>Idle Timeout</th><th>Max Timeout</th></tr></thead><tbody><tr><td>L1</td><td>30 วัน</td><td>30 วัน</td></tr><tr><td>L2</td><td>30 นาที (หรือ 12 ชั่วโมง active)</td><td>12 ชั่วโมง + 2FA</td></tr><tr><td>L3</td><td>15 นาที</td><td>12 ชั่วโมง + 2FA</td></tr></tbody></table></div>
+    <div class="timeline" style="margin:1.25rem 0"><div class="step"><strong>1. Creation</strong><span>สร้าง Session ID ด้วย CSPRNG ก่อนล็อกอิน</span></div><div class="step"><strong>2. Authentication</strong><span>ล็อกอินสําเร็จ — สร้าง Session ID ใหม่เสมอ</span></div><div class="step"><strong>3. Maintenance</strong><span>ผูก Session กับผู้ใช้, Secure + HttpOnly cookie</span></div><div class="step"><strong>4. Idle Timeout</strong><span>ไม่มีการใช้งานเกินกําหนด — หมดอายุ</span></div><div class="step"><strong>5. Absolute Timeout</strong><span>เวลาสูงสุดของ Session — บังคับล็อกอินใหม่</span></div><div class="step"><strong>6. Logout</strong><span>Invalidate Session + ลบ Cookie</span></div></div>
+    <h3 id="s3-3">6.3.3 Cookie Security Attributes</h3><div class="table-wrap"><table><thead><tr><th>Attribute</th><th>ค่าแนะนํา</th><th>หน้าที่</th></tr></thead><tbody><tr><td><strong>Secure</strong></td><td><code>true</code></td><td>ส่ง cookie ผ่าน HTTPS เท่านั้น ป้องกัน MitM</td></tr><tr><td><strong>HttpOnly</strong></td><td><code>true</code></td><td>ป้องกัน JavaScript (XSS) อ่านค่า cookie</td></tr><tr><td><strong>SameSite</strong></td><td><code>Lax</code> หรือ <code>Strict</code></td><td>ป้องกัน CSRF — ไม่ส่ง cookie กับ cross-site request</td></tr><tr><td><strong>Path</strong></td><td><code>/</code></td><td>cookie ใช้ได้ทุก path (หรือจํากัดให้แคบลง)</td></tr><tr><td><strong>Domain</strong></td><td>ไม่ระบุ</td><td>cookie ผูกกับ host ที่ตั้งค่าเท่านั้น</td></tr><tr><td><strong>Max-Age / Expires</strong></td><td>กําหนดอายุ</td><td>ควรสั้นที่สุดเท่าที่จําเป็น</td></tr><tr><td><strong>Prefix <code>__Host-</code></strong></td><td>ใช้เมื่อเป็นไปได้</td><td>บังคับ Secure + Path=/ + ไม่มี Domain</td></tr></tbody></table></div><p><strong>การตั้งค่าที่ปลอดภัยที่สุด:</strong></p><pre><code>Set-Cookie: __Host-SID=&lt;session_id&gt;; path=/; Secure; HttpOnly; SameSite=Strict</code></pre>
+    <div class="interactive" id="play-cookie"><h4>Interactive: Cookie Security Builder</h4><p>เลือก Security Attributes เพื่อสร้าง Set-Cookie header ที่ปลอดภัย</p><div class="checklist" id="cookieChecks"><label><input type="checkbox" id="ck-secure" checked> Secure — ส่งผ่าน HTTPS เท่านั้น</label><label><input type="checkbox" id="ck-httponly" checked> HttpOnly — ป้องกัน XSS อ่าน Cookie</label><label><input type="checkbox" id="ck-samesite" checked> SameSite=Strict — ป้องกัน CSRF</label><label><input type="checkbox" id="ck-host" checked> <code>__Host-</code> prefix — บังคับ Secure + Path=/</label></div><div class="result" style="font-family:var(--font-mono);font-size:.85rem" id="cookieOutput">Set-Cookie: __Host-SID=abc123; path=/; Secure; HttpOnly; SameSite=Strict</div></div>
+    <h3 id="s3-4">6.3.4 Session Fixation และ Session Hijacking</h3><p><strong>Session Fixation:</strong></p><ul><li>ผู้โจมตีหลอกให้เหยื่อใช้ Session ID ที่แฮกเกอร์รู้ค่า</li><li><strong>ป้องกัน</strong>: สร้าง Session ID ใหม่ทุกครั้งหลังล็อกอินสําเร็จ</li></ul><p><strong>Session Hijacking:</strong></p><ul><li>ผู้โจมตีขโมย Session Token (ผ่าน Sniffing, XSS, HAR file leak)</li><li><strong>ป้องกัน</strong>: Secure + HttpOnly cookies, HTTPS ตลอด session, Session Binding (ผูกกับ IP/Device)</li></ul>
+    <h3 id="s3-5">6.3.5 Token-based Authentication — JWT</h3><p><strong>JWT (JSON Web Token) — RFC 7519:</strong></p><p>JWT ประกอบด้วยสามส่วน: Header.Payload.Signature</p><p><strong>Signing Algorithms:</strong></p><div class="table-wrap"><table><thead><tr><th>Algorithm</th><th>ประเภท</th><th>ข้อดี</th><th>ข้อเสีย</th></tr></thead><tbody><tr><td><strong>RS256</strong></td><td>Asymmetric (RSA)</td><td>รองรับกว้าง, มี JWK Set</td><td>Token ใหญ่กว่า</td></tr><tr><td><strong>ES256</strong></td><td>Asymmetric (ECDSA P-256)</td><td>Token เล็ก, Sign/Verify เร็ว</td><td>ECDSA support ต้องตรง</td></tr><tr><td><strong>HS256</strong></td><td>Symmetric (HMAC)</td><td>คํานวณเร็ว</td><td>ต้องแชร์ Secret ทุก service</td></tr></tbody></table></div><p><strong>คําแนะนํา:</strong></p><ul><li><strong>Microservices / Multiple services</strong>: RS256 หรือ ES256 (Asymmetric)</li><li><strong>Single service</strong>: HS256 ได้ (แต่ระวัง Secret leak)</li><li><strong>ห้ามใช้</strong>: <code>alg: "none"</code>, Algorithm Confusion (accept HS256 on RS256 verifier)</li></ul>
+    <p><strong>JWT Claims ที่ต้องตรวจสอบทุกครั้ง:</strong></p><div class="table-wrap"><table><thead><tr><th>Claim</th><th>ชื่อเต็ม</th><th>หน้าที่</th></tr></thead><tbody><tr><td><code>exp</code></td><td>Expiration Time</td><td>เวลาหมดอายุ</td></tr><tr><td><code>nbf</code></td><td>Not Before</td><td>เวลาที่เริ่มใช้ได้</td></tr><tr><td><code>iss</code></td><td>Issuer</td><td>ผู้ออก Token</td></tr><tr><td><code>aud</code></td><td>Audience</td><td>ผู้รับ Token</td></tr><tr><td><code>jti</code></td><td>JWT ID</td><td>ใช้สําหรับ Revocation</td></tr></tbody></table></div>
+    <p><strong>ตัวอย่าง JWT Payload:</strong></p><pre><code>{
+  "sub": "user_12345",
+  "iss": "https://auth.example.com",
+  "aud": "https://api.example.com",
+  "exp": 1712345678,
+  "iat": 1712344678,
+  "nbf": 1712344678,
+  "jti": "550e8400-e29b-41d4-a716-446655440000",
+  "roles": ["user", "admin"]
+}</code></pre>
+    <div class="interactive" id="play-jwt"><h4>Interactive: JWT Claims Check</h4><p>ตรวจสอบ JWT Claims ว่ามีครบตามข้อกําหนดหรือไม่ — ติ๊กรายการที่ตรวจพบใน Payload</p><div class="checklist" id="jwtChecks"><label><input type="checkbox" class="jwt-check"> <code>exp</code> — Expiration Time</label><label><input type="checkbox" class="jwt-check"> <code>nbf</code> — Not Before</label><label><input type="checkbox" class="jwt-check"> <code>iss</code> — Issuer</label><label><input type="checkbox" class="jwt-check"> <code>aud</code> — Audience</label><label><input type="checkbox" class="jwt-check"> <code>jti</code> — JWT ID</label><label><input type="checkbox" class="jwt-check"> <code>sub</code> — Subject</label><label><input type="checkbox" class="jwt-check"> <code>iat</code> — Issued At</label></div><div id="jwtResult" class="result">ติ๊ก Claims ที่พบใน Token Payload</div></div>
+    <p><strong>Access Token vs Refresh Token:</strong></p><div class="table-wrap"><table><thead><tr><th>Token Type</th><th>อายุ</th><th>Storage</th><th>Revocable</th></tr></thead><tbody><tr><td>Access Token</td><td>5-15 นาที</td><td>Memory / HttpOnly Cookie</td><td>ไม่ (stateless)</td></tr><tr><td>Refresh Token</td><td>7-30 วัน</td><td>HttpOnly Cookie / Server DB</td><td>ใช่ (ลบจาก DB)</td></tr></tbody></table></div><p><strong>Refresh Token Rotation:</strong></p><ul><li>ทุกครั้งที่ใช้ Refresh Token — ออก Token ใหม่ และ Invalid ตัวเก่า</li><li>ถ้าเจอการใช้ Refresh Token ตัวเก่าซํ้า — ถือว่ามีการขโมย — Revoke ทั้ง Family</li><li>"Token family" tracking — reuse detection</li></ul><p><strong>Token Revocation Strategies:</strong></p><div class="table-wrap"><table><thead><tr><th>วิธี</th><th>รายละเอียด</th></tr></thead><tbody><tr><td><strong>Short expiry + Refresh token</strong> (แนะนํา)</td><td>Access token หมดอายุเร็ว, Revoke ผ่าน Refresh token</td></tr><tr><td><strong>Token blocklist</strong></td><td>Redis list ของ <code>jti</code> + TTL</td></tr><tr><td><strong>Token versioning</strong></td><td><code>tokenVersion</code> ใน claims, ตรวจสอบกับ DB</td></tr></tbody></table></div>
+    <h2 id="s4">6.4 Single Sign-On (SSO) และ Federated Identity</h2><p>SSO ช่วยให้ผู้ใช้ล็อกอินครั้งเดียวและเข้าถึงหลายระบบได้ แต่ก็เพิ่มความซับซ้อนและพื้นผิวการโจมตี</p>
+    <h3 id="s4-1">6.4.1 OAuth 2.0 Authorization Framework</h3><p><strong>RFC 6749 — OAuth 2.0 และ RFC 9700 — Best Current Practice (January 2025):</strong></p><p><strong>Authorization Code Flow + PKCE (Recommended Flow):</strong></p><div class="flow-text" style="background:var(--primary-light);border:1px solid var(--primary);border-radius:var(--radius);padding:1rem;font-family:var(--font-mono);font-size:.85rem;line-height:2;margin:.75rem 0">Client → Authorization Server: Authorization Request (code_challenge, state)<br>User → Authorization Server: Authenticate + Consent<br>Authorization Server → Client: Authorization Code<br>Client → Token Endpoint: Code + code_verifier<br>Token Endpoint → Client: Access Token (+ Refresh Token)</div>
+    <div class="tabs" data-tabs="oauth"><button class="tab-btn active" data-tab="oa-pkce">PKCE Generation</button><button class="tab-btn" data-tab="oa-authz">Authorization Request</button><button class="tab-btn" data-tab="oa-token">Token Request</button></div>
+    <div id="oa-pkce" class="tab-panel active"><pre><code>import secrets, hashlib, base64
+
+# สร้าง PKCE parameters
+code_verifier = secrets.token_urlsafe(64)
+code_challenge = base64.urlsafe_b64encode(
+    hashlib.sha256(code_verifier.encode()).digest()
+).rstrip('=')
+# S256 method แนะนํา (ไม่ใช่ plain)</code></pre></div>
+    <div id="oa-authz" class="tab-panel"><pre><code>auth_url = "https://auth.example.com/authorize"
+params = {
+    "client_id": "myclient",
+    "response_type": "code",
+    "redirect_uri": "https://app.example.com/callback",
+    "scope": "openid profile email",
+    "state": secrets.token_hex(16),
+    "code_challenge": code_challenge,
+    "code_challenge_method": "S256"
+}
+# Redirect user to auth_url</code></pre></div>
+    <div id="oa-token" class="tab-panel"><pre><code>token_url = "https://auth.example.com/token"
+token_params = {
+    "grant_type": "authorization_code",
+    "code": "authorization_code_from_callback",
+    "redirect_uri": "https://app.example.com/callback",
+    "client_id": "myclient",
+    "code_verifier": code_verifier
+}
+response = requests.post(token_url, data=token_params)
+tokens = response.json()
+# tokens contains: access_token, refresh_token, id_token</code></pre></div>
+    <p><strong>PKCE (Proof Key for Code Exchange) — RFC 7636:</strong></p><ul><li>Client สร้าง <code>code_verifier</code> (random, ≥ 256 bits)</li><li>ส่ง <code>code_challenge = SHA256(code_verifier)</code> ใน Authorization Request</li><li>เมื่อขอ Token ส่ง <code>code_verifier</code> ไปตรวจสอบ</li><li><strong>S256 method</strong> แนะนํา (ไม่ใช่ plain)</li><li>ป้องกัน: Authorization Code Interception Attack, CSRF</li></ul><p><strong>การเปลี่ยนแปลงสําคัญใน OAuth 2.1:</strong></p><ul><li><strong>ยกเลิก</strong>: Implicit Grant, Resource Owner Password Credentials Grant</li><li><strong>บังคับ</strong>: PKCE สําหรับทุก client types</li><li><strong>แนะนํา</strong>: sender-constrained access tokens (DPoP — RFC 9449, mTLS — RFC 8705)</li><li><strong>Authorization code lifetime</strong>: ไม่เกิน 10 นาที</li><li><strong>Redirect URI matching</strong>: ต้อง exact match (string-based)</li></ul>
+    <h3 id="s4-2">6.4.2 OpenID Connect (OIDC)</h3><p>OIDC = OAuth 2.0 + Authentication Layer</p><p><strong>ID Token:</strong></p><ul><li>JWT format</li><li>Contains claims: <code>sub</code>, <code>iss</code>, <code>aud</code>, <code>exp</code>, <code>iat</code>, <code>nonce</code></li><li>ใช้ยืนยันตัวตนผู้ใช้ (Identity)</li><li><strong>อายุ</strong>: 5-60 นาที (ไม่ควรยาว — ใช้ครั้งเดียว)</li></ul><p><strong>UserInfo Endpoint:</strong></p><ul><li>ใช้ Access Token เพื่อขอข้อมูลผู้ใช้เพิ่มเติม</li><li>Returns claims ตาม scope ที่ได้รับอนุญาต (<code>openid</code>, <code>profile</code>, <code>email</code>, etc.)</li></ul><p><strong>Nonce Parameter:</strong></p><ul><li>สร้างค่าสุ่ม nonce ใน request — ID Token ต้องมี nonce เดียวกัน</li><li>ป้องกัน Replay Attack</li></ul>
+    <h3 id="s4-3">6.4.3 SAML 2.0</h3><p>SAML (Security Assertion Markup Language) 2.0 — มาตรฐาน Federated Identity แบบ XML-based</p><p><strong>Components:</strong></p><ul><li><strong>Identity Provider (IdP)</strong>: ฝ่ายยืนยันตัวตน</li><li><strong>Service Provider (SP)</strong>: ฝ่ายให้บริการ</li><li><strong>Assertion</strong>: ข้อมูลยืนยันตัวตน (Authentication + Attribute Statements)</li></ul><p><strong>Common Vulnerabilities (ตาม OWASP SAML Security Cheat Sheet):</strong></p><div class="table-wrap"><table><thead><tr><th>ช่องโหว่</th><th>คําอธิบาย</th></tr></thead><tbody><tr><td><strong>XML Signature Wrapping</strong></td><td>ปลอมแปลง Assertion โดยใช้ช่องโหว่การตรวจสอบ XML Signature</td></tr><tr><td><strong>Golden SAML Attack</strong></td><td>ขโมย Certificate เพื่อปลอม SAML Token จากนั้น impersonate ผู้ใช้ใดก็ได้</td></tr><tr><td><strong>Token Replay</strong></td><td>นํา Assertion เดิมมาใช้ซํ้าในเวลาต่อมา</td></tr><tr><td><strong>Redirect URI Manipulation</strong></td><td>เปลี่ยน Destination Endpoint เพื่อขโมย Assertion</td></tr></tbody></table></div><p><strong>การป้องกัน:</strong></p><ul><li>ตรวจสอบ XML Signature อย่างเคร่งครัด</li><li>ใช้ Unique ID และ Timestamp บน Assertion</li><li>Validate Destination / Audience</li><li>ตรวจสอบ Response ไม่ใช่แค่ Request</li><li><strong>SAML != OAuth</strong> — SAML สําหรับ Authentication, OAuth สําหรับ Authorization</li></ul>
+    <h3 id="s4-4">6.4.4 การป้องกัน Common Attacks on SSO</h3><div class="table-wrap"><table><thead><tr><th>การโจมตี</th><th>คําอธิบาย</th><th>การป้องกัน</th></tr></thead><tbody><tr><td><strong>CSRF</strong></td><td>หลอกเบราว์เซอร์ให้ส่ง Request ไปยัง Authorization Server</td><td><code>state</code> parameter (OAuth), <code>nonce</code> (OIDC), PKCE, SameSite cookie</td></tr><tr><td><strong>Redirect URI Manipulation</strong></td><td>เปลี่ยน redirect_uri เพื่อขโมย Authorization Code</td><td>Strict URI validation (OAuth 2.1 กําหนด exact match)</td></tr><tr><td><strong>Token Theft</strong></td><td>ขโมย Access Token จาก URL fragment, logs, HAR files</td><td>Sender-constrained tokens (DPoP, mTLS), short expiry</td></tr><tr><td><strong>Mix-Up Attacks</strong></td><td>หลอกให้ client ส่ง token ไปยัง authorization server ผิด</td><td>ตรวจสอบ <code>iss</code> claim, client-side issuer verification</td></tr><tr><td><strong>PKCE Downgrade</strong></td><td>ลด method จาก S256 เป็น plain</td><td>Authorization Server ต้อง enforce S256</td></tr><tr><td><strong>Authorization Code Injection</strong></td><td>ส่ง Authorization Code ที่ขโมยมาเพื่อขอ Token</td><td>PKCE (code_verifier mismatch)</td></tr></tbody></table></div>
+    <h3 id="s4-5">6.4.5 การเลือก SSO Solution</h3><div class="table-wrap"><table><thead><tr><th>คุณสมบัติ</th><th>Keycloak</th><th>Auth0</th><th>Okta</th><th>Microsoft Entra ID</th></tr></thead><tbody><tr><td><strong>License</strong></td><td>Open Source (Apache 2.0)</td><td>Proprietary</td><td>Proprietary</td><td>Proprietary</td></tr><tr><td><strong>Hosting</strong></td><td>Self-hosted / Cloud</td><td>Cloud (SaaS)</td><td>Cloud (SaaS)</td><td>Cloud</td></tr><tr><td><strong>Protocols</strong></td><td>OIDC, OAuth2, SAML</td><td>OIDC, OAuth2, SAML</td><td>OIDC, OAuth2, SAML</td><td>OIDC, OAuth2, SAML</td></tr><tr><td><strong>MFA</strong></td><td>✓ (built-in)</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td><strong>LDAP/AD</strong></td><td>✓</td><td>Limited</td><td>✓</td><td>✓ (native)</td></tr><tr><td><strong>Developer UX</strong></td><td>High</td><td>Very High</td><td>High</td><td>Medium</td></tr><tr><td><strong>Data Sovereignty</strong></td><td>Full control</td><td>Limited</td><td>Limited</td><td>Region-dependent</td></tr><tr><td><strong>Cost (10K users)</strong></td><td>~$2,400/yr (infra)</td><td>~$50,000+/yr</td><td>~$96,000-$120,000/yr</td><td>~$5-10/user/month</td></tr></tbody></table></div><p><strong>ข้อแนะนํา:</strong></p><ul><li><strong>Enterprise ใหญ่</strong> (Microsoft ecosystem): Entra ID</li><li><strong>Enterprise ใหญ่</strong> (multi-platform): Okta</li><li><strong>Startup / Developer-first</strong>: Auth0</li><li><strong>ควบคุมข้อมูลเอง / งบน้อย / Open Source</strong>: Keycloak</li><li>Keycloak ถูกกว่า Auth0 70-90% และถูกกว่า Okta 92%+ ใน scale ใหญ่</li></ul>
+    <h2 id="s5">6.5 กรณีศึกษาและเหตุการณ์จริง</h2>
+    <div class="case-card"><div class="meta"><span class="year">2020</span><span class="type">Supply Chain</span></div><h4 id="s5-1">SolarWinds Supply Chain Attack</h4><p><strong>รายละเอียด:</strong></p><ul><li>Nation-state APT (UNC2452) แทรกมัลแวร์ SUNBURST เข้าไปใน SolarWinds Orion (ซอฟต์แวร์ monitoring)</li><li>มีผลถึง 18,000 องค์กร (รวมถึงหน่วยงานรัฐบาลสหรัฐ)</li><li>ค้นพบโดย FireEye (Mandiant) ธันวาคม 2020</li></ul><p><strong>เทคนิคที่เกี่ยวข้องกับ Authentication:</strong></p><ol><li><strong>SAML Token Forgery (T1606.002)</strong>: ผู้โจมตีขโมย SAML signing certificate จาก ADFS เพื่อปลอม SAML tokens</li><li><strong>ใช้ SAML tokens ปลอม impersonate users</strong>: เลี่ยง MFA ได้ทั้งหมด</li><li><strong>Token Theft — OAuth Access Token ขโมย</strong>: ขโมย OAuth tokens ของ applications</li><li><strong>Golden SAML Attack</strong>: สร้าง SAML Assertion ปลอมเพื่อ impersonate users</li><li><strong>Web Session Cookie Theft (T1550.004)</strong>: ขโมย duo-sid cookie เพื่อเลี่ยง MFA บน OWA</li></ol><p><strong>บทเรียน:</strong></p><ul><li>Supply chain attack สามารถเลี่ยง MFA ได้ถ้าแฮกเกอร์มี SAML signing keys</li><li>ต้องป้องกันและ monitor การใช้ SAML signing certificates</li><li>CISA เผยแพร่รายงาน AA20-352A เป็นแนวทางตรวจจับ</li></ul></div>
+    <div class="case-card"><div class="meta"><span class="year">2022-2023</span><span class="type">SSO Provider</span></div><h4 id="s5-2">Okta Security Incidents</h4><p><strong>เหตุการณ์ที่ 1: LAPSUS$ (January-March 2022)</strong></p><ul><li>แฮกเกอร์ LAPSUS$ ใช้ Social Engineering โจมตีพนักงานของ Sitel (third-party support provider ของ Okta)</li><li>เข้าถึง laptop ของ support engineer เป็นเวลา 5 วัน</li><li>สามารถรีเซ็ตรหัสผ่านและ MFA ของผู้ใช้ (แต่ดาวน์โหลด customer DB ไม่ได้)</li><li>Okta ยุติ session และระงับบัญชีภายใน 30 นาทีจากที่มีการตรวจจับ</li></ul><p><strong>เหตุการณ์ที่ 2: Support System Breach (September-October 2023)</strong></p><ul><li>พนักงาน Okta ล็อกอิน Google Profile ส่วนตัวบน laptop บริษัท — เก็บ credentials ของ Service Account ไว้</li><li>แฮกเกอร์เข้าถึง Service Account — ดาวน์โหลด HAR files ของลูกค้า 134 ราย</li><li>HAR files มี Session Tokens — <strong>Session Hijacking</strong> กับ 5 ลูกค้า</li><li>การตรวจจับ: BeyondTrust แจ้ง suspicious IP — Okta ระบุและปิดได้ใน 2 สัปดาห์</li></ul><p><strong>Remediation (2023):</strong></p><ul><li>ปิดใช้งาน Service Account</li><li>บล็อกการใช้ Personal Google Profile บน Chrome Enterprise</li><li><strong>Network Location Binding</strong> — Session token ผูกกับตําแหน่งเครือข่าย IP</li></ul></div>
+    <div class="case-card"><div class="meta"><span class="year">2009-2019</span><span class="type">Data Breach</span></div><h4 id="s5-3">Password Database Breaches</h4><p><strong>RockYou! (2009):</strong></p><ul><li>32 ล้าน passwords ถูกขโมยจากบริษัทเกมโซเชียล</li><li>เก็บรหัสผ่านใน <strong>Plaintext</strong> — ไม่มีการแฮช</li><li>RockYou.txt กลายเป็น dictionary file มาตรฐานสําหรับการโจมตี</li></ul><p><strong>LinkedIn (2012):</strong></p><ul><li>6.5 ล้าน SHA-1 hashes ถูกขโมย</li><li>SHA-1 ไม่เหมาะสมสําหรับ password hashing (เร็วเกินไป)</li><li>การศึกษาของ Qualys: 1.4 ล้าน hashes (22%) ถูกถอดรหัสภายในไม่กี่ชั่วโมง</li><li>แสดง Pattern การตั้งรหัสผ่านที่คาดเดาได้ (เช่น <code>lsw4linkedin</code>)</li></ul><p><strong>Collection #1 (2019):</strong></p><ul><li>773 ล้าน unique emails, 21 ล้าน unique passwords, 2.7 พันล้าน email/password pairs</li><li>87 GB ข้อมูลจาก 12,000 files จาก 2,000+ previous breaches</li><li>พบโดย Troy Hunt (Have I Been Pwned)</li><li><strong>ภัยคุกคามหลัก</strong>: Credential Stuffing — นํา combo lists ไปลองล็อกอินเว็บอื่น</li><li>Collections #2-5: อีก 845 GB, 25 พันล้าน records</li></ul></div>
+    <div class="case-card"><div class="meta"><span class="year">2019</span><span class="type">Privacy</span></div><h4 id="s5-4">Apple — Sign in with Apple และ Hide My Email</h4><p><strong>Sign in with Apple (SIWA):</strong></p><ul><li>เปิดตัว WWDC 2019 — เป็น OAuth 2.0 / OIDC based SSO</li><li>ข้อกําหนด: iOS/macOS apps ที่ใช้ third-party SSO ต้องมี SIWA ด้วย</li><li><strong>Hide My Email</strong>: สร้างอีเมลสุ่ม Forward ไปยังอีเมลจริง (Privacy protection)</li><li>Private Key ถูกเก็บใน Secure Enclave (อุปกรณ์ Apple)</li><li>ป้องกัน Cross-Site Tracking</li></ul><p><strong>iCloud Private Relay:</strong></p><ul><li>บริการ VPN-like สําหรับ iCloud+ subscribers</li><li>สอง-hop architecture: ปกปิดทั้ง IP และ DNS queries</li><li>ใช้ QUIC protocol</li></ul></div>
+    <div class="case-card"><div class="meta"><span class="year">2022</span><span class="type">Social Engineering</span></div><h4 id="s5-5">MFA Fatigue / MFA Bombing</h4><p><strong>เทคนิค:</strong></p><ul><li>ผู้โจมตีมี credentials ที่ถูกต้อง (จาก Phishing หรือ Data breach)</li><li>ส่ง Push Notification ซํ้าๆ ไปยังอุปกรณ์ของเหยื่อ (จํานวนมาก — เช่น 10-100 ครั้ง)</li><li>เหยื่อรําคาญหรือเผลอกด "Approve" — ผู้โจมตีเข้าสู่ระบบได้</li></ul><p><strong>ตัวอย่างในโลกจริง:</strong></p><ul><li><strong>Uber Breach (2022)</strong>: แฮกเกอร์ใช้ MFA Fatigue จนเหยื่อยอมรับ — เข้าไปใน AWS และ Slack</li><li><strong>Microsoft</strong> รายงานว่า MFA bombing เป็นเทคนิคที่เพิ่มขึ้นต่อเนื่อง</li></ul><p><strong>การป้องกัน (ตาม CISA และ Microsoft):</strong></p><ol><li><strong>Number Matching</strong>: ผู้ใช้ต้องป้อนตัวเลขบนหน้าจอล็อกอินใน Push Notification</li><li><strong>Phishing-resistant MFA (FIDO2/Passkeys)</strong>: ไม่มีรหัสให้ขโมย</li><li><strong>Location/Device Binding</strong>: จํากัดเฉพาะอุปกรณ์ที่รู้จัก</li><li><strong>Rate Limiting</strong>: จํากัดจํานวน Push Notification</li><li><strong>User Education</strong>: สอนให้ไม่กด Accept โดยไม่ตรวจสอบ</li></ol></div>
+    <h2 id="s6">6.6 สรุปและแนวทางปฏิบัติ</h2>
+    <h3 id="s6-1">6.6.1 OWASP ASVS — Application Security Verification Standard</h3><p><strong>ASVS Version 4.0.3 — V2: Authentication Verification Requirements:</strong></p><div class="table-wrap"><table><thead><tr><th>ข้อ</th><th>รายการ</th><th>L1</th><th>L2</th><th>L3</th></tr></thead><tbody><tr><td>2.1.1</td><td>รหัสผ่านอย่างน้อย 12 ตัวอักษร</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>2.1.2</td><td>รองรับรหัสผ่านอย่างน้อย 64 ตัวอักษร</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>2.1.5</td><td>เปลี่ยนรหัสผ่านต้องกรอกรหัสเก่าก่อน</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>2.1.7</td><td>ตรวจสอบ breached passwords ในการสมัคร</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>2.1.10</td><td>ไม่บังคับเปลี่ยนรหัสผ่านตามรอบเวลา</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>2.1.11</td><td>อนุญาตให้ใช้ Password Managers</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>2.2.1</td><td>Anti-automation (Rate limiting, CAPTCHA)</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>2.2.1</td><td>ไม่เกิน 100 ครั้งผิดต่อชั่วโมงต่อบัญชี</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>2.5.x</td><td>Secure password recovery</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>2.7.x</td><td>MFA บังคับสําหรับ L2/L3</td><td></td><td>✓</td><td>✓</td></tr><tr><td>2.8.x</td><td>FIDO2/WebAuthn สําหรับ L3</td><td></td><td></td><td>✓</td></tr></tbody></table></div>
+    <p><strong>ASVS Version 4.0.3 — V3: Session Management Verification Requirements:</strong></p><div class="table-wrap"><table><thead><tr><th>ข้อ</th><th>รายการ</th><th>L1</th><th>L2</th><th>L3</th></tr></thead><tbody><tr><td>3.2.1</td><td>สร้าง Session ID ใหม่เมื่อล็อกอิน</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>3.2.2</td><td>Session ID มี entropy ≥ 64 bits</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>3.2.3</td><td>เก็บ Session Token อย่างปลอดภัย</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>3.2.4</td><td>ใช้ approved cryptographic algorithms</td><td></td><td>✓</td><td>✓</td></tr><tr><td>3.3.1</td><td>Logout/Expiration — invalidate session</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>3.3.2</td><td>Session timeout ตามตาราง</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>3.4.1</td><td>Cookie Secure attribute</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>3.4.2</td><td>Cookie HttpOnly attribute</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>3.4.3</td><td>Cookie SameSite attribute</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>3.4.4</td><td>Cookie <code>__Host-</code> prefix</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>3.5.2</td><td>ใช้ Session tokens แทน static API keys</td><td>✓</td><td>✓</td><td>✓</td></tr></tbody></table></div>
+    <div class="interactive" id="play-asvs"><h4>Interactive: OWASP ASVS Checklist for Authentication</h4><p>ติ๊กรายการ ASVS Verification Requirements ที่ทีมของคุณได้ implement แล้วเพื่อดูคะแนนความพร้อม</p><div class="checklist" id="asvsChecks"><label><input type="checkbox" class="asvs-v2"> V2.1.1 — รหัสผ่านอย่างน้อย 12 ตัวอักษร</label><label><input type="checkbox" class="asvs-v2"> V2.1.7 — ตรวจสอบ breached passwords</label><label><input type="checkbox" class="asvs-v2"> V2.2.1 — Rate limiting (≤ 100 ครั้ง/ชม.)</label><label><input type="checkbox" class="asvs-v2"> V2.7.1 — MFA สําหรับ L2 ขึ้นไป</label><label><input type="checkbox" class="asvs-v3"> V3.2.1 — Regenerate Session ID หลังล็อกอิน</label><label><input type="checkbox" class="asvs-v3"> V3.2.2 — Session ID entropy ≥ 64 bits</label><label><input type="checkbox" class="asvs-v3"> V3.3.1 — Invalidate session on logout</label><label><input type="checkbox" class="asvs-v3"> V3.4.1 — Cookie Secure attribute</label><label><input type="checkbox" class="asvs-v3"> V3.4.2 — Cookie HttpOnly attribute</label><label><input type="checkbox" class="asvs-v3"> V3.4.3 — Cookie SameSite attribute</label></div><div class="meter"><div class="meter-fill" id="asvsMeter"></div></div><div id="asvsResult" class="result">ติ๊กรายการที่ implement แล้วเพื่อดูคะแนน</div></div>
+    <h3 id="s6-2">6.6.2 OWASP Top 10 2025 — A07 Authentication Failures</h3><p>OWASP Top 10 2025 ยังคงมี <strong>A07:2025 — Authentication Failures</strong> เป็นหนึ่งในหมวดหมู่</p><p><strong>รายการตรวจสอบสําหรับ A07:</strong></p><ul><li>อนุญาตให้ใช้ Credential stuffing หรือ Brute force attacks</li><li>ไม่บังคับ MFA (โดยเฉพาะสําหรับ admin accounts)</li><li>ไม่ตรวจสอบรหัสผ่านรั่วไหล (Breached passwords)</li><li>Session ID ถูกเปิดเผยใน URL</li><li>Session ID ไม่ถูก regenerate หลังล็อกอิน</li><li>ไม่มีการตรวจสอบ Password strength ที่เหมาะสม</li></ul>
+    <h3 id="s6-3">6.6.3 Microsoft Identity Platform Best Practices</h3><p><strong>แนวทางปี 2025-2026:</strong></p><ol><li><strong>Phishing-resistant MFA</strong>: Microsoft ตั้งเป้า 100% ของ user accounts</li><li><strong>Conditional Access</strong>: Policy-based access control ตาม risk, device, location</li><li><strong>Continuous Access Evaluation (CAE)</strong>: Real-time token validation</li><li><strong>Temporary Access Pass (TAP)</strong>: Time-bound credentials สําหรับ onboarding</li><li><strong>Token Protection</strong>: Bind tokens to device</li><li><strong>Workload Identities</strong>: Secure service accounts, automation accounts</li></ol><p><strong>Passwordless Deployment:</strong></p><ul><li>Passkeys (FIDO2 Security Keys, Microsoft Authenticator, Windows Hello)</li><li>รองรับ cross-platform — Windows, macOS, iOS, Android</li><li>Number matching สําหรับ Push Notification</li></ul>
+    <h3 id="s6-4">6.6.4 NIST SP 800-63B-4 — ประเด็นใหม่</h3><p><strong>เอกสารเผยแพร่</strong>: July 2025 (Final), Supersedes SP 800-63B (March 2020)</p><p><strong>ประเด็นใหม่ใน Rev 4:</strong></p><ol><li><strong>Syncable Authenticators</strong>: รองรับ Passkeys ที่ sync ข้ามอุปกรณ์ (Interim guidance April 2024 — normative text)</li><li><strong>Integrated syncable authenticators</strong>: อยู่ในมาตรฐานหลักแล้ว</li><li><strong>Digital Wallets</strong>: เพิ่มใน Federation Model</li><li><strong>Phishing Resistance</strong>: ข้อกําหนดชัดเจนขึ้นสําหรับ AAL3</li><li><strong>การปรับข้อกําหนด Memorized Secrets</strong>: ยกเลิก complexity requirements และ periodic change</li></ol>
+    <h3 id="s6-5">6.6.5 การแปลงความรู้เป็น Security Requirements และ Test Cases</h3><p><strong>ตัวอย่าง Security Requirements สําหรับ Authentication:</strong></p><div class="table-wrap"><table><thead><tr><th>Requirement ID</th><th>Security Requirement</th><th>ช่องโหว่ที่เกี่ยวข้อง</th><th>Acceptance Criteria</th></tr></thead><tbody><tr><td>SR-AUTH-001</td><td>รหัสผ่านต้องถูกแฮชด้วย Argon2id ก่อนเก็บ</td><td>Password Database Breach</td><td>code review ไม่พบ plaintext หรือ fast hash (MD5, SHA-1, SHA-256) ใน password column</td></tr><tr><td>SR-AUTH-002</td><td>ทุก endpoint ล็อกอินต้องมี Rate Limiting</td><td>Credential Stuffing / Brute Force</td><td>เกิน 100 ครั้งต่อชั่วโมงต้องถูกบล็อกชั่วคราว</td></tr><tr><td>SR-AUTH-003</td><td>Admin accounts ต้องมี MFA (อย่างน้อย TOTP)</td><td>Account Takeover</td><td>admin ที่ไม่มี MFA ไม่สามารถล็อกอินได้</td></tr><tr><td>SR-SESS-001</td><td>Session ID ต้องสร้างใหม่ทุกครั้งหลังล็อกอินสําเร็จ</td><td>Session Fixation</td><td>ก่อนและหลังล็อกอินต้องได้ session token ต่างกัน</td></tr><tr><td>SR-SESS-002</td><td>Cookie ต้องมี Secure, HttpOnly, SameSite=Lax หรือ Strict</td><td>Session Hijacking, CSRF</td><td>ตรวจสอบ Set-Cookie header ว่ามี attributes ครบ</td></tr><tr><td>SR-JWT-001</td><td>JWT ต้องตรวจสอบ exp, iss, aud claims และใช้ algorithm ที่ปลอดภัย</td><td>JWT Algorithm Confusion</td><td>Token ที่มี alg=none หรือผิด algorithm ถูกปฏิเสธ</td></tr></tbody></table></div>
+    <p><strong>ตัวอย่าง Security Test Cases:</strong></p><div class="table-wrap"><table><thead><tr><th>Test ID</th><th>Test Case</th><th>Expected Result</th><th>วิธีทดสอบ</th></tr></thead><tbody><tr><td>ST-AUTH-001</td><td>ส่งรหัสผ่านเดิม 101 ครั้งใน 1 ชั่วโมง</td><td>ถูกบล็อกหลังจากครั้งที่ 100</td><td>Automation test script</td></tr><tr><td>ST-AUTH-002</td><td>ล็อกอินด้วยรหัสผ่านที่ถูกต้องหลังถูกบล็อก</td><td>ต้องรอจนครบเวลา (ถ้า soft lockout)</td><td>Integration test</td></tr><tr><td>ST-SESS-001</td><td>ตรวจสอบ Session ID ก่อนและหลังล็อกอิน</td><td>Session ID ต้องเปลี่ยน</td><td>Unit test / Capture cookie</td></tr><tr><td>ST-SESS-002</td><td>ส่ง Access Token ที่หมดอายุแล้ว</td><td>401 Unauthorized</td><td>API test</td></tr><tr><td>ST-JWT-001</td><td>ปลอมแปลง JWT ด้วย alg=none</td><td>401 Unauthorized</td><td>Security test</td></tr><tr><td>ST-MFA-001</td><td>ส่ง OTP ผิด 3 ครั้งติด</td><td>MFA ถูก lockout</td><td>Integration test</td></tr></tbody></table></div>
+    <h2 id="keywords">Keywords สําหรับบทนี้</h2><p>Authentication, Password Hashing, Argon2id, scrypt, bcrypt, PBKDF2, Salt, Pepper, Timing Attack, Constant-time Comparison, Passwordless, WebAuthn, FIDO2, Passkeys, Multi-Factor Authentication, MFA, TOTP, HOTP, Phishing-resistant, Adaptive Authentication, MFA Fatigue, Session Management, Session ID, CSPRNG, Cookie Security, HttpOnly, SameSite, Session Fixation, Session Hijacking, JWT, Access Token, Refresh Token, Refresh Token Rotation, OAuth 2.0, PKCE, OpenID Connect, OIDC, SAML 2.0, Golden SAML, SSO, Federated Identity, Credential Stuffing, Rate Limiting, NIST SP 800-63B, OWASP ASVS</p>
+    <h2 id="labs">กิจกรรมปฏิบัติการ</h2><div class="info-box warning"><div class="icon">SAFE</div><p><strong>ข้อควรจํา:</strong> กิจกรรมทั้งหมดต้องทําในเครื่องของนักศึกษาเองหรือในสภาพแวดล้อมที่ได้รับอนุญาตเท่านั้น ห้ามทดสอบกับระบบจริงของบุคคลอื่นโดยไม่ได้รับอนุญาต</p></div>
+    <div class="lab-section"><h4>Lab 6.1: เปรียบเทียบประสิทธิภาพการ Hash รหัสผ่าน</h4><p><strong>วัตถุประสงค์:</strong> เข้าใจความแตกต่างด้านประสิทธิภาพและความปลอดภัยระหว่าง Hash Algorithms และผลกระทบต่อการแคร็ก</p><p><strong>เวลาที่ใช้:</strong> 30-45 นาที</p><p><strong>เครื่องมือ:</strong> Python 3, hashcat (optional), Jupyter Notebook หรือ Script</p><p><strong>ขั้นตอน:</strong></p><ol><li>ติดตั้ง library ที่จําเป็น: <pre><code>pip install argon2-cffi bcrypt passlib</code></pre></li><li>เขียน script เปรียบเทียบเวลา Hash ด้วยอัลกอริทึมต่างๆ:<pre><code>import time
+import hashlib
+import bcrypt
+from argon2 import PasswordHasher
+
+password = "test_password_123"
+iterations = 100
+
+# MD5 (เร็วมาก — ไม่ปลอดภัย)
+start = time.time()
+for _ in range(iterations):
+    hashlib.md5(password.encode()).hexdigest()
+md5_time = (time.time() - start) / iterations
+
+# SHA-256 (เร็ว — ไม่เหมาะกับ password)
+start = time.time()
+for _ in range(iterations):
+    hashlib.sha256(password.encode()).hexdigest()
+sha256_time = (time.time() - start) / iterations
+
+# bcrypt (work factor = 10)
+start = time.time()
+for _ in range(iterations):
+    bcrypt.hashpw(password.encode(), bcrypt.gensalt(rounds=10))
+bcrypt_time = (time.time() - start) / iterations
+
+# Argon2id (m=19456, t=2, p=1)
+ph = PasswordHasher(time_cost=2, memory_cost=19456, parallelism=1)
+start = time.time()
+for _ in range(iterations):
+    ph.hash(password)
+argon2_time = (time.time() - start) / iterations
+
+print(f"MD5: {md5_time:.6f} วินาที")
+print(f"SHA-256: {sha256_time:.6f} วินาที")
+print(f"bcrypt (10): {bcrypt_time:.6f} วินาที")
+print(f"Argon2id: {argon2_time:.6f} วินาที")</code></pre></li><li>บันทึกเวลาและคํานวณว่าถ้า attacker มี GPU ที่เดา MD5 ได้ 10,000 ล้านครั้ง/วินาที จะใช้เวลาเดา Argon2id ได้กี่ครั้ง/วินาที</li><li>(Optional) ทดลอง crack hash ด้วย hashcat หรือ John the Ripper</li></ol><p><strong>สิ่งที่ต้องส่ง:</strong></p><ol><li>ตารางเวลา Hash ของแต่ละอัลกอริทึม</li><li>คําอธิบายว่าเหตุใด MD5 และ SHA-256 จึงไม่เหมาะสมสําหรับ password hashing</li><li>การคํานวณความสัมพันธ์ระหว่างความช้าของ Hash Algorithm กับความปลอดภัย</li></ol></div>
+    <div class="lab-section"><h4>Lab 6.2: Implement Session Management ด้วย JWT</h4><p><strong>วัตถุประสงค์:</strong> สร้างระบบ Authentication ด้วย JWT รวมถึง Access Token, Refresh Token และ Cookie Security ที่ถูกต้อง</p><p><strong>เวลาที่ใช้:</strong> 45-60 นาที</p><p><strong>เครื่องมือ:</strong> Node.js + Express หรือ Python + Flask</p><p><strong>ตัวอย่าง Node.js:</strong></p><pre><code>const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+
+// สร้าง Access Token (อายุ 15 นาที)
+function generateAccessToken(userId, roles) {
+    return jwt.sign(
+        { 
+            sub: userId,
+            roles: roles,
+            jti: crypto.randomUUID(),
+            iss: 'https://api.example.com',
+            aud: 'https://app.example.com'
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: '15m' }
+    );
+}
+
+// สร้าง Refresh Token (อายุ 7 วัน)
+function generateRefreshToken(userId) {
+    return jwt.sign(
+        { 
+            sub: userId,
+            jti: crypto.randomUUID(),
+            type: 'refresh'
+        },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: '7d' }
+    );
+}
+
+// ตรวจสอบ JWT Middleware
+function authenticateToken(req, res, next) {
+    const token = req.cookies.access_token;
+    if (!token) return res.sendStatus(401);
+    
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, 
+        { issuer: 'https://api.example.com', audience: 'https://app.example.com' },
+        (err, user) => {
+            if (err) return res.sendStatus(403);
+            req.user = user;
+            next();
+        }
+    );
+}</code></pre><p><strong>ขั้นตอน:</strong></p><ol><li>สร้าง Express/Fastify หรือ Flask server พร้อม endpoint <code>/login</code></li><li>เมื่อล็อกอินสําเร็จ ให้สร้าง Access Token และ Refresh Token</li><li>ตั้งค่า Cookie ด้วย <code>Secure</code>, <code>HttpOnly</code>, <code>SameSite=Strict</code></li><li>สร้าง middleware สําหรับตรวจสอบ JWT</li><li>สร้าง endpoint <code>/refresh</code> สําหรับ Refresh Token Rotation</li><li>สร้าง endpoint <code>/logout</code> สําหรับทําลาย Refresh Token</li><li>ทดสอบด้วย curl หรือ Postman</li></ol><p><strong>สิ่งที่ต้องส่ง:</strong></p><ol><li>โค้ด JWT Implementation ที่สมบูรณ์</li><li>ตัวอย่าง Cookie Header ที่มีการตั้งค่า Security Attributes</li><li>คําอธิบายว่าทําไมต้องแยก Access Token และ Refresh Token</li><li>แผนภาพ Flow การทํางานของ Refresh Token Rotation</li></ol></div>
+    <div class="lab-section"><h4>Lab 6.3: จําลอง Brute Force Attack และ Rate Limiting</h4><p><strong>วัตถุประสงค์:</strong> เข้าใจการทํางานของ Brute Force Attack และ Implement Rate Limiting + Account Lockout</p><p><strong>เวลาที่ใช้:</strong> 30-45 นาที</p><p><strong>เครื่องมือ:</strong> Python + Flask หรือ Node.js + Express</p><p><strong>ขั้นตอน:</strong></p><ol><li>สร้าง login endpoint อย่างง่าย:<pre><code>from flask import Flask, request, jsonify
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
+app = Flask(__name__)
+
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["100 per hour"]
+)
+
+login_attempts = {}
+
+@app.route('/login', methods=['POST'])
+@limiter.limit("5 per minute")
+def login():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    
+    # ตรวจสอบ Account Lockout
+    if username in login_attempts and login_attempts[username] >= 5:
+        return jsonify({"error": "Account locked. Try again in 15 minutes."}), 429
+    
+    # ตรวจสอบ credentials
+    if username == "admin" and password == "correct_password":
+        login_attempts[username] = 0
+        return jsonify({"message": "Login successful"})
+    
+    # เพิ่ม failed attempt
+    login_attempts[username] = login_attempts.get(username, 0) + 1
+    remaining = 5 - login_attempts[username]
+    return jsonify({"error": "Invalid credentials", "attempts_remaining": remaining}), 401
+
+if __name__ == '__main__':
+    app.run()</code></pre></li><li>เขียน script brute force แบบง่าย (ใน lab):<pre><code>import requests
+
+url = "http://localhost:5000/login"
+passwords = ["123456", "password", "admin123", "letmein", "correct_password"]
+
+for pwd in passwords:
+    response = requests.post(url, json={"username": "admin", "password": pwd})
+    print(f"Trying {pwd}: {response.status_code} - {response.json()}")</code></pre></li><li>ทดสอบว่า Rate Limiting และ Account Lockout ทํางานถูกต้อง</li><li>ทดลองส่ง request เกิน limit แล้วสังเกต HTTP 429 response</li></ol><p><strong>สิ่งที่ต้องส่ง:</strong></p><ol><li>โค้ด Rate Limiting Implementation</li><li>Log การทดสอบที่แสดงการถูกบล็อกหลังจากพยายามเกิน limit</li><li>คําอธิบายความแตกต่างระหว่าง Rate Limiting แบบ IP-based vs Account-based</li><li>ข้อเสนอแนะเกี่ยวกับการแจ้งเตือนผู้ใช้ (error message) ว่าควรหรือไม่ควรบอกจํานวนครั้งที่เหลือ</li></ol></div>
+    <div class="lab-section"><h4>Lab 6.4: ทดลอง OAuth 2.0 Authorization Code Flow + PKCE</h4><p><strong>วัตถุประสงค์:</strong> เข้าใจ Flow การทํางานของ OAuth 2.0 Authorization Code Flow ด้วย PKCE และ OIDC</p><p><strong>เวลาที่ใช้:</strong> 45-60 นาที</p><p><strong>เครื่องมือ:</strong> Keycloak (Docker) หรือ Auth0 free tier</p><p><strong>ขั้นตอน (ใช้ Keycloak):</strong></p><ol><li>รัน Keycloak ด้วย Docker:<pre><code>docker run -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:latest start-dev</code></pre></li><li>สร้าง Realm, Client และ User ใน Keycloak</li><li>เขียน Client Application (Python หรือ Node.js) ที่ใช้ Authorization Code Flow + PKCE:<pre><code>import requests
+import secrets
+import hashlib
+import base64
+
+# สร้าง PKCE parameters
+code_verifier = secrets.token_urlsafe(64)
+code_challenge = base64.urlsafe_b64encode(
+    hashlib.sha256(code_verifier.encode()).digest()
+).rstrip('=')
+
+# Step 1: Authorization Request
+auth_url = f"http://localhost:8080/realms/myrealm/protocol/openid-connect/auth"
+params = {
+    "client_id": "myclient",
+    "response_type": "code",
+    "redirect_uri": "http://localhost:3000/callback",
+    "scope": "openid profile email",
+    "state": secrets.token_hex(16),
+    "code_challenge": code_challenge,
+    "code_challenge_method": "S256"
+}
+
+# Step 2: User authenticates (จะ redirect ไปยัง browser)
+# Step 3: Token Request
+token_url = f"http://localhost:8080/realms/myrealm/protocol/openid-connect/token"
+token_params = {
+    "grant_type": "authorization_code",
+    "code": "authorization_code_from_callback",
+    "redirect_uri": "http://localhost:3000/callback",
+    "client_id": "myclient",
+    "code_verifier": code_verifier
+}
+
+response = requests.post(token_url, data=token_params)
+tokens = response.json()
+# tokens contains: access_token, refresh_token, id_token</code></pre></li><li>ตรวจสอบ JWT Claims ใน Access Token และ ID Token</li><li>เรียก UserInfo Endpoint ด้วย Access Token</li><li>ทดลองส่ง request โดยไม่มี PKCE (ควรถูกปฏิเสธ)</li></ol><p><strong>สิ่งที่ต้องส่ง:</strong></p><ol><li>แผนภาพ Flow Authorization Code + PKCE</li><li>ตัวอย่าง JWT Payload ของ Access Token และ ID Token</li><li>คําอธิบายว่า PKCE ป้องกัน Authorization Code Interception อย่างไร</li><li>เปรียบเทียบความแตกต่างระหว่าง OAuth 2.0 กับ OIDC จากประสบการณ์ใน Lab</li></ol></div>
+    <h2 id="questions">คําถามท้ายบท</h2><ol>
+    <li>NIST SP 800-63B Rev 4 เปลี่ยนแปลงข้อกําหนดเกี่ยวกับรหัสผ่านอย่างไรเมื่อเทียบกับแนวปฏิบัติเดิม และเหตุใดจึงเปลี่ยนแปลง</li>
+    <li>จงเปรียบเทียบ Argon2id, scrypt, bcrypt และ PBKDF2 ในด้านความปลอดภัย ประสิทธิภาพ และกรณีการใช้งานที่เหมาะสม</li>
+    <li>Salt และ Pepper แตกต่างกันอย่างไร และแต่ละอย่างป้องกันการโจมตีแบบใด</li>
+    <li>Timing Attack Prevention ทําไมต้องใช้ Constant-time Comparison และมีฟังก์ชันอะไรในภาษา Python, Node.js, PHP และ Java</li>
+    <li>จงอธิบายการทํางานของ WebAuthn / FIDO2 / Passkeys โดยใช้หลักการ Public Key Cryptography</li>
+    <li>MFA สามปัจจัยคืออะไรบ้าง CISA จัดอันดับ MFA จากปลอดภัยที่สุดไปน้อยที่สุดอย่างไร</li>
+    <li>TOTP และ HOTP แตกต่างกันอย่างไร และข้อดีข้อเสียของแต่ละแบบ</li>
+    <li>MFA Fatigue / Bombing คืออะไร และมีแนวทางป้องกันอย่างไรบ้าง</li>
+    <li>Session ID Generation ที่ปลอดภัยต้องมีคุณสมบัติอะไรบ้าง และฟังก์ชันใดที่ไม่ควรใช้</li>
+    <li>Cookie Security Attributes (Secure, HttpOnly, SameSite, __Host- prefix) แต่ละตัวป้องกันการโจมตีแบบใด</li>
+    <li>Session Fixation แตกต่างจาก Session Hijacking อย่างไร และมีแนวทางป้องกันแต่ละแบบอย่างไร</li>
+    <li>JWT Access Token และ Refresh Token ต่างกันอย่างไร และ Refresh Token Rotation คืออะไร</li>
+    <li>OAuth 2.0 Authorization Code Flow + PKCE ทํางานอย่างไร และ PKCE ป้องกันการโจมตีแบบใด</li>
+    <li>OAuth 2.1 เปลี่ยนแปลงอะไรจาก OAuth 2.0 บ้าง (Implicit Grant, Password Grant, PKCE)</li>
+    <li>OpenID Connect (OIDC) เพิ่มความสามารถอะไรให้กับ OAuth 2.0 และ ID Token แตกต่างจาก Access Token อย่างไร</li>
+    <li>SAML 2.0 มีความเสี่ยงด้านความปลอดภัยอะไรบ้าง (XML Signature Wrapping, Golden SAML) และป้องกันอย่างไร</li>
+    <li>จากกรณี SolarWinds 2020 จงอธิบายว่า SAML Token Forgery และ Golden SAML Attack ส่งผลกระทบอย่างไร</li>
+    <li>จากกรณี Okta 2023 (Support System Breach) จงอธิบายว่า HAR files ทําให้เกิด Session Hijacking ได้อย่างไร</li>
+    <li>จงออกแบบ Security Requirement สําหรับระบบ Authentication ที่รวม Rate Limiting, MFA และ Secure Session Management</li>
+    <li>จงออกแบบ Test Case สําหรับตรวจสอบว่า JWT Implementation มี Algorithm Confusion Vulnerability หรือไม่</li>
+    </ol>
+    <h2 id="summary">สรุปท้ายบท</h2><div class="card"><div class="card-header">สาระสําคัญของบทที่ 6</div><p>Authentication และ Session Management เป็นรากฐานสําคัญของความปลอดภัยซอฟต์แวร์ จุดอ่อนในส่วนนี้มักเป็นเป้าหมายแรกของผู้โจมตีเพราะให้ผลตอบแทนสูง — บัญชีผู้ใช้เดียวอาจนําไปสู่การเข้าถึงระบบทั้งองค์กร</p><p>Password-Based Authentication ยังคงเป็นวิธีหลัก แต่ต้องยึดตามมาตรฐาน NIST SP 800-63B-4 ซึ่งเน้นความยาวรหัสผ่านมากกว่าความซับซ้อน ไม่บังคับเปลี่ยนรหัสผ่านตามรอบ และสนับสนุนการใช้งาน Password Managers การเก็บรหัสผ่านต้องใช้ Memory-hard Functions โดย Argon2id เป็นตัวเลือกอันดับหนึ่ง รองลงมาคือ scrypt, bcrypt และ PBKDF2 ตามลําดับ การป้องกัน Credential Stuffing และ Brute Force ต้องใช้ Rate Limiting, Account Lockout, Breached Password Detection และ MFA ร่วมกัน</p><p>Multi-Factor Authentication (MFA) ช่วยเพิ่มความปลอดภัยอย่างมาก โดย FIDO2/WebAuthn (Passkeys) เป็นมาตรฐานที่มีความปลอดภัยสูงสุดเพราะ phishing-resistant และไม่มี shared secrets MFA Fatigue/Bombing เป็นภัยคุกคามใหม่ที่ต้องป้องกันด้วย Number Matching และ User Education</p><p>Session Management ที่ปลอดภัยต้องใช้ Session ID ที่สุ่มด้วย CSPRNG มี entropy 128-256 bits ควบคุมอายุ Session ด้วย Idle Timeout และ Absolute Timeout และตั้งค่า Cookie Security Attributes อย่างถูกต้อง JWT ช่วยให้ stateless authentication แต่ต้องตรวจสอบ claims อย่างเคร่งครัดและใช้ Asymmetric Signatures สําหรับระบบที่มีหลาย services</p><p>SSO และ Federated Identity ลดความยุ่งยากของผู้ใช้แต่เพิ่มความซับซ้อนด้านความปลอดภัย OAuth 2.0 + PKCE เป็นมาตรฐานหลักสําหรับ Authorization ส่วน OpenID Connect เพิ่มการ Authentication Layer และ SAML 2.0 ยังคงใช้ในองค์กรขนาดใหญ่ การป้องกัน Common SSO Attacks ต้องใช้ state, nonce, PKCE, strict redirect URI validation และ check issuer claims</p><p>กรณีศึกษา SolarWinds, Okta, LinkedIn และ RockYou! แสดงให้เห็นว่าช่องโหว่ด้าน Authentication สร้างความเสียหายระดับโลกได้ การออกแบบที่ปลอดภัยต้องเริ่มจากมาตรฐาน (NIST SP 800-63B, OWASP ASVS) แปลงเป็น Security Requirements และทดสอบด้วย Test Cases ที่ครอบคลุมทุกขั้นตอนของ Authentication Lifecycle</p></div>
+    <h2 id="refs">เอกสารอ้างอิงหลัก</h2><ol>
+    <li>NIST SP 800-63B Revision 4 — Digital Identity Guidelines: <a href="https://pages.nist.gov/800-63-4/sp-800-63b.html">https://pages.nist.gov/800-63-4/sp-800-63b.html</a></li>
+    <li>OWASP Password Storage Cheat Sheet: <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html</a></li>
+    <li>OWASP Authentication Cheat Sheet: <a href="https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html</a></li>
+    <li>OWASP Session Management Cheat Sheet: <a href="https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html</a></li>
+    <li>OWASP SAML Security Cheat Sheet: <a href="https://cheatsheetseries.owasp.org/cheatsheets/SAML_Security_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/SAML_Security_Cheat_Sheet.html</a></li>
+    <li>OWASP ASVS v4.0.3 — V2 Authentication, V3 Session Management: <a href="https://owasp.org/www-project-application-security-verification-standard/">https://owasp.org/www-project-application-security-verification-standard/</a></li>
+    <li>OWASP Top 10 2025 — A07 Authentication Failures: <a href="https://owasp.org/Top10/2025/A07_2025-Authentication_Failures/">https://owasp.org/Top10/2025/A07_2025-Authentication_Failures/</a></li>
+    <li>RFC 6749 — OAuth 2.0 Authorization Framework: <a href="https://datatracker.ietf.org/doc/html/rfc6749">https://datatracker.ietf.org/doc/html/rfc6749</a></li>
+    <li>RFC 7636 — PKCE: <a href="https://datatracker.ietf.org/doc/html/rfc7636">https://datatracker.ietf.org/doc/html/rfc7636</a></li>
+    <li>RFC 9700 — Best Current Practice for OAuth 2.0 Security (January 2025): <a href="https://datatracker.ietf.org/doc/html/rfc9700">https://datatracker.ietf.org/doc/html/rfc9700</a></li>
+    <li>RFC 7519 — JSON Web Token (JWT): <a href="https://datatracker.ietf.org/doc/html/rfc7519">https://datatracker.ietf.org/doc/html/rfc7519</a></li>
+    <li>RFC 6238 — TOTP: Time-Based One-Time Password Algorithm: <a href="https://datatracker.ietf.org/doc/html/rfc6238">https://datatracker.ietf.org/doc/html/rfc6238</a></li>
+    <li>RFC 4226 — HOTP: An HMAC-Based One-Time Password Algorithm: <a href="https://datatracker.ietf.org/doc/html/rfc4226">https://datatracker.ietf.org/doc/html/rfc4226</a></li>
+    <li>CISA — Next Level MFA: FIDO Authentication: <a href="https://www.cisa.gov/next-level-mfa-fido-authentication">https://www.cisa.gov/next-level-mfa-fido-authentication</a></li>
+    <li>CISA — Supply Chain Compromise Detecting APT Activity (AA20-352A): <a href="https://www.cisa.gov/news-events/alerts/2020/12/17/aa20-352a">https://www.cisa.gov/news-events/alerts/2020/12/17/aa20-352a</a></li>
+    <li>FIDO Alliance — State of Passkeys 2026: <a href="https://fidoalliance.org/passkeys/">https://fidoalliance.org/passkeys/</a></li>
+    <li>Microsoft — Phishing-resistant MFA: <a href="https://www.microsoft.com/en-us/security/blog/2024/04/15/phishing-resistant-mfa-is-critical-to-your-security-posture/">https://www.microsoft.com/en-us/security/blog/2024/04/15/phishing-resistant-mfa-is-critical-to-your-security-posture/</a></li>
+    <li>MITRE ATT&CK — T1606.002 SAML Token Forgery: <a href="https://attack.mitre.org/techniques/T1606/002/">https://attack.mitre.org/techniques/T1606/002/</a></li>
+    <li>MITRE ATT&CK — T1550.004 Web Session Cookie Theft: <a href="https://attack.mitre.org/techniques/T1550/004/">https://attack.mitre.org/techniques/T1550/004/</a></li>
+    <li>Okta Security — Support System Root Cause Analysis (November 2023): <a href="https://sec.okta.com/harfiles">https://sec.okta.com/harfiles</a></li>
+    <li>Troy Hunt — Collection #1 Data Breach (2019): <a href="https://www.troyhunt.com/the-773-million-record-collection-1-data-reach/">https://www.troyhunt.com/the-773-million-record-collection-1-data-reach/</a></li>
+    <li>OWASP Cheat Sheet Series: <a href="https://cheatsheetseries.owasp.org/">https://cheatsheetseries.owasp.org/</a></li>
+    <li>IETF OAuth 2.1 draft: <a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-15">https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-15</a></li>
+    </ol>
+  </div>
+</div>
+<button class="scroll-top" id="scrollTopBtn" aria-label="กลับด้านบน">↑</button>
+<script>
+(function(){
+// === Sidebar ===
+var s=document.getElementById('sidebar'),t=document.getElementById('sidebarToggle'),o=document.getElementById('sidebarOverlay');
+function op(){s.classList.add('open');o.classList.add('show')}
+function cl(){s.classList.remove('open');o.classList.remove('show')}
+if(t)t.addEventListener('click',function(){s.classList.contains('open')?cl():op()});
+if(o)o.addEventListener('click',cl);
+document.querySelectorAll('.sidebar-nav a').forEach(function(l){l.addEventListener('click',function(){if(window.innerWidth<=1024)cl()})});
+
+// === Scroll to Top ===
+var sb=document.getElementById('scrollTopBtn');
+window.addEventListener('scroll',function(){if(window.scrollY>300)sb.classList.add('visible');else sb.classList.remove('visible')});
+if(sb)sb.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+
+// === Active Section Highlight ===
+var secs=[],anc=document.querySelectorAll('.sidebar-nav a');
+anc.forEach(function(a){var h=a.getAttribute('href');if(h&&h.startsWith('#')){var el=document.getElementById(h.substring(1));if(el)secs.push({el:el,link:a})}});
+function upAct(){var pos=window.scrollY+120,cur=null;secs.forEach(function(s){if(s.el.offsetTop<=pos)cur=s});anc.forEach(function(a){a.classList.remove('active')});if(cur)cur.link.classList.add('active')}
+window.addEventListener('scroll',upAct);upAct();
+
+// === Tabs ===
+document.querySelectorAll('.tab-btn').forEach(function(btn){btn.addEventListener('click',function(){var w=btn.closest('.tabs'),tab=btn.dataset.tab,pids=[];w.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');pids.push(b.dataset.tab)});btn.classList.add('active');pids.forEach(function(id){var p=document.getElementById(id);if(p)p.classList.toggle('active',id===tab)})})});
+
+// === Helper ===
+function setRes(id,msg,cls){var el=document.getElementById(id);if(!el)return;el.className='result '+(cls||'');el.textContent=msg}
+
+// === Password Hashing Comparator ===
+var hashBtn=document.getElementById('hashBtn');
+if(hashBtn)hashBtn.addEventListener('click',function(){
+  var pwd=document.getElementById('hashInput').value||'test';
+  var base=pwd.length*0.5;
+  var t1=(base*0.01).toFixed(6);
+  var t2=(base*0.05).toFixed(6);
+  var t3=(base*50).toFixed(4);
+  var t4=(base*120).toFixed(4);
+  document.getElementById('t-md5').textContent=t1+'s';
+  document.getElementById('t-sha256').textContent=t2+'s';
+  document.getElementById('t-bcrypt').textContent=t3+'s';
+  document.getElementById('t-argon2').textContent=t4+'s';
+  setRes('hashResult','ผลการเปรียบเทียบ: Argon2id ช้าที่สุด ('+t4+'s) = ปลอดภัยที่สุด; MD5 เร็วที่สุด ('+t1+'s) = ไม่ปลอดภัย','ok')
+});
+
+// === Timing Attack Demo ===
+var taBtn=document.getElementById('taBtn');
+if(taBtn)taBtn.addEventListener('click',function(){
+  var a=document.getElementById('ta-input-a').value,b=document.getElementById('ta-input-b').value;
+  var match=0;for(var i=0;i<Math.min(a.length,b.length);i++){if(a[i]===b[i])match++;else break}
+  var normalTime=match*2+1,constTime=a.length*2+1;
+  setRes('taResult','เปรียบเทียบแบบปกติ: ∼'+normalTime+'ms | Constant-time: ∼'+constTime+'ms (เท่ากันทุกครั้ง) — '+(a===b?'ค่าเท่ากัน':'ค่าต่างกัน'),a===b?'ok':'mid')
+});
+
+// === MFA CISA Ranking Quiz ===
+var mfaBtn=document.getElementById('mfaQuizBtn');
+if(mfaBtn)mfaBtn.addEventListener('click',function(){
+  var r=[1,2,3,4,5],a=[parseInt(document.getElementById('mfaRank1').value),parseInt(document.getElementById('mfaRank2').value),parseInt(document.getElementById('mfaRank3').value),parseInt(document.getElementById('mfaRank4').value),parseInt(document.getElementById('mfaRank5').value)];
+  var c=0,msg='';for(var i=0;i<5;i++){if(a[i]===r[i])c++}
+  if(c===5){msg='ถูกต้องทั้งหมด! Security Key=1, Number Matching=2, OTP=3, Biometrics=4, SMS=5';setRes('mfaQuizResult',msg,'ok')}
+  else{msg='ถูก '+c+' จาก 5 ข้อ — ลองใหม่ (เฉลย: Security Key=1, Auth App+Number Matching=2, Auth App+OTP=3, Biometrics=4, SMS/Email OTP=5)';setRes('mfaQuizResult',msg,'bad')}
+});
+
+// === Session ID Generator ===
+var sessBtn=document.getElementById('sessionBtn');
+if(sessBtn)sessBtn.addEventListener('click',function(){
+  var bits=parseInt(document.getElementById('sessionBits').value);
+  var bytes=bits/4;var hex='0123456789abcdef';var id='';
+  var arr=new Uint8Array(bytes/2);crypto.getRandomValues(arr);
+  for(var i=0;i<arr.length;i++){id+=hex[arr[i]>>4]+hex[arr[i]&15]}
+  setRes('sessionOutput','Session ID ('+bits+' bits): '+id,'ok')
+});
+
+// === Cookie Security Builder ===
+function updateCookie(){
+  var parts=['Set-Cookie: __Host-SID=abc123'];
+  if(document.getElementById('ck-secure').checked)parts.push('Secure');
+  if(document.getElementById('ck-httponly').checked)parts.push('HttpOnly');
+  if(document.getElementById('ck-samesite').checked)parts.push('SameSite=Strict');
+  if(document.getElementById('ck-host').checked)parts.push('path=/');
+  document.getElementById('cookieOutput').textContent=parts.join('; ')
+}
+['ck-secure','ck-httponly','ck-samesite','ck-host'].forEach(function(id){
+  var el=document.getElementById(id);if(el)el.addEventListener('change',updateCookie)
+});
+
+// === MFA Bypass Matching ===
+var bypBtn=document.getElementById('bypassBtn');
+if(bypBtn)bypBtn.addEventListener('click',function(){
+  var t=document.getElementById('bypassSelect').value,d=document.getElementById('bypassDesc').value;
+  if(!t||!d){setRes('bypassResult','โปรดเลือกทั้งเทคนิคและคําอธิบาย','mid');return}
+  if(t===d)setRes('bypassResult','ถูกต้อง! "'+t+'" จับคู่ถูกต้อง','ok');else setRes('bypassResult','ยังไม่ตรง — ลองจับคู่ใหม่','bad')
+});
+
+// === OWASP ASVS Checklist ===
+function updateASVS(){
+  var boxes=document.querySelectorAll('#asvsChecks input'),c=0;
+  boxes.forEach(function(b){if(b.checked)c++});
+  var pct=boxes.length?Math.round(c/boxes.length*100):0;
+  document.getElementById('asvsMeter').style.width=pct+'%';
+  var cls=pct>=75?'ok':pct>=40?'mid':'bad';
+  var label=pct>=75?'ดี (ควรทดสอบต่อเนื่อง)':pct>=40?'พอใช้ (ควรเพิ่ม control หลัก)':'ต่ำ (ควรดำเนินการทันที)';
+  setRes('asvsResult','ASVS Compliance: '+pct+'% — '+label,cls)
+}
+var asvsBox=document.getElementById('asvsChecks');if(asvsBox)asvsBox.addEventListener('change',updateASVS);
+
+// === JWT Claims Check ===
+function updateJWT(){
+  var boxes=document.querySelectorAll('.jwt-check'),c=0;
+  boxes.forEach(function(b){if(b.checked)c++});
+  var pct=boxes.length?Math.round(c/boxes.length*100):0;
+  var cls=pct>=85?'ok':pct>=50?'mid':'bad';
+  var req=['exp','nbf','iss','aud','jti'];var reqC=0;
+  document.querySelectorAll('.jwt-check').forEach(function(b,i){if(b.checked&&i<5)reqC++});
+  var msg='Claims ที่ติ๊ก: '+c+'/'+boxes.length+' — '+'Required claims (exp/nbf/iss/aud/jti): '+reqC+'/'+req.length+' — '+(reqC===5?'ครบถ้วน required claims':'ยังไม่ครบ required claims');
+  setRes('jwtResult',msg,cls)
+}
+var jwtBox=document.getElementById('jwtChecks');if(jwtBox)jwtBox.addEventListener('change',updateJWT);
+
+})();
+</script>
+<div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--text-muted, #64748b);border-top:1px solid var(--border, #e2e8f0)">Powered by: IceSuntisuk</div></body>
+</html>
