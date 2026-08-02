@@ -6,12 +6,27 @@
 <title>Inject 2: WebShell + Credential Exfil — TTX User Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('ttx_theme');
+    if (t !== 'dark' && t !== 'light') {
+      t = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+})();
+</script>
 <style>
 :root {
+  color-scheme: dark;
   --bg: #0a0e17;
   --bg-card: #111827;
   --bg-card-hover: #1a2332;
   --bg-sidebar: #0d1321;
+  --nav-bg: #0d1321;
   --border: #1e293b;
   --border-accent: #2563eb;
   --text: #e2e8f0;
@@ -19,20 +34,132 @@
   --text-dim: #64748b;
   --accent: #3b82f6;
   --accent-hover: #60a5fa;
+  --accent-blue: #60a5fa;
+  --highlight: #3b82f6;
+  --gradient-card: linear-gradient(135deg, rgba(17,24,39,0.95), rgba(15,23,42,0.98));
+  --gradient-card-soft: linear-gradient(135deg, rgba(17,24,39,0.9), rgba(15,23,42,0.95));
+  --card-border: rgba(255,255,255,0.06);
+  --surface: rgba(255,255,255,0.02);
+  --surface-mid: rgba(255,255,255,0.03);
+  --hover-bg: rgba(255,255,255,0.03);
+  --table-border: rgba(255,255,255,0.05);
+  --code-bg: rgba(0,0,0,0.3);
+  --code-bg-deep: rgba(0,0,0,0.4);
+  --code-text: #c9d1d9;
+  --accent-bg: rgba(59,130,246,0.08);
+  --accent-bg-strong: rgba(59,130,246,0.12);
+  --accent-bg-soft: rgba(59,130,246,0.15);
+  --accent-border: rgba(59,130,246,0.15);
+  --accent-border-hover: rgba(59,130,246,0.3);
+  --accent-border-strong: rgba(59,130,246,0.4);
   --green: #22c55e;
   --green-bg: rgba(34,197,94,0.1);
+  --green-bg-hover: rgba(34,197,94,0.2);
+  --green-border: rgba(34,197,94,0.3);
+  --green-header: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.02));
+  --green-header-border: rgba(34,197,94,0.3);
+  --green-box-bg: rgba(34,197,94,0.05);
+  --green-box-border: rgba(34,197,94,0.2);
   --orange: #f59e0b;
   --orange-bg: rgba(245,158,11,0.1);
+  --orange-border: rgba(245,158,11,0.3);
+  --orange-header: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.02));
+  --orange-header-border: rgba(245,158,11,0.3);
+  --orange-box-bg: rgba(245,158,11,0.05);
+  --orange-box-border: rgba(245,158,11,0.2);
   --red: #ef4444;
   --red-bg: rgba(239,68,68,0.1);
+  --red-border: rgba(239,68,68,0.3);
+  --red-header: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.02));
+  --red-header-border: rgba(239,68,68,0.3);
+  --red-box-bg: rgba(239,68,68,0.05);
+  --red-box-border: rgba(239,68,68,0.2);
   --blue: #06b6d4;
   --blue-bg: rgba(6,182,212,0.1);
   --purple: #a855f7;
   --purple-bg: rgba(168,85,247,0.1);
+  --purple-border: rgba(168,85,247,0.3);
+  --purple-header: linear-gradient(135deg, rgba(168,85,247,0.08), rgba(168,85,247,0.02));
+  --purple-header-border: rgba(168,85,247,0.3);
+  --purple-box-bg: rgba(168,85,247,0.05);
+  --purple-box-border: rgba(168,85,247,0.2);
+  --context-bg: linear-gradient(135deg, rgba(239,68,68,0.06), rgba(59,130,246,0.06));
+  --context-border: rgba(239,68,68,0.15);
+  --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+  --shadow: 0 8px 32px rgba(0,0,0,0.25);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.35);
   --radius: 16px;
   --radius-sm: 10px;
-  --shadow: 0 8px 32px rgba(0,0,0,0.25);
   --transition: 0.2s ease;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --nav-bg: #ffffff;
+  --border: #e2e8f0;
+  --border-accent: #2563eb;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #64748b;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-blue: #1d4ed8;
+  --highlight: #2563eb;
+  --gradient-card: linear-gradient(135deg, #ffffff, #f8fafc);
+  --gradient-card-soft: linear-gradient(135deg, #ffffff, #f8fafc);
+  --card-border: #e2e8f0;
+  --surface: rgba(15,23,42,0.02);
+  --surface-mid: rgba(15,23,42,0.03);
+  --hover-bg: rgba(15,23,42,0.04);
+  --table-border: #e2e8f0;
+  --code-bg: #f8fafc;
+  --code-bg-deep: #f1f5f9;
+  --code-text: #1e293b;
+  --accent-bg: rgba(37,99,235,0.08);
+  --accent-bg-strong: rgba(37,99,235,0.12);
+  --accent-bg-soft: rgba(37,99,235,0.12);
+  --accent-border: rgba(37,99,235,0.2);
+  --accent-border-hover: rgba(37,99,235,0.35);
+  --accent-border-strong: rgba(37,99,235,0.45);
+  --green: #16a34a;
+  --green-bg: rgba(22,163,74,0.1);
+  --green-bg-hover: rgba(22,163,74,0.16);
+  --green-border: rgba(22,163,74,0.4);
+  --green-header: linear-gradient(135deg, rgba(22,163,74,0.1), rgba(22,163,74,0.03));
+  --green-header-border: rgba(22,163,74,0.35);
+  --green-box-bg: rgba(22,163,74,0.06);
+  --green-box-border: rgba(22,163,74,0.3);
+  --orange: #d97706;
+  --orange-bg: rgba(217,119,6,0.1);
+  --orange-border: rgba(217,119,6,0.4);
+  --orange-header: linear-gradient(135deg, rgba(217,119,6,0.1), rgba(217,119,6,0.03));
+  --orange-header-border: rgba(217,119,6,0.35);
+  --orange-box-bg: rgba(217,119,6,0.06);
+  --orange-box-border: rgba(217,119,6,0.3);
+  --red: #dc2626;
+  --red-bg: rgba(220,38,38,0.1);
+  --red-border: rgba(220,38,38,0.4);
+  --red-header: linear-gradient(135deg, rgba(220,38,38,0.1), rgba(220,38,38,0.03));
+  --red-header-border: rgba(220,38,38,0.35);
+  --red-box-bg: rgba(220,38,38,0.06);
+  --red-box-border: rgba(220,38,38,0.3);
+  --blue: #0891b2;
+  --blue-bg: rgba(8,145,178,0.1);
+  --purple: #9333ea;
+  --purple-bg: rgba(147,51,234,0.1);
+  --purple-border: rgba(147,51,234,0.4);
+  --purple-header: linear-gradient(135deg, rgba(147,51,234,0.1), rgba(147,51,234,0.03));
+  --purple-header-border: rgba(147,51,234,0.35);
+  --purple-box-bg: rgba(147,51,234,0.06);
+  --purple-box-border: rgba(147,51,234,0.3);
+  --context-bg: linear-gradient(135deg, #fef2f2, #eff6ff);
+  --context-border: #fecaca;
+  --shadow-sm: 0 4px 12px rgba(15,23,42,0.08);
+  --shadow: 0 8px 32px rgba(15,23,42,0.08);
+  --shadow-lg: 0 12px 40px rgba(15,23,42,0.12);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -54,8 +181,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(13,19,33,0.92);
-  backdrop-filter: blur(8px);
+  background: var(--nav-bg);
   border-bottom: 1px solid var(--border);
 }
 .topnav-inner {
@@ -88,9 +214,28 @@ body {
   transition: all var(--transition);
   flex-shrink: 0;
 }
-.topnav-link:hover { color: var(--text); background: rgba(59,130,246,0.08); }
-.topnav-link.active { color: var(--accent); background: rgba(59,130,246,0.12); }
+.topnav-link:hover { color: var(--text); background: var(--accent-bg); }
+.topnav-link.active { color: var(--accent); background: var(--accent-bg-strong); }
 .topnav-sep { width: 1px; height: 22px; background: var(--border); margin: 0 6px; flex-shrink: 0; }
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.theme-toggle:hover { color: var(--text); background: var(--hover-bg); border-color: var(--accent); }
+.theme-toggle-icon { font-size: 15px; line-height: 1; }
 
 /* ===== Main ===== */
 .main {
@@ -133,26 +278,26 @@ body {
   font-family: inherit;
   border-bottom: 2px solid transparent;
 }
-.tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.tab-btn:hover { color: var(--text); background: var(--hover-bg); }
 .tab-btn.active { color: white; background: var(--accent); border-bottom-color: var(--accent); }
-.tab-content { display: none; animation: fadeIn 0.2s ease; }
+.tab-content { display: none; animation: tabFadeIn 0.15s ease; }
 .tab-content.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes tabFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 /* ===== Cards ===== */
 .card {
-  background: linear-gradient(135deg, rgba(17,24,39,0.95), rgba(15,23,42,0.98));
-  border: 1px solid rgba(255,255,255,0.06);
+  background: var(--gradient-card);
+  border: 1px solid var(--card-border);
   border-radius: 16px;
   padding: 28px;
   margin-bottom: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  box-shadow: var(--shadow);
   transition: all 0.3s ease;
 }
 .card:hover {
-  border-color: rgba(59,130,246,0.3);
+  border-color: var(--accent-border-hover);
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+  box-shadow: var(--shadow-lg);
 }
 .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 .card-icon {
@@ -169,15 +314,15 @@ body {
 
 /* ===== Tables ===== */
 table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 12px 0; }
-th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 15px; }
-th { font-weight: 600; color: var(--text); background: rgba(59,130,246,0.15); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--table-border); font-size: 15px; }
+th { font-weight: 600; color: var(--text); background: var(--accent-bg-soft); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
 td { color: var(--text-muted); }
 tbody tr { transition: background var(--transition); }
-tbody tr:hover { background: rgba(255,255,255,0.03); }
+tbody tr:hover { background: var(--hover-bg); }
 
 /* ===== Evidence ===== */
 .evidence-block {
-  background: rgba(0,0,0,0.3);
+  background: var(--code-bg);
   border: 1px solid var(--border);
   border-radius: 12px;
   margin: 12px 0;
@@ -194,7 +339,7 @@ tbody tr:hover { background: rgba(255,255,255,0.03); }
   font-weight: 500;
   color: var(--text-muted);
 }
-.evidence-title:hover { background: rgba(255,255,255,0.03); }
+.evidence-title:hover { background: var(--hover-bg); }
 .evidence-title .arrow { transition: transform 0.2s ease; font-size: 12px; }
 .evidence-title.open .arrow { transform: rotate(90deg); }
 .evidence-title-inner { display: flex; align-items: center; flex: 1; min-width: 0; gap: 8px; flex-wrap: wrap; }
@@ -203,8 +348,8 @@ tbody tr:hover { background: rgba(255,255,255,0.03); }
   align-items: center;
   gap: 4px;
   padding: 4px 10px;
-  background: rgba(34,197,94,0.1);
-  border: 1px solid rgba(34,197,94,0.3);
+  background: var(--green-bg);
+  border: 1px solid var(--green-border);
   border-radius: 6px;
   color: var(--green);
   font-size: 12px;
@@ -215,12 +360,12 @@ tbody tr:hover { background: rgba(255,255,255,0.03); }
   margin-left: 8px;
   flex-shrink: 0;
 }
-.evidence-dl:hover { background: rgba(34,197,94,0.2); border-color: var(--green); transform: translateY(-1px); }
+.evidence-dl:hover { background: var(--green-bg-hover); border-color: var(--green); transform: translateY(-1px); }
 .evidence-dl:active { transform: translateY(0); }
 .evidence-body { display: none; padding: 0 18px 18px; }
 .evidence-body.open { display: block; }
 pre {
-  background: rgba(0,0,0,0.4);
+  background: var(--code-bg-deep);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
@@ -228,7 +373,7 @@ pre {
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;
   line-height: 1.6;
-  color: #c9d1d9;
+  color: var(--code-text);
   margin: 8px 0;
 }
 
@@ -240,7 +385,7 @@ pre {
   margin: 12px 0;
 }
 .ioc-item {
-  background: rgba(255,255,255,0.03);
+  background: var(--surface-mid);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 16px;
@@ -262,8 +407,8 @@ pre {
 
 /* ===== Questions ===== */
 .question-card {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(59,130,246,0.15);
+  background: var(--surface-mid);
+  border: 1px solid var(--accent-border);
   border-left: 4px solid var(--accent);
   border-radius: 12px;
   padding: 20px 24px;
@@ -311,31 +456,6 @@ pre {
 .badge-blue { background: var(--blue-bg); color: var(--blue); }
 .badge-purple { background: var(--purple-bg); color: var(--purple); }
 
-/* ===== Nav Arrows ===== */
-.nav-arrows { display: flex; justify-content: space-between; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); }
-.nav-arrow-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--bg-card);
-  color: var(--text-muted);
-  font-size: 14px;
-  cursor: pointer;
-  transition: all var(--transition);
-  font-family: inherit;
-  text-decoration: none;
-}
-.nav-arrow-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-.nav-arrow-btn.next { margin-left: auto; }
-
 /* ===== Utility ===== */
 .highlight { color: var(--accent); font-weight: 600; }
 .highlight-green { color: var(--green); font-weight: 600; }
@@ -361,9 +481,15 @@ pre {
   .card { padding: 20px; }
   .card-title { font-size: 18px; }
   .ioc-grid { grid-template-columns: 1fr; }
-  .nav-arrows { flex-direction: column; gap: 10px; }
-  .nav-arrow-btn { justify-content: center; }
-  .nav-arrow-btn.next { margin-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 </style>
 </head>
@@ -377,12 +503,13 @@ pre {
     <a class="topnav-link active" href="index.html">Inject 2</a>
     <a class="topnav-link" href="../Inject3/index.html">Inject 3</a>
     <a class="topnav-link" href="../Inject4/index.html">Inject 4</a>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง"><span class="theme-toggle-icon">&#127769;</span><span class="theme-toggle-label">สว่าง</span></button>
   </div>
 </nav>
 
 <main class="main">
   <!-- ===== Inject Header ===== -->
-  <div class="inject-header" style="background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(245,158,11,0.02));border-color:rgba(245,158,11,0.3)">
+  <div class="inject-header" style="background:var(--orange-header);border-color:var(--orange-header-border)">
     <h2><span class="badge badge-orange">&#9679; ORANGE</span>&nbsp; Inject 2: WebShell + Credential Exfil — ฝัง webshell และขโมยข้อมูลเข้าสู่ระบบ</h2>
     <div class="meta">
       <span>&#128337; 10:45 – 12:15 (90 นาที)</span>
@@ -403,7 +530,7 @@ pre {
   <div class="tab-content active" id="inj2-tab-scenario">
     <div class="card">
       <h3 style="font-size:16px;font-weight:600;margin-bottom:12px">&#127908; สถานการณ์</h3>
-      <div style="background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius-sm);padding:16px;margin:12px 0">
+      <div style="background:var(--orange-box-bg);border:1px solid var(--orange-box-border);border-radius:var(--radius-sm);padding:16px;margin:12px 0">
         <p style="color:var(--text);line-height:1.8">
           &#8220;หลังจากวาง webshells บน 192.168.2.35 ได้สำเร็จ ผู้โจมตีเริ่มขยับไปยังระบบอื่น:
         </p>
@@ -430,11 +557,11 @@ pre {
     <div class="card">
       <h3 style="font-size:16px;font-weight:600;margin-bottom:12px">&#127919; MITRE ATT&amp;CK</h3>
       <div class="mitre-tags">
-        <span class="mitre-tag" style="background:rgba(245,158,11,0.1);color:var(--orange)">T1046 - Network Service Scanning</span>
-        <span class="mitre-tag" style="background:rgba(245,158,11,0.1);color:var(--orange)">T1082 - System Information Discovery</span>
-        <span class="mitre-tag" style="background:rgba(245,158,11,0.1);color:var(--orange)">T1021.004 - Remote Services: SSH</span>
-        <span class="mitre-tag" style="background:rgba(245,158,11,0.1);color:var(--orange)">T1570 - Lateral Tool Transfer</span>
-        <span class="mitre-tag" style="background:rgba(245,158,11,0.1);color:var(--orange)">T1090.001 - Proxy: Internal Proxy</span>
+        <span class="mitre-tag" style="background:var(--orange-bg);color:var(--orange)">T1046 - Network Service Scanning</span>
+        <span class="mitre-tag" style="background:var(--orange-bg);color:var(--orange)">T1082 - System Information Discovery</span>
+        <span class="mitre-tag" style="background:var(--orange-bg);color:var(--orange)">T1021.004 - Remote Services: SSH</span>
+        <span class="mitre-tag" style="background:var(--orange-bg);color:var(--orange)">T1570 - Lateral Tool Transfer</span>
+        <span class="mitre-tag" style="background:var(--orange-bg);color:var(--orange)">T1090.001 - Proxy: Internal Proxy</span>
       </div>
     </div>
   </div>
@@ -651,11 +778,6 @@ Write-Host "Deployed to $($targetSites.Count) sites"</pre>
     </div>
   </div>
 
-  <!-- ===== Nav Arrows ===== -->
-  <div class="nav-arrows">
-    <a class="nav-arrow-btn" href="../Inject1/index.html">&#8592; Inject 1: Reconnaissance</a>
-    <a class="nav-arrow-btn next" href="../Inject3/index.html">Inject 3: Data Exfiltration &#8594;</a>
-  </div>
 </main>
 
 <footer class="footer">
@@ -663,6 +785,30 @@ Write-Host "Deployed to $($targetSites.Count) sites"</pre>
 </footer>
 
 <script>
+// ========== Theme Toggle ==========
+function setTheme(theme, save) {
+  document.documentElement.setAttribute('data-theme', theme);
+  if (save) {
+    try { localStorage.setItem('ttx_theme', theme); } catch (e) {}
+  }
+  var btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  var icon = btn.querySelector('.theme-toggle-icon');
+  var label = btn.querySelector('.theme-toggle-label');
+  if (icon) icon.textContent = theme === 'dark' ? '\uD83C\uDF19' : '\u2600\uFE0F';
+  if (label) label.textContent = theme === 'dark' ? '\u0E2A\u0E27\u0E48\u0E32\u0E07' : '\u0E21\u0E37\u0E14';
+}
+function toggleTheme() {
+  var current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  setTheme(current === 'light' ? 'dark' : 'light', true);
+}
+(function () {
+  var current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  setTheme(current, false);
+  var btn = document.getElementById('themeToggle');
+  if (btn) btn.addEventListener('click', toggleTheme);
+})();
+
 // ========== Tabs ==========
 function switchTab(injectId, tabName) {
   const tabsContainer = document.getElementById('tabs-' + injectId);
