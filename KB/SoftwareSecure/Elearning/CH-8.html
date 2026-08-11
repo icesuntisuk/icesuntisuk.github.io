@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บทที่ 8: Cryptography สำหรับนักพัฒนาซอฟต์แวร์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#1a56db;--primary-dark:#1340a0;--primary-light:#e8effc;--navy:#1e293b;--navy-light:#334155;--success:#059669;--success-light:#d1fae5;--danger:#dc2626;--danger-light:#fee2e2;--warning:#d97706;--warning-light:#fef3c7;--purple:#7c3aed;--purple-light:#ede9fe;--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--radius:12px;--radius-sm:8px;--sidebar-w:292px;--font-thai:'Sarabun',sans-serif;--font-mono:'IBM Plex Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.8;display:flex;min-height:100vh}a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);height:100vh;background:var(--navy);color:#fff;overflow-y:auto;z-index:100;transition:transform .3s}.sidebar-header{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}.sidebar-header h1{font-size:1rem;font-weight:600;color:#fff;line-height:1.4}.sidebar-header .sub{font-size:.75rem;color:#94a3b8;margin-top:.25rem}.sidebar-nav{padding:.75rem 0}.sidebar-nav a{display:block;padding:.5rem 1.25rem;color:#cbd5e1;font-size:.84rem;transition:all .15s;border-left:3px solid transparent}.sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--primary);text-decoration:none}.sidebar-nav .section-label{padding:.6rem 1.25rem .25rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;font-weight:600}.sidebar-nav .sub-link{padding-left:2.35rem;font-size:.78rem}.sidebar-toggle{display:none;position:fixed;top:.75rem;left:.75rem;z-index:200;background:var(--navy);color:#fff;border:none;width:44px;height:44px;border-radius:var(--radius-sm);cursor:pointer;font-size:1.5rem;align-items:center;justify-content:center}.sidebar-overlay{display:none}.main{flex:1;margin-left:var(--sidebar-w);max-width:100%;padding:0}.topbar{position:sticky;top:0;z-index:50;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between}.topbar-title{font-size:.85rem;color:var(--text-muted)}.topbar-title strong{color:var(--text);font-weight:600}.topbar-progress{font-size:.8rem;color:var(--text-muted)}.topbar-home{color:var(--text-muted);font-size:.85rem;text-decoration:none;margin-right:.75rem;transition:color.15s;white-space:nowrap}.topbar-home:hover{color:var(--primary);text-decoration:none}.content{padding:2rem;max-width:1040px;margin:0 auto}.content h2{margin-top:2.5rem;margin-bottom:1rem;font-size:1.65rem;color:var(--navy);border-bottom:3px solid var(--primary);padding-bottom:.5rem;scroll-margin-top:5rem}.content h3{margin-top:1.75rem;margin-bottom:.6rem;font-size:1.2rem;color:var(--navy-light);scroll-margin-top:5rem}.content h4{margin-top:1.25rem;margin-bottom:.4rem;font-size:1rem;color:var(--text)}.content p{margin-bottom:.85rem;color:var(--text)}.content ul,.content ol{margin-bottom:.85rem;padding-left:1.5rem}.content li{margin-bottom:.3rem}.content strong{color:var(--navy)}.card{background:var(--bg-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;margin-bottom:1.5rem;border:1px solid var(--border)}.card-header{font-size:1.1rem;font-weight:600;margin-bottom:.75rem;color:var(--navy)}.info-box{display:flex;gap:.75rem;padding:1rem;border-radius:var(--radius-sm);margin-bottom:1.25rem;border-left:4px solid}.info-box .icon{font-size:1.4rem;flex-shrink:0;margin-top:.1rem}.info-box.remember{background:var(--primary-light);border-left-color:var(--primary)}.info-box.remember strong{color:var(--primary-dark)}.info-box.warning{background:var(--warning-light);border-left-color:var(--warning)}.info-box.warning strong{color:var(--warning)}.info-box.question{background:var(--purple-light);border-left-color:var(--purple)}.info-box.question strong{color:var(--purple)}.info-box.danger{background:var(--danger-light);border-left-color:var(--danger)}.info-box.danger strong{color:var(--danger)}.info-box.info{background:#e0f2fe;border-left-color:#0284c7}.info-box.info strong{color:#0284c7}.example-box{background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius-sm);padding:1rem;margin-bottom:1.25rem}.example-label{font-weight:600;color:#92400e;margin-bottom:.35rem;font-size:.9rem}.table-wrap{overflow-x:auto;margin-bottom:1.25rem}.table-wrap table{width:100%;border-collapse:collapse;font-size:.88rem}.table-wrap th,.table-wrap td{padding:.65rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}.table-wrap th{background:var(--navy);color:#fff;font-weight:600}.table-wrap tr:nth-child(even){background:#f1f5f9}.table-wrap tr:hover{background:var(--primary-light)}pre{background:#1e293b;color:#e2e8f0;border-radius:var(--radius-sm);padding:1rem;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;line-height:1.6;margin-bottom:1rem;tab-size:4}pre code{background:transparent;padding:0;color:inherit;font-size:inherit}.interactive{background:var(--bg-card);border:2px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem}.interactive h4{margin-top:0;margin-bottom:.5rem;color:var(--primary)}.interactive p{font-size:.9rem;color:var(--text-muted);margin-bottom:.75rem}.control-row{display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap}.control-row input,.control-row select{flex:1;min-width:140px;padding:.55rem .75rem;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:.9rem;font-family:var(--font-thai)}.btn{background:var(--primary);color:#fff;border:none;padding:.55rem 1.1rem;border-radius:var(--radius-sm);cursor:pointer;font-size:.88rem;font-family:var(--font-thai);transition:background .15s;white-space:nowrap}.btn:hover{background:var(--primary-dark)}.btn-sm{font-size:.8rem;padding:.35rem .7rem}.result{padding:.75rem 1rem;background:#f8fafc;border:1px dashed var(--border);border-radius:var(--radius-sm);margin-top:.5rem;font-size:.88rem;min-height:2.6rem}.slider-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;font-size:.85rem}.slider-row label{min-width:140px;font-weight:500}.slider-row input{flex:1}.slider-row .val{min-width:80px;color:var(--primary);font-weight:600}.checklist label{display:flex;align-items:flex-start;gap:.5rem;padding:.3rem 0;font-size:.88rem;cursor:pointer}.checklist input{margin-top:.35rem}.meter{height:8px;background:#e2e8f0;border-radius:99px;margin:.5rem 0;overflow:hidden}.meter-fill{height:100%;border-radius:99px;background:var(--success);width:0;transition:width .3s}.tree-toggle{cursor:pointer;user-select:none;color:var(--primary);margin-right:.35rem}.tree-node{cursor:pointer;padding:.15rem 0}.tree-node:hover{color:var(--primary)}.did-layer{cursor:pointer;transition:all .2s}.did-layer:hover{opacity:.85}.quiz-option{display:block;width:100%;text-align:left;padding:.65rem 1rem;margin-bottom:.4rem;background:#fff;border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:.88rem;font-family:var(--font-thai);transition:all .15s}.quiz-option:hover{border-color:var(--primary);background:var(--primary-light)}.quiz-option.correct{background:var(--success-light);border-color:var(--success);color:#065f46}.quiz-option.incorrect{background:var(--danger-light);border-color:var(--danger);color:#991b1b}.tab-bar{display:flex;gap:0;margin-bottom:0;border-bottom:2px solid var(--border)}.tab-btn{padding:.55rem 1.1rem;background:transparent;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;font-size:.88rem;font-family:var(--font-thai);color:var(--text-muted);transition:all .15s}.tab-btn.active{border-bottom-color:var(--primary);color:var(--primary);font-weight:600}.tab-panel{display:none}.tab-panel.active{display:block}@media(max-width:1024px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sidebar-toggle{display:flex}.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}.sidebar-overlay.show{display:block}.main{margin-left:0}.topbar{padding:.75rem 1rem}.content{padding:1.25rem}}@media print{.sidebar,.topbar,.interactive{display:none}.main{margin-left:0}.content{padding:0;max-width:100%}}
+</style>
+</head>
+<body>
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="เปิดเมนู">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-header"><h1>Cryptography สำหรับนักพัฒนาซอฟต์แวร์</h1><div class="sub">บทที่ 8 · Interactive Learning</div></div>
+  <div class="sidebar-nav">
+    <div class="section-label">เนื้อหา</div>
+    <a href="#s1">8.1 พื้นฐาน Cryptography สำหรับนักพัฒนา</a><a href="#s1-1" class="sub-link">Cryptographic Primitives</a><a href="#s1-2" class="sub-link">Kerckhoffs's Principle</a><a href="#s1-3" class="sub-link">Encryption ≠ Hashing ≠ Encoding</a><a href="#s1-4" class="sub-link">Don't Roll Your Own Crypto</a><a href="#s1-5" class="sub-link">Common Mistakes</a>
+    <a href="#s2">8.2 Symmetric Encryption</a><a href="#s2-1" class="sub-link">Block Ciphers: AES</a><a href="#s2-2" class="sub-link">Modes of Operation</a><a href="#s2-3" class="sub-link">IV / Nonce</a><a href="#s2-4" class="sub-link">Key Derivation Functions</a>
+    <a href="#s3">8.3 Asymmetric Cryptography</a><a href="#s3-1" class="sub-link">RSA</a><a href="#s3-2" class="sub-link">Elliptic Curve Cryptography</a><a href="#s3-3" class="sub-link">Hybrid Encryption</a><a href="#s3-4" class="sub-link">Digital Signatures</a><a href="#s3-5" class="sub-link">Key Exchange และ PFS</a>
+    <a href="#s4">8.4 Cryptographic Hashing</a><a href="#s4-1" class="sub-link">Hash Function ที่ควรรู้จัก</a><a href="#s4-2" class="sub-link">การใช้งาน Hash</a><a href="#s4-3" class="sub-link">Message Authentication Code</a>
+    <a href="#s5">8.5 PKI และ Digital Certificates</a><a href="#s5-1" class="sub-link">X.509 Certificates</a><a href="#s5-2" class="sub-link">Certificate Authority</a><a href="#s5-3" class="sub-link">Certificate Chain</a><a href="#s5-4" class="sub-link">Certificate Revocation</a><a href="#s5-5" class="sub-link">Key Management</a>
+    <a href="#s6">8.6 Post-Quantum Cryptography</a><a href="#s6-1" class="sub-link">ภัยคุกคามจาก Quantum</a><a href="#s6-2" class="sub-link">NIST PQC Standards</a><a href="#s6-3" class="sub-link">Crypto Agility</a>
+    <a href="#s7">8.7 กรณีศึกษา</a><a href="#s7-1" class="sub-link">Heartbleed</a><a href="#s7-2" class="sub-link">CRIME / BREACH / POODLE</a><a href="#s7-3" class="sub-link">Log4Shell</a><a href="#s7-4" class="sub-link">Post-Quantum Readiness</a><a href="#s7-5" class="sub-link">Key Management Attacks</a>
+    <a href="#s8">8.8 สรุปและแนวทางปฏิบัติ</a><a href="#s8-1" class="sub-link">Algorithm Selection Guide</a><a href="#s8-2" class="sub-link">Checklist</a><a href="#s8-3" class="sub-link">ASVS</a>
+    <div class="section-label">กิจกรรม</div>
+    <a href="#labs">Labs</a>    <a href="#keywords">Keywords</a><a href="#questions">คำถามท้ายบท</a><a href="#summary">สรุปท้ายบท</a><a href="#refs">เอกสารอ้างอิง</a>
+  </div>
+</nav>
+<div class="main">
+  <header class="topbar"><a href="index.html" class="topbar-home" aria-label="กลับหน้าแรก">← HOME</a><div class="topbar-title"><strong>บทที่ 8</strong> · Cryptography สำหรับนักพัฒนาซอฟต์แวร์</div><div class="topbar-progress" id="readingProgress">Software Security</div></header>
+  <div class="content">
+
+    <div style="text-align:center;padding:2rem 0 1rem"><span style="display:inline-block;background:var(--primary);color:#fff;padding:.25rem 1rem;border-radius:50px;font-size:.85rem;margin-bottom:1rem">บทที่ 8</span><h1 style="font-size:2.25rem;color:var(--navy);margin-bottom:.5rem;border:none">Cryptography สำหรับนักพัฒนาซอฟต์แวร์</h1><p style="color:var(--text-muted);font-size:1rem">บรรยาย 3 ชม. + ปฏิบัติการ 2 ชม. | รวม 5 ชม.</p></div>
+
+    <div class="card" style="background:var(--navy-light);color:#fff;border:1px solid rgba(255,255,255,.15);box-shadow:0 4px 20px rgba(247, 245, 245, 0.25)"><div class="card-header" style="color:#fff">วัตถุประสงค์การเรียนรู้</div><ol style="color:#fff;padding-left:1.25rem">
+      <li>เข้าใจแนวคิดพื้นฐานของ Cryptographic Primitives และความแตกต่างระหว่าง encryption, hashing, encoding, และ MAC</li>
+      <li>เลือกใช้ Algorithm และโหมดการทำงานที่เหมาะสมสำหรับแต่ละกรณีการใช้งาน</li>
+      <li>อธิบายความแตกต่างระหว่าง Symmetric, Asymmetric Cryptography, และ Hashing พร้อมยกตัวอย่างการประยุกต์ใช้</li>
+      <li>ใช้ Library Cryptography อย่างถูกต้องตามหลักการ Don't Roll Your Own Crypto</li>
+      <li>จัดการ Key Management เบื้องต้น รวมถึงการสร้าง การจัดเก็บ และการหมุนเวียนคีย์</li>
+      <li>เข้าใจแนวคิด Post-Quantum Cryptography และ Crypto Agility</li>
+      <li>อธิบาย PKI, Digital Certificates, และความสำคัญของ Certificate Chain</li>
+      <li>วิเคราะห์และเลือกใช้มาตรการเข้ารหัสที่เหมาะสมในระบบซอฟต์แวร์จริง</li>
+    </ol></div>
+
+    <div class="info-box warning"><div class="icon">⚠️</div><div><strong>ข้อกำหนดด้านจริยธรรมของบทนี้:</strong> บทนี้ครอบคลุมหลักการ Cryptography ที่นักพัฒนาซอฟต์แวร์ต้องรู้ เนื้อหามีตัวอย่างโค้ดเพื่อการเรียนรู้เท่านั้น การใช้ Cryptography ที่ผิดวิธีอาจนำไปสู่ช่องโหว่ที่ร้ายแรงและการละเมิดข้อมูล การตัดสินใจเลือก Algorithm และการจัดการคีย์ต้องกระทำด้วยความรอบคอบและควรได้รับคำปรึกษาจากผู้เชี่ยวชาญด้านความปลอดภัย ข้อควรจำ: การเข้ารหัสไม่ใช่คำตอบของทุกปัญหา — ต้องเข้าใจว่าจะป้องกันอะไร จากใคร และมีมาตรการอื่นเสริมอย่างไร</div></div>
+
+    <h2 id="plan">แผนการเรียนรู้สำหรับ 5 ชั่วโมง</h2><div class="table-wrap"><table><thead><tr><th>ช่วงเวลา</th><th>หัวข้อ</th><th>เป้าหมายการเรียนรู้</th><th>กิจกรรมในชั้นเรียน</th></tr></thead><tbody>
+      <tr><td>ชั่วโมงที่ 1</td><td>พื้นฐาน Cryptography สำหรับนักพัฒนา</td><td>เข้าใจ Cryptographic Primitives, Kerckhoffs's Principle, และ Common Mistakes</td><td>เปรียบเทียบ encryption vs hashing vs encoding และวิเคราะห์ตัวอย่างโค้ดที่ไม่ปลอดภัย</td></tr>
+      <tr><td>ชั่วโมงที่ 2</td><td>Symmetric และ Asymmetric Encryption</td><td>เข้าใจ AES-GCM, ChaCha20-Poly1305, RSA, ECC, Hybrid Encryption, Digital Signatures</td><td>เปรียบเทียบ AES-ECB กับ AES-GCM และทดลอง Sign/Verify</td></tr>
+      <tr><td>ชั่วโมงที่ 3</td><td>Hashing, MAC, PKI และ Key Management</td><td>เข้าใจ SHA-3, HMAC, X.509, Certificate Chain, Key Lifecycle</td><td>วิเคราะห์ TLS Certificate Chain และ Certificates</td></tr>
+      <tr><td>ชั่วโมงที่ 4</td><td>Lab 8.1, 8.2, 8.3</td><td>ฝึกใช้งาน cryptography library, เปรียบเทียบ AES modes, ทดลอง Key Exchange</td><td>เขียนโค้ดเข้ารหัส/ถอดรหัสด้วย AES-GCM และ ECDSA Sign/Verify</td></tr>
+      <tr><td>ชั่วโมงที่ 5</td><td>Lab 8.4 และ Post-Quantum Cryptography</td><td>วิเคราะห์ TLS Handshake และเข้าใจภัยคุกคามจาก Quantum Computer</td><td>ใช้ Wireshark วิเคราะห์ TLS และอภิปราย Crypto Agility</td></tr>
+    </tbody></table></div>
+
+    <h2 id="s1">8.1 พื้นฐาน Cryptography สำหรับนักพัฒนา</h2>
+    <p>Cryptography (การเข้ารหัส) เป็นศาสตร์ของการสื่อสารอย่างลับในที่ที่มีบุคคลที่สาม (adversary) นักพัฒนาซอฟต์แวร์ไม่จำเป็นต้องเป็นนักคณิตศาสตร์ที่ออกแบบ Algorithm ใหม่ แต่ต้องเข้าใจหลักการพื้นฐานเพื่อเลือกใช้ Algorithm และ Library ได้อย่างถูกต้อง</p>
+
+    <h3 id="s1-1">8.1.1 Cryptographic Primitives</h3>
+    <p>Primitive คือบล็อกพื้นฐานทาง Cryptography ที่นำมาประกอบกันเป็นระบบรักษาความปลอดภัย</p>
+    <div class="table-wrap"><table><thead><tr><th>Primitive</th><th>หน้าที่</th><th>ตัวอย่าง Algorithm</th></tr></thead><tbody>
+      <tr><td>Symmetric Encryption</td><td>เข้ารหัสและถอดรหัสด้วยคีย์เดียวกัน</td><td>AES, ChaCha20</td></tr>
+      <tr><td>Asymmetric Encryption</td><td>เข้ารหัสด้วย Public Key, ถอดรหัสด้วย Private Key</td><td>RSA, ECIES</td></tr>
+      <tr><td>Cryptographic Hash</td><td>แปลงข้อมูลขนาดใดก็ได้เป็นค่าคงที่ (One-way)</td><td>SHA-256, SHA-3</td></tr>
+      <tr><td>Message Authentication Code (MAC)</td><td>ตรวจสอบความถูกต้องและที่มาของข้อมูล</td><td>HMAC, Poly1305</td></tr>
+      <tr><td>Digital Signature</td><td>พิสูจน์ตัวตนผู้ส่งและความถูกต้องของข้อมูล</td><td>ECDSA, Ed25519, RSA-PSS</td></tr>
+      <tr><td>Key Exchange</td><td>สร้าง Shared Secret ระหว่างสองฝ่าย</td><td>Diffie-Hellman, ECDH</td></tr>
+    </tbody></table></div>
+
+    <h3 id="s1-2">8.1.2 Kerckhoffs's Principle</h3>
+    <p><strong>หลักการ:</strong> ระบบเข้ารหัสควรปลอดภัยแม้ทุกอย่างเกี่ยวกับระบบยกเว้นคีย์ลับจะถูกเปิดเผยต่อสาธารณะ</p>
+    <p>ในปี 1883 Auguste Kerckhoffs ได้ตีพิมพ์หลักการนี้อธิบายว่าระบบเข้ารหัสไม่ควรพึ่งพาความลับของ Algorithm (Security Through Obscurity) แต่ควรพึ่งพาความลับของคีย์เท่านั้น</p>
+    <p><strong>นัยยะสำหรับนักพัฒนา:</strong></p>
+    <ul>
+      <li>การใช้ Algorithm ที่เป็นมาตรฐานเปิด (AES, SHA-256) ปลอดภัยกว่าการคิด Algorithm เอง</li>
+      <li>การเข้ารหัสที่ "บ้าน" (Proprietary Algorithm) มักถูก Crack ได้ง่ายกว่า</li>
+      <li>ห้ามเชื่อว่า "แฮกเกอร์ไม่รู้ว่าเราใช้ Algorithm อะไร" — ใช้ Algorithm ที่ผ่านการตรวจสอบโดยชุมชน cryptographic</li>
+      <li>Algorithm ที่ดีต้องผ่านการ Cryptanalysis มาหลายสิบปี</li>
+    </ul>
+    <p><strong>หลักการตรงข้าม — Security Through Obscurity:</strong> ความเชื่อที่ว่าระบบจะปลอดภัยถ้าซ่อนวิธีการทำงาน เป็นแนวทางที่ผิดและอันตราย ตัวอย่างความล้มเหลว:</p>
+    <ul>
+      <li>DVD Content Scramble System (CSS) — ถูก Crack ในไม่กี่ปี</li>
+      <li>Microsoft's LM Hash — ใช้วิธีแปลกๆ ที่ไม่เป็นมาตรฐาน ถูก Crack ทันทีที่เปิดเผย Algorithm</li>
+    </ul>
+
+    <h3 id="s1-3">8.1.3 Encryption ≠ Hashing ≠ Encoding</h3>
+    <p>นักพัฒนามือใหม่มักสับสนระหว่าง 3 แนวคิดนี้ ซึ่งมีวัตถุประสงค์ต่างกันโดยสิ้นเชิง</p>
+    <div class="table-wrap"><table><thead><tr><th>คุณสมบัติ</th><th>Encryption</th><th>Hashing</th><th>Encoding</th></tr></thead><tbody>
+      <tr><td><strong>วัตถุประสงค์</strong></td><td>รักษาความลับ</td><td>ตรวจสอบความถูกต้อง / Identity</td><td>แปลงรูปแบบข้อมูล</td></tr>
+      <tr><td><strong>การย้อนกลับ</strong></td><td>ได้ (ด้วยคีย์)</td><td>ไม่ได้ (One-way)</td><td>ได้ (ไม่มีคีย์)</td></tr>
+      <tr><td><strong>ใช้คีย์</strong></td><td>ใช่</td><td>ไม่</td><td>ไม่</td></tr>
+      <tr><td><strong>ขนาดผลลัพธ์</strong></td><td>เท่ากับข้อมูลต้นทาง (หรือใกล้เคียง)</td><td>คงที่ (เช่น 256 bits)</td><td>แปรผันตามข้อมูล</td></tr>
+      <tr><td><strong>ตัวอย่าง</strong></td><td>AES-GCM, RSA</td><td>SHA-256, SHA-3</td><td>Base64, Hex, UTF-8</td></tr>
+      <tr><td><strong>ความปลอดภัย</strong></td><td>ใช้ป้องกันข้อมูล</td><td>ไม่สามารถใช้ป้องกันความลับ</td><td>ไม่มีความปลอดภัยใดๆ</td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่างความสับสนที่พบบ่อยในโค้ด:</strong></p>
+    <ul>
+      <li>การใช้ Base64 เป็น "การเข้ารหัส" — Base64 เป็น Encoding ไม่ใช่ Encryption ใครก็ได้สามารถ Decode ได้ทันที</li>
+      <li>การใช้ MD5/SHA-256 แทน Password Hashing Algorithm — Hash ทั่วไปเร็วเกินไปสำหรับการเก็บรหัสผ่าน</li>
+      <li>การเชื่อว่าการเข้ารหัสข้อมูลแล้ว Hash เหมือนกัน — ความสับสนนี้นำไปสู่ช่องโหว่ร้ายแรง</li>
+    </ul>
+
+    <div class="interactive" id="play-compare">
+      <h4>Interactive: Encryption vs Hashing vs Encoding</h4>
+      <p>เลือกแนวคิดเพื่อดูคำอธิบายและตัวอย่างการใช้งาน</p>
+      <div class="tab-bar" id="conceptTabs">
+        <button class="tab-btn active" data-tab="encrypt">Encryption</button>
+        <button class="tab-btn" data-tab="hash">Hashing</button>
+        <button class="tab-btn" data-tab="encode">Encoding</button>
+      </div>
+      <div class="tab-panel active" id="panel-encrypt"><strong>Encryption</strong><br>แปลงข้อมูลให้อ่านไม่ได้ด้วยคีย์ ถอดกลับได้เมื่อมีคีย์<br>ตัวอย่าง: AES-GCM, ChaCha20-Poly1305, RSA<br>การใช้งาน: รักษาความลับของข้อมูล</div>
+      <div class="tab-panel" id="panel-hash"><strong>Hashing</strong><br>แปลงข้อมูลเป็นค่าคงที่ ย้อนกลับไม่ได้ (One-way)<br>ตัวอย่าง: SHA-256, SHA-3, BLAKE2<br>การใช้งาน: ตรวจสอบ Integrity, Password Storage (with salt)</div>
+      <div class="tab-panel" id="panel-encode"><strong>Encoding</strong><br>แปลงรูปแบบข้อมูล ไม่เกี่ยวกับความปลอดภัย ถอดกลับได้ไม่ต้องใช้คีย์<br>ตัวอย่าง: Base64, Hex, UTF-8<br>การใช้งาน: แปลงข้อมูล Binary เป็น Text, Data Serialization</div>
+    </div>
+
+    <div class="interactive" id="play-algo">
+      <h4>Interactive: Algorithm Purpose Quiz</h4>
+      <p>เลือก Algorithm ที่เหมาะสมกับวัตถุประสงค์</p>
+      <button class="quiz-option" data-quiz="algo" data-correct="false">MD5</button>
+      <button class="quiz-option" data-quiz="algo" data-correct="true">AES-256-GCM</button>
+      <button class="quiz-option" data-quiz="algo" data-correct="false">Base64</button>
+      <button class="quiz-option" data-quiz="algo" data-correct="false">SHA-256</button>
+      <div id="algoResult" class="result">เลือก Algorithm ที่ปลอดภัยที่สุดสำหรับเข้ารหัสข้อมูล</div>
+    </div>
+
+    <h3 id="s1-4">8.1.4 Don't Roll Your Own Crypto</h3>
+    <p><strong>หลักการสำคัญที่สุดในบทนี้:</strong> อย่าเขียน Algorithm เข้ารหัสเอง และอย่า implement Cryptographic Protocol เอง</p>
+    <p><strong>เหตุผล:</strong></p>
+    <ol>
+      <li><strong>Cryptography เป็นคณิตศาสตร์ที่ซับซ้อน</strong> — ข้อผิดพลาดเล็กน้อย (เช่น ใช้ modulo ไม่ถูกต้อง) ทำให้ระบบไม่ปลอดภัยโดยสิ้นเชิง</li>
+      <li><strong>Side-Channel Attacks</strong> — Algorithm ที่ถูกทางคณิตศาสตร์อาจรั่วข้อมูลผ่าน Timing, Power Consumption, Electromagnetic Radiation</li>
+      <li><strong>Implementation Bugs</strong> — Buffer overflow, memory leak, incorrect padding handling</li>
+      <li><strong>Protocol Errors</strong> — ใช้ Algorithm ถูก แต่ลำดับหรือวิธีใช้ผิด ทำให้ปลอดภัยไม่ได้</li>
+    </ol>
+    <p><strong>ตัวอย่างความล้มเหลวจากการ Roll Your Own Crypto:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>เหตุการณ์</th><th>รายละเอียด</th><th>ผลกระทบ</th></tr></thead><tbody>
+      <tr><td><strong>WhatsApp (2011)</strong></td><td>ใช้ OTR Protocol ที่ implement เอง — ข้อผิดพลาดทำให้ Message Integrity เสีย</td><td>ต้องแก้ไขทั้งหมด</td></tr>
+      <tr><td><strong>NATO (2014)</strong></td><td>ใช้ BitLocker แต่คีย์ถูก hardcode ใน BIOS</td><td>การเข้ารหัสไม่มีประโยชน์</td></tr>
+      <tr><td><strong>Tesla (2014-2017)</strong></td><td>ใช้ Algorithm เข้ารหัสเองใน key fob — ถูก Crack ด้วยเครื่อง $600</td><td>ยานพาหนะถูกขโมย</td></tr>
+      <tr><td><strong>Dual_EC_DRBG (2006-2015)</strong></td><td>NSA แทรก backdoor ใน PRNG มาตรฐาน NIST — RSA ใช้ในผลิตภัณฑ์</td><td>ต้องเลิกใช้ Algorithm</td></tr>
+      <tr><td><strong>ค้นพบ Vulnerability ใน crypto library ปี 2024</strong></td><td>OpenSSL, GnuTLS, และอื่นๆ ยังมีช่องโหว่ให้แก้ตลอด</td><td>แม้ library ที่มีคนใช้มากที่สุดก็ยังมี Bug</td></tr>
+    </tbody></table></div>
+    <p><strong>แนวทางที่ถูกต้อง:</strong></p>
+    <ul>
+      <li>ใช้ Library ที่ผ่านการตรวจสอบ (Audited Cryptographic Library) เช่น: <strong>Python</strong>: <code>cryptography</code> library, <code>PyCryptodome</code>; <strong>JavaScript/Node.js</strong>: <code>crypto</code> built-in, <code>libsodium.js</code>; <strong>Java</strong>: <code>Java Cryptography Architecture (JCA)</code>, <code>Bouncy Castle</code>; <strong>Go</strong>: <code>crypto/aes</code>, <code>crypto/ecdsa</code>, <code>golang.org/x/crypto</code>; <strong>Rust</strong>: <code>ring</code>, <code>rustls</code>, <code>aes-gcm</code></li>
+      <li>ใช้ Library ที่มี <strong>libtomcrypt</strong> หรือ <strong>NaCL</strong> (Networking and Cryptography library) — Daniel J. Bernstein ออกแบบให้ใช้งานง่ายและปลอดภัย</li>
+      <li>ใช้ <strong>libsodium</strong> (fork ของ NaCL) — มี binding ในทุกภาษา สำคัญ: Sodium ปลอดภัยเมื่อใช้ฟังก์ชันระดับสูง (crypto_box, crypto_secretbox) แทนการประกอบ Primitive เอง</li>
+    </ul>
+
+    <h3 id="s1-5">8.1.5 Common Mistakes ในการใช้ Cryptography</h3>
+    <div class="table-wrap"><table><thead><tr><th>ข้อผิดพลาด</th><th>คำอธิบาย</th><th>แนวทางแก้ไข</th></tr></thead><tbody>
+      <tr><td><strong>ใช้ ECB mode</strong></td><td>รูปแบบการเข้ารหัสแบบ Block เดียว — ข้อมูลที่เหมือนกันได้ Ciphertext เดียวกัน</td><td>ใช้ GCM, CTR, หรือ CBC แทน</td></tr>
+      <tr><td><strong>ใช้ IV/Nonce ซ้ำ</strong></td><td>Initialization Vector ที่ซ้ำกันทำลายความปลอดภัยของ GCM และ CTR</td><td>สุ่ม IV ด้วย CSPRNG ทุกครั้ง</td></tr>
+      <tr><td><strong>Static IV</strong></td><td>IV ที่ตายตัวทำให้ Ciphertext Pattern ถูกวิเคราะห์ได้</td><td>IV ต้องสุ่มและไม่ซ้ำกันเด็ดขาด</td></tr>
+      <tr><td><strong>Weak Key Generation</strong></td><td>ใช้ <code>random()</code> แทน CSPRNG ในการสร้างคีย์</td><td>ใช้ <code>os.urandom()</code>, <code>secrets.token_bytes()</code></td></tr>
+      <tr><td><strong>Hardcoded Keys</strong></td><td>ฝังคีย์ไว้ใน Source Code</td><td>ใช้ Environment Variable หรือ Secret Manager (HashiCorp Vault, AWS KMS)</td></tr>
+      <tr><td><strong>ใช้ Hash แทน MAC</strong></td><td>ใช้ SHA-256 ตรวจสอบความถูกต้องโดยไม่มีคีย์</td><td>ใช้ HMAC หรือ GCM ที่มี Authentication</td></tr>
+      <tr><td><strong>Padding Oracle Attack</strong></td><td>ใช้ CBC + PKCS7 โดยไม่ตรวจสอบ Padding ก่อน MAC</td><td>ใช้ GCM (Authenticated Encryption) แทน</td></tr>
+      <tr><td><strong>Algorithm Confusion</strong></td><td>ส่ง Algorithm Name ใน Message แล้วรับมาจากผู้โจมตี</td><td>กำหนด Algorithm ไว้ที่ Server เท่านั้น</td></tr>
+      <tr><td><strong>Key Length ไม่พอ</strong></td><td>ใช้ RSA 512-bit หรือ DES 56-bit</td><td>AES-128 ขึ้นไป, RSA-2048 ขึ้นไป, ECC P-256 ขึ้นไป</td></tr>
+      <tr><td><strong>ไม่ตรวจ Certificate</strong></td><td>ใช้ HTTPS แต่ไม่ได้ตรวจสอบ Certificate Hostname</td><td>ใช้ Library ที่ตรวจสอบ Certificate อัตโนมัติ</td></tr>
+    </tbody></table></div>
+
+    <h2 id="s2">8.2 Symmetric Encryption</h2>
+    <p>Symmetric Encryption (การเข้ารหัสแบบสมมาตร) ใช้คีย์เดียวกันในการเข้ารหัสและถอดรหัส เป็นวิธีที่เร็วและมีประสิทธิภาพสูง เหมาะสำหรับการเข้ารหัสข้อมูลปริมาณมาก</p>
+
+    <h3 id="s2-1">8.2.1 Block Ciphers: AES</h3>
+    <p><strong>AES (Advanced Encryption Standard)</strong> เป็นมาตรฐานการเข้ารหัสที่ NIST รับรองในปี 2001 แทน DES ที่ถูก Crack แล้ว (56-bit key ถูก Brute Force ในปี 1998 ภายใน 56 ชั่วโมงด้วยเครื่อง Deep Crack)</p>
+    <p><strong>รูปแบบ AES:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ประเภท</th><th>ขนาดคีย์</th><th>ขนาด Block</th><th>จำนวน Round</th><th>ความปลอดภัย</th></tr></thead><tbody>
+      <tr><td>AES-128</td><td>128 bits (16 bytes)</td><td>128 bits</td><td>10</td><td>เพียงพอสำหรับข้อมูลทั่วไป</td></tr>
+      <tr><td>AES-192</td><td>192 bits (24 bytes)</td><td>128 bits</td><td>12</td><td>Secret/Top Secret (US Government)</td></tr>
+      <tr><td>AES-256</td><td>256 bits (32 bytes)</td><td>128 bits</td><td>14</td><td>ความปลอดภัยสูงสุด</td></tr>
+    </tbody></table></div>
+    <p><strong>ข้อเท็จจริงเกี่ยวกับ AES:</strong></p>
+    <ul>
+      <li>AES ยังไม่ถูก Crack ทางคณิตศาสตร์ (2026) — การโจมตีที่ดีที่สุดลดความแข็งแรงจาก 2^128 เหลือ 2^126.1 (ไม่เป็นผลในทางปฏิบัติ)</li>
+      <li>การใช้ AES-256 แทน AES-128 เพิ่มความปลอดภัยเพียงเล็กน้อย (128 bits ก็เพียงพอต่อการ Brute Force) แต่ AES-256 ช้ากว่าเล็กน้อย (~5-20% บน CPU ที่มี AES-NI, ถึง ~40% ในระบบที่ไม่มี Hardware Acceleration)</li>
+      <li>AES เป็นมาตรฐานของรัฐบาลสหรัฐฯ (FIPS 197) และเป็นที่ยอมรับทั่วโลก</li>
+    </ul>
+
+    <h3 id="s2-2">8.2.2 Modes of Operation</h3>
+    <p>Block Cipher เข้ารหัสข้อมูลทีละ Block (16 bytes สำหรับ AES) — Modes of Operation กำหนดวิธีจัดการข้อมูลที่ยาวกว่า 1 Block</p>
+    <div class="table-wrap"><table><thead><tr><th>Mode</th><th>Authentication</th><th>IV/Nonce</th><th>ความปลอดภัย</th><th>คำแนะนำ</th></tr></thead><tbody>
+      <tr><td><strong>ECB</strong></td><td>ไม่</td><td>ไม่</td><td><strong>ไม่ปลอดภัย</strong></td><td><strong>ห้ามใช้เด็ดขาด</strong></td></tr>
+      <tr><td><strong>CBC</strong></td><td>ไม่</td><td>16 bytes (random)</td><td>ปานกลาง</td><td>เสี่ยง Padding Oracle Attack</td></tr>
+      <tr><td><strong>CTR</strong></td><td>ไม่</td><td>8-16 bytes (unique)</td><td>ปานกลาง</td><td>ไม่มีการตรวจสอบ Integrity</td></tr>
+      <tr><td><strong>GCM</strong></td><td><strong>มี</strong> (GMAC)</td><td>12 bytes (recommended)</td><td><strong>ปลอดภัย</strong></td><td><strong>แนะนำให้ใช้</strong></td></tr>
+      <tr><td><strong>CCM</strong></td><td>มี</td><td>7-13 bytes</td><td>ปลอดภัย</td><td>ใช้ใน IoT, ช้ากว่า GCM</td></tr>
+      <tr><td><strong>ChaCha20-Poly1305</strong></td><td>มี (Poly1305)</td><td>12 bytes</td><td><strong>ปลอดภัย</strong></td><td><strong>แนะนำ</strong> (เร็วใน Software)</td></tr>
+    </tbody></table></div>
+
+    <div class="info-box danger">
+      <span class="icon">🚫</span>
+      <div>
+        <strong>ECB Mode — ห้ามใช้เด็ดขาด:</strong>
+        <p style="margin:.25rem 0 0">ECB (Electronic Codebook) เข้ารหัสแต่ละ Block ด้วยคีย์เดียวกัน — ข้อมูลต้นทาง Block เดียวกันให้ Ciphertext Block เดียวกัน ทำให้เห็น Pattern ของข้อมูล</p>
+      </div>
+    </div>
+
+    <pre><code>Plaintext:  [Block 1] [Block 2] [Block 3] ... [Block N]
+                |         |         |             |
+                v         v         v             v
+Ciphertext: [CT 1]    [CT 2]    [CT 3]    ... [CT N]
+
+# ถ้า Block 1 == Block 5 → CT 1 == CT 5</code></pre>
+
+    <p><strong>ตัวอย่างที่เห็นได้ชัด: การเข้ารหัสภาพ (ECB Penguin):</strong> เมื่อเข้ารหัสภาพด้วย AES-ECB รูปภาพที่ได้ยังคงเห็น "เค้าโครง" ของภาพเดิม — นี่คือปัญหา ECB's Pattern Problem ที่ทำให้ ECB ใช้ในทางปฏิบัติไม่ได้</p>
+
+    <p><strong>GCM (Galois/Counter Mode) — โหมดแนะนำสำหรับข้อมูลทั่วไป:</strong></p>
+    <p>GCM เป็น Authenticated Encryption (AEAD — Authenticated Encryption with Associated Data) ที่ให้ทั้งการรักษาความลับ (Encryption) และการตรวจสอบความถูกต้อง (Authentication) ในขั้นตอนเดียว</p>
+
+    <pre><code>from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+import os
+
+# สร้างคีย์ (256 bits)
+key = AESGCM.generate_key(bit_length=256)
+
+# สร้าง Nonce (12 bytes = 96 bits)
+nonce = os.urandom(12)
+
+# ข้อมูลที่จะเข้ารหัส
+plaintext = b"ข้อความลับบทความจำเป็นที่ต้องป้องกัน"
+
+# Associated Data — ข้อมูลที่ไม่เข้ารหัสแต่ต้องการตรวจสอบ Integrity
+aad = b"header-metadata"
+
+# เข้ารหัส
+aesgcm = AESGCM(key)
+ciphertext = aesgcm.encrypt(nonce, plaintext, aad)
+
+# ถอดรหัส
+plaintext_decrypted = aesgcm.decrypt(nonce, ciphertext, aad)</code></pre>
+
+    <p><strong>ข้อควรระวัง GCM:</strong></p>
+    <ul>
+      <li><strong>Nonce ซ้ำ = หายนะ:</strong> ถ้าใช้ Nonce ซ้ำกับคีย์เดียวกัน ผู้โจมตีสามารถกู้คืนคีย์ได้ — ต้องสุ่มหรือใช้ Counter ที่ถูกต้องเท่านั้น</li>
+      <li><strong>Nonce ความยาว:</strong> แนะนำ 12 bytes (96 bits) — ถ้าใช้น้อยกว่านี้จะมีการประมวลผลเพิ่ม (GHASH) ที่ซับซ้อน</li>
+      <li><strong>ความยาว Nonce:</strong> 12 bytes = 2^96 ค่า — โอกาสซ้ำน้อยมาก จึงสุ่มได้</li>
+      <li><strong>Maximum Message Length:</strong> GCM มีข้อจำกัด — ไม่ควรเข้ารหัสข้อความที่ยาวเกิน 2^39 - 256 bits (~64 GB) ด้วยคีย์-Nonce คู่เดียวกัน</li>
+    </ul>
+
+    <p><strong>ChaCha20-Poly1305:</strong></p>
+    <p>ChaCha20-Poly1305 (RFC 8439) เป็น Authenticated Encryption ที่ออกแบบโดย Daniel J. Bernstein ทำงานเร็วกว่า AES-GCM ในระบบที่ไม่มี Hardware Acceleration สำหรับ AES (เช่น มือถือรุ่นเก่า, IoT)</p>
+
+    <pre><code>from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
+import os
+
+key = ChaCha20Poly1305.generate_key()
+nonce = os.urandom(12)
+
+chacha = ChaCha20Poly1305(key)
+ciphertext = chacha.encrypt(nonce, plaintext, aad)
+plaintext_decrypted = chacha.decrypt(nonce, ciphertext, aad)</code></pre>
+
+    <p><strong>ตารางเปรียบเทียบ AES-GCM กับ ChaCha20-Poly1305:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>คุณสมบัติ</th><th>AES-GCM</th><th>ChaCha20-Poly1305</th></tr></thead><tbody>
+      <tr><td><strong>Algorithm</strong></td><td>AES (AES-NI) + GHASH</td><td>ChaCha20 + Poly1305</td></tr>
+      <tr><td><strong>ความเร็ว (มี HW support)</strong></td><td>เร็วมาก (AES-NI)</td><td>ช้ากว่า (~1.5-2x)</td></tr>
+      <tr><td><strong>ความเร็ว (ไม่มี HW support)</strong></td><td>ช้า</td><td>เร็วกว่า</td></tr>
+      <tr><td><strong>ความปลอดภัย</strong></td><td>สูง</td><td>สูง (ออกแบบมาเทียบเท่า)</td></tr>
+      <tr><td><strong>Nonce size</strong></td><td>12 bytes (recommended)</td><td>12 bytes</td></tr>
+      <tr><td><strong>Side-channel resistance</strong></td><td>ปานกลาง (GHASH ไวต่อ Timing)</td><td>ดี (ออกแบบให้ Constant-time)</td></tr>
+      <tr><td><strong>การใช้งานใน TLS</strong></td><td>TLS 1.3 (AEAD หลัก)</td><td>TLS 1.3 (required cipher)</td></tr>
+      <tr><td><strong>Performance Ratio</strong></td><td>1x (baseline)</td><td>~1.5-2x ช้ากว่าเมื่อเทียบต่อ byte</td></tr>
+    </tbody></table></div>
+
+    <h3 id="s2-3">8.2.3 Initialization Vector (IV) / Nonce</h3>
+    <p>IV และ Nonce เป็นค่าที่สุ่มหรือไม่ซ้ำ ซึ่งใช้เพื่อให้การเข้ารหัสครั้งเดียวกันให้ผลลัพธ์ต่างกัน</p>
+    <p><strong>หลักการสำคัญ:</strong></p>
+    <ul>
+      <li><strong>IV สำหรับ CBC:</strong> ต้องสุ่ม (Random) — ไม่จำเป็นต้องเป็นความลับ ส่งไปกับ Ciphertext ได้</li>
+      <li><strong>Nonce สำหรับ GCM/CTR:</strong> <strong>ห้ามซ้ำเด็ดขาด</strong> ถ้าใช้ Nonce ซ้ำกับ AES-GCM หรือ ChaCha20-Poly1305 ผู้โจมตีสามารถกู้คืน Keystream ได้</li>
+      <li><strong>Nonce สำหรับ CTR:</strong> ห้ามซ้ำเด็ดขาด เช่นเดียวกับ GCM</li>
+    </ul>
+    <p><strong>แนวทางการจัดการ Nonce (GCM):</strong></p>
+    <ol>
+      <li><strong>Counter-based:</strong> ใช้ Counter ที่เพิ่มขึ้นเสมอ — ปลอดภัยแน่ แต่ต้องจัดการ State (เช่น เก็บ Counter ใน Database)</li>
+      <li><strong>Random:</strong> สุ่ม 12 bytes — แนะนำ กรณีที่ Nonce 12 bytes โอกาสซ้ำ 2^96 — ถ้าเข้ารหัสน้อยกว่า 2^32 ครั้ง โอกาสซ้ำ &lt; 2^-64 (ปลอดภัย)</li>
+      <li><strong>Larger Nonce:</strong> ถ้าไม่แน่ใจ ใช้ XChaCha20-Poly1305 (Nonce 24 bytes) — ลดความเสี่ยง Nonce ซ้ำ</li>
+    </ol>
+
+    <pre><code># ไม่ปลอดภัย: Static nonce
+nonce = b"000000000000"  # ซ้ำทุกครั้ง!
+ciphertext1 = aesgcm.encrypt(nonce, b"Hello", None)
+ciphertext2 = aesgcm.encrypt(nonce, b"World", None)
+# ถ้า nonce ซ้ำ → Keystream เดียวกัน → XOR จะเปิดเผยข้อมูล
+
+# ปลอดภัย: Random nonce
+nonce = os.urandom(12)
+ciphertext1 = aesgcm.encrypt(nonce, b"Hello", None)
+# เก็บ nonce นี้ไว้กับ ciphertext เพื่อใช้ตอนถอดรหัส</code></pre>
+
+    <h3 id="s2-4">8.2.4 Key Derivation Functions (KDF)</h3>
+    <p>KDF ใช้ในการแปลงข้อมูลที่มี Entropy ต่ำ (เช่น รหัสผ่าน) หรือคีย์ที่มี Entropy สูงแต่ต้องการปรับรูปแบบ ให้เป็นคีย์ที่มีความยาวตามต้องการ</p>
+    <div class="table-wrap"><table><thead><tr><th>KDF</th><th>การใช้งานหลัก</th><th>ข้อควรรู้</th></tr></thead><tbody>
+      <tr><td><strong>PBKDF2</strong> (RFC 2898)</td><td>Key Derivation จาก Password</td><td>OWASP และ IETF แนะนำ — ต้องมี Iteration count สูง (600,000 สำหรับ HMAC-SHA-256 อ้างอิงจาก OWASP Password Storage Cheat Sheet)</td></tr>
+      <tr><td><strong>Argon2</strong></td><td>Key Derivation จาก Password</td><td><strong>ดีที่สุด</strong> — Memory-hard ป้องกัน GPU/ASIC</td></tr>
+      <tr><td><strong>scrypt</strong></td><td>Key Derivation จาก Password</td><td>Memory-hard — ใช้เมื่อ Argon2 ไม่พร้อม</td></tr>
+      <tr><td><strong>HKDF</strong> (RFC 5869)</td><td>Key Derivation จาก High-Entropy Source</td><td>ใช้ขยายคีย์ที่มี Entropy สูง (เช่น Shared Secret จาก ECDH)</td></tr>
+    </tbody></table></div>
+
+    <pre><code>from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.primitives import hashes
+import os
+
+password = b"my_strong_password"
+salt = os.urandom(16)  # ขนาด 16 bytes
+
+kdf = PBKDF2HMAC(
+    algorithm=hashes.SHA256(),
+    length=32,          # 32 bytes = 256 bits สำหรับ AES-256
+    salt=salt,
+    iterations=600000,  # 600,000 iterations
+)
+
+key = kdf.derive(password)  # สร้างคีย์</code></pre>
+
+    <p><strong>ตาราง Algorithm Selection สำหรับ Symmetric Encryption:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>กรณีใช้งาน</th><th>Algorithm ที่แนะนำ</th><th>หมายเหตุ</th></tr></thead><tbody>
+      <tr><td>ข้อมูลทั่วไป</td><td>AES-256-GCM</td><td>ปลอดภัย, เร็ว (มี HW)</td></tr>
+      <tr><td>Mobile/IoT (ไม่มี HW AES)</td><td>ChaCha20-Poly1305</td><td>เร็วกว่า AES-GCM</td></tr>
+      <tr><td>ข้อมูลขนาดใหญ่ (&gt; 64 GB)</td><td>ChaCha20-Poly1305</td><td>GCM มีข้อจำกัดความยาว</td></tr>
+      <tr><td>ทำ Streaming</td><td>CTR + MAC</td><td>แต่แนะนำ GCM หรือ ChaCha20-Poly1305</td></tr>
+      <tr><td>Disk/File Encryption</td><td>AES-256-XTS</td><td>โหมดพิเศษสำหรับ Disk</td></tr>
+      <tr><td>TLS 1.3</td><td>AES-256-GCM / ChaCha20-Poly1305</td><td>สองอย่างนี้เท่านั้น</td></tr>
+    </tbody></table></div>
+
+    <h2 id="s3">8.3 Asymmetric (Public-Key) Cryptography</h2>
+    <p>Asymmetric Cryptography ใช้คีย์สองค่าที่สัมพันธ์กันทางคณิตศาสตร์ ได้แก่ Public Key (เผยแพร่ให้สาธารณะ) และ Private Key (เก็บเป็นความลับ) แก้ปัญหา Key Distribution ของ Symmetric Cryptography</p>
+
+    <h3 id="s3-1">8.3.1 RSA</h3>
+    <p>RSA (Rivest-Shamir-Adleman, 1977) เป็น Algorithm Asymmetric ที่รู้จักกันมากที่สุด อาศัยความยากของการแยกตัวประกอบจำนวนเฉพาะขนาดใหญ่</p>
+    <p><strong>ขนาดคีย์ RSA ที่แนะนำ:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ขนาดคีย์</th><th>สถานะ</th><th>คำแนะนำ</th></tr></thead><tbody>
+      <tr><td>1024 bits</td><td><strong>ไม่ปลอดภัย</strong></td><td>ถูก Factor ในปี 2010 (Academic) — ห้ามใช้</td></tr>
+      <tr><td>2048 bits</td><td><strong>ปลอดภัย (ปัจจุบัน)</strong></td><td>มาตรฐานขั้นต่ำ — NIST แนะนำถึงปี 2030</td></tr>
+      <tr><td>3072 bits</td><td>ปลอดภัยสูง</td><td>แนะนำถ้าต้องการความปลอดภัยระยะยาว</td></tr>
+      <tr><td>4096 bits</td><td>ปลอดภัยสูงมาก</td><td>ช้ากว่า 2048 bits ~4-8 เท่า</td></tr>
+    </tbody></table></div>
+    <p><strong>ข้อจำกัดของ RSA:</strong></p>
+    <ul>
+      <li>คีย์ยาว — 2048 bits = 256 bytes</li>
+      <li>Encryption ช้า — จำกัดขนาดข้อมูลที่เข้ารหัสได้ (สูงสุด ~ขนาดคีย์ - 42 bytes สำหรับ OAEP)</li>
+      <li>Generation คีย์ช้า — อาจใช้เวลาหลายวินาทีสำหรับ 4096 bits</li>
+      <li>ไม่มี Perfect Forward Secrecy (PFS) ถ้าใช้ RSA เพียงอย่างเดียว</li>
+      <li>กำลังถูกแทนที่ด้วย ECC และ Post-Quantum Algorithms</li>
+    </ul>
+    <p><strong>ข้อควรระวังการใช้งาน RSA:</strong></p>
+    <ul>
+      <li><strong>Padding คือสิ่งที่ทำให้ RSA ปลอดภัย:</strong> ต้องใช้ OAEP (Optimal Asymmetric Encryption Padding) เท่านั้น — ห้ามใช้ Textbook RSA (ไม่ Padding)</li>
+      <li><strong>RSA-OAEP</strong> (PKCS#1 v2.2): แนะนำ</li>
+      <li><strong>RSA-PKCS1v1.5</strong> (PKCS#1 v1.5): เสี่ยง — ถูกโจมตีได้ด้วย Bleichenbacher Attack (1998) แม้จะมี Mitigation แล้วก็ควรหลีกเลี่ยง</li>
+      <li><strong>RSA-PSS</strong> (Probabilistic Signature Scheme): สำหรับ Digital Signature</li>
+    </ul>
+
+    <h3 id="s3-2">8.3.2 Elliptic Curve Cryptography (ECC)</h3>
+    <p>ECC ใช้ Algebraic Structure ของ Elliptic Curve ในการสร้างความสัมพันธ์ทางคณิตศาสตร์ระหว่าง Public และ Private Key จุดเด่นคือให้ความปลอดภัยเทียบเท่า RSA แต่ใช้คีย์สั้นกว่าและเร็วกว่า</p>
+    <p><strong>ขนาดคีย์เปรียบเทียบ ECC vs RSA:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ความปลอดภัย (bits)</th><th>ขนาดคีย์ ECC</th><th>ขนาดคีย์ RSA</th><th>อัตราส่วน</th></tr></thead><tbody>
+      <tr><td>80</td><td>160 bits</td><td>1024 bits</td><td>1:6.4</td></tr>
+      <tr><td>112</td><td>224 bits</td><td>2048 bits</td><td>1:9.1</td></tr>
+      <tr><td>128</td><td>256 bits</td><td>3072 bits</td><td>1:12</td></tr>
+      <tr><td>192</td><td>384 bits</td><td>7680 bits</td><td>1:20</td></tr>
+      <tr><td>256</td><td>521 bits</td><td>15360 bits</td><td>1:29.5</td></tr>
+    </tbody></table></div>
+    <p><strong>Curve ยอดนิยม:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>Curve</th><th>ความปลอดภัย</th><th>การรับรอง</th><th>หมายเหตุ</th></tr></thead><tbody>
+      <tr><td><strong>P-256</strong> (secp256r1)</td><td>128 bits</td><td>NIST, ใช้ใน TLS 1.3</td><td>Curve ที่ใช้มากที่สุด</td></tr>
+      <tr><td><strong>P-384</strong> (secp384r1)</td><td>192 bits</td><td>NIST</td><td>สำหรับ Secret/Top Secret</td></tr>
+      <tr><td><strong>P-521</strong> (secp521r1)</td><td>256 bits</td><td>NIST</td><td>ความปลอดภัยสูงสุด</td></tr>
+      <tr><td><strong>Curve25519</strong> (X25519)</td><td>128 bits</td><td>TLS 1.3</td><td><strong>แนะนำ</strong> — เร็ว, Constant-time</td></tr>
+      <tr><td><strong>Ed25519</strong></td><td>128 bits</td><td>TLS 1.3</td><td><strong>แนะนำ</strong> — Signature Curve</td></tr>
+    </tbody></table></div>
+    <p><strong>ข้อดีของ Curve25519 / Ed25519:</strong></p>
+    <ul>
+      <li>ออกแบบโดย Daniel J. Bernstein — Constant-time โดย design (ป้องกัน Side-Channel)</li>
+      <li>เร็วมาก — Key Generation, Sign, Verify ทั้งหมดเร็วกว่า P-256</li>
+      <li>ไม่มี patents — ใช้ได้ฟรี</li>
+      <li>คีย์สั้น — Public Key 32 bytes, Private Key 32 bytes</li>
+      <li>ปลอดภัยเมื่อใช้อย่างถูกต้อง — ไม่ต้องกังวลเกี่ยวกับ параметр พิเศษ</li>
+    </ul>
+
+    <pre><code>from cryptography.hazmat.primitives.asymmetric import x25519
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+from cryptography.hazmat.primitives import hashes
+
+# Alice สร้าง Key Pair
+alice_private = x25519.X25519PrivateKey.generate()
+alice_public = alice_private.public_key()
+
+# Bob สร้าง Key Pair
+bob_private = x25519.X25519PrivateKey.generate()
+bob_public = bob_private.public_key()
+
+# Alice คำนวณ Shared Secret
+alice_shared = alice_private.exchange(bob_public)
+
+# Bob คำนวณ Shared Secret
+bob_shared = bob_private.exchange(alice_public)
+
+# alice_shared == bob_shared (Shared Secret เดียวกัน)
+# นำ Shared Secret ไปเข้า KDF เพื่อสร้าง Symmetric Key
+derived_key = HKDF(
+    algorithm=hashes.SHA256(),
+    length=32,
+    salt=None,
+    info=b"handshake data",
+).derive(alice_shared)</code></pre>
+
+    <h3 id="s3-3">8.3.3 Hybrid Encryption</h3>
+    <p>Hybrid Encryption คือการรวมข้อดีของ Symmetric (เร็ว) และ Asymmetric (จัดการคีย์ง่าย) เข้าด้วยกัน เป็นพื้นฐานของ TLS, PGP, และการเข้ารหัสอื่นๆ ในโลกจริง</p>
+    <p><strong>กระบวนการ Hybrid Encryption:</strong></p>
+    <ol>
+      <li>สุ่มสร้าง Symmetric Key (Data Encryption Key — DEK)</li>
+      <li>เข้ารหัสข้อมูลด้วย DEK (ใช้ AES-GCM)</li>
+      <li>เข้ารหัส DEK ด้วยผู้รับ's Public Key (ใช้ RSA-OAEP หรือ ECIES)</li>
+      <li>ส่ง Ciphertext + Encrypted DEK ไปให้ผู้รับ</li>
+      <li>ผู้รับถอดรหัส DEK ด้วย Private Key</li>
+      <li>ผู้รับถอดรหัสข้อมูลด้วย DEK</li>
+    </ol>
+
+    <pre><code>ผู้ส่ง:                                    ผู้รับ:
+1. สุ่ม DEK
+2. เข้ารหัสข้อมูลด้วย AES-GCM(DEK)
+3. เข้ารหัส DEK ด้วย RSA-OAEP(PubKey)
+4. ส่ง [Ciphertext + EncryptedDEK]  →    5. ถอดรหัส DEK ด้วย RSA-OAEP(PrivKey)
+                                          6. ถอดรหัสข้อมูลด้วย AES-GCM(DEK)</code></pre>
+
+    <pre><code>from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.hazmat.primitives import hashes
+import os
+
+# ผู้รับสร้าง RSA Key Pair
+private_key = rsa.generate_private_key(
+    public_exponent=65537,
+    key_size=2048,
+)
+public_key = private_key.public_key()
+
+# ผู้ส่ง: Hybrid Encryption
+plaintext = b"ข้อความลับที่มีความยาวมาก"
+dek = AESGCM.generate_key(bit_length=256)  # 1. สุ่ม DEK
+nonce = os.urandom(12)
+
+# 2. เข้ารหัสข้อมูลด้วย DEK
+aesgcm = AESGCM(dek)
+ciphertext = aesgcm.encrypt(nonce, plaintext, None)
+
+# 3. เข้ารหัส DEK ด้วย Public Key
+encrypted_dek = public_key.encrypt(
+    dek,
+    padding.OAEP(
+        mgf=padding.MGF1(algorithm=hashes.SHA256()),
+        algorithm=hashes.SHA256(),
+        label=None,
+    ),
+)
+
+# ส่ง: nonce + encrypted_dek + ciphertext
+
+# ผู้รับ: Hybrid Decryption
+# 5. ถอดรหัส DEK ด้วย Private Key
+dek_decrypted = private_key.decrypt(
+    encrypted_dek,
+    padding.OAEP(
+        mgf=padding.MGF1(algorithm=hashes.SHA256()),
+        algorithm=hashes.SHA256(),
+        label=None,
+    ),
+)
+
+# 6. ถอดรหัสข้อมูลด้วย DEK
+aesgcm_dec = AESGCM(dek_decrypted)
+plaintext_decrypted = aesgcm_dec.decrypt(nonce, ciphertext, None)</code></pre>
+
+    <h3 id="s3-4">8.3.4 Digital Signatures</h3>
+    <p>Digital Signature คือกลไกที่ให้ผู้รับสามารถยืนยันได้ว่าข้อมูลมาจากผู้ส่งจริง (Authentication) และไม่ถูกแก้ไขระหว่างทาง (Integrity) รวมถึงป้องกันการปฏิเสธ (Non-repudiation)</p>
+    <p><strong>กระบวนการ:</strong></p>
+    <ul>
+      <li><strong>Sign:</strong> ผู้ใช้ Private Key เซ็นข้อมูล → ได้ Signature</li>
+      <li><strong>Verify:</strong> ผู้อ่านใช้ Public Key ตรวจสอบ Signature ว่าตรงกับข้อมูล</li>
+    </ul>
+    <p><strong>Algorithm Digital Signature:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>Algorithm</th><th>Curve/ขนาด</th><th>ความปลอดภัย</th><th>ความเร็ว</th><th>คำแนะนำ</th></tr></thead><tbody>
+      <tr><td><strong>Ed25519</strong></td><td>Curve25519</td><td>128 bits</td><td>เร็วมาก</td><td><strong>แนะนำ</strong> — เร็ว, Constant-time</td></tr>
+      <tr><td><strong>ECDSA P-256</strong></td><td>secp256r1</td><td>128 bits</td><td>เร็ว</td><td>ใช้ใน TLS, Bitcoin</td></tr>
+      <tr><td><strong>ECDSA P-384</strong></td><td>secp384r1</td><td>192 bits</td><td>ปานกลาง</td><td>สำหรับระดับสูง</td></tr>
+      <tr><td><strong>RSA-PSS</strong></td><td>2048+ bits</td><td>128+ bits</td><td>Sign ช้า</td><td>ระบบเก่า, Legacy</td></tr>
+      <tr><td><strong>RSA-PKCS1v1.5</strong></td><td>2048+ bits</td><td>128+ bits</td><td>Sign ช้า</td><td><strong>หลีกเลี่ยง</strong> — เปราะบาง</td></tr>
+      <tr><td><strong>DSA</strong></td><td>1024-3072 bits</td><td>-</td><td>ช้า</td><td>เลิกใช้</td></tr>
+    </tbody></table></div>
+
+    <pre><code>from cryptography.hazmat.primitives.asymmetric import ed25519
+from cryptography.hazmat.primitives import hashes
+
+# สร้าง Key Pair
+private_key = ed25519.Ed25519PrivateKey.generate()
+public_key = private_key.public_key()
+
+# เซ็นข้อมูล
+message = b"ข้อมูลที่ต้องการเซ็น"
+signature = private_key.sign(message)
+
+# ตรวจสอบ Signature
+try:
+    public_key.verify(signature, message)
+    print("ลายเซ็นถูกต้อง — ข้อมูลไม่ถูกแก้ไข")
+except Exception:
+    print("ลายเซ็นไม่ถูกต้อง — ข้อมูลถูกแก้ไขหรือไม่ใช่ผู้ส่งจริง")</code></pre>
+
+    <p><strong>การใช้งาน Digital Signature ในทางปฏิบัติ:</strong></p>
+    <ul>
+      <li><strong>Code Signing:</strong> เซ็นโปรแกรมเพื่อยืนยันว่ามาจากผู้พัฒนาจริง (Microsoft Authenticode, Apple Code Signing)</li>
+      <li><strong>Software Update:</strong> เซ็นไฟล์อัปเดตเพื่อป้องกันการแทรกมัลแวร์</li>
+      <li><strong>Git Commit Signing:</strong> เซ็น Git commit เพื่อยืนยันตัวตนผู้ commit (GPG หรือ SSH)</li>
+      <li><strong>Document Signing:</strong> e-signature ในเอกสารอิเล็กทรอนิกส์</li>
+      <li><strong>JWT:</strong> ใช้ Signature เพื่อยืนยันว่า Token ถูกสร้างโดย Authorization Server จริง</li>
+    </ul>
+
+    <h3 id="s3-5">8.3.5 Key Exchange และ Perfect Forward Secrecy</h3>
+    <p><strong>Diffie-Hellman (DH) Key Exchange:</strong></p>
+    <p>DH Protocol (Whitfield Diffie และ Martin Hellman, 1976) เป็นวิธีการที่สองฝ่ายสามารถตกลงใช้คีย์ร่วมกัน (Shared Secret) ได้โดยไม่ต้องส่งคีย์ผ่านช่องทางที่ปลอดภัย</p>
+
+    <pre><code>Alice                             Bob
+  |                                |
+  |--- g^a mod p (Public Value) -->|
+  |                                | Bob คำนวณ Shared Secret = (g^a)^b = g^ab
+  |<-- g^b mod p (Public Value) ---|
+  |                                |
+Alice คำนวณ Shared Secret = (g^b)^a = g^ab</code></pre>
+
+    <p><strong>Elliptic Curve Diffie-Hellman (ECDH):</strong> ใช้ ECC แทน Modular Exponentiation — ให้ความปลอดภัยเทียบเท่าแต่ใช้คีย์สั้นกว่าและเร็วกว่า</p>
+    <p><strong>Perfect Forward Secrecy (PFS):</strong></p>
+    <p>PFS คือคุณสมบัติที่การรั่วไหลของ Long-term Private Key (Server's Private Key) <strong>ไม่</strong> ทำให้ Session Key ในอดีตถูกถอดรหัสได้</p>
+    <ul>
+      <li><strong>ไม่มี PFS:</strong> ถ้าแฮกเกอร์ขโมย Private Key ของ Server → สามารถถอดรหัส Session ทั้งหมดที่เคยบันทึกไว้ได้</li>
+      <li><strong>มี PFS:</strong> Session Key ถูกสร้างจาก Ephemeral Key (สุ่มใหม่ทุก Session) — การรั่วของ Private Key ไม่ช่วยถอดรหัส Session เก่า</li>
+    </ul>
+
+    <pre><code>ECDHE: ใช้ Key Pair ที่สร้างใหม่ทุก Session → ทิ้งเมื่อจบ Session
+ถ้า Private Key ปัจจุบันรั่ว → Session เก่าปลอดภัย (เพราะ Key Pair นั้นถูกทิ้งไปแล้ว)</code></pre>
+
+    <p><strong>OpenSSL Cipher ที่มี PFS (แนะนำ):</strong></p>
+    <pre><code>TLS_AES_256_GCM_SHA384          (TLS 1.3 — ทุก Cipher มี PFS)
+TLS_CHACHA20_POLY1305_SHA256    (TLS 1.3)
+ECDHE-RSA-AES256-GCM-SHA384     (TLS 1.2)
+ECDHE-ECDSA-AES256-GCM-SHA384  (TLS 1.2)</code></pre>
+
+    <pre><code># ใช้ openssl ตรวจสอบ PFS
+openssl s_client -connect example.com:443 -tls1_2 -cipher 'ECDHE' 2>/dev/null
+# ถ้าเชื่อมต่อได้ → เซิร์ฟเวอร์รองรับ PFS</code></pre>
+
+    <h2 id="s4">8.4 Cryptographic Hashing</h2>
+    <p>Cryptographic Hash Function แปลงข้อมูล (Message) ขนาดใดก็ได้ให้เป็นค่า Output ขนาดคงที่ (Digest หรือ Hash Value)</p>
+    <p><strong>คุณสมบัติของ Cryptographic Hash Function:</strong></p>
+    <ol>
+      <li><strong>Deterministic:</strong> Input เดียวกัน → Output เดียวกันเสมอ</li>
+      <li><strong>Fast to Compute:</strong> คำนวณ Hash ได้เร็ว</li>
+      <li><strong>Preimage Resistance (One-way):</strong> จาก Hash → หา Input เดิมไม่ได้</li>
+      <li><strong>Second Preimage Resistance:</strong> จาก Input → หา Input อื่นที่ให้ Hash เดียวกันไม่ได้</li>
+      <li><strong>Collision Resistance:</strong> หา Input สองค่าที่ให้ Hash เดียวกันไม่ได้ (ยาก)</li>
+    </ol>
+
+    <h3 id="s4-1">8.4.1 Hash Function ที่ควรรู้จัก</h3>
+    <div class="table-wrap"><table><thead><tr><th>Algorithm</th><th>ขนาด Output</th><th>ความปลอดภัย</th><th>สถานะ</th><th>คำแนะนำ</th></tr></thead><tbody>
+      <tr><td><strong>MD5</strong></td><td>128 bits</td><td><strong>แตกแล้ว</strong></td><td><strong>เลิกใช้</strong></td><td>Collision Attack ทำได้ในวินาที — ใช้แค่ Checksum ที่ไม่เกี่ยวกับความปลอดภัย</td></tr>
+      <tr><td><strong>SHA-1</strong></td><td>160 bits</td><td><strong>แตกแล้ว</strong></td><td><strong>เลิกใช้</strong></td><td>SHAttered (2017) — Google แสดง Collision จริง</td></tr>
+      <tr><td><strong>SHA-256</strong></td><td>256 bits</td><td>ปลอดภัย</td><td><strong>แนะนำ</strong></td><td>มาตรฐานปัจจุบัน — ใช้สำหรับ Integrity, Digital Signature</td></tr>
+      <tr><td><strong>SHA-512</strong></td><td>512 bits</td><td>ปลอดภัย</td><td>แนะนำ</td><td>ปลอดภัยกว่า 256 แต่ช้ากว่า (ใช้ 64-bit ops — เร็วกว่า SHA-256 บน 64-bit CPU)</td></tr>
+      <tr><td><strong>SHA-3-256</strong></td><td>256 bits</td><td>ปลอดภัย</td><td>แนะนำ</td><td>โครงสร้างต่างจาก SHA-2 (Sponge) — สำรองเมื่อ SHA-2 ถูก Crack</td></tr>
+      <tr><td><strong>BLAKE2</strong></td><td>256/512 bits</td><td>ปลอดภัย</td><td>แนะนำ</td><td>เร็วกว่า SHA-2/3 — ใช้ใน Zcash, Argon2</td></tr>
+    </tbody></table></div>
+
+    <pre><code>import hashlib
+
+# Hash ข้อมูล
+data = b"ข้อมูลที่ต้องการตรวจสอบความถูกต้อง"
+hash_obj = hashlib.sha256(data)
+digest = hash_obj.hexdigest()
+# output: "c4c7a3d5f2e1b8a9..."
+
+# ตรวจสอบ Integrity
+def verify_integrity(original_data, original_hash):
+    current_hash = hashlib.sha256(original_data).hexdigest()
+    return current_hash == original_hash</code></pre>
+
+    <h3 id="s4-2">8.4.2 การใช้งาน Hash ในซอฟต์แวร์</h3>
+    <div class="table-wrap"><table><thead><tr><th>การใช้งาน</th><th>Algorithm ที่แนะนำ</th><th>หมายเหตุ</th></tr></thead><tbody>
+      <tr><td>Integrity Verification (ไฟล์ดาวน์โหลด)</td><td>SHA-256</td><td>เช็ค Checksum ว่าไฟล์ไม่เสียหาย</td></tr>
+      <tr><td>Digital Signature</td><td>SHA-256, SHA-512</td><td>Hash ข้อมูลก่อน Sign</td></tr>
+      <tr><td>Password Hashing</td><td><strong>Argon2id, bcrypt, PBKDF2</strong></td><td><strong>ห้ามใช้ SHA-256 โดยตรง</strong></td></tr>
+      <tr><td>File Deduplication</td><td>SHA-256</td><td>เปรียบเทียบ Content Hash</td></tr>
+      <tr><td>Git</td><td>SHA-1 (กำลังเปลี่ยนเป็น SHA-256)</td><td>Git ใช้ SHA-1 สำหรับ Commit ID</td></tr>
+      <tr><td>Merkle Tree (Blockchain)</td><td>SHA-256</td><td>Bitcoin, Ethereum</td></tr>
+    </tbody></table></div>
+
+    <div class="info-box warning">
+      <span class="icon">⚠️</span>
+      <div>
+        <strong>ข้อสำคัญ — Hash Collision:</strong>
+        <p style="margin:.25rem 0 0">เมื่อเกิด Hash Collision (Input สองค่าที่ให้ Hash เดียวกัน) ความปลอดภัยของระบบที่ใช้ Hash จะถูกทำลาย</p>
+      </div>
+    </div>
+
+    <div class="table-wrap"><table><thead><tr><th>เหตุการณ์</th><th>ปี</th><th>รายละเอียด</th><th>ผลกระทบ</th></tr></thead><tbody>
+      <tr><td>MD5 Collision (Wang et al.)</td><td>2004</td><td>Collision ใช้เวลา 1 ชั่วโมงบน IBM P690</td><td>MD5 เริ่มถูกเลิกใช้</td></tr>
+      <tr><td>MD5 Collision (Marc Stevens)</td><td>2007</td><td>Collision ใน 5 นาทีบน laptop</td><td>MD5 เลิกใช้เด็ดขาด</td></tr>
+      <tr><td>SHAttered (SHA-1 Collision)</td><td>2017</td><td>Google + CWI — Collision แรกของ SHA-1</td><td>เบราว์เซอร์เลิกรองรับ SHA-1 certificate</td></tr>
+      <tr><td>SHA-1 Collision (Shattered Paper)</td><td>2017</td><td>ใช้ 6,500 ปี CPU = 110 ปี GPU</td><td>Google แสดงว่า SHA-1 เสร็จสมบูรณ์</td></tr>
+      <tr><td>MD5/GPG Collision</td><td>2018</td><td>Marc Stevens แสดงการปลอม GPG signature</td><td>MD5 ถูก blocking จาก GnuPG</td></tr>
+    </tbody></table></div>
+
+    <h3 id="s4-3">8.4.3 Message Authentication Code (MAC)</h3>
+    <p>HMAC (Hash-based Message Authentication Code) — RFC 2104 — ใช้คีย์ลับร่วมกับ Hash Function เพื่อสร้าง MAC ที่ใช้ตรวจสอบทั้ง Integrity และ Authenticity ของข้อมูล</p>
+    <p><strong>ความแตกต่างระหว่าง Hash และ MAC:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>คุณสมบัติ</th><th>Hash ธรรมดา</th><th>HMAC</th></tr></thead><tbody>
+      <tr><td><strong>ใช้คีย์</strong></td><td>ไม่</td><td>ใช่</td></tr>
+      <tr><td><strong>ใครคำนวณได้</strong></td><td>ทุกคน (Public)</td><td>เฉพาะคนที่มีคีย์</td></tr>
+      <tr><td><strong>ป้องกัน Tampering</strong></td><td>ไม่ (ผู้โจมตีแก้ข้อมูล + Hash ได้)</td><td>ใช่ (ไม่มีคีย์ → สร้าง MAC ไม่ได้)</td></tr>
+      <tr><td><strong>การใช้งาน</strong></td><td>Integrity Check</td><td>Integrity + Authentication</td></tr>
+    </tbody></table></div>
+
+    <pre><code>import hmac
+import hashlib
+
+# สร้าง HMAC
+key = b"secret-key-for-hmac"
+message = b"ข้อมูลที่ต้องการป้องกันการปลอมแปลง"
+
+hmac_obj = hmac.new(key, message, hashlib.sha256)
+mac = hmac_obj.hexdigest()
+
+# ตรวจสอบ HMAC
+def verify_hmac(key, message, mac_to_verify):
+    expected_mac = hmac.new(key, message, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected_mac, mac_to_verify)
+    # ใช้ compare_digest — ป้องกัน Timing Attack!</code></pre>
+
+    <p><strong>การประยุกต์ใช้ HMAC ในโลกจริง:</strong></p>
+    <ul>
+      <li><strong>AWS Signature V4:</strong> ใช้ HMAC-SHA256 สำหรับ signing API requests</li>
+      <li><strong>TLS:</strong> ใช้ HMAC ใน Record Protocol (TLS 1.2)</li>
+      <li><strong>JWT:</strong> HS256 = HMAC-SHA256 สำหรับ signing tokens</li>
+      <li><strong>OAuth 1.0:</strong> ใช้ HMAC-SHA1 (deprecated)</li>
+    </ul>
+
+    <h2 id="s5">8.5 Public Key Infrastructure (PKI) และ Digital Certificates</h2>
+    <p>PKI คือโครงสร้างพื้นฐานที่จัดการการสร้าง จัดเก็บ แจกจ่าย และเพิกถอน Digital Certificates ทำให้สามารถเชื่อมโยง Public Key กับตัวตน (Identity) ที่แท้จริงได้</p>
+
+    <h3 id="s5-1">8.5.1 X.509 Certificates</h3>
+    <p>X.509 (ITU-T, 1988) เป็นมาตรฐาน Digital Certificate ที่ใช้ใน TLS/SSL, Code Signing, Document Signing, และ Email Encryption</p>
+    <p><strong>โครงสร้าง X.509 v3 Certificate:</strong></p>
+
+    <pre><code>Certificate:
+    Version: 3
+    Serial Number: 04:9A:8B:C5:...
+    Signature Algorithm: sha256WithRSAEncryption
+    Issuer: CN=Let's Encrypt, O=Let's Encrypt, C=US
+    Validity:
+        Not Before: May 1 00:00:00 2026 GMT
+        Not After : Jul 30 00:00:00 2026 GMT
+    Subject: CN=example.com, O=Example Corp, C=US
+    Subject Public Key Info:
+        Public Key Algorithm: id-ecPublicKey
+            Public Key: (256 bits)
+    Extensions:
+        Subject Alternative Name (SAN): DNS:example.com, DNS:www.example.com
+        Basic Constraints: CA:FALSE
+        Key Usage: Digital Signature, Key Encipherment
+        Extended Key Usage: TLS Web Server Authentication, TLS Web Client Authentication
+    Signature: (ลายเซ็นของ CA)</code></pre>
+
+    <p><strong>องค์ประกอบสำคัญของ X.509 Certificate:</strong></p>
+    <ul>
+      <li><strong>Subject</strong> — เจ้าของ Certificate (โดเมน, บริษัท, บุคคล)</li>
+      <li><strong>Issuer</strong> — ผู้ออก Certificate (CA)</li>
+      <li><strong>Subject Public Key Info</strong> — Public Key พร้อม Algorithm</li>
+      <li><strong>Validity</strong> — วันหมดอายุ</li>
+      <li><strong>Extensions</strong> — ข้อมูลเพิ่มเติม (SAN, Key Usage, Basic Constraints)</li>
+      <li><strong>Signature</strong> — ลายเซ็นของ CA ยืนยันความถูกต้อง</li>
+    </ul>
+
+    <h3 id="s5-2">8.5.2 Certificate Authority (CA)</h3>
+    <p>CA คือองค์กรที่เชื่อถือได้ (Trusted Third Party) ทำหน้าที่ออก Certificate หลังจากตรวจสอบตัวตนของผู้ขอ</p>
+    <p><strong>ประเภทของ CA:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ประเภท</th><th>การตรวจสอบ</th><th>ราคา</th><th>การแสดงผล</th></tr></thead><tbody>
+      <tr><td><strong>DV (Domain Validation)</strong></td><td>ตรวจสอบว่าควบคุม Domain ได้</td><td>ฟรี - ~$10/ปี</td><td>HTTPS, ล็อกสีเขียว</td></tr>
+      <tr><td><strong>OV (Organization Validation)</strong></td><td>ตรวจสอบว่ามีตัวตนทางกฎหมาย</td><td>~$100-300/ปี</td><td>HTTPS, แสดงบริษัท</td></tr>
+      <tr><td><strong>EV (Extended Validation)</strong></td><td>ตรวจสอบอย่างละเอียด (Green Bar)</td><td>~$200-600/ปี</td><td><strong>เลิกใช้</strong> — เบราว์เซอร์ไม่แสดง Green Bar แล้ว</td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่าง CA ที่น่าเชื่อถือ (2026):</strong></p>
+    <ul>
+      <li>Let's Encrypt (ฟรี, DV only, Automated)</li>
+      <li>DigiCert</li>
+      <li>Sectigo</li>
+      <li>GlobalSign</li>
+      <li>Entrust</li>
+    </ul>
+
+    <h3 id="s5-3">8.5.3 Certificate Chain และ Chain of Trust</h3>
+    <p>Certificate Chain คือลำดับ Certificate ที่เชื่อมโยงจาก End-entity Certificate (โดเมน) ไปยัง Root CA (รากฐานความเชื่อถือ)</p>
+
+    <pre><code>Root CA Certificate (Self-signed)
+    └── Intermediate CA Certificate 1
+        └── Intermediate CA Certificate 2
+            └── Server Certificate (example.com)</code></pre>
+
+    <p><strong>การทำงานของ Chain of Trust:</strong></p>
+    <ol>
+      <li>Browser มีรายการ Root CA Certificates ที่เชื่อถือ (Trust Store)</li>
+      <li>Server ส่ง Certificate Chain (Server Cert + Intermediate CAs)</li>
+      <li>Browser ตรวจสอบ Signature แต่ละระดับ: Server ← Intermediate2 ← Intermediate1 ← Root</li>
+      <li>ถ้า Signature ทุกจุดถูกต้อง และ Root อยู่ใน Trust Store → เชื่อถือได้</li>
+    </ol>
+
+    <pre><code># ใช้ openssl ดู Certificate Chain
+openssl s_client -connect example.com:443 -showcerts
+
+# ตรวจสอบว่า Certificate หมดอายุหรือไม่
+openssl x509 -in cert.pem -text -noout | grep "Not Before\|Not After"
+
+# ตรวจสอบ SAN
+openssl x509 -in cert.pem -text -noout | grep "Subject Alternative Name"</code></pre>
+
+    <p><strong>ข้อผิดพลาดที่พบบ่อย:</strong></p>
+    <ul>
+      <li><strong>Certificate Chain ไม่สมบูรณ์:</strong> ส่งแค่ Server Cert โดยไม่มี Intermediate CAs บางเบราว์เซอร์อาจเชื่อมต่อได้ (มี Cache) แต่บางเครื่องเชื่อมต่อไม่ได้</li>
+      <li><strong>Root CA หมดอายุ:</strong> Root CA มักมีอายุ 20-25 ปี ถ้าหมดอายุ Trust Store จะปฏิเสธ</li>
+      <li><strong>SAN ไม่รวมโดเมน:</strong> ถ้า Certificate ไม่มี SAN ของโดเมนนั้นๆ Browser จะแสดง Warning</li>
+    </ul>
+
+    <h3 id="s5-4">8.5.4 Certificate Revocation</h3>
+    <p>เมื่อ Private Key ของ Certificate รั่วไหล หรือ CA พบว่าออก Certificate ผิด ต้องมีการเพิกถอน Certificate</p>
+    <p><strong>กลไกการ Revocation:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>กลไก</th><th>วิธีการ</th><th>จุดอ่อน</th></tr></thead><tbody>
+      <tr><td><strong>CRL (Certificate Revocation List)</strong></td><td>CA เผยแพร่รายการ Serial Number ที่ถูกเพิกถอน</td><td>ขนาด CRL ใหญ่, ต้องดาวน์โหลดทั้งหมด, ไม่ Real-time</td></tr>
+      <tr><td><strong>OCSP (Online Certificate Status Protocol)</strong></td><td>Browser ถาม CA แบบ Real-time ว่า Certificate ยังใช้ได้หรือไม่</td><td>Privacy (CA รู้ว่าเข้าเว็บไหน), ต้องมี Internet ตลอด</td></tr>
+      <tr><td><strong>OCSP Stapling</strong></td><td>Server ขอ OCSP Response ล่วงหน้า แล้วแนบไปกับ TLS Handshake</td><td>Server side implementation, Privacy ดีกว่า OCSP</td></tr>
+      <tr><td><strong>CRLite / CRLSets</strong></td><td>Browser รวบรวม CRL ที่จำเป็น (Firefox, Chrome)</td><td>ต้อง Trust Browser vendor</td></tr>
+    </tbody></table></div>
+    <p><strong>เหตุการณ์สำคัญเกี่ยวกับ Revocation:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>เหตุการณ์</th><th>ปี</th><th>รายละเอียด</th></tr></thead><tbody>
+      <tr><td><strong>DigiNotar Hack</strong></td><td>2011</td><td>CA ถูกแฮก — ออก Fake Certificate สำหรับ Google, Yahoo, CIA → DigiNotar ถูกเพิกถอน Trust → ล้มละลาย</td></tr>
+      <tr><td><strong>Comodo</strong></td><td>2011</td><td>Registrar เข้าถึงบัญชีโดยไม่ได้รับอนุญาต — ออก Certificate ปลอม 9 ใบสำหรับ Google, Yahoo, Skype</td></tr>
+      <tr><td><strong>Symantec (Thawte, VeriSign, GeoTrust)</strong></td><td>2017</td><td>พบ Certificate ที่ไม่ถูกต้องมากกว่า 30,000 ใบ → เบราว์เซอร์ทยอยเลิก Trust (ตั้งแต่วันที่ 30 เมษายน 2018)</td></tr>
+      <tr><td><strong>Let's Encrypt</strong></td><td>2020</td><td>มี Certificate ที่ออกผิดพลาดมากกว่า 3 ล้านใบ (~2 ล้าน unique certificates) ในวันที่ 1 มีนาคม 2020 → Revoke ภายใน 24 ชั่วโมง — ยกย่องว่าจัดการดี</td></tr>
+    </tbody></table></div>
+
+    <h3 id="s5-5">8.5.5 การจัดการ Keys และ Secrets</h3>
+    <p>Key Management คือหนึ่งในส่วนที่ยากที่สุดของ Cryptography — Algorithm ที่ดีที่สุดไม่มีประโยชน์ถ้าคีย์ถูกรั่วไหล</p>
+    <p><strong>Key Lifecycle:</strong></p>
+    <pre><code>สร้างคีย์ → จัดเก็บ → ใช้งาน → หมุนเวียน → เพิกถอน → ทำลาย</code></pre>
+    <div class="table-wrap"><table><thead><tr><th>ขั้นตอน</th><th>แนวทางปฏิบัติ</th></tr></thead><tbody>
+      <tr><td><strong>สร้างคีย์</strong></td><td>ใช้ CSPRNG (Cryptographically Secure PRNG) เช่น <code>os.urandom()</code></td></tr>
+      <tr><td><strong>จัดเก็บ</strong></td><td>ใช้ Secret Manager, HSM, หรือ OS Key Store อย่า Hardcode</td></tr>
+      <tr><td><strong>ใช้งาน</strong></td><td>โหลดคีย์ใน Memory เท่านั้น ไม่เขียนลง Disk</td></tr>
+      <tr><td><strong>หมุนเวียน</strong></td><td>เปลี่ยนคีย์ตามรอบ (ทุก 90 วัน - 2 ปี ขึ้นอยู่กับระดับความปลอดภัย)</td></tr>
+      <tr><td><strong>เพิกถอน</strong></td><td>เมื่อคีย์หาย เครื่องถูกขโมย หรือพนักงานลาออก — Revoke Certificate / คีย์</td></tr>
+      <tr><td><strong>ทำลาย</strong></td><td>ต้องลบให้ถาวร — Zero-fill, Cryptographic Erase (ใน HSM)</td></tr>
+    </tbody></table></div>
+
+    <p><strong>ห้าม Hardcode Keys โดยเด็ดขาด:</strong></p>
+
+    <pre><code># ไม่ปลอดภัย: Hardcoded Key
+AES_KEY = b"my-secret-key-123"  # ใน Source Code — ใครอ่าน Source ก็ได้คีย์!
+
+# ปลอดภัย: Environment Variable
+import os
+AES_KEY = os.environ.get("ENCRYPTION_KEY").encode()
+# คีย์ ไม่ได้อยู่ใน Source Code — อยู่ใน Environment
+
+# ปลอดภัยกว่า: Secret Manager
+import boto3
+client = boto3.client('kms')
+response = client.decrypt(
+    CiphertextBlob=encrypted_key_from_env,
+    KeyId='alias/my-key'
+)
+AES_KEY = response['Plaintext']</code></pre>
+
+    <p><strong>แนวทางเก็บ Keys ใน Production:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>วิธี</th><th>ระดับความปลอดภัย</th><th>การจัดการ</th><th>เหมาะกับ</th></tr></thead><tbody>
+      <tr><td>Environment Variables</td><td>ปานกลาง</td><td>ง่าย</td><td>Development, Testing</td></tr>
+      <tr><td>.env file (ไม่ commit)</td><td>ปานกลาง</td><td>ง่าย</td><td>Development</td></tr>
+      <tr><td>Docker Secrets</td><td>ปานกลาง</td><td>ปานกลาง</td><td>Container</td></tr>
+      <tr><td>HashiCorp Vault</td><td>สูง</td><td>ซับซ้อน</td><td>Enterprise</td></tr>
+      <tr><td>AWS KMS / GCP Cloud KMS</td><td>สูงมาก</td><td>ปานกลาง</td><td>Cloud Native</td></tr>
+      <tr><td>Azure Key Vault</td><td>สูงมาก</td><td>ปานกลาง</td><td>Azure</td></tr>
+      <tr><td>Hardware Security Module (HSM)</td><td>สูงสุด</td><td>ซับซ้อนมาก</td><td>Banking, Government</td></tr>
+    </tbody></table></div>
+
+    <h2 id="s6">8.6 Post-Quantum Cryptography</h2>
+    <p>Quantum Computer มีศักยภาพในการทำลาย Algorithm Cryptography ที่ใช้กันอยู่ในปัจจุบัน — นี่คือภัยคุกคามที่นักพัฒนาต้องเตรียมพร้อม</p>
+
+    <h3 id="s6-1">8.6.1 ภัยคุกคามจาก Quantum Computer</h3>
+    <p><strong>Shor's Algorithm (Peter Shor, 1994):</strong></p>
+    <ul>
+      <li>สามารถแก้ปัญหา <strong>Integer Factorization</strong> ได้ในเวลาพหุนาม → ทำลาย RSA</li>
+      <li>สามารถแก้ปัญหา <strong>Discrete Logarithm</strong> ได้ในเวลาพหุนาม → ทำลาย DSA, DH, ECDH, ECDSA</li>
+    </ul>
+    <p><strong>Grover's Algorithm (Lov Grover, 1996):</strong></p>
+    <ul>
+      <li>สามารถค้นหาใน Space ขนาด N ได้ในเวลา √N → ลดความปลอดภัยของ AES-128 จาก 2^128 → 2^64</li>
+      <li><strong>ผลกระทบ:</strong> AES-256 (2^256 → 2^128) — ยังปลอดภัย; AES-128 (2^128 → 2^64) — เสี่ยง</li>
+    </ul>
+    <div class="table-wrap"><table><thead><tr><th>Algorithm</th><th>สถานะหลัง Quantum</th><th>สาเหตุ</th></tr></thead><tbody>
+      <tr><td><strong>RSA</strong></td><td><strong>แตก</strong></td><td>Shor's Algorithm</td></tr>
+      <tr><td><strong>ECDSA / ECDH</strong></td><td><strong>แตก</strong></td><td>Shor's Algorithm</td></tr>
+      <tr><td><strong>DSA</strong></td><td><strong>แตก</strong></td><td>Shor's Algorithm</td></tr>
+      <tr><td><strong>AES-256</strong></td><td>ปลอดภัย (ลดเหลือ 128 bits)</td><td>Grover's Algorithm — ยังเพียงพอ</td></tr>
+      <tr><td><strong>AES-128</strong></td><td>เสี่ยง</td><td>Grover's Algorithm — เหลือ 64 bits</td></tr>
+      <tr><td><strong>SHA-256</strong></td><td>ปลอดภัย (ลดเหลือ 128 bits)</td><td>Grover's Algorithm — ยังเพียงพอ</td></tr>
+      <tr><td><strong>SHA-3</strong></td><td>ปลอดภัย</td><td>Grover's Algorithm</td></tr>
+    </tbody></table></div>
+    <p><strong>เส้นเวลา (Timeline) — การคาดการณ์:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ช่วงเวลา</th><th>สถานการณ์</th></tr></thead><tbody>
+      <tr><td>2024-2026</td><td>NIST เลือกมาตรฐาน Post-Quantum Algorithms</td></tr>
+      <tr><td>2026-2030</td><td>การเริ่มเปลี่ยนผ่าน (Migration)</td></tr>
+      <tr><td>2030-2035</td><td>Quantum Computer ขนาด 1,000+ Logical Qubits อาจเริ่มทำลาย RSA-2048</td></tr>
+      <tr><td>2035+</td><td>Post-Quantum กลายเป็นมาตรฐานใหม่</td></tr>
+    </tbody></table></div>
+    <div class="info-box danger">
+      <span class="icon">🚨</span>
+      <div>
+        <strong>Harvest Now, Decrypt Later:</strong>
+        <p style="margin:.25rem 0 0">การโจมตีที่ผู้ไม่หวังดีบันทึกข้อมูลเข้ารหัสทั้งหมดในวันนี้ เพื่อรอวันที่มี Quantum Computer ถอดรหัสได้ — ข้อมูลที่ต้องการเก็บเป็นความลับระยะยาว (เช่น เอกสารราชการลับ, เวชระเบียน) เสี่ยงตั้งแต่ตอนนี้</p>
+      </div>
+    </div>
+
+    <h3 id="s6-2">8.6.2 NIST Post-Quantum Cryptography Standards</h3>
+    <p>NIST เริ่มกระบวนการคัดเลือก Post-Quantum Cryptography Algorithms ในปี 2016 หลังจากศึกษามากว่า 6 ปี ได้ประกาศ Algorithm ที่ได้รับคัดเลือกในเดือนกรกฎาคม 2022 โดยปัจจุบัน NIST ใช้ชื่อมาตรฐาน FIPS ดังนี้:</p>
+    <div class="table-wrap"><table><thead><tr><th>Algorithm (ชื่อโครงการ)</th><th>ชื่อมาตรฐาน FIPS</th><th>ประเภท</th><th>การใช้งาน</th></tr></thead><tbody>
+      <tr><td><strong>CRYSTALS-Kyber</strong></td><td><strong>ML-KEM</strong> (FIPS 203)</td><td>Key Encapsulation Mechanism (KEM)</td><td>ใช้แทน ECDH/RSA สำหรับ Key Exchange</td></tr>
+      <tr><td><strong>CRYSTALS-Dilithium</strong></td><td><strong>ML-DSA</strong> (FIPS 204)</td><td>Digital Signature</td><td>ใช้แทน ECDSA/RSA-PSS สำหรับ Signature</td></tr>
+      <tr><td><strong>FALCON</strong></td><td><strong>FN-DSA</strong> (FIPS 206 — อยู่ระหว่างพัฒนา)</td><td>Digital Signature</td><td>Signature ที่ Token เล็กกว่า Dilithium (แต่ซับซ้อนกว่า)</td></tr>
+      <tr><td><strong>SPHINCS+</strong></td><td><strong>SLH-DSA</strong> (FIPS 205)</td><td>Digital Signature (Stateless)</td><td>ใช้ Hash-based — Conservative แต่ Token ใหญ่, Sign ช้า</td></tr>
+    </tbody></table></div>
+
+    <p><strong>ขนาดคีย์เปรียบเทียบ:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>Algorithm</th><th>Public Key Size</th><th>Private Key Size</th><th>Signature Size</th></tr></thead><tbody>
+      <tr><td>Kyber-512</td><td>800 bytes</td><td>1,632 bytes</td><td>-</td></tr>
+      <tr><td>Kyber-768</td><td>1,184 bytes</td><td>2,400 bytes</td><td>-</td></tr>
+      <tr><td>Dilithium2</td><td>1,312 bytes</td><td>2,528 bytes</td><td>2,420 bytes</td></tr>
+      <tr><td>Dilithium5</td><td>2,592 bytes</td><td>4,864 bytes</td><td>4,595 bytes</td></tr>
+      <tr><td>Falcon-512</td><td>897 bytes</td><td>1,281 bytes</td><td>666 bytes</td></tr>
+      <tr><td>SPHINCS+-S (128)</td><td>32 bytes</td><td>64 bytes</td><td>7,856 bytes</td></tr>
+      <tr><td><strong>RSA-2048 (เทียบ)</strong></td><td>256 bytes</td><td>256 bytes</td><td>256 bytes</td></tr>
+      <tr><td><strong>Ed25519 (เทียบ)</strong></td><td>32 bytes</td><td>32 bytes</td><td>64 bytes</td></tr>
+    </tbody></table></div>
+    <p><strong>ข้อสังเกต:</strong> Post-Quantum Algorithms มี Public Key และ Signature ที่ใหญ่กว่า ECC/RSA มาก — การออกแบบ Protocol ต้องคำนึงถึง Size Overhead</p>
+
+    <h3 id="s6-3">8.6.3 Crypto Agility</h3>
+    <p>Crypto Agility คือความสามารถของระบบในการเปลี่ยน Algorithm Cryptography ได้โดยไม่ต้องแก้ไขโครงสร้างพื้นฐานทั้งหมด — เป็นคุณสมบัติที่สำคัญสำหรับการเปลี่ยนผ่านสู่ Post-Quantum</p>
+    <p><strong>หลักการออกแบบระบบให้ Crypto Agile:</strong></p>
+    <ol>
+      <li><strong>แยก Cryptographic Layer:</strong> ไม่ผูก Algorithm ไว้กับ Business Logic</li>
+      <li><strong>ใช้ Abstraction:</strong> กำหนด Interface (เข้ารหัส, ถอดรหัส, เซ็น, ตรวจสอบ) โดยไม่ระบุ Algorithm ตายตัว</li>
+      <li><strong>Negotiable Algorithms:</strong> Protocol ต้องรองรับการตกลง Algorithm (Cipher Suite Negotiation)</li>
+      <li><strong>Versioning & Migration Plan:</strong> มีแผนอัปเกรด Algorithm โดยไม่ Downtime</li>
+      <li><strong>Hybrid Mode:</strong> ใช้ Algorithm ปัจจุบัน + Post-Quantum Algorithm พร้อมกันในระหว่าง Migration</li>
+    </ol>
+
+    <pre><code>class CryptoProvider(ABC):
+    """Abstract interface — ไม่ผูกกับ Algorithm ใด Algorithm หนึ่ง"""
+
+    @abstractmethod
+    def encrypt(self, plaintext: bytes, aad: bytes = None) -> bytes:
+        pass
+
+    @abstractmethod
+    def decrypt(self, ciphertext: bytes, aad: bytes = None) -> bytes:
+        pass
+
+    @abstractmethod
+    def sign(self, message: bytes) -> bytes:
+        pass
+
+    @abstractmethod
+    def verify(self, message: bytes, signature: bytes) -> bool:
+        pass
+
+# Implementation แบบ Hybrid: AES-GCM + Kyber
+class HybridCryptoProvider(CryptoProvider):
+    def __init__(self):
+        self.classic_cipher = AESGCM(...)
+        self.pq_kem = KyberKEM(...)
+
+    def encrypt(self, plaintext, aad=None):
+        # เข้ารหัสด้วยทั้ง AES-GCM และ Kyber
+        # เก็บ Ciphertext + Algorithm Identifier
+        pass</code></pre>
+
+    <div class="interactive">
+      <h4>Interactive: Post-Quantum Algorithm Impact</h4>
+      <p>คลิก Algorithm เพื่อดูสถานะหลังยุค Quantum Computing</p>
+      <button class="quiz-option" data-quiz="pqc" data-correct="true">CRYSTALS-Kyber — KEM มาตรฐาน FIPS 203</button>
+      <button class="quiz-option" data-quiz="pqc" data-correct="false">RSA-2048 — แตกด้วย Shor's Algorithm</button>
+      <button class="quiz-option" data-quiz="pqc" data-correct="false">ECDSA P-256 — แตกด้วย Shor's Algorithm</button>
+      <button class="quiz-option" data-quiz="pqc" data-correct="true">AES-256 — ยังปลอดภัย (ลดเหลือ 128 bits)</button>
+      <div id="pqcResult" class="result">เลือก Algorithm เพื่อดูสถานะหลังยุค Quantum</div>
+    </div>
+
+    <h2 id="s7">8.7 กรณีศึกษาและเหตุการณ์จริง</h2>
+
+    <h3 id="s7-1">8.7.1 Heartbleed (CVE-2014-0160)</h3>
+    <p><strong>รายละเอียด:</strong></p>
+    <ul>
+      <li>ช่องโหว่ใน OpenSSL (มีผลกับ 1.0.1 — 1.0.1f)</li>
+      <li>Buffer over-read ใน TLS Heartbeat Extension</li>
+      <li>ผู้โจมตีสามารถอ่าน Memory ของ Server ได้ครั้งละ 64 KB (แต่ทำซ้ำได้เรื่อยๆ)</li>
+      <li>ไม่ต้อง Authentication — ทุกคนที่เชื่อมต่อ TLS อ่าน Memory ได้</li>
+    </ul>
+    <p><strong>ผลกระทบ:</strong></p>
+    <ul>
+      <li>รั่วไหล Private Key — แฮกเกอร์ขโมย Private Key จาก Memory</li>
+      <li>รั่วไหล Session Keys, Passwords, และ User Data</li>
+      <li>มีผลกับเซิร์ฟเวอร์ ~17% (500,000+) ของ HTTPS Servers</li>
+      <li>OpenSSL เป็น Library Cryptography ที่ได้รับความนิยมสูงสุด</li>
+    </ul>
+    <p><strong>บทเรียน:</strong></p>
+    <ul>
+      <li>Library Cryptography ที่มีคนใช้มากที่สุดก็มี Bug ได้</li>
+      <li>Memory Safety ในภาษา C เป็นปัญหา — Buffer Over-read</li>
+      <li>ต้องมี Monitoring และ Patch Management ที่รวดเร็ว</li>
+      <li>การใช้ Memory-safe Language (Rust, Go) สำหรับ Cryptography กำลังได้รับความนิยม</li>
+    </ul>
+
+    <h3 id="s7-2">8.7.2 CRIME, BREACH, และ POODLE (TLS Attacks)</h3>
+    <div class="table-wrap"><table><thead><tr><th>Attack</th><th>ปี</th><th>เป้าหมาย</th><th>วิธีการ</th></tr></thead><tbody>
+      <tr><td><strong>CRIME</strong> (CVE-2012-4929)</td><td>2012</td><td>TLS Compression</td><td>บีบอัดข้อมูลก่อนเข้ารหัส → ขนาด Ciphertext บอกข้อมูล</td></tr>
+      <tr><td><strong>BREACH</strong> (CVE-2013-3587)</td><td>2013</td><td>HTTP Compression</td><td>HTTP Response Body ถูกบีบอัด → ขนาดบอกข้อมูล</td></tr>
+      <tr><td><strong>POODLE</strong> (CVE-2014-3566)</td><td>2014</td><td>SSL 3.0</td><td>จัดการ Padding ใน CBC Mode → อ่านข้อมูลทีละ Byte</td></tr>
+    </tbody></table></div>
+    <p><strong>บทเรียน:</strong></p>
+    <ul>
+      <li>อย่าบีบอัดข้อมูลก่อนเข้ารหัสร่วมกับข้อมูลที่ผู้โจมตีควบคุมได้ (ไม่ใช้ TLS Compression)</li>
+      <li>SSL 3.0 ถูก Deprecated — ใช้ TLS 1.2+ เท่านั้น</li>
+      <li>Side-Channel Attacks อาศัย Observable Behavior (เวลา, ขนาด) — ต้องมี Constant-time Implementation</li>
+    </ul>
+
+    <h3 id="s7-3">8.7.3 Log4Shell (CVE-2021-44228)</h3>
+    <p><strong>รายละเอียด:</strong></p>
+    <ul>
+      <li>ช่องโหว่ใน Apache Log4j library (Java logging framework)</li>
+      <li>ผู้โจมตีส่ง String พิเศษใน Header หรือ Input → Log4j ดึง JNDI lookup ที่รันโค้ดบน Server</li>
+      <li>CVSS 10.0 — Remote Code Execution</li>
+      <li>มีผลกับเซิร์ฟเวอร์นับล้าน</li>
+    </ul>
+    <p><strong>ความเกี่ยวข้องกับ Cryptography:</strong></p>
+    <ul>
+      <li>ถึงแม้ไม่ใช่ช่องโหว่ Cryptography โดยตรง แต่ Log4Shell แสดงให้เห็นว่า <strong>ข้อมูลที่ถูก Log อาจไหลไปยังระบบอื่น</strong></li>
+      <li>ข้อความที่เป็น JNDI lookup ถูกประมวลผล — ไม่ใช่แค่เขียนลง File</li>
+      <li>ความปลอดภัยของ Cryptography Library (JCA) ไร้ประโยชน์ถ้า System Security ถูก bypass ได้</li>
+    </ul>
+
+    <h3 id="s7-4">8.7.4 Venafi / Microsoft 2024 — Post-Quantum Readiness Report</h3>
+    <p><strong>รายละเอียด:</strong></p>
+    <ul>
+      <li>จากการสำรวจองค์กรทั่วโลก (2024):</li>
+      <li>75% ขององค์กรยังไม่ได้เตรียมความพร้อมสำหรับ Post-Quantum Cryptography</li>
+      <li>45% ไม่ทราบว่าต้องทำอะไร</li>
+      <li>60% ขององค์กรการเงินเริ่มเตรียมการแล้ว</li>
+      <li>เฉลี่ยการเปลี่ยนผ่านใช้เวลา 5-10 ปี</li>
+    </ul>
+    <p><strong>บทเรียน:</strong></p>
+    <ul>
+      <li>ต้องเริ่มสร้าง Crypto Inventory (ทำรายการ Algorithm ที่ใช้ทั่วทั้งองค์กร) ตอนนี้</li>
+      <li>Algorithm Classical → Post-Quantum Migration ใช้เวลานาน</li>
+      <li>ระบบที่ใช้ RSA-1024 หรือ SHA-1 ต้องรีบเปลี่ยน</li>
+    </ul>
+
+    <h3 id="s7-5">8.7.5 การโจมตี Key Management จริง</h3>
+    <div class="table-wrap"><table><thead><tr><th>เหตุการณ์</th><th>ปี</th><th>รายละเอียด</th></tr></thead><tbody>
+      <tr><td><strong>AWS Keys รั่วจาก Source Code</strong></td><td>2023</td><td>พบ Access Key ใน GitHub Public Repo → นาทีแรกก็ถูกใช้แล้ว</td></tr>
+      <tr><td><strong>NPM Package ปลอมขโมย Keys</strong></td><td>2024</td><td>Malicious Package ใน npm อ่าน Environment Variables</td></tr>
+      <tr><td><strong>HouseAd (Microsoft)</strong></td><td>2024</td><td>Key ถูก hardcode ใน Internal App — รั่วจาก Source Code Leak</td></tr>
+      <tr><td><strong>Cryptomining บน Kubernetes (2024)</strong></td><td>2024</td><td>แฮกเกอร์หา Kubernetes Secrets จาก Cluster ที่ Config ผิด → ใช้ Cloud Resources ฟรี</td></tr>
+    </tbody></table></div>
+
+    <h2 id="s8">8.8 สรุปและแนวทางปฏิบัติ</h2>
+
+    <h3 id="s8-1">8.8.1 Algorithm Selection Guide</h3>
+    <div class="table-wrap"><table><thead><tr><th>กรณีใช้งาน</th><th>Algorithm ที่แนะนำ</th><th>ห้ามใช้</th></tr></thead><tbody>
+      <tr><td><strong>Encrypt Data</strong></td><td>AES-256-GCM, ChaCha20-Poly1305</td><td>ECB mode, RC4, DES</td></tr>
+      <tr><td><strong>Encrypt at Rest</strong></td><td>AES-256-GCM, AES-256-XTS (disk)</td><td>ECB, Static IV</td></tr>
+      <tr><td><strong>Encrypt in Transit</strong></td><td>TLS 1.3 (AES-GCM, ChaCha20-Poly1305)</td><td>SSL 3.0, TLS 1.0, TLS 1.1</td></tr>
+      <tr><td><strong>Password Hashing</strong></td><td>Argon2id, bcrypt</td><td>MD5, SHA-256 (โดยตรง)</td></tr>
+      <tr><td><strong>Digital Signature</strong></td><td>Ed25519, ECDSA P-256</td><td>DSA, RSA-PKCS1v1.5</td></tr>
+      <tr><td><strong>Key Exchange</strong></td><td>X25519 (ECDHE)</td><td>DH-1024, RSA Key Exchange</td></tr>
+      <tr><td><strong>Integrity Check</strong></td><td>SHA-256, SHA-3-256, HMAC-SHA256</td><td>MD5, SHA-1</td></tr>
+      <tr><td><strong>Certificate</strong></td><td>X.509 v3, SHA-256withRSA/ECDSA</td><td>SHA-1 Certificate</td></tr>
+    </tbody></table></div>
+
+    <h3 id="s8-2">8.8.2 Checklist การใช้ Cryptography</h3>
+    <div class="interactive" id="play-checklist">
+      <h4>Interactive: Cryptography Implementation Checklist</h4>
+      <p>ทำเครื่องหมายรายการที่ตรวจสอบแล้ว</p>
+      <div class="checklist" id="cryptoChecks">
+        <label><input type="checkbox" value="lib"> ใช้ Library ที่ผ่านการตรวจสอบ (ไม่เขียนเอง)</label>
+        <label><input type="checkbox" value="ecb"> ไม่ใช้ ECB Mode — ใช้ GCM หรือ CTR</label>
+        <label><input type="checkbox" value="nonce"> IV/Nonce ถูกสุ่มทุกครั้ง (ไม่ซ้ำเด็ดขาดสำหรับ GCM/ChaCha20)</label>
+        <label><input type="checkbox" value="aead"> ใช้ Authenticated Encryption (AEAD) — GCM, ChaCha20-Poly1305</label>
+        <label><input type="checkbox" value="pwhash"> Hash รหัสผ่านด้วย Argon2id หรือ bcrypt (ไม่ใช่ SHA-256)</label>
+        <label><input type="checkbox" value="constime"> ใช้ Constant-time Comparison (ไม่ใช่ == / ===)</label>
+        <label><input type="checkbox" value="keys"> คีย์ถูกเก็บใน Secret Manager หรือ HSM (ไม่ Hardcode)</label>
+        <label><input type="checkbox" value="padding"> RSA Padding ใช้ OAEP เสมอ (ไม่ใช้ PKCS1v1.5 ถ้าเลี่ยงได้)</label>
+        <label><input type="checkbox" value="hashalgo"> Hash Algorithm = SHA-256 ขึ้นไป (ไม่ใช้ MD5/SHA-1)</label>
+        <label><input type="checkbox" value="tls"> TLS 1.3 หรือ TLS 1.2 อย่างน้อย (ไม่ใช้ SSL/ TLS 1.0)</label>
+        <label><input type="checkbox" value="cert"> ตรวจสอบ Certificate ทุกครั้งใน HTTPS Connection</label>
+        <label><input type="checkbox" value="agility"> มีแผน Crypto Agility สำหรับ Post-Quantum Migration</label>
+      </div>
+      <div class="meter"><div class="meter-fill" id="cryptoMeter"></div></div>
+      <div id="cryptoCheckResult" class="result">ทำเครื่องหมายรายการที่ตรวจสอบแล้วเพื่อดูคะแนน</div>
+    </div>
+
+    <h3 id="s8-3">8.8.3 OWASP ASVS ที่เกี่ยวข้องกับ Cryptography</h3>
+    <p><strong>ASVS Version 4.0.3 — Cryptographic Architecture:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ข้อ</th><th>รายการ</th><th style="text-align:center">Level</th></tr></thead><tbody>
+      <tr><td>6.2.1</td><td>Algorithm ต้องเป็น FIPS-approved หรือ NIST-recommended</td><td style="text-align:center">L1</td></tr>
+      <tr><td>6.2.2</td><td>มีการจัดการ Key Lifecycle</td><td style="text-align:center">L2</td></tr>
+      <tr><td>6.2.3</td><td>ใช้ CSPRNG สำหรับสร้าง Key และ Nonce</td><td style="text-align:center">L2</td></tr>
+      <tr><td>6.2.4</td><td>Padding Mode ถูกต้อง (OAEP สำหรับ RSA)</td><td style="text-align:center">L2</td></tr>
+      <tr><td>6.2.5</td><td>ใช้ Authenticated Encryption (GCM, ChaCha20-Poly1305)</td><td style="text-align:center">L3</td></tr>
+      <tr><td>6.2.6</td><td>Key Rotation มีกลไกอัตโนมัติ</td><td style="text-align:center">L3</td></tr>
+      <tr><td>6.2.7</td><td>สามารถเปลี่ยน Algorithm ได้ง่าย (Crypto Agility)</td><td style="text-align:center">L3</td></tr>
+      <tr><td>6.2.8</td><td>มี Post-Quantum Migration Plan</td><td style="text-align:center">L3</td></tr>
+    </tbody></table></div>
+
+    <div class="info-box remember" id="summary">
+      <span class="icon">📌</span>
+      <div>
+        <strong>สรุปท้ายบท:</strong>
+        <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+          <li>Cryptography เป็นพื้นฐานสำคัญของความปลอดภัยซอฟต์แวร์ — ต้องใช้ให้ถูกต้องตามหลักการ</li>
+          <li>Don't Roll Your Own Crypto — ใช้ Library ที่ผ่านการตรวจสอบเสมอ</li>
+          <li>AES-256-GCM และ ChaCha20-Poly1305 เป็นมาตรฐานสำหรับ Symmetric Encryption</li>
+          <li>ECC (Ed25519, X25519) แทนที่ RSA ในกรณีส่วนใหญ่เพราะเร็วกว่าและปลอดภัยกว่า</li>
+          <li>PKI และ Certificate Chain เป็นรากฐานของความน่าเชื่อถือในระบบ Internet</li>
+          <li>Post-Quantum Cryptography กำลังมา — ต้องเตรียม Crypto Agility ตั้งแต่ตอนนี้</li>
+          <li>Key Management เป็นจุดอ่อนที่สุด — ใช้ Secret Manager หรือ HSM อย่า Hardcode</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-box question">
+      <span class="icon">💬</span>
+      <div>
+        <strong>คำถามสำหรับการอภิปรายในชั้นเรียน:</strong>
+        <p style="margin:.25rem 0 0">ในฐานะนักพัฒนา ท่านคิดว่าควรเริ่มเตรียมความพร้อมสำหรับ Post-Quantum Cryptography อย่างไรในองค์กรของท่าน? อะไรคือความท้าทายหลักในการเปลี่ยนผ่าน?</p>
+      </div>
+    </div>
+
+    <h2 id="keywords">Keywords</h2>
+    <p>Cryptography, AES, GCM, ChaCha20, RSA, ECC, ECDSA, Ed25519, Digital Signature, Hash, SHA-256, SHA-3, HMAC, PKI, X.509, Certificate Authority, Key Management, Post-Quantum, Kyber, Dilithium, Crypto Agility, Authenticated Encryption, Perfect Forward Secrecy</p>
+
+    <h2 id="labs">กิจกรรมปฏิบัติการ</h2>
+
+    <div class="card"><div class="card-header">Lab 8.1: ใช้ Python Cryptography Library</div>
+    <ul>
+      <li>ติดตั้ง <code>cryptography</code> library</li>
+      <li>เข้ารหัส AES-GCM ด้วย key ขนาด 256 bits</li>
+      <li>Sign และ Verify ข้อความด้วย ECDSA P-256</li>
+      <li>Hash ข้อความด้วย SHA-256 และ HMAC-SHA256</li>
+      <li>ตรวจสอบความแตกต่างระหว่าง Encryption, Hashing, และ Encoding</li>
+    </ul></div>
+
+    <div class="card"><div class="card-header">Lab 8.2: เปรียบเทียบ AES-ECB กับ AES-GCM</div>
+    <ul>
+      <li>เข้ารหัสภาพ (image file) ด้วย AES-ECB และ AES-GCM</li>
+      <li>สังเกต Pattern ที่เหลืออยู่ใน AES-ECB ที่ทำให้เห็นโครงสร้างภาพเดิม</li>
+      <li>เปรียบเทียบผลลัพธ์และอธิบายว่าเหตุใด ECB จึงไม่ปลอดภัย</li>
+    </ul></div>
+
+    <div class="card"><div class="card-header">Lab 8.3: Key Exchange ด้วย ECDH</div>
+    <ul>
+      <li>สร้าง Key Pair สำหรับ Alice และ Bob ด้วย X25519</li>
+      <li>คำนวณ Shared Secret ผ่าน ECDH Exchange</li>
+      <li>ใช้ HKDF เพื่อสร้าง AES Key จาก Shared Secret</li>
+      <li>ทดลองเข้ารหัสข้อความด้วย AES-GCM โดยใช้ Key จาก ECDH</li>
+    </ul></div>
+
+    <div class="card"><div class="card-header">Lab 8.4: วิเคราะห์ TLS Handshake ด้วย Wireshark</div>
+    <ul>
+      <li>ใช้ Wireshark จับ traffic ระหว่าง Browser กับ Server</li>
+      <li>วิเคราะห์ TLS Handshake: Cipher Suite, Certificate Chain, Key Exchange</li>
+      <li>ระบุ Algorithm ที่ใช้ (ECDHE, AES-GCM, SHA-384)</li>
+      <li>ตรวจสอบว่า Server รองรับ PFS หรือไม่</li>
+    </ul></div>
+
+    <h2 id="questions">คำถามท้ายบท</h2>
+    <ol>
+      <li>ทำไมจึงห้ามใช้ ECB mode ในการเข้ารหัสข้อมูลที่มี Pattern? ยกตัวอย่างการโจมตีที่มองเห็น Pattern ได้ชัดเจน</li>
+      <li>AES-GCM แตกต่างจาก AES-CBC อย่างไร? ข้อดีของ GCM คืออะไร และทำไม GCM จึงเป็น Authenticated Encryption?</li>
+      <li>Hybrid Encryption คืออะไร? ทำไมระบบจริง (เช่น TLS, PGP) จึงใช้ทั้ง Symmetric และ Asymmetric Encryption ร่วมกัน?</li>
+      <li>ความแตกต่างระหว่าง hashing และ encryption คืออะไร? ยกตัวอย่างการใช้งานที่ถูกต้องของแต่ละอย่าง</li>
+      <li>ทำไมการใช้ HMAC จึงปลอดภัยกว่าการใช้ SHA-256 เพียงอย่างเดียวในการตรวจสอบ Integrity ของข้อมูล?</li>
+      <li>Post-Quantum Cryptography คืออะไร? Algorithm ใดบ้างที่ NIST เลือกเป็นมาตรฐาน และทำไมนักพัฒนาต้องเตรียมพร้อม?</li>
+      <li>Certificate Chain ใน PKI คืออะไร? อธิบาย Chain of Trust ตั้งแต่ Root CA จนถึง Server Certificate</li>
+      <li>ถ้าต้องออกแบบระบบจัดเก็บรหัสผ่านที่ปลอดภัย ควรใช้ Algorithm อะไร ต้องมี Salt หรือ Pepper หรือไม่ และทำไมถึงห้ามใช้ SHA-256 สำหรับจุดประสงค์นี้</li>
+      <li>Perfect Forward Secrecy (PFS) คืออะไร? Protocol ใดที่ให้ PFS และทำไม PFS จึงสำคัญต่อความปลอดภัยในระยะยาว?</li>
+      <li>Crypto Agility คืออะไร? นักพัฒนาควรออกแบบระบบอย่างไรให้สามารถเปลี่ยน Algorithm Cryptography ได้ง่ายเมื่อเข้าสู่ยุค Post-Quantum?</li>
+      <li>ถ้าพบว่ามีการ Hardcode Encryption Key ไว้ใน Source Code ของโครงการ ซอฟต์แวร์ที่เผยแพร่ไปแล้วควรดำเนินการอย่างไร?</li>
+      <li>Kerckhoffs's Principle กล่าวว่าอย่างไร? จงอธิบายว่าหลักการนี้เกี่ยวข้องกับแนวปฏิบัติ Don't Roll Your Own Crypto อย่างไร</li>
+    </ol>
+
+    <h2 id="refs">เอกสารอ้างอิง</h2>
+    <ol style="font-size:.88rem">
+      <li>NIST FIPS 197 — Advanced Encryption Standard (AES)</li>
+      <li>NIST SP 800-38D — Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM) and GMAC</li>
+      <li>NIST SP 800-57 — Recommendation for Key Management</li>
+      <li>NIST SP 800-63B-4 — Digital Identity Guidelines: Authentication and Lifecycle Management</li>
+      <li>NIST SP 800-132 — Recommendation for Password-Based Key Derivation</li>
+      <li>NIST IR 8413 — Status Report on the Third Round of the NIST Post-Quantum Cryptography Standardization Process</li>
+      <li>NIST FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), FIPS 205 (SLH-DSA) — Post-Quantum Cryptography Standards</li>
+      <li>RFC 8439 — ChaCha20 and Poly1305 for IETF Protocols</li>
+      <li>RFC 8018 — PKCS #5: Password-Based Cryptography Specification Version 2.1 (PBKDF2)</li>
+      <li>RFC 5869 — HMAC-based Extract-and-Expand Key Derivation Function (HKDF)</li>
+      <li>RFC 7519 — JSON Web Token (JWT)</li>
+      <li>RFC 8032 — Edwards-Curve Digital Signature Algorithm (EdDSA)</li>
+      <li>RFC 8446 — The Transport Layer Security (TLS) Protocol Version 1.3</li>
+      <li>OWASP Password Storage Cheat Sheet</li>
+      <li>OWASP ASVS (Application Security Verification Standard) Version 4.0.3</li>
+      <li>IBM Security — Cost of a Data Breach Report 2025</li>
+      <li>Shor, P.W. (1994) — Algorithms for Quantum Computation: Discrete Logarithms and Factoring</li>
+      <li>Grover, L.K. (1996) — A Fast Quantum Mechanical Algorithm for Database Search</li>
+    </ol>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  // Sidebar toggle
+  var toggles = document.getElementById('sidebarToggle');
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebarOverlay');
+  if (toggles) {
+    toggles.addEventListener('click', function(){
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+    });
+  }
+  if (overlay) {
+    overlay.addEventListener('click', function(){
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    });
+  }
+
+  // Active sidebar link
+  var links = sidebar.querySelectorAll('a');
+  links.forEach(function(a){
+    a.addEventListener('click', function(){
+      links.forEach(function(l){ l.classList.remove('active'); });
+      this.classList.add('active');
+      if (window.innerWidth <= 1024) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+      }
+    });
+  });
+
+  // Tab panels
+  var tabBars = document.querySelectorAll('.tab-bar');
+  tabBars.forEach(function(bar){
+    var btns = bar.querySelectorAll('.tab-btn');
+    btns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        btns.forEach(function(b){ b.classList.remove('active'); });
+        this.classList.add('active');
+        var container = this.closest('.interactive');
+        var panels = container.querySelectorAll('.tab-panel');
+        panels.forEach(function(p){ p.classList.remove('active'); });
+        var target = container.querySelector('#panel-' + this.getAttribute('data-tab'));
+        if (target) target.classList.add('active');
+      });
+    });
+  });
+
+  // Quiz options
+  var quizOpts = document.querySelectorAll('.quiz-option');
+  quizOpts.forEach(function(opt){
+    opt.addEventListener('click', function(){
+      var container = this.closest('.interactive');
+      var qname = this.getAttribute('data-quiz');
+      var correct = this.getAttribute('data-correct') === 'true';
+      var allOpts = container.querySelectorAll('.quiz-option');
+      allOpts.forEach(function(o){
+        o.classList.remove('correct', 'incorrect');
+        o.style.opacity = '0.6';
+      });
+      this.style.opacity = '1';
+      if (correct) {
+        this.classList.add('correct');
+        var r = container.querySelector('#' + qname + 'Result');
+        if (r) r.textContent = '✓ ถูกต้อง! คำตอบนี้ปลอดภัยและเหมาะสม';
+      } else {
+        this.classList.add('incorrect');
+        var r = container.querySelector('#' + qname + 'Result');
+        if (r) r.textContent = '✗ ไม่ถูกต้อง ลองเลือกคำตอบอื่น';
+      }
+    });
+  });
+
+  // Checklist
+  var checklists = document.querySelectorAll('.checklist');
+  checklists.forEach(function(cl){
+    var result = cl.parentElement.querySelector('.result');
+    var meter = cl.parentElement.querySelector('.meter-fill');
+    var inputs = cl.querySelectorAll('input[type="checkbox"]');
+    function update(){
+      var checked = 0;
+      inputs.forEach(function(inp){ if(inp.checked) checked++; });
+      var pct = inputs.length > 0 ? Math.round(checked / inputs.length * 100) : 0;
+      if (meter) meter.style.width = pct + '%';
+      if (result) result.textContent = 'ตรวจสอบแล้ว ' + checked + ' จาก ' + inputs.length + ' รายการ (' + pct + '%)';
+    }
+    inputs.forEach(function(inp){ inp.addEventListener('change', update); });
+    update();
+  });
+
+  // Reading progress
+  var readingProgress = document.getElementById('readingProgress');
+  if (readingProgress) {
+    document.addEventListener('scroll', function(){
+      var scrollTop = window.scrollY;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = docHeight > 0 ? Math.min(100, Math.round(scrollTop / docHeight * 100)) : 0;
+      readingProgress.textContent = 'Software Security · ' + pct + '%';
+    });
+  }
+})();
+</script>
+<div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--text-muted, #64748b);border-top:1px solid var(--border, #e2e8f0)">Powered by: IceSuntisuk</div></body>
+</html>
