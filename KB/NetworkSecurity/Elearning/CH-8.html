@@ -1,0 +1,1560 @@
+﻿<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-8: เครือข่ายส่วนตัวเสมือน (Virtual Private Network — VPN) | วิชา Network Security</title>
+<meta name="description" content="บทที่ 8 วิชา Network Security — เครือข่ายส่วนตัวเสมือน (VPN): หลักการและความจําเป็นของ VPN, องค&ประกอบของ VPN, VPN Tunneling (Tunnel Mode vs Transport Mode), ประเภทของ VPN (Remote Access, Site-to-Site, SSL VPN, Client-based), IPsec VPN, OpenVPN, WireGuard, L2TP/IPsec, PPTP, การเลือกใช้ VPN, กรณีศึกษาการออกแบบ VPN สําหรับองค&กร">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "CH-8: เครือข่ายส่วนตัวเสมือน (Virtual Private Network — VPN)",
+  "description": "บทที่ 8 ของวิชา Network Security — ครอบคลุม หลักการและความจําเป็นของ VPN, องค&ประกอบของ VPN, VPN Tunneling (Tunnel Mode vs Transport Mode), ประเภทของ VPN (Remote Access, Site-to-Site, SSL VPN, Client-based), IPsec VPN, OpenVPN, WireGuard, L2TP/IPsec, PPTP, การเลือกใช้ VPN, กรณีศึกษาการออกแบบ VPN สําหรับองค&กร",
+  "educationalLevel": "Undergraduate",
+  "educationalRole": "Instructor",
+  "teaches": [
+    "Virtual Private Network (VPN)",
+    "VPN Tunneling",
+    "Site-to-Site VPN",
+    "Remote Access VPN",
+    "SSL VPN",
+    "IPsec VPN",
+    "OpenVPN",
+    "WireGuard",
+    "L2TP/IPsec",
+    "PPTP",
+    "IPsec IKEv2",
+    "Perfect Forward Secrecy",
+    "NAT Traversal",
+    "Split Tunneling"
+  ],
+  "inLanguage": "th"
+}
+</script>
+<style>
+:root{--primary:#1a3a5c;--primary-dark:#0f2440;--primary-light:#2c5a8c;--accent:#2563eb;--accent-hover:#1d4ed8;--bg:#ffffff;--bg-secondary:#f8fafc;--bg-tertiary:#f1f5f9;--text:#1e293b;--text-secondary:#475569;--text-muted:#94a3b8;--border:#e2e8f0;--border-light:#f1f5f9;--code-bg:#0f172a;--code-text:#e2e8f0;--table-stripe:#f8fafc;--sidebar-bg:#f8fafc;--sidebar-border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);--radius:8px;--radius-sm:4px;--radius-lg:12px;--font-thai:'Sarabun','IBM Plex Sans Thai','Kanit','Noto Sans Thai',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--font-mono:'JetBrains Mono','Fira Code','Cascadia Code','Source Code Pro','Menlo','Consolas',monospace;--transition:0.2s ease;--header-height:64px;--toc-width:280px}
+[data-theme="dark"]{--primary:#60a5fa;--primary-dark:#1e3a5f;--accent:#3b82f6;--accent-hover:#60a5fa;--bg:#0f172a;--bg-secondary:#1e293b;--bg-tertiary:#334155;--text:#f1f5f9;--text-secondary:#cbd5e1;--text-muted:#64748b;--border:#334155;--code-bg:#020617;--table-stripe:#1e293b;--sidebar-bg:#1e293b;--sidebar-border:#334155;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+h1,h2,h3,h4,h5,h6{line-height:1.3;font-weight:700;color:var(--text);margin-top:1.5em;margin-bottom:.75em}
+h1{font-size:2.25rem;margin-top:0}
+h2{font-size:1.75rem;border-bottom:2px solid var(--border);padding-bottom:.4em}
+h3{font-size:1.35rem}
+h4{font-size:1.1rem}
+p{margin-bottom:1em}
+hr{border:none;border-top:2px solid var(--border);margin:2.5em 0}
+strong,b{font-weight:700}
+ul,ol{margin-bottom:1em;padding-left:1.5em}
+li{margin-bottom:.35em}
+#loading-screen{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s ease}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-secondary);font-size:1rem}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#818cf8);z-index:9998;width:0%;transition:width .15s ease-out}
+.top-nav{position:fixed;top:3px;left:0;right:0;z-index:9997;height:var(--header-height);background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-nav .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem;color:var(--text);white-space:nowrap}
+.top-nav .logo i{color:var(--accent);font-size:1.3rem}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-actions button,.nav-actions .search-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:1rem}
+.nav-actions button:hover,.nav-actions .search-toggle:hover{background:var(--bg-tertiary);color:var(--text);border-color:var(--text-muted)}
+#sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.search-overlay{position:fixed;inset:0;z-index:9996;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(4px)}
+.search-overlay.active{display:flex}
+.search-panel{background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:90%;max-width:640px;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
+.search-input-wrap{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);gap:.5rem}
+.search-input-wrap i{color:var(--text-muted)}
+.search-input-wrap input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:1rem;font-family:var(--font-thai)}
+.search-input-wrap input::placeholder{color:var(--text-muted)}
+.search-count{font-size:.8rem;color:var(--text-muted);white-space:nowrap;padding:.25rem .5rem;background:var(--bg-tertiary);border-radius:var(--radius-sm)}
+.search-results{overflow-y:auto;padding:.5rem;flex:1;max-height:50vh}
+.search-results .no-results{padding:2rem;text-align:center;color:var(--text-muted)}
+.search-result-item{padding:.75rem;border-radius:var(--radius);cursor:pointer;transition:background .2s ease;border-bottom:1px solid var(--border-light)}
+.search-result-item:hover{background:var(--bg-tertiary)}
+.search-result-item .result-heading{font-weight:600;font-size:.9rem;color:var(--accent);margin-bottom:.2rem}
+.search-result-item .result-snippet{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.search-result-item .result-snippet mark,.highlight{background:#fef08a;color:#1e293b;padding:0 2px;border-radius:2px}
+[data-theme="dark"] .search-result-item .result-snippet mark,[data-theme="dark"] .highlight{background:#854d0e;color:#fef9c3}
+.layout{display:flex;padding-top:calc(var(--header-height) + 3px);min-height:100vh}
+.sidebar{width:var(--toc-width);flex-shrink:0;position:sticky;top:calc(var(--header-height) + 3px);height:calc(100vh - var(--header-height) - 3px);overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:1.25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--text-muted) transparent;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:4px}
+.sidebar-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{margin-bottom:.15rem}
+.toc-link{display:block;padding:.4rem .6rem;border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-secondary);transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;line-height:1.4}
+.toc-link:hover{background:var(--bg-tertiary);color:var(--text);text-decoration:none}
+.toc-link.active{color:var(--accent);background:rgba(37,99,235,.08);border-left-color:var(--accent);font-weight:600}
+.toc-link.sub{padding-left:1.4rem;font-size:.8rem}
+.toc-link.sub2{padding-left:2.2rem;font-size:.78rem}
+.main-content{flex:1;min-width:0;padding:2rem 2.5rem;max-width:calc(100vw - var(--toc-width))}
+.main-content>section{margin-bottom:2.5rem}
+.section-ref{scroll-margin-top:calc(var(--header-height) + 16px)}
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:2.5rem 2rem;border-radius:var(--radius-lg);margin-bottom:2.5rem}
+.hero h1{color:#fff;font-size:2rem;margin-bottom:.5rem}
+.hero .subtitle{color:rgba(255,255,255,.85);font-size:1.1rem;margin-bottom:1.25rem}
+.hero .meta-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.hero .meta-tag{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);padding:.25rem .75rem;border-radius:20px;font-size:.8rem}
+.learning-objectives{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+.learning-objectives h3{margin-top:0;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.learning-objectives ol{margin:.75rem 0 0;padding-left:1.25rem}
+.learning-objectives li{margin-bottom:.5rem;color:var(--text-secondary);font-size:.95rem}
+.table-wrap{overflow-x:auto;margin:1.25em 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}
+thead{background:var(--bg-tertiary)}
+th,td{padding:.6rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}
+th{font-weight:700;color:var(--text)}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+tbody tr:hover{background:var(--bg-tertiary)}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:1.25em 0;position:relative}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+code{background:var(--bg-tertiary);color:var(--accent);padding:.15em .4em;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.85em}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:0}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.expandable{margin:1.25em 0}
+.expandable-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease;user-select:none;font-weight:600;font-size:.95rem}
+.expandable-header:hover{background:var(--border)}
+.expandable-header i{transition:transform .2s ease;font-size:.85rem;color:var(--text-muted)}
+.expandable.expanded .expandable-header i{transform:rotate(180deg)}
+.expandable-content{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;border:1px solid transparent}
+.expandable.expanded .expandable-content{max-height:50000px;padding:1rem;border-color:var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.quiz-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:all .2s ease}
+.quiz-card.revealed{border-left:4px solid #22c55e}
+.quiz-question{display:flex;gap:.75rem;align-items:flex-start}
+.q-number{background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.quiz-question p{margin:0;font-weight:500;color:var(--text);font-size:.95rem}
+.quiz-card .reveal-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-family:var(--font-thai);transition:all .2s ease}
+.quiz-card .reveal-btn:hover{background:var(--accent-hover)}
+.quiz-card.revealed .reveal-btn{background:var(--text-muted)}
+.quiz-answer{margin-top:.75rem;padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border);font-size:.9rem}
+.hidden{display:none}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:9995;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-lg);transition:all .2s ease;opacity:0;visibility:hidden;transform:translateY(10px)}
+#back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+#back-to-top:hover{background:var(--accent-hover);transform:translateY(-2px)}
+.site-footer{margin-top:3rem;padding:1.5rem 2rem;background:var(--bg-secondary);border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+@media print{.top-nav,.sidebar,#back-to-top,#progress-bar,.copy-btn,.search-overlay,#sidebar-toggle,.nav-actions{display:none!important}.layout{display:block;padding-top:0}.main-content{max-width:100%;padding:0}.hero{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hero h1,.hero .subtitle{color:#fff!important}table{font-size:.8rem}pre{white-space:pre-wrap;word-break:break-all}.expandable-content{max-height:none!important;padding:1rem!important;border-color:var(--border)!important}.expandable-header i{display:none}.table-wrap{overflow:visible}.quiz-answer.hidden{display:block!important}.quiz-card .reveal-btn{display:none}body{font-size:11pt}section{page-break-inside:avoid}h2,h3{page-break-after:avoid}}
+@media(max-width:1024px){:root{--toc-width:240px}.main-content{padding:1.5rem}}
+@media(max-width:768px){:root{--toc-width:0px}#sidebar-toggle{display:flex}.sidebar{position:fixed;left:-280px;top:calc(var(--header-height) + 3px);width:280px;height:calc(100vh - var(--header-height) - 3px);transition:left .3s ease;z-index:9990;box-shadow:var(--shadow-lg)}.sidebar.open{left:0}.sidebar-overlay{position:fixed;inset:0;z-index:9989;background:rgba(0,0,0,.4);display:none}.sidebar-overlay.active{display:block}.main-content{max-width:100%;padding:1rem}.hero{padding:1.5rem 1rem}.hero h1{font-size:1.5rem}h2{font-size:1.4rem}h3{font-size:1.15rem}.top-nav{padding:0 .75rem}.top-nav .logo{font-size:.85rem}table{font-size:.8rem}th,td{padding:.4rem .6rem}.quiz-card{padding:1rem}}
+@media(max-width:480px){.nav-actions button,.nav-actions .search-toggle{width:36px;height:36px}#back-to-top{bottom:1rem;right:1rem;width:40px;height:40px}.search-panel{width:95%}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<div id="loading-screen" role="status" aria-label="กําลังโหลดเนื้อหา">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">กําลังโหลดเนื้อหา...</div>
+</div>
+<div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้าการอ่าน"></div>
+<header class="top-nav" role="banner">
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button id="sidebar-toggle" aria-label="เปิดเมนูสารบัญ" aria-expanded="false"><i class="fas fa-bars"></i></button>
+    <div class="logo"><i class="fas fa-shield-halved" aria-hidden="true"></i><span>Network Security — บทที่ 8</span></div>
+  </div>
+  <div class="nav-actions">
+    <button class="search-toggle" id="search-toggle-btn" aria-label="ค้นหา" title="ค้นหา (Ctrl+K / ⌘K)"><i class="fas fa-search" aria-hidden="true"></i></button>
+    <button id="dark-mode-toggle" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง"><i class="fas fa-moon" aria-hidden="true"></i></button>
+  </div>
+</header>
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="ค้นหาเนื้อหา">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="ค้นหาในเนื้อหาทั้งหมด..." aria-label="ป้อนคําค้นหา" autocomplete="off">
+      <span class="search-count" id="search-count"></span>
+      <button id="search-close-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;" aria-label="ปิดค้นหา"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="layout">
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-title"><i class="fas fa-list" aria-hidden="true"></i> สารบัญ</div>
+  <ul class="toc-list" id="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#hero-section" data-target="hero-section">บทนํา</a></li>
+    <li class="toc-item"><a class="toc-link" href="#learning-objectives" data-target="learning-objectives">วัตถุประสงค์การเรียนรู้</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section1" data-target="section1">1. หลักการและความจําเป็นของ VPN</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-1" data-target="section1-1">1.1 VPN คืออะไร</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-2" data-target="section1-2">1.2 ทําไมต้องใช้ VPN</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-3" data-target="section1-3">1.3 สถิติการใช้งาน VPN</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section2" data-target="section2">2. องค์ประกอบของ VPN</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-1" data-target="section2-1">2.1 ส่วนประกอบหลัก</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-2" data-target="section2-2">2.2 ประเภทการเชื่อมต่อ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section3" data-target="section3">3. VPN Tunneling</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-1" data-target="section3-1">3.1 หลักการ Tunneling</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-2" data-target="section3-2">3.2 Tunnel vs Transport</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section4" data-target="section4">4. ประเภทของ VPN ตามการใช้งาน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-1" data-target="section4-1">4.1 Remote Access VPN</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-2" data-target="section4-2">4.2 Site-to-Site VPN</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-3" data-target="section4-3">4.3 SSL VPN</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-4" data-target="section4-4">4.4 Client-based VPN</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section5" data-target="section5">5. IPsec VPN</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-1" data-target="section5-1">5.1 ภาพรวม IPsec</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-2" data-target="section5-2">5.2 IPsec VPN Architecture</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-3" data-target="section5-3">5.3 IPsec Config Example</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-4" data-target="section5-4">5.4 ข้อดีและข้อจํากัด</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section6" data-target="section6">6. OpenVPN</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-1" data-target="section6-1">6.1 ภาพรวม</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-2" data-target="section6-2">6.2 สถาปัตยกรรม</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-3" data-target="section6-3">6.3 การเข้ารหัส</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-4" data-target="section6-4">6.4 OpenVPN Config</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-5" data-target="section6-5">6.5 ข้อดีและข้อจํากัด</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section7" data-target="section7">7. WireGuard</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-1" data-target="section7-1">7.1 ภาพรวม</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-2" data-target="section7-2">7.2 หลักการออกแบบ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-3" data-target="section7-3">7.3 การทํางาน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-4" data-target="section7-4">7.4 WireGuard Config</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-5" data-target="section7-5">7.5 ข้อดีและข้อจํากัด</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section8" data-target="section8">8. L2TP/IPsec</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-1" data-target="section8-1">8.1 ภาพรวม</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-2" data-target="section8-2">8.2 L2TP/IPsec vs อื่นๆ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section9" data-target="section9">9. PPTP</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-1" data-target="section9-1">9.1 ความไม่ปลอดภัย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-2" data-target="section9-2">9.2 Timeline การโจมตี</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section10" data-target="section10">10. การเลือกใช้ VPN</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-1" data-target="section10-1">10.1 ตารางเปรียบเทียบ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-2" data-target="section10-2">10.2 แนวทางการเลือก</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-3" data-target="section10-3">10.3 ปัจจัยในการเลือก</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section11" data-target="section11">11. กรณีศึกษา ABC Corporation</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section11-1" data-target="section11-1">11.1 สถานการณ์</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section11-2" data-target="section11-2">11.2 ความต้องการ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section11-3" data-target="section11-3">11.3 การออกแบบ VPN</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section11-4" data-target="section11-4">11.4 การเลือกโพรโทคอล</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section11-5" data-target="section11-5">11.5 นโยบายความปลอดภัย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section11-6" data-target="section11-6">11.6 High Availability</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section11-7" data-target="section11-7">11.7 บทเรียน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#summary" data-target="summary">สรุปท้ายบท</a></li>
+    <li class="toc-item"><a class="toc-link" href="#review-questions" data-target="review-questions">คําถามทบทวน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#references" data-target="references">เอกสารอ้างอิง</a></li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content" role="main">
+
+<section id="hero-section" class="hero section-ref">
+  <h1><i class="fas fa-shield-halved" aria-hidden="true"></i> CH-8: เครือข่ายส่วนตัวเสมือน (Virtual Private Network — VPN)</h1>
+  <p class="subtitle">Virtual Private Network (VPN) — หลักการและความจําเป็นของ VPN, องค์ประกอบ, VPN Tunneling, ประเภทของ VPN, โพรโทคอล VPN (IPsec, OpenVPN, WireGuard, L2TP/IPsec, PPTP), การเลือกใช้ VPN และกรณีศึกษา</p>
+  <div class="meta-tags">
+    <span class="meta-tag"><i class="fas fa-graduation-cap" aria-hidden="true"></i> วิชา Network Security</span>
+    <span class="meta-tag"><i class="fas fa-calendar" aria-hidden="true"></i> ภาคเรียนที่ 1/2569</span>
+    <span class="meta-tag"><i class="fas fa-book-open" aria-hidden="true"></i> บทที่ 8</span>
+  </div>
+</section>
+<div class="learning-objectives section-ref" id="learning-objectives">
+  <h3><i class="fas fa-bullseye" aria-hidden="true"></i> วัตถุประสงค์การเรียนรู้ (Learning Objectives)</h3>
+  <p>เมื่อจบบทนี้แล้ว ผู้เรียนสามารถ:</p>
+  <ol>
+    <li>อธิบายหลักการและความจําเป็นของ VPN ในการสื่อสารสมัยใหม่ได้</li>
+    <li>เปรียบเทียบประเภทของ VPN: Site-to-Site, Remote Access, Client-based, และ SSL VPN ได้</li>
+    <li>อธิบายความแตกต่างระหว่าง Tunnel Mode และ Transport Mode ใน VPN Tunneling ได้</li>
+    <li>เปรียบเทียบข้อดีข้อเสียของโพรโทคอล VPN ต่างๆ (IPsec, OpenVPN, WireGuard, L2TP, PPTP) ได้</li>
+    <li>อธิบายกลไกการรักษาความปลอดภัยของ VPN — Authentication, Encryption, Integrity, PFS ได้</li>
+    <li>เลือกใช้ VPN และโพรโทคอลให้เหมาะสมกับความต้องการขององค์กรได้</li>
+    <li>ออกแบบ VPN สําหรับองค์กรที่มีสาขาย่อยหลายแห่งจากกรณีศึกษาได้</li>
+  </ol>
+</div>
+<hr>
+
+<section id="section1" class="section-ref">
+<h2>1. หลักการและความจําเป็นของ VPN</h2>
+
+<h3 id="section1-1" class="section-ref">1.1 VPN คืออะไร</h3>
+<p>VPN (Virtual Private Network) คือเทคโนโลยีที่สร้าง <strong>ช่องทางการสื่อสารที่ปลอดภัยและเข้ารหัส (Encrypted Tunnel)</strong> บนเครือข่ายสาธารณะ (เช่น อินเทอร์เน็ต) เพื่อเชื่อมต่อเครือข่ายหรืออุปกรณ์ที่อยู่ห่างไกลเข้าด้วยกัน เสมือนว่าอยู่ในเครือข่ายส่วนตัวเดียวกัน</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>VPN Concept:
+────────────────
+[Office Network] ────[🔒 Internet Tunnel 🔒]──── [Remote User]
+    10.0.0.0/8          (Encrypted Traffic)             VPN Client</pre>
+
+<h3 id="section1-2" class="section-ref">1.2 ทําไมต้องใช้ VPN</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ความต้องการ</th><th>คําอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>การทํางานระยะไกล (Remote Work)</strong></td><td>พนักงานสามารถเข้าถึงทรัพยากรองค์กรจากที่บ้านหรือระหว่างเดินทางได้อย่างปลอดภัย</td></tr>
+    <tr><td><strong>การเชื่อมต่อระหว่างสาขา (Site-to-Site)</strong></td><td>เชื่อมต่อเครือข่ายของสํานักงานใหญ่กับสาขาโดยไม่ต้องใช้ Leased Line ราคาแพง</td></tr>
+    <tr><td><strong>ความเป็นส่วนตัว (Privacy)</strong></td><td>ซ่อน Traffic จาก ISP และผู้ให้บริการเครือข่าย</td></tr>
+    <tr><td><strong>ความปลอดภัยบน Wi-Fi สาธารณะ</strong></td><td>ปกป้องข้อมูลเมื่อใช้ Wi-Fi ในร้านกาแฟ, สนามบิน, โรงแรม</td></tr>
+    <tr><td><strong>การข้ามข้อจํากัดทางภูมิศาสตร์</strong></td><td>เข้าถึงเนื้อหาที่ถูกจํากัดตามภูมิภาค (Geo-restriction)</td></tr>
+    <tr><td><strong>การปกปิดตัวตน (Anonymity)</strong></td><td>ซ่อน IP Address จริงของผู้ใช้</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section1-3" class="section-ref">1.3 สถิติการใช้งาน VPN</h3>
+<ul>
+  <li>การใช้งาน VPN ทั่วโลกเพิ่มขึ้นมากกว่า 400% ตั้งแต่ปี 2019–2024 (จากรายงานของ Global Market Insights)</li>
+  <li>องค์กรขนาดใหญ่กว่า 80% ใช้ VPN Site-to-Site สําหรับเชื่อมต่อสาขา</li>
+  <li>พนักงานระยะไกลมากกว่า 65% ใช้งาน VPN ทุกวัน</li>
+  <li>การโจมตี VPN Gateway เพิ่มขึ้น 250% ในปี 2023–2024 (ตามรายงานของ CISA)</li>
+</ul>
+</section>
+<hr>
+
+
+<section id="section2" class="section-ref">
+<h2>2. องค์ประกอบของ VPN</h2>
+
+<h3 id="section2-1" class="section-ref">2.1 ส่วนประกอบหลัก</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>VPN Components:
+────────────────
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│ VPN Client   │────▶│ VPN Gateway  │────▶│ Target      │
+│ (Software/   │     │ (Server/     │     │ Network     │
+│  Hardware)   │◀────│  Appliance)  │◀────│ Resources   │
+└─────────────┘     └─────────────┘     └─────────────┘</pre>
+<ol>
+  <li><strong>VPN Client:</strong> ซอฟต์แวร์หรืออุปกรณ์ที่ติดตั้งบนเครื่องผู้ใช้หรืออุปกรณ์ปลายทาง</li>
+  <li><strong>VPN Gateway/Server:</strong> อุปกรณ์หรือเซิร์ฟเวอร์ที่รับการเชื่อมต่อ VPN และเชื่อมต่อกับเครือข่ายเป้าหมาย</li>
+  <li><strong>VPN Tunnel:</strong> ช่องทางการสื่อสารที่เข้ารหัสระหว่าง Client และ Gateway</li>
+  <li><strong>Authentication Mechanism:</strong> กลไกพิสูจน์ตัวตน (Pre-shared Key, Certificate, MFA)</li>
+  <li><strong>Encryption Protocol:</strong> โพรโทคอลที่ใช้เข้ารหัสข้อมูล (AES, ChaCha20)</li>
+</ol>
+
+<h3 id="section2-2" class="section-ref">2.2 ประเภทของการเชื่อมต่อ VPN</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>การเชื่อมต่อ</th><th>ผู้ใช้งานทั่วไป</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Remote Access VPN</strong></td><td>Client → Gateway</td><td>พนักงานระยะไกล 1-1,000+ คน</td><td>OpenVPN, AnyConnect, WireGuard</td></tr>
+    <tr><td><strong>Site-to-Site VPN</strong></td><td>Gateway ↔ Gateway</td><td>เชื่อมต่อสาขา 2-100+ แห่ง</td><td>IPsec Site-to-Site</td></tr>
+    <tr><td><strong>Client-to-Site VPN</strong></td><td>ลูกค้า → เครือข่ายองค์กร</td><td>ลูกค้าภายนอก</td><td>SSL VPN Portal</td></tr>
+    <tr><td><strong>Host-to-Host VPN</strong></td><td>เครื่อง → เครื่องโดยตรง</td><td>ผู้ดูแลระบบ</td><td>SSH Tunnel, Direct IPsec</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+
+<section id="section3" class="section-ref">
+<h2>3. VPN Tunneling</h2>
+
+<h3 id="section3-1" class="section-ref">3.1 หลักการ Tunneling</h3>
+<p>Tunneling คือกระบวนการห่อหุ้ม Packet ต้นฉบับทั้งหมด (รวมถึง Header) ไว้ใน Packet ใหม่ เพื่อให้สามารถส่งผ่านเครือข่ายที่มี Protocol ต่างกันได้อย่างปลอดภัย</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Tunneling Concept:
+──────────────────
+Original Packet:
+┌──────┬────────────────────────────────────┐
+│ IP   │  TCP  │        Payload             │
+│Header│ Header│                            │
+└──────┴────────────────────────────────────┘
+
+After Encapsulation (Tunnel Mode):
+┌──────┬──────┬──────┬────────────────────────────────────┐
+│ New  │ VPN  │ IP   │  TCP  │        Payload             │
+│ IP   │Proto │Header│ Header│                            │
+│Header│(ESP) │      │       │                            │
+└──────┴──────┴──────┴────────────────────────────────────┘
+        └─────────────── Encrypted ───────────────────────┘</pre>
+
+<h3 id="section3-2" class="section-ref">3.2 Tunnel Mode vs Transport Mode</h3>
+<p><strong>Transport Mode:</strong></p>
+<ul>
+  <li>เข้ารหัสเฉพาะ Payload (Layer 4 ขึ้นไป)</li>
+  <li>IP Header เดิมยังคงอยู่ (มองเห็นปลายทางจริง)</li>
+  <li>ใช้สําหรับ Host-to-Host VPN (เชื่อมต่อโดยตรงระหว่างเครื่อง)</li>
+</ul>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Transport Mode:
+┌──────┬──────────────────────────────┐
+│ IP   │  ESP  │  TCP  │   Payload    │
+│Header│ Header│ Header│  (Encrypted) │
+└──────┴──────────────────────────────┘</pre>
+<p><strong>Tunnel Mode:</strong></p>
+<ul>
+  <li>เข้ารหัสทั้ง Packet ต้นฉบับ (รวมถึง IP Header เดิม)</li>
+  <li>เพิ่ม IP Header ใหม่ (ปลายทางคือ VPN Gateway)</li>
+  <li>ใช้สําหรับ Site-to-Site VPN, Remote Access VPN</li>
+</ul>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Tunnel Mode:
+┌──────┬──────┬──────────────────────────────┐
+│ New  │ ESP  │  Original Packet (ทั้งหมด)    │
+│ IP   │Header│  ┌──────┬──────┬──────────┐ │
+│Header│      │  │ IP   │ TCP  │ Payload  │ │
+│      │      │  │Header│Header│          │ │
+│      │      │  └──────┴──────┴──────────┘ │
+│      │      │         (Encrypted)         │
+└──────┴──────┴──────────────────────────────┘</pre>
+<p><strong>ตารางเปรียบเทียบ:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>Transport Mode</th><th>Tunnel Mode</th></tr></thead>
+  <tbody>
+    <tr><td>Encrypts Original IP Header</td><td>❌</td><td>✅</td></tr>
+    <tr><td>New IP Header Added</td><td>❌</td><td>✅</td></tr>
+    <tr><td>เห็น Source/Destination จริง</td><td>✅</td><td>❌ (เห็น Gateway)</td></tr>
+    <tr><td>การใช้งานหลัก</td><td>Host-to-Host</td><td>Site-to-Site, Remote Access</td></tr>
+    <tr><td>ขนาด Overhead</td><td>น้อยกว่า</td><td>มากกว่า</td></tr>
+    <tr><td>Performance</td><td>ดีกว่า</td><td>ช้ากว่าเล็กน้อย</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+
+<section id="section4" class="section-ref">
+<h2>4. ประเภทของ VPN ตามการใช้งาน</h2>
+
+<h3 id="section4-1" class="section-ref">4.1 Remote Access VPN</h3>
+<p>VPN สําหรับพนักงานระยะไกลที่ต้องการเข้าถึงเครือข่ายองค์กรจากนอกสถานที่:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Remote Access VPN:
+────────────────────
+[Remote User] ──[Internet]──▶ [VPN Gateway] ──▶ [Corporate Network]
+   Laptop           🔒               │               10.0.0.0/8
+  VPN Client     Encrypted     (Authenticate)        Servers,
+                   Tunnel       + Authorize         Printers, DB</pre>
+<p><strong>ลักษณะการทํางาน:</strong></p>
+<ol>
+  <li>ผู้ใช้ติดตั้ง VPN Client บนเครื่อง (หรือใช้ Built-in Client ของ OS)</li>
+  <li>เชื่อมต่อไปยัง VPN Gateway ที่อยู่ขอบเครือข่ายองค์กร</li>
+  <li>Gateway ตรวจสอบ Authentication (Username/Password + MFA หรือ Certificate)</li>
+  <li>สร้าง Tunnel ที่เข้ารหัส — ผู้ใช้ได้รับ IP Address ในเครือข่ายองค์กร</li>
+  <li>Traffic ทั้งหมดหรือเฉพาะบางส่วนถูกส่งผ่าน Tunnel</li>
+</ol>
+<p><strong>ข้อดี:</strong></p>
+<ul>
+  <li>พนักงานเข้าถึงทรัพยากรภายในได้จากทุกที่</li>
+  <li>ควบคุมการเข้าถึงผ่านนโยบายของ Gateway</li>
+  <li>รองรับ MFA</li>
+</ul>
+<p><strong>ข้อเสีย:</strong></p>
+<ul>
+  <li>ต้องติดตั้งและจัดการ Client บนเครื่องผู้ใช้ทุกเครื่อง</li>
+  <li>ประสิทธิภาพขึ้นอยู่กับคุณภาพอินเทอร์เน็ตของผู้ใช้</li>
+  <li>ปัญหา Split Tunneling — Traffic อินเทอร์เน็ตทั่วไปอาจรั่วไหล</li>
+</ul>
+
+<h3 id="section4-2" class="section-ref">4.2 Site-to-Site VPN</h3>
+<p>VPN สําหรับเชื่อมต่อเครือข่ายระหว่างสาขาหรือระหว่างองค์กร:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Site-to-Site VPN:
+───────────────────
+[HQ Network: 10.0.0.0/16]           [Branch: 10.1.0.0/16]
+┌─────────────────┐                  ┌─────────────────┐
+│  Servers         │                 │  Local Users     │
+│  DB, Files, ERP  │                 │  POS Terminals   │
+└────────┬────────┘                 └────────┬────────┘
+         │                                   │
+┌────────▼────────┐                 ┌────────▼────────┐
+│ VPN Gateway (HQ)│◀═══ IPsec Tunnel ═══▶│ VPN Gateway(Br)│
+│ 203.0.113.10    │    (Encrypted)       │ 198.51.100.20  │
+└─────────────────┘                     └─────────────────┘</pre>
+<p><strong>ลักษณะการทํางาน:</strong></p>
+<ol>
+  <li>VPN Gateway ทั้งสองฝั่งมี Public IP (หรือผ่าน NAT Traversal)</li>
+  <li>สร้าง IPsec Tunnel ระหว่าง Gateway ทั้งสอง (IKE Phase 1 + Phase 2)</li>
+  <li>Traffic ระหว่างเครือข่ายย่อย (Subnet) ของทั้งสองฝั่งถูกเข้ารหัสและส่งผ่าน Tunnel</li>
+  <li>ผู้ใช้ปลายทางไม่จําเป็นต้องรู้ว่ามี VPN — ทํางานเสมือนอยู่ในเครือข่ายเดียวกัน</li>
+</ol>
+<p><strong>ข้อดี:</strong></p>
+<ul>
+  <li>เชื่อมต่อสาขาโดยไม่ต้องใช้ Leased Line ราคาแพง</li>
+  <li>Transparent — ผู้ใช้ไม่ต้องติดตั้งซอฟต์แวร์เพิ่ม</li>
+  <li>รองรับ Multiple Sites (Hub-and-Spoke, Full Mesh)</li>
+</ul>
+<p><strong>ข้อเสีย:</strong></p>
+<ul>
+  <li>ต้องใช้ Public IP หรือ NAT Traversal</li>
+  <li>การเพิ่ม Site ใหม่ต้องตั้งค่า Gateway เพิ่ม</li>
+  <li>Latency สูงกว่า Local Network</li>
+</ul>
+
+<h3 id="section4-3" class="section-ref">4.3 SSL VPN</h3>
+<p>VPN ที่ทํางานผ่าน Web Browser โดยไม่ต้องติดตั้งซอฟต์แวร์ Client (แต่บางรูปแบบก็ต้องติดตั้ง):</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>รูปแบบ</th><th>การทํางาน</th><th>ต้องติดตั้ง Client?</th></tr></thead>
+  <tbody>
+    <tr><td><strong>SSL VPN Portal</strong></td><td>เข้าถึง Web Application ผ่าน Browser (HTTPS Reverse Proxy)</td><td>❌ ไม่ต้อง</td></tr>
+    <tr><td><strong>SSL VPN Tunnel</strong></td><td>สร้าง Tunnel ระดับ Network (ใช้ JavaScript/Java/ActiveX หรือ Native App)</td><td>✅ ต้อง (Thin Client)</td></tr>
+    <tr><td><strong>Clientless SSL VPN</strong></td><td>เข้าถึงเฉพาะ Web App ที่กําหนด (ไม่สามารถใช้ App อื่นได้)</td><td>❌ ไม่ต้อง</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ข้อดี:</strong></p>
+<ul>
+  <li>ไม่ต้องติดตั้งซอฟต์แวร์ (Portal Mode)</li>
+  <li>เข้าถึงผ่าน Browser ทั่วไป</li>
+  <li>ง่ายต่อการใช้งานสําหรับผู้ใช้ที่ไม่เชี่ยวชาญ</li>
+  <li>รองรับ BYOD (Bring Your Own Device)</li>
+</ul>
+<p><strong>ข้อเสีย:</strong></p>
+<ul>
+  <li>Clientless Mode รองรับเฉพาะ Web Application (ไม่รองรับ Native App)</li>
+  <li>Performance ต่ํากว่า IPsec VPN</li>
+  <li>ความปลอดภัยน้อยกว่าถ้าใช้แค่ Browser (Browser Vulnerability)</li>
+</ul>
+
+<h3 id="section4-4" class="section-ref">4.4 Client-based VPN</h3>
+<p>VPN ที่ต้องติดตั้งซอฟต์แวร์ Client บนเครื่องผู้ใช้:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Client</th><th>แพลตฟอร์ม</th><th>โพรโทคอล</th><th>จุดเด่น</th></tr></thead>
+  <tbody>
+    <tr><td><strong>OpenVPN Connect</strong></td><td>Windows, macOS, Linux, iOS, Android</td><td>OpenVPN (SSL/TLS)</td><td>Open Source, Cross-platform</td></tr>
+    <tr><td><strong>WireGuard</strong></td><td>Windows, macOS, Linux, iOS, Android</td><td>WireGuard Protocol</td><td>เร็วที่สุด, Kernel Integration</td></tr>
+    <tr><td><strong>Cisco AnyConnect</strong></td><td>Windows, macOS, Linux, iOS, Android</td><td>SSL VPN + IPsec</td><td>Enterprise Features</td></tr>
+    <tr><td><strong>Palo Alto GlobalProtect</strong></td><td>Windows, macOS, Linux, iOS, Android</td><td>SSL VPN + IPsec</td><td>Integration with NGFW</td></tr>
+    <tr><td><strong>Pulse Secure</strong></td><td>Windows, macOS, Linux, iOS, Android</td><td>SSL VPN</td><td>Enterprise Support</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+
+<section id="section5" class="section-ref">
+<h2>5. IPsec VPN</h2>
+
+<h3 id="section5-1" class="section-ref">5.1 ภาพรวมของ IPsec</h3>
+<p>IPsec (Internet Protocol Security) คือชุดโพรโทคอลสําหรับรักษาความปลอดภัยของการสื่อสารแบบ IP ทํางานใน Layer 3 ของ OSI Model — ให้บริการ Authentication, Encryption, และ Integrity</p>
+<p><strong>หมายเหตุ:</strong> รายละเอียดเชิงลึกของ IPsec (AH, ESP, IKE, Security Association) ได้กล่าวถึงแล้วใน CH-5: โพรโทคอลเพื่อการสื่อสารที่ปลอดภัย ในบทนี้จะเน้นการนํา IPsec ไปใช้ในบริบทของ VPN</p>
+
+<h3 id="section5-2" class="section-ref">5.2 IPsec VPN Architecture</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>IPsec Site-to-Site VPN Setup:
+─────────────────────────────
+IKE Phase 1 — Main Mode:
+──────────────────────────
+HQ (203.0.113.10)                       Branch (198.51.100.20)
+      │                                        │
+      │────────── SA Proposal ─────────────────▶│
+      │         (AES-256, SHA-256, DH-14)      │
+      │◀───────── SA Accept ───────────────────│
+      │────────── DH Public Key ──────────────▶│
+      │◀────────── DH Public Key ──────────────│
+      │     (Shared Secret Established)         │
+      │────────── Authentication ────────────▶│
+      │◀────────── Authentication ─────────────│
+      │   (IKE SA Established — Secure Channel) │
+      │                                        │
+
+IKE Phase 2 — Quick Mode:
+──────────────────────────
+HQ (203.0.113.10)                       Branch (198.51.100.20)
+      │                                        │
+      │────────── IPSec SA Proposal ──────────▶│
+      │         (ESP, AES-256, Tunnel Mode)    │
+      │◀───────── IPSec SA Accept ─────────────│
+      │   (Two Unidirectional SAs Established)  │
+      │                                        │
+      │◀══════ Encrypted Traffic ═════════════▶│
+      │    (ESP Tunnel Mode — AES-256-GCM)      │</pre>
+
+<h3 id="section5-3" class="section-ref">5.3 IPsec VPN Configuration Example</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># ตัวอย่าง: IPsec Site-to-Site VPN on strongSwan (Ubuntu)
+
+# /etc/ipsec.conf — HQ Side
+conn hq-to-branch
+    left=203.0.113.10
+    leftsubnet=10.0.0.0/16
+    leftcert=hkCert.pem
+    right=198.51.100.20
+    rightsubnet=10.1.0.0/16
+    rightid="CN=branch.example.com"
+    auto=start
+    ike=aes256-sha256-modp2048      # IKE Phase 1 Proposal
+    esp=aes256gcm128-modp2048       # IKE Phase 2 Proposal
+    keyingtries=%forever
+    dpdaction=restart</pre>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># /etc/ipsec.conf — Branch Side
+conn branch-to-hq
+    left=198.51.100.20
+    leftsubnet=10.1.0.0/16
+    leftcert=branchCert.pem
+    right=203.0.113.10
+    rightsubnet=10.0.0.0/16
+    rightid="CN=hq.example.com"
+    auto=start
+    ike=aes256-sha256-modp2048
+    esp=aes256gcm128-modp2048
+    keyingtries=%forever
+    dpdaction=restart</pre>
+
+<h3 id="section5-4" class="section-ref">5.4 IPsec VPN — ข้อดีและข้อจํากัด</h3>
+<p><strong>ข้อดี:</strong></p>
+<ul>
+  <li>มาตรฐานสากล — รองรับทุกอุปกรณ์ (Cisco, Palo Alto, Fortinet, Linux, Windows)</li>
+  <li>ความปลอดภัยระดับสูง — รองรับ AES-256, SHA-256, PFS</li>
+  <li>Tunnel Mode และ Transport Mode</li>
+  <li>Site-to-Site VPN ที่มั่นคง</li>
+  <li>Perfect Forward Secrecy (PFS)</li>
+</ul>
+<p><strong>ข้อจํากัด:</strong></p>
+<ul>
+  <li>การตั้งค่าซับซ้อน — มีพารามิเตอร์มากมายที่ต้องตรงกันทั้งสองฝั่ง</li>
+  <li>ปัญหา NAT Traversal — ต้องใช้ NAT-T (UDP 4500)</li>
+  <li>Performance — IKE Handshake ใช้ CPU สูง</li>
+  <li>การทํา Mobility — IPsec ไม่รองรับการเปลี่ยน Network (WiFi → Mobile) ระหว่าง Session</li>
+  <li>Dead Peer Detection (DPD) ต้องมีการตั้งค่า</li>
+</ul>
+</section>
+<hr>
+
+
+<section id="section6" class="section-ref">
+<h2>6. OpenVPN</h2>
+
+<h3 id="section6-1" class="section-ref">6.1 ภาพรวม</h3>
+<p>OpenVPN คือ Open Source VPN Solution ที่พัฒนาโดย James Yonan ในปี 2001 ทํางานบน SSL/TLS (Layer 7) — ใช้ Port 443/UDP หรือ 443/TCP ทําให้ผ่าน Firewall และ NAT ได้ง่าย</p>
+
+<h3 id="section6-2" class="section-ref">6.2 สถาปัตยกรรม OpenVPN</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>OpenVPN Architecture:
+──────────────────────
+┌──────────────────────────────────────────────┐
+│              OpenVPN Server                   │
+│  ┌────────────────────────────────────────┐  │
+│  │  Management Interface (port 1194)       │  │
+│  ├────────────────────────────────────────┤  │
+│  │  TLS Authentication | Data Channel      │  │
+│  │  (Control Channel)    | (Encrypted)     │  │
+│  │   X.509 Certificate   | AES-256-GCM    │  │
+│  │   HMAC Authentication | LZ4 Compression │  │
+│  └────────────────────────────────────────┘  │
+│  ┌────────────────────────────────────────┐  │
+│  │  Virtual TUN/TAP Interface              │  │
+│  │  TUN: Layer 3 (IP), TAP: Layer 2 (Ethernet)│
+│  └────────────────────────────────────────┘  │
+│  Routing / NAT to Internal Network           │
+└──────────────────────────────────────────────┘</pre>
+<p><strong>TUN vs TAP:</strong></p>
+<ul>
+  <li><strong>TUN (Tunnel):</strong> ส่ง Traffic ระดับ IP (Layer 3) — ประสิทธิภาพดีกว่า ใช้สําหรับ Remote Access VPN</li>
+  <li><strong>TAP (Tap):</strong> ส่ง Traffic ระดับ Ethernet (Layer 2) — รองรับ Broadcast, DHCP, NetBIOS ใช้สําหรับ Network Bridge</li>
+</ul>
+
+<h3 id="section6-3" class="section-ref">6.3 การเข้ารหัสใน OpenVPN</h3>
+<p>OpenVPN แยก Control Channel และ Data Channel:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Control Channel (TLS):
+├── Authentication: X.509 Certificates
+├── Key Exchange: TLS Handshake (ECDHE or DHE)
+└── HMAC for Packet Authentication
+
+Data Channel:
+├── Cipher: AES-256-GCM (แนะนำ), ChaCha20-Poly1305
+├── HMAC: HMAC-SHA-256
+└── Key Derivation: จาก TLS Keying Material (ผ่าน PRF)</pre>
+
+<h3 id="section6-4" class="section-ref">6.4 OpenVPN Configuration Example</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># /etc/openvpn/server.conf
+port 1194
+proto udp
+dev tun
+
+# Certificate
+ca ca.crt
+cert server.crt
+key server.key
+dh dh2048.pem
+
+# Network
+server 10.8.0.0 255.255.255.0
+push "route 10.0.0.0 255.255.0.0"
+push "dhcp-option DNS 10.0.0.5"
+
+# Security
+tls-version-min 1.2
+cipher AES-256-GCM
+auth SHA-256
+tls-crypt tls-crypt.key  # TLS Control Channel Encryption
+tls-cipher TLS-ECDHE-RSA-WITH-AES-256-GCM-SHA384
+
+# Features
+keepalive 10 120
+compress lz4-v2
+push "compress lz4-v2"
+user nobody
+group nogroup
+status openvpn-status.log
+verb 3</pre>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># client.ovpn
+client
+dev tun
+proto udp
+remote vpn.example.com 1194
+resolv-retry infinite
+nobind
+
+ca ca.crt
+cert client.crt
+key client.key
+tls-crypt tls-crypt.key
+
+cipher AES-256-GCM
+auth SHA-256
+tls-version-min 1.2
+tls-cipher TLS-ECDHE-RSA-WITH-AES-256-GCM-SHA384
+compress lz4-v2
+verb 3</pre>
+
+<h3 id="section6-5" class="section-ref">6.5 OpenVPN — ข้อดีและข้อจํากัด</h3>
+<p><strong>ข้อดี:</strong></p>
+<ul>
+  <li>Open Source — ไม่มีค่าใช้จ่าย ตรวจสอบ Code ได้</li>
+  <li>รองรับทุก Platform (Desktop, Mobile, Router Firmware)</li>
+  <li>ผ่าน Firewall/NAT ได้ดี (ใช้ Port 443)</li>
+  <li>ความปลอดภัยสูง — X.509 + TLS + AES-256-GCM</li>
+  <li>รองรับ Multi-factor Authentication</li>
+  <li>ชุมชนใหญ่ — มี Documentation และ Tutorial มากมาย</li>
+</ul>
+<p><strong>ข้อจํากัด:</strong></p>
+<ul>
+  <li>Performance ด้อยกว่า WireGuard (Single-threaded)</li>
+  <li>การตั้งค่า Server ซับซ้อน (ต้องจัดการ Certificate)</li>
+  <li>UDP Mode ต้องตั้งค่า Firewall ให้ถูกต้อง</li>
+  <li>การ Scale สําหรับผู้ใช้จํานวนมาก (1,000+) ต้อง Tuning</li>
+</ul>
+</section>
+<hr>
+
+
+<section id="section7" class="section-ref">
+<h2>7. WireGuard</h2>
+
+<h3 id="section7-1" class="section-ref">7.1 ภาพรวม</h3>
+<p>WireGuard คือ VPN Protocol ที่พัฒนาโดย Jason A. Donenfeld ในปี 2016 (รวมเข้าใน Linux Kernel 5.6 ปี 2020) ออกแบบมาให้ <strong>เร็ว ง่าย และปลอดภัย</strong> โดยใช้หลักการ Cryptography ที่ทันสมัย</p>
+
+<h3 id="section7-2" class="section-ref">7.2 หลักการออกแบบ WireGuard</h3>
+<p>WireGuard แตกต่างจาก VPN รุ่นก่อนอย่างมีนัยสําคัญ:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>IPsec / OpenVPN</th><th>WireGuard</th></tr></thead>
+  <tbody>
+    <tr><td><strong>จํานวนโค้ด</strong></td><td>400,000+ บรรทัด</td><td>~4,000 บรรทัด</td></tr>
+    <tr><td><strong>Cipher Suite</strong></td><td>หลายตัวเลือก</td><td>Fixed (ตัวเดียว)</td></tr>
+    <tr><td><strong>Key Management</strong></td><td>IKE, PKI, Certificates</td><td>Public/Private Key Pair</td></tr>
+    <tr><td><strong>Handshake</strong></td><td>6-9 Messages (IKE)</td><td>1-RTT (3 Messages)</td></tr>
+    <tr><td><strong>Noise Protocol</strong></td><td>❌ ไม่ใช้</td><td>✅ Noise_IK</td></tr>
+    <tr><td><strong>Kernel Integration</strong></td><td>Userspace</td><td>✅ Linux Kernel Built-in</td></tr>
+    <tr><td><strong>Roaming</strong></td><td>จํากัด (ต้อง DPD)</td><td>✅ สมบูรณ์ (Connection Migration)</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section7-3" class="section-ref">7.3 การทํางานของ WireGuard</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>WireGuard Handshake — 1-RTT:
+─────────────────────────────
+Client (10.0.0.2)                    Server (10.0.0.1)
+      │                                      │
+      │── (1) Initiation ──────────────────▶│
+      │    Static Public Key (Client)        │
+      │    Ephemeral Public Key (x25519)     │
+      │    Timestamp                        │
+      │                                      │
+      │◀─ (2) Response ─────────────────────│
+      │    Static Public Key (Server)        │
+      │    Ephemeral Public Key (x25519)     │
+      │    Encrypted Cookie (Anti-DDoS)      │
+      │                                      │
+      │── (3) Cookie/Data ────────────────▶│
+      │    (Encrypted Data Starts Here)     │
+      │                                      │
+      │◀══════ Encrypted Data (ChaCha20) ═══▶│</pre>
+<p><strong>Key Features:</strong></p>
+<ul>
+  <li><strong>Noise Protocol Framework:</strong> WireGuard ใช้ Noise_IK Handshake — ทนทานต่อ DoS และได้รับการพิสูจน์ความปลอดภัยทางคณิตศาสตร์</li>
+  <li><strong>Fixed Cipher Suite:</strong> ChaCha20-Poly1305 (Encryption + MAC), Curve25519 (Key Exchange), BLAKE2s (Hashing), HKDF (Key Derivation)</li>
+  <li><strong>Connection Migration:</strong> เมื่อ IP เปลี่ยน (WiFi → Mobile) WireGuard รักษา Connection ไว้โดยอัตโนมัติ</li>
+  <li><strong>Silent:</strong> ไม่ส่ง Packet เมื่อไม่มี Traffic — ไม่มี Keepalive (ประหยัดแบตเตอรี่)</li>
+</ul>
+
+<h3 id="section7-4" class="section-ref">7.4 WireGuard Configuration Example</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># /etc/wireguard/wg0.conf — Server
+[Interface]
+Address = 10.200.0.1/24
+ListenPort = 51820
+PrivateKey = <Server-Private-Key>
+
+# Enable IP forwarding (sysctl net.ipv4.ip_forward=1)
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT
+PostUp = iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT
+PostDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+[Peer]
+PublicKey = <Client1-Public-Key>
+AllowedIPs = 10.200.0.2/32
+
+[Peer]
+PublicKey = <Client2-Public-Key>
+AllowedIPs = 10.200.0.3/32</pre>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># /etc/wireguard/wg0.conf — Client
+[Interface]
+PrivateKey = <Client-Private-Key>
+Address = 10.200.0.2/32
+DNS = 10.0.0.5
+
+[Peer]
+PublicKey = <Server-Public-Key>
+Endpoint = vpn.example.com:51820
+AllowedIPs = 10.0.0.0/8, 10.200.0.0/16
+PersistentKeepalive = 25</pre>
+
+<h3 id="section7-5" class="section-ref">7.5 WireGuard — ข้อดีและข้อจํากัด</h3>
+<p><strong>ข้อดี:</strong></p>
+<ul>
+  <li><strong>เร็วที่สุด:</strong> ประสิทธิภาพเหนือกว่า OpenVPN 3-4 เท่า (Near-native throughput)</li>
+  <li><strong>โค้ดขนาดเล็ก:</strong> ตรวจสอบ Security Audit ได้ง่าย (~4,000 บรรทัด)</li>
+  <li><strong>ความปลอดภัยสูง:</strong> Modern Cryptography, Forward Secrecy, Denial of Service Resistance</li>
+  <li><strong>Roaming สมบูรณ์:</strong> เปลี่ยน Network โดยไม่ขาด Connection</li>
+  <li><strong>Kernel-level:</strong> ติดตั้งใน Linux Kernel — Latency ต่ํามาก</li>
+  <li><strong>การตั้งค่าง่ายมาก:</strong> ไม่ต้องจัดการ Certificate หรือ PKI</li>
+</ul>
+<p><strong>ข้อจํากัด:</strong></p>
+<ul>
+  <li><strong>ไม่มี Built-in Authentication สําหรับผู้ใช้</strong> — ไม่มี Username/Password, ไม่มี MFA (ต้องใช้ Layer ด้านบน)</li>
+  <li><strong>ไม่มี Logging / Auditing ในตัว</strong></li>
+  <li><strong>ไม่มี Dynamic IP Assignment</strong> — กําหนด IP ล่วงหน้าใน Config</li>
+  <li><strong>Multi-factor Authentication</strong> — ต้องทําเอง (ผ่าน Pre-shared Key หรือ Auth Script)</li>
+  <li><strong>DDoS on handshake</strong> — แม้จะป้องกันด้วย Cookie แต่ก็ยังมีช่องโหว่ที่ต้องระวัง</li>
+</ul>
+</section>
+<hr>
+
+
+<section id="section8" class="section-ref">
+<h2>8. L2TP/IPsec</h2>
+
+<h3 id="section8-1" class="section-ref">8.1 ภาพรวม</h3>
+<p>L2TP (Layer 2 Tunneling Protocol) ไม่ใช่ VPN Protocol ที่แท้จริง — เป็น <strong>Tunneling Protocol</strong> ที่ห่อหุ้ม PPP (Point-to-Point Protocol) แต่ไม่มีการเข้ารหัส ดังนั้นจึงต้องทํางานร่วมกับ IPsec (L2TP/IPsec) เพื่อเพิ่ม Encryption</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>L2TP/IPsec Architecture:
+─────────────────────────
+┌──────────────┐     ┌──────────────┐
+│  L2TP Client  │────▶│ L2TP Server   │
+│  (PPP Session)│     │ (PPP Terminate)│
+└──────┬───────┘     └──────┬───────┘
+       │                    │
+       ▼                    ▼
+┌──────────────┐     ┌──────────────┐
+│  IPsec ESP    │◀═══▶│  IPsec ESP    │
+│  (Encryption) │     │  (Encryption) │
+└──────────────┘     └──────────────┘</pre>
+
+<h3 id="section8-2" class="section-ref">8.2 L2TP/IPsec vs อื่นๆ</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>L2TP/IPsec</th><th>OpenVPN</th><th>WireGuard</th></tr></thead>
+  <tbody>
+    <tr><td>ความซับซ้อนในการตั้งค่า</td><td>สูง</td><td>ปานกลาง</td><td>ต่ํา</td></tr>
+    <tr><td>Security</td><td>ดี (AES-256)</td><td>ดี (AES-256-GCM)</td><td>ดีเยี่ยม (ChaCha20)</td></tr>
+    <tr><td>Performance</td><td>ปานกลาง</td><td>ปานกลาง</td><td>สูงมาก</td></tr>
+    <tr><td>NAT Traversal</td><td>ต้องตั้งค่า (IPsec NAT-T)</td><td>✅ ดี (UDP/TCP 443)</td><td>✅ ดี (UDP)</td></tr>
+    <tr><td>Built-in Authentication</td><td>✅ (PPP + IPsec)</td><td>✅ (X.509)</td><td>❌</td></tr>
+    <tr><td>Mobility/Roaming</td><td>❌</td><td>จํากัด</td><td>✅ สมบูรณ์</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<section id="section9" class="section-ref">
+<h2>9. PPTP (Point-to-Point Tunneling Protocol) — ❌ ไม่ปลอดภัย</h2>
+
+<h3 id="section9-1" class="section-ref">9.1 ความไม่ปลอดภัยของ PPTP</h3>
+<p>PPTP เป็น VPN Protocol ที่พัฒนาโดย Microsoft ในยุค Windows 95 (1996) ปัจจุบัน <strong>เลิกใช้งานโดยเด็ดขาด</strong> เนื่องจากช่องโหว่ด้านความปลอดภัยร้ายแรง:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ปัญหา</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>MS-CHAPv2 Crackable</strong></td><td>MS-CHAPv2 Authentication สามารถ Crack ได้ภายใน 24 ชม. ด้วย GPU</td></tr>
+    <tr><td><strong>ใช้ MPPE Encryption</strong></td><td>MPPE (Microsoft Point-to-Point Encryption) ใช้ RC4 ซึ่งมีจุดอ่อน</td></tr>
+    <tr><td><strong>ไม่มีการตรวจสอบ Integrity</strong></td><td>ไม่มี HMAC — เสี่ยงต่อการถูกแก้ไขข้อมูล (Bit Flipping)</td></tr>
+    <tr><td><strong>Authentication แบบง่าย</strong></td><td>ใช้เฉพาะ Password — ไม่รองรับ Certificate หรือ MFA</td></tr>
+    <tr><td><strong>ช่องโหว่ Known Plaintext</strong></td><td>RC4 ในโหมด Stream Cipher ถูกโจมตีได้ด้วย Known Plaintext Attack</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section9-2" class="section-ref">9.2 Timeline การโจมตี PPTP</h3>
+<ul>
+  <li><strong>1998:</strong> มีการพิสูจน์แล้วว่า MS-CHAPv1 ไม่ปลอดภัย</li>
+  <li><strong>2000:</strong> MS-CHAPv2 เปิดตัว — แก้ปัญหาแต่ยังไม่พอ</li>
+  <li><strong>2012:</strong> Moxie Marlinspike และ David Hulton แสดงการ Crack MS-CHAPv2 ได้ใน 24 ชม.</li>
+  <li><strong>2014:</strong> หน่วยงานความมั่นคงของสหรัฐฯ (NSA) แนะนําให้เลิกใช้ PPTP</li>
+  <li><strong>2020:</strong> Microsoft แนะนําให้เลิกใช้ PPTP ใน Windows 10</li>
+</ul>
+<p><strong>สรุป:</strong> PPTP ควรถูกแทนที่ด้วย WireGuard, OpenVPN, หรือ IPsec ทันที — ไม่ควรใช้ในระบบ Production ไม่ว่ากรณีใดๆ</p>
+</section>
+<hr>
+
+
+<section id="section10" class="section-ref">
+<h2>10. การเลือกใช้ VPN ให้เหมาะสมกับองค์กร</h2>
+
+<h3 id="section10-1" class="section-ref">10.1 ตารางเปรียบเทียบโพรโทคอล VPN</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>IPsec IKEv2</th><th>OpenVPN</th><th>WireGuard</th><th>L2TP/IPsec</th><th>PPTP</th></tr></thead>
+  <tbody>
+    <tr><td>ความปลอดภัย</td><td>✅ สูง</td><td>✅ สูง</td><td>✅ สูงมาก</td><td>✅ ปานกลาง</td><td>❌ ต่ํา</td></tr>
+    <tr><td>Performance</td><td>✅ สูง</td><td>⚠️ ปานกลาง</td><td>✅ สูงมาก</td><td>⚠️ ปานกลาง</td><td>✅ เร็วแต่ไม่ปลอดภัย</td></tr>
+    <tr><td>ตั้งค่าง่าย</td><td>❌ ซับซ้อน</td><td>⚠️ ปานกลาง</td><td>✅ ง่าย</td><td>❌ ซับซ้อน</td><td>✅ ง่าย</td></tr>
+    <tr><td>Cross-platform</td><td>✅ ดี</td><td>✅ ดีมาก</td><td>✅ ดี</td><td>✅ ดี</td><td>✅ ทุก Windows</td></tr>
+    <tr><td>NAT Traversal</td><td>✅ IKEv2</td><td>✅ ดีมาก</td><td>✅ ดี</td><td>⚠️ ต้องตั้งค่า</td><td>⚠️ มีปัญหา</td></tr>
+    <tr><td>ผ่าน Firewall</td><td>⚠️ ปานกลาง</td><td>✅ ดีมาก</td><td>⚠️ ต้องเปิด Port</td><td>⚠️ ปานกลาง</td><td>✅ ดี</td></tr>
+    <tr><td>MFA Support</td><td>✅ มี</td><td>✅ มี</td><td>❌ ไม่มีในตัว</td><td>✅ มี</td><td>❌</td></tr>
+    <tr><td>Mobility</td><td>✅ IKEv2 Mobility</td><td>❌</td><td>✅ สมบูรณ์</td><td>❌</td><td>❌</td></tr>
+    <tr><td>เหมาะกับ</td><td>Enterprise Site-to-Site</td><td>Enterprise Remote Access</td><td>Personal/SMB, Performance</td><td>Legacy Systems</td><td>❌ ไม่ควรใช้</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section10-2" class="section-ref">10.2 แนวทางการเลือก VPN ตามสถานการณ์</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>สถานการณ์</th><th>โพรโทคอลที่แนะนํา</th><th>เหตุผล</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Site-to-Site องค์กรขนาดใหญ่</strong></td><td>IPsec (IKEv2)</td><td>มาตรฐานอุตสาหกรรม, รองรับทุกอุปกรณ์</td></tr>
+    <tr><td><strong>Remote Access พนักงานทั่วไป</strong></td><td>OpenVPN</td><td>ผ่าน Firewall ได้ดี, รองรับ MFA</td></tr>
+    <tr><td><strong>Remote Access ต้องการ Performance</strong></td><td>WireGuard</td><td>เร็วที่สุด, เหมาะกับ Video Conference</td></tr>
+    <tr><td><strong>Mobile Users (iOS/Android)</strong></td><td>IKEv2 หรือ WireGuard</td><td>รองรับ Native, Roaming ดี</td></tr>
+    <tr><td><strong>Personal VPN</strong></td><td>WireGuard</td><td>ตั้งค่าง่าย, เร็ว, ปลอดภัย</td></tr>
+    <tr><td><strong>องค์กรที่ใช้ MS Remote Access</strong></td><td>SSTP (Microsoft)</td><td>ใช้ Port 443, ทํางานกับ Windows</td></tr>
+    <tr><td><strong>ต้องการ Clientless</strong></td><td>SSL VPN Portal</td><td>ไม่ต้องติดตั้ง Client — ใช้ Browser</td></tr>
+    <tr><td><strong>ระบบ Legacy</strong></td><td>L2TP/IPsec (temporary)</td><td>อุปกรณ์เก่าที่ไม่รองรับ OpenVPN/WireGuard</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section10-3" class="section-ref">10.3 ปัจจัยในการเลือก</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ปัจจัย</th><th>คําถามที่ต้องพิจารณา</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Security Requirements</strong></td><td>ต้องการ Authentication แบบใด? ต้องการ MFA? FIPS Compliance?</td></tr>
+    <tr><td><strong>Scale</strong></td><td>มีจํานวนผู้ใช้เท่าใด? 10, 100, 1,000, 10,000 คน?</td></tr>
+    <tr><td><strong>Device Types</strong></td><td>Windows, macOS, Linux, iOS, Android — รองรับทุก Platform หรือไม่?</td></tr>
+    <tr><td><strong>Network Constraints</strong></td><td>Firewall Policy, NAT, Port Restrictions</td></tr>
+    <tr><td><strong>Performance Requirements</strong></td><td>Bandwidth, Latency Sensitivity (VoIP, Video)</td></tr>
+    <tr><td><strong>Management</strong></td><td>มีทีมดูแลหรือไม่? ต้องการ Central Management หรือไม่?</td></tr>
+    <tr><td><strong>Budget</strong></td><td>Open Source vs Commercial Solution</td></tr>
+    <tr><td><strong>Compliance</strong></td><td>PCI DSS, HIPAA, PDPA, GDPR Requirements</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+
+<section id="section11" class="section-ref">
+<h2>11. กรณีศึกษา: การออกแบบ VPN สําหรับองค์กรที่มีสาขาย่อยหลายแห่ง</h2>
+
+<h3 id="section11-1" class="section-ref">11.1 สถานการณ์</h3>
+<p>บริษัท ABC Corporation:</p>
+<ul>
+  <li><strong>สํานักงานใหญ่ (HQ):</strong> กรุงเทพฯ — พนักงาน 500 คน, Data Center</li>
+  <li><strong>สาขาใหญ่ (Branch 1):</strong> ภูเก็ต — พนักงาน 100 คน</li>
+  <li><strong>สาขากลาง (Branch 2):</strong> เชียงใหม่ — พนักงาน 50 คน</li>
+  <li><strong>สาขาย่อย (Branch 3-5):</strong> ระยอง, ขอนแก่น, สงขลา — พนักงาน 20-30 คนต่อสาขา</li>
+  <li><strong>พนักงาน Remote:</strong> 30 คน (ทํางานที่บ้าน, ระหว่างเดินทาง)</li>
+  <li><strong>จุดขาย (POS):</strong> 50 จุดทั่วประเทศ (ร้านค้าปลีก, เคาน์เตอร์บริการ)</li>
+  <li><strong>Partner Connection:</strong> 3 บริษัทคู่ค้าที่ต้องเชื่อมต่อระบบ</li>
+</ul>
+
+<h3 id="section11-2" class="section-ref">11.2 ความต้องการ</h3>
+<ol>
+  <li>สาขาทุกแห่งต้องเข้าถึงระบบ ERP, Database, และ File Server ที่ HQ</li>
+  <li>พนักงาน Remote ต้องเข้าถึงทรัพยากรภายในด้วยความปลอดภัยสูง</li>
+  <li>POS ต้องการ Connection ที่เสถียรและปลอดภัย</li>
+  <li>คู่ค้าต้องเข้าถึงเฉพาะบางระบบ (API Gateway) เท่านั้น</li>
+  <li>จะต้องมี High Availability — หาก Gateway ที่ HQ ล้ม สาขาต้องยังทํางานได้</li>
+</ol>
+
+<h3 id="section11-3" class="section-ref">11.3 การออกแบบ VPN</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Design Overview:
+─────────────────
+                          ┌────────────────────────┐
+                          │      HEAD OFFICE         │
+                          │      (กรุงเทพฯ)          │
+                          │                          │
+                          │  ┌────────────────────┐  │
+                          │  │  VPN Concentrator    │  │
+                          │  │  (Active-Active)     │  │
+                          │  │  Cluster HA          │  │
+                          │  │  Public IP:           │  │
+                          │  │  203.0.113.10/11     │  │
+                          │  └──────────┬─────────┘  │
+                          │             │             │
+                          │     Internal Network      │
+                          │    ┌──────────────┐      │
+                          │    │  Internal     │      │
+                          │    │  DNS, AD, ERP │      │
+                          │    │  DB Cluster   │      │
+                          │    └──────────────┘      │
+                          └────────────┬─────────────┘
+                                       │
+                                       │
+         ┌─────────┬─────────┬─────────┼─────────┬─────────┐
+         │         │         │         │         │         │
+         ▼         ▼         ▼         ▼         ▼         ▼
+   ┌────────┐┌────────┐┌────────┐┌──────────┐┌────────┐┌────────┐
+   │Branch 1││Branch 2││Branch 3││Branch 4-5││Remote  ││Partner │
+   │ภูเก็ต   ││เชียงใหม่││ระยอง   ││ขอนแก่น/  ││30 คน   ││3 บริษัท │
+   │100 คน  ││ 50 คน  ││ 30 คน  ││สงขลา     ││OpenVPN ││IPsec   │
+   │IPsec   ││IPsec   ││IPsec   ││IPsec     ││Client  ││Site-to-│
+   │Site-to-││Site-to-││Site-to-││Site-to-  ││        ││Site    │
+   │Site    ││Site    ││Site    ││Site      ││        ││Limited │
+   └────────┘└────────┘└────────┘└──────────┘└────────┘└────────┘
+        │         │         │          │         │         │
+   POS 50 จุด ───────────────────────────────────────────────
+        (4G Router with IPsec to HQ)</pre>
+
+<h3 id="section11-4" class="section-ref">11.4 การเลือกโพรโทคอลตามกลุ่มผู้ใช้</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>กลุ่ม</th><th>โพรโทคอล</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>สาขาขนาดใหญ่</strong> (Branch 1-2)</td><td><strong>IPsec Site-to-Site</strong></td><td>Gateway-to-Gateway, Tunnel Mode, AES-256-GCM, PFS</td></tr>
+    <tr><td><strong>สาขาขนาดกลาง-เล็ก</strong> (Branch 3-5)</td><td><strong>IPsec Site-to-Site</strong></td><td>Hub-and-Spoke topology เชื่อมต่อตรงถึง HQ</td></tr>
+    <tr><td><strong>พนักงาน Remote</strong></td><td><strong>OpenVPN (SSL)</strong></td><td>ผ่าน Firewall ได้ดี, รองรับ MFA + Certificate + Username/Password</td></tr>
+    <tr><td><strong>POS Terminal</strong></td><td><strong>WireGuard</strong></td><td>ต้องการ Performance สูง + Connection Migration (4G สลับเครือข่าย)</td></tr>
+    <tr><td><strong>Partner Access</strong></td><td><strong>IPsec Site-to-Site (จํากัด)</strong></td><td>เชื่อมต่อเฉพาะ DMZ — ไม่สามารถเข้าถึง Internal Network</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section11-5" class="section-ref">11.5 นโยบายความปลอดภัย</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Security Policy:
+─────────────────
+
+1. Authentication:
+   ├── IPsec Site-to-Site: Pre-shared Key + Certificate
+   ├── OpenVPN (Remote):   Certificate + Username/Password + MFA (TOTP)
+   ├── WireGuard (POS):    Public/Private Key + Pre-shared Key
+   └── Partner IPsec:      Certificate + Restricted Source IP
+
+2. Encryption:
+   ├── IPsec: AES-256-GCM + SHA-256 + DH Group 14 (2048-bit)
+   ├── OpenVPN: AES-256-GCM + TLS 1.3 + ECDHE P-384
+   └── WireGuard: ChaCha20-Poly1305 + Curve25519
+
+3. Segmentation:
+   ├── VPN Users → VLAN 100 (Remote Access)
+   ├── Branch Networks → VLAN 200-205 (Site-to-Site)
+   ├── POS Network → VLAN 300 (Isolated, Internet-only access)
+   └── Partner Network → VLAN 400 (DMZ, restricted access)
+
+4. Access Control:
+   ├── Remote Users: เข้าถึงได้เฉพาะ Application Server (ไม่ถึง Database โดยตรง)
+   ├── Branch: เข้าถึง Internal Network เต็ม (ผ่าน Firewall Policy)
+   ├── POS: เข้าถึงเฉพาะ POS Server (TCP 443) + DNS
+   └── Partner: เข้าถึงเฉพาะ API Gateway (HTTPS) — ไม่สามารถ SSH หรือ RDP</pre>
+
+<h3 id="section11-6" class="section-ref">11.6 High Availability Design</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>HA Architecture:
+─────────────────
+VPN Concentrator Cluster (Active-Active):
+├── Node 1: wg-hq-01.example.com (203.0.113.10)
+├── Node 2: wg-hq-02.example.com (203.0.113.11)
+├── VIP:    203.0.113.12 (Floating IP)
+└── Health Check: ICMP + Port 51820
+
+Failover:
+├── Primary Link: ISP1 (500 Mbps Fiber)
+├── Secondary: ISP2 (100 Mbps 4G Backup)
+└── Site-to-Site: IPsec DPD + Auto-failover
+
+Redundancy at Branch:
+├── Main Router: IPsec Tunnel to wg-hq-01
+├── Backup: 4G Failover → WireGuard Tunnel
+└── Auto-detect: OSPF / BGP Routing</pre>
+
+<h3 id="section11-7" class="section-ref">11.7 บทเรียนและข้อเสนอแนะ</h3>
+<ol>
+  <li><strong>ไม่ใช้ Hub-and-Spoke สําหรับทุก Traffic:</strong> จากประสบการณ์ การส่ง Traffic สาขาไปยังสาขาอื่นผ่าน HQ ช้า — ควรใช้ Full Mesh สําหรับสาขาขนาดใหญ่</li>
+  <li><strong>Monitoring สําคัญ:</strong> ใช้ VPN Monitoring Tool (Zabbix, PRTG) ตรวจสอบ Tunnel Status, Latency, Packet Loss</li>
+  <li><strong>Bandwidth Management:</strong> Remote Users ควรมี Bandwidth Limit — ป้องกันคนเดียวใช้ Bandwidth หมด</li>
+  <li><strong>Logging และ Audit:</strong> VPN Gateway ต้อง Log การเชื่อมต่อทุกครั้ง — ส่งไปยัง SIEM</li>
+  <li><strong>Firmware Updates:</strong> อัปเดต Firmware ของ VPN Gateway อย่างสม่ําเสมอ — ช่องโหว่ VPN Gateway ถูกโจมตีมากขึ้น</li>
+  <li><strong>Split Tunneling Policy:</strong> กําหนดว่าผู้ใช้ Remote ควรส่ง Traffic ใดผ่าน VPN — ควรส่งเฉพาะ Traffic ที่จําเป็น (ไม่ส่ง Netflix หรือ YouTube ผ่าน VPN)</li>
+</ol>
+</section>
+<hr>
+
+
+<section id="summary" class="section-ref">
+<h2><i class="fas fa-list-check" aria-hidden="true"></i> สรุปท้ายบท (Chapter Summary)</h2>
+<ol>
+  <li><strong>VPN</strong> สร้างช่องทางการสื่อสารที่ปลอดภัยบนเครือข่ายสาธารณะ — จําเป็นสําหรับการทํางานระยะไกลและการเชื่อมต่อสาขา</li>
+  <li><strong>Tunneling</strong> คือการห่อหุ้ม Packet ต้นฉบับใน Packet ใหม่ — มี 2 โหมด: Transport Mode (เข้ารหัสเฉพาะ Payload) และ Tunnel Mode (เข้ารหัสทั้ง Packet)</li>
+  <li><strong>ประเภทของ VPN ตามการใช้งาน:</strong> Remote Access, Site-to-Site, SSL VPN, และ Client-based — แต่ละแบบเหมาะกับสถานการณ์ต่างกัน</li>
+  <li><strong>IPsec</strong> เป็นมาตรฐาน Site-to-Site VPN ที่มีความปลอดภัยสูงแต่ตั้งค่าซับซ้อน — ใช้ IKE สําหรับ Key Exchange และ ESP สําหรับ Encryption</li>
+  <li><strong>OpenVPN</strong> เป็น Open Source VPN ที่ยืดหยุ่น รองรับหลาย Platform ผ่าน Firewall ได้ดี — เหมาะสําหรับ Remote Access Enterprise</li>
+  <li><strong>WireGuard</strong> เป็น VPN ที่เร็วที่สุด — โค้ดขนาดเล็ก, Cryptography ทันสมัย, Kernel Integration, Roaming สมบูรณ์ — เหมาะกับ Performance-critical Applications</li>
+  <li><strong>PPTP</strong> ไม่ปลอดภัย — ห้ามใช้เด็ดขาด — โปรดย้ายไปใช้ WireGuard, OpenVPN, หรือ IPsec</li>
+  <li><strong>การเลือก VPN</strong> ต้องพิจารณา Security, Performance, Scale, Device Types, Network Constraints, และ Budget</li>
+  <li><strong>การออกแบบ VPN สําหรับองค์กร</strong> ต้องมี High Availability, Segmentation, Monitoring, และ Incident Response Plan</li>
+</ol>
+</section>
+<hr>
+
+<section id="review-questions" class="section-ref">
+<h2><i class="fas fa-question-circle" aria-hidden="true"></i> คําถามทบทวน (Review Questions)</h2>
+<p style="color:var(--text-secondary);margin-bottom:1.5rem;">คลิกปุ่ม <strong>"ดูเฉลย"</strong> เพื่อเปิดคําตอบ</p>
+
+<div class="quiz-card" data-question="1">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 1</span>
+    <p>จงอธิบายความแตกต่างระหว่าง Transport Mode และ Tunnel Mode ใน VPN พร้อมยกตัวอย่างการใช้งานที่เหมาะสมของแต่ละโหมด</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Transport Mode:</strong> เข้ารหัสเฉพาะ Payload (Layer 4 ขึ้นไป) — IP Header เดิมยังคงอยู่ ทําให้มองเห็น Source/Destination จริง มี Overhead น้อยกว่า Performance ดีกว่า ใช้สําหรับ Host-to-Host VPN เช่น การเชื่อมต่อโดยตรงระหว่างเครื่องสองเครื่อง <strong>Tunnel Mode:</strong> เข้ารหัสทั้ง Packet ต้นฉบับรวมถึง IP Header เดิม — เพิ่ม IP Header ใหม่ที่ระบุปลายทางเป็น VPN Gateway ไม่เห็น Source/Destination จริง (เห็นแค่ Gateway) มี Overhead มากกว่า แต่ให้ความปลอดภัยสูงกว่า ใช้สําหรับ Site-to-Site VPN และ Remote Access VPN</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="2">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 2</span>
+    <p>เปรียบเทียบ Site-to-Site VPN และ Remote Access VPN ในแง่ของ Gateway, Client, และ Security Requirements</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Site-to-Site VPN:</strong> Gateway-to-Gateway — ไม่ต้องติดตั้ง Client บนเครื่องผู้ใช้ (Transparent), ใช้ IPsec เป็นหลัก, Gateway ทั้งสองฝั่งต้องมี Public IP หรือ NAT Traversal, ความปลอดภัยเน้นที่ Device Authentication (Certificate/PSK) และ Encryption ระหว่าง Gateway, ผู้ใช้ปลายทางไม่รู้ว่ามี VPN <strong>Remote Access VPN:</strong> Client-to-Gateway — ต้องติดตั้ง Client บนเครื่องผู้ใช้แต่ละเครื่อง, ใช้ OpenVPN/WireGuard/IPsec ได้หลากหลาย, ต้องการ User Authentication (Username/Password + MFA) + Device Authentication, ต้องจัดการ User Account และ Policy ส่วนบุคคล, เหมาะกับพนักงานที่ทํางานนอกสถานที่</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="3">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 3</span>
+    <p>จงอธิบายข้อดีและข้อเสียของ SSL VPN Portal Mode เมื่อเทียบกับ Full Tunnel VPN</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>SSL VPN Portal Mode (Clientless):</strong> ข้อดี — ไม่ต้องติดตั้งซอฟต์แวร์, เข้าถึงผ่าน Browser ทั่วไป, ง่ายต่อการใช้งาน, รองรับ BYOD, จัดการง่ายเพราะ Admin กําหนดเฉพาะ Web App ที่เข้าถึงได้ ข้อเสีย — รองรับเฉพาะ Web Application (ไม่รองรับ Native App เช่น ERP Client, Database Tool), Performance ต่ํากว่า, Browser อาจมีช่องโหว่ <strong>Full Tunnel VPN (Client-based):</strong> ข้อดี — รองรับทุก Application, Performance ดีกว่า, ควบคุมระดับ Network ได้, ความปลอดภัยสูงกว่า ข้อเสีย — ต้องติดตั้ง Client, ต้องจัดการ Client บนทุกเครื่อง, ซับซ้อนกว่าในการตั้งค่า</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="4">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 4</span>
+    <p>เปรียบเทียบ OpenVPN และ WireGuard ในด้าน: ความเร็ว, ความปลอดภัย, ความง่ายในการตั้งค่า, และการสนับสนุน MFA</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>OpenVPN:</strong> ความเร็วปานกลาง (Single-threaded), ความปลอดภัยสูง (X.509 + TLS + AES-256-GCM + HMAC), การตั้งค่าซับซ้อน (ต้องจัดการ PKI, Certificate, CA), รองรับ MFA ได้ดี (Username/Password + Certificate + TOTP), ผ่าน Firewall/NAT ได้ดีมาก (ใช้ Port 443), เหมาะกับ Enterprise Remote Access <strong>WireGuard:</strong> เร็วที่สุด (3-4 เท่าของ OpenVPN, Near-native throughput), ความปลอดภัยสูง (ChaCha20-Poly1305, Curve25519, BLAKE2s, Noise Protocol), การตั้งค่าง่ายมาก (แค่ Public/Private Key — ไม่ต้องใช้ Certificate), ไม่มี Built-in MFA (ต้องใช้ Layer ด้านบน เช่น LDAP Auth Script หรือ PSK), Kernel Integration ทําให้ Latency ต่ํา, Roaming สมบูรณ์, เหมาะกับ Performance-critical และ SMB</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="5">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 5</span>
+    <p>จงอธิบายว่าเหตุใด PPTP จึงไม่ปลอดภัย และควรใช้โพรโทคอลใดแทนสําหรับ Legacy Systems</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> PPTP ไม่ปลอดภัยเนื่องจาก: (1) MS-CHAPv2 Authentication สามารถ Crack ได้ใน 24 ชม. ด้วย GPU (2) ใช้ MPPE Encryption ซึ่งใช้ RC4 Stream Cipher ที่มีจุดอ่อน Known Plaintext Attack (3) ไม่มี HMAC — เสี่ยง Bit Flipping Attack (4) ไม่รองรับ Certificate หรือ MFA สําหรับ Legacy Systems ที่ต้องการเปลี่ยนจาก PPTP: (1) แนะนํา WireGuard หรือ OpenVPN (2) ถ้าอุปกรณ์เก่าไม่รองรับ ให้ใช้ L2TP/IPsec เป็นตัวแทนชั่วคราว (แต่ต้องแน่ใจว่าอุปกรณ์รองรับ IPsec NAT-T) (3) ถ้าอุปกรณ์เป็น Windows เก่า ให้ใช้ SSTP (Microsoft SSL VPN) หรือ IKEv2 ซึ่งรองรับใน Windows 7+ (4) กรณีอุปกรณ์ Embedded ที่อัปเกรดไม่ได้ ควรเปลี่ยน Hardware</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="6">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 6</span>
+    <p>ในกรณีศึกษาของบริษัท ABC Corporation จงวิเคราะห์ว่าหากใช้ WireGuard แทน IPsec สําหรับการเชื่อมต่อสาขา จะมีข้อดีและข้อเสียอย่างไร</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>ข้อดีของการใช้ WireGuard แทน IPsec:</strong> (1) ตั้งค่าง่ายกว่า — ไม่ต้องจัดการ IKE Parameters, Certificate, หรือ PSK ที่ซับซ้อน (2) Performance สูงกว่า — เหมาะกับสาขาที่มี Bandwidth จํากัด (3) Connection Migration — สาขาที่ใช้ 4G สลับเครือข่ายได้โดยไม่ขาด Connection (4) โค้ดขนาดเล็ก — Security Audit และ Maintenance ง่ายกว่า <strong>ข้อเสีย:</strong> (1) อุปกรณ์ Enterprise Router/ Firewall หลายยี่ห้อยังไม่รองรับ WireGuard (Cisco, Palo Alto บางรุ่น) (2) ไม่มี Dynamic Routing Protocol ในตัว — ต้อง Static Route หรือใช้ OSPF/BGP แยก (3) ไม่มี Built-in Authentication สําหรับผู้ใช้ — ต้องทําเอง (4) การรองรับ Enterprise Feature เช่น Central Management, Logging, Monitoring น้อยกว่า IPsec <strong>สรุป:</strong> WireGuard เหมาะถ้า Hardware รองรับและทีมดูแลมีทักษะ — IPsec ยังคงเป็นตัวเลือกที่ปลอดภัยกว่าสําหรับ Enterprise ที่มีอุปกรณ์หลากหลาย</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="7">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 7</span>
+    <p>NAT Traversal คืออะไร และเหตุใดจึงเป็นปัญหาสําหรับ IPsec VPN? จงอธิบายวิธีแก้ไขด้วย NAT-T</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> NAT Traversal คือกระบวนการที่ทําให้ VPN Packet สามารถผ่านอุปกรณ์ NAT (Network Address Translation) เช่น Router ตามบ้านหรือ Firewall ขององค์กรได้ <strong>ปัญหาของ IPsec กับ NAT:</strong> IPsec ESP (Protocol 50) ไม่ใช่ TCP หรือ UDP — NAT Device ไม่สามารถ map Port ได้, IPsec AH ทําให้ Integrity Check ล้มเหลวเมื่อ NAT เปลี่ยน IP Address, IKE ใช้ UDP 500 ซึ่งบาง NAT Device จัดการไม่ถูกต้อง <strong>วิธีแก้ไขด้วย NAT-T (NAT Traversal):</strong> (1) IPsec NAT-T ห่อหุ้ม ESP Packet ใน UDP (Port 4500) เพื่อให้ NAT Device จัดการได้เหมือน UDP ทั่วไป (2) ใช้ UDP Encapsulation — เพิ่ม UDP Header ก่อน ESP Header (3) ใช้ IKEv2 ซึ่งรองรับ NAT-T เป็นมาตรฐานดีกว่า IKEv1 (4) ต้องเปิด Port UDP 500 (IKE) และ UDP 4500 (NAT-T) บน Firewall ทั้งสองฝั่ง</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="8">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 8</span>
+    <p>จงออกแบบนโยบาย Split Tunneling สําหรับพนักงาน Remote — Traffic ใดควรผ่าน VPN และ Traffic ใดไม่ควร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Traffic ที่ควรผ่าน VPN (องค์กร):</strong> (1) การเข้าถึง Internal Application — ERP, CRM, HR System, Database (2) File Server และ Document Management (3) Internal Email Server (ถ้าไม่ใช้ Cloud) (4) การพิมพ์ผ่าน Network Printer ที่องค์กร (5) Remote Desktop (RDP) เข้า Server ภายใน (6) Internal DNS Query <strong>Traffic ที่ไม่ควรผ่าน VPN (Internet โดยตรง):</strong> (1) การเข้าถึง Website ทั่วไป — Google, Facebook, YouTube (2) Streaming — Netflix, YouTube, Spotify (3) Cloud Services ที่องค์กรใช้ — Office 365, Gmail, Slack, Teams (ควรใช้ Direct Connection เพื่อ Performance) (4) Software Updates — Windows Update, App Store (5) Video Conference — Zoom, Google Meet (ควรใช้ Direct เพื่อ Latency ต่ํา) <strong>ข้อควรระวัง:</strong> Split Tunneling ลดภาระ VPN Gateway และลด Latency สําหรับ Internet Traffic แต่เพิ่มความเสี่ยงด้านความปลอดภัย — ผู้โจมตีอาจเข้าถึงเครื่องพนักงานผ่าน Internet Connection แล้วใช้ VPN Tunnel เป็นช่องทางเข้าเครือข่ายองค์กร (Lateral Movement) ควรใช้ Always-On VPN สําหรับพนักงานที่มีความเสี่ยงสูง หรือใช้ DNS Filtering / Web Security บนเครื่อง</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="9">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 9</span>
+    <p>จงอธิบาย Perfect Forward Secrecy (PFS) และความสําคัญต่อความปลอดภัยของ VPN</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> Perfect Forward Secrecy (PFS) คือคุณสมบัติของ Key Exchange Protocol ที่ทําให้การเปิดเผย Private Key ระยะยาว (Long-term Key) ไม่ส่งผลกระทบต่อ Session Key ของการสื่อสารในอดีต <strong>กลไก:</strong> (1) PFS ใช้ Ephemeral Key Exchange — Diffie-Hellman (DHE) หรือ Elliptic Curve Diffie-Hellman (ECDHE) ในแต่ละ Session (2) ทุกครั้งที่มีการสร้าง Connection ใหม่ จะมีการ Generate Ephemeral Key Pair ใหม่ (3) Session Key ถูกสร้างจาก Ephemeral Key — ไม่เกี่ยวข้องกับ Long-term Private Key (4) เมื่อ Session จบลง Ephemeral Key จะถูกทิ้ง — ไม่มีทางคํานวณ Session Key ย้อนหลัง <strong>ความสําคัญต่อ VPN:</strong> (1) ป้องกัน "Harvest Now, Decrypt Later" — แม้ผู้โจมตีจะบันทึก Traffic ทั้งหมดตอนนี้ แต่ถ้าไม่มี PFS เมื่อ Private Key ถูกเปิดเผยในอนาคต ก็ไม่สามารถถอดรหัส Traffic ที่บันทึกไว้ได้ (2) เป็นข้อกําหนดในมาตรฐานความปลอดภัยหลายมาตรฐาน (PCI DSS, HIPAA, GDPR) (3) IPsec: ใช้ DH Groups (14, 19, 20, 21) สําหรับ PFS, WireGuard: มี PFS เป็นค่าเริ่มต้น (Curve25519), OpenVPN: ใช้ ECDHE สําหรับ PFS</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="10">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 10</span>
+    <p>หาก VPN Gateway ขององค์กรถูกโจมตีจนระบบล่ม จะมีแผนสํารอง (Disaster Recovery) อย่างไร? จงออกแบบ HA Architecture สําหรับ VPN Concentrator</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>แผน Disaster Recovery สําหรับ VPN Gateway:</strong> (1) มี Active-Active Cluster อย่างน้อย 2 โหนด — ถ้าโหนดหนึ่งล้ม โหนดอื่นรับงานต่อ (2) ใช้ Floating IP (VIP) — Client เชื่อมต่อด้วย IP/域名เดียวกันเสมอ (3) Site-to-Site: ใช้ DPD (Dead Peer Detection) + Auto-failover — ถ้า Gateway หลักไม่ตอบสนอง ให้สลับไปใช้ Backup Gateway โดยอัตโนมัติ (4) Remote Access: ใช้ DNS Failover หรือ Anycast — Client ลองเชื่อมต่อ Gateway หลายตัว (5) มี Backup ISP — ถ้า ISP หลักล้ม ใช้ ISP สํารอง (4G/5G) <strong>HA Architecture:</strong> VPN Concentrator Cluster (Active-Active): Node 1: 203.0.113.10, Node 2: 203.0.113.11, VIP: 203.0.113.12, Health Check: ICMP + Port Check ทุก 5 วินาที, Auto-failover: ถ้า Node 1 ไม่ตอบสนอง 3 ครั้ง → VIP ย้ายไป Node 2 <strong>การสํารองข้อมูล:</strong> Backup Config ทุกวัน, ทดสอบ Failover ทุกเดือน, ทํา DR Drill ปีละ 2 ครั้ง <strong>สําหรับ Remote Users:</strong> แจ้ง URL สํารอง, ใช้ VPN Client ที่รองรับ Multiple Server (OpenVPN Remote Configuration)</p>
+  </div>
+</div>
+
+</section>
+<hr>
+
+
+<section id="references" class="section-ref">
+<h2><i class="fas fa-book" aria-hidden="true"></i> เอกสารอ้างอิง (References)</h2>
+<ol>
+  <li>Kaufman, C., Perlman, R., &amp; Speciner, M. (2022). <em>Network Security: Private Communication in a Public World</em> (3rd ed.). Chapter 15-17: IPsec, VPNs. Addison-Wesley.</li>
+  <li>Stallings, W. (2022). <em>Cryptography and Network Security: Principles and Practice</em> (8th ed.). Chapter 19: IP Security. Pearson.</li>
+  <li>Donenfeld, J. A. (2017). "WireGuard: Next Generation Kernel Network Tunnel." <em>Proceedings of the 2017 Network and Distributed System Security Symposium (NDSS)</em>.</li>
+  <li>OpenVPN Inc. (2024). <em>OpenVPN Community Resources</em>. Retrieved from https://community.openvpn.net/</li>
+  <li>WireGuard Project. (2024). <em>WireGuard Documentation</em>. Retrieved from https://www.wireguard.com/</li>
+  <li>NIST Special Publication 800-77 Rev. 1. (2020). <em>Guide to IPsec VPNs</em>. National Institute of Standards and Technology.</li>
+  <li>Microsoft Corporation. (2020). <em>PPTP is deprecated in Windows 10</em>. Retrieved from Microsoft Docs.</li>
+  <li>IETF RFC 7296. (2014). <em>Internet Key Exchange Protocol Version 2 (IKEv2)</em>.</li>
+  <li>IETF RFC 8446. (2018). <em>The Transport Layer Security (TLS) Protocol Version 1.3</em>.</li>
+  <li>CISA. (2023). <em>Guidance on Securing VPNs</em>. Cybersecurity and Infrastructure Security Agency.</li>
+</ol>
+</section>
+</main>
+</div> <!-- .layout -->
+
+<footer class="site-footer" role="contentinfo">
+  <hr class="footer-divider">
+  <p><i class="fas fa-shield-halved" aria-hidden="true"></i> รายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+  <p style="margin-top:0.5rem;font-size:0.8rem;">เอกสารนี้เป็นส่วนหนึ่งของรายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+</footer>
+
+<button id="back-to-top" aria-label="กลับไปด้านบน" title="กลับไปด้านบน">
+  <i class="fas fa-arrow-up" aria-hidden="true"></i>
+</button>
+
+<script>
+// ====== Loading Screen ======
+window.addEventListener("load", function() {
+  document.getElementById("loading-screen").classList.add("hidden");
+});
+
+// ====== Progress Bar ======
+window.addEventListener("scroll", function() {
+  var scrollTop = window.scrollY;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById("progress-bar").style.width = progress + "%";
+  document.getElementById("progress-bar").setAttribute("aria-valuenow", Math.round(progress));
+});
+
+// ====== Dark Mode ======
+(function() {
+  var toggle = document.getElementById("dark-mode-toggle");
+  var icon = toggle.querySelector("i");
+  var theme = localStorage.getItem("theme");
+  if (theme === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+    icon.className = "fas fa-sun";
+  }
+  toggle.addEventListener("click", function() {
+    var current = document.documentElement.getAttribute("data-theme");
+    if (current === "dark") {
+      document.documentElement.removeAttribute("data-theme");
+      localStorage.setItem("theme", "light");
+      icon.className = "fas fa-moon";
+    } else {
+      document.documentElement.setAttribute("data-theme", "dark");
+      localStorage.setItem("theme", "dark");
+      icon.className = "fas fa-sun";
+    }
+  });
+})();
+
+// ====== Sidebar Toggle (mobile) ======
+(function() {
+  var btn = document.getElementById("sidebar-toggle");
+  var sidebar = document.getElementById("sidebar");
+  var overlay = document.getElementById("sidebar-overlay");
+  if (!btn || !sidebar || !overlay) return;
+  btn.addEventListener("click", function() {
+    var open = sidebar.classList.toggle("open");
+    overlay.classList.toggle("active");
+    btn.setAttribute("aria-expanded", open);
+  });
+  overlay.addEventListener("click", function() {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("active");
+    btn.setAttribute("aria-expanded", "false");
+  });
+})();
+
+// ====== Scroll Spy ======
+(function() {
+  var tocLinks = document.querySelectorAll(".toc-link");
+  var sections = [];
+  tocLinks.forEach(function(link) {
+    var targetId = link.getAttribute("data-target");
+    var el = document.getElementById(targetId);
+    if (el) sections.push({ id: targetId, el: el, link: link });
+  });
+  
+  function updateActive() {
+    var scrollPos = window.scrollY + 120;
+    var currentId = null;
+    for (var i = 0; i < sections.length; i++) {
+      var s = sections[i];
+      if (s.el.offsetTop <= scrollPos) {
+        currentId = s.id;
+      }
+    }
+    tocLinks.forEach(function(l) { l.classList.remove("active"); });
+    if (currentId) {
+      var activeLink = document.querySelector('.toc-link[data-target="' + currentId + '"]');
+      if (activeLink) {
+        activeLink.classList.add("active");
+        var sidebar = document.getElementById("sidebar");
+        if (sidebar) {
+          var itemTop = activeLink.offsetTop - sidebar.offsetTop;
+          var itemBottom = itemTop + activeLink.offsetHeight;
+          var sidebarScrollTop = sidebar.scrollTop;
+          var sidebarHeight = sidebar.clientHeight;
+          if (itemTop < sidebarScrollTop) {
+            activeLink.scrollIntoView({ block: "nearest" });
+          } else if (itemBottom > sidebarScrollTop + sidebarHeight) {
+            activeLink.scrollIntoView({ block: "nearest" });
+          }
+        }
+      }
+    }
+  }
+  
+  window.addEventListener("scroll", updateActive);
+  window.addEventListener("load", updateActive);
+  setTimeout(updateActive, 500);
+})();
+
+// ====== Smooth scroll for TOC links ======
+document.querySelectorAll(".toc-link").forEach(function(link) {
+  link.addEventListener("click", function(e) {
+    e.preventDefault();
+    var targetId = this.getAttribute("data-target");
+    var target = document.getElementById(targetId);
+    if (target) {
+      var offset = 80;
+      var targetPos = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: targetPos, behavior: "smooth" });
+    }
+    var sidebar = document.getElementById("sidebar");
+    var overlay = document.getElementById("sidebar-overlay");
+    if (sidebar && sidebar.classList.contains("open")) {
+      sidebar.classList.remove("open");
+      overlay.classList.remove("active");
+      document.getElementById("sidebar-toggle").setAttribute("aria-expanded", "false");
+    }
+  });
+});
+
+// ====== Back to Top ======
+(function() {
+  var btn = document.getElementById("back-to-top");
+  window.addEventListener("scroll", function() {
+    if (window.scrollY > 400) {
+      btn.classList.add("visible");
+    } else {
+      btn.classList.remove("visible");
+    }
+  });
+  btn.addEventListener("click", function() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+})();
+
+// ====== Copy Code ======
+function copyCode(btn) {
+  var pre = btn.closest("pre");
+  var code = pre.textContent;
+  code = code.replace(/\u0e04\u0e31\u0e14\u0e25\u0e2d\u0e01/g, "").trim();
+  navigator.clipboard.writeText(code).then(function() {
+    btn.innerHTML = "<i class=\"fas fa-check\" aria-hidden=\"true\"></i> \u0e04\u0e31\u0e14\u0e25\u0e2d\u0e01\u0e41\u0e25\u0e49\u0e27";
+    btn.classList.add("copied");
+    setTimeout(function() {
+      btn.innerHTML = "<i class=\"fas fa-copy\" aria-hidden=\"true\"></i> \u0e04\u0e31\u0e14\u0e25\u0e2d\u0e01";
+      btn.classList.remove("copied");
+    }, 2000);
+  }).catch(function() {
+    var textarea = document.createElement("textarea");
+    textarea.value = code;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+    btn.innerHTML = "<i class=\"fas fa-check\" aria-hidden=\"true\"></i> \u0e04\u0e31\u0e14\u0e25\u0e2d\u0e01\u0e41\u0e25\u0e49\u0e27";
+    btn.classList.add("copied");
+    setTimeout(function() {
+      btn.innerHTML = "<i class=\"fas fa-copy\" aria-hidden=\"true\"></i> \u0e04\u0e31\u0e14\u0e25\u0e2d\u0e01";
+      btn.classList.remove("copied");
+    }, 2000);
+  });
+}
+
+// ====== Expandable Sections ======
+function toggleExpand(header) {
+  var expandable = header.closest(".expandable");
+  if (!expandable) return;
+  var isExpanded = expandable.classList.toggle("expanded");
+  header.setAttribute("aria-expanded", isExpanded);
+}
+
+// ====== Reveal Answer (Quiz) ======
+function revealAnswer(btn) {
+  var card = btn.closest(".quiz-card");
+  if (!card) return;
+  card.classList.add("revealed");
+  var answer = card.querySelector(".quiz-answer");
+  if (answer) {
+    answer.classList.remove("hidden");
+  }
+  btn.textContent = "\u0e14\u0e39\u0e40\u0e09\u0e25\u0e22\u0e41\u0e25\u0e49\u0e27";
+  btn.disabled = true;
+}
+
+// ====== Search ======
+(function() {
+  var searchToggle = document.getElementById("search-toggle-btn");
+  var searchOverlay = document.getElementById("search-overlay");
+  var searchInput = document.getElementById("search-input");
+  var searchResults = document.getElementById("search-results");
+  var searchCount = document.getElementById("search-count");
+  var searchClose = document.getElementById("search-close-btn");
+  
+  var mainContent = document.getElementById("main-content");
+  var searchData = [];
+  
+  function buildSearchIndex() {
+    searchData = [];
+    var sections = mainContent.querySelectorAll("h2, h3, h4, p, li, td, th, pre");
+    sections.forEach(function(el) {
+      var text = el.textContent.trim();
+      if (text.length > 10) {
+        var heading = "";
+        var parent = el.parentElement;
+        while (parent && parent !== mainContent) {
+          var prevHeading = parent.querySelector("h2, h3, h4");
+          if (prevHeading) { heading = prevHeading.textContent.trim(); break; }
+          parent = parent.parentElement;
+        }
+        searchData.push({
+          text: text,
+          heading: heading || "\u0e40\u0e19\u0e37\u0e49\u0e2d\u0e2b\u0e32",
+          element: el
+        });
+      }
+    });
+  }
+  
+  buildSearchIndex();
+  
+  function performSearch(query) {
+    if (!query || query.length < 2) {
+      searchResults.innerHTML = "<div class=\"no-results\">\u0e01\u0e23\u0e38\u0e13\u0e32\u0e1b\u0e49\u0e2d\u0e19\u0e04\u0e33\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e2d\u0e22\u0e48\u0e32\u0e07\u0e19\u0e49\u0e2d\u0e22 2 \u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23</div>";
+      searchCount.textContent = "";
+      return;
+    }
+    
+    var q = query.toLowerCase();
+    var results = [];
+    var totalMatches = 0;
+    
+    searchData.forEach(function(item) {
+      var lower = item.text.toLowerCase();
+      var idx = lower.indexOf(q);
+      if (idx !== -1) {
+        var count = 0;
+        var pos = -1;
+        while ((pos = lower.indexOf(q, pos + 1)) !== -1) count++;
+        totalMatches += count;
+        
+        var snippet = item.text.substring(Math.max(0, idx - 60), idx + q.length + 120);
+        if (idx > 60) snippet = "..." + snippet;
+        if (idx + q.length + 120 < item.text.length) snippet = snippet + "...";
+        
+        snippet = snippet.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        snippet = snippet.replace(new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi"), "<mark>$1</mark>");
+        
+        results.push({
+          heading: item.heading,
+          snippet: snippet,
+          element: item.element,
+          count: count
+        });
+      }
+    });
+    
+    if (results.length > 50) results = results.slice(0, 50);
+    
+    searchCount.textContent = totalMatches + " \u0e1c\u0e25\u0e25\u0e31\u0e1e\u0e18\u0e4c";
+    
+    if (results.length === 0) {
+      searchResults.innerHTML = "<div class=\"no-results\">\u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e1c\u0e25\u0e25\u0e31\u0e1e\u0e18\u0e4c\u0e2a\u0e33\u0e2b\u0e23\u0e31\u0e1a \"" + query + "\"</div>";
+      return;
+    }
+    
+    var html = "";
+    results.forEach(function(r) {
+      html += "<div class=\"search-result-item\" data-heading=\"" + r.heading.replace(/"/g, "&quot;") + "\">";
+      html += "<div class=\"result-heading\">" + r.heading + "</div>";
+      html += "<div class=\"result-snippet\">" + r.snippet + "</div>";
+      html += "</div>";
+    });
+    searchResults.innerHTML = html;
+    
+    searchResults.querySelectorAll(".search-result-item").forEach(function(item, i) {
+      item.addEventListener("click", function() {
+        var el = results[i].element;
+        if (el) {
+          var offset = 100;
+          var pos = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: pos, behavior: "smooth" });
+          searchOverlay.classList.remove("active");
+          el.style.transition = "background 0.5s ease";
+          el.style.background = "var(--bg-tertiary)";
+          setTimeout(function() {
+            el.style.background = "";
+          }, 1500);
+        }
+      });
+    });
+  }
+  
+  var searchTimeout = null;
+  searchInput.addEventListener("input", function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      performSearch(searchInput.value);
+    }, 300);
+  });
+  
+  searchToggle.addEventListener("click", function() {
+    searchOverlay.classList.add("active");
+    setTimeout(function() { searchInput.focus(); }, 100);
+  });
+  
+  searchClose.addEventListener("click", function() {
+    searchOverlay.classList.remove("active");
+    searchInput.value = "";
+    searchResults.innerHTML = "";
+    searchCount.textContent = "";
+  });
+  
+  searchOverlay.addEventListener("click", function(e) {
+    if (e.target === searchOverlay) {
+      searchOverlay.classList.remove("active");
+      searchInput.value = "";
+      searchResults.innerHTML = "";
+      searchCount.textContent = "";
+    }
+  });
+  
+  document.addEventListener("keydown", function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+      e.preventDefault();
+      searchToggle.click();
+    }
+    if (e.key === "Escape") {
+      searchOverlay.classList.remove("active");
+    }
+  });
+})();
+
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll(".expandable.expanded").forEach(function(el) {
+    var header = el.querySelector(".expandable-header");
+    if (header) header.setAttribute("aria-expanded", "true");
+  });
+});
+</script>
+</body>
+</html>
