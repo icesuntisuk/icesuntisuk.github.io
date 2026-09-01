@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บทที่ 11: Mobile Application Security</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--primary:#1a56db;--primary-dark:#1340a0;--primary-light:#e8effc;--navy:#1e293b;--navy-light:#334155;--success:#059669;--success-light:#d1fae5;--danger:#dc2626;--danger-light:#fee2e2;--warning:#d97706;--warning-light:#fef3c7;--purple:#7c3aed;--purple-light:#ede9fe;--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--radius:12px;--radius-sm:8px;--sidebar-w:292px;--font-thai:'Sarabun',sans-serif;--font-mono:'IBM Plex Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.8;display:flex;min-height:100vh}a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);height:100vh;background:var(--navy);color:#fff;overflow-y:auto;z-index:100;transition:transform .3s}.sidebar-header{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}.sidebar-header h1{font-size:1rem;font-weight:600;color:#fff;line-height:1.4}.sidebar-header .sub{font-size:.75rem;color:#94a3b8;margin-top:.25rem}.sidebar-nav{padding:.75rem 0}.sidebar-nav a{display:block;padding:.5rem 1.25rem;color:#cbd5e1;font-size:.84rem;transition:all .15s;border-left:3px solid transparent}.sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--primary);text-decoration:none}.sidebar-nav .section-label{padding:.6rem 1.25rem .25rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;font-weight:600}.sidebar-nav .sub-link{padding-left:2.35rem;font-size:.78rem}.sidebar-toggle{display:none;position:fixed;top:.75rem;left:.75rem;z-index:200;background:var(--navy);color:#fff;border:none;width:44px;height:44px;border-radius:var(--radius-sm);cursor:pointer;font-size:1.5rem;align-items:center;justify-content:center}.sidebar-overlay{display:none}.main{flex:1;margin-left:var(--sidebar-w);max-width:100%;padding:0}.topbar{position:sticky;top:0;z-index:50;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between}.topbar-title{font-size:.85rem;color:var(--text-muted)}.topbar-title strong{color:var(--text);font-weight:600}.topbar-progress{font-size:.8rem;color:var(--text-muted)}.topbar-home{color:var(--text-muted);font-size:.85rem;text-decoration:none;margin-right:.75rem;transition:color.15s;white-space:nowrap}.topbar-home:hover{color:var(--primary);text-decoration:none}.content{padding:2rem;max-width:1040px;margin:0 auto}.content h2{font-size:1.5rem;color:var(--navy);margin:2.5rem 0 1rem;padding-bottom:.5rem;border-bottom:3px solid var(--primary)}.content h3{font-size:1.2rem;color:var(--navy);margin:1.75rem 0 .75rem}.content h4{font-size:1rem;color:var(--navy);margin:1.25rem 0 .5rem}.content p{margin-bottom:.85rem;color:var(--text)}.content ul,.content ol{padding-left:1.5rem;margin-bottom:.85rem}.content li{margin-bottom:.35rem;color:var(--text)}.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1.25rem 0;box-shadow:var(--shadow)}.card-header{font-size:1rem;font-weight:600;margin-bottom:.75rem;color:var(--navy)}.info-box{display:flex;gap:.85rem;padding:1rem 1.25rem;border-radius:var(--radius-sm);margin:1rem 0;font-size:.9rem}.info-box .icon{font-size:1.3rem;flex-shrink:0;margin-top:.1rem}.info-box.warning{background:var(--warning-light);border-left:4px solid var(--warning);color:#92400e}.info-box.remember{background:var(--primary-light);border-left:4px solid var(--primary);color:var(--navy)}.info-box.question{background:var(--purple-light);border-left:4px solid var(--purple);color:var(--navy)}.table-wrap{overflow-x:auto;margin:1rem 0;border-radius:var(--radius-sm);border:1px solid var(--border)}table{width:100%;border-collapse:collapse;font-size:.88rem}thead{background:var(--navy);color:#fff}th{padding:.65rem .85rem;text-align:left;font-weight:600;white-space:nowrap}td{padding:.6rem .85rem;border-bottom:1px solid var(--border);vertical-align:top}tbody tr:hover{background:#f1f5f9}code{font-family:var(--font-mono);font-size:.82rem;background:#f1f5f9;padding:.1rem .35rem;border-radius:4px;color:var(--danger)}pre{margin:.85rem 0;border-radius:var(--radius-sm);overflow-x:auto;background:#0f172a;color:#e2e8f0;padding:1rem;font-size:.82rem;line-height:1.6}pre code{background:transparent;padding:0;color:inherit;font-size:inherit}.interactive{background:var(--bg-card);border:2px solid var(--primary-light);border-radius:var(--radius);padding:1.5rem;margin:1.5rem 0}.interactive h4{color:var(--primary);margin-top:0;margin-bottom:.65rem}.quiz-option{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--border);border-radius:var(--radius-sm);padding:.65rem 1rem;margin:.4rem 0;cursor:pointer;font-family:var(--font-thai);font-size:.9rem;color:var(--text);transition:all .2s}.quiz-option:hover{border-color:var(--primary);background:var(--primary-light)}.quiz-option.correct{background:var(--success-light);border-color:var(--success);color:#065f46;font-weight:600}.quiz-option.incorrect{background:var(--danger-light);border-color:var(--danger);color:#991b1b}.result{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-sm);padding:.6rem 1rem;margin-top:.65rem;font-size:.85rem;color:var(--text-muted);min-height:2.5rem}.meter{height:10px;background:#e2e8f0;border-radius:99px;margin:.65rem 0;overflow:hidden}.meter-fill{height:100%;background:var(--success);border-radius:99px;transition:width .4s;width:0}.checklist label{display:flex;align-items:flex-start;gap:.55rem;padding:.4rem 0;cursor:pointer;font-size:.88rem}.checklist input[type=checkbox]{margin-top:.25rem;width:18px;height:18px;accent-color:var(--primary)}.control-row{display:flex;gap:.65rem;margin:.65rem 0;flex-wrap:wrap}.control-row input{flex:1;min-width:160px;padding:.55rem .85rem;border:2px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-thai);font-size:.88rem}.control-row select{flex:1;min-width:160px;padding:.55rem .85rem;border:2px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-thai);font-size:.88rem;background:#fff}.btn{background:var(--primary);color:#fff;border:none;padding:.55rem 1.25rem;border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-thai);font-size:.88rem;font-weight:500;white-space:nowrap;transition:background .2s}.btn:hover{background:var(--primary-dark)}.slider-row{display:flex;align-items:center;gap:.75rem;padding:.3rem 0;font-size:.85rem}.slider-row label{flex:0 0 220px;color:var(--text)}.slider-row input{flex:1;max-width:260px}.slider-row .val{flex:0 0 80px;color:var(--primary);font-weight:600;font-size:.82rem}.example-box{background:var(--primary-light);border-radius:var(--radius-sm);padding:1rem 1.25rem;margin:1rem 0;font-size:.88rem}.example-label{display:inline-block;background:var(--primary);color:#fff;padding:.15rem .75rem;border-radius:99px;font-size:.78rem;font-weight:600;margin-bottom:.5rem}.memory-card{background:#fff;border:2px solid var(--border);border-radius:var(--radius-sm);padding:1rem;cursor:pointer;transition:all .2s;text-align:center}.memory-card:hover{border-color:var(--primary)}.memory-card.expanded{border-color:var(--primary);background:var(--primary-light)}.memory-card .card-icon{font-size:1.5rem;margin-bottom:.25rem}.memory-card .card-title{font-weight:600;font-size:.85rem;color:var(--navy)}.memory-card .card-desc{display:none;margin-top:.65rem;font-size:.8rem;color:var(--text);text-align:left}.memory-card .card-desc.show{display:block}.memory-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.65rem;margin:.75rem 0}.cve-bar{background:var(--primary);color:#fff;padding:.7rem 1rem;border-radius:var(--radius-sm);cursor:pointer;margin:.35rem 0;transition:all .2s;font-size:.85rem;font-weight:500}.cve-bar:hover{background:var(--primary-dark);transform:translateX(4px)}.cve-bar .cve-id{font-weight:700}.cve-bar .cve-desc{font-weight:400;opacity:.9}.incident-item{background:#fff;border:2px solid var(--border);border-radius:var(--radius-sm);padding:.75rem 1rem;margin:.4rem 0;cursor:pointer;transition:all .2s;font-size:.85rem}.incident-item:hover{border-color:var(--purple);background:var(--purple-light)}.incident-item.expanded{border-color:var(--purple);background:var(--purple-light)}.incident-item .incident-title{font-weight:600;color:var(--navy)}.incident-item .incident-detail{display:none;margin-top:.5rem;font-size:.8rem;color:var(--text);padding:.5rem;background:#fff;border-radius:var(--radius-sm)}.incident-item .incident-detail.show{display:block}.tab-bar{display:flex;gap:4px;margin:.75rem 0;border-bottom:2px solid var(--border)}.tab-btn{background:transparent;border:none;padding:.55rem 1rem;cursor:pointer;font-family:var(--font-thai);font-size:.85rem;color:var(--text-muted);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}.tab-btn:hover{color:var(--primary)}.tab-panel{display:none;padding:.75rem 0}.tab-panel.active{display:block}@media(max-width:1024px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sidebar-toggle{display:flex}.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}.sidebar-overlay.show{display:block}.main{margin-left:0}.content{padding:1.25rem}.topbar{padding:.75rem 1rem}.topbar-title{font-size:.78rem}}@media(max-width:640px){.content{padding:1rem}.content h2{font-size:1.25rem}.memory-card-grid{grid-template-columns:repeat(2,1fr)}.slider-row{flex-direction:column;align-items:stretch;gap:.35rem}.slider-row label{flex:unset}.slider-row input{max-width:100%}}</style>
+</head>
+<body>
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="เปิดเมนู">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-header"><h1>Mobile Application Security</h1><div class="sub">บทที่ 11 · Interactive Learning</div></div>
+  <div class="sidebar-nav">
+    <div class="section-label">เนื้อหา</div>
+    <a href="#plan">แผนการเรียนรู้</a>
+    <a href="#s1">11.1 OWASP Mobile Security Ecosystem</a><a href="#s1-1" class="sub-link">11.1.1 OWASP MASVS v2.1.0</a><a href="#s1-2" class="sub-link">11.1.2 OWASP MASTG v1.7.0</a><a href="#s1-3" class="sub-link">11.1.3 OWASP MASWE</a><a href="#s1-4" class="sub-link">11.1.4 OWASP Mobile Top 10 2024</a>
+    <a href="#s2">11.2 ความปลอดภัยบน Android</a><a href="#s2-1" class="sub-link">11.2.1 Application Sandbox</a><a href="#s2-2" class="sub-link">11.2.2 Permission Model</a><a href="#s2-3" class="sub-link">11.2.3 APK Structure และ RE</a><a href="#s2-4" class="sub-link">11.2.4 Intent Spoofing</a><a href="#s2-5" class="sub-link">11.2.5 Content Provider</a><a href="#s2-6" class="sub-link">11.2.6 WebView Security</a><a href="#s2-7" class="sub-link">11.2.7 Insecure Storage</a>
+    <a href="#s3">11.3 ความปลอดภัยบน iOS</a><a href="#s3-1" class="sub-link">11.3.1 iOS Sandbox และ Entitlements</a><a href="#s3-2" class="sub-link">11.3.2 Keychain Services</a><a href="#s3-3" class="sub-link">11.3.3 Data Protection API</a><a href="#s3-4" class="sub-link">11.3.4 App Transport Security</a><a href="#s3-5" class="sub-link">11.3.5 Jailbreak Detection</a><a href="#s3-6" class="sub-link">11.3.6 Secure Enclave</a>
+    <a href="#s4">11.4 Mobile API Security</a><a href="#s4-1" class="sub-link">11.4.1 Certificate Pinning</a><a href="#s4-2" class="sub-link">11.4.2 Network Security Config</a><a href="#s4-3" class="sub-link">11.4.3 Certificate Pinning iOS</a><a href="#s4-4" class="sub-link">11.4.4 OAuth 2.0 with PKCE</a><a href="#s4-5" class="sub-link">11.4.5 การป้องกัน MITM</a><a href="#s4-6" class="sub-link">11.4.6 Device Fingerprinting</a><a href="#s4-7" class="sub-link">11.4.7 การจัดเก็บ API Keys</a>
+    <a href="#s5">11.5 Secure Data Storage</a><a href="#s5-1" class="sub-link">11.5.1 Android Keystore</a><a href="#s5-2" class="sub-link">11.5.2 iOS Keychain</a><a href="#s5-3" class="sub-link">11.5.3 EncryptedSharedPrefs</a><a href="#s5-4" class="sub-link">11.5.4 SQLCipher</a><a href="#s5-5" class="sub-link">11.5.5 สิ่งที่ไม่ควรจัดเก็บ</a>
+    <a href="#s6">11.6 Mobile Security Testing Tools</a><a href="#s6-1" class="sub-link">11.6.1 MobSF v4.4.6</a><a href="#s6-2" class="sub-link">11.6.2 Burp Suite</a><a href="#s6-3" class="sub-link">11.6.3 Drozer v3.1.0</a><a href="#s6-4" class="sub-link">11.6.4 Objection (Frida)</a><a href="#s6-5" class="sub-link">11.6.5 ขั้นตอนการทดสอบ</a>
+    <a href="#s7">11.7 เหตุการณ์จริงและแนวโน้ม</a><a href="#s7-1" class="sub-link">11.7.1 เหตุการณ์สำคัญ</a><a href="#s7-2" class="sub-link">11.7.2 แนวโน้ม</a>
+    <div class="section-label">กิจกรรม</div>
+    <a href="#labs">Labs 11.1 — 11.4</a><a href="#keywords">Keywords</a><a href="#questions">คำถามท้ายบท</a><a href="#summary">สรุปท้ายบท</a><a href="#refs">เอกสารอ้างอิง</a>
+  </div>
+</nav>
+<div class="main">
+  <header class="topbar"><a href="index.html" class="topbar-home" aria-label="กลับหน้าแรก">← HOME</a><div class="topbar-title"><strong>บทที่ 11</strong> · Mobile Application Security</div><div class="topbar-progress" id="readingProgress">Software Security</div></header>
+  <div class="content">
+    <div style="text-align:center;padding:2rem 0 1rem"><span style="display:inline-block;background:var(--primary);color:#fff;padding:.25rem 1rem;border-radius:50px;font-size:.85rem;margin-bottom:1rem">บทที่ 11</span><h1 style="font-size:2.25rem;color:var(--navy);margin-bottom:.5rem;border:none">Mobile Application Security</h1><p style="color:var(--text-muted);font-size:1rem">บรรยาย 2 ชม. + ปฏิบัติการ 2 ชม. | รวม 4 ชม.</p></div>
+    <div class="card" style="background:var(--navy-light);color:#fff;border:1px solid rgba(255,255,255,.15);box-shadow:0 4px 20px rgba(247,245,245,0.25)"><div class="card-header" style="color:#fff">วัตถุประสงค์การเรียนรู้</div><ol style="color:#fff;padding-left:1.25rem">
+      <li>อธิบายองค์ประกอบของ OWASP Mobile Security Ecosystem ได้แก่ MASVS v2.1.0 (8 กลุ่มควบคุม), MASTG v1.7.0, MASWE และ OWASP Mobile Top 10 2024 ได้อย่างถูกต้อง</li>
+      <li>วิเคราะห์ความแตกต่างด้านความปลอดภัยระหว่างแพลตฟอร์ม Android และ iOS ในด้าน App Sandbox, Permission Model, Entitlements และการเข้ารหัสข้อมูล</li>
+      <li>ระบุและอธิบายช่องโหว่ที่พบบ่อยในแอปพลิเคชันบนอุปกรณ์เคลื่อนที่ เช่น Intent Spoofing, WebView Injection, Insecure Data Storage และ Insecure Communication</li>
+      <li>เลือกใช้แนวทางป้องกัน Mobile API Communication ที่ปลอดภัย ได้แก่ Certificate Pinning, OAuth 2.0 with PKCE และ Device Fingerprinting</li>
+      <li>ออกแบบกลไก Secure Data Storage บนอุปกรณ์เคลื่อนที่โดยใช้ Android Keystore, iOS Keychain, EncryptedSharedPreferences และ SQLCipher</li>
+      <li>ใช้เครื่องมือทดสอบความปลอดภัยของแอปพลิเคชันบนอุปกรณ์เคลื่อนที่ ได้แก่ MobSF, Burp Suite, Drozer และ Objection (Frida) เพื่อวิเคราะห์ช่องโหว่</li>
+      <li>วิเคราะห์กรณีเหตุการณ์จริงด้านความปลอดภัยของแอปพลิเคชันบนอุปกรณ์เคลื่อนที่และระบุบทเรียนที่นำไปปรับใช้ได้</li>
+    </ol></div>
+    <div class="info-box warning"><div class="icon">⚠️</div><div><strong>ขอบเขตและข้อกำหนดด้านจริยธรรมของบทนี้:</strong> บทนี้ครอบคลุมหลักการรักษาความปลอดภัยของแอปพลิเคชันบนอุปกรณ์เคลื่อนที่ทั้งในระบบปฏิบัติการ Android และ iOS เนื้อหามีตัวอย่างเกี่ยวกับช่องโหว่และการโจมตีเพื่อการเรียนรู้เชิงป้องกันเท่านั้น กิจกรรมปฏิบัติการทั้งหมดต้องทำในสภาพแวดล้อมที่ได้รับอนุญาต เช่น อุปกรณ์ทดสอบในห้องปฏิบัติการ เครื่องเสมือน (Virtual Machine) หรือแอปพลิเคชันตัวอย่างที่อาจารย์จัดให้เท่านั้น <strong>ข้อควรจำ:</strong> ห้ามนำเทคนิคในบทนี้ไปทดสอบกับแอปพลิเคชันหรือระบบของบุคคลอื่นโดยไม่ได้รับอนุญาตเป็นลายลักษณ์อักษร การใช้เครื่องมือเช่น MobSF, Burp Suite, Drozer และ Frida กับแอปพลิเคชันที่ไม่ใช่ของตนเองหรือไม่ได้รับอนุญาตอาจมีความผิดทางกฎหมาย พ.ร.บ. ว่าด้วยการกระทำผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560 และแก้ไขเพิ่มเติม การทดสอบแอปพลิเคชันบนอุปกรณ์เคลื่อนที่ต้องทำบนอุปกรณ์ที่นักศึกษาเป็นเจ้าของและอยู่ในการควบคุมของนักศึกษาเท่านั้น</div></div>
+
+    <h2 id="plan">แผนการเรียนรู้สำหรับ 4 ชั่วโมง</h2><div class="table-wrap"><table><thead><tr><th>ช่วงเวลา</th><th>หัวข้อ</th><th>เป้าหมายการเรียนรู้</th><th>กิจกรรมในชั้นเรียน</th></tr></thead><tbody>
+      <tr><td>ชั่วโมงที่ 1</td><td>OWASP Mobile Security Ecosystem และความปลอดภัยบน Android</td><td>เข้าใจ MASVS, MASTG, OWASP Mobile Top 10 2024, Android App Sandbox, Permission Model, APK Structure และ Intent Security</td><td>วิเคราะห์กรณี CVE ด้าน Intent Spoofing และ Android Permission</td></tr>
+      <tr><td>ชั่วโมงที่ 2</td><td>ความปลอดภัยบน iOS และ Mobile API Security</td><td>เข้าใจ iOS Sandbox, Entitlements, Keychain, ATS, Certificate Pinning, OAuth 2.0 with PKCE และ API Key Storage</td><td>เปรียบเทียบ Android vs iOS Security Model และวิเคราะห์โค้ดตัวอย่าง</td></tr>
+      <tr><td>ชั่วโมงที่ 3</td><td>Lab 11.1 และ Lab 11.2</td><td>ฝึกใช้ MobSF วิเคราะห์ APK และใช้ Burp Suite ดักจับ Mobile App Traffic</td><td>วิเคราะห์ APK ตัวอย่างด้วย MobSF และตั้งค่า proxy สำหรับ mobile app</td></tr>
+      <tr><td>ชั่วโมงที่ 4</td><td>Lab 11.3 และ Lab 11.4</td><td>ฝึกวิเคราะห์ Android Manifest/iOS Info.plist และ Reverse Engineering ด้วย JADX/APKTool</td><td>ตรวจสอบ exported activities, permissions และ decompile DEX</td></tr>
+    </tbody></table></div>
+
+    <h2 id="s1">11.1 OWASP Mobile Security Ecosystem</h2>
+    <p>OWASP (Open Web Application Security Project) ได้พัฒนาเฟรมเวิร์กด้านความปลอดภัยของแอปพลิเคชันบนอุปกรณ์เคลื่อนที่อย่างครอบคลุม ประกอบด้วยสามองค์ประกอบหลักที่ทำงานร่วมกัน ได้แก่ MASVS (Mobile Application Security Verification Standard), MASTG (Mobile Application Security Testing Guide) และ MASWE (Mobile Application Security Weakness Enumeration)</p>
+
+    <h3 id="s1-1">11.1.1 OWASP MASVS v2.1.0 (มกราคม 2024)</h3>
+    <p>MASVS เป็นมาตรฐานสำหรับการตรวจสอบความปลอดภัยของแอปพลิเคชันบนอุปกรณ์เคลื่อนที่ เวอร์ชันล่าสุด v2.1.0 แบ่งกลุ่มควบคุมออกเป็น 8 กลุ่ม ดังนี้:</p>
+    <div class="table-wrap"><table><thead><tr><th>กลุ่มควบคุม</th><th>รหัส</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td>MASVS-STORAGE</td><td>การจัดเก็บข้อมูลอย่างปลอดภัย</td><td>การเข้ารหัสข้อมูลที่จัดเก็บในอุปกรณ์, การจัดการ Keychain/Keystore, การป้องกันข้อมูลรั่วไหลผ่านไฟล์ขยะ</td></tr>
+      <tr><td>MASVS-CRYPTO</td><td>การเข้ารหัส</td><td>การใช้ Algorithm ที่ปลอดภัย, การจัดการคีย์อย่างถูกต้อง, การไม่ใช้การเข้ารหัสที่พัฒนาขึ้นเอง</td></tr>
+      <tr><td>MASVS-AUTH</td><td>การยืนยันตัวตนและอนุญาต</td><td>การยืนยันตัวตนของผู้ใช้, การจัดการ Session, Biometric Authentication, Local Authentication</td></tr>
+      <tr><td>MASVS-NETWORK</td><td>การสื่อสารผ่านเครือข่าย</td><td>TLS, Certificate Pinning, การป้องกัน MITM, การสื่อสารที่เข้ารหัส</td></tr>
+      <tr><td>MASVS-PLATFORM</td><td>ปฏิสัมพันธ์กับแพลตฟอร์ม</td><td>Intent, IPC, URL Scheme, WebView, การเรียกใช้ API ของระบบปฏิบัติการอย่างปลอดภัย</td></tr>
+      <tr><td>MASVS-CODE</td><td>ความปลอดภัยของโค้ด</td><td>Input Validation, Error Handling, การป้องกัน Code Tampering, การคอมไพล์อย่างปลอดภัย</td></tr>
+      <tr><td>MASVS-RESILIENCE</td><td>ความทนทานต่อการถูกดัดแปลง</td><td>การป้องกันการถูก Reverse Engineering, การตรวจจับการถูกดัดแปลง, การป้องกันการถูกดีบัก</td></tr>
+      <tr><td>MASVS-PRIVACY</td><td>ความเป็นส่วนตัว</td><td>การจัดการข้อมูลส่วนบุคคล, การแจ้งให้ผู้ใช้ทราบ, การปฏิบัติตามกฎหมายคุ้มครองข้อมูลส่วนบุคคล</td></tr>
+    </tbody></table></div>
+
+    <h3 id="s1-2">11.1.2 OWASP MASTG v1.7.0</h3>
+    <p>MASTG เป็นคู่มือการทดสอบความปลอดภัยของแอปพลิเคชันบนอุปกรณ์เคลื่อนที่ที่ครอบคลุมทั้งการทดสอบแบบ Static Analysis และ Dynamic Analysis ปัจจุบันมี 12,846 stars บน GitHub MASTG แบ่งการทดสอบออกเป็นหมวดหมู่ตามกลุ่มควบคุมของ MASVS โดยแต่ละหมวดหมู่มี Test Case ที่ระบุขั้นตอนการทดสอบ เครื่องมือที่ต้องใช้ และเกณฑ์การประเมินผล</p>
+    <p>MASTG ครอบคลุมการทดสอบในด้านต่อไปนี้:</p>
+    <ul>
+      <li>การทดสอบการจัดเก็บข้อมูล (MASVS-STORAGE)</li>
+      <li>การทดสอบการเข้ารหัส (MASVS-CRYPTO)</li>
+      <li>การทดสอบการยืนยันตัวตน (MASVS-AUTH)</li>
+      <li>การทดสอบการสื่อสารผ่านเครือข่าย (MASVS-NETWORK)</li>
+      <li>การทดสอบปฏิสัมพันธ์กับแพลตฟอร์ม (MASVS-PLATFORM)</li>
+      <li>การทดสอบความปลอดภัยของโค้ด (MASVS-CODE)</li>
+      <li>การทดสอบความทนทานต่อการถูกดัดแปลง (MASVS-RESILIENCE)</li>
+      <li>การทดสอบความเป็นส่วนตัว (MASVS-PRIVACY)</li>
+    </ul>
+
+    <h3 id="s1-3">11.1.3 OWASP MASWE</h3>
+    <p>MASWE (Mobile Application Security Weakness Enumeration) เป็นโครงการที่เชื่อมโยงระหว่าง MASVS และ MASTG โดย MASWE จะระบุช่องโหว่หรือจุดอ่อน (Weakness) ที่สอดคล้องกับแต่ละกลุ่มควบคุมใน MASVS และเชื่อมต่อไปยัง Test Case ที่เกี่ยวข้องใน MASTG ทำให้ผู้พัฒนาสามารถติดตามได้ว่าช่องโหว่ใดควรแก้ไขตามกลุ่มควบคุมใด และจะทดสอบอย่างไร</p>
+
+    <h3 id="s1-4">11.1.4 OWASP Mobile Top 10 2024</h3>
+    <p>OWASP Mobile Top 10 2024 (Final v1.0) เป็นรายการความเสี่ยงด้านความปลอดภัยที่สำคัญที่สุด 10 อันดับสำหรับแอปพลิเคชันบนอุปกรณ์เคลื่อนที่:</p>
+    <div class="table-wrap"><table><thead><tr><th>อันดับ</th><th>ความเสี่ยง</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td>M1</td><td>Improper Credential Usage</td><td>การใช้ข้อมูลประจำตัวอย่างไม่เหมาะสม เช่น การเก็บรหัสผ่านในรูปแบบ Plaintext หรือการใช้ Credential ที่รั่วไหล</td></tr>
+      <tr><td>M2</td><td>Inadequate Supply Chain Security</td><td>ความปลอดภัยของห่วงโซ่อุปทานที่ไม่เพียงพอ เช่น การใช้ Third-Party SDK ที่ไม่ปลอดภัย</td></tr>
+      <tr><td>M3</td><td>Insecure Authentication/Authorization</td><td>การยืนยันตัวตนและอนุญาตที่ไม่ปลอดภัย</td></tr>
+      <tr><td>M4</td><td>Insufficient Input/Output Validation</td><td>การตรวจสอบ Input และ Output ที่ไม่เพียงพอ</td></tr>
+      <tr><td>M5</td><td>Insecure Communication</td><td>การสื่อสารที่ไม่ปลอดภัย เช่น การไม่ใช้ TLS หรือการไม่ตรวจสอบ Certificate</td></tr>
+      <tr><td>M6</td><td>Inadequate Privacy Controls</td><td>การควบคุมความเป็นส่วนตัวที่ไม่เพียงพอ</td></tr>
+      <tr><td>M7</td><td>Insufficient Binary Protections</td><td>การป้องกัน Binary ที่ไม่เพียงพอ เช่น การไม่ป้องกัน Reverse Engineering</td></tr>
+      <tr><td>M8</td><td>Security Misconfiguration</td><td>การกำหนดค่าที่ผิดพลาดด้านความปลอดภัย</td></tr>
+      <tr><td>M9</td><td>Insecure Data Storage</td><td>การจัดเก็บข้อมูลที่ไม่ปลอดภัย</td></tr>
+      <tr><td>M10</td><td>Insufficient Cryptography</td><td>การใช้การเข้ารหัสที่ไม่เพียงพอ</td></tr>
+    </tbody></table></div>
+
+    <div class="interactive" id="play-masvs">
+      <h4>Interactive: MASVS Control Group Quiz</h4>
+      <p style="font-weight:500;color:var(--navy)">กลุ่มควบคุม MASVS ใดที่เกี่ยวข้องกับการเข้ารหัสข้อมูลบนอุปกรณ์?</p>
+      <button class="quiz-option" data-quiz="masvs1" data-correct="false">MASVS-STORAGE</button>
+      <button class="quiz-option" data-quiz="masvs1" data-correct="true">MASVS-CRYPTO</button>
+      <button class="quiz-option" data-quiz="masvs1" data-correct="false">MASVS-NETWORK</button>
+      <div id="masvs1Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+      <p style="font-weight:500;color:var(--navy);margin-top:1.25rem">กลุ่มควบคุม MASVS ใดที่ครอบคลุมการป้องกัน Intent Spoofing และ WebView Injection?</p>
+      <button class="quiz-option" data-quiz="masvs2" data-correct="false">MASVS-CODE</button>
+      <button class="quiz-option" data-quiz="masvs2" data-correct="true">MASVS-PLATFORM</button>
+      <button class="quiz-option" data-quiz="masvs2" data-correct="false">MASVS-RESILIENCE</button>
+      <div id="masvs2Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+      <p style="font-weight:500;color:var(--navy);margin-top:1.25rem">กลุ่มควบคุม MASVS ใดที่เกี่ยวข้องกับ Certificate Pinning?</p>
+      <button class="quiz-option" data-quiz="masvs3" data-correct="true">MASVS-NETWORK</button>
+      <button class="quiz-option" data-quiz="masvs3" data-correct="false">MASVS-AUTH</button>
+      <button class="quiz-option" data-quiz="masvs3" data-correct="false">MASVS-PRIVACY</button>
+      <div id="masvs3Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+    </div>
+
+    <h2 id="s2">11.2 ความปลอดภัยบน Android</h2>
+
+    <h3 id="s2-1">11.2.1 Application Sandbox</h3>
+    <p>Android ใช้กลไก Sandbox ในระดับ Linux Kernel โดยแต่ละแอปพลิเคชันจะถูกกำหนด Linux User ID (UID) ที่ไม่ซ้ำกัน แอปพลิเคชันแต่ละตัวจะทำงานใน Process ของตนเอง และมีไดเรกทอรีส่วนตัวที่ <code>/data/data/&lt;package_name&gt;</code> ซึ่งแอปพลิเคชันอื่นไม่สามารถเข้าถึงได้โดยตรง</p>
+    <p>กลไก Sandbox นี้ทำงานดังนี้:</p>
+    <ul>
+      <li>แต่ละแอปพลิเคชันได้รับ UID ที่ไม่ซ้ำกันเมื่อติดตั้ง</li>
+      <li>ไฟล์และทรัพยากรของแอปพลิเคชันถูกจำกัดการเข้าถึงด้วยสิทธิ์ระดับ Linux</li>
+      <li>การสื่อสารระหว่างแอปพลิเคชันต้องผ่าน IPC (Inter-Process Communication) เช่น Intent, Binder, Content Provider</li>
+      <li>แอปพลิเคชันไม่สามารถอ่านไฟล์ของแอปพลิเคชันอื่นได้โดยตรง</li>
+    </ul>
+
+    <h3 id="s2-2">11.2.2 Permission Model</h3>
+    <p>Android มีโมเดลการขอสิทธิ์ที่พัฒนามาอย่างต่อเนื่อง:</p>
+    <div class="table-wrap"><table><thead><tr><th>Android เวอร์ชัน</th><th>การเปลี่ยนแปลงสำคัญ</th></tr></thead><tbody>
+      <tr><td>Android 6.0 (API 23)</td><td>เริ่มใช้ Runtime Permissions — ผู้ใช้สามารถปฏิเสธสิทธิ์ขณะรันได้</td></tr>
+      <tr><td>Android 10 (API 29)</td><td>เริ่มใช้ Scoped Storage — จำกัดการเข้าถึงไฟล์ภายนอก</td></tr>
+      <tr><td>Android 11 (API 30)</td><td>Auto-Reset Permissions — สิทธิ์ที่ไม่ได้ใช้จะถูกรีเซ็ตอัตโนมัติ</td></tr>
+    </tbody></table></div>
+    <p><strong>ประเภทของ Permissions ใน Android:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ประเภท</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead><tbody>
+      <tr><td>Normal</td><td>อนุญาตอัตโนมัติ ไม่ต้องขอผู้ใช้</td><td><code>INTERNET</code>, <code>ACCESS_NETWORK_STATE</code></td></tr>
+      <tr><td>Dangerous</td><td>ต้องขอ Runtime Permission</td><td><code>CAMERA</code>, <code>ACCESS_FINE_LOCATION</code>, <code>READ_CONTACTS</code></td></tr>
+      <tr><td>Signature</td><td>ได้รับก็ต่อเมื่อแอปเซ็นด้วย Certificate เดียวกัน</td><td><code>BIND_ACCESSIBILITY_SERVICE</code></td></tr>
+      <tr><td>Special</td><td>ต้องผ่านการตั้งค่าใน Settings พิเศษ</td><td><code>SYSTEM_ALERT_WINDOW</code>, <code>REQUEST_INSTALL_PACKAGES</code></td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่างการขอ Runtime Permission ใน Kotlin:</strong></p>
+    <pre><code>// Android — ขอ Runtime Permission ด้วย Activity Result API
+class MainActivity : AppCompatActivity() {
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean -&gt;
+        if (isGranted) {
+            // สิทธิ์ได้รับแล้ว — ดำเนินการต่อ
+        } else {
+            // สิทธิ์ถูกปฏิเสธ — แจ้งผู้ใช้
+        }
+    }
+
+    private fun requestCameraPermission() {
+        when {
+            ContextCompat.checkSelfPermission(
+                this, Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED -&gt; {
+                // มีสิทธิ์แล้ว
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -&gt; {
+                // อธิบายเหตุผลที่ต้องใช้สิทธิ์
+            }
+            else -&gt; {
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }
+    }
+}</code></pre>
+
+    <h3 id="s2-3">11.2.3 APK Structure และ Reverse Engineering</h3>
+    <p>ไฟล์ APK (Android Package Kit) เป็นไฟล์ที่ถูกบีบอัด (ZIP Archive) ซึ่งประกอบด้วยส่วนประกอบต่าง ๆ ดังนี้:</p>
+    <div class="table-wrap"><table><thead><tr><th>องค์ประกอบ</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td><code>AndroidManifest.xml</code></td><td>ไฟล์ Manifest ที่ประกาศ Component, Permission, Features (ถูก Compile เป็น Binary XML)</td></tr>
+      <tr><td><code>classes.dex</code></td><td>โค้ดที่ถูก Compile เป็น DEX (Dalvik Executable)</td></tr>
+      <tr><td><code>resources.arsc</code></td><td>ไฟล์ Resource ที่ถูก Compile</td></tr>
+      <tr><td><code>res/</code></td><td>โฟลเดอร์เก็บ Resource ดิบ (รูปภาพ, Layout XML)</td></tr>
+      <tr><td><code>lib/</code></td><td>โฟลเดอร์เก็บ Native Library (.so) สำหรับแต่ละสถาปัตยกรรม</td></tr>
+      <tr><td><code>META-INF/</code></td><td>โฟลเดอร์เก็บข้อมูลลายเซ็นและ Manifest</td></tr>
+    </tbody></table></div>
+    <p><strong>เครื่องมือสำหรับ Reverse Engineering Android:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>เครื่องมือ</th><th>หน้าที่</th><th>รายละเอียด</th></tr></thead><tbody>
+      <tr><td>JADX</td><td>Decompile DEX เป็น Java Code</td><td>แสดงโค้ด Java ที่อ่านเข้าใจได้จากไฟล์ DEX</td></tr>
+      <tr><td>APKTool</td><td>Decode/Rebuild ทรัพยากร</td><td>ถอดรหัส AndroidManifest.xml และ Resource File</td></tr>
+      <tr><td>Jadx-GUI</td><td>ส่วนติดต่อผู้ใช้แบบกราฟิกของ JADX</td><td>แสดงโครงสร้างคลาสและโค้ดแบบ Interactive</td></tr>
+      <tr><td>Ghidra</td><td>Reverse Engineering Native Library</td><td>วิเคราะห์ไฟล์ .so ที่เขียนด้วย C/C++</td></tr>
+    </tbody></table></div>
+    <p><strong>คำสั่งสำหรับการวิเคราะห์ APK ด้วย APKTool และ JADX:</strong></p>
+    <pre><code># ถอด APK ด้วย APKTool
+apktool d target.apk -o output_dir/
+
+# ตรวจสอบ AndroidManifest ที่ถอดแล้ว
+cat output_dir/AndroidManifest.xml
+
+# Decompile DEX ด้วย JADX
+jadx -d output_java/ target.apk
+
+# ใช้ JADX แบบ GUI
+jadx-gui target.apk</code></pre>
+
+    <h3 id="s2-4">11.2.4 Intent Spoofing และ Intent Injection</h3>
+    <p>Intent เป็นกลไก IPC (Inter-Process Communication) หลักของ Android ที่ใช้สื่อสารระหว่าง Component (Activity, Service, Broadcast Receiver) ทั้งภายในและระหว่างแอปพลิเคชัน</p>
+    <p><strong>Intent Spoofing:</strong> เกิดขึ้นเมื่อ Component ที่ถูก Export (มี <code>&lt;exported=true&gt;</code>) ไม่ได้ตรวจสอบ Intent ที่ได้รับ ทำให้แอปพลิเคชันอื่นสามารถส่ง Intent มาปลอมแปลงคำสั่งได้</p>
+    <p><strong>Intent Injection:</strong> เกิดขึ้นเมื่อแอปพลิเคชันสร้าง Intent จากข้อมูลที่ผู้ใช้ควบคุม โดยไม่ได้ตรวจสอบความถูกต้อง ทำให้ผู้โจมตีสามารถแทรกคำสั่งที่เป็นอันตรายได้</p>
+    <p><strong>ตัวอย่าง CVE ที่เกี่ยวข้องกับ Intent:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>CVE</th><th>ปี</th><th>รายละเอียด</th><th>ผลกระทบ</th></tr></thead><tbody>
+      <tr><td>CVE-2025-48564</td><td>2025</td><td>Intent filter bypass via race condition ใน Android 13-16</td><td>ผู้โจมตีสามารถข้าม Intent Filter ได้ผ่าน Race Condition</td></tr>
+      <tr><td>CVE-2025-48566</td><td>2025</td><td>User profile boundary bypass ใน Android</td><td>การข้ามขอบเขตระหว่าง User Profile</td></tr>
+      <tr><td>CVE-2025-22433</td><td>2025</td><td>Cross-profile intent filter bypass (CVSS 7.8)</td><td>การข้าม Intent Filter ระหว่าง Profile ส่งผลให้เกิด Privilege Escalation</td></tr>
+      <tr><td>CVE-2025-32326</td><td>2025</td><td>Confused deputy attack</td><td>แอปพลิเคชันที่ได้รับสิทธิ์สูงถูกหลอกให้ดำเนินการแทนแอปพลิเคชันที่ไม่ได้รับสิทธิ์</td></tr>
+      <tr><td>CVE-2025-22441</td><td>2025</td><td>Confused deputy via RemoteViews</td><td>การใช้ RemoteViews เพื่อโจมตีแบบ Confused Deputy</td></tr>
+    </tbody></table></div>
+    <p><strong>กรณีศึกษา: EngageSDK Intent Redirection (Microsoft, เมษายน 2026)</strong></p>
+    <p>Microsoft รายงานช่องโหว่ Intent Redirection ใน Third-Party SDK ที่พบในแอปพลิเคชัน Android มากกว่า 50 ล้านครั้งที่ติดตั้ง ช่องโหว่เกิดจากการใช้ <code>parseUri()</code> ด้วย Flag <code>URI_ALLOW_UNSAFE</code> ซึ่งทำให้ผู้โจมตีสามารถส่ง Intent ที่ไม่ปลอดภัยไปยัง Component ภายในแอปพลิเคชันได้</p>
+    <p><strong>แนวทางป้องกัน Intent Spoofing/Injection:</strong></p>
+    <pre><code>// ไม่ปลอดภัย: ไม่ตรวจสอบ Intent ที่เข้ามา
+class VulnerableActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val data = intent.getStringExtra("data")
+        // ใช้ data โดยตรงโดยไม่ตรวจสอบแหล่งที่มา
+    }
+}
+
+// ปลอดภัย: ตรวจสอบ Caller และ Input
+class SecureActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        // ตรวจสอบว่า Caller เป็นแอปพลิเคชันที่เชื่อถือได้
+        val callingUid = callingUid
+        val packageName = packageManager.getNameForUid(callingUid)
+        
+        if (trustedPackages.contains(packageName)) {
+            val data = intent.getStringExtra("data")
+            // ตรวจสอบและ Sanitize ก่อนใช้งาน
+            if (isValidInput(data)) {
+                processData(data)
+            }
+        } else {
+            finish()  // ปิด Activity หาก Caller ไม่ได้รับอนุญาต
+        }
+    }
+}</code></pre>
+
+    <h3 id="s2-5">11.2.5 Content Provider Security</h3>
+    <p>Content Provider เป็น Component ที่ให้แอปพลิเคชันอื่นเข้าถึงข้อมูลผ่าน URI interface หาก Content Provider ถูก Export โดยไม่มีการป้องกันข้อมูล ผู้โจมตีสามารถเข้าถึงข้อมูลที่ละเอียดอ่อนได้</p>
+    <p><strong>CVE-2025-48619 (Android 14-16):</strong> ช่องโหว่ใน <code>ContentProvider.java</code> ที่ทำให้แอปพลิเคชันแบบ Read-Only สามารถตัดทอน (Truncate) ไฟล์ได้เนื่องจากตรรกะการตรวจสอบสิทธิ์ที่ผิดพลาด</p>
+    <p><strong>แนวทางป้องกัน Content Provider:</strong></p>
+    <pre><code>&lt;!-- ปลอดภัย: ไม่ Export Content Provider โดยไม่จำเป็น --&gt;
+&lt;provider
+    android:name=".SecureProvider"
+    android:authorities="com.example.app.provider"
+    android:exported="false" /&gt;
+
+&lt;!-- หากจำเป็นต้อง Export ต้องใช้ Permission --&gt;
+&lt;provider
+    android:name=".SharedProvider"
+    android:authorities="com.example.app.shared"
+    android:exported="true"
+    android:readPermission="com.example.READ_DATA"
+    android:writePermission="com.example.WRITE_DATA" /&gt;</code></pre>
+
+    <h3 id="s2-6">11.2.6 WebView Security</h3>
+    <p>WebView เป็น Component ที่ใช้แสดงเนื้อหาเว็บภายในแอปพลิเคชัน Android ซึ่งมีความเสี่ยงด้านความปลอดภัยที่สำคัญ:</p>
+    <div class="table-wrap"><table><thead><tr><th>ความเสี่ยง</th><th>คำอธิบาย</th><th>แนวทางป้องกัน</th></tr></thead><tbody>
+      <tr><td>JavaScript Bridge Injection</td><td>การใช้ <code>addJavascriptInterface()</code> สามารถทำให้เกิด Remote Code Execution (RCE) บน API &lt; 17</td><td>ใช้เฉพาะบน API 17+ และตรวจสอบ Input ทุกครั้ง</td></tr>
+      <tr><td>Cleartext Traffic</td><td>WebView ที่อนุญาตการรับส่งข้อมูลแบบไม่เข้ารหัส (HTTP)</td><td>ตั้งค่า <code>android:usesCleartextTraffic="false"</code> ใน Manifest</td></tr>
+      <tr><td>File Access</td><td>WebView ที่เปิดให้เข้าถึงไฟล์ภายในเครื่องผ่าน <code>file://</code></td><td>ตั้งค่า <code>setAllowFileAccess(false)</code></td></tr>
+      <tr><td>Cross-Site Scripting (XSS)</td><td>การโจมตีผ่าน JavaScript ที่ถูก Inject ใน WebView</td><td>ใช้ Input Validation และ Output Encoding</td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่างการตั้งค่า WebView ที่ปลอดภัย:</strong></p>
+    <pre><code>// การตั้งค่า WebView ที่ปลอดภัย
+val webView = findViewById&lt;WebView&gt;(R.id.webview)
+
+// ปิด JavaScript ถ้าไม่จำเป็น
+webView.settings.javaScriptEnabled = false
+
+// ถ้าจำเป็นต้องใช้ JavaScript ให้ใช้เฉพาะ API 17+
+if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+    webView.addJavascriptInterface(object {
+        @JavascriptInterface
+        fun processData(data: String) {
+            // ตรวจสอบและ Sanitize ข้อมูล
+        }
+    }, "AndroidBridge")
+}
+
+// ปิด File Access
+webView.settings.allowFileAccess = false
+
+// ปิด File Access จาก URL
+webView.settings.allowFileAccessFromFileURLs = false
+webView.settings.allowUniversalAccessFromFileURLs = false
+
+// ใช้ HTTPS เท่านั้น
+webView.loadUrl("https://trusted-site.com")</code></pre>
+
+    <h3 id="s2-7">11.2.7 การจัดเก็บข้อมูลที่ไม่ปลอดภัย (Insecure Storage)</h3>
+    <p>ข้อมูลที่ละเอียดอ่อนที่ถูกจัดเก็บในรูปแบบที่ไม่ปลอดภัยเป็นหนึ่งในช่องโหว่ที่พบบ่อยที่สุดในการทดสอบความปลอดภัยของแอปพลิเคชันบนอุปกรณ์เคลื่อนที่</p>
+    <div class="table-wrap"><table><thead><tr><th>วิธีการจัดเก็บ</th><th>ความเสี่ยง</th><th>ระดับความปลอดภัย</th></tr></thead><tbody>
+      <tr><td>SharedPreferences (Plaintext)</td><td>ข้อมูลถูกจัดเก็บเป็น XML ที่อ่านได้ง่าย</td><td>ไม่ปลอดภัย</td></tr>
+      <tr><td>SQLite Database (ไม่เข้ารหัส)</td><td>ฐานข้อมูลสามารถอ่านได้ด้วยเครื่องมือเช่น SQLite Browser</td><td>ไม่ปลอดภัย</td></tr>
+      <tr><td>Internal Storage (ไฟล์ Plaintext)</td><td>แอปพลิเคชันอื่นไม่สามารถเข้าถึงได้ แต่อ่านได้บนอุปกรณ์ที่ Root แล้ว</td><td>ปลอดภัยระดับพื้นฐาน</td></tr>
+      <tr><td>External Storage (SD Card)</td><td>แอปพลิเคชันใดก็ได้อ่านได้ หากมีสิทธิ์ <code>READ_EXTERNAL_STORAGE</code></td><td>ไม่ปลอดภัย</td></tr>
+    </tbody></table></div>
+
+    <h2 id="s3">11.3 ความปลอดภัยบน iOS</h2>
+
+    <h3 id="s3-1">11.3.1 iOS App Sandbox และ Entitlements</h3>
+    <p>iOS ใช้กลไก Sandbox ที่เข้มงวดกว่า Android โดยแอปพลิเคชันของบุคคลที่สามทุกรุ่นทำงานภายใต้ผู้ใช้ <code>mobile</code> ซึ่งเป็น Non-Privileged User พร้อมกับการบังคับใช้ Mandatory Access Control (MAC) ผ่าน TrustedBSD</p>
+    <p><strong>Entitlements:</strong> เป็น Key-Value Pairs ที่ถูกเซ็นไว้ใน Code Signature ของแอปพลิเคชัน ไม่สามารถเปลี่ยนแปลงได้หลังจากเซ็นแล้ว Entitlements กำหนดสิทธิ์พิเศษที่แอปพลิเคชันได้รับ เช่น:</p>
+    <ul>
+      <li><code>com.apple.security.personal-information.addressbook</code> — การเข้าถึง Address Book</li>
+      <li><code>com.apple.developer.networking.wifi-info</code> — การเข้าถึงข้อมูล WiFi</li>
+      <li><code>com.apple.developer.nfc.readersession.formats</code> — การเข้าถึง NFC</li>
+    </ul>
+
+    <h3 id="s3-2">11.3.2 Keychain Services</h3>
+    <p>Keychain เป็นระบบจัดเก็บข้อมูลที่ละเอียดอ่อนใน iOS ที่จัดการโดย Daemon ชื่อ <code>securityd</code> และใช้ฐานข้อมูล SQLite ในการจัดเก็บ Keychain เป็นกลไกหลักสำหรับการจัดเก็บข้อมูลที่เข้ารหัส เช่น รหัสผ่าน, คีย์เข้ารหัส, Token การยืนยันตัวตน</p>
+    <p><strong>Accessibility Levels ของ Keychain:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ค่า</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td><code>kSecAttrAccessibleWhenUnlocked</code></td><td>สามารถเข้าถึงได้เมื่ออุปกรณ์ปลดล็อกแล้วเท่านั้น</td></tr>
+      <tr><td><code>kSecAttrAccessibleAfterFirstUnlock</code></td><td>สามารถเข้าถึงได้หลังจากปลดล็อกครั้งแรก จนกว่าจะปิดเครื่อง</td></tr>
+      <tr><td><code>kSecAttrAccessibleAlways</code></td><td>สามารถเข้าถึงได้ตลอดเวลา (ไม่แนะนำ)</td></tr>
+      <tr><td><code>kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly</code></td><td>สามารถเข้าถึงได้เมื่อตั้งรหัสผ่านและปลดล็อกเท่านั้น ไม่สำรองข้อมูล</td></tr>
+    </tbody></table></div>
+    <p>ACL (Access Control Lists) ของ Keychain ถูกประเมินภายใน Secure Enclave ทำให้ผู้โจมตีไม่สามารถ bypass การตรวจสอบสิทธิ์ได้</p>
+    <p><strong>ตัวอย่างการใช้งาน Keychain ใน Swift:</strong></p>
+    <pre><code>import Security
+
+// การจัดเก็บข้อมูลใน Keychain
+func saveToKeychain(key: String, data: Data) -&gt; Bool {
+    let query: [String: Any] = [
+        kSecClass as String: kSecClassGenericPassword,
+        kSecAttrAccount as String: key,
+        kSecValueData as String: data,
+        kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+        kSecUseDataProtectionKeychain as String: true
+    ]
+    
+    // ลบข้อมูลเก่าก่อน (ถ้ามี)
+    SecItemDelete(query as CFDictionary)
+    
+    // เพิ่มข้อมูลใหม่
+    let status = SecItemAdd(query as CFDictionary, nil)
+    return status == errSecSuccess
+}
+
+// การอ่านข้อมูลจาก Keychain
+func readFromKeychain(key: String) -&gt; Data? {
+    let query: [String: Any] = [
+        kSecClass as String: kSecClassGenericPassword,
+        kSecAttrAccount as String: key,
+        kSecReturnData as String: true,
+        kSecMatchLimit as String: kSecMatchLimitOne
+    ]
+    
+    var item: CFTypeRef?
+    let status = SecItemCopyMatching(query as CFDictionary, &amp;item)
+    
+    guard status == errSecSuccess, let data = item as? Data else {
+        return nil
+    }
+    return data
+}</code></pre>
+    <p><strong>Biometric Authentication กับ Keychain:</strong></p>
+    <pre><code>import LocalAuthentication
+
+// การกำหนดให้ Keychain Item ต้องยืนยัน Biometric
+func saveWithBiometric(key: String, data: Data) {
+    // กำหนด Access Control ด้วย Biometric
+    let access = SecAccessControlCreateWithFlags(
+        nil,
+        kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+        .biometryCurrentUser,  // Face ID หรือ Touch ID
+        nil
+    )
+    
+    let query: [String: Any] = [
+        kSecClass as String: kSecClassGenericPassword,
+        kSecAttrAccount as String: key,
+        kSecValueData as String: data,
+        kSecAttrAccessControl as String: access as Any
+    ]
+    
+    SecItemDelete(query as CFDictionary)
+    SecItemAdd(query as CFDictionary, nil)
+}</code></pre>
+
+    <h3 id="s3-3">11.3.3 Data Protection API</h3>
+    <p>iOS Data Protection API ให้ความสามารถในการเข้ารหัสไฟล์ในระดับระบบปฏิบัติการโดยใช้ฮาร์ดแวร์เข้ารหัสของอุปกรณ์:</p>
+    <div class="table-wrap"><table><thead><tr><th>ระดับการป้องกัน</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td><code>NSFileProtectionComplete</code></td><td>เข้ารหัสไฟล์และไม่สามารถเข้าถึงได้เมื่ออุปกรณ์ถูกล็อก</td></tr>
+      <tr><td><code>NSFileProtectionCompleteUnlessOpen</code></td><td>เข้ารหัสไฟล์ แต่ไฟล์ที่เปิดอยู่แล้วสามารถเข้าถึงได้ต่อเมื่อปิดไฟล์</td></tr>
+      <tr><td><code>NSFileProtectionCompleteUntilFirstUserAuthentication</code></td><td>เข้ารหัสไฟล์หลังจากผู้ใช้ปลดล็อกครั้งแรก — ระดับค่าเริ่มต้น</td></tr>
+      <tr><td><code>NSFileProtectionNone</code></td><td>ไม่มีการเข้ารหัส — ไม่แนะนำ</td></tr>
+    </tbody></table></div>
+    <p><strong>ตัวอย่างการใช้งาน Data Protection API ใน Swift:</strong></p>
+    <pre><code>import Foundation
+
+// การบันทึกไฟล์ด้วย Data Protection
+let data = "Sensitive content".data(using: .utf8)!
+let fileURL = FileManager.default.urls(
+    for: .documentDirectory, in: .userDomainMask
+).first!.appendingPathComponent("secret.txt")
+
+// เขียนไฟล์และกำหนด Protection Level
+try data.write(
+    to: fileURL,
+    options: [.completeFileProtection] // NSFileProtectionComplete
+)
+
+// หรือกำหนดภายหลัง
+try (fileURL as NSURL).setResourceValue(
+    URLFileProtection.complete,
+    forKey: .fileProtectionKey
+)</code></pre>
+
+    <h3 id="s3-4">11.3.4 App Transport Security (ATS)</h3>
+    <p>ATS เป็นกลไกที่บังคับใช้โดย iOS ตั้งแต่เวอร์ชัน 9.0 เป็นต้นไป โดยกำหนดให้การเชื่อมต่อทั้งหมดต้องใช้ TLS 1.2 ขึ้นไป พร้อมกับ Forward Secrecy การเชื่อมต่อที่ไม่เป็นไปตามข้อกำหนดจะถูกบล็อกโดยระบบปฏิบัติการ</p>
+    <p><strong>ข้อยกเว้น ATS (ไม่แนะนำให้ใช้):</strong></p>
+    <pre><code>&lt;!-- Info.plist — ATS Exception (ไม่แนะนำสำหรับ Production) --&gt;
+&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;
+&lt;dict&gt;
+    &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;
+    &lt;false/&gt;
+    
+    &lt;!-- หากจำเป็นต้องยกเว้นสำหรับบางโดเมน --&gt;
+    &lt;key&gt;NSExceptionDomains&lt;/key&gt;
+    &lt;dict&gt;
+        &lt;key&gt;legacy-api.example.com&lt;/key&gt;
+        &lt;dict&gt;
+            &lt;key&gt;NSExceptionMinimumTLSVersion&lt;/key&gt;
+            &lt;string&gt;TLSv1.0&lt;/string&gt;
+        &lt;/dict&gt;
+    &lt;/dict&gt;
+&lt;/dict&gt;</code></pre>
+
+    <h3 id="s3-5">11.3.5 การตรวจจับการถูก Jailbreak</h3>
+    <p>Jailbreak Detection เป็นเทคนิคที่แอปพลิเคชันใช้ตรวจสอบว่าอุปกรณ์ถูก Jailbreak หรือไม่ อย่างไรก็ตาม เทคนิคนี้สามารถเลี่ยงได้ด้วยเครื่องมือเช่น Frida</p>
+    <p><strong>ตัวอย่างการตรวจจับการถูก Jailbreak ใน Swift:</strong></p>
+    <pre><code>func isJailbroken() -&gt; Bool {
+    // ตรวจสอบการมีอยู่ของไฟล์ที่เกี่ยวข้องกับการ Jailbreak
+    let jailbreakPaths = [
+        "/Applications/Cydia.app",
+        "/Applications/Sileo.app",
+        "/usr/sbin/sshd",
+        "/etc/apt",
+        "/var/lib/cydia"
+    ]
+    
+    for path in jailbreakPaths {
+        if FileManager.default.fileExists(atPath: path) {
+            return true
+        }
+    }
+    
+    // ตรวจสอบความสามารถในการเขียนนอก Sandbox
+    do {
+        try "test".write(
+            toFile: "/private/jailbreak-test.txt",
+            atomically: true,
+            encoding: .utf8
+        )
+        // ถ้าเขียนสำเร็จ — แสดงว่าอุปกรณ์ถูก Jailbreak
+        try FileManager.default.removeItem(atPath: "/private/jailbreak-test.txt")
+        return true
+    } catch {
+        return false
+    }
+}</code></pre>
+
+    <h3 id="s3-6">11.3.6 Secure Enclave</h3>
+    <p>Secure Enclave เป็น Coprocessor ด้านความปลอดภัยในฮาร์ดแวร์ที่เริ่มใช้ตั้งแต่ iPhone 5s เป็นต้นไป Secure Enclave ถูกแยกออกจาก Processor หลักอย่างสิ้นเชิง และคีย์เข้ารหัสจะไม่มีทางออกจากฮาร์ดแวร์นี้</p>
+    <p><strong>ความสามารถของ Secure Enclave:</strong></p>
+    <ul>
+      <li>จัดเก็บและประมวลผลข้อมูล Biometric (Face ID, Touch ID)</li>
+      <li>สร้างและจัดเก็บคีย์เข้ารหัสที่ไม่สามารถถูกอ่านโดยระบบปฏิบัติการ</li>
+      <li>ยืนยันรหัสผ่าน (Passcode) โดยไม่เปิดเผยข้อมูล</li>
+      <li>ยืนยันธุรกรรม Apple Pay</li>
+      <li>ประเมิน ACL ของ Keychain</li>
+    </ul>
+
+    <div class="interactive" id="play-compare">
+      <h4>Interactive: Android vs iOS Security Quiz</h4>
+      <p style="font-weight:500;color:var(--navy)">ข้อ 1: Android ใช้กลไก Sandbox แบบใด?</p>
+      <button class="quiz-option" data-quiz="cmp1" data-correct="true">Linux UID-based Sandbox</button>
+      <button class="quiz-option" data-quiz="cmp1" data-correct="false">MAC ผ่าน TrustedBSD</button>
+      <button class="quiz-option" data-quiz="cmp1" data-correct="false">FreeBSD Jail</button>
+      <div id="cmp1Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+      <p style="font-weight:500;color:var(--navy);margin-top:1.25rem">ข้อ 2: iOS ใช้กลไก Sandbox แบบใด?</p>
+      <button class="quiz-option" data-quiz="cmp2" data-correct="false">Linux UID-based Sandbox</button>
+      <button class="quiz-option" data-quiz="cmp2" data-correct="true">MAC ผ่าน TrustedBSD</button>
+      <button class="quiz-option" data-quiz="cmp2" data-correct="false">SELinux</button>
+      <div id="cmp2Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+      <p style="font-weight:500;color:var(--navy);margin-top:1.25rem">ข้อ 3: API Keys ควรจัดเก็บที่ไหนปลอดภัยที่สุด?</p>
+      <button class="quiz-option" data-quiz="cmp3" data-correct="false">Hardcoded ใน Source Code</button>
+      <button class="quiz-option" data-quiz="cmp3" data-correct="false">SharedPreferences</button>
+      <button class="quiz-option" data-quiz="cmp3" data-correct="true">Proxy Server</button>
+      <button class="quiz-option" data-quiz="cmp3" data-correct="false">Keystore/Keychain</button>
+      <div id="cmp3Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+    </div>
+
+    <h2 id="s4">11.4 Mobile API Security</h2>
+
+    <h3 id="s4-1">11.4.1 Certificate Pinning และ Public Key Pinning</h3>
+    <p>Certificate Pinning เป็นเทคนิคที่แอปพลิเคชันยืนยันว่า Certificate ของเซิร์ฟเวอร์ตรงกับ Certificate ที่คาดไว้ ป้องกันการโจมตีแบบ MITM แม้ว่า Certificate Authority (CA) จะถูกบุกรุก</p>
+    <div class="table-wrap"><table><thead><tr><th>วิธีการ</th><th>คำอธิบาย</th><th>ข้อดี</th><th>ข้อเสีย</th></tr></thead><tbody>
+      <tr><td>Certificate Pinning</td><td>ตรึงค่า Certificate จริง (Public Key + Metadata)</td><td>ตรวจจับการเปลี่ยนแปลง Certificate ได้</td><td>ต้องอัปเดตแอปเมื่อ Certificate หมดอายุ</td></tr>
+      <tr><td>Public Key Pinning</td><td>ตรึงเฉพาะ Public Key ของ Certificate</td><td>ทนต่อการ Renew Certificate (ถ้าใช้ Key เดิม)</td><td>ต้องจัดการ Key Rotation</td></tr>
+    </tbody></table></div>
+    <p><strong>แนวทางที่แนะนำ:</strong> Public Key Pinning เป็นวิธีที่แนะนำเนื่องจากสามารถ Renew Certificate ได้โดยไม่ต้องอัปเดตแอป (ถ้าใช้ Key คู่เดิม)</p>
+
+    <h3 id="s4-2">11.4.2 การกำหนดค่า Network Security Configuration บน Android</h3>
+    <p>Android แนะนำให้ใช้ Network Security Configuration (NSC) สำหรับการ Pinning ตั้งแต่ API 24 (Android 7.0):</p>
+    <pre><code>&lt;!-- res/xml/network_security_config.xml --&gt;
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;network-security-config&gt;
+    &lt;!-- การกำหนดค่า Pinning สำหรับ Production Domain --&gt;
+    &lt;domain-config&gt;
+        &lt;domain includeSubdomains="true"&gt;api.example.com&lt;/domain&gt;
+        
+        &lt;!-- Public Key Pinning — ใช้ SHA-256 ของ Public Key --&gt;
+        &lt;pin-set expiration="2026-12-31"&gt;
+            &lt;pin digest="SHA-256"&gt;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=&lt;/pin&gt;
+            &lt;pin digest="SHA-256"&gt;BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=&lt;/pin&gt;
+        &lt;/pin-set&gt;
+        
+        &lt;!-- Backup Pin สำหรับกรณีฉุกเฉิน --&gt;
+    &lt;/domain-config&gt;
+    
+    &lt;!-- ปิด Cleartext Traffic --&gt;
+    &lt;base-config cleartextTrafficPermitted="false"&gt;
+        &lt;trust-anchors&gt;
+            &lt;certificates src="system" /&gt;
+        &lt;/trust-anchors&gt;
+    &lt;/base-config&gt;
+&lt;/network-security-config&gt;</code></pre>
+    <pre><code>&lt;!-- AndroidManifest.xml — อ้างอิง NSC --&gt;
+&lt;application
+    android:networkSecurityConfig="@xml/network_security_config"
+    android:usesCleartextTraffic="false"&gt;
+&lt;/application&gt;</code></pre>
+
+    <h3 id="s4-3">11.4.3 Certificate Pinning บน iOS ด้วย URLSessionDelegate</h3>
+    <pre><code>import Foundation
+
+class PinningURLSessionDelegate: NSObject, URLSessionDelegate {
+    let pinnedPublicKeyHash = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    
+    func urlSession(
+        _ session: URLSession,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -&gt; Void
+    ) {
+        // ตรวจสอบว่าเป็นการท้าทายแบบ Server Trust
+        guard challenge.protectionSpace.authenticationMethod ==
+              NSURLAuthenticationMethodServerTrust,
+              let serverTrust = challenge.protectionSpace.serverTrust else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+        
+        // รับ Certificate จาก Server
+        if let serverCertificate = SecTrustGetCertificateAtIndex(serverTrust, 0) {
+            let serverPublicKey = SecCertificateCopyKey(serverCertificate)
+            let serverPublicKeyData = SecKeyCopyExternalRepresentation(serverPublicKey!, nil)!
+            let serverPublicKeyHash = sha256(data: serverPublicKeyData as Data)
+            
+            // เปรียบเทียบ Public Key Hash
+            if serverPublicKeyHash == pinnedPublicKeyHash {
+                completionHandler(.useCredential, URLCredential(trust: serverTrust))
+            } else {
+                completionHandler(.cancelAuthenticationChallenge, nil)
+            }
+        }
+    }
+    
+    private func sha256(data: Data) -&gt; String {
+        // สร้าง SHA-256 hash และเข้ารหัส Base64
+        var hash = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
+        data.withUnsafeBytes { buffer in
+            _ = CC_SHA256(buffer.baseAddress, CC_LONG(data.count), &amp;hash)
+        }
+        return Data(hash).base64EncodedString()
+    }
+}</code></pre>
+
+    <h3 id="s4-4">11.4.4 OAuth 2.0 สำหรับอุปกรณ์เคลื่อนที่ด้วย PKCE</h3>
+    <p>OAuth 2.0 Authorization Code Flow with PKCE (Proof Key for Code Exchange) ตาม RFC 7636 เป็นมาตรฐานที่จำเป็นสำหรับแอปพลิเคชันบนอุปกรณ์เคลื่อนที่เนื่องจากไม่สามารถเก็บ Client Secret อย่างปลอดภัยได้</p>
+    <p><strong>ขั้นตอนของ PKCE Flow:</strong></p>
+    <div class="table-wrap"><table><thead><tr><th>ขั้นตอน</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td>1. สร้าง Code Verifier</td><td>สุ่มค่า String ที่มีความยาว 43-128 ตัวอักษร</td></tr>
+      <tr><td>2. สร้าง Code Challenge</td><td>นำ Code Verifier มาทำ SHA-256 hash (S256)</td></tr>
+      <tr><td>3. ส่ง Authorization Request</td><td>ส่ง Code Challenge ไปยัง Authorization Server</td></tr>
+      <tr><td>4. รับ Authorization Code</td><td>รับ Authorization Code หลังจากผู้ใช้อนุญาต</td></tr>
+      <tr><td>5. ส่ง Token Request</td><td>ส่ง Authorization Code + Code Verifier ไปยัง Token Endpoint</td></tr>
+      <tr><td>6. รับ Access Token</td><td>เซิร์ฟเวอร์ตรวจสอบ Code Verifier ว่าตรงกับ Code Challenge หรือไม่</td></tr>
+    </tbody></table></div>
+    <p><strong>ข้อกำหนด:</strong> OAuth 2.1 กำหนดให้ PKCE เป็นข้อบังคับสำหรับทุกประเภทของ Client โดยใช้ S256 (SHA-256 based) เป็นค่าเริ่มต้น</p>
+    <p><strong>ตัวอย่างการใช้งาน PKCE ใน Kotlin:</strong></p>
+    <pre><code>import java.security.MessageDigest
+import java.util.Base64
+
+class PKCEGenerator {
+    companion object {
+        // สร้าง Code Verifier แบบสุ่ม
+        fun generateCodeVerifier(): String {
+            val random = java.security.SecureRandom()
+            val bytes = ByteArray(32)
+            random.nextBytes(bytes)
+            return Base64.getUrlEncoder().withoutPadding()
+                .encodeToString(bytes)
+        }
+        
+        // สร้าง Code Challenge ด้วย S256
+        fun generateCodeChallenge(verifier: String): String {
+            val digest = MessageDigest.getInstance("SHA-256")
+            val hash = digest.digest(verifier.toByteArray())
+            return Base64.getUrlEncoder().withoutPadding()
+                .encodeToString(hash)
+        }
+    }
+}</code></pre>
+
+    <h3 id="s4-5">11.4.5 การป้องกัน Man-in-the-Middle (MITM)</h3>
+    <p>การป้องกัน MITM บนอุปกรณ์เคลื่อนที่ต้องใช้มาตรการหลายชั้น:</p>
+    <div class="table-wrap"><table><thead><tr><th>มาตรการ</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td>TLS 1.3+</td><td>ใช้โปรโตคอล TLS เวอร์ชันล่าสุดที่มี Forward Secrecy</td></tr>
+      <tr><td>Certificate/Public Key Pinning</td><td>ตรึงค่า Certificate หรือ Public Key ของเซิร์ฟเวอร์</td></tr>
+      <tr><td>App Attestation</td><td>ใช้ DeviceCheck (iOS) หรือ Play Integrity API (Android) เพื่อยืนยันว่าแอปไม่ถูกดัดแปลง</td></tr>
+      <tr><td>การบล็อก MITM Tools</td><td>ตรวจจับและเตือนเมื่อพบ Proxy หรือเครื่องมือดักจับการรับส่งข้อมูล</td></tr>
+      <tr><td>Certificate Transparency</td><td>ตรวจสอบ Certificate ผ่าน CT Logs</td></tr>
+    </tbody></table></div>
+
+    <h3 id="s4-6">11.4.6 Device Fingerprinting</h3>
+    <p>Device Fingerprinting เป็นเทคนิคที่ใช้สร้างลายเซ็นเฉพาะของอุปกรณ์เพื่อใช้ในการตรวจจับความผิดปกติและการยืนยันตัวตน:</p>
+    <div class="table-wrap"><table><thead><tr><th>ตัวบ่งชี้</th><th>Android</th><th>iOS</th></tr></thead><tbody>
+      <tr><td>Device Model</td><td><code>Build.MODEL</code></td><td><code>[UIDevice currentDevice].model</code></td></tr>
+      <tr><td>OS Version</td><td><code>Build.VERSION.RELEASE</code></td><td><code>[UIDevice currentDevice].systemVersion</code></td></tr>
+      <tr><td>Hardware ID</td><td><code>Settings.Secure.ANDROID_ID</code></td><td><code>identifierForVendor</code> (IDFV)</td></tr>
+    </tbody></table></div>
+
+    <h3 id="s4-7">11.4.7 การจัดเก็บ API Keys</h3>
+    <p>การจัดเก็บ API Keys บนอุปกรณ์เคลื่อนที่เป็นปัญหาที่พบได้บ่อย การศึกษาโดย CloudSEK ในเดือนเมษายน 2026 พบว่ามีการฝัง Google API Keys ถึง 32 คีย์แบบ Hardcoded ในแอปพลิเคชัน Android ยอดนิยม 22 รายการที่มีการติดตั้งรวมกว่า 500 ล้านครั้ง ส่งผลให้มีการเรียกเก็บค่าใช้จ่ายที่ไม่ได้รับอนุญาตตั้งแต่ 15,400 ถึง 82,314 ดอลลาร์สหรัฐ</p>
+    <div class="table-wrap"><table><thead><tr><th>วิธีการ</th><th>ระดับความปลอดภัย</th><th>คำอธิบาย</th></tr></thead><tbody>
+      <tr><td>Hardcoded ใน Source Code</td><td>ไม่ปลอดภัยที่สุด</td><td>คีย์ถูกเปิดเผยทันทีเมื่อมีการ Reverse Engineering</td></tr>
+      <tr><td>เก็บใน Resource File (strings.xml)</td><td>ไม่ปลอดภัย</td><td>อ่านได้ง่ายจาก APK</td></tr>
+      <tr><td>เก็บใน Keystore/Keychain</td><td>ปลอดภัย</td><td>คีย์ถูกเข้ารหัสด้วยฮาร์ดแวร์</td></tr>
+      <tr><td>Proxy Server (แนะนำมากที่สุด)</td><td>ปลอดภัยที่สุด</td><td>คีย์อยู่บนเซิร์ฟเวอร์ ไม่เคยถูกส่งไปยังอุปกรณ์</td></tr>
+    </tbody></table></div>
+
+    <div class="interactive" id="play-apikey">
+      <h4>Interactive: API Key Storage Risk Quiz</h4>
+      <p style="font-weight:500;color:var(--navy)">วิธีการจัดเก็บ API Keys วิธีใดปลอดภัยที่สุด?</p>
+      <button class="quiz-option" data-quiz="apikey1" data-correct="false">Hardcoded ใน Source Code</button>
+      <button class="quiz-option" data-quiz="apikey1" data-correct="false">เก็บใน SharedPreferences</button>
+      <button class="quiz-option" data-quiz="apikey1" data-correct="false">เก็บใน Keystore/Keychain</button>
+      <button class="quiz-option" data-quiz="apikey1" data-correct="true">Proxy Server (ไม่ส่ง Key ไปยังอุปกรณ์)</button>
+      <div id="apikey1Result" class="result">คลิกเพื่อเลือกคำตอบ</div>
+      <div class="info-box remember" style="margin-top:.85rem"><div class="icon">📌</div><div><strong>คำอธิบาย:</strong> การเก็บ API Keys ไว้บน Proxy Server เป็นวิธีที่ปลอดภัยที่สุดเพราะคีย์ไม่เคยถูกจัดเก็บหรือส่งไปยังอุปกรณ์เคลื่อนที่เลย ลดความเสี่ยงจากการถูกขโมยผ่าน Reverse Engineering หรือ Malware บนอุปกรณ์</div></div>
+    </div>
+
+    <div class="interactive" id="play-cve">
+      <h4>Interactive: CVE Timeline — Real-World Mobile CVEs</h4>
+      <p>คลิกที่ CVE แต่ละรายการเพื่อดูรายละเอียด</p>
+      <div class="cve-bar" data-detail="CVE-2025-48564: Intent filter bypass via race condition ใน Android 13-16 — ผู้โจมตีสามารถข้าม Intent Filter ได้ผ่าน Race Condition ส่งผลให้แอปพลิเคชันที่ไม่ได้รับอนุญาตสามารถส่ง Intent ไปยัง Component ที่ถูกป้องกันได้">
+        <span class="cve-id">CVE-2025-48564</span> — <span class="cve-desc">Intent filter bypass via race condition (Android 13-16)</span>
+      </div>
+      <div class="cve-bar" data-detail="CVE-2025-22433: Cross-profile intent filter bypass (CVSS 7.8) — การข้าม Intent Filter ระหว่าง Profile บน Android ส่งผลให้เกิด Privilege Escalation โดยแอปพลิเคชันใน Profile หนึ่งสามารถเข้าถึงทรัพยากรของอีก Profile หนึ่งได้">
+        <span class="cve-id">CVE-2025-22433</span> — <span class="cve-desc">Cross-profile intent filter bypass (CVSS 7.8)</span>
+      </div>
+      <div class="cve-bar" data-detail="CVE-2025-32326: Confused deputy attack — แอปพลิเคชันที่ได้รับสิทธิ์สูงถูกหลอกให้ดำเนินการแทนแอปพลิเคชันที่ไม่ได้รับสิทธิ์ ผ่านการส่ง Intent ที่ถูกปลอมแปลง">
+        <span class="cve-id">CVE-2025-32326</span> — <span class="cve-desc">Confused deputy attack บน Android</span>
+      </div>
+      <div class="cve-bar" data-detail="CVE-2025-22441: Confused deputy via RemoteViews — การใช้ RemoteViews (วิดเจ็ตระยะไกล) เพื่อโจมตีแบบ Confused Deputy โดยแอปพลิเคชันที่ได้รับสิทธิ์ถูกหลอกให้ดำเนินการในนามของผู้โจมตี">
+        <span class="cve-id">CVE-2025-22441</span> — <span class="cve-desc">Confused deputy via RemoteViews</span>
+      </div>
+      <div class="cve-bar" data-detail="CVE-2025-48619: ช่องโหว่ใน ContentProvider.java สำหรับ Android 14-16 — แอปพลิเคชันแบบ Read-Only สามารถตัดทอน (Truncate) ไฟล์ได้เนื่องจากตรรกะการตรวจสอบสิทธิ์ที่ผิดพลาด">
+        <span class="cve-id">CVE-2025-48619</span> — <span class="cve-desc">ContentProvider truncation (Android 14-16)</span>
+      </div>
+      <div id="cveDetail" class="result">คลิกที่ CVE เพื่อดูรายละเอียด</div>
+    </div>
+
+    <h2 id="s5">11.5 Secure Data Storage บนอุปกรณ์เคลื่อนที่</h2>
+
+    <h3 id="s5-1">11.5.1 Android Keystore</h3>
+    <p>Android Keystore เป็นระบบที่ใช้ฮาร์ดแวร์ (TEE — Trusted Execution Environment) ในการจัดการคีย์เข้ารหัส โดยคีย์ Material จะไม่มีทางเข้าไปใน Process ของแอปพลิเคชัน:</p>
+    <pre><code>import java.security.KeyStore
+import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
+
+class AndroidKeystoreManager {
+    private val keyStore = KeyStore.getInstance("AndroidKeyStore").apply {
+        load(null)
+    }
+    
+    fun generateKey(keyAlias: String) {
+        val keyGenerator = KeyGenerator.getInstance(
+            KeyProperties.KEY_ALGORITHM_AES,
+            "AndroidKeyStore"
+        )
+        
+        val spec = KeyGenParameterSpec.Builder(
+            keyAlias,
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+        )
+            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            .setKeySize(256)
+            .setUserAuthenticationRequired(true)  // ต้องยืนยันตัวตนผู้ใช้
+            .build()
+        
+        keyGenerator.init(spec)
+        keyGenerator.generateKey()
+    }
+    
+    fun encrypt(keyAlias: String, plaintext: String): ByteArray {
+        val secretKey = keyStore.getEntry(keyAlias, null) as KeyStore.SecretKeyEntry
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey.secretKey)
+        
+        // IV (Initialization Vector) ต้องถูกเก็บไว้เพื่อใช้ในการ Decrypt
+        val iv = cipher.iv
+        val ciphertext = cipher.doFinal(plaintext.toByteArray())
+        
+        return iv + ciphertext  // รวม IV + ข้อมูลที่เข้ารหัส
+    }
+}</code></pre>
+
+    <h3 id="s5-2">11.5.2 iOS Keychain (Secure Enclave Backed)</h3>
+    <p>iOS Keychain ที่ใช้ Secure Enclave เป็นการจัดเก็บข้อมูลที่ปลอดภัยที่สุดบนอุปกรณ์ iOS โดยคีย์จะถูกจัดเก็บและประมวลผลภายใน Secure Enclave เท่านั้น:</p>
+    <pre><code>// การใช้ Secure Enclave ในการสร้างคีย์
+func generateSecureEnclaveKey() -&gt; SecKey? {
+    let attributes: [String: Any] = [
+        kSecAttrKeyType as String: kSecAttrKeyTypeECSECPrimeRandom,
+        kSecAttrKeySizeInBits as String: 256,
+        kSecAttrTokenID as String: kSecAttrTokenIDSecureEnclave,
+        kSecPrivateKeyAttrs as String: [
+            kSecAttrIsPermanent as String: true,
+            kSecAttrApplicationTag as String: "com.example.securekey"
+        ]
+    ]
+    
+    // คีย์ถูกสร้างภายใน Secure Enclave — private key ไม่มีทางออกมา
+    var error: Unmanaged&lt;CFError&gt;?
+    return SecKeyCreateRandomKey(attributes as CFDictionary, &amp;error)
+}</code></pre>
+
+    <h3 id="s5-3">11.5.3 EncryptedSharedPreferences (AndroidX Security)</h3>
+    <p>EncryptedSharedPreferences เป็นไลบรารีจาก AndroidX Security ที่ใช้ AES-256 GCM ในการเข้ารหัสข้อมูลที่จัดเก็บใน SharedPreferences โดยใช้คีย์จาก Android Keystore:</p>
+    <pre><code>import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
+
+class SecurePreferences(context: Context) {
+    private val masterKey = MasterKey.Builder(context)
+        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+        .build()
+    
+    private val securePrefs = EncryptedSharedPreferences.create(
+        context,
+        "secure_prefs",
+        masterKey,
+        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+    )
+    
+    fun saveToken(token: String) {
+        securePrefs.edit().putString("auth_token", token).apply()
+    }
+    
+    fun getToken(): String? {
+        return securePrefs.getString("auth_token", null)
+    }
+}</code></pre>
+
+    <h3 id="s5-4">11.5.4 SQLCipher — การเข้ารหัสฐานข้อมูล</h3>
+    <p>SQLCipher เป็นส่วนขยายของ SQLite ที่เข้ารหัสทั้งฐานข้อมูลด้วย AES-256-CBC และ HMAC-SHA512 พร้อม PBKDF2 สำหรับการ Derive Key:</p>
+    <pre><code>// Android — การใช้ SQLCipher กับ Room
+import net.sqlcipher.database.SupportFactory
+import androidx.room.Room
+
+class DatabaseHelper(context: Context) {
+    private val passphrase = "your-strong-passphrase" // ควรมาจาก Keystore
+    
+    fun getDatabase(): AppDatabase {
+        val factory = SupportFactory(passphrase.toByteArray())
+        
+        return Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "encrypted_database.db"
+        )
+            .openHelperFactory(factory)
+            .build()
+    }
+}</code></pre>
+    <pre><code>// iOS — การใช้ SQLCipher กับ CoreData
+import Foundation
+
+func configureEncryptedCoreData() {
+    // เปิดใช้งาน EncryptedStore (SQLCipher) สำหรับ Core Data
+    // การใช้ EncryptedStore จาก MITRE ร่วมกับ SQLCipher
+    // https://github.com/mitre/FHIR/tree/master/EncryptedStore
+    let options = [
+        EncryptedStorePassphraseKey: "your-strong-passphrase",
+        EncryptedStoreDatabaseLocation: storeURL
+    ] as [String: Any]
+    
+    // Core Data store จะถูกเข้ารหัสด้วย AES-256 ผ่าน SQLCipher
+    persistentStoreCoordinator.addPersistentStore(
+        ofType: NSSQLiteStoreType,
+        configurationName: nil,
+        at: storeURL,
+        options: options
+    )
+}</code></pre>
+
+    <h3 id="s5-5">11.5.5 สิ่งที่ไม่ควรจัดเก็บบนอุปกรณ์เคลื่อนที่</h3>
+    <div class="table-wrap"><table><thead><tr><th>ข้อมูล</th><th>เหตุผลที่ไม่ควรจัดเก็บ</th></tr></thead><tbody>
+      <tr><td>API Keys</td><td>สามารถถูกขโมยได้ผ่าน Reverse Engineering</td></tr>
+      <tr><td>Long-Lived Token</td><td>หาก Token ถูกขโมย ผู้โจมตีสามารถเข้าถึง API ได้นาน</td></tr>
+      <tr><td>คีย์เข้ารหัสในรูปแบบ Plaintext</td><td>การฝังคีย์ในโค้ดเป็นการเปิดเผยคีย์ให้ผู้โจมตี</td></tr>
+      <tr><td>ข้อมูลส่วนบุคคล (PII)</td><td>ละเมิดข้อกำหนด PDPA/GDPR หากข้อมูลรั่วไหล</td></tr>
+      <tr><td>รหัสผ่านฐานข้อมูล</td><td>ทำให้ผู้โจมตีเข้าถึงฐานข้อมูลฝั่งหลังได้</td></tr>
+      <tr><td>Session Token ใน SharedPreferences</td><td>Token ถูกจัดเก็บในรูปแบบ Plaintext</td></tr>
+    </tbody></table></div>
+
+    <div class="interactive" id="play-checklist">
+      <h4>Interactive: Secure Storage Checklist</h4>
+      <p>ทำเครื่องหมายแนวทางปฏิบัติที่นำไปใช้แล้วเพื่อดูความคืบหน้า</p>
+      <div class="checklist" id="chkStorage">
+        <label><input type="checkbox" value="k1"> ใช้ Android Keystore สำหรับจัดการคีย์เข้ารหัส</label>
+        <label><input type="checkbox" value="k2"> ใช้ iOS Keychain สำหรับจัดเก็บข้อมูลที่ละเอียดอ่อน</label>
+        <label><input type="checkbox" value="k3"> ใช้ EncryptedSharedPreferences แทน SharedPreferences ทั่วไป</label>
+        <label><input type="checkbox" value="k4"> ใช้ SQLCipher สำหรับเข้ารหัสฐานข้อมูล SQLite</label>
+        <label><input type="checkbox" value="k5"> หลีกเลี่ยงการ Hardcode API Keys ใน Source Code</label>
+        <label><input type="checkbox" value="k6"> ใช้ Certificate Pinning สำหรับการสื่อสารผ่านเครือข่าย</label>
+        <label><input type="checkbox" value="k7"> ใช้ PKCE สำหรับ OAuth 2.0 Flow</label>
+        <label><input type="checkbox" value="k8"> จัดเก็บ API Keys ไว้บน Proxy Server</label>
+      </div>
+      <div class="meter"><div class="meter-fill" id="chkStorageMeter"></div></div>
+      <div id="chkStorageResult" class="result">ทำเครื่องหมายเพื่อดูความคืบหน้า</div>
+    </div>
+
+    <h2 id="s6">11.6 Mobile Security Testing Tools</h2>
+
+    <h3 id="s6-1">11.6.1 MobSF v4.4.6 (Mobile Security Framework)</h3>
+    <p>MobSF เป็นเครื่องมือวิเคราะห์ความปลอดภัยแบบครบวงจรที่รองรับทั้ง Android (APK) และ iOS (IPA) เวอร์ชันล่าสุด v4.4.6 (มีนาคม 2026) มีความสามารถทั้ง Static Analysis และ Dynamic Analysis พร้อม REST API สำหรับการผนวกเข้ากับ CI/CD Pipeline:</p>
+    <pre><code># รัน MobSF ด้วย Docker
+docker run --rm -it -p 8000:8000 opensecurity/mobile-security-framework-mobsf:v4.4.6
+
+# วิเคราะห์ APK ด้วย REST API
+curl -F "file=@target.apk" http://localhost:8000/api/v1/upload
+curl -X POST http://localhost:8000/api/v1/scan \
+    -H "Content-Type: application/json" \
+    -d '{"hash": "&lt;file_hash&gt;", "scan_type": "apk"}'</code></pre>
+    <p><strong>ความสามารถหลักของ MobSF:</strong></p>
+    <ul>
+      <li>Static Analysis: ตรวจสอบ AndroidManifest.xml, วิเคราะห์โค้ด DEX, ตรวจสอบ Permissions</li>
+      <li>Dynamic Analysis: วิเคราะห์พฤติกรรมขณะรันบนอุปกรณ์จริงหรือ Emulator</li>
+      <li>API Test: ทดสอบ API Endpoint ที่แอปพลิเคชันเรียกใช้</li>
+      <li>Malware Analysis: ตรวจสอบลายเซ็นของ Malware</li>
+    </ul>
+
+    <h3 id="s6-2">11.6.2 Burp Suite สำหรับการทดสอบ Mobile App</h3>
+    <p>Burp Suite เป็นเครื่องมือ Intercepting Proxy ที่ใช้ดักจับและวิเคราะห์ Traffic ของแอปพลิเคชันบนอุปกรณ์เคลื่อนที่:</p>
+    <p><strong>ขั้นตอนการติดตั้ง CA Certificate ของ Burp Suite บน Android 7+:</strong></p>
+    <ol>
+      <li>ตั้งค่า Proxy ของอุปกรณ์เคลื่อนที่ให้ชี้ไปยัง Burp Suite</li>
+      <li>ดาวน์โหลด CA Certificate ของ Burp Suite จาก <code>http://burpsuite</code></li>
+      <li>ติดตั้ง Certificate ใน Settings → Security → Install from Storage</li>
+      <li><strong>ปัญหาบน Android 7+:</strong> User-installed CA ไม่ได้รับความเชื่อถือโดยแอปพลิเคชันที่กำหนด <code>network-security-config</code> ที่เจาะจง — ต้องแก้ไขไฟล์ NSC หรือใช้ Frida Bypass</li>
+    </ol>
+
+    <h3 id="s6-3">11.6.3 Drozer v3.1.0 (สิงหาคม 2024)</h3>
+    <p>Drozer เป็นเครื่องมือทดสอบความปลอดภัยที่เน้นการโจมตี Attack Surface ผ่าน IPC โดยไม่ต้อง Root เครื่อง:</p>
+    <pre><code># ติดตั้ง Drozer Agent บนอุปกรณ์
+adb install drozer-agent.apk
+
+# เชื่อมต่อ Drozer
+adb forward tcp:31415 tcp:31415
+drozer console connect
+
+# ตรวจสอบ Attack Surface
+dz&gt; run app.package.attacksurface com.example.target
+# ผลลัพธ์: แสดง Activity, Service, Broadcast Receiver, Content Provider ที่ถูก Export
+
+# ค้นหา Activity ที่ถูก Export
+dz&gt; run app.activity.info -a com.example.target
+
+# ทดสอบ Intent Injection ไปยัง Activity
+dz&gt; run app.activity.start --component com.example.target com.example.target.VulnerableActivity</code></pre>
+
+    <h3 id="s6-4">11.6.4 Objection (Frida-based)</h3>
+    <p>Objection เป็นเครื่องมือ Runtime Exploration ที่ใช้ Frida Engine สำหรับการทดสอบแบบ Dynamic โดยไม่ต้องแก้ไขไฟล์ APK/IPA:</p>
+    <pre><code># ติดตั้ง Objection
+pip3 install objection
+
+# รัน Objection บนแอปพลิเคชัน
+objection -g com.example.target explore
+
+# คำสั่งใน Objection Console:
+
+# ปิด SSL Pinning
+android sslpinning disable
+
+# ปิด Jailbreak Detection
+android root disable
+
+# ดูไฟล์ใน Sandbox
+env
+
+# ค้นหา Keychain Items (iOS)
+ios keychain dump
+
+# จัดการ SharedPreferences (Android)
+android sharedpreferences set flag_enable_debug true</code></pre>
+
+    <h3 id="s6-5">11.6.5 ขั้นตอนการทดสอบความปลอดภัยที่สมบูรณ์</h3>
+    <div class="table-wrap"><table><thead><tr><th>ขั้นตอน</th><th>เครื่องมือ</th><th>เป้าหมาย</th></tr></thead><tbody>
+      <tr><td>1. Static Analysis</td><td>MobSF</td><td>วิเคราะห์ Manifest, โค้ด, Permissions</td></tr>
+      <tr><td>2. Dynamic Analysis</td><td>Frida/Objection</td><td>ทดสอบ Runtime, จัดการ Pinning/Bypass</td></tr>
+      <tr><td>3. IPC Testing</td><td>Drozer</td><td>ทดสอบ Attack Surface ผ่าน Intent/Content Provider</td></tr>
+      <tr><td>4. Network Testing</td><td>Burp Suite</td><td>ดักจับ Traffic, ทดสอบ API, Pinning</td></tr>
+      <tr><td>5. Native Analysis</td><td>Ghidra</td><td>วิเคราะห์ Native Library (.so)</td></tr>
+    </tbody></table></div>
+
+    <div class="interactive" id="play-tools">
+      <h4>Interactive: Testing Tools Match Game</h4>
+      <p>คลิกที่เครื่องมือเพื่อดูรายละเอียด</p>
+      <div class="memory-card-grid">
+        <div class="memory-card">
+          <div class="card-icon">📱</div>
+          <div class="card-title">MobSF</div>
+          <div class="card-desc">Mobile Security Framework — เครื่องมือวิเคราะห์ความปลอดภัยแบบครบวงจร (Static + Dynamic Analysis) สำหรับ Android APK และ iOS IPA รองรับ REST API สำหรับ CI/CD Pipeline</div>
+        </div>
+        <div class="memory-card">
+          <div class="card-icon">🕵️</div>
+          <div class="card-title">Burp Suite</div>
+          <div class="card-desc">Intercepting Proxy สำหรับดักจับและวิเคราะห์ Traffic ของแอปพลิเคชันบนอุปกรณ์เคลื่อนที่ รองรับการทดสอบ API และการวิเคราะห์ HTTPS Traffic</div>
+        </div>
+        <div class="memory-card">
+          <div class="card-icon">🔌</div>
+          <div class="card-title">Drozer</div>
+          <div class="card-desc">เครื่องมือทดสอบ Attack Surface ผ่าน IPC (Intent, Content Provider) โดยไม่ต้อง Root เครื่อง — ตรวจสอบ Exported Components และ Intent Injection</div>
+        </div>
+        <div class="memory-card">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">Objection</div>
+          <div class="card-desc">Runtime Exploration Tool ที่ใช้ Frida Engine สำหรับ Dynamic Testing — ปิด SSL Pinning, bypass Jailbreak Detection, จัดการ SharedPreferences</div>
+        </div>
+        <div class="memory-card">
+          <div class="card-icon">🔍</div>
+          <div class="card-title">JADX</div>
+          <div class="card-desc">Decompiler ที่แปลง DEX เป็น Java Code — ใช้สำหรับ Reverse Engineering เพื่อวิเคราะห์โค้ด ค้นหา Hardcoded API Keys และตรวจสอบ WebView Usage</div>
+        </div>
+      </div>
+      <div id="toolsDetail" class="result">คลิกที่เครื่องมือเพื่อดูรายละเอียด</div>
+    </div>
+
+    <h2 id="s7">11.7 เหตุการณ์จริงและแนวโน้มด้านความปลอดภัย</h2>
+
+    <h3 id="s7-1">11.7.1 เหตุการณ์สำคัญในปี 2025-2026</h3>
+    <div class="table-wrap"><table><thead><tr><th>เหตุการณ์</th><th>วันที่</th><th>รายละเอียด</th><th>ผลกระทบ</th></tr></thead><tbody>
+      <tr><td>EngageSDK Intent Redirection (Microsoft)</td><td>เมษายน 2026</td><td>ช่องโหว่ Intent Redirection ใน Third-Party SDK</td><td>แอปพลิเคชันกว่า 50 ล้านครั้งติดตั้งได้รับผลกระทบ</td></tr>
+      <tr><td>Google Gemini API Key Leak (CloudSEK)</td><td>เมษายน 2026</td><td>พบ API Keys 32 คีย์ถูก Hardcoded ใน 22 แอปพลิเคชัน</td><td>แอปพลิเคชันกว่า 500 ล้านครั้งติดตั้ง, ค่าใช้จ่าย 15,400-82,314 ดอลลาร์สหรัฐ</td></tr>
+      <tr><td>AppsFlyer Web SDK Supply Chain Attack</td><td>มีนาคม 2026</td><td>การโจมตีห่วงโซ่อุปทานผ่าน SDK ของ AppsFlyer, แทรก JavaScript สำหรับขโมย Cryptocurrency</td><td>แอปพลิเคชันกว่า 100,000 รายการได้รับผลกระทบ</td></tr>
+      <tr><td>Keenadu Backdoor (Kaspersky)</td><td>2025-2026</td><td>Backdoor ในระดับ Firmware ที่ฝังตัวในอุปกรณ์</td><td>ผู้ใช้ 13,715 รายได้รับผลกระทบ</td></tr>
+      <tr><td>GoldPickaxe Malware</td><td>2025</td><td>มัลแวร์ที่ใช้ Deepfake หลอกระบบ Face Recognition</td><td>เจาะจงเป้าหมายในประเทศไทยและเวียดนาม</td></tr>
+      <tr><td>Premium VPN Spyware (Cairn Intelligence)</td><td>กุมภาพันธ์ 2026</td><td>แอปพลิเคชัน VPN ที่แอบขโมยข้อมูลและส่งออกผ่าน Telegram Bot</td><td>ผู้ใช้ที่ติดตั้งแอปพลิเคชัน VPN ปลอม</td></tr>
+    </tbody></table></div>
+
+    <h3 id="s7-2">11.7.2 แนวโน้มด้านความปลอดภัยของอุปกรณ์เคลื่อนที่</h3>
+    <div class="table-wrap"><table><thead><tr><th>แนวโน้ม</th><th>รายละเอียด</th></tr></thead><tbody>
+      <tr><td>จำนวนการโจมตีที่เพิ่มขึ้น</td><td>Kaspersky 2025: บล็อกการโจมตีบนอุปกรณ์เคลื่อนที่กว่า 14 ล้านครั้ง, พบ Banking Trojan Package ใหม่ 255,000 รายการ</td></tr>
+      <tr><td>สัดส่วนอุปกรณ์ที่ติด Malware</td><td>Zimperium 2025: ร้อยละ 18.1 ของอุปกรณ์ทั้งหมดตรวจพบ Malware</td></tr>
+      <tr><td>Third-Party SDK ที่ไม่มี SBOM</td><td>ร้อยละ 60 ของ SDK บุคคลที่สามชั้นนำถูกเผยแพร่เป็น Precompiled Binary โดยไม่มี Software Bill of Materials (SBOM)</td></tr>
+      <tr><td>AI-Powered Threats</td><td>Deepfake ที่ใช้เลียนแบบ Biometric, Phishing ที่สร้างโดย AI, Malware ที่ปรับเปลี่ยนพฤติกรรมตามสภาพแวดล้อม</td></tr>
+      <tr><td>Banking Trojan เพิ่มขึ้น</td><td>การโจมตี Banking Trojan เพิ่มขึ้นร้อยละ 196 เมื่อเทียบปีต่อปี (2024 ไป 2025)</td></tr>
+    </tbody></table></div>
+
+    <div class="interactive" id="play-top10">
+      <h4>Interactive: Mobile Top 10 Knowledge Check</h4>
+      <p style="font-weight:500;color:var(--navy)">ข้อ 1: M1 ใน OWASP Mobile Top 10 2024 คืออะไร?</p>
+      <button class="quiz-option" data-quiz="top10a" data-correct="true">Improper Credential Usage</button>
+      <button class="quiz-option" data-quiz="top10a" data-correct="false">Insecure Authentication/Authorization</button>
+      <button class="quiz-option" data-quiz="top10a" data-correct="false">Insecure Data Storage</button>
+      <div id="top10aResult" class="result">คลิกเพื่อเลือกคำตอบ</div>
+      <p style="font-weight:500;color:var(--navy);margin-top:1.25rem">ข้อ 2: M9 ใน OWASP Mobile Top 10 2024 คืออะไร?</p>
+      <button class="quiz-option" data-quiz="top10b" data-correct="false">Insufficient Cryptography</button>
+      <button class="quiz-option" data-quiz="top10b" data-correct="true">Insecure Data Storage</button>
+      <button class="quiz-option" data-quiz="top10b" data-correct="false">Security Misconfiguration</button>
+      <div id="top10bResult" class="result">คลิกเพื่อเลือกคำตอบ</div>
+      <p style="font-weight:500;color:var(--navy);margin-top:1.25rem">ข้อ 3: M2: Inadequate Supply Chain Security เกี่ยวข้องกับอะไร?</p>
+      <button class="quiz-option" data-quiz="top10c" data-correct="false">การใช้รหัสผ่านที่ไม่ปลอดภัย</button>
+      <button class="quiz-option" data-quiz="top10c" data-correct="true">การใช้ Third-Party SDK ที่ไม่ปลอดภัย</button>
+      <button class="quiz-option" data-quiz="top10c" data-correct="false">การจัดเก็บข้อมูลโดยไม่เข้ารหัส</button>
+      <div id="top10cResult" class="result">คลิกเพื่อเลือกคำตอบ</div>
+    </div>
+
+    <div class="interactive" id="play-incidents">
+      <h4>Interactive: Timeline — เหตุการณ์สำคัญ 2025-2026</h4>
+      <p>คลิกที่เหตุการณ์เพื่อดูรายละเอียดเพิ่มเติม</p>
+      <div class="incident-item" data-detail="Microsoft รายงานช่องโหว่ Intent Redirection ใน Third-Party SDK ที่พบในแอปพลิเคชัน Android มากกว่า 50 ล้านครั้งที่ติดตั้ง ช่องโหว่เกิดจากการใช้ parseUri() ด้วย Flag URI_ALLOW_UNSAFE ซึ่งทำให้ผู้โจมตีสามารถส่ง Intent ที่ไม่ปลอดภัยไปยัง Component ภายในแอปพลิเคชันได้">
+        <div class="incident-title">🔴 EngageSDK Intent Redirection — เมษายน 2026</div>
+        <div class="incident-detail">Microsoft รายงานช่องโหว่ Intent Redirection ใน Third-Party SDK ที่พบในแอปพลิเคชัน Android มากกว่า 50 ล้านครั้งที่ติดตั้ง ช่องโหว่เกิดจากการใช้ parseUri() ด้วย Flag URI_ALLOW_UNSAFE ซึ่งทำให้ผู้โจมตีสามารถส่ง Intent ที่ไม่ปลอดภัยไปยัง Component ภายในแอปพลิเคชันได้</div>
+      </div>
+      <div class="incident-item" data-detail="CloudSEK รายงานการพบ Google API Keys จำนวน 32 คีย์ที่ถูก Hardcoded ในแอปพลิเคชัน Android ยอดนิยม 22 รายการที่มีการติดตั้งรวมกว่า 500 ล้านครั้ง ส่งผลให้มีการเรียกเก็บค่าใช้จ่ายที่ไม่ได้รับอนุญาตตั้งแต่ 15,400 ถึง 82,314 ดอลลาร์สหรัฐ">
+        <div class="incident-title">🟠 Google Gemini API Key Leak (CloudSEK) — เมษายน 2026</div>
+        <div class="incident-detail">CloudSEK รายงานการพบ Google API Keys จำนวน 32 คีย์ที่ถูก Hardcoded ในแอปพลิเคชัน Android ยอดนิยม 22 รายการที่มีการติดตั้งรวมกว่า 500 ล้านครั้ง ส่งผลให้มีการเรียกเก็บค่าใช้จ่ายที่ไม่ได้รับอนุญาตตั้งแต่ 15,400 ถึง 82,314 ดอลลาร์สหรัฐ</div>
+      </div>
+      <div class="incident-item" data-detail="การโจมตีห่วงโซ่อุปทานผ่าน SDK ของ AppsFlyer โดยผู้โจมตีสามารถแทรก JavaScript สำหรับขโมย Cryptocurrency ส่งผลกระทบต่อแอปพลิเคชันกว่า 100,000 รายการ">
+        <div class="incident-title">🟡 AppsFlyer Web SDK Supply Chain Attack — มีนาคม 2026</div>
+        <div class="incident-detail">การโจมตีห่วงโซ่อุปทานผ่าน SDK ของ AppsFlyer โดยผู้โจมตีสามารถแทรก JavaScript สำหรับขโมย Cryptocurrency ส่งผลกระทบต่อแอปพลิเคชันกว่า 100,000 รายการ</div>
+      </div>
+      <div class="incident-item" data-detail="Kaspersky ค้นพบ Backdoor ในระดับ Firmware ที่ฝังตัวในอุปกรณ์ ส่งผลกระทบต่อผู้ใช้ 13,715 ราย Backdoor นี้ทำงานในระดับฮาร์ดแวร์ทำให้ตรวจจับและกำจัดได้ยาก">
+        <div class="incident-title">🟣 Keenadu Backdoor (Kaspersky) — 2025-2026</div>
+        <div class="incident-detail">Kaspersky ค้นพบ Backdoor ในระดับ Firmware ที่ฝังตัวในอุปกรณ์ ส่งผลกระทบต่อผู้ใช้ 13,715 ราย Backdoor นี้ทำงานในระดับฮาร์ดแวร์ทำให้ตรวจจับและกำจัดได้ยาก</div>
+      </div>
+      <div class="incident-item" data-detail="GoldPickaxe เป็นมัลแวร์ที่ใช้ Deepfake หลอกระบบ Face Recognition เพื่อเข้าถึงข้อมูลการเงิน บัญชีธนาคาร และสกุลเงินดิจิทัล เจาะจงเป้าหมายในประเทศไทยและเวียดนาม">
+        <div class="incident-title">💰 GoldPickaxe Malware — 2025</div>
+        <div class="incident-detail">GoldPickaxe เป็นมัลแวร์ที่ใช้ Deepfake หลอกระบบ Face Recognition เพื่อเข้าถึงข้อมูลการเงิน บัญชีธนาคาร และสกุลเงินดิจิทัล เจาะจงเป้าหมายในประเทศไทยและเวียดนาม</div>
+      </div>
+      <div id="incidentDetail" class="result">คลิกที่เหตุการณ์เพื่อดูรายละเอียด</div>
+    </div>
+
+    <h2 id="keywords">Keywords</h2>
+    <p>OWASP MASVS v2.1.0, OWASP MASTG v1.7.0, OWASP MASWE, OWASP Mobile Top 10 2024, Android Security, iOS Security, App Sandbox, Permission Model, Entitlements, APK Structure, Intent Spoofing, Intent Injection, Content Provider Security, WebView Security, CVE-2025-48564, CVE-2025-22433, CVE-2025-32326, EngageSDK, Keychain Services, Data Protection API, App Transport Security (ATS), Secure Enclave, Jailbreak Detection, Certificate Pinning, Public Key Pinning, Network Security Configuration (NSC), OAuth 2.0 with PKCE, RFC 7636, Android Keystore, EncryptedSharedPreferences, SQLCipher, MobSF v4.4.6, Burp Suite, Drozer v3.1.0, Objection, Frida, MITM Protection, Device Fingerprinting</p>
+
+    <h2 id="labs">กิจกรรมปฏิบัติการ</h2>
+    <div class="info-box warning"><div class="icon">⚠️</div><div>กิจกรรมทั้งหมดต้องทำในสภาพแวดล้อมที่ได้รับอนุญาตเท่านั้น — ใช้อุปกรณ์ทดสอบในห้องปฏิบัติการหรือแอปพลิเคชันตัวอย่างที่อาจารย์จัดให้เท่านั้น ห้ามทดสอบกับแอปพลิเคชันจริงหรือแอปพลิเคชันของผู้อื่นโดยไม่ได้รับอนุญาตเป็นลายลักษณ์อักษร</div></div>
+
+    <div class="card"><div class="card-header">Lab 11.1: การวิเคราะห์ APK ด้วย Mobile Security Framework (MobSF)</div>
+    <p><strong>วัตถุประสงค์:</strong> เรียนรู้การใช้ MobSF ในการวิเคราะห์ความปลอดภัยของ APK แบบ Static Analysis</p>
+    <p><strong>เวลาที่ใช้:</strong> 30-45 นาที</p>
+    <p><strong>เครื่องมือ:</strong> MobSF v4.4.6, ไฟล์ APK ตัวอย่าง (ที่อาจารย์จัดให้)</p>
+    <p><strong>ขั้นตอน:</strong></p>
+    <ol>
+      <li>รัน MobSF ด้วย Docker:<pre><code>docker run --rm -it -p 8000:8000 opensecurity/mobile-security-framework-mobsf:v4.4.6</code></pre></li>
+      <li>เปิดเบราว์เซอร์ไปที่ <code>http://localhost:8000</code></li>
+      <li>อัปโหลดไฟล์ APK ตัวอย่างที่อาจารย์จัดให้</li>
+      <li>รอให้ MobSF วิเคราะห์เสร็จ (ประมาณ 2-5 นาที)</li>
+      <li>ตรวจสอบผลลัพธ์ในแต่ละหมวดหมู่:
+        <ul>
+          <li><strong>File Analysis:</strong> ตรวจสอบไฟล์ภายใน APK</li>
+          <li><strong>Permissions:</strong> ดู Permissions ที่แอปพลิเคชันขอ</li>
+          <li><strong>Manifest Analysis:</strong> ตรวจสอบ Exported Components</li>
+          <li><strong>Code Analysis:</strong> ดูช่องโหว่ที่พบในโค้ด</li>
+          <li><strong>Network Analysis:</strong> ดู URL และโดเมนที่แอปพลิเคชันเชื่อมต่อ</li>
+        </ul>
+      </li>
+      <li>บันทึกรายงานในรูปแบบ PDF หรือ HTML</li>
+    </ol>
+    <p><strong>สิ่งที่ต้องส่ง:</strong></p>
+    <ol>
+      <li>รายชื่อ Permissions ที่แอปพลิเคชันขอ แบ่งเป็น Normal และ Dangerous</li>
+      <li>Exported Components ที่พบ (Activity, Service, Broadcast Receiver, Content Provider)</li>
+      <li>ช่องโหว่ที่มีความเสี่ยงสูงที่สุด 3 รายการ พร้อมคำอธิบาย</li>
+      <li>รายชื่อโดเมนที่แอปพลิเคชันเชื่อมต่อ</li>
+    </ol>
+    </div>
+
+    <div class="card"><div class="card-header">Lab 11.2: การดักจับ Mobile App Traffic ด้วย Burp Suite</div>
+    <p><strong>วัตถุประสงค์:</strong> เรียนรู้การตั้งค่า Proxy และดักจับ Traffic ของแอปพลิเคชันบนอุปกรณ์เคลื่อนที่</p>
+    <p><strong>เวลาที่ใช้:</strong> 30-45 นาที</p>
+    <p><strong>เครื่องมือ:</strong> Burp Suite Community Edition, อุปกรณ์ Android/Emulator</p>
+    <p><strong>ขั้นตอน:</strong></p>
+    <ol>
+      <li>เปิด Burp Suite และตั้งค่า Proxy เป็น <code>127.0.0.1:8080</code></li>
+      <li>ตั้งค่า Proxy บนอุปกรณ์ Android:<pre><code># เชื่อมต่ออุปกรณ์กับเครือข่ายเดียวกัน
+# ตั้งค่า WiFi Proxy → IP ของคอมพิวเตอร์ + Port 8080</code></pre></li>
+      <li>ติดตั้ง CA Certificate ของ Burp Suite บนอุปกรณ์:
+        <ul>
+          <li>เปิดเบราว์เซอร์ไปที่ <code>http://burpsuite</code></li>
+          <li>ดาวน์โหลด <code>cacert.der</code></li>
+          <li>ติดตั้งใน Settings → Security → Install from Storage</li>
+        </ul>
+      </li>
+      <li>ทดสอบเปิดแอปพลิเคชันตัวอย่าง และสังเกต Traffic ใน Burp Suite</li>
+      <li>ตรวจสอบว่า HTTPS Traffic ถูกถอดรหัสหรือไม่:
+        <ul>
+          <li>ถ้า Certificate Pinning ถูกใช้งาน → การเชื่อมต่อจะถูกบล็อก</li>
+          <li>ถ้าไม่มีการ Pinning → สามารถดู Request/Response ได้</li>
+        </ul>
+      </li>
+      <li>วิเคราะห์ API Endpoint ที่แอปพลิเคชันเรียกใช้:
+        <ul>
+          <li>บันทึก URL Endpoint ที่พบ</li>
+          <li>ตรวจสอบ Request Method และ Headers</li>
+          <li>ตรวจสอบ Request Body และ Response</li>
+        </ul>
+      </li>
+    </ol>
+    <p><strong>สิ่งที่ต้องส่ง:</strong></p>
+    <ol>
+      <li>ภาพ Screenshot แสดง Burp Suite ที่ดักจับ Traffic ได้</li>
+      <li>รายการ API Endpoint ที่แอปพลิเคชันเรียกใช้</li>
+      <li>การตรวจสอบว่ามี Certificate Pinning หรือไม่</li>
+      <li>ข้อมูลที่เปิดเผย (ถ้ามี) เช่น API Key, Token, ข้อมูลส่วนบุคคล</li>
+    </ol>
+    </div>
+
+    <div class="card"><div class="card-header">Lab 11.3: การตรวจสอบ Android Manifest และ iOS Info.plist</div>
+    <p><strong>วัตถุประสงค์:</strong> เรียนรู้การตรวจสอบการตั้งค่าความปลอดภัยใน Manifest และ Info.plist</p>
+    <p><strong>เวลาที่ใช้:</strong> 30-45 นาที</p>
+    <p><strong>เครื่องมือ:</strong> APKTool, MobSF, ไฟล์ APK/IPA ตัวอย่าง</p>
+    <p><strong>ขั้นตอน:</strong></p>
+    <ol>
+      <li>ถอด APK ด้วย APKTool:<pre><code>apktool d target.apk -o output_dir/</code></pre></li>
+      <li>ตรวจสอบ <code>AndroidManifest.xml</code> ในประเด็นต่อไปนี้:
+        <ul>
+          <li><code>android:exported="true"</code> ใน Activity, Service, Receiver</li>
+          <li><code>android:allowBackup="true"</code></li>
+          <li><code>android:usesCleartextTraffic="true"</code></li>
+          <li><code>android:debuggable="true"</code></li>
+          <li>Intent Filter ที่ไม่มีการตรวจสอบ</li>
+          <li><code>&lt;uses-permission&gt;</code> ที่เป็น Dangerous Permission</li>
+        </ul>
+      </li>
+      <li>สำหรับ iOS ใช้ MobSF หรือเครื่องมืออื่นตรวจสอบ <code>Info.plist</code>:
+        <ul>
+          <li><code>NSAppTransportSecurity</code> — มี <code>NSAllowsArbitraryLoads</code> หรือไม่</li>
+          <li><code>NSCameraUsageDescription</code>, <code>NSLocationWhenInUseUsageDescription</code> — คำอธิบายที่เหมาะสม</li>
+          <li><code>CFBundleURLTypes</code> — URL Scheme ที่เปิดรับ</li>
+          <li><code>UIBackgroundModes</code> — การทำงานเบื้องหลัง</li>
+        </ul>
+      </li>
+      <li>สร้างตารางเปรียบเทียบความแตกต่างระหว่าง Android Manifest และ iOS Info.plist</li>
+    </ol>
+    <p><strong>สิ่งที่ต้องส่ง:</strong></p>
+    <ol>
+      <li>รายการ Component ที่ถูก Export ใน Android Manifest</li>
+      <li>การตั้งค่าที่ไม่ปลอดภัยที่พบ (เช่น Cleartext Traffic, Allow Backup, Debuggable)</li>
+      <li>การตั้งค่า ATS Exception ใน iOS Info.plist (ถ้ามี)</li>
+      <li>ตารางเปรียบเทียบ Android Manifest vs iOS Info.plist</li>
+    </ol>
+    </div>
+
+    <div class="card"><div class="card-header">Lab 11.4: Android Reverse Engineering ด้วย JADX และ APKTool</div>
+    <p><strong>วัตถุประสงค์:</strong> เรียนรู้การ Decompile และวิเคราะห์โค้ดของแอปพลิเคชัน Android</p>
+    <p><strong>เวลาที่ใช้:</strong> 30-45 นาที</p>
+    <p><strong>เครื่องมือ:</strong> JADX, APKTool, ไฟล์ APK ตัวอย่าง</p>
+    <p><strong>ขั้นตอน:</strong></p>
+    <ol>
+      <li>ติดตั้ง JADX:<pre><code># macOS
+brew install jadx</code></pre></li>
+      <li>Decompile APK ด้วย JADX:<pre><code>jadx-gui target.apk
+# หรือ
+jadx -d output_java/ target.apk</code></pre></li>
+      <li>วิเคราะห์ Source Code ที่ Decompile ได้:
+        <ul>
+          <li>ค้นหา Hardcoded API Key: ค้นหาคำว่า <code>api_key</code>, <code>apikey</code>, <code>secret</code>, <code>token</code></li>
+          <li>ค้นหา SharedPreferences: ค้นหาการใช้ <code>getSharedPreferences</code> และ <code>putString</code></li>
+          <li>ค้นหา WebView: ค้นหาการใช้ <code>WebView</code>, <code>setJavaScriptEnabled</code>, <code>addJavascriptInterface</code></li>
+          <li>ค้นหา Intent: ค้นหาการใช้ <code>getIntent</code>, <code>startActivity</code>, <code>Intent</code></li>
+        </ul>
+      </li>
+      <li>ตรวจสอบคลาสที่มีความสำคัญด้านความปลอดภัย:<pre><code># ค้นหา String ที่น่าสนใจในโค้ด
+grep -r "https://" output_java/
+grep -r "password" output_java/
+grep -r "secret" output_java/</code></pre></li>
+      <li>วิเคราะห์ ProGuard/R8 Obfuscation:
+        <ul>
+          <li>ตรวจสอบว่าโค้ดถูก Obfuscate หรือไม่</li>
+          <li>ถ้าถูก Obfuscate — คลาสและเมธอดจะมีชื่อที่อ่านยาก (a.a(), b.c())</li>
+          <li>ถ้าไม่ถูก Obfuscate — โค้ดจะอ่านได้ชัดเจน</li>
+        </ul>
+      </li>
+    </ol>
+    <p><strong>สิ่งที่ต้องส่ง:</strong></p>
+    <ol>
+      <li>ภาพ Screenshot ของ JADX ที่แสดง Source Code ที่ Decompile ได้</li>
+      <li>Hardcoded Credential หรือ API Key ที่พบ (รายงานผ่าน MobSF ก่อน)</li>
+      <li>การใช้ WebView ที่พบและการประเมินความปลอดภัย</li>
+      <li>การใช้ Intent และการตรวจสอบ Caller</li>
+      <li>การประเมิน Obfuscation — มีหรือไม่ และมีผลต่อการวิเคราะห์อย่างไร</li>
+    </ol>
+    </div>
+
+    <h2 id="questions">คำถามท้ายบท</h2>
+    <ol>
+      <li>OWASP MASVS v2.1.0 แบ่งกลุ่มควบคุมออกเป็น 8 กลุ่ม จงอธิบายกลุ่มควบคุมทั้ง 8 พร้อมยกตัวอย่าง Test Case ที่เกี่ยวข้องจาก MASTG อย่างน้อย 1 ตัวอย่างต่อกลุ่ม</li>
+      <li>Android Permission Model และ iOS Entitlements แตกต่างกันอย่างไร จงเปรียบเทียบในแง่ของกลไกการทำงาน ช่วงเวลาที่ขอสิทธิ์ และความยืดหยุ่นในการปรับเปลี่ยนภายหลัง</li>
+      <li>Intent Spoofing และ Intent Injection แตกต่างกันอย่างไร จงอธิบายกลไกการโจมตีทั้งสองรูปแบบ พร้อมยกตัวอย่าง CVE ที่เกี่ยวข้องอย่างน้อย 2 รายการ (ระบุ CVE ID, ปี, และรายละเอียด)</li>
+      <li>Certificate Pinning และ Public Key Pinning แตกต่างกันอย่างไร จงอธิบายข้อดีและข้อเสียของแต่ละวิธี พร้อมยกตัวอย่างการกำหนดค่า Network Security Configuration (NSC) สำหรับ Android ที่ปลอดภัย</li>
+      <li>การจัดเก็บ API Keys บนอุปกรณ์เคลื่อนที่มีแนวทางใดบ้าง จงเรียงลำดับจากปลอดภัยน้อยที่สุดไปยังปลอดภัยที่สุด พร้อมอธิบายเหตุผลและยกตัวอย่างกรณีศึกษา CloudSEK (เมษายน 2026) ที่เกี่ยวข้อง</li>
+    </ol>
+
+    <h2 id="summary">สรุปท้ายบท</h2>
+    <div class="info-box remember">
+      <span class="icon">📌</span>
+      <div>
+        <strong>สรุปท้ายบท:</strong>
+        <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+          <li>ความปลอดภัยของแอปพลิเคชันบนอุปกรณ์เคลื่อนที่เป็นเรื่องที่ซับซ้อนและต้องพิจารณาทั้งในด้านความปลอดภัยของแพลตฟอร์ม (Android และ iOS), การสื่อสารผ่านเครือข่าย, การจัดเก็บข้อมูล, และการทำงานร่วมกับ API OWASP MASVS v2.1.0 เป็นมาตรฐานที่ครอบคลุม 8 กลุ่มควบคุม ตั้งแต่การจัดเก็บข้อมูลอย่างปลอดภัยไปจนถึงความเป็นส่วนตัว ในขณะที่ OWASP Mobile Top 10 2024 ระบุความเสี่ยงที่สำคัญที่สุด 10 อันดับ</li>
+          <li>Android และ iOS มีแนวทางด้านความปลอดภัยที่แตกต่างกันอย่างมีนัยสำคัญ Android ใช้ Linux UID-based Sandbox และ Runtime Permissions ในขณะที่ iOS ใช้ MAC-based Sandbox ผ่าน TrustedBSD และ Entitlements ที่ถูกเซ็นใน Code Signature การทำความเข้าใจความแตกต่างนี้สำคัญต่อการพัฒนาแอปพลิเคชันที่ปลอดภัยบนทั้งสองแพลตฟอร์ม</li>
+          <li>Mobile API Security โดยเฉพาะ Certificate Pinning, OAuth 2.0 with PKCE, และการป้องกัน MITM เป็นสิ่งจำเป็นสำหรับการสื่อสารที่ปลอดภัยระหว่างแอปพลิเคชันกับเซิร์ฟเวอร์ ในด้านการจัดเก็บข้อมูล Android Keystore และ iOS Keychain (Secure Enclave) เป็นกลไกหลักที่ควรใช้ร่วมกับ EncryptedSharedPreferences และ SQLCipher</li>
+          <li>เครื่องมือทดสอบความปลอดภัยเช่น MobSF, Burp Suite, Drozer และ Objection ช่วยให้นักพัฒนาสามารถตรวจสอบและปรับปรุงความปลอดภัยของแอปพลิเคชันได้อย่างเป็นระบบ ในขณะที่เหตุการณ์จริงในปี 2025-2026 (EngageSDK, Google Gemini API Key Leak, AppsFlyer Supply Chain Attack) แสดงให้เห็นว่าภัยคุกคามต่อแอปพลิเคชันบนอุปกรณ์เคลื่อนที่ยังคงเพิ่มขึ้นอย่างต่อเนื่อง</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 id="refs">เอกสารอ้างอิง</h2>
+    <ol style="font-size:.88rem">
+      <li>OWASP MASVS v2.1.0 — https://mas.owasp.org/MASVS/</li>
+      <li>OWASP MASTG v1.7.0 — https://mas.owasp.org/MASTG/</li>
+      <li>OWASP Mobile Top 10 2024 — https://owasp.org/www-project-mobile-top-10/</li>
+      <li>OWASP MASWE — https://mas.owasp.org/MASWE/</li>
+      <li>Android Security Documentation — https://source.android.com/docs/security</li>
+      <li>iOS Security Guide — https://developer.apple.com/documentation/security</li>
+      <li>RFC 7636 — Proof Key for Code Exchange (PKCE) — https://datatracker.ietf.org/doc/html/rfc7636</li>
+      <li>OAuth 2.1 Authorization Framework — https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1</li>
+      <li>MobSF — Mobile Security Framework — https://github.com/MobSF/Mobile-Security-Framework-MobSF</li>
+      <li>Drozer — https://github.com/WithSecureLabs/drozer</li>
+      <li>Objection — https://github.com/sensepost/objection</li>
+      <li>SQLCipher — https://www.zetetic.net/sqlcipher/</li>
+      <li>EncryptedSharedPreferences (AndroidX Security) — https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences</li>
+      <li>CVE-2025-48564 — NVD Detail</li>
+      <li>CVE-2025-22433 — NVD Detail (CVSS 7.8)</li>
+      <li>CVE-2025-32326 — NVD Detail</li>
+      <li>CVE-2025-22441 — NVD Detail</li>
+      <li>CVE-2025-48619 — NVD Detail</li>
+      <li>Kaspersky Mobile Security Report 2025</li>
+      <li>Zimperium Mobile Threat Report 2025</li>
+      <li>CloudSEK — Google API Key Leak Report (เมษายน 2026)</li>
+      <li>Microsoft EngageSDK Advisory (เมษายน 2026)</li>
+      <li>AppsFlyer Supply Chain Security Incident (มีนาคม 2026)</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+(function(){
+  var toggle = document.getElementById('sidebarToggle');
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebarOverlay');
+  if(toggle && sidebar) {
+    toggle.addEventListener('click', function(){ sidebar.classList.toggle('open'); if(overlay) overlay.classList.toggle('show'); });
+  }
+  if(overlay) overlay.addEventListener('click', function(){ sidebar.classList.remove('open'); overlay.classList.remove('show'); });
+
+  var links = sidebar.querySelectorAll("a");
+  links.forEach(function(a){
+    a.addEventListener("click", function(){
+      links.forEach(function(l){ l.classList.remove("active"); });
+      this.classList.add("active");
+      if (window.innerWidth <= 1024) {
+        sidebar.classList.remove("open");
+        if(overlay) overlay.classList.remove("show");
+      }
+    });
+  });
+
+  var quizOpts = document.querySelectorAll(".quiz-option");
+  quizOpts.forEach(function(opt){
+    opt.addEventListener("click", function(){
+      var container = this.closest(".interactive");
+      var qname = this.getAttribute("data-quiz");
+      var correct = this.getAttribute("data-correct") === "true";
+      var allOpts = container.querySelectorAll(".quiz-option");
+      allOpts.forEach(function(o){ o.classList.remove("correct", "incorrect"); o.style.opacity = "0.6"; });
+      this.style.opacity = "1";
+      if (correct) { this.classList.add("correct"); var r = container.querySelector("#" + qname + "Result"); if (r) r.textContent = "✓ ถูกต้อง! คำตอบนี้ถูกต้อง"; }
+      else { this.classList.add("incorrect"); var r = container.querySelector("#" + qname + "Result"); if (r) r.textContent = "✗ ไม่ถูกต้อง ลองเลือกคำตอบอื่น"; }
+    });
+  });
+
+  document.querySelectorAll('.cve-bar').forEach(function(bar){
+    bar.addEventListener('click', function(){
+      var detail = this.closest('.interactive').querySelector('#cveDetail');
+      if (detail) detail.textContent = this.getAttribute('data-detail') || 'รายละเอียด CVE';
+    });
+  });
+
+  var memCards = document.querySelectorAll(".memory-card");
+  memCards.forEach(function(card){
+    card.addEventListener("click", function(){
+      var wasExpanded = this.classList.contains("expanded");
+      memCards.forEach(function(c){ c.classList.remove("expanded"); var desc = c.querySelector(".card-desc"); if (desc) desc.classList.remove("show"); });
+      if (!wasExpanded) { this.classList.add("expanded"); var desc = this.querySelector(".card-desc"); if (desc) desc.classList.add("show"); var detail = this.closest(".interactive").querySelector("#toolsDetail"); if(detail){ var t = this.querySelector(".card-title"); if(t) detail.textContent = "กำลังดู: " + t.textContent; } }
+      else { var detail = this.closest(".interactive").querySelector("#toolsDetail"); if(detail) detail.textContent = "คลิกที่เครื่องมือเพื่อดูรายละเอียด"; }
+    });
+  });
+
+  var checklists = document.querySelectorAll(".checklist");
+  checklists.forEach(function(cl){
+    var parent = cl.parentElement;
+    var result = parent.querySelector(".result");
+    var meter = parent.querySelector(".meter-fill");
+    var inputs = cl.querySelectorAll("input[type=checkbox]");
+    function update(){
+      var checked = 0; inputs.forEach(function(inp){ if(inp.checked) checked++; });
+      var pct = inputs.length > 0 ? Math.round(checked / inputs.length * 100) : 0;
+      if (meter) meter.style.width = pct + "%";
+      if (result) result.textContent = "ตรวจสอบแล้ว " + checked + " จาก " + inputs.length + " รายการ (" + pct + "%)";
+    }
+    inputs.forEach(function(inp){ inp.addEventListener("change", update); });
+    update();
+  });
+
+  var readingProgress = document.getElementById("readingProgress");
+  if (readingProgress) {
+    document.addEventListener("scroll", function(){
+      var scrollTop = window.scrollY;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = docHeight > 0 ? Math.min(100, Math.round(scrollTop / docHeight * 100)) : 0;
+      readingProgress.textContent = "Software Security · " + pct + "%";
+    });
+  }
+
+  var incidentItems = document.querySelectorAll(".incident-item");
+  incidentItems.forEach(function(item){
+    item.addEventListener("click", function(){
+      var wasExpanded = this.classList.contains("expanded");
+      incidentItems.forEach(function(i){ i.classList.remove("expanded"); var d = i.querySelector(".incident-detail"); if(d) d.classList.remove("show"); });
+      if (!wasExpanded) { this.classList.add("expanded"); var detail = this.querySelector(".incident-detail"); if(detail) detail.classList.add("show"); var result = this.closest(".interactive").querySelector("#incidentDetail"); if(result){ var t = this.querySelector(".incident-title"); if(t) result.textContent = "กำลังดู: " + t.textContent; } }
+      else { var result = this.closest(".interactive").querySelector("#incidentDetail"); if(result) result.textContent = "คลิกที่เหตุการณ์เพื่อดูรายละเอียด"; }
+    });
+  });
+})();
+</script>
+<div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--text-muted, #64748b);border-top:1px solid var(--border, #e2e8f0)">Powered by: IceSuntisuk</div></body>
+</html>
