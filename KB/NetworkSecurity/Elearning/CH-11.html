@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-11: การรักษาความปลอดภัยสำหรับเครือข่ายไร้สาย | วิชา Network Security</title>
+<meta name="description" content="บทที่ 11 วิชา Network Security — การรักษาความปลอดภัยสำหรับเครือข่ายไร้สาย: วิวัฒนาการ 802.11, WEP, WPA, WPA2, WPA3, 4-Way Handshake, KRACK, PMKID, SAE, OWE, Evil Twin, Deauth, 802.1X, EAP, RADIUS, Network Segmentation, Bluetooth/IoT, WIDS/WIPS และแนวปฏิบัติที่ดี">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "CH-11: การรักษาความปลอดภัยสำหรับเครือข่ายไร้สาย",
+  "description": "บทที่ 11 ของวิชา Network Security — ครอบคลุมการรักษาความปลอดภัยสำหรับเครือข่ายไร้สาย WEP, WPA, WPA2, WPA3, SAE, OWE, การโจมตีเครือข่ายไร้สาย Evil Twin, Deauthentication, KRACK, PMKID, 802.1X, EAP, RADIUS, Network Segmentation, Bluetooth/IoT Security, WIDS/WIPS และแนวปฏิบัติที่ดี",
+  "educationalLevel": "Undergraduate",
+  "educationalRole": "Instructor",
+  "teaches": [
+    "Wireless Security",
+    "IEEE 802.11",
+    "WEP",
+    "WPA",
+    "WPA2",
+    "WPA3",
+    "SAE",
+    "OWE",
+    "4-Way Handshake",
+    "KRACK",
+    "PMKID",
+    "Evil Twin",
+    "Deauthentication Attack",
+    "802.1X",
+    "EAP",
+    "RADIUS",
+    "FreeRADIUS",
+    "Network Segmentation",
+    "Guest Network",
+    "IoT Security",
+    "Bluetooth Security",
+    "WIDS",
+    "WIPS"
+  ],
+  "inLanguage": "th"
+}
+</script>
+<style>
+:root{--primary:#1a3a5c;--primary-dark:#0f2440;--primary-light:#2c5a8c;--accent:#2563eb;--accent-hover:#1d4ed8;--bg:#ffffff;--bg-secondary:#f8fafc;--bg-tertiary:#f1f5f9;--text:#1e293b;--text-secondary:#475569;--text-muted:#94a3b8;--border:#e2e8f0;--border-light:#f1f5f9;--code-bg:#0f172a;--code-text:#e2e8f0;--table-stripe:#f8fafc;--sidebar-bg:#f8fafc;--sidebar-border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);--radius:8px;--radius-sm:4px;--radius-lg:12px;--font-thai:'Sarabun','IBM Plex Sans Thai','Kanit','Noto Sans Thai',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--font-mono:'JetBrains Mono','Fira Code','Cascadia Code','Source Code Pro','Menlo','Consolas',monospace;--transition:0.2s ease;--header-height:64px;--toc-width:280px}
+[data-theme="dark"]{--primary:#60a5fa;--primary-dark:#1e3a5f;--accent:#3b82f6;--accent-hover:#60a5fa;--bg:#0f172a;--bg-secondary:#1e293b;--bg-tertiary:#334155;--text:#f1f5f9;--text-secondary:#cbd5e1;--text-muted:#64748b;--border:#334155;--code-bg:#020617;--table-stripe:#1e293b;--sidebar-bg:#1e293b;--sidebar-border:#334155;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+h1,h2,h3,h4,h5,h6{line-height:1.3;font-weight:700;color:var(--text);margin-top:1.5em;margin-bottom:.75em}
+h1{font-size:2.25rem;margin-top:0}
+h2{font-size:1.75rem;border-bottom:2px solid var(--border);padding-bottom:.4em}
+h3{font-size:1.35rem}
+h4{font-size:1.1rem}
+p{margin-bottom:1em}
+hr{border:none;border-top:2px solid var(--border);margin:2.5em 0}
+strong,b{font-weight:700}
+ul,ol{margin-bottom:1em;padding-left:1.5em}
+li{margin-bottom:.35em}
+#loading-screen{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s ease}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-secondary);font-size:1rem}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#818cf8);z-index:9998;width:0%;transition:width .15s ease-out}
+.top-nav{position:fixed;top:3px;left:0;right:0;z-index:9997;height:var(--header-height);background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-nav .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem;color:var(--text);white-space:nowrap}
+.top-nav .logo i{color:var(--accent);font-size:1.3rem}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-actions button,.nav-actions .search-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:1rem}
+.nav-actions button:hover,.nav-actions .search-toggle:hover{background:var(--bg-tertiary);color:var(--text);border-color:var(--text-muted)}
+#sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.search-overlay{position:fixed;inset:0;z-index:9996;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(4px)}
+.search-overlay.active{display:flex}
+.search-panel{background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:90%;max-width:640px;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
+.search-input-wrap{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);gap:.5rem}
+.search-input-wrap i{color:var(--text-muted)}
+.search-input-wrap input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:1rem;font-family:var(--font-thai)}
+.search-input-wrap input::placeholder{color:var(--text-muted)}
+.search-count{font-size:.8rem;color:var(--text-muted);white-space:nowrap;padding:.25rem .5rem;background:var(--bg-tertiary);border-radius:var(--radius-sm)}
+.search-results{overflow-y:auto;padding:.5rem;flex:1;max-height:50vh}
+.search-results .no-results{padding:2rem;text-align:center;color:var(--text-muted)}
+.search-result-item{padding:.75rem;border-radius:var(--radius);cursor:pointer;transition:background .2s ease;border-bottom:1px solid var(--border-light)}
+.search-result-item:hover{background:var(--bg-tertiary)}
+.search-result-item .result-heading{font-weight:600;font-size:.9rem;color:var(--accent);margin-bottom:.2rem}
+.search-result-item .result-snippet{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.search-result-item .result-snippet mark,.highlight{background:#fef08a;color:#1e293b;padding:0 2px;border-radius:2px}
+[data-theme="dark"] .search-result-item .result-snippet mark,[data-theme="dark"] .highlight{background:#854d0e;color:#fef9c3}
+.layout{display:flex;padding-top:calc(var(--header-height) + 3px);min-height:100vh}
+.sidebar{width:var(--toc-width);flex-shrink:0;position:sticky;top:calc(var(--header-height) + 3px);height:calc(100vh - var(--header-height) - 3px);overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:1.25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--text-muted) transparent;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:4px}
+.sidebar-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{margin-bottom:.15rem}
+.toc-link{display:block;padding:.4rem .6rem;border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-secondary);transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;line-height:1.4}
+.toc-link:hover{background:var(--bg-tertiary);color:var(--text);text-decoration:none}
+.toc-link.active{color:var(--accent);background:rgba(37,99,235,.08);border-left-color:var(--accent);font-weight:600}
+.toc-link.sub{padding-left:1.4rem;font-size:.8rem}
+.toc-link.sub2{padding-left:2.2rem;font-size:.78rem}
+.main-content{flex:1;min-width:0;padding:2rem 2.5rem;max-width:calc(100vw - var(--toc-width))}
+.main-content>section{margin-bottom:2.5rem}
+.section-ref{scroll-margin-top:calc(var(--header-height) + 16px)}
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:2.5rem 2rem;border-radius:var(--radius-lg);margin-bottom:2.5rem}
+.hero h1{color:#fff;font-size:2rem;margin-bottom:.5rem}
+.hero .subtitle{color:rgba(255,255,255,.85);font-size:1.1rem;margin-bottom:1.25rem}
+.hero .meta-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.hero .meta-tag{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);padding:.25rem .75rem;border-radius:20px;font-size:.8rem}
+.learning-objectives{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+.learning-objectives h3{margin-top:0;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.learning-objectives ol{margin:.75rem 0 0;padding-left:1.25rem}
+.learning-objectives li{margin-bottom:.5rem;color:var(--text-secondary);font-size:.95rem}
+.table-wrap{overflow-x:auto;margin:1.25em 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}
+thead{background:var(--bg-tertiary)}
+th,td{padding:.6rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}
+th{font-weight:700;color:var(--text)}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+tbody tr:hover{background:var(--bg-tertiary)}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:1.25em 0;position:relative}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+code{background:var(--bg-tertiary);color:var(--accent);padding:.15em .4em;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.85em}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:0}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.expandable{margin:1.25em 0}
+.expandable-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease;user-select:none;font-weight:600;font-size:.95rem}
+.expandable-header:hover{background:var(--border)}
+.expandable-header i{transition:transform .2s ease;font-size:.85rem;color:var(--text-muted)}
+.expandable.expanded .expandable-header i{transform:rotate(180deg)}
+.expandable-content{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;border:1px solid transparent}
+.expandable.expanded .expandable-content{max-height:50000px;padding:1rem;border-color:var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.quiz-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:all .2s ease}
+.quiz-card.revealed{border-left:4px solid #22c55e}
+.quiz-question{display:flex;gap:.75rem;align-items:flex-start}
+.q-number{background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.quiz-question p{margin:0;font-weight:500;color:var(--text);font-size:.95rem}
+.quiz-card .reveal-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-family:var(--font-thai);transition:all .2s ease}
+.quiz-card .reveal-btn:hover{background:var(--accent-hover)}
+.quiz-card.revealed .reveal-btn{background:var(--text-muted)}
+.quiz-answer{margin-top:.75rem;padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border);font-size:.9rem}
+.hidden{display:none}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:9995;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-lg);transition:all .2s ease;opacity:0;visibility:hidden;transform:translateY(10px)}
+#back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+#back-to-top:hover{background:var(--accent-hover);transform:translateY(-2px)}
+.site-footer{margin-top:3rem;padding:1.5rem 2rem;background:var(--bg-secondary);border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+@media print{.top-nav,.sidebar,#back-to-top,#progress-bar,.copy-btn,.search-overlay,#sidebar-toggle,.nav-actions{display:none!important}.layout{display:block;padding-top:0}.main-content{max-width:100%;padding:0}.hero{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hero h1,.hero .subtitle{color:#fff!important}table{font-size:.8rem}pre{white-space:pre-wrap;word-break:break-all}.expandable-content{max-height:none!important;padding:1rem!important;border-color:var(--border)!important}.expandable-header i{display:none}.table-wrap{overflow:visible}.quiz-answer.hidden{display:block!important}.quiz-card .reveal-btn{display:none}body{font-size:11pt}section{page-break-inside:avoid}h2,h3{page-break-after:avoid}}
+@media(max-width:1024px){:root{--toc-width:240px}.main-content{padding:1.5rem}}
+@media(max-width:768px){:root{--toc-width:0px}#sidebar-toggle{display:flex}.sidebar{position:fixed;left:-280px;top:calc(var(--header-height) + 3px);width:280px;height:calc(100vh - var(--header-height) - 3px);transition:left .3s ease;z-index:9990;box-shadow:var(--shadow-lg)}.sidebar.open{left:0}.sidebar-overlay{position:fixed;inset:0;z-index:9989;background:rgba(0,0,0,.4);display:none}.sidebar-overlay.active{display:block}.main-content{max-width:100%;padding:1rem}.hero{padding:1.5rem 1rem}.hero h1{font-size:1.5rem}h2{font-size:1.4rem}h3{font-size:1.15rem}.top-nav{padding:0 .75rem}.top-nav .logo{font-size:.85rem}table{font-size:.8rem}th,td{padding:.4rem .6rem}.quiz-card{padding:1rem}}
+@media(max-width:480px){.nav-actions button,.nav-actions .search-toggle{width:36px;height:36px}#back-to-top{bottom:1rem;right:1rem;width:40px;height:40px}.search-panel{width:95%}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.mcq-item .mcq-option{display:block;margin:.35rem 0;padding:.5rem .75rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease}
+.mcq-item .mcq-option:hover{background:var(--bg-tertiary)}
+.mcq-item .mcq-option input{margin-right:.5rem;cursor:pointer}
+.mcq-item.correct{border-left:4px solid #22c55e}
+.mcq-item.wrong{border-left:4px solid #ef4444}
+.mcq-option.correct-opt{background:#dcfce7 !important;border-color:#22c55e !important;color:#14532d}
+.mcq-option.wrong-opt{background:#fee2e2 !important;border-color:#ef4444 !important;color:#7f1d1d}
+#mcq-result.success{background:#dcfce7;border-color:#22c55e}
+#mcq-result.fail{background:#fee2e2;border-color:#ef4444}
+</style>
+</head>
+<body>
+<div id="loading-screen" role="status" aria-label="กำลังโหลดเนื้อหา">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">กำลังโหลดเนื้อหา...</div>
+</div>
+<div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้าการอ่าน"></div>
+<header class="top-nav" role="banner">
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button id="sidebar-toggle" aria-label="เปิดเมนูสารบัญ" aria-expanded="false"><i class="fas fa-bars"></i></button>
+    <div class="logo"><i class="fas fa-shield-halved" aria-hidden="true"></i><span>Network Security — บทที่ 11</span></div>
+  </div>
+  <div class="nav-actions">
+    <button class="search-toggle" id="search-toggle-btn" aria-label="ค้นหา" title="ค้นหา (Ctrl+K / ⌘K)"><i class="fas fa-search" aria-hidden="true"></i></button>
+    <button id="dark-mode-toggle" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง"><i class="fas fa-moon" aria-hidden="true"></i></button>
+  </div>
+</header>
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="ค้นหาเนื้อหา">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="ค้นหาในเนื้อหาทั้งหมด..." aria-label="ป้อนคำค้นหา" autocomplete="off">
+      <span class="search-count" id="search-count"></span>
+      <button id="search-close-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;" aria-label="ปิดค้นหา"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="layout">
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-title"><i class="fas fa-list" aria-hidden="true"></i> สารบัญ</div>
+  <ul class="toc-list" id="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#hero-section" data-target="hero-section">บทนำ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#learning-objectives" data-target="learning-objectives">วัตถุประสงค์การเรียนรู้</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section1" data-target="section1">1. วิวัฒนาการ 802.11</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-1" data-target="section1-1">1.1 มาตรฐาน IEEE 802.11</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-2" data-target="section1-2">1.2 วิวัฒนาการด้านความปลอดภัย</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section2" data-target="section2">2. WEP</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-1" data-target="section2-1">2.1 หลักการทำงาน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-2" data-target="section2-2">2.2 จุดอ่อน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-3" data-target="section2-3">2.3 การโจมตี</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-4" data-target="section2-4">2.4 สรุป</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section3" data-target="section3">3. WPA</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-1" data-target="section3-1">3.1 หลักการทำงาน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-2" data-target="section3-2">3.2 จุดอ่อน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-3" data-target="section3-3">3.3 สรุป</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section4" data-target="section4">4. WPA2</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-1" data-target="section4-1">4.1 หลักการทำงาน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-2" data-target="section4-2">4.2 4-Way Handshake</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-3" data-target="section4-3">4.3 Personal vs Enterprise</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-4" data-target="section4-4">4.4 PMKID Attack</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-5" data-target="section4-5">4.5 KRACK</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section5" data-target="section5">5. WPA3</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-1" data-target="section5-1">5.1 หลักการทำงาน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-2" data-target="section5-2">5.2 SAE</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-3" data-target="section5-3">5.3 WPA3-Enterprise</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-4" data-target="section5-4">5.4 OWE</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section6" data-target="section6">6. การโจมตีเครือข่ายไร้สาย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-1" data-target="section6-1">6.1 Evil Twin</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-2" data-target="section6-2">6.2 Deauth Attack</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-3" data-target="section6-3">6.3 อื่นๆ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section7" data-target="section7">7. 802.1X / EAP / RADIUS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-1" data-target="section7-1">7.1 802.1X</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-2" data-target="section7-2">7.2 EAP</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-3" data-target="section7-3">7.3 RADIUS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-4" data-target="section7-4">7.4 RADIUS vs AD</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section8" data-target="section8">8. การแบ่งแยกเครือข่าย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-1" data-target="section8-1">8.1 SSID Segmentation</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-2" data-target="section8-2">8.2 Guest Network</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section8-3" data-target="section8-3">8.3 IoT Network</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section9" data-target="section9">9. Bluetooth / IoT</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-1" data-target="section9-1">9.1 Bluetooth</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-2" data-target="section9-2">9.2 IoT Challenges</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-3" data-target="section9-3">9.3 Mirai Botnet</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section9-4" data-target="section9-4">9.4 แนวทาง IoT</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section10" data-target="section10">10. WIDS/WIPS และ Best Practices</a></li>
+    <li class="toc-item"><a class="toc-link" href="#summary" data-target="summary">สรุปท้ายบท</a></li>
+    <li class="toc-item"><a class="toc-link" href="#review-questions" data-target="review-questions">คำถามทบทวน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#interactive-quiz" data-target="interactive-quiz">แบบทดสอบ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#references" data-target="references">เอกสารอ้างอิง</a></li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content" role="main">
+
+<section id="hero-section" class="hero section-ref">
+  <h1><i class="fas fa-wifi" aria-hidden="true"></i> CH-11: การรักษาความปลอดภัยสำหรับเครือข่ายไร้สาย</h1>
+  <p class="subtitle">Wireless Network Security — 802.11, WEP, WPA, WPA2, WPA3, SAE, OWE, Evil Twin, Deauth, KRACK, PMKID, 802.1X, RADIUS, Network Segmentation, Bluetooth/IoT, WIDS/WIPS</p>
+  <div class="meta-tags">
+    <span class="meta-tag"><i class="fas fa-graduation-cap" aria-hidden="true"></i> วิชา Network Security</span>
+    <span class="meta-tag"><i class="fas fa-calendar" aria-hidden="true"></i> ภาคเรียนที่ 1/2569</span>
+    <span class="meta-tag"><i class="fas fa-book-open" aria-hidden="true"></i> บทที่ 11</span>
+  </div>
+</section>
+
+<div class="learning-objectives section-ref" id="learning-objectives">
+  <h3><i class="fas fa-bullseye" aria-hidden="true"></i> วัตถุประสงค์การเรียนรู้ (Learning Objectives)</h3>
+  <p>เมื่อจบบทนี้แล้ว ผู้เรียนสามารถ:</p>
+  <ol>
+    <li>อธิบายวิวัฒนาการของมาตรฐานความปลอดภัยเครือข่ายไร้สายตั้งแต่ WEP ถึง WPA3 และเปรียบเทียบจุดอ่อนของแต่ละรุ่นได้</li>
+    <li>อธิบายการโจมตีเครือข่ายไร้สายที่สำคัญ (Evil Twin, Deauthentication, KRACK, PMKID) และแนวทางการป้องกันได้</li>
+    <li>อธิบายหลักการทำงานของ 802.1X และ RADIUS ในการพิสูจน์ตัวตนอุปกรณ์ไร้สายได้</li>
+    <li>ออกแบบการแบ่งแยกเครือข่ายไร้สาย (Guest Network, IoT Network) สำหรับองค์กรได้</li>
+    <li>อธิบายความปลอดภัยของ Bluetooth และ IoT Devices ได้</li>
+    <li>นำแนวทางปฏิบัติที่ดี (Best Practices) สำหรับเครือข่ายไร้สายในองค์กรไปปรับใช้ได้</li>
+    <li>อธิบายบทบาทของ WIDS/WIPS ในการตรวจจับการโจมตีเครือข่ายไร้สายได้</li>
+  </ol>
+</div>
+
+<hr>
+
+<!-- SECTION 1 -->
+<section id="section1" class="section-ref">
+<h3>ส่วนที่ 1: มาตรฐานความปลอดภัยเครือข่ายไร้สาย</h3>
+<h2>1. วิวัฒนาการของมาตรฐาน 802.11</h2>
+<h3 id="section1-1" class="section-ref">1.1 มาตรฐาน IEEE 802.11</h3>
+<p>เครือข่ายไร้สายตามมาตรฐาน IEEE 802.11 มีวิวัฒนาการด้านความเร็วและความปลอดภัยดังนี้:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>มาตรฐาน</th><th>ปี</th><th>ความถี่</th><th>ความเร็วสูงสุด</th><th>Security</th></tr></thead>
+  <tbody>
+    <tr><td>802.11</td><td>1997</td><td>2.4 GHz</td><td>2 Mbps</td><td>WEP (RC4)</td></tr>
+    <tr><td>802.11b</td><td>1999</td><td>2.4 GHz</td><td>11 Mbps</td><td>WEP (RC4)</td></tr>
+    <tr><td>802.11a</td><td>1999</td><td>5 GHz</td><td>54 Mbps</td><td>WEP (RC4)</td></tr>
+    <tr><td>802.11g</td><td>2003</td><td>2.4 GHz</td><td>54 Mbps</td><td>WPA (TKIP)</td></tr>
+    <tr><td>802.11n (Wi-Fi 4)</td><td>2009</td><td>2.4 + 5 GHz</td><td>600 Mbps</td><td>WPA2 (CCMP/AES)</td></tr>
+    <tr><td>802.11ac (Wi-Fi 5)</td><td>2013</td><td>5 GHz</td><td>3.5 Gbps</td><td>WPA2/WPA3</td></tr>
+    <tr><td>802.11ax (Wi-Fi 6)</td><td>2019</td><td>2.4 + 5 GHz</td><td>9.6 Gbps</td><td>WPA3 (SAE)</td></tr>
+    <tr><td>802.11be (Wi-Fi 7)</td><td>2024</td><td>2.4 + 5 + 6 GHz</td><td>46 Gbps</td><td>WPA3 (SAE)</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section1-2" class="section-ref">1.2 วิวัฒนาการด้านความปลอดภัย</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>WEP (1997) ─── RC4 + CRC-32 ❌
+  │
+  ├── WPA (2003) ─── TKIP + Michael ❌ (Deprecated)
+  │     │
+  │     └── WPA2 (2004) ─── CCMP + AES-CCMP ⚠️ (มี KRACK)
+  │           │
+  │           └── WPA2-Enterprise ─── 802.1X + EAP + RADIUS
+  │
+  └── WPA3 (2018) ─── SAE + AES-GCMP ✅ (แนะนำ)
+        │
+        ├── WPA3-Personal ─── SAE (Simultaneous Authentication of Equals)
+        ├── WPA3-Enterprise ─── 802.1X + EAP-TLS + GCMP-256
+        ├── OWE (Opportunistic Wireless Encryption) ─── ไม่ต้องใส่ Password
+        └── Wi-Fi Enhanced Open ─── OWE + PMF</pre>
+</section>
+<hr>
+
+<!-- SECTION 2 -->
+<section id="section2" class="section-ref">
+<h2>2. WEP (Wired Equivalent Privacy) ❌</h2>
+<h3 id="section2-1" class="section-ref">2.1 หลักการทำงาน</h3>
+<p>WEP เป็นมาตรฐานรักษาความปลอดภัยแรกของ Wi-Fi (IEEE 802.11, 1997) ใช้ RC4 Stream Cipher ในการเข้ารหัส:</p>
+<p><strong>ส่วนประกอบของ WEP:</strong></p>
+<ul>
+  <li><strong>RC4:</strong> Stream Cipher สำหรับ Encryption</li>
+  <li><strong>CRC-32 (ICV):</strong> Integrity Check Value — ตรวจสอบความถูกต้องของข้อมูล</li>
+  <li><strong>IV (Initialization Vector):</strong> ค่า 24-bit ที่เปลี่ยนทุก Packet</li>
+</ul>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>WEP Encrypted Packet Structure:
+────────────────────────────────
+┌──────────┬──────────┬──────────────────┬────────────┐
+│ IV (24bit)│ Key ID   │   Data Payload    │ ICV (CRC32)│
+│          │ (2bit)   │   (RC4 Encrypted) │ (Encrypted)│
+└──────────┴──────────┴──────────────────┴────────────┘</pre>
+
+<h3 id="section2-2" class="section-ref">2.2 จุดอ่อนของ WEP</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>จุดอ่อน</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>IV ซ้ำ (IV Collision)</strong></td><td>IV มีขนาด 24-bit — เพียง 16,777,216 ค่า — ซ้ำแน่นอนในเครือข่ายที่ใช้งาน</td></tr>
+    <tr><td><strong>RC4 Weak Keys</strong></td><td>มี Weak Key ใน RC4 ที่ทำให้ Key Analysis เป็นไปได้</td></tr>
+    <tr><td><strong>CRC-32 ไม่ปลอดภัย</strong></td><td>CRC-32 เป็น Linear Function — แก้ไขข้อมูลได้โดยไม่ต้องรู้ Key (Bit Flipping Attack)</td></tr>
+    <tr><td><strong>No Authentication</strong></td><td>WEP ไม่มีการตรวจสอบความถูกต้องของ Client — Spoofing ทำได้ง่าย</td></tr>
+    <tr><td><strong>Shared Key Authentication</strong></td><td>ส่ง Challenge ในรูปแบบ Plaintext + Encrypted Version — ทำให้รู้ RC4 Keystream</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section2-3" class="section-ref">2.3 การโจมตี WEP</h3>
+<p><strong>FMS Attack (Fluhrer, Mantin, Shamir — 2001):</strong></p>
+<ul>
+  <li>ใช้จุดอ่อนของ RC4 IV (Weak IVs) เพื่อค้นหา WEP Key</li>
+  <li>ต้องเก็บ Packet ประมาณ 250,000-500,000 Packet</li>
+  <li>ใช้เวลาไม่กี่นาที</li>
+</ul>
+<p><strong>KoreK Attack (2004):</strong></p>
+<ul>
+  <li>ปรับปรุง FMS — ใช้ Weak IV ได้มากขึ้น</li>
+  <li>ต้องใช้ Packet น้อยกว่า — ประมาณ 40,000-50,000 Packet</li>
+</ul>
+<p><strong>PTW Attack (Pyshkin, Tews, Weinmann — 2007):</strong></p>
+<ul>
+  <li>ไม่ต้องรอ Weak Key — ใช้ ARP Packet Replay + Statistical Analysis</li>
+  <li>Crack WEP 64-bit ได้ใน 60 วินาที</li>
+  <li>Crack WEP 128-bit ได้ใน 2-3 นาที</li>
+</ul>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># การโจมตี WEP ด้วย aircrack-ng
+airodump-ng wlan0mon                          # ดักจับ Packet
+airodump-ng -c 6 --bssid AA:BB:CC:DD:EE:FF -w capture wlan0mon  # เก็บเฉพาะ Target
+aireplay-ng -3 -b AA:BB:CC:DD:EE:FF wlan0mon  # ARP Replay — เร่งการเก็บ Packet
+aircrack-ng -b AA:BB:CC:DD:EE:FF capture.cap  # Crack WEP Key</pre>
+
+<h3 id="section2-4" class="section-ref">2.4 สรุป WEP</h3>
+<p><strong>WEP ควรถูกเลิกใช้โดยเด็ดขาด</strong> — ไม่ว่าจะใช้ Key ขนาด 64-bit หรือ 128-bit — เครื่องมืออย่าง aircrack-ng สามารถ Crack ได้ในไม่กี่นาที</p>
+</section>
+<hr>
+
+<!-- SECTION 3 -->
+<section id="section3" class="section-ref">
+<h2>3. WPA (Wi-Fi Protected Access) ⚠️</h2>
+<h3 id="section3-1" class="section-ref">3.1 หลักการทำงาน</h3>
+<p>WPA ถูกพัฒนาขึ้นในปี 2003 เพื่อแก้ปัญหาของ WEP โดยไม่ต้องเปลี่ยน Hardware (ใช้เฉพาะ Firmware Update) ใช้ <strong>TKIP (Temporal Key Integrity Protocol)</strong> แทน WEP เดิม:</p>
+<p><strong>การปรับปรุงจาก WEP:</strong></p>
+<ol>
+  <li><strong>TKIP Key Mixing:</strong> สร้าง Key เฉพาะแต่ละ Packet — ป้องกัน IV Collision</li>
+  <li><strong>Michael (MIC):</strong> Message Integrity Code ที่ดีกว่า CRC-32</li>
+  <li><strong>Countermeasures:</strong> ถ้าตรวจพบ Attack — Access Point หยุดทำงาน 60 วินาที</li>
+  <li><strong>IV Size เพิ่มเป็น 48-bit</strong> — ลดโอกาส IV ซ้ำ</li>
+</ol>
+
+<h3 id="section3-2" class="section-ref">3.2 จุดอ่อนของ WPA/TKIP</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>จุดอ่อน</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Beck-Tews Attack (2008)</strong></td><td>ถอดรหัส Packet ขนาดเล็ก (เช่น ARP) ได้ด้วย QoS Channel</td></tr>
+    <tr><td><strong>Michael MIC Weakness</strong></td><td>MIC ของ TKIP ใช้สำหรับ Packet ขนาด &lt; 18 bytes — ARP Packet</td></tr>
+    <tr><td><strong>Ohigashi-Morii Attack (2009)</strong></td><td>ปรับปรุง Beck-Tews — ถอดรหัส ARP ได้ใน 1 นาที</td></tr>
+    <tr><td><strong>Vanhoef-Piessens Attack (2014)</strong></td><td>ถอดรหัสและแทรก Packet ได้ — ใช้กับ WPA-TKIP 64-bit</td></tr>
+    <tr><td><strong>No Forward Secrecy</strong></td><td>ถ้าคนรู้ PSK — สามารถถอดรหัส Traffic ย้อนหลังได้ (ด้วย Nonce และ MIC)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Countermeasures ของ WPA:</strong></p>
+<p>เมื่อตรวจพบ Attack (MIC Error มากกว่า 2 ครั้งใน 60 วินาที) — AP จะ:</p>
+<ul>
+  <li>ปฏิเสธการเชื่อมต่อใหม่ทั้งหมดเป็นเวลา 60 วินาที</li>
+  <li>ทำให้เกิด DoS (Denial of Service) ที่ผู้โจมตีสามารถโจมตี Countermeasure เองได้</li>
+</ul>
+
+<h3 id="section3-3" class="section-ref">3.3 สรุป WPA</h3>
+<p>WPA (TKIP) เป็นมาตรการชั่วคราว — ปัจจุบันถูก Deprecated — ควรย้ายไปใช้ WPA2 หรือ WPA3</p>
+</section>
+<hr>
+
+<!-- SECTION 4 -->
+<section id="section4" class="section-ref">
+<h2>4. WPA2 (IEEE 802.11i) ✅</h2>
+<h3 id="section4-1" class="section-ref">4.1 หลักการทำงาน</h3>
+<p>WPA2 เปิดตัวในปี 2004 เป็นมาตรฐาน IEEE 802.11i ที่สมบูรณ์ ใช้ <strong>CCMP (Counter Mode CBC-MAC Protocol)</strong> กับ AES แทน TKIP</p>
+<p><strong>CCMP Components:</strong></p>
+<ul>
+  <li><strong>AES-CTR:</strong> Encryption (AES ใน Counter Mode)</li>
+  <li><strong>CBC-MAC:</strong> Integrity (Cipher Block Chaining Message Authentication Code)</li>
+  <li><strong>AES-CCMP:</strong> รวม Encryption + Authentication ใน Algorithm เดียว (AEAD)</li>
+</ul>
+
+<h3 id="section4-2" class="section-ref">4.2 4-Way Handshake</h3>
+<p>หัวใจของ WPA2 คือ 4-Way Handshake — กระบวนการสร้าง Key สำหรับ Session:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>4-Way Handshake:
+─────────────────
+Supplicant (Client)              Authenticator (AP)
+      │                                   │
+      │  PMK (Pairwise Master Key)        │  PMK
+      │  ─── PSK [Personal] ───           │
+      │  ─── From 802.1X [Enterprise] ──  │
+      │                                   │
+      │◀── (1) AP Nonce (ANonce) ────────│
+      │                                   │
+      │  PTK = PRF(PMK, ANonce, SNonce,   │
+      │         MAC_AP, MAC_Client)        │
+      │                                   │
+      │── (2) SNonce + MIC ──────────────▶│
+      │                                   │
+      │  PTK = PRF(PMK, ANonce, SNonce,   │
+      │         MAC_AP, MAC_Client)        │
+      │                                   │
+      │◀── (3) GTK + MIC ────────────────│
+      │                                   │
+      │── (4) ACK ───────────────────────▶│
+      │                                   │
+      │  DATA ENCRYPTION START            │
+      │  (PTK = AES-CCMP)                 │</pre>
+<p><strong>Key Hierarchy ของ WPA2:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>PSK (256-bit) — Pre-Shared Key
+    │
+    ▼
+PMK (256-bit) — Pairwise Master Key (PSK เท่ากับ PMK ใน WPA2-Personal)
+    │
+    ▼ (ผ่าน 4-Way Handshake)
+PTK (512-bit) — Pairwise Transient Key
+    ├── KCK (128-bit) — Key Confirmation Key (MIC ใน Handshake)
+    ├── KEK (128-bit) — Key Encryption Key (ใช้ส่ง GTK)
+    └── TK (128-bit) — Temporal Key (ใช้ AES-CCMP Encryption)
+
+GTK (128-bit) — Group Temporal Key (ใช้ Broadcast/Multicast)</pre>
+
+<h3 id="section4-3" class="section-ref">4.3 WPA2-Personal vs WPA2-Enterprise</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>WPA2-Personal (PSK)</th><th>WPA2-Enterprise (802.1X)</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Authentication</strong></td><td>Pre-Shared Key (Password)</td><td>RADIUS + 802.1X + EAP</td></tr>
+    <tr><td><strong>Key Uniqueness</strong></td><td>Key เดียวกันทุกคน</td><td>Key ต่างกันแต่ละ User</td></tr>
+    <tr><td><strong>Scalability</strong></td><td>ไม่เหมาะกับ &gt;50 คน</td><td>รองรับผู้ใช้ไม่จำกัด</td></tr>
+    <tr><td><strong>Management</strong></td><td>เปลี่ยน Password = ทุกคนตั้งใหม่</td><td>Management ผ่าน RADIUS</td></tr>
+    <tr><td><strong>Security</strong></td><td>PSK ถูก Crack ได้ (Wordlist)</td><td>สูง (Certificate-based)</td></tr>
+    <tr><td><strong>เหมาะกับ</strong></td><td>บ้าน, ร้านเล็ก</td><td>องค์กร</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section4-4" class="section-ref">4.4 การโจมตี WPA2-PSK — PMKID Attack</h3>
+<p><strong>PMKID (Pairwise Master Key Identifier):</strong></p>
+<p>WPA2 AP ที่รองรับ 802.11r (Fast Roaming) จะส่ง PMKID ใน EAPOL-Key Frame แรกของ 4-Way Handshake:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>PMKID = HMAC-SHA1(PMK, "PMK Name" || MAC_AP || MAC_Client)
+
+ผู้โจมตีสามารถ:
+1. ดักจับ PMKID จาก Beacon/eapol-start
+2. โดยไม่ต้องรอ 4-Way Handshake เต็ม
+3. Offline Dictionary Attack — หา PSK</pre>
+<p><strong>ข้อดีของการโจมตี PMKID เมื่อเทียบกับ 4-Way Handshake Capture:</strong></p>
+<ul>
+  <li>ไม่ต้องรอ Client Connect (รอแค่ Beacon)</li>
+  <li>ไม่ต้องทำ Deauthentication</li>
+  <li>ไม่มี Client ก็ Attack ได้</li>
+</ul>
+
+<h3 id="section4-5" class="section-ref">4.5 การโจมตี WPA2 — KRACK (2017)</h3>
+<p><strong>KRACK (Key Reinstallation Attack)</strong> โดย Mathy Vanhoef — ช่องโหว่ที่รุนแรงที่สุดของ WPA2:</p>
+<p><strong>หลักการ:</strong></p>
+<ol>
+  <li>4-Way Handshake ขั้นตอนที่ 3 — AP ส่ง GTK + MIC</li>
+  <li>Client ต้องส่ง ACK ขั้นตอนที่ 4 เพื่อยืนยัน</li>
+  <li>ถ้า AP ไม่ได้รับ ACK — AP ส่ง Frame 3 ซ้ำ</li>
+  <li><strong>KRACK:</strong> ผู้โจมตีบังคับให้เกิดการส่ง Frame 3 ซ้ำ (โดย Block ACK)</li>
+  <li>Client Reinstall Key ที่ใช้แล้ว — ทำให้เกิด Nonce Reset</li>
+  <li><strong>Nonce Reuse</strong> → AES-CTR Encryption ถูกทำลาย</li>
+</ol>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>KRACK Attack:
+──────────────
+AP                          Client              Attacker
+ │                            │                    │
+ │──── Msg1 (ANonce) ────────▶│                    │
+ │◀─── Msg2 (SNonce+MIC) ────│                    │
+ │──── Msg3 (GTK+MIC) ──────▶│                    │
+ │                            │  PTK Installed     │
+ │◀─── Msg4 (ACK) ───────────│                    │
+ │                            │                    │
+ │◀─── [Block ACK] ───────────────────────────────│ ← Attacker Blocks Msg4
+ │──── Msg3 (GTK+MIC) ──────▶│                    │
+ │                            │  PTK REINSTALLED!  │  ← Nonce Reset!
+ │                            │  Nonce = 0         │
+ │                            │  Encryption Broken │</pre>
+<p><strong>ผลกระทบของ KRACK:</strong></p>
+<ul>
+  <li>ถอดรหัส Traffic ระหว่าง AP และ Client</li>
+  <li>ปลอมแปลงและแทรก Packet (ARP Spoofing, DNS Spoofing)</li>
+  <li>ส่งผลกระทบต่อ WPA2 ทุกแบบ — Personal และ Enterprise</li>
+  <li>Windows, Android, iOS, Linux ทุก Version</li>
+</ul>
+<p><strong>การแก้ไข KRACK:</strong></p>
+<ul>
+  <li>Patch Firmware AP และ Client Driver</li>
+  <li>WPA3 ไม่มีช่องโหว่นี้</li>
+</ul>
+</section>
+<hr>
+
+<!-- SECTION 5 -->
+<section id="section5" class="section-ref">
+<h2>5. WPA3 (2018) ✅</h2>
+<h3 id="section5-1" class="section-ref">5.1 หลักการทำงาน</h3>
+<p>WPA3 เปิดตัวในปี 2018 โดย Wi-Fi Alliance เพื่อแก้ปัญหาความปลอดภัยของ WPA2:</p>
+<p><strong>WPA3 มี 3 โหมด:</strong></p>
+<ol>
+  <li><strong>WPA3-Personal (SAE):</strong> แทน PSK ด้วย SAE (Simultaneous Authentication of Equals)</li>
+  <li><strong>WPA3-Enterprise (Suite B):</strong> ใช้ GCMP-256, ECDHE-384, SHA-384</li>
+  <li><strong>Wi-Fi Enhanced Open (OWE):</strong> Opportunistic Wireless Encryption — เข้ารหัสแม้ไม่มี Password</li>
+</ol>
+
+<h3 id="section5-2" class="section-ref">5.2 SAE (Simultaneous Authentication of Equals)</h3>
+<p>SAE — หรือ <strong>Dragonfly Key Exchange</strong> — ใช้ <strong>Dragonfly Handshake</strong> (RFC 7664) แทน PSK:</p>
+<p><strong>เปรียบเทียบ PSK vs SAE:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>WPA2-PSK (PSK)</th><th>WPA3-SAE (SAE)</th></tr></thead>
+  <tbody>
+    <tr><td>PSK ถูกใช้โดยตรงใน 4-Way Handshake</td><td>PSK ใช้สร้าง Commit เท่านั้น</td></tr>
+    <tr><td>Dictionary Attack แบบ Offline ได้ (Capture 4-Way แล้ว Crack)</td><td>Offline Dictionary Attack เป็นไปไม่ได้</td></tr>
+    <tr><td>ไม่มี Forward Secrecy</td><td>มี Forward Secrecy (ECC Key Exchange)</td></tr>
+    <tr><td>PMKID Attack</td><td>ไม่มี PMKID ใน Beacon</td></tr>
+    <tr><td>KRACK Vulnerability</td><td>ไม่มี 4-Way Handshake แบบเดิม</td></tr>
+  </tbody>
+</table></div>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>SAE Handshake (Dragonfly):
+───────────────────────────
+Station (Password)                    AP (Password)
+      │                                      │
+      │  Commit ──────────────────────────▶  │
+      │  (Scalar + Element ของ ECC)          │
+      │                                      │
+      │  ◀── Commit ───────────────────────  │
+      │  (Scalar + Element ของ ECC)          │
+      │                                      │
+      │  (Key Derivation: PMK = HKDF(         │
+      │   shared_secret + counter)            │
+      │                                      │
+      │  Confirm ──────────────────────────▶  │
+      │  ◀── Confirm ───────────────────────  │
+      │                                      │
+      │  (PMK Established — 4-Way Handshake   │
+      │   สำหรับ Derive PTK)                  │</pre>
+<p><strong>ประโยชน์ของ SAE:</strong></p>
+<ul>
+  <li><strong>Dictionary Attack Protection:</strong> แม้ผู้โจมตีจะดักจับ Commit/Confirm ได้ — ไม่สามารถ Offline Crack Password ได้เพราะต้องคำนวณ Discrete Logarithm</li>
+  <li><strong>Perfect Forward Secrecy:</strong> ถ้า Password รั่วในอนาคต — Traffic ที่บันทึกไว้ก่อนหน้านี้ถอดรหัสไม่ได้</li>
+  <li><strong>No KRACK:</strong> SAE ไม่ใช้ 4-Way Handshake แบบเดิม — KRACK ไม่มีผล</li>
+</ul>
+
+<h3 id="section5-3" class="section-ref">5.3 WPA3-Enterprise</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>WPA2-Enterprise</th><th>WPA3-Enterprise</th></tr></thead>
+  <tbody>
+    <tr><td>AES-CCMP (128-bit)</td><td>AES-GCMP-256</td></tr>
+    <tr><td>EAP-TLS, PEAP, EAP-TTLS</td><td>EAP-TLS (บังคับ — PEAP/EAP-TTLS Deprecated)</td></tr>
+    <tr><td>TLS 1.0/1.1</td><td>TLS 1.2/1.3</td></tr>
+    <tr><td>SHA-1</td><td>SHA-384</td></tr>
+    <tr><td>DH Group 1024-bit</td><td>ECDHE P-384</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section5-4" class="section-ref">5.4 OWE (Opportunistic Wireless Encryption)</h3>
+<p>OWE — หรือ <strong>Enhanced Open</strong> — เป็นการเข้ารหัส Traffic บน Open Wi-Fi (ไม่มี Password) โดยใช้ Diffie-Hellman Key Exchange:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>OWE: เปิดการเข้ารหัสโดยอัตโนมัติ
+─────────────────────────────────
+[Client] ──▶ [AP]  "ฉันอยากเชื่อมต่อ"
+[AP]     ──▶ [Client] "DH Public Key ของฉัน"
+[Client] ──▶ [AP]  "DH Public Key ของฉัน"
+[AP]     ──▶ [Client] "PMK Established"
+│
+Traffic ถูกเข้ารหัส — แม้ไม่มี Password
+ป้องกัน Sniffing บนเครือข่ายสาธารณะ</pre>
+</section>
+<hr>
+
+<!-- SECTION 6 -->
+<section id="section6" class="section-ref">
+<h2>6. การโจมตีเครือข่ายไร้สาย</h2>
+<h3 id="section6-1" class="section-ref">6.1 Evil Twin Attack</h3>
+<p><strong>หลักการ:</strong> ผู้โจมตีตั้ง Access Point ปลอมที่ SSID เดียวกันกับ AP จริง — ทำให้ผู้ใช้เชื่อมต่อ (เข้าใจผิดว่า Signal ของ AP ปลอมแรงกว่า)</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Evil Twin Attack:
+──────────────────
+                 [AP Real: CoffeeShop_Free]
+                 SSID: CoffeeShop_Free
+                 Signal: -65 dBm
+                 
+                 [Evil Twin: CoffeeShop_Free]
+                 SSID: CoffeeShop_Free
+                 Signal: -35 dBm ← แรงกว่า → Client เลือก AP ปลอม!
+                 
+Client ──▶ [Evil Twin AP] ──▶ [Internet]
+                │
+           อ่าน Traffic:
+           ├── HTTP Request (Password, Cookie)
+           ├── DNS Query → Redirect ไปยังหน้า Phishing
+           └── MITM → แก้ไข Web Content</pre>
+<p><strong>การป้องกัน Evil Twin:</strong></p>
+<ul>
+  <li><strong>802.11w (PMF — Protected Management Frames):</strong> ป้องกัน Deauthentication Spoofing</li>
+  <li><strong>Rogue AP Detection:</strong> ใช้ WIPS หรือ Wireless Controller ตรวจสอบ AP ผิดปกติ</li>
+  <li><strong>EAP-TLS (Certificate Validation):</strong> ผู้ใช้ตรวจสอบ Certificate AP</li>
+  <li><strong>VPN:</strong> ใช้ VPN เสมอเมื่อใช้ Wi-Fi สาธารณะ</li>
+</ul>
+
+<h3 id="section6-2" class="section-ref">6.2 Deauthentication Attack (Deauth Attack)</h3>
+<p><strong>หลักการ:</strong> ผู้โจมตีส่ง Deauthentication Frame ปลอม (ไม่ต้อง Authentication) ทำให้ Client ตัดการเชื่อมต่อจาก AP:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># Deauth Attack ด้วย aireplay-ng
+aireplay-ng -0 5 -a AA:BB:CC:DD:EE:FF -c 11:22:33:44:55:66 wlan0mon
+# -0: Deauth count, -a: BSSID AP, -c: Client MAC</pre>
+<p><strong>วัตถุประสงค์ของ Deauth Attack:</strong></p>
+<ul>
+  <li><strong>Capture 4-Way Handshake:</strong> บังคับให้ Client เชื่อมต่อใหม่ — จับ Handshake เพื่อ Crack PSK</li>
+  <li><strong>ทำให้ Client เชื่อมต่อ Evil Twin:</strong> Client หลุดจาก AP จริง → เชื่อมต่อ Evil Twin ที่แรงกว่า</li>
+  <li><strong>DoS:</strong> ทำให้ Client ไม่สามารถใช้งาน Wi-Fi ได้</li>
+</ul>
+<p><strong>การป้องกัน Deauth Attack:</strong></p>
+<ul>
+  <li><strong>802.11w (PMF):</strong> เข้ารหัส Management Frame — ป้องกันปลอมแปลง Deauth Frame</li>
+  <li><strong>WPA3 (SAE):</strong> รองรับ PMF โดยค่าเริ่มต้น</li>
+  <li><strong>Wireless IDS:</strong> ตรวจจับ Deauth Flood Attack</li>
+</ul>
+
+<h3 id="section6-3" class="section-ref">6.3 การโจมตีอื่นๆ</h3>
+<p>KRACK และ PMKID ได้อธิบายไว้แล้วในส่วน WPA2 ข้างต้น</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>การโจมตี</th><th>คำอธิบาย</th><th>การป้องกัน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>WPS Attack</strong></td><td>Brute-force WPS PIN (8 หลัก, ตรวจสอบแยก 2 ชุด — จริงๆ มี 11,000 ค่า)</td><td>ปิด WPS, ใช้ WPS Lockout</td></tr>
+    <tr><td><strong>Beacon Flood</strong></td><td>ส่ง Beacon Frame ปลอมจำนวนมาก — ทำให้ Client เห็นเครือข่ายจำนวนมาก</td><td>Wireless IDS</td></tr>
+    <tr><td><strong>Probe Request</strong></td><td>ดักจับ Probe Request จาก Client — รู้ SSID ที่ Client เคยเชื่อมต่อ (Favorite Network)</td><td>ใช้ PMF, ไม่ Broadcast SSID</td></tr>
+    <tr><td><strong>Man-in-the-Middle (MITM)</strong></td><td>ARP Spoofing + DNS Spoofing หลังเชื่อมต่อ Wi-Fi</td><td>HTTPS, VPN, DNSSEC</td></tr>
+    <tr><td><strong>KARMA Attack</strong></td><td>ตอบ Probe Request ทุกอัน — Client เชื่อมต่อ AP ที่รู้จักโดยอัตโนมัติ</td><td>ลบ Favorite Network ที่ไม่ใช้</td></tr>
+    <tr><td><strong>Wi-Fi Pineapple</strong></td><td>อุปกรณ์ที่ใช้ Evil Twin + KARMA + MITM ในตัว</td><td>ใช้ VPN, 802.1X</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<!-- SECTION 7 -->
+<section id="section7" class="section-ref">
+<h3>ส่วนที่ 2: ความปลอดภัยระดับ Enterprise</h3>
+<h2>7. 802.1X และ RADIUS</h2>
+<h3 id="section7-1" class="section-ref">7.1 หลักการของ 802.1X</h3>
+<p>802.1X คือมาตรฐาน Network Access Control ที่ทำงานบน Layer 2 — ควบคุมการเข้าถึงเครือข่ายโดยต้อง Authentication ก่อน:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>802.1X Architecture:
+─────────────────────
+┌────────────┐     ┌────────────┐     ┌────────────┐
+│ Supplicant │────▶│ Authenticator│────▶│ Auth Server│
+│ (Client)   │     │ (AP/Switch)  │     │ (RADIUS)   │
+└────────────┘     └────────────┘     └────────────┘
+    802.1X Client         │                 │
+    wpa_supplicant     ถ่ายทอด EAP        FreeRADIUS
+                                             
+                  EAP over LAN (EAPOL):
+                  ├── EAPOL-Start — Client ขอเชื่อมต่อ
+                  ├── EAP-Request/Identity — AP ถามว่า Client คือใคร
+                  ├── EAP-Response/Identity — Client บอกว่า ฉันคือ...
+                  ├── EAP-Request (Method) — RADIUS ใช้ EAP Method
+                  ├── EAP-Response — Client ตอบ
+                  └── EAP-Success/Failure — ผ่าน/ไม่ผ่าน</pre>
+
+<h3 id="section7-2" class="section-ref">7.2 EAP (Extensible Authentication Protocol)</h3>
+<p>EAP เป็น Framework สำหรับ Authentication — ไม่ใช่ Protocol เดียว:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>EAP Method</th><th>Security</th><th>Certificate</th><th>Password</th><th>เหมาะกับ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>EAP-TLS</strong></td><td>✅ สูงที่สุด</td><td>✅ Client + Server</td><td>❌</td><td>Enterprise, อุปกรณ์ IT</td></tr>
+    <tr><td><strong>EAP-TTLS</strong></td><td>✅ สูง</td><td>✅ Server</td><td>✅</td><td>Legacy Clients</td></tr>
+    <tr><td><strong>PEAP</strong></td><td>✅ สูง</td><td>✅ Server</td><td>✅</td><td>Windows, Microsoft</td></tr>
+    <tr><td><strong>EAP-FAST</strong></td><td>✅ ปานกลาง</td><td>❌ (PAC)</td><td>✅</td><td>Cisco Environment</td></tr>
+    <tr><td><strong>EAP-MD5</strong></td><td>❌ ต่ำ</td><td>❌</td><td>✅</td><td>❌ ไม่ควรใช้</td></tr>
+    <tr><td><strong>LEAP</strong></td><td>❌ ต่ำ</td><td>❌</td><td>✅</td><td>❌ ไม่ควรใช้ (Cisco Legacy)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>EAP-TLS — ปลอดภัยที่สุด:</strong></p>
+<ul>
+  <li>ต้องมี Certificate ทั้ง Client และ Server</li>
+  <li>Mutual Authentication — ทั้งสองฝั่งตรวจสอบกัน</li>
+  <li>ไม่มี Password — ใช้ Certificate</li>
+  <li>รองรับ Smart Card, YubiKey</li>
+</ul>
+
+<h3 id="section7-3" class="section-ref">7.3 RADIUS Server</h3>
+<p>RADIUS (Remote Authentication Dial-In User Service) คือ Authentication Server ที่ใช้กับ 802.1X:</p>
+<p><strong>FreeRADIUS — Open Source RADIUS:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># /etc/freeradius/3.0/clients.conf — กำหนด AP/Switch
+client 192.168.1.0/24 {
+    secret = strong-radius-secret
+    shortname = corporate-wireless
+}
+
+# /etc/freeradius/3.0/mods-config/files/authorize — ผู้ใช้
+"john@example.com" Cleartext-Password := "password123"
+"admin" Cleartext-Password := "securepass"</pre>
+<p><strong>RADIUS Proxy for Eduroam:</strong></p>
+<p>Eduroam (Education Roaming) เป็นบริการที่ให้นักศึกษามหาวิทยาลัยต่างๆ ใช้ Wi-Fi ข้ามสถาบันได้ โดยใช้ RADIUS Proxy:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>eduroam Architecture:
+──────────────────────
+[Student A] ──▶ [Univ B AP] ──▶ [Univ B RADIUS] ──▶ [Univ A RADIUS]
+                  │                                     │
+             802.1X + EAP-TLS/PEAP                   Verify: ใช่ นักศึกษาของเราหรือไม่
+              Student A @ univ-a.edu                    └── Yes → Allow</pre>
+
+<h3 id="section7-4" class="section-ref">7.4 RADIUS vs Active Directory</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>RADIUS</th><th>Active Directory</th></tr></thead>
+  <tbody>
+    <tr><td><strong>บทบาท</strong></td><td>Authentication Network</td><td>Authentication OS/App</td></tr>
+    <tr><td><strong>Protocol</strong></td><td>RADIUS (UDP 1812/1813)</td><td>LDAP, Kerberos</td></tr>
+    <tr><td><strong>ใช้กับ</strong></td><td>Network Device</td><td>Windows, Apps</td></tr>
+    <tr><td><strong>Certificate</strong></td><td>EAP-TLS</td><td>Domain Join</td></tr>
+    <tr><td><strong>Integration</strong></td><td>AD Backend</td><td>RADIUS Frontend</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<!-- SECTION 8 -->
+<section id="section8" class="section-ref">
+<h2>8. การแบ่งแยกเครือข่ายไร้สาย</h2>
+<h3 id="section8-1" class="section-ref">8.1 SSID Segmentation</h3>
+<p>แนวทางการแบ่งเครือข่ายไร้สายตามระดับความน่าเชื่อถือ:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>SSID Segmentation:
+───────────────────
+┌────────────────────────────────────────────────────────┐
+│                    Wireless Controller                   │
+├────────────────────────────────────────────────────────┤
+│  SSID: Corp-WiFi        │  VLAN 10 │  Internal Network   │
+│  ───────────────────────┼──────────┼─────────────────────│
+│  SSID: Guest-WiFi       │  VLAN 20 │  Internet Only       │
+│  ───────────────────────┼──────────┼─────────────────────│
+│  SSID: IoT-Network      │  VLAN 30 │  Isolated (IoT GW)   │
+│  ───────────────────────┼──────────┼─────────────────────│
+│  SSID: BYOD-Devices     │  VLAN 40 │  MDM Check → Limited │
+│  ───────────────────────┼──────────┼─────────────────────│
+│  SSID: Management       │  VLAN 99 │  Admin Only (Hidden) │
+└────────────────────────────────────────────────────────┘</pre>
+
+<h3 id="section8-2" class="section-ref">8.2 Guest Network Design</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Guest Network — มาตรฐานความปลอดภัย:
+──────────────────────────────────────
+1. VLAN แยก — ไม่สามารถเข้าถึง Internal Network
+2. Internet Only — อนุญาต HTTP/HTTPS, DNS
+3. Bandwidth Limit — ไม่เกิน 5 Mbps/User
+4. Captive Portal — Acceptable Use Policy
+5. Session Timeout — ตัดการเชื่อมต่อทุก 4 ชม.
+6. MAC Filtering — จำกัดจำนวน Device/MAC
+7. Client Isolation — ผู้ใช้ Guest ไม่เห็นกันเอง
+8. Rate Limiting — ป้องกัน Abuse
+
+ตัวอย่าง ACL สำหรับ Guest:
+──────────────────────────
+permit udp any any eq 53       # DNS
+permit tcp any any eq 80       # HTTP
+permit tcp any any eq 443      # HTTPS
+deny ip any 10.0.0.0/8        # Block Private IPs
+deny ip any 172.16.0.0/12     # Block Private IPs
+deny ip any 192.168.0.0/16    # Block Private IPs
+permit ip any any              # Internet Only</pre>
+
+<h3 id="section8-3" class="section-ref">8.3 IoT Network Design</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>IoT Network — ข้อควรพิจารณา:
+──────────────────────────────
+1. VLAN แยกเฉพาะ — IoT Devices ไม่ควรอยู่ในเครือข่ายหลัก
+2. No Internet Access (ถ้าไม่จำเป็น) — IoT Devices ไม่ควรเข้าถึง Internet โดยไม่จำเป็น
+3. IoT Gateway — Traffic IoT ผ่าน Gateway เพื่อควบคุม
+4. Firmware Updates — ต้องมี Process อัปเดต Firmware
+5. Device Authentication — 802.1X สำหรับ IoT (ถ้ารองรับ)
+6. Traffic Inspection — ตรวจสอบ Traffic IoT ผ่าน IPS
+7. MAC Whitelist — อนุญาตเฉพาะ MAC Address ที่รู้จัก
+8. Network Segmentation — IoT แต่ละชนิด (Camera, Sensor, Printer) แยก VLAN กัน
+
+ตัวอย่าง Device Segmentation:
+├── Surveillance: VLAN 31 — Camera → NVR Only
+├── HVAC/BMS:    VLAN 32 — Building Management
+├── Printers:    VLAN 33 — Printer → Print Server
+└── Medical:     VLAN 34 — Medical Device (HIPAA Compliant)</pre>
+</section>
+<hr>
+
+<!-- SECTION 9 -->
+<section id="section9" class="section-ref">
+<h2>9. ความปลอดภัยของ Bluetooth และ IoT</h2>
+<h3 id="section9-1" class="section-ref">9.1 Bluetooth Security</h3>
+<p><strong>Bluetooth Versions and Security:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Version</th><th>Security Features</th><th>จุดอ่อน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>BR/EDR (Classic)</strong></td><td>pairing, encryption</td><td>BlueBorne (2017), KNOB Attack</td></tr>
+    <tr><td><strong>BLE 4.0-4.2</strong></td><td>LE Secure Connections</td><td>IV Reuse (บาง Implementation)</td></tr>
+    <tr><td><strong>BLE 5.0+</strong></td><td>AES-CCM Encryption</td><td>Improved Key Management</td></tr>
+    <tr><td><strong>BT 5.3+</strong></td><td>LE Secure Connections + CTKD</td><td>—</td></tr>
+  </tbody>
+</table></div>
+<p><strong>BlueBorne Attack (2017):</strong></p>
+<ul>
+  <li>ช่องโหว่ใน Bluetooth Stack ของ Android, iOS, Windows, Linux</li>
+  <li>ไม่ต้อง Pairing — ส่ง Packet ที่เป็นอันตรายไปยัง Bluetooth ที่เปิดไว้</li>
+  <li>ผลกระทบ: RCE (Remote Code Execution), MITM</li>
+  <li>อุปกรณ์กว่า 5.3 พันล้านเครื่องได้รับผลกระทบ</li>
+</ul>
+<p><strong>การป้องกัน Bluetooth:</strong></p>
+<ul>
+  <li>ปิด Bluetooth เมื่อไม่ใช้งาน</li>
+  <li>อัปเดต Firmware และ Driver อย่างสม่ำเสมอ</li>
+  <li>ใช้ Secure Simple Pairing (SSP) — เปรียบเทียบ PIN</li>
+  <li>ใช้ Bluetooth เวอร์ชัน 5.0+ ที่มีการปรับปรุงความปลอดภัย</li>
+</ul>
+
+<h3 id="section9-2" class="section-ref">9.2 IoT Device Security Challenges</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ความท้าทาย</th><th>ปัญหา</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Default Credentials</strong></td><td>อุปกรณ์ IoT มักมี Username/Password มาตรฐาน (admin/admin)</td></tr>
+    <tr><td><strong>No Update Mechanism</strong></td><td>Firmware ไม่ได้รับการอัปเดต — ช่องโหว่ไม่ถูกแก้</td></tr>
+    <tr><td><strong>Limited Resources</strong></td><td>CPU/RAM ไม่พอสำหรับ Encryption และ Protocol ที่ปลอดภัย</td></tr>
+    <tr><td><strong>Insecure Protocols</strong></td><td>ใช้ HTTP แทน HTTPS, Telnet แทน SSH, FTP แทน SFTP</td></tr>
+    <tr><td><strong>Data Privacy</strong></td><td>IoT Device ส่งข้อมูลไปยัง Cloud โดยไม่เข้ารหัส</td></tr>
+    <tr><td><strong>Physical Access</strong></td><td>อุปกรณ์ IoT มักถูกวางในพื้นที่ที่เข้าถึงได้ง่าย</td></tr>
+    <tr><td><strong>No Authentication</strong></td><td>Protocol IoT บางตัวไม่มีการ Authentication</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section9-3" class="section-ref">9.3 Mirai Botnet (2016)</h3>
+<p><strong>เหตุการณ์:</strong> Mirai Botnet โจมตี DDoS ขนาด 1.2 Tbps ต่อ Dyn DNS — ทำให้ Twitter, Netflix, Reddit, GitHub ล่ม</p>
+<p><strong>วิธีการ:</strong></p>
+<ol>
+  <li>สแกน IoT Devices ที่ใช้ Default Credentials (Telnet 23)</li>
+  <li>ติดตั้ง Malware — กลายเป็น Bot</li>
+  <li>Bot รอ Command จาก C2 Server</li>
+  <li>DDoS Attack — ส่ง Traffic ไปยัง Target</li>
+</ol>
+<p><strong>บทเรียนจาก Mirai:</strong></p>
+<ul>
+  <li>IoT Device มีความปลอดภัยต่ำมาก — Default Password, Telnet, No Update</li>
+  <li>Firmware ของอุปกรณ์ IoT ไม่มี Secure Boot — ทำให้ติด Malware แบบถาวร</li>
+  <li>IoT Devices ควรได้รับการแยก Network — ไม่ให้เข้าถึง Internal</li>
+  <li>เปลี่ยน Default Credentials ทุกครั้ง</li>
+</ul>
+
+<h3 id="section9-4" class="section-ref">9.4 แนวทางการรักษาความปลอดภัย IoT</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>แนวทางปฏิบัติที่ดีสำหรับ IoT:
+─────────────────────────────
+1. เปลี่ยน Default Password ทันที
+2. ปิดบริการที่ไม่จำเป็น (Telnet, FTP, UPnP)
+3. ใช้ Network Segmentation — IoT VLAN แยก
+4. Firmware Updates — อัปเดตสม่ำเสมอ
+5. ใช้ Protocol ที่ปลอดภัย — HTTPS, SSH, MQTTS
+6. Monitor Traffic IoT — ตรวจจับพฤติกรรมผิดปกติ
+7. Device Authentication — 802.1X, Certificate
+8. Disable Remote Access — ถ้าไม่จำเป็น
+9. ใช้ IoT Gateway — ควบคุมและตรวจสอบ Traffic
+10. ทำ Asset Inventory — รู้ว่ามี IoT อะไรบ้าง</pre>
+</section>
+<hr>
+
+<!-- SECTION 10 -->
+<section id="section10" class="section-ref">
+<h2>10. Wireless IDS/IPS และแนวทางปฏิบัติที่ดี</h2>
+<h3 id="section10-1" class="section-ref">10.1 WIDS/WIPS</h3>
+<p>Wireless Intrusion Detection/Prevention System:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ความสามารถ</th><th>WIDS</th><th>WIPS</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Rogue AP Detection</strong></td><td>✅ แจ้งเตือน</td><td>✅ ปิดการเชื่อมต่อ (Deauth)</td></tr>
+    <tr><td><strong>Evil Twin Detection</strong></td><td>✅ แจ้งเตือน</td><td>✅ Block Client</td></tr>
+    <tr><td><strong>Deauth Attack Detection</strong></td><td>✅ แจ้งเตือน</td><td>✅ ส่ง Deauth ปลอมเพื่อป้องกัน</td></tr>
+    <tr><td><strong>Client Misassociation</strong></td><td>✅ แจ้งเตือน</td><td>✅ Disconnect</td></tr>
+    <tr><td><strong>Honeypot Detection</strong></td><td>✅ แจ้งเตือน</td><td>✅ Block</td></tr>
+    <tr><td><strong>Spectrum Analysis</strong></td><td>✅</td><td>✅</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ตัวอย่าง WIDS Solution:</strong></p>
+<ul>
+  <li><strong>Cisco ISE + CMX:</strong> Enterprise WIDS</li>
+  <li><strong>Aruba Wireless:</strong> Integrated WIPS</li>
+  <li><strong>Airtight Networks:</strong> Dedicated WIPS</li>
+  <li><strong>Kismet:</strong> Open Source WIDS</li>
+  <li><strong>Wifiphisher:</strong> Rogue AP Framework (สำหรับ Penetration Test)</li>
+</ul>
+
+<h3 id="section10-2" class="section-ref">10.2 Best Practices สำหรับเครือข่ายไร้สายองค์กร</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>1. ใช้ WPA3-Enterprise (SAE + 802.1X + EAP-TLS)
+   └── ถ้า WPA3 ไม่รองรับ → WPA2-Enterprise + 802.1X + PMF
+
+2. 802.1X + RADIUS (FreeRADIUS, Cisco ISE, Aruba ClearPass)
+   └── แทน PSK ทุกกรณี — PSK สำหรับบ้านเท่านั้น
+
+3. 802.11w (Protected Management Frames)
+   └── ป้องกัน Deauth Spoofing, Disconnect Attack
+
+4. ใช้ Multiple SSID + VLAN Segmentation:
+   ├── Corporate — 802.1X
+   ├── Guest — Captive Portal + Internet Only
+   ├── IoT — Isolated VLAN
+   └── Management — Hidden SSID
+
+5. WIDS/WIPS — ตรวจจับ Rogue AP, Evil Twin
+
+6. Regular Security Audit:
+   ├── War Driving — เดินตรวจสอบเครือข่ายไร้สาย
+   ├── Spectrum Analysis — ตรวจสอบ Interference
+   └── Penetration Test — ทดสอบการโจมตี
+
+7. Firmware Update — อัปเดต Firmware AP และ Wireless Controller
+
+8. Certificate Management — EAP-TLS Certificate ต้องมี Auto-renewal
+
+9. Monitoring — Log การเชื่อมต่อทั้งหมดไปยัง SIEM
+
+10. Incident Response — มี Plan เมื่อเจอ Wireless Attack</pre>
+</section>
+<hr>
+
+<!-- SUMMARY -->
+<section id="summary" class="section-ref">
+<h2><i class="fas fa-list-check" aria-hidden="true"></i> สรุปท้ายบท (Chapter Summary)</h2>
+<ol>
+  <li><strong>WEP ❌</strong> — ใช้ RC4 + CRC-32 — Crack ได้ในไม่กี่นาทีด้วย aircrack-ng — ห้ามใช้เด็ดขาด</li>
+  <li><strong>WPA ⚠️</strong> — ใช้ TKIP + Michael — ปรับปรุงจาก WEP แต่ยังมีจุดอ่อน — Deprecated</li>
+  <li><strong>WPA2 ✅</strong> — ใช้ CCMP + AES — มาตรฐานปัจจุบัน — มี KRACK Vulnerability — ควร Patch</li>
+  <li><strong>WPA3 ✅</strong> — ใช้ SAE (Dragonfly) + GCMP-256 — ปลอดภัยจาก Offline Dictionary Attack และ KRACK — แนะนำ</li>
+  <li><strong>Evil Twin + Deauth Attack</strong> — ใช้ 802.11w (PMF) และ WIPS ในการป้องกัน</li>
+  <li><strong>802.1X + RADIUS + EAP-TLS</strong> — มาตรฐานสำหรับ Enterprise — ใช้ Certificate ยืนยันตัวตน</li>
+  <li><strong>Network Segmentation</strong> — แยก Guest, IoT, Corporate SSID+VLAN — จำกัดพื้นผิวการโจมตี</li>
+  <li><strong>IoT Security</strong> — เปลี่ยน Default Password, แยก Network, ปิดบริการที่ไม่จำเป็น</li>
+  <li><strong>WIDS/WIPS</strong> — ตรวจจับ Rogue AP, Evil Twin, และ Wireless Attack อัตโนมัติ</li>
+</ol>
+</section>
+<hr>
+
+<!-- REVIEW QUESTIONS -->
+<section id="review-questions" class="section-ref">
+<h2><i class="fas fa-question-circle" aria-hidden="true"></i> คำถามทบทวน (Review Questions)</h2>
+<p style="color:var(--text-secondary);margin-bottom:1.5rem;">คลิกปุ่ม <strong>"ดูเฉลย"</strong> เพื่อเปิดคำตอบ</p>
+
+<div class="quiz-card" data-question="1">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 1</span>
+    <p>จงเปรียบเทียบ WEP, WPA, WPA2, และ WPA3 ในด้าน Algorithm, Authentication, และช่องโหว่ที่สำคัญ</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>WEP</strong> ใช้ RC4 Stream Cipher + CRC-32 สำหรับ Integrity — IV 24-bit ซ้ำง่าย — โจมตีด้วย FMS/KoreK/PTW ได้ในไม่กี่นาที — ห้ามใช้ <strong>WPA</strong> ใช้ TKIP + Michael MIC — แก้ IV Collision และเพิ่ม Countermeasure แต่ยังถูกโจมตี Beck-Tews/Ohigashi-Morii และไม่มี Forward Secrecy — ปัจจุบัน Deprecated <strong>WPA2</strong> ใช้ CCMP + AES-CCMP (AEAD) — มี 4-Way Handshake — โจมตีได้ด้วย PMKID และ KRACK (Nonce Reuse) — ต้อง Patch Firmware <strong>WPA3</strong> ใช้ SAE (Dragonfly) + AES-GCMP-256 — ป้องกัน Offline Dictionary Attack, มี Forward Secrecy, ไม่มี KRACK, รองรับ OWE สำหรับ Open Network ที่เข้ารหัส</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="2">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 2</span>
+    <p>จงอธิบาย 4-Way Handshake ของ WPA2 และ Key Hierarchy (PSK → PMK → PTK → KCK + KEK + TK)</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> 4-Way Handshake เป็นกระบวนการสร้าง PTK ระหว่าง Client (Supplicant) กับ AP (Authenticator) โดยใช้ PMK ที่ได้จาก PSK หรือ 802.1X ขั้นตอนคือ (1) AP ส่ง ANonce (2) Client ส่ง SNonce + MIC (3) AP ส่ง GTK + MIC (4) Client ส่ง ACK จากนั้นเริ่มเข้ารหัสข้อมูลด้วย PTK <strong>Key Hierarchy:</strong> PSK (หรือ 802.1X) → PMK (256-bit) → ผ่าน PRF(PMK, ANonce, SNonce, MAC_AP, MAC_Client) ได้ PTK (512-bit) ประกอบด้วย KCK (128-bit สำหรับ MIC ใน Handshake), KEK (128-bit สำหรับส่ง GTK), TK (128-bit สำหรับ AES-CCMP Encryption) และ GTK (128-bit สำหรับ Broadcast/Multicast)</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="3">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 3</span>
+    <p>KRACK คืออะไร และเหตุใดจึงสามารถถอดรหัส WPA2 Traffic ได้? จงอธิบายขั้นตอนการโจมตี</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>KRACK (Key Reinstallation Attack)</strong> คือการโจมตีที่บังคับให้ Client Reinstall Key เดิมใน 4-Way Handshake ทำให้ Nonce Reset ขั้นตอน: AP ส่ง Msg3 (GTK+MIC) → Client ส่ง Msg4 (ACK) → ผู้โจมตี Block ACK → AP ส่ง Msg3 ซ้ำ → Client Reinstall PTK → Nonce กลับไปเป็น 0 → AES-CTR Encryption ถูกทำลาย → ผู้โจมตีถอดรหัส Traffic ปลอมแปลง/แทรก Packet ได้ แก้ไขโดย Patch Firmware และใช้ WPA3</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="4">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 4</span>
+    <p>WPA3-SAE แตกต่างจาก WPA2-PSK อย่างไร? จงอธิบาย Dragonfly Handshake และความได้เปรียบด้านความปลอดภัย</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> WPA2-PSK ใช้ Password โดยตรงเป็น PMK ใน 4-Way Handshake — สามารถ Capture แล้ว Crack Offline ได้ และไม่มี Forward Secrecy WPA3-SAE ใช้ Dragonfly Handshake: Client และ AP แลกเปลี่ยน Commit (Scalar + ECC Element) ทั้งสองฝั่ง — Derive PMK จาก shared secret ด้วย HKDF — ส่ง Confirm ยืนยัน ข้อได้เปรียบ: ป้องกัน Offline Dictionary Attack (ต้องคำนวณ Discrete Logarithm ทุกครั้ง), มี Perfect Forward Secrecy, ไม่มี PMKID ใน Beacon, ไม่มีช่องโหว่ KRACK</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="5">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 5</span>
+    <p>802.1X มีองค์ประกอบอะไรบ้าง (Supplicant, Authenticator, Auth Server)? จงอธิบายบทบาทของแต่ละองค์ประกอบ</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Supplicant</strong> = Client/อุปกรณ์ไร้สายที่ต้องการเข้าเครือข่าย (wpa_supplicant) — ตอบสนอง EAP-Identity และทำ EAP Method <strong>Authenticator</strong> = AP หรือ Switch ที่ทำหน้าที่ควบคุม Port — ถ่ายทอด EAP Message ระหว่าง Supplicant กับ Auth Server (EAPOL) <strong>Authentication Server</strong> = RADIUS Server (เช่น FreeRADIUS) — ตรวจสอบข้อมูลประจำตัว ตัดสินผ่าน/ไม่ผ่าน และออก EAP-Success/Failure</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="6">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 6</span>
+    <p>จงเปรียบเทียบ EAP-TLS, PEAP, และ EAP-TTLS — และอธิบายว่าเหตุใด EAP-TLS จึงปลอดภัยที่สุด</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>EAP-TLS</strong> ต้องใช้ Certificate ทั้ง Client และ Server — Mutual Authentication — ไม่มี Password ให้ขโมย — รองรับ Smart Card/YubiKey <strong>PEAP</strong> ใช้ Server Certificate + ส่ง Password ผ่าน TLS Tunnel — รองรับ Windows ดี <strong>EAP-TTLS</strong> ใช้ Server Certificate + หลากหลาย Inner Method (PAP/MS-CHAPv2) — เหมาะกับ Legacy EAP-TLS ปลอดภัยที่สุดเพราะไม่พึ่งพา Password ที่อาจถูก Brute-force/Phishing และมี Mutual Authentication ทั้งสองฝั่ง</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="7">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 7</span>
+    <p>Evil Twin Attack คืออะไร จงอธิบายวิธีการป้องกัน</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> Evil Twin คือ AP ปลอมที่ตั้ง SSID เดียวกับ AP จริงและส่งสัญญาณแรงกว่า เพื่อหลอกให้ Client เชื่อมต่อ จากนั้นดักอ่าน Traffic หรือ Redirect ไป Phishing การป้องกัน: เปิด <strong>802.11w (PMF)</strong> เพื่อป้องกัน Spoofed Deauth, ใช้ <strong>WIPS/Rogue AP Detection</strong> ตรวจหา AP ผิดปกติ, ใช้ <strong>EAP-TLS</strong> ให้ Client ตรวจสอบ Certificate AP, ใช้ <strong>VPN</strong> บน Wi-Fi สาธารณะ, และลบ Favorite Network ที่ไม่ใช้</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="8">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 8</span>
+    <p>Mirai Botnet ใช้ช่องโหว่ของ IoT Devices อย่างไร? จงอธิบายและเสนอแนวทางป้องกันองค์กรจาก IoT Botnet</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> Mirai สแกนอุปกรณ์ IoT ที่เปิด Telnet (พอร์ต 23) และใช้ Default Credentials (admin/admin) เข้าควบคุม ติดตั้ง Malware ให้กลายเป็น Bot แล้วโจมตี DDoS ตามคำสั่ง C2 Server แนวทางป้องกัน: เปลี่ยน Default Password ทันที, ปิด Telnet/FTP/UPnP, แยก IoT เป็น VLAN แยก/Isolated, อัปเดต Firmware สม่ำเสมอ, ใช้ MAC Whitelist, ตรวจสอบ Traffic IoT ผ่าน IPS/SIEM, ทำ Asset Inventory และใช้ IoT Gateway</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="9">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 9</span>
+    <p>จงออกแบบ SSID + VLAN Segmentation สำหรับมหาวิทยาลัย — โดยมีนักศึกษา, อาจารย์, บุคลากร, Guest, และ IoT Devices</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> ตัวอย่างการออกแบบ: <br>• <strong>Student-WiFi (VLAN 10)</strong> — Internet + E-Learning (จำกัด Bandwidth) <br>• <strong>Staff-WiFi (VLAN 20)</strong> — 802.1X + EAP-TLS เข้าถึง Internal Resources <br>• <strong>Guest-WiFi (VLAN 30)</strong> — Captive Portal, Internet Only, Client Isolation, Session Timeout <br>• <strong>IoT-WiFi (VLAN 40)</strong> — Isolated, ผ่าน IoT Gateway, MAC Whitelist, No Internet ถ้าไม่จำเป็น <br>• <strong>Management (VLAN 99)</strong> — Hidden SSID, Admin Only, เข้าถึง AP/Controller</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="10">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 10</span>
+    <p>จงอธิบายบทบาทของ WIDS/WIPS และยกตัวอย่างการตรวจจับที่ WIDS สามารถทำได้</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>WIDS</strong> (Wireless Intrusion Detection System) ตรวจจับและแจ้งเตือนการโจมตี/อุปกรณ์ผิดปกติ <strong>WIPS</strong> (Wireless Intrusion Prevention System) เพิ่มความสามารถในการตอบโต้ เช่น ส่ง Deauth ไปยัง Rogue AP/Client หรือ Block Client ที่เชื่อมต่อผิดพลาด ตัวอย่างการตรวจจับ: Rogue AP, Evil Twin, Deauth Flood, Client Misassociation, Honeypot AP, และ Spectrum Anomaly ตัวอย่างโซลูชัน: Cisco ISE/CMX, Aruba WIPS, Kismet (Open Source)</p>
+  </div>
+</div>
+</section>
+<hr>
+
+<!-- INTERACTIVE QUIZ -->
+<section id="interactive-quiz" class="section-ref">
+<h2><i class="fas fa-clipboard-check" aria-hidden="true"></i> แบบทดสอบออนไลน์ (15 ข้อ)</h2>
+<p style="color:var(--text-secondary);margin-bottom:1.5rem;">เลือกคำตอบที่ถูกต้องที่สุด แล้วกด <strong>"ตรวจคำตอบ"</strong> เพื่อดูคะแนน</p>
+<form id="mcq-form">
+
+<div class="quiz-card mcq-item" data-q="1" data-answer="c">
+  <div class="quiz-question"><span class="q-number">1</span><p>WEP ใช้ Algorithm ใดในการเข้ารหัส?</p></div>
+  <label class="mcq-option"><input type="radio" name="q1" value="a"> AES-CCMP</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="b"> TKIP + Michael</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="c"> RC4 + CRC-32</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="d"> AES-GCMP-256</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="2" data-answer="b">
+  <div class="quiz-question"><span class="q-number">2</span><p>IV ของ WEP มีขนาดเท่าใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q2" value="a"> 48-bit</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="b"> 24-bit</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="c"> 128-bit</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="d"> 256-bit</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="3" data-answer="d">
+  <div class="quiz-question"><span class="q-number">3</span><p>ข้อใดเป็นช่องโหว่ของ WPA/TKIP?</p></div>
+  <label class="mcq-option"><input type="radio" name="q3" value="a"> IV Collision</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="b"> PMKID Leak</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="c"> Nonce Reuse ใน 4-Way Handshake</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="d"> Beck-Tews Attack</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="4" data-answer="a">
+  <div class="quiz-question"><span class="q-number">4</span><p>WPA2 ใช้ Protocol ใดสำหรับ Encryption และ Integrity?</p></div>
+  <label class="mcq-option"><input type="radio" name="q4" value="a"> CCMP / AES-CCMP</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="b"> TKIP / Michael</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="c"> WEP / RC4</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="d"> GCMP-256 / SHA-384</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="5" data-answer="b">
+  <div class="quiz-question"><span class="q-number">5</span><p>4-Way Handshake ของ WPA2 ใช้สร้าง Key ใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q5" value="a"> GTK เท่านั้น</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="b"> PTK</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="c"> PMKID</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="d"> SAE Commit</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="6" data-answer="c">
+  <div class="quiz-question"><span class="q-number">6</span><p>KRACK โจมตีช่องโหว่ในขั้นตอนใดของ 4-Way Handshake?</p></div>
+  <label class="mcq-option"><input type="radio" name="q6" value="a"> Msg1 (ANonce)</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="b"> Msg2 (SNonce+MIC)</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="c"> Msg3 (GTK+MIC)</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="d"> Msg4 (ACK)</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="7" data-answer="a">
+  <div class="quiz-question"><span class="q-number">7</span><p>WPA3-Personal ใช้ Mechanism ใดแทน PSK?</p></div>
+  <label class="mcq-option"><input type="radio" name="q7" value="a"> SAE (Simultaneous Authentication of Equals)</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="b"> EAP-TLS</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="c"> PMKID</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="d"> OWE</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="8" data-answer="d">
+  <div class="quiz-question"><span class="q-number">8</span><p>OWE มีประโยชน์อย่างไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q8" value="a"> บังคับให้ Client ใช้ Certificate</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="b"> ป้องกัน Deauth Attack</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="c"> เร่งความเร็ว Wi-Fi</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="d"> เข้ารหัส Traffic บน Open Wi-Fi โดยไม่ต้องใส่ Password</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="9" data-answer="b">
+  <div class="quiz-question"><span class="q-number">9</span><p>การโจมตี Deauthentication มักใช้เครื่องมือใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q9" value="a"> dnscat2</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="b"> aireplay-ng</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="c"> ClamAV</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="d"> FreeRADIUS</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="10" data-answer="a">
+  <div class="quiz-question"><span class="q-number">10</span><p>802.11w (PMF) ช่วยป้องกันการโจมตีใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q10" value="a"> Spoofed Deauthentication/Disassociation Frames</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="b"> DNS Spoofing</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="c"> WPS Brute-force</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="d"> ARP Spoofing</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="11" data-answer="c">
+  <div class="quiz-question"><span class="q-number">11</span><p>ใน 802.1X Authenticator คืออุปกรณ์ใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q11" value="a"> RADIUS Server</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="b"> Client Device</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="c"> AP หรือ Switch</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="d"> IoT Gateway</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="12" data-answer="a">
+  <div class="quiz-question"><span class="q-number">12</span><p>EAP Method ใดต้องใช้ Certificate ทั้ง Client และ Server?</p></div>
+  <label class="mcq-option"><input type="radio" name="q12" value="a"> EAP-TLS</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="b"> PEAP</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="c"> EAP-TTLS</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="d"> EAP-FAST</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="13" data-answer="d">
+  <div class="quiz-question"><span class="q-number">13</span><p>Guest Network ควรมีคุณสมบัติใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q13" value="a"> เข้าถึง Internal Network ได้เต็มรูปแบบ</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="b"> ไม่จำกัด Bandwidth</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="c"> ใช้ PSK ร่วมกับ Corporate</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="d"> VLAN แยก, Internet Only, Client Isolation</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="14" data-answer="b">
+  <div class="quiz-question"><span class="q-number">14</span><p>Mirai Botnet โจมตีอุปกรณ์ IoT ผ่านช่องโหว่หลักใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q14" value="a"> BlueBorne</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="b"> Default Credentials + Telnet</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="c"> KRACK</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="d"> WPS PIN</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="15" data-answer="c">
+  <div class="quiz-question"><span class="q-number">15</span><p>ข้อใดเป็น Best Practice สำหรับเครือข่ายไร้สายในองค์กร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q15" value="a"> ใช้ WPA-Personal สำหรับทุก SSID</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="b"> ปิด Firmware Update เพื่อความเสถียร</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="c"> ใช้ WPA3-Enterprise + 802.1X + VLAN Segmentation + WIDS/WIPS</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="d"> เปิด WPS เพื่อความสะดวก</label>
+</div>
+
+<div style="text-align:center;margin-top:1.5rem;">
+  <button type="button" id="mcq-submit" class="reveal-btn" style="font-size:1rem;padding:.6rem 1.5rem;">ตรวจคำตอบ</button>
+  <button type="reset" id="mcq-reset" class="reveal-btn" style="font-size:1rem;padding:.6rem 1.5rem;background:var(--text-muted);margin-left:.5rem;">เริ่มใหม่</button>
+</div>
+<div id="mcq-result" style="display:none;margin-top:1.5rem;padding:1rem;border-radius:var(--radius);background:var(--bg-tertiary);border:1px solid var(--border);text-align:center;">
+  <strong>คะแนนของคุณ:</strong> <span id="mcq-score" style="font-size:1.5rem;color:var(--accent);"></span><br>
+  <span id="mcq-feedback" style="color:var(--text-secondary);"></span>
+</div>
+</form>
+</section>
+<hr>
+
+<!-- REFERENCES -->
+<section id="references" class="section-ref">
+<h2><i class="fas fa-book" aria-hidden="true"></i> เอกสารอ้างอิง (References)</h2>
+<ol>
+  <li>IEEE 802.11-2020. <em>IEEE Standard for Information Technology — Wireless LAN Medium Access Control (MAC) and Physical Layer (PHY) Specifications</em>.</li>
+  <li>Vanhoef, M., &amp; Piessens, F. (2017). "Key Reinstallation Attacks: Forcing Nonce Reuse in WPA2." <em>Proceedings of the 2017 ACM SIGSAC Conference on Computer and Communications Security (CCS)</em>.</li>
+  <li>Vanhoef, M., &amp; Piessens, F. (2018). "Release the Kraken: New KRACKs in the 802.11 Standard." <em>Proceedings of the 2018 ACM SIGSAC Conference on Computer and Communications Security (CCS)</em>.</li>
+  <li>Wi-Fi Alliance. (2018). <em>WPA3 Specification</em>. Retrieved from https://www.wi-fi.org/</li>
+  <li>IETF RFC 7664. (2015). <em>Dragonfly Key Exchange (SAE)</em>.</li>
+  <li>IETF RFC 3748. (2004). <em>Extensible Authentication Protocol (EAP)</em>.</li>
+  <li>IETF RFC 5216. (2008). <em>The EAP-TLS Authentication Protocol</em>.</li>
+  <li>NIST Special Publication 800-153. (2012). <em>Guidelines for Securing Wireless Local Area Networks (WLANs)</em>.</li>
+  <li>Antonakakis, M., et al. (2017). "Understanding the Mirai Botnet." <em>Proceedings of the 26th USENIX Security Symposium</em>.</li>
+  <li>CISA. (2024). <em>Securing IoT Devices — Best Practices</em>. Cybersecurity and Infrastructure Security Agency.</li>
+</ol>
+</section>
+
+</main>
+</div>
+
+<footer class="site-footer" role="contentinfo">
+  <hr class="footer-divider">
+  <p><i class="fas fa-shield-halved" aria-hidden="true"></i> รายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+  <p style="margin-top:0.5rem;font-size:0.8rem;">เอกสารนี้เป็นส่วนหนึ่งของรายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+</footer>
+
+<button id="back-to-top" aria-label="กลับไปด้านบน" title="กลับไปด้านบน">
+  <i class="fas fa-arrow-up" aria-hidden="true"></i>
+</button>
+
+<script>
+// ====== Loading Screen ======
+window.addEventListener("load", function() {
+  document.getElementById("loading-screen").classList.add("hidden");
+});
+
+// ====== Progress Bar ======
+window.addEventListener("scroll", function() {
+  var scrollTop = window.scrollY;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById("progress-bar").style.width = progress + "%";
+  document.getElementById("progress-bar").setAttribute("aria-valuenow", Math.round(progress));
+});
+
+// ====== Dark Mode ======
+(function() {
+  var toggle = document.getElementById("dark-mode-toggle");
+  var icon = toggle.querySelector("i");
+  var theme = localStorage.getItem("theme");
+  if (theme === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+    icon.className = "fas fa-sun";
+  }
+  toggle.addEventListener("click", function() {
+    var current = document.documentElement.getAttribute("data-theme");
+    if (current === "dark") {
+      document.documentElement.removeAttribute("data-theme");
+      localStorage.setItem("theme", "light");
+      icon.className = "fas fa-moon";
+    } else {
+      document.documentElement.setAttribute("data-theme", "dark");
+      localStorage.setItem("theme", "dark");
+      icon.className = "fas fa-sun";
+    }
+  });
+})();
+
+// ====== Sidebar Toggle (mobile) ======
+(function() {
+  var btn = document.getElementById("sidebar-toggle");
+  var sidebar = document.getElementById("sidebar");
+  var overlay = document.getElementById("sidebar-overlay");
+  if (!btn || !sidebar || !overlay) return;
+  btn.addEventListener("click", function() {
+    var open = sidebar.classList.toggle("open");
+    overlay.classList.toggle("active");
+    btn.setAttribute("aria-expanded", open);
+  });
+  overlay.addEventListener("click", function() {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("active");
+    btn.setAttribute("aria-expanded", "false");
+  });
+})();
+
+// ====== Scroll Spy ======
+(function() {
+  var tocLinks = document.querySelectorAll(".toc-link");
+  var sections = [];
+  tocLinks.forEach(function(link) {
+    var targetId = link.getAttribute("data-target");
+    var el = document.getElementById(targetId);
+    if (el) sections.push({ id: targetId, el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollPos = window.scrollY + 120;
+    var currentId = null;
+    for (var i = 0; i < sections.length; i++) {
+      var s = sections[i];
+      if (s.el.offsetTop <= scrollPos) {
+        currentId = s.id;
+      }
+    }
+    tocLinks.forEach(function(l) { l.classList.remove("active"); });
+    if (currentId) {
+      var activeLink = document.querySelector('.toc-link[data-target="' + currentId + '"]');
+      if (activeLink) {
+        activeLink.classList.add("active");
+        var sidebar = document.getElementById("sidebar");
+        if (sidebar) {
+          var itemTop = activeLink.offsetTop - sidebar.offsetTop;
+          var itemBottom = itemTop + activeLink.offsetHeight;
+          var sidebarScrollTop = sidebar.scrollTop;
+          var sidebarHeight = sidebar.clientHeight;
+          if (itemTop < sidebarScrollTop || itemBottom > sidebarScrollTop + sidebarHeight) {
+            activeLink.scrollIntoView({ block: "nearest" });
+          }
+        }
+      }
+    }
+  }
+
+  window.addEventListener("scroll", updateActive);
+  window.addEventListener("load", updateActive);
+  setTimeout(updateActive, 500);
+})();
+
+// ====== Smooth scroll for TOC links ======
+document.querySelectorAll(".toc-link").forEach(function(link) {
+  link.addEventListener("click", function(e) {
+    e.preventDefault();
+    var targetId = this.getAttribute("data-target");
+    var target = document.getElementById(targetId);
+    if (target) {
+      var offset = 80;
+      var targetPos = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: targetPos, behavior: "smooth" });
+    }
+    var sidebar = document.getElementById("sidebar");
+    var overlay = document.getElementById("sidebar-overlay");
+    if (sidebar && sidebar.classList.contains("open")) {
+      sidebar.classList.remove("open");
+      overlay.classList.remove("active");
+      document.getElementById("sidebar-toggle").setAttribute("aria-expanded", "false");
+    }
+  });
+});
+
+// ====== Back to Top ======
+(function() {
+  var btn = document.getElementById("back-to-top");
+  window.addEventListener("scroll", function() {
+    if (window.scrollY > 400) {
+      btn.classList.add("visible");
+    } else {
+      btn.classList.remove("visible");
+    }
+  });
+  btn.addEventListener("click", function() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+})();
+
+// ====== Copy Code ======
+function copyCode(btn) {
+  var pre = btn.closest("pre");
+  var code = pre.textContent;
+  code = code.replace(/คัดลอก/g, "").trim();
+  navigator.clipboard.writeText(code).then(function() {
+    btn.innerHTML = "<i class=\"fas fa-check\" aria-hidden=\"true\"></i> คัดลอกแล้ว";
+    btn.classList.add("copied");
+    setTimeout(function() {
+      btn.innerHTML = "<i class=\"fas fa-copy\" aria-hidden=\"true\"></i> คัดลอก";
+      btn.classList.remove("copied");
+    }, 2000);
+  }).catch(function() {
+    var textarea = document.createElement("textarea");
+    textarea.value = code;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+    btn.innerHTML = "<i class=\"fas fa-check\" aria-hidden=\"true\"></i> คัดลอกแล้ว";
+    btn.classList.add("copied");
+    setTimeout(function() {
+      btn.innerHTML = "<i class=\"fas fa-copy\" aria-hidden=\"true\"></i> คัดลอก";
+      btn.classList.remove("copied");
+    }, 2000);
+  });
+}
+
+// ====== Expandable Sections ======
+function toggleExpand(header) {
+  var expandable = header.closest(".expandable");
+  if (!expandable) return;
+  var isExpanded = expandable.classList.toggle("expanded");
+  header.setAttribute("aria-expanded", isExpanded);
+}
+
+// ====== Reveal Answer (Review Questions) ======
+function revealAnswer(btn) {
+  var card = btn.closest(".quiz-card");
+  if (!card) return;
+  card.classList.add("revealed");
+  var answer = card.querySelector(".quiz-answer");
+  if (answer) {
+    answer.classList.remove("hidden");
+  }
+  btn.textContent = "ดูเฉลยแล้ว";
+  btn.disabled = true;
+}
+
+// ====== Interactive MCQ Quiz ======
+(function() {
+  var form = document.getElementById("mcq-form");
+  var submitBtn = document.getElementById("mcq-submit");
+  var resetBtn = document.getElementById("mcq-reset");
+  var resultBox = document.getElementById("mcq-result");
+  var scoreSpan = document.getElementById("mcq-score");
+  var feedbackSpan = document.getElementById("mcq-feedback");
+  if (!form || !submitBtn) return;
+
+  submitBtn.addEventListener("click", function() {
+    var items = form.querySelectorAll(".mcq-item");
+    var score = 0;
+    var total = items.length;
+    items.forEach(function(item) {
+      var answer = item.getAttribute("data-answer");
+      var radios = item.querySelectorAll('input[type="radio"]');
+      var selected = null;
+      radios.forEach(function(r) {
+        if (r.checked) selected = r.value;
+        r.disabled = true;
+      });
+      var options = item.querySelectorAll(".mcq-option");
+      options.forEach(function(opt) {
+        var val = opt.querySelector('input').value;
+        if (val === answer) {
+          opt.classList.add("correct-opt");
+        }
+        if (val === selected && val !== answer) {
+          opt.classList.add("wrong-opt");
+        }
+      });
+      if (selected === answer) {
+        score++;
+        item.classList.add("correct");
+      } else {
+        item.classList.add("wrong");
+      }
+    });
+
+    var percent = Math.round((score / total) * 100);
+    scoreSpan.textContent = score + "/" + total + " (" + percent + "%)";
+    if (score >= 12) {
+      resultBox.className = "success";
+      resultBox.style.display = "block";
+      feedbackSpan.textContent = "ผ่าน! คุณเข้าใจเนื้อหาบทนี้ได้ดีแล้ว";
+    } else {
+      resultBox.className = "fail";
+      resultBox.style.display = "block";
+      feedbackSpan.textContent = "ยังไม่ผ่าน ลองทบทวนเนื้อหาแล้วทำใหม่";
+    }
+    submitBtn.disabled = true;
+  });
+
+  resetBtn.addEventListener("click", function() {
+    form.reset();
+    var items = form.querySelectorAll(".mcq-item");
+    items.forEach(function(item) {
+      item.classList.remove("correct", "wrong");
+      item.querySelectorAll('input[type="radio"]').forEach(function(r) { r.disabled = false; });
+      item.querySelectorAll(".mcq-option").forEach(function(opt) {
+        opt.classList.remove("correct-opt", "wrong-opt");
+      });
+    });
+    resultBox.style.display = "none";
+    resultBox.className = "";
+    submitBtn.disabled = false;
+  });
+})();
+
+// ====== Search ======
+(function() {
+  var searchToggle = document.getElementById("search-toggle-btn");
+  var searchOverlay = document.getElementById("search-overlay");
+  var searchInput = document.getElementById("search-input");
+  var searchResults = document.getElementById("search-results");
+  var searchCount = document.getElementById("search-count");
+  var searchClose = document.getElementById("search-close-btn");
+
+  var mainContent = document.getElementById("main-content");
+  var searchData = [];
+
+  function buildSearchIndex() {
+    searchData = [];
+    var sections = mainContent.querySelectorAll("h2, h3, h4, p, li, td, th, pre");
+    sections.forEach(function(el) {
+      var text = el.textContent.trim();
+      if (text.length > 10) {
+        var heading = "";
+        var parent = el.parentElement;
+        while (parent && parent !== mainContent) {
+          var prevHeading = parent.querySelector("h2, h3, h4");
+          if (prevHeading) { heading = prevHeading.textContent.trim(); break; }
+          parent = parent.parentElement;
+        }
+        searchData.push({
+          text: text,
+          heading: heading || "เนื้อหา",
+          element: el
+        });
+      }
+    });
+  }
+
+  buildSearchIndex();
+
+  function performSearch(query) {
+    if (!query || query.length < 2) {
+      searchResults.innerHTML = "<div class=\"no-results\">กรุณาป้อนคำค้นหาอย่างน้อย 2 ตัวอักษร</div>";
+      searchCount.textContent = "";
+      return;
+    }
+
+    var q = query.toLowerCase();
+    var results = [];
+    var totalMatches = 0;
+
+    searchData.forEach(function(item) {
+      var lower = item.text.toLowerCase();
+      var idx = lower.indexOf(q);
+      if (idx !== -1) {
+        var count = 0;
+        var pos = -1;
+        while ((pos = lower.indexOf(q, pos + 1)) !== -1) count++;
+        totalMatches += count;
+
+        var snippet = item.text.substring(Math.max(0, idx - 60), idx + q.length + 120);
+        if (idx > 60) snippet = "..." + snippet;
+        if (idx + q.length + 120 < item.text.length) snippet = snippet + "...";
+
+        snippet = snippet.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        snippet = snippet.replace(new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi"), "<mark>$1</mark>");
+
+        results.push({
+          heading: item.heading,
+          snippet: snippet,
+          element: item.element,
+          count: count
+        });
+      }
+    });
+
+    if (results.length > 50) results = results.slice(0, 50);
+
+    searchCount.textContent = totalMatches + " ผลลัพธ์";
+
+    if (results.length === 0) {
+      searchResults.innerHTML = "<div class=\"no-results\">ไม่พบผลลัพธ์สำหรับ \"" + query + "\"</div>";
+      return;
+    }
+
+    var html = "";
+    results.forEach(function(r) {
+      html += "<div class=\"search-result-item\" data-heading=\"" + r.heading.replace(/"/g, "&quot;") + "\">";
+      html += "<div class=\"result-heading\">" + r.heading + "</div>";
+      html += "<div class=\"result-snippet\">" + r.snippet + "</div>";
+      html += "</div>";
+    });
+    searchResults.innerHTML = html;
+
+    searchResults.querySelectorAll(".search-result-item").forEach(function(item, i) {
+      item.addEventListener("click", function() {
+        var el = results[i].element;
+        if (el) {
+          var offset = 100;
+          var pos = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: pos, behavior: "smooth" });
+          searchOverlay.classList.remove("active");
+          el.style.transition = "background 0.5s ease";
+          el.style.background = "var(--bg-tertiary)";
+          setTimeout(function() {
+            el.style.background = "";
+          }, 1500);
+        }
+      });
+    });
+  }
+
+  var searchTimeout = null;
+  searchInput.addEventListener("input", function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      performSearch(searchInput.value);
+    }, 300);
+  });
+
+  searchToggle.addEventListener("click", function() {
+    searchOverlay.classList.add("active");
+    setTimeout(function() { searchInput.focus(); }, 100);
+  });
+
+  searchClose.addEventListener("click", function() {
+    searchOverlay.classList.remove("active");
+    searchInput.value = "";
+    searchResults.innerHTML = "";
+    searchCount.textContent = "";
+  });
+
+  searchOverlay.addEventListener("click", function(e) {
+    if (e.target === searchOverlay) {
+      searchOverlay.classList.remove("active");
+      searchInput.value = "";
+      searchResults.innerHTML = "";
+      searchCount.textContent = "";
+    }
+  });
+
+  document.addEventListener("keydown", function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+      e.preventDefault();
+      searchToggle.click();
+    }
+    if (e.key === "Escape") {
+      searchOverlay.classList.remove("active");
+    }
+  });
+})();
+
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll(".expandable.expanded").forEach(function(el) {
+    var header = el.querySelector(".expandable-header");
+    if (header) header.setAttribute("aria-expanded", "true");
+  });
+});
+</script>
+</body>
+</html>
