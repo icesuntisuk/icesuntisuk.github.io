@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บทที่ 12: Network Security สำหรับซอฟต์แวร์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--primary:#1a56db;--primary-dark:#1340a0;--primary-light:#e8effc;--navy:#1e293b;--navy-light:#334155;--success:#059669;--success-light:#d1fae5;--danger:#dc2626;--danger-light:#fee2e2;--warning:#d97706;--warning-light:#fef3c7;--purple:#7c3aed;--purple-light:#ede9fe;--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--radius:12px;--radius-sm:8px;--sidebar-w:292px;--font-thai:'Sarabun',sans-serif;--font-mono:'IBM Plex Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.8;display:flex;min-height:100vh}a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);height:100vh;background:var(--navy);color:#fff;overflow-y:auto;z-index:100;transition:transform .3s}.sidebar-header{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}.sidebar-header h1{font-size:1rem;font-weight:600;color:#fff;line-height:1.4}.sidebar-header .sub{font-size:.75rem;color:#94a3b8;margin-top:.25rem}.sidebar-nav{padding:.75rem 0}.sidebar-nav a{display:block;padding:.5rem 1.25rem;color:#cbd5e1;font-size:.84rem;transition:all .15s;border-left:3px solid transparent}.sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--primary);text-decoration:none}.sidebar-nav .section-label{padding:.6rem 1.25rem .25rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#64748b;font-weight:600}.sidebar-nav .sub-link{padding-left:2.35rem;font-size:.78rem}.sidebar-toggle{display:none;position:fixed;top:.75rem;left:.75rem;z-index:200;background:var(--navy);color:#fff;border:none;width:44px;height:44px;border-radius:var(--radius-sm);cursor:pointer;font-size:1.5rem;align-items:center;justify-content:center}.sidebar-overlay{display:none}.main{flex:1;margin-left:var(--sidebar-w);max-width:100%;padding:0}.topbar{position:sticky;top:0;z-index:50;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between}.topbar-title{font-size:.85rem;color:var(--text-muted)}.topbar-title strong{color:var(--text);font-weight:600}.topbar-progress{font-size:.8rem;color:var(--text-muted)}.topbar-home{color:var(--text-muted);font-size:.85rem;text-decoration:none;margin-right:.75rem;transition:color.15s;white-space:nowrap}.topbar-home:hover{color:var(--primary);text-decoration:none}.content{padding:2rem;max-width:1040px;margin:0 auto}h2{font-size:1.75rem;color:var(--navy);margin:3rem 0 1.5rem;padding-bottom:.75rem;border-bottom:3px solid var(--primary);font-weight:700}h2:first-of-type{margin-top:0}h3{font-size:1.35rem;color:var(--navy);margin:2rem 0 1rem;font-weight:600}h4{font-size:1.1rem;color:var(--navy-light);margin:1.5rem 0 .75rem;font-weight:600}h5{font-size:1rem;color:var(--text);margin:1rem 0 .5rem;font-weight:600}p{margin-bottom:.75rem;color:var(--text)}p:last-child{margin-bottom:0}.card{background:var(--bg-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;margin-bottom:1.5rem;border:1px solid var(--border)}.card-header{font-weight:600;font-size:1.05rem;margin-bottom:.75rem;color:var(--navy);display:flex;align-items:center;gap:.5rem}.info-box{border-radius:var(--radius-sm);padding:1rem 1.25rem;margin:1rem 0;display:flex;gap:.75rem;align-items:flex-start}.info-box .icon{font-size:1.25rem;flex-shrink:0;margin-top:.1rem}.info-box p{font-size:.92rem}.info-box.remember{background:var(--primary-light);border-left:4px solid var(--primary)}.info-box.warning{background:var(--danger-light);border-left:4px solid var(--danger)}.info-box.tip{background:var(--success-light);border-left:4px solid var(--success)}.info-box.question{background:var(--warning-light);border-left:4px solid var(--warning)}.table-wrap{overflow-x:auto;margin:1rem 0}table{width:100%;border-collapse:collapse;font-size:.9rem;border-radius:var(--radius-sm);overflow:hidden}thead{background:var(--navy);color:#fff}th{padding:.75rem 1rem;text-align:left;font-weight:600;font-size:.85rem}td{padding:.65rem 1rem;border-bottom:1px solid var(--border)}tbody tr:nth-child(even){background:#f1f5f9}tbody tr:hover{background:#e2e8f0}tbody tr:last-child td{border-bottom:none}code{font-family:var(--font-mono);font-size:.85rem;background:#f1f5f9;padding:.15em .4em;border-radius:4px;color:var(--danger)}pre{background:#1e293b;color:#e2e8f0;border-radius:var(--radius-sm);padding:1rem;overflow-x:auto;margin:1rem 0;font-family:var(--font-mono);font-size:.85rem;line-height:1.6}pre code{background:none;color:inherit;padding:0;font-size:inherit}.keywords-wrap{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}.keyword{display:inline-flex;align-items:center;gap:.4rem;background:var(--primary-light);color:var(--primary);padding:.35rem .85rem;border-radius:50px;font-size:.82rem;font-weight:500;border:1px solid rgba(26,86,219,0.2)}.keyword:hover{background:var(--primary);color:#fff}.keyword .en{font-family:var(--font-mono);font-size:.78rem;opacity:.8}.content ul,.content ol{padding-left:1.5rem;margin:.75rem 0}.content li{margin-bottom:.35rem}.scroll-top{position:fixed;bottom:2rem;right:2rem;width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;border:none;cursor:pointer;font-size:1.25rem;box-shadow:var(--shadow-lg);z-index:50;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .3s}.scroll-top.visible{opacity:1;visibility:visible}.scroll-top:hover{background:var(--primary)}.interactive{background:linear-gradient(135deg,#fff,var(--primary-light));border:1px solid rgba(26,86,219,.25);border-radius:var(--radius);padding:1.25rem;margin:1.25rem 0;box-shadow:var(--shadow)}.interactive h4{margin-top:0;color:var(--primary)}.result{border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:.75rem;background:#fff;border:1px solid var(--border)}.result.ok{background:var(--success-light);border-color:var(--success);color:#064e3b}.result.bad{background:var(--danger-light);border-color:var(--danger);color:#7f1d1d}.result.mid{background:var(--warning-light);border-color:var(--warning);color:#78350f}.cve-bar{display:inline-block;padding:.4rem 1rem;margin:.3rem;border-radius:var(--radius-sm);cursor:pointer;font-size:.85rem;font-weight:600;border:none;color:#fff;transition:transform .15s,box-shadow .15s}.cve-bar:hover{transform:scale(1.05);box-shadow:var(--shadow)}.cve-bar.critical{background:var(--danger)}.cve-bar.high{background:#ea580c}.cve-bar.medium{background:var(--warning)}.cve-bar.low{background:var(--primary)}.meter{height:12px;background:var(--border);border-radius:99px;margin:.75rem 0;overflow:hidden}.meter-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--danger),var(--warning),var(--success));width:0;transition:width .4s}
+.quiz-option{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--border);border-radius:var(--radius-sm);padding:.65rem 1rem;margin:.4rem 0;cursor:pointer;font-family:var(--font-thai);font-size:.9rem;color:var(--text);transition:all .2s}
+.quiz-option:hover{border-color:var(--primary);background:var(--primary-light)}
+.quiz-option.selected{border-color:var(--primary);background:var(--primary-light)}
+.quiz-option.correct{background:var(--success-light);border-color:var(--success);color:#065f46;font-weight:600}
+.quiz-option.incorrect{background:var(--danger-light);border-color:var(--danger);color:#991b1b}
+.tab-bar{display:flex;gap:4px;margin:.75rem 0;border-bottom:2px solid var(--border)}
+.tab-btn{background:transparent;border:none;padding:.55rem 1rem;cursor:pointer;font-family:var(--font-thai);font-size:.85rem;color:var(--text-muted);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
+.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+.tab-btn:hover{color:var(--primary)}
+.tab-panel{display:none;padding:.75rem 0}
+.tab-panel.active{display:block}
+.btn{background:var(--primary);color:#fff;border:none;padding:.55rem 1.25rem;border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-thai);font-size:.88rem;font-weight:500;white-space:nowrap;transition:background .2s}
+.btn:hover{background:var(--primary-dark)}
+
+@media(max-width:1024px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sidebar-toggle{display:flex}.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}.sidebar-overlay.show{display:block}.main{margin-left:0}.content{padding:1.25rem}.topbar{padding:.75rem 1rem}}@media(max-width:640px){h2{font-size:1.35rem}h3{font-size:1.15rem}.content{padding:1rem}.card{padding:1rem}.topbar-title{font-size:.75rem}.topbar-progress{display:none}}@media print{.sidebar,.sidebar-toggle,.sidebar-overlay,.topbar,.scroll-top{display:none!important}.main{margin-left:0}.content{max-width:100%;padding:0}}</style>
+</head>
+<body>
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="เปิดเมนู">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-header"><h1>Network Security สำหรับซอฟต์แวร์</h1><div class="sub">บทที่ 12 · Interactive Learning</div></div>
+  <div class="sidebar-nav">
+    <div class="section-label">เนื้อหา</div>
+    <a href="#plan">แผนการเรียนรู้</a>
+    <a href="#s12.1">12.1 พื้นฐาน Network Security</a>
+    <a href="#s12.1.1" class="sub-link">12.1.1 โมเดล OSI</a>
+    <a href="#s12.1.2" class="sub-link">12.1.2 TCP/IP Security Issues</a>
+    <a href="#s12.1.3" class="sub-link">12.1.3 DNS Security</a>
+    <a href="#s12.1.4" class="sub-link">12.1.4 Network Segments</a>
+    <a href="#s12.2">12.2 TLS/SSL และ HTTPS</a>
+    <a href="#s12.2.1" class="sub-link">12.2.1 TLS Handshake</a>
+    <a href="#s12.2.2" class="sub-link">12.2.2 Cipher Suites</a>
+    <a href="#s12.2.3" class="sub-link">12.2.3 การจัดการ Certificate</a>
+    <a href="#s12.2.4" class="sub-link">12.2.4 mTLS</a>
+    <a href="#s12.2.5" class="sub-link">12.2.5 การตรวจสอบ TLS</a>
+    <a href="#s12.3">12.3 Firewall และ NAC</a>
+    <a href="#s12.3.1" class="sub-link">12.3.1 Network Firewall vs WAF</a>
+    <a href="#s12.3.2" class="sub-link">12.3.2 Stateful vs Stateless</a>
+    <a href="#s12.3.3" class="sub-link">12.3.3 Security Group/ACL</a>
+    <a href="#s12.3.4" class="sub-link">12.3.4 ZTNA และ SASE</a>
+    <a href="#s12.3.5" class="sub-link">12.3.5 Port และ CAA Records</a>
+    <a href="#s12.4">12.4 DDoS Protection</a>
+    <a href="#s12.4.1" class="sub-link">12.4.1 ประเภท DDoS</a>
+    <a href="#s12.4.2" class="sub-link">12.4.2 สถิติ DDoS 2025-2026</a>
+    <a href="#s12.4.3" class="sub-link">12.4.3 Aisuru-Kimwolf</a>
+    <a href="#s12.4.4" class="sub-link">12.4.4 CDN และ Anycast</a>
+    <a href="#s12.4.5" class="sub-link">12.4.5 Rate Limiting</a>
+    <a href="#s12.4.6" class="sub-link">12.4.6 Auto Scaling/LB</a>
+    <a href="#s12.5">12.5 Network Monitoring</a>
+    <a href="#s12.5.1" class="sub-link">12.5.1 IDS/IPS</a>
+    <a href="#s12.5.2" class="sub-link">12.5.2 Wireshark และ Zeek</a>
+    <a href="#s12.5.3" class="sub-link">12.5.3 SIEM</a>
+    <a href="#s12.5.4" class="sub-link">12.5.4 NetFlow/IPFIX</a>
+    <a href="#s12.5.5" class="sub-link">12.5.5 การบูรณาการ</a>
+    <a href="#labs">กิจกรรมปฏิบัติการ</a>
+    <a href="#keywords">Keywords</a>
+    <a href="#questions">คำถามท้ายบท</a>
+    <a href="#summary">สรุปท้ายบท</a>
+    <a href="#refs">เอกสารอ้างอิง</a>
+  </div>
+</nav>
+<div class="main">
+  <header class="topbar"><a href="index.html" class="topbar-home" aria-label="กลับหน้าแรก">← HOME</a><div class="topbar-title"><strong>บทที่ 12</strong> · Network Security สำหรับซอฟต์แวร์</div><div class="topbar-progress" id="readingProgress">Software Security</div></header>
+  <div class="content" id="content">
+    <div style="text-align:center;padding:2rem 0 1rem">
+      <span style="display:inline-block;background:var(--primary);color:#fff;padding:.25rem 1rem;border-radius:50px;font-size:.85rem;margin-bottom:1rem">บทที่ 12</span>
+      <h1 style="font-size:2.25rem;color:var(--navy);margin-bottom:.5rem;border:none">Network Security สำหรับซอฟต์แวร์</h1>
+      <p style="color:var(--text-muted);font-size:1rem">บรรยาย 2 ชม. + ปฏิบัติการ 2 ชม. | รวม 4 ชม.</p>
+    </div>
+
+<p># CH-12: Network Security สำหรับซอฟต์แวร์</p>
+
+<p><strong>จำนวนชั่วโมง: บรรยาย 2 ชม. + ปฏิบัติการ 2 ชม. | รวม 4 ชม.</strong></p>
+
+<hr>
+
+<h2 id="objectives" style="display:none">วัตถุประสงค์การเรียนรู้</h2>
+<div class="card" style="background:linear-gradient(135deg,var(--navy),#0f172a);color:#fff;border:none">
+<div class="card-header" style="color:#fff">วัตถุประสงค์การเรียนรู้</div>
+<ol style="color:#cbd5e1;padding-left:1.25rem">
+  <li style="margin-bottom:.5rem">อธิบายพื้นฐานด้าน Network Security ที่เกี่ยวข้องกับนักพัฒนา ได้แก่ โมเดล OSI ในแต่ละชั้น ปัญหาด้านความปลอดภัยของ TCP/IP (IP Spoofing, TCP SYN Flood, Session Hijacking) และแนวทางป้องกัน DNS Security (DNSSEC, DNS over HTTPS/TLS)</li>
+  <li style="margin-bottom:.5rem">วิเคราะห์ความแตกต่างระหว่าง TLS 1.2 และ TLS 1.3 ในด้าน Handshake, Cipher Suites, Forward Secrecy และเลือกใช้การตั้งค่าที่ปลอดภัยสำหรับซอฟต์แวร์</li>
+  <li style="margin-bottom:.5rem">ติดตั้งและจัดการ Certificate สำหรับ HTTPS โดยใช้ Let's Encrypt, ACME Protocol และ Certificate Transparency รวมถึงการใช้งาน mTLS สำหรับ Service-to-Service Authentication</li>
+  <li style="margin-bottom:.5rem">จำแนกความแตกต่างระหว่าง Network Firewall, WAF, Stateful vs Stateless Firewall และ Security Group/Network ACL ในระบบคลาวด์ พร้อมอธิบายแนวคิด Zero Trust Network Access (ZTNA)</li>
+  <li style="margin-bottom:.5rem">ระบุประเภทของ DDoS Attack และเลือกใช้มาตรการป้องกันที่เหมาะสม ได้แก่ CDN, Rate Limiting, Auto Scaling และ Load Balancing</li>
+  <li style="margin-bottom:.5rem">ใช้เครื่องมือ Network Monitoring และ Threat Detection เช่น Suricata, Wireshark, Zeek และ SIEM เพื่อตรวจจับและวิเคราะห์ภัยคุกคามทางเครือข่าย</li>
+  <li style="margin-bottom:.5rem">บูรณาการแนวทาง Network Security ในกระบวนการพัฒนาซอฟต์แวร์ ได้แก่ Structured Logging, Distributed Tracing และการตั้งค่า CAA DNS Records</li>
+</ol>
+</div>
+
+<div class="info-box warning"><div class="icon">⚠️</div><div><strong>ขอบเขตและข้อกำหนดด้านจริยธรรมของบทนี้:</strong> บทนี้ครอบคลุมหลักการรักษาความปลอดภัยทางเครือข่ายในมุมมองของนักพัฒนาซอฟต์แวร์ เนื้อหามีตัวอย่างเกี่ยวกับเทคนิคการโจมตีเพื่อการเรียนรู้เชิงป้องกันเท่านั้น กิจกรรมปฏิบัติการทั้งหมดต้องทำในสภาพแวดล้อมที่ได้รับอนุญาต เช่น ห้องปฏิบัติการทดสอบ, เครื่องเสมือน (Virtual Machine) หรือระบบที่อาจารย์จัดให้เท่านั้น <strong>ข้อควรจำ:</strong> ห้ามนำเทคนิคในบทนี้ไปทดสอบกับระบบของบุคคลอื่นโดยไม่ได้รับอนุญาตเป็นลายลักษณ์อักษร การใช้เครื่องมือเช่น nmap, Metasploit, Burp Suite หรือเทคนิคการโจมตีทางเครือข่ายกับระบบที่ไม่ใช่ของตนเองหรือไม่ได้รับอนุญาตอาจมีความผิดทางกฎหมาย พ.ร.บ. ว่าด้วยการกระทำผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560 และที่แก้ไขเพิ่มเติม การทดสอบระบบต้องได้รับอนุญาตเป็นลายลักษณ์อักษรก่อนดำเนินการทุกครั้ง</div></div>
+
+<h2 id="plan">แผนการเรียนรู้สำหรับ 4 ชั่วโมง</h2>
+
+<div class="table-wrap"><table><thead><tr><th>ช่วงเวลา</th><th>หัวข้อ</th><th>เป้าหมายการเรียนรู้</th><th>กิจกรรมในชั้นเรียน</th></tr></thead><tbody><tr><td>ชั่วโมงที่ 1</td><td>พื้นฐาน Network Security, TCP/IP Security Issues, DNS Security</td><td>เข้าใจโมเดล OSI ในชั้น L7/L4/L3, ปัญหาด้านความปลอดภัยของ TCP/IP, DNSSEC และ DNS over HTTPS/TLS</td><td>วิเคราะห์กรณี CVE-2025-6515 (Session Hijacking) และ CVE-2025-66414 (DNS Rebinding)</td></tr><tr><td>ชั่วโมงที่ 2</td><td>TLS/SSL, HTTPS, Firewall และ Network Access Control</td><td>เข้าใจ TLS Handshake 1.2 vs 1.3, Cipher Suites, mTLS, ความแตกต่างของ Firewall แต่ละประเภท, Zero Trust Network Access</td><td>เปรียบเทียบการตั้งค่า TLS และวิเคราะห์ CVE-2025-68121 (Go crypto/tls CVSS 10.0)</td></tr><tr><td>ชั่วโมงที่ 3</td><td>Lab 12.1 และ Lab 12.2</td><td>ฝึกวิเคราะห์ TLS Configuration ด้วย SSL Labs และ testssl.sh, ตั้งค่า WAF ด้วย ModSecurity + OWASP CRS</td><td>วิเคราะห์คะแนน SSL ของเว็บไซต์จริง ทดสอบการป้องกัน SQL Injection/XSS</td></tr><tr><td>ชั่วโมงที่ 4</td><td>Lab 12.3 และ Lab 12.4</td><td>ฝึกจับและวิเคราะห์ Network Traffic ด้วย Wireshark, กำหนด Firewall Rules ด้วย iptables/nftables</td><td>วิเคราะห์ TLS Handshake, HTTP Request, DNS Queries; ตั้งค่า Default Deny Policy</td></tr></tbody></table></div>
+
+<hr>
+
+<h2 id="s12.1">12.1 พื้นฐาน Network Security สำหรับนักพัฒนา</h2>
+
+<p>Network Security เป็นองค์ประกอบที่สำคัญของความปลอดภัยโดยรวมของซอฟต์แวร์ แม้ว่านักพัฒนาซอฟต์แวร์จะไม่ได้ดูแลโครงสร้างพื้นฐานเครือข่ายโดยตรง แต่ความเข้าใจในหลักการด้าน Network Security ช่วยให้นักพัฒนาสามารถเขียนโค้ดที่ปลอดภัยและทำงานร่วมกับทีมโครงสร้างพื้นฐานได้อย่างมีประสิทธิภาพ</p>
+
+<h3 id="s12.1.1">12.1.1 โมเดล OSI กับความปลอดภัยในแต่ละชั้น</h3>
+
+<p>โมเดล OSI (Open Systems Interconnection) แบ่งการสื่อสารออกเป็น 7 ชั้น สำหรับนักพัฒนาซอฟต์แวร์ ชั้นที่เกี่ยวข้องมากที่สุดคือ Layer 7 (Application), Layer 4 (Transport) และ Layer 3 (Network):</p>
+
+<div class="table-wrap"><table><thead><tr><th>ชั้น OSI</th><th>โปรโตคอล</th><th>ความเสี่ยงด้านความปลอดภัย</th><th>แนวทางป้องกันที่นักพัฒนาควรทราบ</th></tr></thead><tbody><tr><td>L7 Application</td><td>HTTP/HTTPS, DNS, SSH, FTP</td><td>Injection, XSS, Broken Auth, API Abuse</td><td>Input Validation, WAF, Authentication ที่ปลอดภัย, Security Headers</td></tr><tr><td>L6 Presentation</td><td>TLS/SSL, MIME</td><td>Protocol Downgrade, Weak Cipher</td><td>ใช้ TLS 1.3 เท่านั้น, ปิด Cipher ที่ไม่ปลอดภัย</td></tr><tr><td>L5 Session</td><td>Sockets, NetBIOS</td><td>Session Hijacking, Session Fixation</td><td>Session ID ที่ปลอดภัย (CSPRNG), HttpOnly/Secure Cookies</td></tr><tr><td>L4 Transport</td><td>TCP, UDP</td><td>SYN Flood, Port Scanning, Connection Hijacking</td><td>SYN Cookies, Rate Limiting, Firewall Rules</td></tr><tr><td>L3 Network</td><td>IP, ICMP</td><td>IP Spoofing, Smurf Attack, DDoS</td><td>Egress Filtering, Ingress Filtering (BCP 38)</td></tr></tbody></table></div>
+
+<p><strong>สำหรับนักพัฒนา:</strong> จุดที่นักพัฒนาควรให้ความสำคัญมากที่สุดคือ Layer 7 (Application) และ Layer 4 (Transport) เนื่องจากเป็นชั้นที่ซอฟต์แวร์สามารถควบคุมได้โดยตรง การเข้ารหัสด้วย TLS อยู่ที่ Layer 6 แต่ถูกเรียกใช้งานจาก Layer 7 ผ่านไลบรารีเช่น OpenSSL, BoringSSL หรือ crypto/tls</p>
+
+<h3 id="s12.1.2">12.1.2 TCP/IP Security Issues</h3>
+
+<p><strong>IP Spoofing:</strong></p>
+<p>IP Spoofing เป็นเทคนิคที่ผู้โจมตีปลอมแปลง Source IP Address ในหัวข้อแพ็กเกต IP เพื่อทำให้ดูเหมือนว่าแพ็กเกตมาจากแหล่งที่เชื่อถือได้ การโจมตีแบบนี้มักใช้ในการโจมตีแบบ Reflection DDoS (เช่น DNS Amplification, NTP Amplification) หรือการโจมตีที่ต้องการหลบเลี่ยง Access Control Lists (ACL)</p>
+
+<p>แนวทางป้องกัน IP Spoofing:</p>
+<ul>
+  <li><strong>Egress Filtering:</strong> กรองแพ็กเกตขาออกที่ Source IP ไม่ตรงกับเครือข่ายภายในตามแนวทาง BCP 38 (RFC 2827)</li>
+  <li><strong>Ingress Filtering:</strong> กรองแพ็กเกตขาเข้าที่ Source IP มาจากเครือข่ายภายในทางอินเทอร์เฟซภายนอก</li>
+  <li><strong>uRPF (Unicast Reverse Path Forwarding):</strong> ตรวจสอบว่า Source IP ของแพ็กเกตสามารถเข้าถึงได้ผ่านอินเทอร์เฟซที่แพ็กเกตเข้ามาจริง</li>
+</ul>
+
+<p><strong>TCP SYN Flood:</strong></p>
+<p>TCP SYN Flood เป็นการโจมตีแบบ Denial of Service (DoS) ที่อาศัยช่องโหว่ในกลไก Three-Way Handshake ของ TCP ผู้โจมตีจะส่งแพ็กเกต SYN จำนวนมากโดยไม่ตอบกลับ ACK ทำให้เซิร์ฟเวอร์ต้องจัดสรรทรัพยากรเพื่อรอการเชื่อมต่อที่ไม่มีวันสมบูรณ์ ซึ่งทำให้ Backlog Queue เต็มและไม่สามารถรับการเชื่อมต่อใหม่ได้</p>
+
+<p>แนวทางป้องกัน TCP SYN Flood:</p>
+<ul>
+  <li><strong>SYN Cookies:</strong> เทคนิคที่เข้ารหัสข้อมูลสถานะการเชื่อมต่อไว้ใน Sequence Number ของ SYN-ACK แทนการจัดสรรทรัพยากรล่วงหน้า ทำให้เซิร์ฟเวอร์ไม่ต้องจองทรัพยากรจนกว่า Three-Way Handshake จะสมบูรณ์ SYN Cookies ถูกเปิดใช้งานเป็นค่าเริ่มต้นใน Linux ตั้งแต่ Kernel 2.6.x</li>
+  <li><strong>SYN Proxy:</strong> ให้ Firewall หรือ Load Balancer รับมือ Three-Way Handshake แทนเซิร์ฟเวอร์จริง</li>
+  <li><strong>เพิ่ม TCP Backlog Queue:</strong> การเพิ่มค่า <code>tcp_max_syn_backlog</code> และ <code>somaxconn</code></li>
+</ul>
+
+<p><strong>Session Hijacking:</strong></p>
+<p>Session Hijacking คือการที่ผู้โจมตีสามารถขโมยหรือคาดเดา Session ID ของผู้ใช้ที่ถูกต้องแล้วนำไปใช้ในการเข้าถึงระบบเสมือนเป็นผู้ใช้นั้น กลไกการโจมตีรวมถึงการดักจับ Cookie ที่ไม่มีการเข้ารหัส, การคาดเดา Session ID ที่อ่อนแอ, หรือ Cross-Site Scripting (XSS) ที่ขโมย Cookie</p>
+
+<p>แนวทางป้องกัน Session Hijacking:</p>
+<ul>
+  <li><strong>CSPRNG (Cryptographically Secure Pseudo-Random Number Generator):</strong> ใช้สำหรับสร้าง Session ID ที่ไม่สามารถคาดเดาได้ การใช้ฟังก์ชันเช่น <code>random_bytes()</code> ใน PHP หรือ <code>crypto/rand</code> ใน Go</li>
+  <li><strong>HttpOnly และ Secure Flags:</strong> ตั้งค่า Cookie Flag <code>HttpOnly</code> เพื่อป้องกันการเข้าถึงผ่าน JavaScript และ <code>Secure</code> เพื่อให้ส่งผ่าน HTTPS เท่านั้น</li>
+  <li><strong>SameSite Flag:</strong> ใช้ <code>SameSite=Lax</code> หรือ <code>SameSite=Strict</code> เพื่อป้องกัน CSRF-based Session Hijacking</li>
+  <li><strong>Session Timeout และ Rotation:</strong> กำหนดอายุ Session และสร้าง Session ID ใหม่หลังจากการยืนยันตัวตนสำเร็จ</li>
+</ul>
+
+<p><strong>CVE-2025-6515 (เผยแพร่: 20 ตุลาคม 2025):</strong> ช่องโหว่ใน oatpp-mcp (MCP SSE endpoint) ที่ส่งคืน Instance Pointer เป็น Session ID ซึ่งไม่ใช่ค่าที่ไม่ซ้ำกันและไม่ปลอดภัยทางด้านการเข้ารหัส ผู้โจมตีที่สามารถเข้าถึงเครือข่ายของเซิร์ฟเวอร์ oatpp-mcp สามารถคาดเดา Session ID ในอนาคตและทำการโจมตีแบบ Session Hijacking เพื่อควบคุม Session ของ Client ที่ถูกต้อง คะแนน CVSS 3.1 อยู่ที่ 6.8 (Medium) จัดอยู่ใน CWE-330 (Use of Insufficiently Random Values)</p>
+
+<h3 id="s12.1.3">12.1.3 DNS Security</h3>
+
+<p>DNS (Domain Name System) เป็นโปรโตคอลพื้นฐานที่ไม่มีกลไกความปลอดภัยในตัว การโจมตี DNS ที่พบบ่อยรวมถึง DNS Spoofing/Cache Poisoning, DNS Tunneling, DNS Amplification DDoS และ DNS Hijacking</p>
+
+<p><strong>DNSSEC (DNS Security Extensions):</strong></p>
+<p>DNSSEC เป็นชุดของส่วนขยายมาตรฐานที่เพิ่มความสมบูรณ์ของข้อมูล (Data Integrity) และการยืนยันแหล่งที่มา (Source Authentication) ให้กับ DNS โดยใช้ Digital Signature ข้อมูล DNS ที่ได้รับการเซ็นชื่อด้วย DNSSEC จะมี Resource Record (RR) พิเศษเช่น RRSIG, DNSKEY, DS และ NSEC</p>
+
+<p>NIST SP 800-81r3 (Secure Domain Name System Deployment Guide ฉบับปรับปรุงครั้งที่ 3) เป็นเอกสารมาตรฐานที่เผยแพร่ในเดือนมีนาคม ค.ศ. 2026 โดย NIST ให้คำแนะนำเกี่ยวกับการปรับใช้ DNS อย่างปลอดภัยในองค์กร ครอบคลุม 3 ด้านหลัก:</p>
+<ol>
+  <li><strong>การปกป้องข้อมูล DNS ด้วย DNSSEC:</strong> ปกป้องความสมบูรณ์ของข้อมูล DNS จากการถูกแก้ไขระหว่างทาง</li>
+  <li><strong>การใช้ Encrypted DNS:</strong> ปกป้องความเป็นส่วนตัวของคำถาม DNS ด้วย DoT, DoH, DoQ</li>
+  <li><strong>บทบาทของ DNS ใน Zero Trust Architecture:</strong> DNS ทำหน้าที่เป็น Policy Enforcement Point (PEP) และแหล่งข้อมูลสำหรับการประเมินคำขอเข้าถึง</li>
+</ol>
+
+<p><strong>ข้อควรทราบ:</strong> DNSSEC ให้เฉพาะการปกป้องความสมบูรณ์ของข้อมูล (Integrity) และการยืนยันตัวตน (Authentication) เท่านั้น ไม่ได้ให้การเข้ารหัส (Encryption) หรือการปกป้องความเป็นส่วนตัว (Privacy) คุณสมบัติเหล่านั้นมาจาก DNS over TLS (DoT) และ DNS over HTTPS (DoH)</p>
+
+<p><strong>DNS over HTTPS (DoH) และ DNS over TLS (DoT):</strong></p>
+
+<div class="table-wrap"><table><thead><tr><th>คุณสมบัติ</th><th>DNS over TLS (DoT)</th><th>DNS over HTTPS (DoH)</th></tr></thead><tbody><tr><td>พอร์ต</td><td>853 (พอร์ตเฉพาะ)</td><td>443 (รวมกับ HTTPS)</td></tr><tr><td>โปรโตคอลพื้นฐาน</td><td>TLS</td><td>HTTPS (HTTP/2 หรือ HTTP/3)</td></tr><tr><td>การระบุตัวตน</td><td>ง่าย — พอร์ตเฉพาะที่ใช้สำหรับ DoT</td><td>ยาก — รวมอยู่ในการรับส่ง HTTPS ปกติ</td></tr><tr><td>การถูกบล็อก</td><td>ง่าย — บล็อกพอร์ต 853</td><td>ยาก — แยกไม่ออกจาก HTTPS ทั่วไป</td></tr><tr><td>มาตรฐาน</td><td>RFC 7858</td><td>RFC 8484</td></tr><tr><td>การใช้งาน</td><td>Enterprise, Stub Resolver</td><td>Browser, Application</td></tr></tbody></table></div>
+
+<p><strong>การทำงานร่วมกันของ DNSSEC และ DoH/DoT:</strong></p>
+<p>การใช้งาน DNSSEC ร่วมกับ DoH/DoT ให้การปกป้องใน 2 มิติที่แตกต่างกัน:</p>
+<ul>
+  <li>DNSSEC ปกป้องความสมบูรณ์ของข้อมูล DNS (ตอบคำถามว่า "ข้อมูลนี้ถูกต้องหรือไม่")</li>
+  <li>DoH/DoT ปกป้องความเป็นส่วนตัวของคำถาม DNS (ตอบคำถามว่า "ใครถามอะไร")</li>
+</ul>
+
+<p><strong>CVE-2025-66414 (เผยแพร่: 2 ธันวาคม 2025):</strong> ช่องโหว่ใน MCP TypeScript SDK ที่ไม่เปิดใช้งาน DNS Rebinding Protection เป็นค่าเริ่มต้นสำหรับเซิร์ฟเวอร์ที่ใช้ HTTP เมื่อเซิร์ฟเวอร์ MCP ที่ใช้ HTTP ทำงานบน localhost โดยไม่มีการยืนยันตัวตน เว็บไซต์ที่ไม่หวังดีสามารถใช้ DNS Rebinding เพื่อเลื่อนนโยบาย Same-Origin และส่งคำขอไปยังเซิร์ฟเวอร์ MCP ในเครื่อง ส่งผลให้ผู้โจมตีสามารถเรียกใช้เครื่องมือหรือเข้าถึงทรัพยากรที่เปิดเผยโดยเซิร์ฟเวอร์ MCP ได้ คะแนน CVSS 3.1 อยู่ที่ 8.1 (High) CWE-1188 (Insecure Default Initialization of Resource) แก้ไขในเวอร์ชัน 1.24.0</p>
+
+<h3 id="s12.1.4">12.1.4 การแบ่ง Network Segments</h3>
+
+<p>การแบ่งเครือข่ายออกเป็นส่วน (Network Segmentation) เป็นแนวทางป้องกันความปลอดภัยที่จำกัดการแพร่กระจายของการโจมตีและลด Attack Surface:</p>
+
+<div class="table-wrap"><table><thead><tr><th>Segment</th><th>คำอธิบาย</th><th>บริการที่อยู่</th><th>แนวทางการเข้าถึง</th></tr></thead><tbody><tr><td>**DMZ (Demilitarized Zone)**</td><td>เครือข่ายที่เปิดให้เข้าถึงจากอินเทอร์เน็ตได้</td><td>Web Server, Reverse Proxy, API Gateway, DNS Server</td><td>เปิดเฉพาะพอร์ตที่จำเป็น (80, 443, 53)</td></tr><tr><td>**Internal Network**</td><td>เครือข่ายภายในที่ไม่เปิดสู่สาธารณะ</td><td>Application Server, Database, Internal API</td><td>เข้าถึงได้จาก DMZ เท่านั้น ไม่เปิดสู่อินเทอร์เน็ต</td></tr><tr><td>**Management Network**</td><td>เครือข่ายสำหรับผู้ดูแลระบบ</td><td>SSH/Bastion Host, Monitoring, Logging, Backup</td><td>จำกัดเฉพาะผู้ดูแลที่ได้รับอนุญาต, ใช้ VPN หรือ Jump Box</td></tr><tr><td>**Development/Test Network**</td><td>เครือข่ายสำหรับพัฒนาและทดสอบ</td><td>Dev/Staging Servers, CI/CD</td><td>แยกจาก Production อย่างเด็ดขาด ไม่มีข้อมูลจริง</td></tr></tbody></table></div>
+
+<p><strong>หลักการสำคัญ:</strong> เซิร์ฟเวอร์ใน DMZ ไม่ควรสามารถเชื่อมต่อไปยัง Internal Network ได้โดยตรง (ต้องผ่าน Reverse Proxy หรือ API Gateway ที่มีการตรวจสอบสิทธิ์) และ Management Network ควรเข้าถึงได้ผ่าน Bastion Host หรือ VPN เท่านั้น</p>
+
+<hr>
+
+<h2 id="s12.2">12.2 TLS/SSL และ HTTPS</h2>
+
+<p>TLS (Transport Layer Security) เป็นโปรโตคอลที่อยู่ระหว่าง Layer 4 (Transport) และ Layer 7 (Application) ในโมเดล OSI ให้การเข้ารหัส (Encryption), การยืนยันตัวตน (Authentication) และความสมบูรณ์ของข้อมูล (Integrity) สำหรับการสื่อสารผ่านเครือข่าย</p>
+
+<h3 id="s12.2.1">12.2.1 TLS Handshake: 1.2 vs 1.3</h3>
+
+<p><strong>TLS 1.2 Handshake (2-RTT):</strong></p>
+<ol>
+  <li><strong>ClientHello:</strong> Client ส่ง TLS Version ที่รองรับ, Cipher Suites ที่รองรับ, และ Client Random</li>
+  <li><strong>ServerHello:</strong> Server เลือก TLS Version และ Cipher Suite, ส่ง Server Random และ Certificate</li>
+  <li><strong>Certificate Verification:</strong> Client ตรวจสอบ Certificate ของ Server</li>
+  <li><strong>Key Exchange:</strong> Client สร้าง Pre-Master Secret, เข้ารหัสด้วย Public Key ของ Server, ส่งให้ Server</li>
+  <li><strong>Change Cipher Spec:</strong> ทั้งสองฝ่ายยืนยันการเปลี่ยนไปใช้พารามิเตอร์ที่เข้ารหัส</li>
+  <li><strong>Finished:</strong> ทั้งสองฝ่ายส่งข้อความยืนยันที่เข้ารหัส</li>
+</ol>
+
+<p><strong>TLS 1.3 Handshake (1-RTT):</strong></p>
+<ol>
+  <li><strong>ClientHello:</strong> Client ส่ง TLS Version, Key Share (สาธารณะ), Cipher Suites ที่รองรับ</li>
+  <li><strong>ServerHello:</strong> Server เลือกพารามิเตอร์, ส่ง Key Share (สาธารณะ), Certificate, และ Finished พร้อมกัน</li>
+  <li><strong>Client Finished:</strong> Client ยืนยันและเริ่มการสื่อสารที่เข้ารหัสได้ทันที</li>
+</ol>
+
+<div class="tab-bar">
+<button class="tab-btn active" onclick="switchTab('tls','table')">ตารางเปรียบเทียบ</button>
+<button class="tab-btn" onclick="switchTab('tls','summary')">สรุปสั้น</button>
+</div>
+<div id="tls-table" class="tab-panel active">
+<div class="table-wrap"><table><thead><tr><th>คุณสมบัติ</th><th>TLS 1.2</th><th>TLS 1.3</th></tr></thead><tbody><tr><td>RTT ในการ Handshake ครั้งแรก</td><td>2-RTT</td><td>1-RTT</td></tr><tr><td>RTT ในการต่อเชื่อมใหม่ (Session Resumption)</td><td>1-RTT</td><td>0-RTT (PSK)</td></tr><tr><td>ความสามารถในการต่อรอง Cipher Suite</td><td>ยืดหยุ่นสูง (เสี่ยงต่อ Downgrade Attack)</td><td>จำกัดเฉพาะชุดที่ปลอดภัยเท่านั้น</td></tr><tr><td>Forward Secrecy</td><td>ไม่บังคับ (สามารถใช้ RSA Key Exchange ที่ไม่มี PFS)</td><td>บังคับ (ต้องใช้ ECDHE หรือ DHE)</td></tr><tr><td>รายการ Cipher Suite</td><td>>300 ชุด</td><td>5 ชุด</td></tr><tr><td>Encrypted Certificate</td><td>ไม่มี</td><td>มี (Encrypted Certificate Message)</td></tr><tr><td>PSK (Pre-Shared Key)</td><td>ต้องกำหนดค่าเอง</td><td>รองรับในตัวสำหรับ Session Resumption และ 0-RTT</td></tr><tr><td>ความซับซ้อนของโปรโตคอล</td><td>สูง (มีหลายขั้นตอนที่อาจมีช่องโหว่)</td><td>ต่ำ (ลดขั้นตอนที่ไม่จำเป็นออก)</td></tr></tbody></table></div>
+</div>
+<div id="tls-summary" class="tab-panel">
+<p><strong>TLS 1.3</strong> ปลอดภัยและมีประสิทธิภาพกว่า TLS 1.2 อย่างมาก:</p>
+<ul>
+  <li>จำนวน RTT ลดลงจาก 2-RTT เหลือ 1-RTT (และ 0-RTT สำหรับ PSK)</li>
+  <li>บังคับใช้ <strong>Forward Secrecy</strong> (ECDHE/DHE เท่านั้น)</li>
+  <li>ลดจำนวน Cipher Suite จาก 300+ เหลือ 5 ชุดที่ปลอดภัย</li>
+  <li>รองรับ <strong>Encrypted Certificate</strong> (ECH)</li>
+  <li>โปรโตคอลเรียบง่ายขึ้น ลดความเสี่ยงจากช่องโหว่</li>
+</ul>
+<p><strong>ข้อแนะนำ:</strong> ใช้ TLS 1.3 เป็นค่าเริ่มต้น, รองรับ TLS 1.2 สำหรับการทำงานร่วมกับระบบเก่า, ปิด TLS 1.0/1.1 โดยเด็ดขาด</p>
+</div>
+
+<p><strong>Forward Secrecy (PFS - Perfect Forward Secrecy):</strong></p>
+<p>TLS 1.3 บังคับใช้ Forward Secrecy โดยในทุกครั้งที่มีการสร้างการเชื่อมต่อ คีย์ชั่วคราว (Ephemeral Key) สำหรับการเข้ารหัสข้อมูลจะถูกสร้างขึ้นใหม่ผ่าน ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) หรือ DHE ทำให้แม้ว่าคีย์ส่วนตัว (Private Key) ของเซิร์ฟเวอร์จะถูกเปิดเผยในภายหลัง ผู้โจมตีก็ไม่สามารถถอดรหัสการสื่อสารที่ถูกบันทึกไว้ก่อนหน้าได้</p>
+
+<p><strong>PSK (Pre-Shared Key) และ 0-RTT ใน TLS 1.3:</strong></p>
+<p>TLS 1.3 รองรับการต่อเชื่อมใหม่โดยใช้ PSK ที่ได้มาจากการเชื่อมต่อก่อนหน้า ทำให้สามารถเริ่มส่งข้อมูลได้ทันทีใน 0-RTT โดยไม่ต้องรอให้ Handshake เสร็จสมบูรณ์ อย่างไรก็ตาม 0-RTT มีความเสี่ยงด้านความปลอดภัยเรื่อง Replay Attack ควรใช้เมื่อการโจมตีแบบ Replay ไม่มีผลกระทบร้ายแรงเท่านั้น</p>
+
+<h3 id="s12.2.2">12.2.2 Cipher Suites ที่ปลอดภัย</h3>
+
+<p>Cipher Suite คือชุดของอัลกอริทึมที่ใช้ใน TLS ประกอบด้วย 4 ส่วน:</p>
+<ol>
+  <li><strong>Key Exchange Algorithm:</strong> ใช้สำหรับแลกเปลี่ยนคีย์ระหว่าง Client และ Server</li>
+  <li><strong>Authentication Algorithm:</strong> ใช้ยืนยันตัวตนของเซิร์ฟเวอร์ (หรือ Client ใน mTLS)</li>
+  <li><strong>Bulk Encryption Cipher:</strong> ใช้เข้ารหัสข้อมูลในการสื่อสาร</li>
+  <li><strong>Message Authentication Code (MAC):</strong> ใช้ตรวจสอบความสมบูรณ์ของข้อมูล</li>
+</ol>
+
+<p><strong>Cipher Suites ที่แนะนำสำหรับนักพัฒนาในปี 2025-2026:</strong></p>
+
+<div class="table-wrap"><table><thead><tr><th>Cipher Suite</th><th>ความปลอดภัย</th><th>ลักษณะเด่น</th></tr></thead><tbody><tr><td>`TLS_AES_256_GCM_SHA384`</td><td>สูงสุด</td><td>AES-256 ในโหมด GCM (Galois/Counter Mode), ใช้ในระดับความปลอดภัยสูง</td></tr><tr><td>`TLS_AES_128_GCM_SHA256`</td><td>สูง</td><td>AES-128 ในโหมด GCM, ประสิทธิภาพดี, แนะนำสำหรับการใช้งานทั่วไป</td></tr><tr><td>`TLS_CHACHA20_POLY1305_SHA256`</td><td>สูง</td><td>ChaCha20 + Poly1305, เหมาะสำหรับอุปกรณ์ที่ไม่มีฮาร์ดแวร์เร่ง AES (เช่น มือถือรุ่นเก่า)</td></tr></tbody></table></div>
+
+<p><strong>Cipher Suites ที่ถูกลบและสาเหตุ:</strong></p>
+
+<div class="table-wrap"><table><thead><tr><th>Cipher Suite เดิม</th><th>สาเหตุที่ถูกลบ</th><th>ปีที่ถูกยกเลิก</th></tr></thead><tbody><tr><td>RC4</td><td>ความอ่อนแอของการเข้ารหัส — มี Bias ทางสถิติที่ทำให้สามารถถอดรหัสได้</td><td>RFC 7465 (2015)</td></tr><tr><td>3DES (Triple DES)</td><td>ขนาด Block 64-bit ที่ทำให้เกิด Birthday Attack ที่ 32GB ของข้อมูลที่เข้ารหัส</td><td>RFC 8996 (2021)</td></tr><tr><td>CBC Mode Ciphers</td><td>ช่องโหว่ Padding Oracle Attack (เช่น POODLE, Lucky13)</td><td>RFC 9325 (2022)</td></tr><tr><td>RSA Key Exchange</td><td>ไม่มี Forward Secrecy — หาก Private Key รั่วไหล การสื่อสารทั้งหมดในอดีตสามารถถอดรหัสได้</td><td>RFC 9325 (2022)</td></tr><tr><td>EXPORT Grade Ciphers</td><td>ขนาดคีย์ที่อ่อนแอ (512-bit) จากการจำกัดการส่งออกของสหรัฐอเมริกา</td><td>RFC 7465 (2015)</td></tr></tbody></table></div>
+
+<h3 id="s12.2.3">12.2.3 การติดตั้งและจัดการ Certificate</h3>
+
+<p><strong>Let's Encrypt และ ACME Protocol:</strong></p>
+<p>Let's Encrypt เป็น Certificate Authority (CA) ที่ให้บริการ Certificate ฟรีสำหรับ HTTPS โดยอัตโนมัติผ่าน ACME (Automatic Certificate Management Environment) Protocol ตามมาตรฐาน RFC 8555</p>
+
+<p>ACME Protocol รองรับการยืนยันการควบคุมโดเมน (Domain Validation) หลายวิธี:</p>
+<ul>
+  <li><strong>HTTP-01 Challenge:</strong> สร้างไฟล์ที่มี Token ที่ URL <code>http://&lt;domain&gt;/.well-known/acme-challenge/&lt;token&gt;</code></li>
+  <li><strong>DNS-01 Challenge:</strong> เพิ่ม TXT Record ใน DNS สำหรับ <code>&lt;challenge&gt;.example.com</code></li>
+  <li><strong>TLS-ALPN-01 Challenge:</strong> ยืนยันผ่าน TLS Handshake บนพอร์ต 443</li>
+</ul>
+
+<p><strong>ตัวอย่างการใช้ Certbot (ACME Client) ขอ Certificate:</strong></p>
+
+<div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code># ขอ Certificate สำหรับ Nginx ด้วย Certbot
+sudo certbot --nginx -d example.com -d www.example.com
+
+# ขอ Certificate โดยใช้ DNS Challenge (สำหรับ Wildcard Certificate)
+sudo certbot certonly --manual --preferred-challenges dns -d "*.example.com"
+
+# ต่ออายุ Certificate โดยอัตโนมัติ
+sudo certbot renew --dry-run</code></pre>
+
+<p><strong>Certificate Transparency (CT):</strong></p>
+<p>Certificate Transparency เป็นระบบบันทึก Certificate ทั้งหมดที่ออกโดย CA ใน Log Server ที่ตรวจสอบได้โดยสาธารณะ ตามมาตรฐาน RFC 6962 ตั้งแต่มกราคม ค.ศ. 2023 เบราว์เซอร์ Chrome และ Safari กำหนดให้ Certificate ที่ออกใหม่ต้องมี Signed Certificate Timestamp (SCT) จาก CT Logs อย่างน้อย 2-3 รายการ มิฉะนั้นจะไม่ถูกเชื่อถือ</p>
+
+<p>ประโยชน์ของ Certificate Transparency สำหรับนักพัฒนา:</p>
+<ul>
+  <li>ตรวจจับ Certificate ที่ออกโดยไม่ได้รับอนุญาต (Mis-issuance)</li>
+  <li>ตรวจสอบว่ามี Certificate สำหรับโดเมนของตนเองที่ออกโดยไม่ได้รับอนุญาตหรือไม่ (ผ่าน CT Search Tools)</li>
+  <li>เพิ่มความโปร่งใสของห่วงโซ่ Certificate (PKI Transparency)</li>
+</ul>
+
+<h3 id="s12.2.4">12.2.4 mTLS สำหรับ Service-to-Service Authentication</h3>
+
+<p>mTLS (Mutual TLS) เป็นรูปแบบของ TLS ที่ทั้งสองฝ่าย (Client และ Server) ต้องแสดง Certificate เพื่อยืนยันตัวตนซึ่งกันและกัน ต่างจาก TLS ทั่วไปที่เฉพาะ Server เท่านั้นที่ต้องแสดง Certificate</p>
+
+<p><strong>การทำงานของ mTLS:</strong></p>
+<ol>
+  <li>Client เชื่อมต่อไปยัง Server ผ่าน TLS</li>
+  <li>Server ส่ง Certificate ของตนเอง</li>
+  <li>Client ตรวจสอบ Certificate ของ Server</li>
+  <li><strong>Server ขอ Certificate จาก Client (CertificateRequest)</strong></li>
+  <li>Client ส่ง Certificate ของตนเอง</li>
+  <li>Server ตรวจสอบ Certificate ของ Client</li>
+  <li>การสื่อสารที่เข้ารหัสจึงจะเริ่มขึ้นได้</li>
+</ol>
+
+<p><strong>การประยุกต์ใช้ mTLS ใน Service Mesh:</strong></p>
+<p>ในสถาปัตยกรรม Service Mesh (เช่น Istio, Linkerd, Consul Connect) mTLS ถูกใช้เป็นกลไกหลักสำหรับการยืนยันตัวตนระหว่าง Service โดยอัตโนมัติ:</p>
+
+<div class="table-wrap"><table><thead><tr><th>ส่วนประกอบ</th><th>หน้าที่</th></tr></thead><tbody><tr><td>**Sidecar Proxy (Envoy)**</td><td>จัดการ mTLS แทน Application โดยไม่ต้องแก้ไขโค้ด</td></tr><tr><td>**Certificate Authority (CA)**</td><td>ออก Certificate สำหรับ Service แต่ละตัว</td></tr><tr><td>**SPIFFE Identity**</td><td>ระบุตัวตนของ Service ในรูปแบบ URI เช่น `spiffe://cluster.local/ns/default/sa/api-service`</td></tr><tr><td>**Certificate Rotation**</td><td>ต่ออายุ Certificate อัตโนมัติทุก 24 ชั่วโมง</td></tr></tbody></table></div>
+
+<p><strong>ข้อควรระวังสำหรับนักพัฒนาเมื่อใช้ mTLS:</strong></p>
+<ul>
+  <li><strong>โครงสร้างพื้นฐาน Certificate:</strong> ต้องมีระบบจัดการ Certificate (Certificate Management System) ที่สามารถออก, ต่ออายุ และเพิกถอน Certificate ได้โดยอัตโนมัติ</li>
+  <li><strong>การหมุนเวียน Certificate (Certificate Rotation):</strong> กำหนดอายุของ Certificate ให้สั้น (เช่น 24 ชั่วโมง) เพื่อลดผลกระทบหาก Certificate รั่วไหล</li>
+  <li><strong>การทดสอบ:</strong> ต้องทดสอบกรณี Certificate หมดอายุ, Certificate ถูกเพิกถอน, และการเชื่อมต่อที่ไม่มี Certificate</li>
+  <li><strong>Monitoring:</strong> ตรวจสอบอัตราความสำเร็จและความล้มเหลวของการเชื่อมต่อ mTLS</li>
+</ul>
+
+<h3 id="s12.2.5">12.2.5 การตรวจสอบ TLS Configuration</h3>
+
+<p><strong>Qualys SSL Labs (ssllabs.com):</strong></p>
+<p>SSL Labs Server Test เป็นเครื่องมือออนไลน์ฟรีที่วิเคราะห์การตั้งค่า TLS ของเว็บเซิร์ฟเวอร์ ให้คะแนนตั้งแต่ A+ ถึง F ครอบคลุม:</p>
+<ul>
+  <li>Certificate Validation และ Certificate Chain</li>
+  <li>TLS Protocol Support (1.2, 1.3)</li>
+  <li>Cipher Suite ที่รองรับ</li>
+  <li>ความปลอดภัยของ Key Exchange</li>
+  <li>การโจมตีแบบ BEAST, POODLE, Heartbleed</li>
+  <li>HSTS และ Security Headers</li>
+</ul>
+
+<p><strong>testssl.sh:</strong></p>
+<p>testssl.sh เป็นเครื่องมือบรรทัดคำสั่งสำหรับตรวจสอบ TLS Configuration ของเซิร์ฟเวอร์ใด ๆ ผ่าน Command Line เหมาะสำหรับการตรวจสอบภายในที่ไม่เปิดสู่อินเทอร์เน็ต:</p>
+
+<div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code># ตรวจสอบ TLS Configuration พื้นฐาน
+testssl.sh https://example.com
+
+# ตรวจสอบช่องโหว่เฉพาะ
+testssl.sh --heartbleed example.com:443
+testssl.sh --poodle example.com:443
+
+# ตรวจสอบ Cipher Suite ที่รองรับ
+testssl.sh --cipher-per-proto example.com:443
+
+# สรุปผลลัพธ์แบบสั้น
+testssl.sh --severity MEDIUM example.com:443
+
+# ตรวจสอบ Certificate
+testssl.sh --certificate example.com:443</code></pre>
+
+<h3 id="s12.2.6">12.2.6 Recent CVEs ที่เกี่ยวข้องกับ TLS</h3>
+
+<div class="interactive">
+<h4>คลิกเพื่อดูรายละเอียด CVE</h4>
+<div class="cve-bar critical" data-detail="CVE-2025-68121 (CVSS 10.0 CRITICAL): ช่องโหว่ใน crypto/tls ของ Go — Certificate validation bypass ระหว่าง Session Resumption เมื่อ Config.Clone ถูกเรียกใช้ แก้ไขใน Go 1.24.13, 1.25.7, 1.26.0-rc.3">CVE-2025-68121: Go crypto/tls Session Resumption (CVSS 10.0)</div>
+<div class="cve-bar low" data-detail="CVE-2026-2673: ช่องโหว่ใน OpenSSL 3.5.x/3.6.x — TLS 1.3 Server เลือก Key Exchange Group ไม่ถูกต้องเมื่อใช้ DEFAULT keyword แก้ไขใน 3.5.6 และ 3.6.2">CVE-2026-2673: OpenSSL Key Exchange Group (Low)</div>
+<div class="cve-bar medium" data-detail="CVE-2026-26994: ช่องโหว่ใน uTLS v1.6.7 และต่ำกว่า — ไม่ตรวจสอบ Downgrade Canary ใน TLS 1.3 ทำให้ผู้โจมตี Downgrade การเชื่อมต่อไปยัง TLS 1.2 ได้ CWE-693 แก้ไขใน v1.7.0">CVE-2026-26994: uTLS Downgrade Protection (Medium)</div>
+<div id="cveResult" class="result" style="margin-top:.65rem">คลิกที่ CVE bar ด้านบนเพื่อดูรายละเอียด</div>
+</div>
+
+<hr>
+
+<h2 id="s12.3">12.3 Firewall และ Network Access Control</h2>
+
+<p>Firewall เป็นระบบรักษาความปลอดภัยทางเครือข่ายที่ตรวจสอบและควบคุมการรับส่งข้อมูลตามกฎที่กำหนดไว้ สำหรับนักพัฒนา การเข้าใจหลักการของ Firewall ช่วยให้สามารถออกแบบระบบที่ทำงานร่วมกับข้อจำกัดด้านเครือข่ายได้อย่างถูกต้อง</p>
+
+<h3 id="s12.3.1">12.3.1 Network Firewall vs Web Application Firewall (WAF)</h3>
+
+<div class="table-wrap"><table><thead><tr><th>คุณสมบัติ</th><th>Network Firewall (L3/L4)</th><th>Web Application Firewall (L7)</th></tr></thead><tbody><tr><td>ชั้น OSI</td><td>Layer 3 (Network) และ Layer 4 (Transport)</td><td>Layer 7 (Application)</td></tr><tr><td>การตรวจสอบ</td><td>Source/Dest IP, Port, Protocol, TCP Flags</td><td>HTTP Headers, Request Body, URL Parameters</td></tr><tr><td>ความเร็ว</td><td>สูงมาก (ตรวจสอบเฉพาะหัวข้อแพ็กเกต)</td><td>ปานกลาง (ต้องถอดรหัส HTTP และวิเคราะห์เนื้อหา)</td></tr><tr><td>การป้องกัน SQL Injection</td><td>ไม่สามารถ</td><td>สามารถ (ด้วย Rule Set เช่น OWASP CRS)</td></tr><tr><td>การป้องกัน XSS</td><td>ไม่สามารถ</td><td>สามารถ</td></tr><tr><td>การป้องกัน DDoS (Layer 3/4)</td><td>สามารถ</td><td>จำกัด</td></tr><tr><td>การป้องกันการโจมตีที่ Protocol Level</td><td>สามารถ</td><td>ไม่สามารถ</td></tr><tr><td>บทบาท</td><td>ควบคุมการเข้าถึงเครือข่าย</td><td>ปกป้อง Web Application จาก Layer 7 Attacks</td></tr></tbody></table></div>
+
+<p><strong>บทบาทที่แตกต่างแต่เสริมกัน:</strong> Network Firewall และ WAF ทำงานในระดับที่แตกต่างกัน Network Firewall ทำหน้าที่เป็นด่านแรกที่กรองการรับส่งข้อมูลตาม IP และ Port ในขณะที่ WAF ทำหน้าที่เป็นด่านที่สองที่วิเคราะห์เนื้อหาของ HTTP/S Request อย่างละเอียดเพื่อตรวจจับการโจมตีที่ซับซ้อนใน Layer 7</p>
+
+<h3 id="s12.3.2">12.3.2 Stateful vs Stateless Firewall</h3>
+
+<p><strong>Stateless Firewall (Packet Filter):</strong></p>
+<ul>
+  <li>ตรวจสอบแต่ละแพ็กเกตอย่างอิสระ โดยไม่พิจารณาสถานะการเชื่อมต่อ</li>
+  <li>เร็วกว่าแต่มีความสามารถในการตรวจจับน้อยกว่า</li>
+  <li>ต้องกำหนดกฎทั้งขาเข้าและขาออกแยกกัน</li>
+  <li>ไม่สามารถตรวจจับแพ็กเกตที่ผิดลำดับหรือแพ็กเกตปลอมในบริบทของการเชื่อมต่อได้</li>
+</ul>
+
+<p><strong>Stateful Firewall:</strong></p>
+<ul>
+  <li>จดจำสถานะของการเชื่อมต่อที่กำลังทำงานอยู่</li>
+  <li>ตัดสินใจอนุญาตหรือปฏิเสธแพ็กเกตโดยพิจารณาจากบริบทของการเชื่อมต่อ</li>
+  <li>สามารถอนุญาตแพ็กเกตตอบกลับโดยอัตโนมัติเมื่อมีการเชื่อมต่อที่ถูกต้องจากภายใน</li>
+  <li>ใช้ทรัพยากรมากกว่า Stateless Firewall</li>
+</ul>
+
+<p><strong>ข้อแนะนำ:</strong> Stateful Firewall เป็นมาตรฐานปัจจุบันสำหรับการใช้งานทั่วไป ในขณะที่ Stateless Firewall เหมาะสำหรับสภาพแวดล้อมที่ต้องการประสิทธิภาพสูงมาก เช่น Data Center หรือ Router ขอบเครือข่าย</p>
+
+<h3 id="s12.3.3">12.3.3 Security Group / Network ACL ในระบบคลาวด์</h3>
+
+<p>ในระบบคลาวด์ (AWS, Azure, GCP) การควบคุมการเข้าถึงเครือข่ายมี 2 ระดับหลัก:</p>
+
+<div class="table-wrap"><table><thead><tr><th>คุณสมบัติ</th><th>Security Group</th><th>Network ACL</th></tr></thead><tbody><tr><td>ระดับ</td><td>Instance-level (Stateful)</td><td>Subnet-level (Stateless)</td></tr><tr><td>Stateful/Stateless</td><td>**Stateful** — อนุญาตตอบกลับอัตโนมัติ</td><td>**Stateless** — ต้องกำหนดกฎขากลับเอง</td></tr><tr><td>กฎ</td><td>อนุญาตเท่านั้น (Allow rules only)</td><td>อนุญาตและปฏิเสธ (Allow + Deny rules)</td></tr><tr><td>การประเมิน</td><td>กฎทั้งหมดถูกประเมินก่อนอนุญาต</td><td>กฎถูกประเมินตามลำดับหมายเลข</td></tr><tr><td>สนับสนุน</td><td>AWS, Azure (NSG), GCP (Firewall Rules)</td><td>AWS, Azure (ไม่เทียบเท่าโดยตรง), GCP (ไม่เทียบเท่า)</td></tr></tbody></table></div>
+
+<p><strong>แนวปฏิบัติที่ดีสำหรับ Security Group ในระบบคลาวด์:</strong></p>
+
+<div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code># AWS CLI — สร้าง Security Group สำหรับ Web Server
+aws ec2 create-security-group \
+    --group-name web-server-sg \
+    --description "Security group for web servers" \
+    --vpc-id vpc-xxxxx
+
+# เปิดพอร์ต 443 (HTTPS) จากอินเทอร์เน็ต
+aws ec2 authorize-security-group-ingress \
+    --group-id sg-xxxxx \
+    --protocol tcp \
+    --port 443 \
+    --cidr 0.0.0.0/0
+
+# เปิดพอร์ต 22 (SSH) จาก IP ของผู้ดูแลเท่านั้น
+aws ec2 authorize-security-group-ingress \
+    --group-id sg-xxxxx \
+    --protocol tcp \
+    --port 22 \
+    --cidr 203.0.113.0/24</code></pre>
+
+<p><strong>หลักการ Default Deny:</strong> ทั้ง Security Group และ Network ACL ควรเริ่มต้นด้วยการปฏิเสธทุกการเชื่อมต่อ (Default Deny) แล้วค่อยเปิดเฉพาะพอร์ตและแหล่งที่มาที่จำเป็นเท่านั้น</p>
+
+<h3 id="s12.3.4">12.3.4 Zero Trust Network Access (ZTNA) และ SASE</h3>
+
+<p><strong>Zero Trust Network Access (ZTNA):</strong></p>
+<p>ZTNA เป็นแนวทางด้านความปลอดภัยที่ยึดหลัก "Never Trust, Always Verify" หมายถึงไม่เชื่อถืออุปกรณ์หรือผู้ใช้ใด ๆ โดยอัตโนมัติแม้ว่าจะอยู่ในเครือข่ายภายในก็ตาม การเข้าถึงทรัพยากรทุกครั้งต้องได้รับการตรวจสอบสิทธิ์และการอนุญาต</p>
+
+<div class="table-wrap"><table><thead><tr><th>หลักการ</th><th>คำอธิบาย</th></tr></thead><tbody><tr><td>**Never Trust, Always Verify**</td><td>ไม่เชื่อถืออุปกรณ์หรือผู้ใช้ใด ๆ โดยปริยาย ตรวจสอบทุกครั้งที่เข้าถึง</td></tr><tr><td>**Least Privilege Access**</td><td>ให้สิทธิ์เฉพาะที่จำเป็นต่อการทำงานเท่านั้น</td></tr><tr><td>**Microsegmentation**</td><td>แบ่งเครือข่ายออกเป็นส่วนย่อยเพื่อจำกัดการเคลื่อนที่ในแนวราบ (Lateral Movement)</td></tr><tr><td>**Continuous Verification**</td><td>ตรวจสอบพฤติกรรมและความเสี่ยงอย่างต่อเนื่อง ไม่ใช่แค่ตอนเริ่มต้นเชื่อมต่อ</td></tr><tr><td>**Identity-Centric**</td><td>ควบคุมการเข้าถึงตาม Identity ไม่ใช่ตาม IP Address</td></tr></tbody></table></div>
+
+<p><strong>การเปรียบเทียบ ZTNA กับ VPN แบบดั้งเดิม:</strong></p>
+
+<div class="table-wrap"><table><thead><tr><th>คุณสมบัติ</th><th>VPN แบบดั้งเดิม</th><th>ZTNA</th></tr></thead><tbody><tr><td>การเข้าถึง</td><td>เข้าถึงเครือข่ายทั้งหมด (Network-level Access)</td><td>เข้าถึงเฉพาะ Application ที่ได้รับอนุญาต (Application-level Access)</td></tr><tr><td>ความเสี่ยง</td><td>หากเชื่อมต่อ VPN ได้ เข้าถึงทรัพยากรภายในได้ทั้งหมด</td><td>เข้าถึงได้เฉพาะ Application ที่ได้รับอนุญาตเท่านั้น</td></tr><tr><td>ตำแหน่ง</td><td>ต้องติดตั้ง Client Software</td><td>ใช้ Browser เป็นหลัก (Clientless) หรือ Agent เฉพาะ</td></tr><tr><td>ประสิทธิภาพ</td><td>การรับส่งข้อมูลทั้งหมดผ่าน VPN Gateway</td><td>Traffic ตรงไปยัง Application (Split Tunneling)</td></tr><tr><td>การปรับขนาด</td><td>ต้องขยาย VPN Gateway</td><td>ปรับขนาดได้ตามความต้องการ (Cloud-native)</td></tr></tbody></table></div>
+
+<p><strong>SASE (Secure Access Service Edge):</strong></p>
+<p>SASE เป็นสถาปัตยกรรมที่รวม Network Security Functions (SWG, CASB, ZTNA) และ Wide Area Network (WAN) Capabilities (SD-WAN) เป็นบริการบนคลาวด์เดียว ตัวอย่างผู้ให้บริการ: Cloudflare One, Zscaler, Netskope, Palo Alto Prisma Access</p>
+
+<h3 id="s12.3.5">12.3.5 การเปิด Port ที่จำเป็นเท่านั้น และ CAA DNS Records</h3>
+
+<p><strong>หลักการเปิด Port ที่จำเป็น:</strong></p>
+<ul>
+  <li>เปิดเฉพาะพอร์ตที่บริการต้องการใช้งานจริง (Default Deny)</li>
+  <li>จำกัดแหล่งที่มาที่สามารถเข้าถึงได้ (Source IP Restriction)</li>
+  <li>ใช้ Microsegmentation เพื่อจำกัดการสื่อสารระหว่าง Service</li>
+</ul>
+
+<div class="table-wrap"><table><thead><tr><th>บริการ</th><th>พอร์ต (TCP)</th><th>หมายเหตุ</th></tr></thead><tbody><tr><td>HTTPS</td><td>443</td><td>เปิดจากอินเทอร์เน็ต</td></tr><tr><td>HTTP</td><td>80</td><td>เปิดจากอินเทอร์เน็ต (สำหรับ Redirect ไป HTTPS เท่านั้น)</td></tr><tr><td>SSH</td><td>22</td><td>เปิดเฉพาะจาก Bastion Host หรือ VPN</td></tr><tr><td>Database (MySQL/PostgreSQL)</td><td>3306/5432</td><td>เปิดเฉพาะจาก Application Server เท่านั้น</td></tr><tr><td>Redis</td><td>6379</td><td>เปิดเฉพาะจาก Application Server ไม่เปิดสู่อินเทอร์เน็ต</td></tr><tr><td>Kubernetes API</td><td>6443</td><td>เปิดเฉพาะจากผู้ดูแลระบบ</td></tr></tbody></table></div>
+
+<p><strong>CAA (Certification Authority Authorization) DNS Records:</strong></p>
+<p>CAA DNS Record (RFC 6844) เป็น Resource Record ใน DNS ที่ระบุว่า Certificate Authority (CA) รายใดบ้างที่ได้รับอนุญาตให้ออก Certificate สำหรับโดเมนนั้น การตั้งค่า CAA Record ช่วยป้องกันการออก Certificate โดยไม่ได้รับอนุญาตจาก CA ที่ไม่พึงประสงค์</p>
+
+<div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code># CAA Record — อนุญาตเฉพาะ Let's Encrypt เท่านั้น
+example.com.  CAA  0 issue "letsencrypt.org"
+
+# CAA Record — อนุญาต CA หลายราย
+example.com.  CAA  0 issue "letsencrypt.org"
+example.com.  CAA  0 issue "digicert.com"
+
+# CAA Record — ระบุรายงานการละเมิด
+example.com.  CAA  0 iodef "mailto:security@example.com"</code></pre>
+
+<hr>
+
+<h2 id="s12.4">12.4 DDoS Protection</h2>
+
+<p>Distributed Denial of Service (DDoS) Attack เป็นการโจมตีที่ทำให้ระบบเป้าหมายไม่สามารถให้บริการได้ตามปกติ โดยใช้ทรัพยากรจากอุปกรณ์จำนวนมากที่ถูกควบคุม (Botnet)</p>
+
+<h3 id="s12.4.1">12.4.1 ประเภทของ DDoS Attack</h3>
+
+<div class="table-wrap"><table><thead><tr><th>ประเภท</th><th>ชั้น OSI</th><th>เป้าหมาย</th><th>ตัวอย่าง</th></tr></thead><tbody><tr><td>**Volume-based (Volumetric)**</td><td>L3/L4</td><td>ทำให้ Bandwidth อิ่มตัว (Bandwidth Saturation)</td><td>UDP Flood, ICMP Flood, DNS Amplification, NTP Amplification</td></tr><tr><td>**Protocol/State-exhaustion**</td><td>L3/L4</td><td>ทำให้ทรัพยากรของเซิร์ฟเวอร์หรืออุปกรณ์เครือข่ายหมด</td><td>SYN Flood, ACK Flood, Ping of Death, HTTP/2 Rapid Reset</td></tr><tr><td>**Application Layer**</td><td>L7</td><td>ทำให้ทรัพยากรของ Web Application หมด</td><td>HTTP Flood, Slowloris, POST Flood, WordPress XML-RPC Flood</td></tr></tbody></table></div>
+
+<p><strong>Volume-based Attacks:</strong></p>
+<ul>
+  <li><strong>DNS Amplification:</strong> ผู้โจมตีส่งคำถาม DNS แบบเปิด (Open Resolver) โดยปลอม Source IP เป็น IP ของเหยื่อ คำตอบ DNS อาจใหญ่กว่าคำถามถึง 50-100 เท่า</li>
+  <li><strong>UDP Flood:</strong> ส่ง UDP Packet จำนวนมากไปยังพอร์ตสุ่มของเหยื่อ ทำให้เซิร์ฟเวอร์ต้องตอบกลับด้วย ICMP Destination Unreachable</li>
+  <li><strong>Carpet Bombing:</strong> โจมตีหลาย IP Address พร้อมกันเพื่อหลบเลี่ยงการตรวจจับจากระบบป้องกันที่ดูเฉพาะราย IP</li>
+</ul>
+
+<p><strong>Protocol/State-exhaustion Attacks:</strong></p>
+<ul>
+  <li><strong>SYN Flood:</strong> ส่ง TCP SYN Packet จำนวนมากโดยไม่ตอบกลับ ACK ทำให้ Backlog Queue เต็ม</li>
+  <li><strong>HTTP/2 Rapid Reset (CVE-2023-44487):</strong> เป็นการโจมตีที่ใช้คุณสมบัติ Multiplexed Streams ของ HTTP/2 โดย Client ส่ง Request แล้วยกเลิกทันทีด้วย RST_STREAM Frame ทำให้เซิร์ฟเวอร์ต้องทำงานหนักในการสร้างและทำลาย Stream โดยไม่กระทบกับขีดจำกัดของ Active Streams ต่อหนึ่งเชื่อมต่อ คะแนน CVSS 3.1 อยู่ที่ 7.5 (High) ถูกใช้ในการโจมตีจริงระหว่างเดือนสิงหาคมถึงตุลาคม 2023 และส่งผลกระทบต่อ Web Server ทุกรายที่ใช้งาน HTTP/2</li>
+
+<div class="cve-bar high" data-detail="CVE-2023-44487 (HTTP/2 Rapid Reset, CVSS 7.5): การโจมตีที่ใช้ Multiplexed Streams ของ HTTP/2 เพื่อทำให้ Server ทำงานหนัก ถูกใช้ในการโจมตีจริง Q3-Q4 2023 ส่งผลกระทบต่อ Web Server ทุกรายที่ใช้ HTTP/2">CVE-2023-44487: HTTP/2 Rapid Reset Attack (CVSS 7.5)</div>
+</ul>
+
+<p><strong>Application Layer Attacks:</strong></p>
+<ul>
+  <li><strong>HTTP Flood:</strong> ส่ง HTTP GET/POST Request จำนวนมากที่ดูเหมือนการเข้าชมปกติ</li>
+  <li><strong>Slowloris:</strong> ส่ง HTTP Request แบบช้า ๆ โดยการส่งข้อมูลบางส่วนแล้วหยุด ทำให้เซิร์ฟเวอร์ต้องรอการเชื่อมต่อนาน</li>
+  <li><strong>WordPress XML-RPC Flood:</strong> ใช้ฟังก์ชัน <code>system.multicall</code> ของ WordPress XML-RPC เพื่อส่ง Request จำนวนมากผ่านครั้งเดียว</li>
+</ul>
+
+<h3 id="s12.4.2">12.4.2 สถิติ DDoS ปี 2025-2026</h3>
+
+<p>ตามรายงาน Cloudflare Q4 2025 DDoS Threat Report (กุมภาพันธ์ 2026):</p>
+
+<div class="table-wrap"><table><thead><tr><th>สถิติ</th><th>ค่า</th></tr></thead><tbody><tr><td>จำนวนการโจมตี DDoS ทั้งปี 2025</td><td>47.1 ล้านครั้ง (เพิ่มขึ้น 121% จากปี 2024)</td></tr><tr><td>การเพิ่มขึ้นระหว่างปี 2023-2025</td><td>236%</td></tr><tr><td>ค่าเฉลี่ยการโจมตีต่อชั่วโมง</td><td>5,376 ครั้ง (3,925 Network-layer + 1,451 HTTP-layer)</td></tr><tr><td>Network-layer DDoS ปี 2025</td><td>34.4 ล้านครั้ง (เพิ่มขึ้น 3 เท่าจาก 11.4 ล้านครั้งในปี 2024)</td></tr><tr><td>Hyper-volumetric Attack (Q4 2025)</td><td>เพิ่มขึ้น 40% จาก Q3 2025</td></tr><tr><td>DDoS Attack ที่ใหญ่ที่สุดที่ถูกบรรเทา</td><td>31.4 Tbps (นาน 35 วินาที)</td></tr><tr><td>ขนาด HTTP DDoS สูงสุด</td><td>มากกว่า 200 ล้าน Request ต่อวินาที</td></tr><tr><td>ขนาด Packet Rate สูงสุด</td><td>14.1 พันล้าน Packet ต่อวินาที (สถิติ Q3 2025)</td></tr></tbody></table></div>
+
+<h3 id="s12.4.3">12.4.3 Aisuru-Kimwolf Botnet</h3>
+
+<p>Aisuru-Kimwolf Botnet เป็นเครือข่ายอุปกรณ์ที่ติดมัลแวร์ที่มีขนาดใหญ่ที่สุดเครือข่ายหนึ่งในประวัติศาสตร์ DDoS:</p>
+
+<p><strong>ข้อมูลสำคัญ:</strong></p>
+<ul>
+  <li><strong>ขนาด:</strong> ประมาณ 1-4 ล้านอุปกรณ์ที่ติดเชื้อ โดย Kimwolf (ส่วนของ Android TV Boxes) มีประมาณ 2 ล้านอุปกรณ์</li>
+  <li><strong>กำลังการโจมตี:</strong> ทำลายสถิติ DDoS ถึง 31.4 Tbps (Q4 2025), 14.1 Bpps (Q3 2025) และ HTTP DDoS มากกว่า 200 Mpps</li>
+  <li><strong>การแพร่กระจาย:</strong> Kimwolf เติบโตจาก 800,000 เป็น 2 ล้านอุปกรณ์ภายในไม่กี่สัปดาห์ในเดือนตุลาคม 2025</li>
+  <li><strong>ประเทศที่ติดเชื้อมากที่สุด:</strong> เวียดนาม, บราซิล, อินเดีย, ซาอุดีอาระเบีย</li>
+  <li><strong>การขัดขวางโดย Lumen Black Lotus Labs:</strong> บล็อกเซิร์ฟเวอร์ C2 มากกว่า 550 เครื่องภายใน 4 เดือน</li>
+  <li><strong>ชื่อแคมเปญ:</strong> "The Night Before Christmas" — โจมตีในช่วงไตรมาสที่ 4 ของปี 2025</li>
+  <li><strong>เทคนิค:</strong> Kimwolf ใช้ DNS over TLS เพื่อซ่อนการสื่อสาร, ใช้ Elliptic Curve Digital Signature สำหรับยืนยันคำสั่ง C2 และใช้ EtherHiding บน Blockchain Domain</li>
+</ul>
+
+<h3 id="s12.4.4">12.4.4 CDN Integration และ Anycast Routing</h3>
+
+<p><strong>CDN (Content Delivery Network) และ Anycast Routing:</strong></p>
+<p>CDN ช่วยป้องกัน DDoS โดยกระจายปริมาณการรับส่งข้อมูลไปยังเซิร์ฟเวอร์หลายแห่งทั่วโลกผ่าน Anycast Routing ซึ่งทำให้ IP Address เดียวสามารถประกาศจากหลายตำแหน่ง และการรับส่งข้อมูลจะถูกส่งไปยังตำแหน่งที่ใกล้ที่สุด</p>
+
+<div class="table-wrap"><table><thead><tr><th>ผู้ให้บริการ CDN</th><th>จุดเด่นด้าน DDoS Protection</th></tr></thead><tbody><tr><td>**Cloudflare**</td><td>ป้องกัน DDoS อัตโนมัติ, ขนาดเครือข่าย 330+ Tbps, Magic Transit สำหรับ Network-layer DDoS</td></tr><tr><td>**Akamai**</td><td>Prolexic Routed สำหรับ Network-layer และ App & API Protector สำหรับ Layer 7</td></tr><tr><td>**AWS CloudFront** + AWS Shield</td><td>AWS Shield Standard ฟรี, AWS Shield Advanced ($3,000/เดือน) สำหรับ DDoS Mitigation ขั้นสูง</td></tr><tr><td>**Google Cloud Armor**</td><td>ปรับใช้กับ Cloud Load Balancing, รองรับ WAF และ DDoS Protection</td></tr></tbody></table></div>
+
+<p><strong>ข้อแนะนำสำหรับนักพัฒนา:</strong> การวาง CDN ไว้หน้า Web Application ช่วยดูดซับ DDoS ใน Layer 3/4 และ Layer 7 ก่อนที่การรับส่งข้อมูลจะไปถึงเซิร์ฟเวอร์จริง</p>
+
+<h3 id="s12.4.5">12.4.5 Rate Limiting และ Throttling</h3>
+
+<p>Rate Limiting เป็นกลไกที่จำกัดจำนวน Request ที่ Client หรือ IP Address สามารถส่งได้ภายในช่วงเวลาที่กำหนด</p>
+
+<p><strong>ตัวอย่างการใช้งาน Rate Limiting ใน Web Application:</strong></p>
+
+<div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">python</div><pre class="code-block"><code># Python Flask — Rate Limiting ด้วย Flask-Limiter
+from flask import Flask
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
+app = Flask(__name__)
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"]
+)
+
+@app.route("/api/login")
+@limiter.limit("5 per minute")
+def login():
+    # API สำหรับเข้าสู่ระบบ
+    return {"status": "login endpoint"}</code></pre>
+
+<div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">yaml</div><pre class="code-block"><code># NGINX — Rate Limiting
+http {
+    # กำหนด Zone สำหรับ Rate Limiting (10MB = 160,000 sessions)
+    limit_req_zone $binary_remote_addr zone=login:10m rate=5r/m;
+    
+    server {
+        location /api/login {
+            limit_req zone=login burst=10 nodelay;
+            proxy_pass http://backend;
+        }
+    }
+}</code></pre>
+
+<p><strong>แนวทางปฏิบัติสำหรับ Rate Limiting:</strong></p>
+<ul>
+  <li>ใช้ Rate Limiting ที่เข้มงวดกว่าสำหรับ API Endpoint ที่สำคัญ (Login, Register, Password Reset)</li>
+  <li>แจ้ง Client ด้วย HTTP Header <code>Retry-After</code> และ <code>X-RateLimit-*</code> Headers</li>
+  <li>ตอบกลับด้วย HTTP Status Code 429 (Too Many Requests) เมื่อถึงขีดจำกัด</li>
+  <li>พิจารณาการใช้ Token Bucket หรือ Leaky Bucket Algorithm</li>
+</ul>
+
+<h3 id="s12.4.6">12.4.6 Auto Scaling และ Load Balancing</h3>
+
+<p><strong>Auto Scaling:</strong></p>
+<p>Auto Scaling เพิ่มหรือลดจำนวนเซิร์ฟเวอร์ตามปริมาณการรับส่งข้อมูล ช่วยรับมือกับ DDoS ที่มีขนาดไม่เกินระดับที่สามารถจัดการได้ (ไม่สามารถรับมือกับ Volumetric DDoS ขนาดใหญ่ที่ทำให้โครงสร้างเครือข่ายอิ่มตัว)</p>
+
+<p><strong>ข้อจำกัดของ Auto Scaling ในการรับมือ DDoS:</strong></p>
+<ul>
+  <li>ไม่สามารถช่วยได้เมื่อ Bandwidth ของเครือข่ายถูกทำให้อิ่มตัว</li>
+  <li>การเปิดเซิร์ฟเวอร์เพิ่มในช่วง DDoS อาจเพิ่มค่าใช้จ่ายโดยไม่จำเป็น</li>
+  <li>ควรตั้งค่า Scaling Threshold ที่สูงกว่าปกติเพื่อป้องกันการเปิดปิดเซิร์ฟเวอร์บ่อยเกินไป (Thundering Herd)</li>
+</ul>
+
+<p><strong>Load Balancing:</strong></p>
+<p>Load Balancer กระจายปริมาณการรับส่งข้อมูลไปยังเซิร์ฟเวอร์หลายตัว มี 3 ประเภทหลัก:</p>
+
+<div class="table-wrap"><table><thead><tr><th>ประเภท</th><th>ชั้น</th><th>ตัวอย่าง</th><th>DDoS Protection</th></tr></thead><tbody><tr><td>Hardware Load Balancer</td><td>L4-L7</td><td>F5 BIG-IP, Citrix ADC</td><td>มีความสามารถ DDoS Protection ในตัว</td></tr><tr><td>Cloud Load Balancer</td><td>L4-L7</td><td>AWS ALB/NLB, GCP HTTP LB, Azure LB</td><td>บูรณาการกับ Cloud DDoS Protection</td></tr><tr><td>Software Load Balancer</td><td>L4-L7</td><td>NGINX, HAProxy, Envoy</td><td>ต้องกำหนดค่า Rate Limiting และ Connection Limiting ด้วยตนเอง</td></tr></tbody></table></div>
+
+<hr>
+
+<h2 id="s12.5">12.5 Network Monitoring และ Threat Detection</h2>
+
+<p>การตรวจสอบเครือข่าย (Network Monitoring) ช่วยให้นักพัฒนาและทีมปฏิบัติการสามารถตรวจจับพฤติกรรมผิดปกติและภัยคุกคามที่เกิดขึ้นบนเครือข่ายได้</p>
+
+<h3 id="s12.5.1">12.5.1 Intrusion Detection/Prevention Systems (IDS/IPS)</h3>
+
+<p>IDS (Intrusion Detection System) ตรวจจับการบุกรุกและแจ้งเตือน ในขณะที่ IPS (Intrusion Prevention System) สามารถบล็อกการโจมตีได้โดยอัตโนมัติ</p>
+
+<p><strong>Suricata vs Snort:</strong></p>
+
+<div class="table-wrap"><table><thead><tr><th>คุณสมบัติ</th><th>Suricata</th><th>Snort</th></tr></thead><tbody><tr><td>เทคโนโลยีหลัก</td><td>Multi-threaded (ใช้หลาย CPU Core)</td><td>Single-threaded</td></tr><tr><td>ประสิทธิภาพ</td><td>รองรับสูงถึง 50+ Gbps</td><td>รองรับสูงถึง 10+ Gbps</td></tr><tr><td>ความสามารถเพิ่มเติม</td><td>File Extraction, TLS Inspection, HTTP Logging</td><td>IPS Mode (Inline)</td></tr><tr><td>GPU Acceleration</td><td>รองรับ CUDA</td><td>ไม่รองรับ</td></tr><tr><td>อัปเดตกฎ</td><td>ET (Emerging Threats), ET Pro</td><td>VRT (Talos), ET</td></tr><tr><td>การตั้งโปรโตคอล</td><td>HTTP, TLS, DNS, SMTP พร้อม Logger ในตัว</td><td>ต้องใช้ Plugin เพิ่ม</td></tr><tr><td>**ข้อแนะนำ**</td><td>**แนะนำสำหรับการติดตั้งใหม่**</td><td>เหมาะสำหรับระบบที่ใช้งานอยู่แล้วและอัปเกรด</td></tr></tbody></table></div>
+
+<p><strong>การติดตั้ง Suricata:</strong></p>
+
+<div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code># ติดตั้ง Suricata บน Ubuntu
+sudo apt-get install suricata
+
+# กำหนดค่า Network Interface ใน /etc/suricata/suricata.yaml
+# af-packet:
+#   - interface: eth0
+
+# ดาวน์โหลด Emerging Threats Rules
+sudo suricata-update
+
+# รัน Suricata ในโหมด IDS
+sudo suricata -c /etc/suricata/suricata.yaml -i eth0
+
+# ตรวจสอบ Log
+sudo tail -f /var/log/suricata/fast.log</code></pre>
+
+<p><strong>การใช้งาน Suricata สำหรับนักพัฒนา:</strong></p>
+
+<p>Suricata สามารถถูกบูรณาการกับเครื่องมือพัฒนาและการทำงานของทีมได้:</p>
+<ul>
+  <li><strong>Eve JSON Log:</strong> Suricata สามารถส่งออก Log ในรูปแบบ JSON ที่เครื่องมือ SIEM และ Log Management สามารถอ่านได้</li>
+  <li><strong>HTTP Log:</strong> บันทึก HTTP Request ทั้งหมดที่ผ่านเครือข่าย ช่วยในการวิเคราะห์ API Abuse</li>
+  <li><strong>TLS Log:</strong> บันทึก TLS Handshake — ตรวจสอบ Certificate ที่ไม่ถูกต้องหรือไม่น่าเชื่อถือ</li>
+  <li><strong>File Extraction:</strong> สกัดไฟล์ที่ส่งผ่านเครือข่ายเพื่อตรวจสอบ Malware</li>
+</ul>
+
+<h3 id="s12.5.2">12.5.2 Network Traffic Analysis: Wireshark และ Zeek</h3>
+
+<p><strong>Wireshark:</strong></p>
+<p>Wireshark เป็นเครื่องมือ Deep Packet Inspection (DPI) แบบกราฟิกที่ใช้สำหรับวิเคราะห์แพ็กเกตเครือข่ายโดยละเอียด:</p>
+
+<div class="table-wrap"><table><thead><tr><th>การใช้งาน</th><th>คำอธิบาย</th></tr></thead><tbody><tr><td>**Filter แบบ Capture**</td><td>กรองแพ็กเกตก่อนบันทึก: `tcp port 443`, `host 192.168.1.1`</td></tr><tr><td>**Filter แบบ Display**</td><td>กรองแพ็กเกตที่แสดงผล: `http.request.method == "POST"`, `tls.handshake.type == 1`</td></tr><tr><td>**Follow TCP Stream**</td><td>ดูการสื่อสารทั้งหมดในการเชื่อมต่อ TCP หนึ่ง ๆ</td></tr><tr><td>**Statistics**</td><td>Protocol Hierarchy, IO Graph, Conversations</td></tr></tbody></table></div>
+
+<p><strong>ตัวอย่าง Filter ใน Wireshark สำหรับนักพัฒนา:</strong></p>
+
+<div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">wireshark</div><pre class="code-block"><code># ดูเฉพาะ HTTP Request
+http.request
+
+# ดู TLS Handshake
+tls.handshake.type == 1          # ClientHello
+tls.handshake.type == 2          # ServerHello
+tls.handshake.type == 11         # Certificate
+
+# ดูเฉพาะ Traffic ของ IP ใด IP หนึ่ง
+ip.addr == 192.168.1.100
+
+# ดู DNS Query
+dns.flags.response == 0
+
+# ดู HTTP POST Request
+http.request.method == "POST"
+
+# ดู HTTP Response ที่มี Status Code 4xx หรือ 5xx
+http.response.code &gt;= 400</code></pre>
+
+<p><strong>Zeek (เดิมชื่อ Bro):</strong></p>
+<p>Zeek เป็น Network Monitoring Framework ที่แตกต่างจาก IDS/IPS ตรงที่ไม่เน้นการตรวจจับตาม Signature แต่เน้นการบันทึก Log ที่มีรายละเอียดสูงสำหรับการวิเคราะห์ Forensic:</p>
+
+<div class="table-wrap"><table><thead><tr><th>Log ของ Zeek</th><th>คำอธิบาย</th></tr></thead><tbody><tr><td>`conn.log`</td><td>บันทึกทุกการเชื่อมต่อ TCP/UDP/ICMP (Source IP, Dest IP, Port, Bytes, Duration)</td></tr><tr><td>`http.log`</td><td>บันทึก HTTP Request/Response ทุกรายการ (Method, URI, Host, Status Code, User-Agent)</td></tr><tr><td>`ssl.log`</td><td>บันทึก TLS Handshake (TLS Version, Cipher Suite, Certificate, Server Name)</td></tr><tr><td>`dns.log`</td><td>บันทึก DNS Query/Response ทุกรายการ (Query, Answer, RTT)</td></tr><tr><td>`notice.log`</td><td>แจ้งเตือนกิจกรรมที่น่าสนใจ เช่น Scanning, Brute Force</td></tr><tr><td>`files.log`</td><td>บันทึกไฟล์ที่ถูกส่งผ่านเครือข่าย</td></tr></tbody></table></div>
+
+<p><strong>ความแตกต่างระหว่าง Wireshark และ Zeek:</strong></p>
+
+<div class="table-wrap"><table><thead><tr><th>คุณสมบัติ</th><th>Wireshark</th><th>Zeek</th></tr></thead><tbody><tr><td>การทำงาน</td><td>Real-time Interactive Analysis</td><td>Passive Monitoring + Log Generation</td></tr><tr><td>การจัดเก็บ</td><td>เก็บ Packet Capture (.pcap) ไฟล์ใหญ่</td><td>เก็บ Log ที่มีขนาดเล็กกว่าและวิเคราะห์ง่ายกว่า</td></tr><tr><td>การวิเคราะห์</td><td>Deep Packet Inspection แบบละเอียด (ทีละแพ็กเกต)</td><td>สรุป Traffic ในรูปแบบ Log ที่มีโครงสร้าง</td></tr><tr><td>เหมาะกับ</td><td>การ Debug ปัญหาเฉพาะจุด</td><td>การตรวจสอบ Forensic และการวิเคราะห์ขนาดใหญ่</td></tr><tr><td>การใช้งานของนักพัฒนา</td><td>ทดสอบ API, ตรวจสอบ TLS Handshake, Debug</td><td>วิเคราะห์พฤติกรรมเครือข่าย, หา Indicators of Compromise</td></tr></tbody></table></div>
+
+<h3 id="s12.5.3">12.5.3 SIEM (Security Information and Event Management)</h3>
+
+<p>SIEM รวบรวม Log จากหลายแหล่ง (Server, Firewall, IDS/IPS, Application) และวิเคราะห์เพื่อตรวจจับเหตุการณ์ด้านความปลอดภัย</p>
+
+<div class="table-wrap"><table><thead><tr><th>เครื่องมือ SIEM</th><th>ประเภท</th><th>จุดเด่น</th></tr></thead><tbody><tr><td>**Splunk**</td><td>Commercial (มี Free Tier)</td><td>การค้นหาและการสร้าง Dashboard ที่ยืดหยุ่น, Machine Learning Toolkit</td></tr><tr><td>**Microsoft Sentinel**</td><td>Cloud-native (Azure)</td><td>บูรณาการกับ Microsoft Ecosystem, ใช้ AI ในการตรวจจับ, ราคาตามปริมาณข้อมูล</td></tr><tr><td>**Elastic Security** (ELK Stack)</td><td>Open Source / Commercial</td><td>ใช้ Elasticsearch + Kibana + Fleet, SIEM ในตัว, ราคาถูกกว่า</td></tr><tr><td>**Wazuh**</td><td>Open Source ฟรี</td><td>SIEM + XDR, ตรวจจับการบุกรุก, การตรวจสอบ Compliance (PCI DSS, GDPR)</td></tr></tbody></table></div>
+
+<p><strong>ประโยชน์ของ SIEM สำหรับนักพัฒนา:</strong></p>
+
+<ol>
+  <li><strong>การตรวจจับ API Abuse:</strong> วิเคราะห์ Log การเรียก API เพื่อหารูปแบบที่ผิดปกติ</li>
+  <li><strong>การตรวจสอบ Authentication Failure:</strong> ตรวจจับ Brute Force Attack ที่ Login Endpoint</li>
+  <li><strong>การวิเคราะห์ Error Rate ที่สูงผิดปกติ:</strong> ตรวจจับ Application Layer DDoS หรือการโจมตีที่ทำให้ Application ผิดพลาด</li>
+  <li><strong>Correlation ของ Event:</strong> เชื่อมโยงเหตุการณ์จากหลายแหล่ง เช่น Web Server Log + Firewall Log + IDS Alert</li>
+</ol>
+
+<h3 id="s12.5.4">12.5.4 NetFlow/IPFIX Analysis</h3>
+
+<p>NetFlow (Cisco) และ IPFIX (Internet Protocol Flow Information Export — มาตรฐาน RFC 7011) เป็นโปรโตคอลที่ใช้ในการเก็บข้อมูลสถิติของการรับส่งข้อมูลในเครือข่าย:</p>
+
+<div class="table-wrap"><table><thead><tr><th>ข้อมูลที่บันทึก</th><th>คำอธิบาย</th></tr></thead><tbody><tr><td>Source IP / Dest IP</td><td>ที่อยู่ IP ต้นทางและปลายทาง</td></tr><tr><td>Source Port / Dest Port</td><td>พอร์ตต้นทางและปลายทาง</td></tr><tr><td>Protocol</td><td>โปรโตคอลที่ใช้ (TCP, UDP, ICMP)</td></tr><tr><td>Bytes / Packets</td><td>ขนาดและจำนวนแพ็กเกตที่ส่ง</td></tr><tr><td>Timestamps</td><td>เวลาเริ่มต้นและสิ้นสุดของการรับส่ง</td></tr><tr><td>TCP Flags</td><td>Flag ของ TCP (SYN, ACK, FIN, RST)</td></tr><tr><td>Interface</td><td>อินเทอร์เฟซที่แพ็กเกตผ่านเข้าและออก</td></tr></tbody></table></div>
+
+<p><strong>การประยุกต์ใช้ NetFlow สำหรับนักพัฒนา:</strong></p>
+<ul>
+  <li>ตรวจจับ Traffic Spike ที่ผิดปกติที่อาจเป็นการโจมตี DDoS</li>
+  <li>วิเคราะห์ Top Talkers — IP Address ที่รับส่งข้อมูลมากที่สุด</li>
+  <li>ตรวจจับ Data Exfiltration — การส่งข้อมูลปริมาณมากออกนอกเครือข่าย</li>
+  <li>ตรวจสอบการเชื่อมต่อไปยัง IP Address ที่น่าสงสัย</li>
+</ul>
+
+<h3 id="s12.5.5">12.5.5 การบูรณาการ Network Monitoring โดยนักพัฒนา</h3>
+
+<p>นักพัฒนาสามารถบูรณาการแนวทาง Network Monitoring ในซอฟต์แวร์ที่พัฒนาขึ้นเอง:</p>
+
+<p><strong>Structured Logging:</strong></p>
+<p>การบันทึก Log ในรูปแบบที่มีโครงสร้าง (JSON) ช่วยให้ SIEM และ Log Analysis Tool สามารถวิเคราะห์ข้อมูลได้อย่างมีประสิทธิภาพ:</p>
+
+<div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">json</div><pre class="code-block"><code>// ตัวอย่าง Structured Log ที่ SIEM สามารถวิเคราะห์ได้
+{
+  "timestamp": "2026-05-12T10:30:00.123Z",
+  "event": "authentication_attempt",
+  "user_id": "user-123",
+  "source_ip": "203.0.113.50",
+  "user_agent": "Mozilla/5.0 ...",
+  "status": "failed",
+  "failure_reason": "invalid_password",
+  "request_id": "req-abc-123"
+}</code></pre>
+
+<p><strong>Distributed Tracing:</strong></p>
+<p>การติดตามคำขอข้าม Service (Distributed Tracing) ด้วยระบบเช่น OpenTelemetry, Jaeger หรือ Zipkin ช่วยให้เห็นภาพรวมของคำขอที่เดินทางผ่าน Service หลายตัว:</p>
+
+<div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">yaml</div><pre class="code-block"><code># OpenTelemetry Configuration — ส่ง Trace ไปยัง Network Monitoring Tool
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+processors:
+  batch:
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+  zipkin:
+    endpoint: "http://zipkin:9411/api/v2/spans"
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [zipkin]</code></pre>
+
+<p><strong>การเพิ่ม HTTP Headers สำหรับ Network Monitoring:</strong></p>
+
+<div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">nginx</div><pre class="code-block"><code># NGINX — การเพิ่ม Headers สำหรับติดตามการรับส่ง
+server {
+    listen 443 ssl;
+    server_name api.example.com;
+    
+    # เพิ่ม Request ID สำหรับติดตาม Request
+    add_header X-Request-ID $request_id;
+    
+    # Log รายละเอียดที่สำคัญ
+    log_format detailed '$remote_addr - $remote_user [$time_local] '
+                        '"$request" $status $body_bytes_sent '
+                        '"$http_referer" "$http_user_agent" '
+                        '$request_time $upstream_response_time';
+    
+    access_log /var/log/nginx/api_access.log detailed;
+}</code></pre>
+
+<hr>
+
+<h2 id="keywords">Keywords</h2>
+
+<p>Network Security, OSI Model, TCP/IP, IP Spoofing, SYN Flood, SYN Cookies, Egress Filtering, Session Hijacking, CSPRNG, DNS Security, DNSSEC, NIST SP 800-81r3, DNS over HTTPS (DoH), DNS over TLS (DoT), DNS Rebinding, Network Segmentation, DMZ, TLS 1.2, TLS 1.3, Forward Secrecy, Cipher Suite, AES-256-GCM, AES-128-GCM, ChaCha20-Poly1305, Let's Encrypt, ACME Protocol, Certificate Transparency, mTLS, Service Mesh, testssl.sh, SSL Labs, CVE-2025-68121, CVE-2026-2673, CVE-2026-26994, Firewall, WAF, Stateful Firewall, Stateless Firewall, Security Group, Network ACL, Zero Trust Network Access (ZTNA), SASE, CAA DNS Record, Microsegmentation, DDoS, Volume-based Attack, Protocol Attack, Application Layer Attack, Aisuru-Kimwolf Botnet, HTTP/2 Rapid Reset, CVE-2023-44487, CDN, Anycast Routing, Rate Limiting, Auto Scaling, Load Balancing, IDS/IPS, Suricata, Snort, Wireshark, Zeek, SIEM, Splunk, Microsoft Sentinel, Elastic Security, Wazuh, NetFlow, IPFIX, Structured Logging, Distributed Tracing</p>
+
+<hr>
+
+<h2 id="labs">กิจกรรมปฏิบัติการ</h2>
+
+<p>&gt; กิจกรรมทั้งหมดต้องทำในสภาพแวดล้อมที่ได้รับอนุญาตเท่านั้น — ใช้เซิร์ฟเวอร์ทดสอบในห้องปฏิบัติการหรือระบบที่อาจารย์จัดให้เท่านั้น ห้ามทดสอบกับระบบจริงหรือระบบของผู้อื่นโดยไม่ได้รับอนุญาตเป็นลายลักษณ์อักษร</p>
+
+<h3 id="lab-12-1-การวิเคราะห์-tls-configuration-ด้วย-ssl-labs-server-test-และ-testssl-sh">Lab 12.1: การวิเคราะห์ TLS Configuration ด้วย SSL Labs Server Test และ testssl.sh</h3>
+
+<p><strong>วัตถุประสงค์:</strong> เรียนรู้การใช้ SSL Labs Server Test และ testssl.sh ในการวิเคราะห์และให้คะแนนความปลอดภัยของการตั้งค่า TLS ของเว็บไซต์</p>
+
+<p><strong>เวลาที่ใช้:</strong> 30-45 นาที</p>
+
+<p><strong>เครื่องมือ:</strong> เว็บเบราว์เซอร์, testssl.sh, เว็บไซต์ตัวอย่างที่อาจารย์กำหนด</p>
+
+<p><strong>ขั้นตอน:</strong></p>
+
+<ol>
+  <li>เปิดเบราว์เซอร์ไปที่ <code>https://www.ssllabs.com/ssltest/</code></li>
+</ol>
+
+<ol>
+  <li>ป้อนชื่อโดเมนที่อาจารย์กำหนด (หรือใช้ <code>https://www.ssllabs.com/ssltest/analyze.html?d=example.com</code>)</li>
+</ol>
+
+<ol>
+  <li>รอให้การทดสอบเสร็จสมบูรณ์ (ประมาณ 2-5 นาที)</li>
+</ol>
+
+<ol>
+  <li>ตรวจสอบผลการทดสอบในหมวดหมู่ต่อไปนี้:</li>
+</ol>
+<p>   - <strong>Overall Rating:</strong> คะแนน A, A+, B, C, D, F</p>
+<p>   - <strong>Certificate:</strong> ตรวจสอบ Certificate Chain, ความถูกต้องของ Certificate</p>
+<p>   - <strong>Protocol Support:</strong> TLS 1.3, TLS 1.2, TLS 1.1, TLS 1.0</p>
+<p>   - <strong>Cipher Suites:</strong> ตรวจสอบ Cipher ที่รองรับและลำดับความสำคัญ</p>
+<p>   - <strong>Key Exchange:</strong> ประเภทของ Key Exchange (ECDHE, DHE, RSA)</p>
+<p>   - <strong>HSTS:</strong> มีการตั้งค่า HSTS หรือไม่</p>
+
+<ol>
+  <li>ติดตั้ง testssl.sh บนเครื่องของนักศึกษา:</li>
+</ol>
+<p>   ```bash</p>
+<p>   # macOS หรือ Linux</p>
+<p>   git clone --depth 1 https://github.com/testssl/testssl.sh.git</p>
+<p>   cd testssl.sh</p>
+<p>   ```</p>
+
+<ol>
+  <li>รัน testssl.sh กับเว็บไซต์ตัวอย่าง:</li>
+</ol>
+<p>   ```bash</p>
+<p>   ./testssl.sh https://example.com</p>
+<p>   ```</p>
+
+<ol>
+  <li>เปรียบเทียบผลลัพธ์ระหว่าง SSL Labs และ testssl.sh</li>
+</ol>
+
+<ol>
+  <li>วิเคราะห์สิ่งที่ควรปรับปรุง:</li>
+</ol>
+<p>   - TLS เวอร์ชันที่ต่ำกว่า 1.2 ควรปิด</p>
+<p>   - Cipher Suite ที่ไม่ปลอดภัยควรลบออก</p>
+<p>   - ควรเพิ่ม HSTS Header</p>
+<p>   - ควรเปิด OCSP Stapling</p>
+
+<p><strong>สิ่งที่ต้องส่ง:</strong></p>
+
+<ol>
+  <li>คะแนน Overall Rating ของ SSL Labs (A+ ถึง F)</li>
+  <li>รายการ TLS Protocol ที่รองรับ (TLS 1.3, 1.2, 1.1, 1.0)</li>
+  <li>รายการ Cipher Suite ที่ปลอดภัยและไม่ปลอดภัย</li>
+  <li>คำแนะนำในการปรับปรุง TLS Configuration อย่างน้อย 3 ข้อ</li>
+</ol>
+
+<hr>
+
+<h3 id="lab-12-2-การตั้งค่า-web-application-firewall-waf-ด้วย-modsecurity-และ-owasp-crs">Lab 12.2: การตั้งค่า Web Application Firewall (WAF) ด้วย ModSecurity และ OWASP CRS</h3>
+
+<p><strong>วัตถุประสงค์:</strong> เรียนรู้การติดตั้งและกำหนดค่า ModSecurity WAF ร่วมกับ OWASP Core Rule Set (CRS) เพื่อป้องกัน SQL Injection และ Cross-Site Scripting (XSS)</p>
+
+<p><strong>เวลาที่ใช้:</strong> 30-45 นาที</p>
+
+<p><strong>เครื่องมือ:</strong> Docker, ModSecurity, OWASP CRS, ระบบ Web Application ที่อาจารย์จัดให้</p>
+
+<p><strong>ขั้นตอน:</strong></p>
+
+<ol>
+  <li>รัน Web Application ที่มีช่องโหว่ด้วย Docker:</li>
+</ol>
+<p>   ```bash</p>
+<p>   # รัน DVWA (Damn Vulnerable Web Application)</p>
+<p>   docker run --rm -d -p 8080:80 vulnerables/web-dvwa</p>
+<p>   ```</p>
+
+<ol>
+  <li>รัน ModSecurity WAF ด้วย OWASP CRS:</li>
+</ol>
+<p>   ```bash</p>
+<p>   docker run --rm -d -p 8081:80 \</p>
+<p>     -e PARANOIA=1 \</p>
+<p>     -e BLOCKING_PARANOIA=1 \</p>
+<p>     -v "$(pwd)/crs:/etc/modsecurity.d/owasp-crs" \</p>
+<p>     --name modsec \</p>
+<p>     coreruleset/modsecurity:latest</p>
+<p>   ```</p>
+
+<ol>
+  <li>ทดสอบการโจมตี SQL Injection โดยไม่ผ่าน WAF (directly ไปที่ DVWA):</li>
+</ol>
+<p>   ```bash</p>
+<p>   # ทดสอบ SQL Injection ที่ DVWA โดยตรง (พอร์ต 8080)</p>
+<p>   curl "http://localhost:8080/vulnerabilities/sqli/?id=1' UNION SELECT user,password FROM users--&amp;Submit=Submit"</p>
+<p>   ```</p>
+
+<ol>
+  <li>ทดสอบการโจมตี SQL Injection ผ่าน WAF (พอร์ต 8081):</li>
+</ol>
+<p>   ```bash</p>
+<p>   # ทดสอบ SQL Injection ผ่าน WAF — ควรถูกบล็อก</p>
+<p>   curl -v "http://localhost:8081/vulnerabilities/sqli/?id=1' OR '1'='1"</p>
+
+<p>   # สังเกต HTTP Status Code 403 (Forbidden) หรือ 406 (Not Acceptable)</p>
+<p>   ```</p>
+
+<ol>
+  <li>ทดสอบการโจมตี XSS ผ่าน WAF:</li>
+</ol>
+<p>   ```bash</p>
+<p>   # ทดสอบ XSS — ควรถูกบล็อกโดย ModSecurity</p>
+<p>   curl -v "http://localhost:8081/vulnerabilities/xss_r/?name=&lt;script&gt;alert(1)&lt;/script&gt;"</p>
+<p>   ```</p>
+
+<ol>
+  <li>ตรวจสอบ ModSecurity Audit Log:</li>
+</ol>
+<p>   ```bash</p>
+<p>   docker exec modsec cat /var/log/modsec_audit.log</p>
+<p>   # ดูรายละเอียดของ Rule ที่ถูก Trigger</p>
+<p>   ```</p>
+
+<p><strong>สิ่งที่ต้องส่ง:</strong></p>
+
+<ol>
+  <li>ภาพ Screenshot แสดง SQL Injection ที่สำเร็จเมื่อไม่ผ่าน WAF (พอร์ต 8080)</li>
+  <li>ภาพ Screenshot แสดงการถูกบล็อกเมื่อผ่าน WAF (HTTP 403 หรือ 406)</li>
+  <li>Audit Log ที่ ModSecurity บันทึก (อย่างน้อย 1 รายการ)</li>
+  <li>อธิบายว่า OWASP CRS Rule ใดบ้างที่ตรวจจับ SQL Injection และ XSS</li>
+</ol>
+
+<hr>
+
+<h3 id="lab-12-3-การจับและวิเคราะห์-network-traffic-ด้วย-wireshark">Lab 12.3: การจับและวิเคราะห์ Network Traffic ด้วย Wireshark</h3>
+
+<p><strong>วัตถุประสงค์:</strong> เรียนรู้การใช้ Wireshark ในการจับและวิเคราะห์ Network Traffic เพื่อระบุ HTTP Request, TLS Handshake และ DNS Queries</p>
+
+<p><strong>เวลาที่ใช้:</strong> 30-45 นาที</p>
+
+<p><strong>เครื่องมือ:</strong> Wireshark, เว็บเบราว์เซอร์</p>
+
+<p><strong>ขั้นตอน:</strong></p>
+
+<ol>
+  <li>ติดตั้ง Wireshark:</li>
+</ol>
+<p>   ```bash</p>
+<p>   # macOS</p>
+<p>   brew install --cask wireshark</p>
+
+<p>   # Linux</p>
+<p>   sudo apt-get install wireshark</p>
+<p>   ```</p>
+
+<ol>
+  <li>เริ่มจับ Packet บน Network Interface ที่ใช้งาน (เช่น en0 สำหรับ Wi-Fi):</li>
+</ol>
+<p>   - เปิด Wireshark</p>
+<p>   - เลือก Network Interface (en0, eth0, หรือ Wi-Fi)</p>
+<p>   - คลิก Start</p>
+
+<ol>
+  <li>เปิดเว็บเบราว์เซอร์และไปที่ <code>https://example.com</code></li>
+</ol>
+
+<ol>
+  <li>หยุดการจับ Packet ใน Wireshark</li>
+</ol>
+
+<ol>
+  <li>วิเคราะห์ Traffic ด้วย Filter ต่าง ๆ:</li>
+</ol>
+<p>   ```wireshark</p>
+<p>   # กรองเฉพาะ DNS Query</p>
+<p>   dns</p>
+
+<p>   # กรองเฉพาะ TLS Handshake</p>
+<p>   tls.handshake.type</p>
+
+<p>   # กรองเฉพาะ HTTP Request</p>
+<p>   http.request</p>
+
+<p>   # ติดตาม TLS Stream</p>
+<p>   tls.handshake.type == 1   # ClientHello - ดู TLS Version และ Cipher Suites</p>
+<p>   tls.handshake.type == 11  # Certificate - ดู Certificate Chain</p>
+<p>   tls.handshake.type == 14  # ServerHello Done</p>
+<p>   ```</p>
+
+<ol>
+  <li>วิเคราะห์ TLS Handshake โดยละเอียด:</li>
+</ol>
+<p>   - ค้นหา ClientHello → ดู TLS Version, Cipher Suites ที่ Client รองรับ</p>
+<p>   - ค้นหา ServerHello → ดู TLS Version และ Cipher Suite ที่ Server เลือก</p>
+<p>   - ค้นหา Certificate → ดู Certificate Chain และ Server Name</p>
+
+<ol>
+  <li>วิเคราะห์ HTTP/HTTPS Traffic:</li>
+</ol>
+<p>   ```wireshark</p>
+<p>   # ใช้ Follow TCP Stream เพื่อดูเนื้อหาของ HTTP</p>
+<p>   # คลิกขวาที่ Packet HTTP → Follow → TCP Stream</p>
+<p>   ```</p>
+
+<p><strong>สิ่งที่ต้องส่ง:</strong></p>
+
+<ol>
+  <li>ภาพ Screenshot ของ TLS Handshake แบบสมบูรณ์ (ClientHello → ServerHello → Certificate → Finished)</li>
+  <li>TLS Version และ Cipher Suite ที่ถูกเลือก</li>
+  <li>ชื่อของ Certificate Authority ที่ออก Certificate</li>
+  <li>DNS Query ที่ถูกส่งไป (Domain Name และ IP Address ที่ตอบกลับ)</li>
+  <li>อธิบายความแตกต่างของ Traffic เมื่อเข้าถึง HTTP vs HTTPS</li>
+</ol>
+
+<hr>
+
+<h3 id="lab-12-4-การกำหนด-firewall-rules-ด้วย-iptables-nftables-หรือ-cloud-security-group">Lab 12.4: การกำหนด Firewall Rules ด้วย iptables/nftables หรือ Cloud Security Group</h3>
+
+<p><strong>วัตถุประสงค์:</strong> เรียนรู้การกำหนด Firewall Rules ด้วย iptables/nftables หรือ Security Group ในระบบคลาวด์ (AWS/GCP) สำหรับ Web Application</p>
+
+<p><strong>เวลาที่ใช้:</strong> 30-45 นาที</p>
+
+<p><strong>เครื่องมือ:</strong> Linux VM หรือ Cloud Account (AWS/GCP Free Tier) ที่ได้รับอนุญาต</p>
+
+<p><strong>ขั้นตอน (ส่วนที่ 1 — iptables บน Linux VM):</strong></p>
+
+<ol>
+  <li>ตรวจสอบสถานะของ iptables:</li>
+</ol>
+<p>   ```bash</p>
+<p>   sudo iptables -L -n -v</p>
+<p>   ```</p>
+
+<ol>
+  <li>ตั้งค่า Default Policy เป็น DROP:</li>
+</ol>
+<p>   ```bash</p>
+<p>   sudo iptables -P INPUT DROP</p>
+<p>   sudo iptables -P FORWARD DROP</p>
+<p>   sudo iptables -P OUTPUT ACCEPT</p>
+<p>   ```</p>
+
+<ol>
+  <li>อนุญาต Local Loopback Traffic:</li>
+</ol>
+<p>   ```bash</p>
+<p>   sudo iptables -A INPUT -i lo -j ACCEPT</p>
+<p>   ```</p>
+
+<ol>
+  <li>อนุญาต Established Connections (Stateful Firewall):</li>
+</ol>
+<p>   ```bash</p>
+<p>   sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT</p>
+<p>   ```</p>
+
+<ol>
+  <li>อนุญาต SSH จาก IP ของผู้ดูแล:</li>
+</ol>
+<p>   ```bash</p>
+<p>   sudo iptables -A INPUT -p tcp --dport 22 -s 203.0.113.0/24 -j ACCEPT</p>
+<p>   ```</p>
+
+<ol>
+  <li>อนุญาต HTTP และ HTTPS จากทุกที่:</li>
+</ol>
+<p>   ```bash</p>
+<p>   sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT</p>
+<p>   sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT</p>
+<p>   ```</p>
+
+<ol>
+  <li>อนุญาต ICMP (Ping) เพื่อการตรวจสอบ:</li>
+</ol>
+<p>   ```bash</p>
+<p>   sudo iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT</p>
+<p>   ```</p>
+
+<ol>
+  <li>ตรวจสอบกฎที่ตั้งค่า:</li>
+</ol>
+<p>   ```bash</p>
+<p>   sudo iptables -L -n -v --line-numbers</p>
+<p>   ```</p>
+
+<ol>
+  <li>ทดสอบการเชื่อมต่อ:</li>
+</ol>
+<p>   ```bash</p>
+<p>   # ทดสอบจากเครื่องอื่น — ควรเชื่อมต่อ HTTPS ได้</p>
+<p>   curl https://&lt;IP ของ VM&gt;</p>
+
+<p>   # ทดสอบ Port อื่น — ควรถูกปฏิเสธ</p>
+<p>   curl http://&lt;IP ของ VM&gt;:3306  # MySQL Port — ควรถูกบล็อก</p>
+<p>   ```</p>
+
+<ol>
+  <li>บันทึกกฎ iptables เพื่อให้คงอยู่หลัง Reboot:</li>
+</ol>
+<p>    ```bash</p>
+<p>    sudo iptables-save &gt; /etc/iptables/rules.v4</p>
+<p>    ```</p>
+
+<p><strong>ขั้นตอน (ส่วนที่ 2 — AWS Security Group — ถ้ามีสิทธิ์เข้าถึง AWS):</strong></p>
+
+<ol>
+  <li>สร้าง Security Group ใหม่:</li>
+</ol>
+<p>   ```bash</p>
+<p>   # ใช้ AWS CLI</p>
+<p>   aws ec2 create-security-group \</p>
+<p>       --group-name web-sg \</p>
+<p>       --description "Web Server Security Group" \</p>
+<p>       --vpc-id vpc-xxxxx</p>
+<p>   ```</p>
+
+<ol>
+  <li>กำหนดกฎ Inbound:</li>
+</ol>
+<p>   ```bash</p>
+<p>   # SSH จาก IP ของผู้ดูแล</p>
+<p>   aws ec2 authorize-security-group-ingress \</p>
+<p>       --group-id sg-xxxxx \</p>
+<p>       --protocol tcp --port 22 \</p>
+<p>       --cidr 203.0.113.0/24</p>
+
+<p>   # HTTP (80) และ HTTPS (443) จากทุกที่</p>
+<p>   aws ec2 authorize-security-group-ingress \</p>
+<p>       --group-id sg-xxxxx \</p>
+<p>       --protocol tcp --port 80 \</p>
+<p>       --cidr 0.0.0.0/0</p>
+
+<p>   aws ec2 authorize-security-group-ingress \</p>
+<p>       --group-id sg-xxxxx \</p>
+<p>       --protocol tcp --port 443 \</p>
+<p>       --cidr 0.0.0.0/0</p>
+<p>   ```</p>
+
+<ol>
+  <li>ตรวจสอบกฎ:</li>
+</ol>
+<p>   ```bash</p>
+<p>   aws ec2 describe-security-groups --group-ids sg-xxxxx</p>
+<p>   ```</p>
+
+<p><strong>สิ่งที่ต้องส่ง:</strong></p>
+
+<ol>
+  <li>คำสั่ง iptables หรือ AWS CLI ที่ใช้</li>
+  <li>ผลลัพธ์ของ <code>iptables -L -n -v</code> หรือ <code>describe-security-groups</code> หลังการตั้งค่า</li>
+  <li>อธิบายว่าแต่ละกฎมีความสำคัญอย่างไร</li>
+  <li>ทดสอบการเชื่อมต่อไปยัง Port ที่ถูกปิด — แสดงผลลัพธ์</li>
+</ol>
+
+<hr>
+
+<h2 id="questions">คำถามท้ายบท</h2>
+
+<div class="interactive">
+<h4>แบบทดสอบบทที่ 12 — เลือกคำตอบที่ถูกต้อง</h4>
+
+<p><strong>ข้อ 1:</strong> ข้อใดคือโมเดล OSI ชั้นที่เกี่ยวข้องกับนักพัฒนามากที่สุด?</p>
+<div class="quiz-option" data-quiz="q1" data-correct="false">Layer 1 (Physical) และ Layer 2 (Data Link)</div>
+<div class="quiz-option" data-quiz="q1" data-correct="true">Layer 7 (Application), Layer 4 (Transport) และ Layer 3 (Network)</div>
+<div class="quiz-option" data-quiz="q1" data-correct="false">Layer 5 (Session) และ Layer 6 (Presentation) เท่านั้น</div>
+<div class="quiz-option" data-quiz="q1" data-correct="false">Layer 8 (Financial) และ Layer 9 (Political)</div>
+
+<p><strong>ข้อ 2:</strong> TLS 1.3 Handshake ใช้กี่ RTT ในการเชื่อมต่อครั้งแรก?</p>
+<div class="quiz-option" data-quiz="q2" data-correct="false">2-RTT</div>
+<div class="quiz-option" data-quiz="q2" data-correct="true">1-RTT</div>
+<div class="quiz-option" data-quiz="q2" data-correct="false">3-RTT</div>
+<div class="quiz-option" data-quiz="q2" data-correct="false">0-RTT</div>
+
+<p><strong>ข้อ 3:</strong> ข้อใดคือความแตกต่างระหว่าง Network Firewall และ WAF?</p>
+<div class="quiz-option" data-quiz="q3" data-correct="false">Network Firewall ป้องกัน SQL Injection ได้, WAF ป้องกันไม่ได้</div>
+<div class="quiz-option" data-quiz="q3" data-correct="false">WAF ทำงานเร็วกว่า Network Firewall</div>
+<div class="quiz-option" data-quiz="q3" data-correct="true">Network Firewall ทำงานที่ L3/L4 (IP/Port) ส่วน WAF ทำงานที่ L7 (HTTP Content)</div>
+<div class="quiz-option" data-quiz="q3" data-correct="false">ทั้งสองทำงานเหมือนกันแต่ชื่อต่างกัน</div>
+
+<p><strong>ข้อ 4:</strong> DDoS Attack ประเภทใดที่ทำให้ Bandwidth อิ่มตัว?</p>
+<div class="quiz-option" data-quiz="q4" data-correct="true">Volume-based Attack (เช่น UDP Flood, DNS Amplification)</div>
+<div class="quiz-option" data-quiz="q4" data-correct="false">Protocol/State-exhaustion Attack (เช่น SYN Flood)</div>
+<div class="quiz-option" data-quiz="q4" data-correct="false">Application Layer Attack (เช่น HTTP Flood)</div>
+<div class="quiz-option" data-quiz="q4" data-correct="false">Physical Layer Attack (เช่น ตัดสายแลน)</div>
+
+<p><strong>ข้อ 5:</strong> ข้อใดคือความแตกต่างระหว่าง Suricata และ Snort?</p>
+<div class="quiz-option" data-quiz="q5" data-correct="false">Snort รองรับ Multi-threaded, Suricata เป็น Single-threaded</div>
+<div class="quiz-option" data-quiz="q5" data-correct="true">Suricata รองรับ Multi-threaded (50+ Gbps), Snort เป็น Single-threaded (10+ Gbps)</div>
+<div class="quiz-option" data-quiz="q5" data-correct="false">ทั้งสองเหมือนกันทุกประการ</div>
+<div class="quiz-option" data-quiz="q5" data-correct="false">Suricata ไม่รองรับ GPU acceleration แต่ Snort รองรับ</div>
+
+<div id="quizResult" class="result" style="margin-top:.75rem">คลิกที่คำตอบเพื่อตรวจสอบ</div>
+<button class="btn" onclick="resetQuiz()" style="margin-top:.5rem">เริ่มใหม่</button>
+</div>
+
+<hr>
+
+<h3>คำถามอัตนัย (สำหรับการบ้านหรือ discussion)</h3>
+
+<ol>
+  <li>โมเดล OSI ในชั้นใดบ้างที่เกี่ยวข้องกับนักพัฒนาซอฟต์แวร์มากที่สุด จงอธิบายความเสี่ยงด้านความปลอดภัยและแนวทางป้องกันในแต่ละชั้น พร้อมยกตัวอย่างช่องโหว่ที่เกิดขึ้นจริง (ระบุ CVE ID และรายละเอียด)</li>
+</ol>
+
+<ol>
+  <li>TLS 1.3 แตกต่างจาก TLS 1.2 ในด้าน Handshake (จำนวน RTT), Forward Secrecy, Cipher Suite และ Encrypted Certificate อย่างไร จงอธิบายพร้อมยกตัวอย่างประกอบ จงอธิบายว่าทำไม RC4, 3DES และ Cipher แบบ CBC Mode จึงถูกลบออกจากรายการ Cipher Suite ที่แนะนำ</li>
+</ol>
+
+<ol>
+  <li>Network Firewall และ Web Application Firewall (WAF) แตกต่างกันอย่างไรในแง่ของชั้น OSI ที่ทำงาน, การตรวจสอบ, ความสามารถในการป้องกันการโจมตี และบทบาทที่เสริมกัน จงอธิบายพร้อมยกตัวอย่างการใช้ร่วมกัน (Defense in Depth)</li>
+</ol>
+
+<ol>
+  <li>DDoS Attack มีกี่ประเภท จงอธิบายแต่ละประเภทพร้อมตัวอย่างการโจมตีและแนวทางป้องกัน อ้างอิงสถิติจากรายงาน Cloudflare Q4 2025 (47.1 ล้านครั้ง, เพิ่มขึ้น 121%) และอธิบายว่า Aisuru-Kimwolf Botnet คืออะไรและมีผลกระทบอย่างไร</li>
+</ol>
+
+<ol>
+  <li>Suricata และ Snort แตกต่างกันอย่างไร จงอธิบายข้อดีข้อเสียและให้คำแนะนำสำหรับองค์กรที่ต้องการติดตั้ง IDS/IPS ใหม่ จากนั้นอธิบายความแตกต่างระหว่าง Wireshark กับ Zeek ในแง่ของการใช้งานและการวิเคราะห์ Network Traffic</li>
+</ol>
+
+<hr>
+
+<h2 id="summary">สรุปท้ายบท</h2>
+
+<p>Network Security เป็นองค์ประกอบที่สำคัญของความปลอดภัยโดยรวมของซอฟต์แวร์ นักพัฒนาซอฟต์แวร์จำเป็นต้องเข้าใจหลักการพื้นฐานของเครือข่ายในโมเดล OSI โดยเฉพาะใน Layer 7 (Application), Layer 4 (Transport) และ Layer 3 (Network) เพื่อให้สามารถพัฒนาโค้ดที่ปลอดภัยและทำงานร่วมกับทีมโครงสร้างพื้นฐานได้อย่างมีประสิทธิภาพ</p>
+
+<p>TCP/IP Security Issues เช่น IP Spoofing, TCP SYN Flood และ Session Hijacking ยังคงเป็นภัยคุกคามที่สำคัญ แนวทางป้องกันได้แก่ Egress Filtering (BCP 38), SYN Cookies และการใช้ CSPRNG สำหรับสร้าง Session ID ความปลอดภัยของ DNS ครอบคลุมทั้ง DNSSEC (สำหรับความสมบูรณ์ของข้อมูล) และ DNS over HTTPS/TLS/QUIC (สำหรับความเป็นส่วนตัว) ตามคำแนะนำใน NIST SP 800-81r3</p>
+
+<p>TLS 1.3 เป็นโปรโตคอลที่ปลอดภัยและมีประสิทธิภาพกว่า TLS 1.2 อย่างมีนัยสำคัญ โดยบังคับใช้ Forward Secrecy และ 1-RTT Handshake การเลือก Cipher Suite ที่ปลอดภัย (AES-256-GCM, AES-128-GCM, ChaCha20-Poly1305) และการจัดการ Certificate ผ่าน Let's Encrypt, ACME Protocol และ Certificate Transparency เป็นสิ่งที่นักพัฒนาควรปฏิบัติ mTLS เป็นกลไกสำคัญสำหรับ Service-to-Service Authentication ในสถาปัตยกรรม Service Mesh</p>
+
+<p>Firewall และ Network Access Control มีหลากหลายรูปแบบ ตั้งแต่ Network Firewall (L3/L4), WAF (L7), Stateful/Stateless Firewall ไปจนถึง Security Group และ Network ACL ในระบบคลาวด์ Zero Trust Network Access (ZTNA) ยึดหลัก "Never Trust, Always Verify" และ Microsegmentation เป็นแนวทางที่ได้รับความนิยมมากขึ้นแทน VPN แบบดั้งเดิม</p>
+
+<p>DDoS Protection มีความสำคัญเพิ่มมากขึ้น โดยในปี 2025 มีการโจมตี DDoS ถึง 47.1 ล้านครั้ง (เพิ่มขึ้น 121%) และ Aisuru-Kimwolf Botnet ทำลายสถิติด้วยการโจมตีสูงสุดที่ 31.4 Tbps การป้องกันต้องใช้หลายมาตรการร่วมกัน ได้แก่ CDN Integration (Anycast Routing), Rate Limiting, Auto Scaling และ Load Balancing</p>
+
+<p>Network Monitoring และ Threat Detection ผ่านเครื่องมือเช่น Suricata, Wireshark, Zeek และ SIEM (Splunk, Microsoft Sentinel, Elastic Security, Wazuh) ช่วยให้นักพัฒนาและทีมปฏิบัติการสามารถตรวจจับและตอบสนองต่อภัยคุกคามได้ทันท่วงที นักพัฒนาควรบูรณาการ Structured Logging, Distributed Tracing และข้อมูลที่จำเป็นสำหรับ Network Monitoring ในซอฟต์แวร์ที่พัฒนาขึ้นเอง เพื่อให้ทีมรักษาความปลอดภัยสามารถวิเคราะห์และตรวจจับเหตุการณ์ผิดปกติได้อย่างมีประสิทธิภาพ</p>
+
+<hr>
+
+<h2 id="refs">เอกสารอ้างอิง</h2>
+
+<ol>
+  <li>Cloudflare. (2026). <em>2025 Q4 DDoS Threat Report: A Record-Setting 31.4 Tbps</em>. https://blog.cloudflare.com/ddos-threat-report-2025-q4/</li>
+  <li>Cloudflare. (2026). <em>What is the Aisuru-Kimwolf Botnet?</em>. https://www.cloudflare.com/learning/ddos/glossary/aisuru-kimwolf-botnet/</li>
+  <li>NIST. (2026). <em>NIST SP 800-81r3: Secure Domain Name System (DNS) Deployment Guide</em>. https://doi.org/10.6028/NIST.SP.800-81r3</li>
+  <li>NIST. (2025). <em>NIST SP 800-81r3 (Initial Public Draft)</em>. https://csrc.nist.gov/pubs/sp/800/81/r3/ipd</li>
+  <li>IETF. <em>RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3</em>. https://datatracker.ietf.org/doc/html/rfc8446</li>
+  <li>IETF. <em>RFC 5246: The Transport Layer Security (TLS) Protocol Version 1.2</em>. https://datatracker.ietf.org/doc/html/rfc5246</li>
+  <li>IETF. <em>RFC 8555: Automatic Certificate Management Environment (ACME)</em>. https://datatracker.ietf.org/doc/html/rfc8555</li>
+  <li>IETF. <em>RFC 6962: Certificate Transparency</em>. https://datatracker.ietf.org/doc/html/rfc6962</li>
+  <li>IETF. <em>RFC 7858: Specification for DNS over Transport Layer Security (TLS)</em>. https://datatracker.ietf.org/doc/html/rfc7858</li>
+  <li>IETF. <em>RFC 8484: DNS Queries over HTTPS (DoH)</em>. https://datatracker.ietf.org/doc/html/rfc8484</li>
+  <li>IETF. <em>RFC 6844: DNS Certification Authority Authorization (CAA) Resource Record</em>. https://datatracker.ietf.org/doc/html/rfc6844</li>
+  <li>IETF. <em>RFC 2827 (BCP 38): Network Ingress Filtering</em>. https://datatracker.ietf.org/doc/html/rfc2827</li>
+  <li>OWASP. <em>HTTP/2 Reset Attack (CVE-2023-44487)</em>. https://owasp.org/www-community/attacks/HTTP2_Reset_Attack</li>
+  <li>CVE-2023-44487 — NVD Detail. https://nvd.nist.gov/vuln/detail/CVE-2023-44487</li>
+  <li>CVE-2025-6515 — NVD Detail. https://nvd.nist.gov/vuln/detail/CVE-2025-6515</li>
+  <li>CVE-2025-66414 — NVD Detail. https://nvd.nist.gov/vuln/detail/CVE-2025-66414</li>
+  <li>CVE-2025-68121 — NVD Detail. https://nvd.nist.gov/vuln/detail/CVE-2025-68121</li>
+  <li>CVE-2026-2673 — NVD Detail. https://nvd.nist.gov/vuln/detail/CVE-2026-2673</li>
+  <li>CVE-2026-26994 — NVD Detail. https://nvd.nist.gov/vuln/detail/CVE-2026-26994</li>
+  <li>JFrog Research. (2025). <em>oatpp-mcp Prompt Hijacking (CVE-2025-6515)</em>. https://research.jfrog.com/vulnerabilities/oatpp-mcp-prompt-hijacking-jfsa-2025-001494691/</li>
+  <li>Go Project. (2026). <em>Go Security Advisory GO-2026-4337 (CVE-2025-68121)</em>. https://go.dev/vuln/GO-2026-4337</li>
+  <li>OpenSSL. (2026). <em>OpenSSL Security Advisory (CVE-2026-2673)</em>. https://openssl-library.org/news/secadv/20260313.txt</li>
+  <li>Lumen Black Lotus Labs. (2026). <em>Aisuru/Kimwolf Botnet Disruption — 550+ C2 Servers Blocked</em>. https://securityaffairs.com/186918/cyber-crime/lumen-disrupts-aisuru-and-kimwolf-botnet-by-blocking-over-550-c2-servers.html</li>
+  <li>Synthient. (2026). <em>Kimwolf Botnet Analysis — 2M+ Android TV Devices Infected</em>. https://cyberscoop.com/kimwolf-aisuru-botnet-lumen-technologies/</li>
+  <li>Radware. (2026). <em>2026 Global Threat Analysis Report</em>. https://www.radware.com/newsevents/pressreleases/2026/radware-2026-global-threat-report-shows-ddos-attacks-jump/</li>
+  <li>OWASP Core Rule Set (CRS). https://coreruleset.org/</li>
+  <li>Suricata IDS/IPS. https://suricata.io/</li>
+  <li>Zeek Network Security Monitor. https://zeek.org/</li>
+  <li>testssl.sh. https://testssl.sh/</li>
+  <li>Qualys SSL Labs. https://www.ssllabs.com/ssltest/</li>
+</ol>
+
+<hr>
+
+<h2 id="verification">Verification</h2>
+
+<ul>
+  <li><strong>Cloudflare DDoS Report 2025 Q4:</strong> ยืนยันตัวเลข 47.1 ล้านครั้ง (เพิ่มขึ้น 121% YoY), 34.4 ล้าน network-layer attacks, 5,376 ครั้ง/ชั่วโมง, 236% spike 2023-2025, 31.4 Tbps peak, 200M rps HTTP, 14.1 Bpps (Q3 2025) ผ่าน Cloudflare Blog</li>
+  <li><strong>Aisuru-Kimwolf Botnet:</strong> ยืนยัน 1-4M devices, 31.4 Tbps attack, 2M+ Android TV devices, Vietnam/Brazil/India/Saudi Arabia, 550+ C2 servers null-routed, "The Night Before Christmas" campaign ผ่าน Cloudflare Blog และ CyberScoop</li>
+  <li><strong>NIST SP 800-81r3:</strong> ยืนยัน final publication 19 มีนาคม 2026, initial public draft เมษายน 2025, ครอบคลุม DNSSEC, Encrypted DNS, Zero Trust role of DNS ผ่าน CSRC.NIST.GOV</li>
+  <li><strong>CVE-2025-6515:</strong> ยืนยัน CVE ID, oatpp-mcp, instance pointer as session ID, CWE-330, CVSS 6.8, เผยแพร่ 20 ตุลาคม 2025 ผ่าน NVD</li>
+  <li><strong>CVE-2025-66414:</strong> ยืนยัน CVE ID, MCP TypeScript SDK DNS rebinding, CWE-1188, CVSS 8.1, แก้ไขใน 1.24.0, เผยแพร่ 2 ธันวาคม 2025 ผ่าน NVD</li>
+  <li><strong>CVE-2025-68121:</strong> ยืนยัน CVE ID, Go crypto/tls Config.Clone session resumption, Improper Certificate Validation, CVSS 3.1 = 10.0 CRITICAL (NVD), เผยแพร่ 5 กุมภาพันธ์ 2026, แก้ไขใน Go 1.24.13, 1.25.7, 1.26.0-rc.3 ผ่าน NVD และ OSV</li>
+  <li><strong>CVE-2026-2673:</strong> ยืนยัน CVE ID, OpenSSL TLS 1.3 key exchange group negotiation, affects 3.5.x/3.6.x, เผยแพร่ 13 มีนาคม 2026, แก้ไขใน 3.5.6 และ 3.6.2 ผ่าน NVD และ OpenSSL Advisory</li>
+  <li><strong>CVE-2026-26994:</strong> ยืนยัน CVE ID, uTLS TLS 1.3 downgrade protection, CWE-693, แก้ไขใน v1.7.0, เผยแพร่ 19 กุมภาพันธ์ 2026 ผ่าน NVD</li>
+  <li><strong>CVE-2023-44487 (HTTP/2 Rapid Reset):</strong> ยืนยัน CVE ID, protocol-level HTTP/2 issue, CVSS 7.5, exploited in wild August-October 2023, impacts all HTTP/2 implementations ผ่าน NVD และ OWASP</li>
+  <li><strong>TLS 1.3:</strong> ยืนยัน RFC 8446 (2018), Forward Secrecy บังคับ, 1-RTT handshake, 5 cipher suites, PSK/0-RTT, Encrypted Certificate</li>
+  <li><strong>TLS 1.2:</strong> ยืนยัน RFC 5246 (2008), 2-RTT handshake, ไม่บังคับ Forward Secrecy</li>
+  <li><strong>Cipher Suite ที่ถูกลบ:</strong> ยืนยัน RC4 (RFC 7465), 3DES (RFC 8996), CBC (RFC 9325), RSA Key Exchange (RFC 9325), EXPORT Grade (RFC 7465) ผ่าน IETF RFCs</li>
+  <li><strong>ACME Protocol:</strong> ยืนยัน RFC 8555, HTTP-01/DNS-01/TLS-ALPN-01 challenges</li>
+  <li><strong>Certificate Transparency:</strong> ยืนยัน RFC 6962, SCT requirement for Chrome/Safari ตั้งแต่ มกราคม 2023</li>
+  <li><strong>BCP 38 (Egress Filtering):</strong> ยืนยัน RFC 2827</li>
+  <li><strong>SYN Cookies:</strong> ยืนยันเป็นค่าเริ่มต้นใน Linux Kernel 2.6+</li>
+  <li><strong>CAA DNS Record:</strong> ยืนยัน RFC 6844, issue/iodef tags</li>
+  <li><strong>Suricata:</strong> ยืนยัน multi-threaded, 50+ Gbps, GPU acceleration (CUDA), Eve JSON Log ผ่าน Suricata Official Documentation</li>
+  <li><strong>Snort:</strong> ยืนยัน single-threaded, 10+ Gbps, VRT/Talos rules</li>
+  <li><strong>Zeek:</strong> ยืนยัน conn.log, http.log, ssl.log, dns.log, notice.log, files.log ผ่าน Zeek Official Documentation</li>
+  <li><strong>Safety boundary:</strong> Labs ระบุให้ทำเฉพาะในสภาพแวดล้อมที่ได้รับอนุญาตเท่านั้น ทุกตัวอย่างช่องโหว่ใช้เพื่อการศึกษาเท่านั้น</li>
+  <li><strong>ภาษาไทย:</strong> ตรวจสอบการใช้ภาษาไทยตลอดทั้งบท — ไม่มีการปนอักษรจีน ญี่ปุ่น หรืออักษรอื่นใด คำบุพบทถูกใช้อย่างถูกต้อง (ใน, ของ, ที่, ด้วย) การเรียงคำนาม-คุณศัพท์เป็นแบบไทย ไม่ใช่แบบภาษาอังกฤษ การใช้ "ทำให้" มีกริยาตามอย่างถูกต้อง</li>
+  <li><strong>Status:</strong> ตรวจสอบข้อมูลหลักทั้งหมดแล้ว ไม่มีรายการที่ตั้งใจปล่อยไว้เป็น [UNVERIFIED]</li>
+</ul>
+
+  </div>
+</div>
+<button class="scroll-top" id="scrollTopBtn" aria-label="กลับด้านบน">↑</button>
+<script>
+(function(){
+  var sidebar=document.getElementById('sidebar'),toggle=document.getElementById('sidebarToggle'),overlay=document.getElementById('sidebarOverlay');
+  function openSidebar(){sidebar.classList.add('open');overlay.classList.add('show')}
+  function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('show')}
+  if(toggle)toggle.addEventListener('click',function(){sidebar.classList.contains('open')?closeSidebar():openSidebar()});
+  if(overlay)overlay.addEventListener('click',closeSidebar);
+  document.querySelectorAll('.sidebar-nav a').forEach(function(l){l.addEventListener('click',function(){if(window.innerWidth<=1024)closeSidebar()})});
+  var scrollBtn=document.getElementById('scrollTopBtn');
+  window.addEventListener('scroll',function(){if(window.scrollY>300)scrollBtn.classList.add('visible');else scrollBtn.classList.remove('visible')});
+  if(scrollBtn)scrollBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+  var anchors=document.querySelectorAll('.sidebar-nav a'),sections=[];
+  anchors.forEach(function(a){var h=a.getAttribute('href');if(h&&h.startsWith('#')){var t=document.getElementById(h.substring(1));if(t)sections.push({el:t,link:a})}});
+  function updateActive(){var p=window.scrollY+120,c=null;sections.forEach(function(s){if(s.el.offsetTop<=p)c=s});anchors.forEach(function(a){a.classList.remove('active')});if(c)c.link.classList.add('active')}
+  window.addEventListener('scroll',updateActive);updateActive();
+
+  function setResult(id,msg,cls){var el=document.getElementById(id);if(!el)return;el.className='result '+(cls||'');el.textContent=msg}
+
+  // Scroll reading progress
+  var rp=document.getElementById('readingProgress');
+  if(rp){
+    document.addEventListener('scroll',function(){
+      var st=window.scrollY,dh=document.documentElement.scrollHeight-window.innerHeight,p=dh>0?Math.min(100,Math.round(st/dh*100)):0;
+      rp.textContent='Software Security · '+p+'%';
+    });
+  }
+
+  // CVE bars
+  document.querySelectorAll('.cve-bar').forEach(function(bar){
+    bar.addEventListener('click',function(){
+      var detail=bar.getAttribute('data-detail')||'รายละเอียด CVE';
+      setResult('cveResult',detail,bar.classList.contains('critical')?'bad':bar.classList.contains('high')?'mid':'ok');
+    });
+  });
+
+  // Quiz interactivity
+  document.querySelectorAll('.quiz-option').forEach(function(opt){
+    opt.addEventListener('click',function(){
+      var quiz = opt.getAttribute('data-quiz');
+      document.querySelectorAll('.quiz-option[data-quiz="'+quiz+'"]').forEach(function(sib){
+        sib.classList.remove('selected','correct','incorrect');
+      });
+      opt.classList.add('selected');
+      var correct = opt.getAttribute('data-correct') === 'true';
+      if(correct){
+        opt.classList.add('correct');
+        document.getElementById('quizResult').className = 'result ok';
+        document.getElementById('quizResult').textContent = '✓ ถูกต้อง!';
+      } else {
+        opt.classList.add('incorrect');
+        document.querySelectorAll('.quiz-option[data-quiz="'+quiz+'"]').forEach(function(sib){
+          if(sib.getAttribute('data-correct') === 'true') sib.classList.add('correct');
+        });
+        document.getElementById('quizResult').className = 'result bad';
+        document.getElementById('quizResult').textContent = '✗ ไม่ถูกต้อง ลองใหม่อีกครั้ง';
+      }
+    });
+  });
+  window.resetQuiz = function(){
+    document.querySelectorAll('.quiz-option').forEach(function(opt){
+      opt.classList.remove('selected','correct','incorrect');
+    });
+    document.getElementById('quizResult').className = 'result';
+    document.getElementById('quizResult').textContent = 'คลิกที่คำตอบเพื่อตรวจสอบ';
+  };
+
+  // Tab switching
+  window.switchTab = function(group, panel){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    var btn = document.querySelector('.tab-btn[onclick*="'+panel+'"]');
+    if(btn) btn.classList.add('active');
+    var pnl = document.getElementById(group+'-'+panel);
+    if(pnl) pnl.classList.add('active');
+  };
+
+})();
+</script>
+<div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--text-muted, #64748b);border-top:1px solid var(--border, #e2e8f0)">Powered by: IceSuntisuk</div></body>
+</html>
