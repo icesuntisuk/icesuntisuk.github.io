@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-12: การตรวจสอบและเฝ้าระวังเครือข่าย | วิชา Network Security</title>
+<meta name="description" content="บทที่ 12 วิชา Network Security — การตรวจสอบและเฝ้าระวังเครือข่าย: Network Monitoring, SOC, Syslog, NetFlow, sFlow, SIEM, Wireshark, tcpdump, Threat Intelligence, Indicator of Compromise (IoC), Traffic Anomaly Detection, NIST SP 800-61 Incident Response">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "CH-12: การตรวจสอบและเฝ้าระวังเครือข่าย",
+  "description": "บทที่ 12 ของวิชา Network Security — ครอบคลุม Network Monitoring, Security Operations Center (SOC), Syslog, NetFlow, sFlow, SIEM, Wireshark, tcpdump, Threat Intelligence, Indicator of Compromise (IoC), Traffic Anomaly Detection, และ NIST SP 800-61 Incident Response",
+  "educationalLevel": "Undergraduate",
+  "educationalRole": "Instructor",
+  "teaches": [
+    "Network Monitoring",
+    "Security Operations Center",
+    "SOC",
+    "Syslog",
+    "NetFlow",
+    "sFlow",
+    "SIEM",
+    "Wireshark",
+    "tcpdump",
+    "Threat Intelligence",
+    "Indicator of Compromise",
+    "IoC",
+    "Traffic Anomaly Detection",
+    "Incident Response",
+    "NIST SP 800-61"
+  ],
+  "inLanguage": "th"
+}
+</script>
+<style>
+:root{--primary:#1a3a5c;--primary-dark:#0f2440;--primary-light:#2c5a8c;--accent:#2563eb;--accent-hover:#1d4ed8;--bg:#ffffff;--bg-secondary:#f8fafc;--bg-tertiary:#f1f5f9;--text:#1e293b;--text-secondary:#475569;--text-muted:#94a3b8;--border:#e2e8f0;--border-light:#f1f5f9;--code-bg:#0f172a;--code-text:#e2e8f0;--table-stripe:#f8fafc;--sidebar-bg:#f8fafc;--sidebar-border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);--radius:8px;--radius-sm:4px;--radius-lg:12px;--font-thai:'Sarabun','IBM Plex Sans Thai','Kanit','Noto Sans Thai',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--font-mono:'JetBrains Mono','Fira Code','Cascadia Code','Source Code Pro','Menlo','Consolas',monospace;--transition:0.2s ease;--header-height:64px;--toc-width:280px}
+[data-theme="dark"]{--primary:#60a5fa;--primary-dark:#1e3a5f;--accent:#3b82f6;--accent-hover:#60a5fa;--bg:#0f172a;--bg-secondary:#1e293b;--bg-tertiary:#334155;--text:#f1f5f9;--text-secondary:#cbd5e1;--text-muted:#64748b;--border:#334155;--code-bg:#020617;--table-stripe:#1e293b;--sidebar-bg:#1e293b;--sidebar-border:#334155;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+h1,h2,h3,h4,h5,h6{line-height:1.3;font-weight:700;color:var(--text);margin-top:1.5em;margin-bottom:.75em}
+h1{font-size:2.25rem;margin-top:0}
+h2{font-size:1.75rem;border-bottom:2px solid var(--border);padding-bottom:.4em}
+h3{font-size:1.35rem}
+h4{font-size:1.1rem}
+p{margin-bottom:1em}
+hr{border:none;border-top:2px solid var(--border);margin:2.5em 0}
+strong,b{font-weight:700}
+ul,ol{margin-bottom:1em;padding-left:1.5em}
+li{margin-bottom:.35em}
+#loading-screen{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s ease}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-secondary);font-size:1rem}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#818cf8);z-index:9998;width:0%;transition:width .15s ease-out}
+.top-nav{position:fixed;top:3px;left:0;right:0;z-index:9997;height:var(--header-height);background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-nav .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem;color:var(--text);white-space:nowrap}
+.top-nav .logo i{color:var(--accent);font-size:1.3rem}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-actions button,.nav-actions .search-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:1rem}
+.nav-actions button:hover,.nav-actions .search-toggle:hover{background:var(--bg-tertiary);color:var(--text);border-color:var(--text-muted)}
+#sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.search-overlay{position:fixed;inset:0;z-index:9996;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(4px)}
+.search-overlay.active{display:flex}
+.search-panel{background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:90%;max-width:640px;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
+.search-input-wrap{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);gap:.5rem}
+.search-input-wrap i{color:var(--text-muted)}
+.search-input-wrap input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:1rem;font-family:var(--font-thai)}
+.search-input-wrap input::placeholder{color:var(--text-muted)}
+.search-count{font-size:.8rem;color:var(--text-muted);white-space:nowrap;padding:.25rem .5rem;background:var(--bg-tertiary);border-radius:var(--radius-sm)}
+.search-results{overflow-y:auto;padding:.5rem;flex:1;max-height:50vh}
+.search-results .no-results{padding:2rem;text-align:center;color:var(--text-muted)}
+.search-result-item{padding:.75rem;border-radius:var(--radius);cursor:pointer;transition:background .2s ease;border-bottom:1px solid var(--border-light)}
+.search-result-item:hover{background:var(--bg-tertiary)}
+.search-result-item .result-heading{font-weight:600;font-size:.9rem;color:var(--accent);margin-bottom:.2rem}
+.search-result-item .result-snippet{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.search-result-item .result-snippet mark,.highlight{background:#fef08a;color:#1e293b;padding:0 2px;border-radius:2px}
+[data-theme="dark"] .search-result-item .result-snippet mark,[data-theme="dark"] .highlight{background:#854d0e;color:#fef9c3}
+.layout{display:flex;padding-top:calc(var(--header-height) + 3px);min-height:100vh}
+.sidebar{width:var(--toc-width);flex-shrink:0;position:sticky;top:calc(var(--header-height) + 3px);height:calc(100vh - var(--header-height) - 3px);overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:1.25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--text-muted) transparent;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:4px}
+.sidebar-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{margin-bottom:.15rem}
+.toc-link{display:block;padding:.4rem .6rem;border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-secondary);transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;line-height:1.4}
+.toc-link:hover{background:var(--bg-tertiary);color:var(--text);text-decoration:none}
+.toc-link.active{color:var(--accent);background:rgba(37,99,235,.08);border-left-color:var(--accent);font-weight:600}
+.toc-link.sub{padding-left:1.4rem;font-size:.8rem}
+.toc-link.sub2{padding-left:2.2rem;font-size:.78rem}
+.main-content{flex:1;min-width:0;padding:2rem 2.5rem;max-width:calc(100vw - var(--toc-width))}
+.main-content>section{margin-bottom:2.5rem}
+.section-ref{scroll-margin-top:calc(var(--header-height) + 16px)}
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:2.5rem 2rem;border-radius:var(--radius-lg);margin-bottom:2.5rem}
+.hero h1{color:#fff;font-size:2rem;margin-bottom:.5rem}
+.hero .subtitle{color:rgba(255,255,255,.85);font-size:1.1rem;margin-bottom:1.25rem}
+.hero .meta-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.hero .meta-tag{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);padding:.25rem .75rem;border-radius:20px;font-size:.8rem}
+.learning-objectives{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+.learning-objectives h3{margin-top:0;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.learning-objectives ol{margin:.75rem 0 0;padding-left:1.25rem}
+.learning-objectives li{margin-bottom:.5rem;color:var(--text-secondary);font-size:.95rem}
+.table-wrap{overflow-x:auto;margin:1.25em 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}
+thead{background:var(--bg-tertiary)}
+th,td{padding:.6rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}
+th{font-weight:700;color:var(--text)}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+tbody tr:hover{background:var(--bg-tertiary)}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:1.25em 0;position:relative}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+code{background:var(--bg-tertiary);color:var(--accent);padding:.15em .4em;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.85em}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:0}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.expandable{margin:1.25em 0}
+.expandable-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease;user-select:none;font-weight:600;font-size:.95rem}
+.expandable-header:hover{background:var(--border)}
+.expandable-header i{transition:transform .2s ease;font-size:.85rem;color:var(--text-muted)}
+.expandable.expanded .expandable-header i{transform:rotate(180deg)}
+.expandable-content{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;border:1px solid transparent}
+.expandable.expanded .expandable-content{max-height:50000px;padding:1rem;border-color:var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.quiz-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:all .2s ease}
+.quiz-card.revealed{border-left:4px solid #22c55e}
+.quiz-question{display:flex;gap:.75rem;align-items:flex-start}
+.q-number{background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.quiz-question p{margin:0;font-weight:500;color:var(--text);font-size:.95rem}
+.quiz-card .reveal-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-family:var(--font-thai);transition:all .2s ease}
+.quiz-card .reveal-btn:hover{background:var(--accent-hover)}
+.quiz-card.revealed .reveal-btn{background:var(--text-muted)}
+.quiz-answer{margin-top:.75rem;padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border);font-size:.9rem}
+.hidden{display:none}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:9995;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-lg);transition:all .2s ease;opacity:0;visibility:hidden;transform:translateY(10px)}
+#back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+#back-to-top:hover{background:var(--accent-hover);transform:translateY(-2px)}
+.site-footer{margin-top:3rem;padding:1.5rem 2rem;background:var(--bg-secondary);border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+@media print{.top-nav,.sidebar,#back-to-top,#progress-bar,.copy-btn,.search-overlay,#sidebar-toggle,.nav-actions{display:none!important}.layout{display:block;padding-top:0}.main-content{max-width:100%;padding:0}.hero{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hero h1,.hero .subtitle{color:#fff!important}table{font-size:.8rem}pre{white-space:pre-wrap;word-break:break-all}.expandable-content{max-height:none!important;padding:1rem!important;border-color:var(--border)!important}.expandable-header i{display:none}.table-wrap{overflow:visible}.quiz-answer.hidden{display:block!important}.quiz-card .reveal-btn{display:none}body{font-size:11pt}section{page-break-inside:avoid}h2,h3{page-break-after:avoid}}
+@media(max-width:1024px){:root{--toc-width:240px}.main-content{padding:1.5rem}}
+@media(max-width:768px){:root{--toc-width:0px}#sidebar-toggle{display:flex}.sidebar{position:fixed;left:-280px;top:calc(var(--header-height) + 3px);width:280px;height:calc(100vh - var(--header-height) - 3px);transition:left .3s ease;z-index:9990;box-shadow:var(--shadow-lg)}.sidebar.open{left:0}.sidebar-overlay{position:fixed;inset:0;z-index:9989;background:rgba(0,0,0,.4);display:none}.sidebar-overlay.active{display:block}.main-content{max-width:100%;padding:1rem}.hero{padding:1.5rem 1rem}.hero h1{font-size:1.5rem}h2{font-size:1.4rem}h3{font-size:1.15rem}.top-nav{padding:0 .75rem}.top-nav .logo{font-size:.85rem}table{font-size:.8rem}th,td{padding:.4rem .6rem}.quiz-card{padding:1rem}}
+@media(max-width:480px){.nav-actions button,.nav-actions .search-toggle{width:36px;height:36px}#back-to-top{bottom:1rem;right:1rem;width:40px;height:40px}.search-panel{width:95%}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.mcq-item .mcq-option{display:block;margin:.35rem 0;padding:.5rem .75rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease}
+.mcq-item .mcq-option:hover{background:var(--bg-tertiary)}
+.mcq-item .mcq-option input{margin-right:.5rem;cursor:pointer}
+.mcq-item.correct{border-left:4px solid #22c55e}
+.mcq-item.wrong{border-left:4px solid #ef4444}
+.mcq-option.correct-opt{background:#dcfce7 !important;border-color:#22c55e !important;color:#14532d}
+.mcq-option.wrong-opt{background:#fee2e2 !important;border-color:#ef4444 !important;color:#7f1d1d}
+#mcq-result.success{background:#dcfce7;border-color:#22c55e}
+#mcq-result.fail{background:#fee2e2;border-color:#ef4444}
+</style>
+</head>
+<body>
+<div id="loading-screen" role="status" aria-label="กำลังโหลดเนื้อหา">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">กำลังโหลดเนื้อหา...</div>
+</div>
+<div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้าการอ่าน"></div>
+<header class="top-nav" role="banner">
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button id="sidebar-toggle" aria-label="เปิดเมนูสารบัญ" aria-expanded="false"><i class="fas fa-bars"></i></button>
+    <div class="logo"><i class="fas fa-shield-halved" aria-hidden="true"></i><span>Network Security — บทที่ 12</span></div>
+  </div>
+  <div class="nav-actions">
+    <button class="search-toggle" id="search-toggle-btn" aria-label="ค้นหา" title="ค้นหา (Ctrl+K / ⌘K)"><i class="fas fa-search" aria-hidden="true"></i></button>
+    <button id="dark-mode-toggle" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง"><i class="fas fa-moon" aria-hidden="true"></i></button>
+  </div>
+</header>
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="ค้นหาเนื้อหา">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="ค้นหาในเนื้อหาทั้งหมด..." aria-label="ป้อนคำค้นหา" autocomplete="off">
+      <span class="search-count" id="search-count"></span>
+      <button id="search-close-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;" aria-label="ปิดค้นหา"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="layout">
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-title"><i class="fas fa-list" aria-hidden="true"></i> สารบัญ</div>
+  <ul class="toc-list" id="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#hero-section" data-target="hero-section">บทนำ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#learning-objectives" data-target="learning-objectives">วัตถุประสงค์การเรียนรู้</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section1" data-target="section1">ส่วนที่ 1: Network Monitoring และ SOC</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-1" data-target="section1-1">1.1 Network Monitoring คืออะไร</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-2" data-target="section1-2">1.2 ระดับของ Network Monitoring</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-3" data-target="section1-3">1.3 เครื่องมือ Network Monitoring</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-1" data-target="section2-1">2.1 SOC คืออะไร</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-2" data-target="section2-2">2.2 SOC Tiers</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-3" data-target="section2-3">2.3 SOC Models</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-4" data-target="section2-4">2.4 SOC Metrics</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section2" data-target="section2">ส่วนที่ 2: การเก็บ Log และ Flow Data</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section3-1" data-target="section3-1">3.1 หลักการของ Syslog</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section3-2" data-target="section3-2">3.2 การตั้งค่า Syslog</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section3-3" data-target="section3-3">3.3 Security Logging</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section4-1" data-target="section4-1">4.1 NetFlow</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section4-2" data-target="section4-2">4.2 sFlow</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section4-3" data-target="section4-3">4.3 ตัวอย่างการวิเคราะห์ NetFlow</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section5-1" data-target="section5-1">5.1 หลักการทำงานของ SIEM</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section5-2" data-target="section5-2">5.2 Correlation Rules</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section5-3" data-target="section5-3">5.3 SIEM Solutions</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section5-4" data-target="section5-4">5.4 การเลือกใช้ SIEM</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section3" data-target="section3">ส่วนที่ 3: Packet Analysis และ Threat Intelligence</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section6-1" data-target="section6-1">6.1 Wireshark</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section6-2" data-target="section6-2">6.2 การวิเคราะห์การโจมตีด้วย Wireshark</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section6-3" data-target="section6-3">6.3 tcpdump</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section7-1" data-target="section7-1">7.1 หลักการ Threat Intelligence</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section7-2" data-target="section7-2">7.2 Indicator of Compromise (IoC)</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section7-3" data-target="section7-3">7.3 แหล่ง Threat Intelligence</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section7-4" data-target="section7-4">7.4 STIX และ TAXII</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section8-1" data-target="section8-1">8.1 Baselines และ Thresholds</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section8-2" data-target="section8-2">8.2 ตัวอย่าง Anomaly Detection</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section4" data-target="section4">ส่วนที่ 4: Incident Response — NIST SP 800-61</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section9-1" data-target="section9-1">9.1 ภาพรวม</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section9-2" data-target="section9-2">9.2 Preparation</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section9-3" data-target="section9-3">9.3 Detection and Analysis</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section9-4" data-target="section9-4">9.4 Containment/Eradication/Recovery</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section9-5" data-target="section9-5">9.5 Post-Incident Activity</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section9-6" data-target="section9-6">9.6 Playbook Template</a></li>
+    <li class="toc-item"><a class="toc-link" href="#summary" data-target="summary">สรุปท้ายบท</a></li>
+    <li class="toc-item"><a class="toc-link" href="#review-questions" data-target="review-questions">คำถามทบทวน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#interactive-quiz" data-target="interactive-quiz">แบบทดสอบ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#references" data-target="references">เอกสารอ้างอิง</a></li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content" role="main">
+
+<section id="hero-section" class="hero section-ref">
+  <h1><i class="fas fa-eye" aria-hidden="true"></i> CH-12: การตรวจสอบและเฝ้าระวังเครือข่าย</h1>
+  <p class="subtitle">Network Monitoring &amp; Surveillance — Network Monitoring, SOC, Syslog, NetFlow, sFlow, SIEM, Wireshark, tcpdump, Threat Intelligence, Indicator of Compromise (IoC), Traffic Anomaly Detection, NIST SP 800-61 Incident Response</p>
+  <div class="meta-tags">
+    <span class="meta-tag"><i class="fas fa-graduation-cap" aria-hidden="true"></i> วิชา Network Security</span>
+    <span class="meta-tag"><i class="fas fa-calendar" aria-hidden="true"></i> ภาคเรียนที่ 1/2569</span>
+    <span class="meta-tag"><i class="fas fa-book-open" aria-hidden="true"></i> บทที่ 12</span>
+  </div>
+</section>
+
+<div class="learning-objectives section-ref" id="learning-objectives">
+  <h3><i class="fas fa-bullseye" aria-hidden="true"></i> วัตถุประสงค์การเรียนรู้ (Learning Objectives)</h3>
+  <p>เมื่อจบบทนี้แล้ว ผู้เรียนสามารถ:</p>
+  <ol>
+    <li>อธิบายหลักการ Network Monitoring และโครงสร้างของ Security Operations Center (SOC) ได้</li>
+    <li>อธิบายการเก็บ Log และระบบ Log Management — Syslog, NetFlow, sFlow — ได้</li>
+    <li>อธิบายหลักการทำงานของ SIEM และเปรียบเทียบโซลูชันต่างๆ ได้</li>
+    <li>วิเคราะห์ Packet Capture ด้วย Wireshark และ tcpdump เบื้องต้นได้</li>
+    <li>อธิบายแนวคิด Threat Intelligence (TI) และการนำ Indicator of Compromise (IoC) ไปใช้ได้</li>
+    <li>ตรวจจับ Traffic Anomaly และวิเคราะห์ Network Behavior ได้</li>
+    <li>อธิบายขั้นตอน Incident Response ตาม NIST SP 800-61 (Preparation, Detection, Containment, Eradication, Recovery) ได้</li>
+  </ol>
+</div>
+
+<hr>
+
+<!-- SECTION 1 -->
+<section id="section1" class="section-ref">
+<h3>ส่วนที่ 1: Network Monitoring และ SOC</h3>
+<h2>1. หลักการ Network Monitoring</h2>
+<h3 id="section1-1" class="section-ref">1.1 Network Monitoring คืออะไร</h3>
+<p>Network Monitoring คือกระบวนการเฝ้าดูและวิเคราะห์เครือข่ายอย่างต่อเนื่อง เพื่อ:</p>
+<ul>
+  <li>ตรวจจับปัญหาด้านประสิทธิภาพ (Latency, Packet Loss, Bandwidth Utilization)</li>
+  <li>ตรวจจับเหตุการณ์ด้านความปลอดภัย (Traffic Anomaly, Malware Communication)</li>
+  <li>ตรวจสอบ Compliance (PCI DSS, PDPA, ISO 27001)</li>
+  <li>วางแผน Capacity (เมื่อใดต้องเพิ่ม Bandwidth)</li>
+  <li>Verify Change Management (หลังเปลี่ยนแปลง Network Config)</li>
+</ul>
+
+<h3 id="section1-2" class="section-ref">1.2 ระดับของ Network Monitoring</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ระดับการตรวจสอบ:
+─────────────────
+Layer 1 — Availability (บอกว่าพังหรือไม่พัง)
+├── Ping/ICMP — Server ตายหรือรอด
+├── SNMP Up/Down Status
+└── Port Status
+
+Layer 2 — Performance (บอกว่าช้าหรือเร็ว)
+├── Bandwidth Utilization (%)
+├── Packet Loss (%)
+├── Latency (ms)
+├── Jitter (ms)
+└── CPU/Memory ของ Network Device
+
+Layer 3 — Visibility (บอกว่าใคร คุยกับใคร ใช้อะไร)
+├── NetFlow/sFlow/IPFIX — Flow Data
+├── DNS Query Log
+├── HTTP Log
+└── TLS Certificate Info
+
+Layer 4 — Security (บอกว่าถูกโจมตีหรือไม่)
+├── IDS/IPS Alert
+├── Anomaly Detection
+├── Threat Intelligence Feed
+└── Packet Capture (เมื่อจำเป็น)</pre>
+
+<h3 id="section1-3" class="section-ref">1.3 เครื่องมือ Network Monitoring</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>เครื่องมือ</th><th>ประเภท</th><th>จุดเด่น</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Zabbix</strong></td><td>Open Source</td><td>SNMP Monitoring, Alerting, Graphing</td></tr>
+    <tr><td><strong>Prometheus + Grafana</strong></td><td>Open Source</td><td>Metrics Collection, Visualization</td></tr>
+    <tr><td><strong>Nagios</strong></td><td>Open Source</td><td>Alerting, Plugin Ecosystem</td></tr>
+    <tr><td><strong>PRTG</strong></td><td>Commercial</td><td>All-in-One, ใช้งานง่าย</td></tr>
+    <tr><td><strong>SolarWinds</strong></td><td>Commercial</td><td>NPM, NTA, SEM — ครบวงจร</td></tr>
+    <tr><td><strong>Datadog</strong></td><td>Cloud SaaS</td><td>Infrastructure + APM + Security</td></tr>
+    <tr><td><strong>ELK Stack</strong></td><td>Open Source</td><td>Log Collection + Search + Visualization</td></tr>
+    <tr><td><strong>Splunk</strong></td><td>Commercial</td><td>SIEM + Log Management</td></tr>
+  </tbody>
+</table></div>
+
+<h2>2. Security Operations Center (SOC)</h2>
+<h3 id="section2-1" class="section-ref">2.1 SOC คืออะไร</h3>
+<p>SOC คือทีมและศูนย์ปฏิบัติการที่รับผิดชอบการรักษาความปลอดภัยทางไซเบอร์ขององค์กร แบบ 24/7:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>SOC Structure:
+───────────────
+┌──────────────────────────────────────────────────┐
+│                 SOC DIRECTOR                      │
+├──────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌───────────┐ │
+│  │ Tier 1      │  │ Tier 2      │  │ Tier 3    │ │
+│  │ Analyst     │─▶│ Analyst     │─▶│ Engineer  │ │
+│  │ (Triage)    │  │ (Investigate)│  │ (Deep Dive)│ │
+│  │ Monitor +   │  │ Analysis    │  │ Malware    │ │
+│  │ Triage      │  │ Escalation  │  │ Reverse   │ │
+│  └─────────────┘  └─────────────┘  └───────────┘ │
+│  ┌─────────────┐  ┌─────────────┐  ┌───────────┐ │
+│  │ Threat Intel │  │ Forensic    │  │ IR Team   │ │
+│  │ (CTI)        │  │ Analyst     │  │ (Incident │ │
+│  │              │  │             │  │  Response)│ │
+│  └─────────────┘  └─────────────┘  └───────────┘ │
+└──────────────────────────────────────────────────┘</pre>
+
+<h3 id="section2-2" class="section-ref">2.2 SOC Tiers</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>Tier</th><th>บทบาท</th><th>ความสามารถ</th><th>เครื่องมือที่ใช้</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Tier 1 (Triage)</strong></td><td>ตรวจสอบ Alert, ยืนยัน True/False Positive, Escalate</td><td>SIEM, Ticket System</td><td>Splunk, ServiceNow</td></tr>
+    <tr><td><strong>Tier 2 (Investigator)</strong></td><td>สอบสวนเหตุการณ์เชิงลึก, Containment เบื้องต้น</td><td>SIEM, EDR, Packet Analysis</td><td>Wireshark, EDR, Sandbox</td></tr>
+    <tr><td><strong>Tier 3 (Expert)</strong></td><td>Malware Analysis, Forensic, IR Planning</td><td>Reverse Engineering, Threat Hunting</td><td>IDA Pro, Volatility, YARA</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section2-3" class="section-ref">2.3 SOC Models</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>Model</th><th>คำอธิบาย</th><th>เหมาะกับ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>In-house SOC</strong></td><td>ทีมภายในองค์กร 24/7</td><td>องค์กรใหญ่, ธนาคาร</td></tr>
+    <tr><td><strong>Virtual SOC</strong></td><td>SOC-as-a-Service (Managed)</td><td>SME, ไม่มีงบสร้าง SOC</td></tr>
+    <tr><td><strong>Co-managed SOC</strong></td><td>บางส่วน In-house + บางส่วน Outsourced</td><td>องค์กรขนาดกลาง</td></tr>
+    <tr><td><strong>Distributed SOC</strong></td><td>SOC หลายแห่ง เชื่อมต่อกัน</td><td>Multinational, Global</td></tr>
+    <tr><td><strong>Hybrid SOC</strong></td><td>In-house + MSSP ร่วมกัน</td><td>องค์กรทั่วไป</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section2-4" class="section-ref">2.4 SOC Metrics (KPIs)</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>KPI</th><th>คำอธิบาย</th><th>ค่าเป้าหมาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>MTTD (Mean Time to Detect)</strong></td><td>เวลาตั้งแต่เกิดเหตุการณ์ถึงตรวจพบ</td><td>&lt; 1 ชม. (Critical)</td></tr>
+    <tr><td><strong>MTTR (Mean Time to Respond)</strong></td><td>เวลาตั้งแต่ตรวจพบถึงตอบสนอง</td><td>&lt; 2 ชม. (Critical)</td></tr>
+    <tr><td><strong>MTTI (Mean Time to Investigate)</strong></td><td>เวลาใช้ในการสอบสวน</td><td>&lt; 24 ชม.</td></tr>
+    <tr><td><strong>Alert Triage Time</strong></td><td>เวลา Tier 1 ตรวจสอบ Alert</td><td>&lt; 15 นาที</td></tr>
+    <tr><td><strong>False Positive Rate</strong></td><td>% Alert ที่ไม่ใช่ Threat</td><td>&lt; 10%</td></tr>
+    <tr><td><strong>Escalation Rate</strong></td><td>% Alert ที่ถูกส่งต่อ Tier 2</td><td>&lt; 20%</td></tr>
+  </tbody>
+</table></div>
+</section>
+<hr>
+
+<!-- SECTION 2 -->
+<section id="section2" class="section-ref">
+<h3>ส่วนที่ 2: การเก็บ Log และ Flow Data</h3>
+<h2>3. Syslog</h2>
+<h3 id="section3-1" class="section-ref">3.1 หลักการของ Syslog</h3>
+<p>Syslog (RFC 5424) เป็นมาตรฐานสำหรับส่ง Log Message จาก Network Device ไปยัง Log Server:</p>
+<p><strong>Syslog Message Structure:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>&lt;PRI&gt;1 TIMESTAMP HOSTNAME APP_NAME PROCID MSGID STRUCTURED-DATA MSG
+
+ตัวอย่าง:
+&lt;134&gt;1 2024-11-15T14:30:00Z firewall01 sshd 1234 - [timeQuality tzKnown="1"]
+    "Failed password for root from 203.0.113.5 port 22 ssh2"
+
+&lt;PRI&gt; = Facility * 8 + Severity
+134    = Facility 16 (Local0) * 8 + Severity 6 (Informational)</pre>
+<p><strong>Syslog Severity Levels:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Code</th><th>Severity</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td>0</td><td>Emergency</td><td>ระบบไม่สามารถทำงานได้</td></tr>
+    <tr><td>1</td><td>Alert</td><td>ต้องดำเนินการทันที</td></tr>
+    <tr><td>2</td><td>Critical</td><td>สภาวะวิกฤต</td></tr>
+    <tr><td>3</td><td>Error</td><td>ข้อผิดพลาด</td></tr>
+    <tr><td>4</td><td>Warning</td><td>คำเตือน</td></tr>
+    <tr><td>5</td><td>Notice</td><td>เหตุการณ์สำคัญ</td></tr>
+    <tr><td>6</td><td>Informational</td><td>ข้อความทั่วไป</td></tr>
+    <tr><td>7</td><td>Debug</td><td>ข้อมูลสำหรับ Debug</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section3-2" class="section-ref">3.2 การตั้งค่า Syslog</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button># /etc/syslog-ng/conf.d/network-devices.conf — Syslog-ng Server
+source s_network {
+    udp(port(514));
+    tcp(port(514));
+};
+
+destination d_security_logs {
+    file("/var/log/security/%HOSTNAME/%YEAR-%MONTH-%DAY.log"
+         owner("root") group("adm") perm(0640));
+};
+
+log {
+    source(s_network);
+    destination(d_security_logs);
+};</pre>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>! ตั้งค่า Syslog บน Cisco Switch
+logging host 192.168.1.100
+logging trap informational
+logging source-interface Vlan99
+service timestamps log datetime msec</pre>
+
+<h3 id="section3-3" class="section-ref">3.3 Security Logging — ควร Log อะไรบ้าง</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภทอุปกรณ์</th><th>เหตุการณ์ที่ควร Log</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Firewall</strong></td><td>Allow/Deny, Connection, Policy Change, Admin Login</td></tr>
+    <tr><td><strong>IDS/IPS</strong></td><td>Alert, Signature Match, Anomaly Detection</td></tr>
+    <tr><td><strong>Switch/Router</strong></td><td>Interface Up/Down, Config Change, Authentication Fail</td></tr>
+    <tr><td><strong>Server</strong></td><td>Login (สำเร็จ/ล้มเหลว), Service Start/Stop, File Change</td></tr>
+    <tr><td><strong>Web Server</strong></td><td>HTTP Request (URL, Status Code), Error, Admin Access</td></tr>
+    <tr><td><strong>DNS Server</strong></td><td>Query Log, Zone Transfer, DNSSEC Failure</td></tr>
+    <tr><td><strong>Email Server</strong></td><td>SMTP Transaction, SPF/DKIM/DMARC Fail, Spam</td></tr>
+  </tbody>
+</table></div>
+
+<h2>4. NetFlow และ sFlow</h2>
+<h3 id="section4-1" class="section-ref">4.1 NetFlow</h3>
+<p>NetFlow (Cisco Proprietary, ปัจจุบันเป็น IETF IPFIX) เก็บข้อมูล <strong>Flow</strong> — ไม่ใช่แต่ละ Packet — ทำให้ได้ Visibility สูงแต่ใช้ทรัพยากรน้อย:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>NetFlow Record (v5):
+─────────────────────
+┌──────────────────────────────────────┐
+│ Source IP Address                     │
+│ Destination IP Address                │
+│ Source Port                           │
+│ Destination Port                      │
+│ Layer 3 Protocol Type                 │
+│ ToS (Type of Service)                 │
+│ Flow Start Timestamp                  │
+│ Flow End Timestamp                    │
+│ Packets Count                         │
+│ Bytes Count                           │
+│ TCP Flags (OR of all packets)         │
+│ Input Interface Index                 │
+│ Output Interface Index                │
+└──────────────────────────────────────┘</pre>
+<p><strong>NetFlow vs Packet Capture:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>NetFlow</th><th>Packet Capture</th></tr></thead>
+  <tbody>
+    <tr><td>ข้อมูลที่เก็บ</td><td>Metadata (IP, Port, Bytes)</td><td>Full Packet Content</td></tr>
+    <tr><td>ขนาดข้อมูล</td><td>เล็ก (1-2% ของ Traffic)</td><td>ใหญ่ (100% ของ Traffic)</td></tr>
+    <tr><td>Storage</td><td>เก็บได้นาน (เดือน)</td><td>เก็บได้สั้น (วัน)</td></tr>
+    <tr><td>Forensic Detail</td><td>รู้ว่ามีอะไรเกิดขึ้น</td><td>รู้เนื้อหาที่เกิดขึ้น</td></tr>
+    <tr><td>Privacy</td><td>ไม่เห็น Payload — ดีกว่า PDPA</td><td>เห็น Payload — ต้องระวัง PDPA</td></tr>
+    <tr><td>Performance</td><td>Router/Switch รองรับ Built-in</td><td>ต้องใช้ Probe แยก</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section4-2" class="section-ref">4.2 sFlow</h3>
+<p>sFlow (sFlow.org) เป็น Sampling Technology — สุ่มเก็บตัวอย่าง Packet แทนการเก็บทุกรายการ:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>sFlow Sampling:
+────────────────
+Traffic: [1][2][3][4][5][6][7][8][9][10]... (1,000,000 packets)
+sFlow:    [1]      [4]      [7]      [10]    (Sampling Rate 1:3)
+
+ข้อดี: Performance ไม่กระทบ — Sampling Rate 1:N
+ข้อเสีย: ไม่เห็นทุก Flow — อาจพลาดการโจมตีที่ใช้ Packet น้อย</pre>
+<p><strong>NetFlow vs sFlow:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>NetFlow</th><th>sFlow</th></tr></thead>
+  <tbody>
+    <tr><td>เก็บทุก Flow (Deterministic)</td><td>สุ่มเก็บ (Statistical Sampling)</td></tr>
+    <tr><td>ใช้ CPU/Memory มากกว่า</td><td>ใช้ทรัพยากรน้อย</td></tr>
+    <tr><td>ครบถ้วน — รู้ทุก Connection</td><td>ประมาณ — รู้แนวโน้ม</td></tr>
+    <tr><td>Cisco, Juniper, Huawei</td><td>HP, Arista, Dell, Brocade</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section4-3" class="section-ref">4.3 ตัวอย่างการวิเคราะห์ NetFlow</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>NetFlow Analysis (Top Talkers):
+────────────────────────────────
+Source          Dest            Bytes       Duration    App
+──              ──              ─────       ────────    ───
+10.0.0.50       93.184.216.34   1.2 GB      15 min      HTTPS
+192.168.1.100   198.51.100.20   500 MB      45 min      SMB
+10.0.0.50       203.0.113.5     100 MB      5 min       SSH ← ทำไม SSH มาก?
+
+Anomaly Detection:
+───────────────────
+Src: 10.0.0.50 → Dest: 203.0.113.5 Port: 22 (SSH)
+Volume: 100 MB in 5 min = ~3.3 Mbps (SSH ปกติควร &lt; 100 Kbps)
+→ สงสัย Data Exfiltration ผ่าน SSH Tunnel!</pre>
+
+<h2>5. SIEM (Security Information and Event Management)</h2>
+<h3 id="section5-1" class="section-ref">5.1 หลักการทำงานของ SIEM</h3>
+<p>SIEM รวม Log Management + Security Event Correlation + Alerting:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>SIEM Architecture:
+───────────────────
+┌──────────┐  ┌──────────┐  ┌──────────┐
+│ Firewall  │  │ IDS/IPS  │  │ Server    │
+│ Syslog    │  │ Alert    │  │ EventLog  │
+└─────┬────┘  └─────┬────┘  └─────┬────┘
+      │             │             │
+      └─────────────┼─────────────┘
+                    ▼
+           ┌────────────────┐
+           │  SIEM Core      │
+           │  ┌──────────┐  │
+           │  │Collection │  │  ← Normalize, Parse
+           │  ├──────────┤  │
+           │  │Correlation│  │  ← Event Correlation Rules
+           │  ├──────────┤  │
+           │  │Alerting   │  │  ← Real-time Notification
+           │  ├──────────┤  │
+           │  │Reporting  │  │  ← Compliance Reports
+           │  ├──────────┤  │
+           │  │Search     │  │  ← Ad-hoc Investigation
+           │  └──────────┘  │
+           └────────────────┘
+                    │
+                    ▼
+              ┌──────────┐
+              │ Analyst   │
+              │ Dashboard │
+              └──────────┘</pre>
+
+<h3 id="section5-2" class="section-ref">5.2 Correlation Rules</h3>
+<p>SIEM ใช้ Correlation Rules เพื่อเชื่อมโยงเหตุการณ์ที่แยกกัน:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Correlation Rule Example — Brute Force Attack:
+───────────────────────────────────────────────
+Event 1: [Auth Fail] User: admin, Src: 10.0.0.50, Time: 14:30:01
+Event 2: [Auth Fail] User: admin, Src: 10.0.0.50, Time: 14:30:03
+Event 3: [Auth Fail] User: admin, Src: 10.0.0.50, Time: 14:30:05
+...
+Event 10: [Auth Success] User: admin, Src: 10.0.0.50, Time: 14:31:00
+
+Correlation Result:
+────────────────────
+Rule: "Brute Force + Success"
+Trigger: 10+ Auth Fail from same source within 5 min, followed by Auth Success
+Alert: 🔴 HIGH — Account admin potentially compromised from 10.0.0.50
+MITRE ATT&CK: T1110 (Brute Force)</pre>
+
+<h3 id="section5-3" class="section-ref">5.3 SIEM Solutions</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>โซลูชัน</th><th>ประเภท</th><th>จุดเด่น</th><th>ราคา</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Splunk</strong></td><td>Commercial</td><td>Enterprise SIEM, Machine Learning, SOAR Integration</td><td>$</td></tr>
+    <tr><td><strong>IBM QRadar</strong></td><td>Commercial</td><td>Offense-based Correlation, Network Activity</td><td>$</td></tr>
+    <tr><td><strong>Microsoft Sentinel</strong></td><td>Cloud SIEM</td><td>Azure Integration, KQL Query, AI</td><td>$$</td></tr>
+    <tr><td><strong>Elastic Security</strong></td><td>Open Source/Paid</td><td>ELK Stack, SIEM + EDR, Detection Rules</td><td>ฟรี/เสียเงิน</td></tr>
+    <tr><td><strong>Wazuh</strong></td><td>Open Source</td><td>Fork ของ OSSEC, SIEM + HIDS + FIM</td><td>ฟรี</td></tr>
+    <tr><td><strong>Prelude</strong></td><td>Open Source</td><td>Hybrid SIEM, Correlation Engine</td><td>ฟรี</td></tr>
+    <tr><td><strong>LogRhythm</strong></td><td>Commercial</td><td>Enterprise SIEM, AI Engine</td><td>$</td></tr>
+    <tr><td><strong>AlienVault USM</strong></td><td>Commercial</td><td>All-in-One: SIEM + Asset + Vuln + TI</td><td>$</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section5-4" class="section-ref">5.4 การเลือกใช้ SIEM</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ข้อควรพิจารณาในการเลือก SIEM:
+───────────────────────────────
+1. Data Volume — รับ Log ได้กี่ GB/วัน (EPS = Events Per Second)
+2. Integration — รองรับ Device Type ที่องค์กรใช้หรือไม่
+3. Scalability — ขยายได้เมื่อองค์กรโต
+4. Compliance — รองรับ Report (PCI DSS, ISO 27001, PDPA)
+5. Threat Intelligence — Built-in TI Feed
+6. SOAR — Automation (Respond อัตโนมัติ)
+7. AI/ML — Anomaly Detection, UEBA
+8. Cost — License, Infrastructure, Maintenance</pre>
+</section>
+<hr>
+
+<!-- SECTION 3 -->
+<section id="section3" class="section-ref">
+<h3>ส่วนที่ 3: Packet Analysis และ Threat Intelligence</h3>
+<h2>6. Wireshark และ tcpdump</h2>
+<h3 id="section6-1" class="section-ref">6.1 Wireshark</h3>
+<p>Wireshark เป็นเครื่องมือวิเคราะห์ Packet แบบ Graphical ที่นิยมที่สุด:</p>
+
+<h4>Capture Filters (ใช้กับ tcpdump/libpcap — ก่อน Capture)</h4>
+<p>ไวยากรณ์: <code>[protocol] [direction] [host] [port]</code></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>tcp port 80              # HTTP Traffic
+host 192.168.1.1         # Traffic จาก/ถึง IP นี้
+src 10.0.0.0/24          # Traffic จาก Subnet นี้
+not arp                  # ไม่รวม ARP
+tcp port 443 and host example.com  # HTTPS ไปยัง example.com</pre>
+
+<h4>Display Filters (ใช้กับ Wireshark — หลัง Capture)</h4>
+<p>ไวยากรณ์: <code>[field] [operator] [value]</code></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>http.request.method == "POST"              # HTTP POST Request
+tcp.port == 443                             # TCP Port 443
+ip.addr == 192.168.1.1                      # IP Address
+tcp.flags.syn == 1 and tcp.flags.ack == 0   # SYN Packet (First of Handshake)
+http.response.code == 404                    # HTTP 404
+dns.qry.name contains "malware"              # DNS Query ที่มีคำว่า malware</pre>
+
+<h3 id="section6-2" class="section-ref">6.2 การวิเคราะห์การโจมตีด้วย Wireshark</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ตัวอย่าง 1: ตรวจจับ Port Scan (TCP SYN Scan)
+─────────────────────────────────────────────
+Filter: tcp.flags.syn == 1 and tcp.flags.ack == 0
+
+สังเกต:
+- SYN ไปยัง Port หลาย Port ติดต่อกัน
+- ไม่มี SYN-ACK กลับมา (Port ปิด) หรือ SYN-ACK (Port เปิด)
+- Source IP เดียว, Destination IP เดียว, ระยะเวลาสั้น
+
+ตัวอย่าง 2: ตรวจจับ ARP Spoofing
+────────────────────────────────
+Filter: arp.duplicate-address-detected or (arp.opcode == 2)
+
+สังเกต:
+- IP เดียวกัน แต่ MAC Address ต่างกัน (สอง MAC ตอบ ARP)
+- ARP Response จำนวนมากผิดปกติ
+
+ตัวอย่าง 3: ตรวจจับ DNS Tunneling
+──────────────────────────────────
+Filter: dns.flags.response == 0
+
+สังเกต:
+- DNS Query ที่มี Subdomain ยาวผิดปกติ (&gt; 50 ตัวอักษร)
+- DNS Query ความถี่สูง
+- DNS TXT Record Query ที่ผิดปกติ</pre>
+
+<h3 id="section6-3" class="section-ref">6.3 tcpdump</h3>
+<p>tcpdump คือ Command-line Packet Capture Tool:</p>
+
+<h4>พื้นฐาน</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>tcpdump -i eth0                     # Capture Interface eth0
+tcpdump -i any port 80              # HTTP Traffic
+tcpdump -i eth0 host 10.0.0.1       # Traffic จาก IP นี้</pre>
+
+<h4>การบันทึก</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>tcpdump -i eth0 -w capture.pcap     # บันทึกเป็นไฟล์
+tcpdump -r capture.pcap             # อ่านจากไฟล์
+tcpdump -r capture.pcap -X          # แสดง Hex + ASCII</pre>
+
+<h4>ขั้นสูง</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>tcpdump -i eth0 'tcp[tcpflags] & tcp-syn != 0'    # SYN Packet
+tcpdump -i eth0 'icmp[icmptype] = 8'              # ICMP Echo
+tcpdump -i eth0 -c 1000 -s 0 -w attack.pcap       # 1000 Packet, Full Capture</pre>
+
+<h4>Performance</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>tcpdump -i eth0 -n -s 0 -B 4096 -w capture.pcap   # High Speed Capture</pre>
+
+<h2>7. Threat Intelligence (TI) และ Indicator of Compromise (IoC)</h2>
+<h3 id="section7-1" class="section-ref">7.1 หลักการ Threat Intelligence</h3>
+<p>CTI (Cyber Threat Intelligence) คือข้อมูลเกี่ยวกับภัยคุกคามที่นำมาใช้ป้องกันและตรวจจับการโจมตี:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>CTI Pyramid of Pain (David Bianco, 2014):
+─────────────────────────────────────────
+                    🔴
+                   TTPs      ← Tactics, Techniques, Procedures (ยากที่สุด)
+                  🟠🟠
+                 Tools
+                🟡🟡🟡
+               Network/Host Artifacts
+              🟢🟢🟢🟢
+             Domain Names
+            🔵🔵🔵🔵🔵
+           IP Addresses          ง่ายที่สุด
+          ⚪⚪⚪⚪⚪⚪
+         Hash Values (MD5/SHA)   เปลี่ยนได้ง่าย</pre>
+<p><strong>ระดับของ TI:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ระดับ</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Strategic</strong></td><td>ภาพรวม, แนวโน้ม, สำหรับผู้บริหาร</td><td>"Ransomware targeting Thai banks in 2024"</td></tr>
+    <tr><td><strong>Operational</strong></td><td>การโจมตีที่กำลังเกิดขึ้น</td><td>"APT41 targeting VPN gateways with CVE-2023-XXXX"</td></tr>
+    <tr><td><strong>Tactical</strong></td><td>TTPs — วิธีการโจมตี</td><td>"T1566 Phishing + T1059 PowerShell + T1047 WMI"</td></tr>
+    <tr><td><strong>Technical</strong></td><td>IoCs — ข้อมูลจำเพาะ</td><td>IP, Domain, Hash, YARA Rule</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section7-2" class="section-ref">7.2 Indicator of Compromise (IoC)</h3>
+<p>IoC คือหลักฐานที่บ่งชี้ว่าระบบถูกบุกรุก:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>IoC ประเภทต่างๆ:
+─────────────────
+1. Network-based IoCs:
+   ├── IP Address: 185.130.5.253 (C2 Server)
+   ├── Domain: malc0de.evil.com
+   ├── URL: https://evil.com/backdoor.php
+   ├── User-Agent: Mozilla/5.0 (compatible; MSIE 6.0; Windows NT 5.1)
+   └── SSL Cert Fingerprint: 7a:3b:4c:...
+
+2. Host-based IoCs:
+   ├── File Hash (MD5/SHA1/SHA256): a1b2c3d4e5...
+   ├── Registry Key: HKLM\Software\Microsoft\...\Malware
+   ├── Process Name: svch0st.exe (svchost.exe ปลอม)
+   ├── Mutex: Global\Malware_Mutex_2024
+   └── File Path: C:\Windows\Temp\malware.dll
+
+3. Behavioral IoCs:
+   ├── DNS Query Frequency: ทุก 5 นาที ไปยัง domain ผิดปกติ
+   ├── Traffic Pattern: Outbound Data 03:00-05:00 AM
+   └── Login Pattern: SSH Login จาก IP ต่างประเทศเวลา 2 AM</pre>
+
+<h3 id="section7-3" class="section-ref">7.3 แหล่ง Threat Intelligence</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>แหล่งข้อมูล</th><th>ประเภท</th><th>ฟรี/เสียเงิน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>AlienVault OTX</strong></td><td>TI Platform</td><td>ฟรี</td></tr>
+    <tr><td><strong>MISP</strong></td><td>Open Source TI Sharing</td><td>ฟรี</td></tr>
+    <tr><td><strong>VirusTotal</strong></td><td>File/URL Analysis</td><td>ฟรี + Premium</td></tr>
+    <tr><td><strong>IBM X-Force Exchange</strong></td><td>TI Platform</td><td>ฟรี</td></tr>
+    <tr><td><strong>Talos Intelligence</strong></td><td>TI (Cisco)</td><td>ฟรี</td></tr>
+    <tr><td><strong>Recorded Future</strong></td><td>Enterprise TI</td><td>เสียเงิน</td></tr>
+    <tr><td><strong>Mandiant Threat Intel</strong></td><td>Enterprise TI</td><td>เสียเงิน</td></tr>
+    <tr><td><strong>Anomali</strong></td><td>Enterprise TI</td><td>เสียเงิน</td></tr>
+    <tr><td><strong>ThreatConnect</strong></td><td>SOAR + TI</td><td>เสียเงิน</td></tr>
+    <tr><td><strong>STIX/TAXII Feeds</strong></td><td>Standard TI Format</td><td>ฟรี/เสียเงิน</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="section7-4" class="section-ref">7.4 STIX และ TAXII</h3>
+<p><strong>STIX (Structured Threat Information Expression):</strong> มาตรฐานสำหรับแลกเปลี่ยน CTI Data</p>
+<p><strong>TAXII (Trusted Automated eXchange of Indicator Information):</strong> Protocol สำหรับส่ง STIX Data</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>// STIX 2.1 — ตัวอย่าง Indicator
+{
+    "type": "indicator",
+    "id": "indicator--12345678-1234-1234-1234-123456789012",
+    "created": "2024-11-15T00:00:00Z",
+    "name": "Malicious IP Address",
+    "pattern": "[ipv4-addr:value = '185.130.5.253']",
+    "valid_from": "2024-11-15T00:00:00Z",
+    "labels": ["malicious-activity", "c2-server"],
+    "kill_chain_phases": [{
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "command-and-control"
+    }]
+}</pre>
+
+<h2>8. Traffic Anomaly Detection</h2>
+<h3 id="section8-1" class="section-ref">8.1 Baselines และ Thresholds</h3>
+<p>การตรวจจับ Anomaly ต้องมี Baseline:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Baseline Creation:
+───────────────────
+Window: 4 สัปดาห์ (28 วัน)
+Metrics:
+├── Bytes/sec (Inbound + Outbound)
+├── Packets/sec
+├── Connections/min
+├── DNS Queries/min (per domain)
+├── New Flows/sec
+└── Protocol Distribution
+
+Example — Traffic Volume Baseline:
+├── Weekday (09:00-17:00): Mean = 500 Mbps, SD = 50 Mbps
+├── Weekday (17:00-09:00): Mean = 150 Mbps, SD = 30 Mbps
+├── Weekend: Mean = 80 Mbps, SD = 20 Mbps
+└── Threshold = Mean + 3*SD
+    → Alert เมื่อ Traffic &gt; 650 Mbps (Weekday Daytime)</pre>
+
+<h3 id="section8-2" class="section-ref">8.2 ตัวอย่าง Anomaly Detection</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Scenario 1: Data Exfiltration
+──────────────────────────────
+Baseline: Outbound Traffic = 10-50 MB/hr (03:00 AM)
+Anomaly:  Outbound Traffic = 2.3 GB in 15 min (03:00 AM)
+Analysis: Source = DB Server (10.0.0.5), Dest = IP 203.0.113.5 Port 443
+Action:   🔴 Alert — Possible Data Exfiltration
+
+Scenario 2: DDoS Detection
+──────────────────────────
+Baseline: Inbound Traffic = 200-500 Mbps
+Anomaly:  Inbound Traffic Spike to 8 Gbps in 30 seconds
+Analysis: Source IPs = 50,000+ Unique, Dest Port = 80, SYN Flood
+Action:   🔴 Critical — DDoS Attack, reroute to DDoS mitigation
+
+Scenario 3: Malware C2 Beaconing
+─────────────────────────────────
+Baseline: DNS Query to example.com = Normal
+Anomaly:  DNS Query to random-generated.domain.com every 60 seconds
+          (a3k2d9f7.malware-c2.evil.com)
+Analysis: DGA (Domain Generation Algorithm) Pattern
+Action:   🟡 Suspicious — DNS Sinkhole + Investigate</pre>
+</section>
+<hr>
+
+<!-- SECTION 4 -->
+<section id="section4" class="section-ref">
+<h3>ส่วนที่ 4: Incident Response — NIST SP 800-61</h3>
+<h2>9. NIST Incident Response Framework</h2>
+<h3 id="section9-1" class="section-ref">9.1 ภาพรวม</h3>
+<p>NIST SP 800-61 Rev. 2 (Computer Security Incident Handling Guide) กำหนด Incident Response Lifecycle 4 ขั้นตอน:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>NIST Incident Response Lifecycle:
+──────────────────────────────────
+         ┌─────────────────────┐
+         │     Preparation      │
+         └──────────┬──────────┘
+                    │
+         ┌──────────▼──────────┐
+         │     Detection        │
+         │     & Analysis       │
+         └──────────┬──────────┘
+                    │
+         ┌──────────▼──────────┐
+         │     Containment      │
+         │     Eradication      │
+         │     & Recovery       │
+         └──────────┬──────────┘
+                    │
+         ┌──────────▼──────────┐
+         │  Post-Incident       │
+         │  Activity            │
+         └──────────┬──────────┘
+                    │
+         (กลับไป Preparation)</pre>
+
+<h3 id="section9-2" class="section-ref">9.2 Preparation (การเตรียมพร้อม)</h3>
+<p><strong>สิ่งที่ต้องมีก่อนเกิดเหตุ:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>1. Incident Response Policy:
+   ├── นิยาม Incident (อะไรคือ Incident)
+   ├── บทบาทและความรับผิดชอบของทีม IR
+   └── ขั้นตอนการรายงาน
+
+2. Incident Response Plan (IRP):
+   ├── Playbook สำหรับการโจมตีแต่ละประเภท
+   ├── Communication Plan (ใครติดต่อใคร เมื่อไหร่)
+   └── Escalation Path
+
+3. IR Team (CSIRT):
+   ├── Core Team: IR Lead, Triage, Forensic, Communication
+   ├── Extended: Legal, HR, PR, Management
+   └── External: MSSP, Law Enforcement, Forensic Firm
+
+4. Tools and Resources:
+   ├── SIEM, EDR, Network Monitoring
+   ├── Forensic Workstation (encased)
+   ├── Malware Sandbox
+   ├── Communication Channel (Signal, Slack)
+   └── Incident Management Platform (ServiceNow, Jira)
+
+5. Training and Testing:
+   ├── Tabletop Exercise — 2 ครั้ง/ปี
+   ├── Purple Team Exercise — 1 ครั้ง/ปี
+   └── Phishing Simulation — ทุกเดือน</pre>
+
+<h3 id="section9-3" class="section-ref">9.3 Detection and Analysis (การตรวจจับและวิเคราะห์)</h3>
+<p><strong>แหล่งที่มาของ Detection:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>แหล่ง</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>SIEM Alert</strong></td><td>Correlation Rule Match</td></tr>
+    <tr><td><strong>EDR Alert</strong></td><td>Malicious Process Detected</td></tr>
+    <tr><td><strong>IDS/IPS Alert</strong></td><td>Critical Signature Match</td></tr>
+    <tr><td><strong>User Report</strong></td><td>"คลิก Link ต้องสงสัย"</td></tr>
+    <tr><td><strong>Threat Intel</strong></td><td>IOC จาก TI Feed ตรงกับ Asset องค์กร</td></tr>
+    <tr><td><strong>External Notice</strong></td><td>เจ้าหน้าที่แจ้ง, Hacker Disclosure</td></tr>
+  </tbody>
+</table></div>
+<p><strong>การวิเคราะห์ — TRIAGE:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Triage Process:
+───────────────
+1. IS IT REAL? — ยืนยันว่าเป็น Incident จริง (ไม่ใช่ False Positive)
+2. HOW BAD? — ประเมินความรุนแรง (Critical/High/Medium/Low)
+3. WHAT'S IMPACTED? — Asset/Location ที่เกี่ยวข้อง
+4. IS IT ONGOING? — การโจมตียังดำเนินอยู่หรือไม่
+5. ACT NOW? — ต้อง Contain ทันทีหรือรอข้อมูลเพิ่ม
+
+Severity Classification:
+├── Critical: Data Breach, Ransomware, RCE on Critical System
+├── High: Lateral Movement, Privilege Escalation, Malware on Server
+├── Medium: Phishing (ไม่ success), Scan, Policy Violation
+└── Low: False Positive, Low-risk Activity</pre>
+
+<h3 id="section9-4" class="section-ref">9.4 Containment, Eradication, and Recovery</h3>
+<p><strong>Containment (การควบคุม):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Containment Strategy:
+──────────────────────
+
+Short-term Containment:
+├── Disconnect Network Cable (ถอดสายแลน)
+├── Disable User Account
+├── Block IP บน Firewall
+├── Isolate VM (Network Disconnect)
+└── Reset Password / Revoke Token
+
+Long-term Containment:
+├── Patch ช่องโหว่
+├── Update Firewall Rules
+├── Segment Affected Network
+├── Deploy WAF Rule
+└── Enable MFA
+
+ตัวอย่าง Ransomware Containment:
+1. 🔴 Isolate infected host from network (ทันที)
+2. 🛑 Block C2 IP  on perimeter firewall
+3. 📸 Snapshot memory and disk
+4. 🔍 Scan network for lateral movement
+5. 📧 Notify IR team + Legal + Management</pre>
+<p><strong>Eradication (การกำจัด):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Eradication Tasks:
+───────────────────
+├── Remove Malware (Antivirus, EDR Cleanup)
+├── Remove Backdoor (จากกระบวนการ, Registry, Scheduled Task)
+├── Revoke ALL Credentials (Password, Token, API Key)
+├── Patch ช่องโหว่ที่ถูกใช้โจมตี
+├── Rebuild Server from Known-good Image (แนะนำ)
+└── Verify Clean — Full Scan + TI IOC Scan</pre>
+<p><strong>Recovery (การกู้คืน):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Recovery Tasks:
+────────────────
+├── Restore Data from Backup (ตรวจสอบว่า Backup ไม่ติด Malware)
+├── Bring System Online (ทีละเครื่อง ติดตามผล)
+├── Monitor for Re-infection (72 ชม. หลังเปิดเครื่อง)
+├── Verify Business Functionality
+├── Update DR Plan จากบทเรียน
+└── Communication — แจ้ง Stakeholder ว่ากู้คืนแล้ว</pre>
+
+<h3 id="section9-5" class="section-ref">9.5 Post-Incident Activity</h3>
+<p><strong>Lessons Learned:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>หลัง Incident:
+───────────────
+1. Timeline Reconstruction:
+   ├── เมื่อไหร่ที่เกิด Initial Access
+   ├── เส้นทางที่ผู้โจมตีใช้
+   ├── สิ่งที่ผู้โจมตีทำ (Accessed, Exfiltrated, Modified)
+   └── MTTPD (กราฟ)
+
+2. Root Cause Analysis (RCA):
+   ├── ช่องโหว่ใดที่ทำให้เกิด Incident
+   ├── ทำไม Detection จึงไม่ทำงาน (ถ้าช้า)
+   └── ทำไม Containment จึงช้า
+
+3. Improvement Plan:
+   ├── Patch ช่องโหว่ (Short-term)
+   ├── ปรับปรุง Detection Rule (Medium-term)
+   ├── เปลี่ยน Architecture (Long-term)
+   └── เพิ่ม Training (Continuous)
+
+4. Report to Management:
+   ├── Executive Summary (1 หน้า)
+   ├── Technical Details
+   ├── Business Impact (Dollar Loss)
+   ├── Actions Taken
+   └── Recommendation</pre>
+
+<h3 id="section9-6" class="section-ref">9.6 Incident Response Playbook Template</h3>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Playbook: Ransomware
+─────────────────────
+ID: IR-PB-001
+Severity: Critical
+
+Step 1 — DETECT:
+├── Alert: EDR Alert — Ransomware File Extension Created
+├── Alert: SIEM — Multiple File Encryption Events
+└── Alert: User Report — File ไม่สามารถเปิดได้, มี .locked ต่อท้าย
+
+Step 2 — TRIAGE:
+├── Verify: True Positive (ยืนยันว่าเป็น Ransomware)
+├── Scope: จำนวนเครื่องที่ติด, ชนิด Ransomware, C2 IP
+└── Impact: ระบบที่ได้รับผลกระทบ
+
+Step 3 — CONTAIN:
+├── Isolate infected host (EDR Network Isolation)
+├── Block C2 IP on Firewall
+├── Disable affected user accounts
+└── Activate mail filter for ransom-themed emails
+
+Step 4 — ERADICATE:
+├── Snapshot infected host for forensics
+├── Wipe infected host
+├── Rebuild from clean image
+└── Password reset for all affected users
+
+Step 5 — RECOVER:
+├── Restore data from immutable backup
+├── Verify integrity of restored data
+├── Monitor for re-infection (72 hrs)
+└── Resume normal operations
+
+Step 6 — POST-MORTEM:
+├── Lessons learned session (within 7 days)
+├── Update detection rules
+├── Improve backup validation
+└── Update playbook</pre>
+</section>
+<hr>
+
+<!-- SUMMARY -->
+<section id="summary" class="section-ref">
+<h2><i class="fas fa-list-check" aria-hidden="true"></i> สรุปท้ายบท (Chapter Summary)</h2>
+<ol>
+  <li><strong>Network Monitoring</strong> ตรวจสอบ Availability, Performance, Visibility, และ Security — ใช้เครื่องมืออย่าง Zabbix, Prometheus, PRTG</li>
+  <li><strong>SOC</strong> มีโครงสร้าง 3 Tiers — Tier 1 (Triage), Tier 2 (Investigate), Tier 3 (Expert) — วัดประสิทธิภาพด้วย MTTD, MTTR</li>
+  <li><strong>Log Management</strong> — Syslog (RFC 5424) สำหรับ Event Log, NetFlow/sFlow สำหรับ Flow Data, SIEM สำหรับ Correlation</li>
+  <li><strong>SIEM</strong> รวม Log Collection + Correlation + Alerting — โซลูชันยอดนิยม: Splunk, QRadar, Elastic, Wazuh</li>
+  <li><strong>Packet Analysis</strong> — Wireshark สำหรับ GUI Analysis, tcpdump สำหรับ CLI Capture — ใช้ Display Filter เพื่อค้นหาการโจมตี</li>
+  <li><strong>Threat Intelligence</strong> — ใช้ Pyramid of Pain (Hash → IP → Domain → Artifact → Tool → TTP) — แลกเปลี่ยนด้วย STIX/TAXII</li>
+  <li><strong>Traffic Anomaly Detection</strong> — สร้าง Baseline, ใช้ Threshold Mean + 3SD, ตรวจจับ DDoS, C2 Beaconing, Data Exfiltration</li>
+  <li><strong>NIST SP 800-61 Incident Response</strong> — 4 ขั้นตอน: Preparation → Detection → Containment/Eradication/Recovery → Post-Incident</li>
+</ol>
+</section>
+<hr>
+
+<!-- REVIEW QUESTIONS -->
+<section id="review-questions" class="section-ref">
+<h2><i class="fas fa-question-circle" aria-hidden="true"></i> คำถามทบทวน (Review Questions)</h2>
+<p style="color:var(--text-secondary);margin-bottom:1.5rem;">คลิกปุ่ม <strong>"ดูเฉลย"</strong> เพื่อเปิดคำตอบ</p>
+
+<div class="quiz-card" data-question="1">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 1</span>
+    <p>จงอธิบายโครงสร้าง SOC (3 Tiers) และบทบาทของแต่ละ Tier พร้อม KPI ที่ใช้วัดประสิทธิภาพ</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Tier 1 (Triage)</strong> ตรวจสอบ Alert ยืนยัน True/False Positive และ Escalate — ใช้ SIEM, Ticket System เช่น Splunk, ServiceNow <strong>Tier 2 (Investigator)</strong> สอบสวนเชิงลึก ทำ Containment เบื้องต้น — ใช้ SIEM, EDR, Wireshark <strong>Tier 3 (Expert)</strong> ทำ Malware Analysis, Forensic, IR Planning — ใช้ IDA Pro, Volatility, YARA KPI สำคัญได้แก่ MTTD (เวลาตรวจพบ &lt; 1 ชม.), MTTR (เวลาตอบสนอง &lt; 2 ชม.), MTTI (เวลาสอบสวน &lt; 24 ชม.), Alert Triage Time (&lt; 15 นาที), False Positive Rate (&lt; 10%), และ Escalation Rate (&lt; 20%)</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="2">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 2</span>
+    <p>ความแตกต่างระหว่าง Syslog, NetFlow, และ Packet Capture คืออะไร? จงเปรียบเทียบในแง่ของข้อมูลที่เก็บ ขนาด และการใช้งาน</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Syslog</strong> เก็บ Event Log/Message จากอุปกรณ์ (เช่น Login, Policy Change, Alert) ขนาดเล็ก เหมาะสำหรับ Audit และ Compliance <strong>NetFlow</strong> เก็บ Metadata ของ Flow (IP, Port, Bytes, Timestamp) ขนาดเล็ก (~1-2% ของ Traffic) เหมาะสำหรับวิเคราะห์ Traffic Pattern และ Top Talkers เก็บได้นาน <strong>Packet Capture</strong> เก็บเนื้อหา Packet ทั้งหมด (Full Payload) ขนาดใหญ่ เหมาะสำหรับ Forensic ลึก แต่ต้องระวัง PDPA และใช้ Storage มาก</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="3">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 3</span>
+    <p>SIEM คืออะไร? จงอธิบายกระบวนการ Normalize → Correlate → Alert → Investigate</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>SIEM (Security Information and Event Management)</strong> รวม Log Management, Event Correlation และ Alerting กระบวนการทำงาน: <strong>Normalize</strong> — รวบรวม Log จากหลายแหล่งและแปลงเป็นรูปแบบมาตรฐาน <strong>Correlate</strong> — ใช้ Correlation Rules เชื่อมโยงเหตุการณ์ที่แยกกัน เช่น 10 ครั้ง Auth Fail ตามด้วย Auth Success <strong>Alert</strong> — แจ้งเตือน Analyst แบบ Real-time เช่น HIGH — Brute Force Detected <strong>Investigate</strong> — Analyst ใช้ Dashboard Search และ Timeline เพื่อสอบสวนต่อ</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="4">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 4</span>
+    <p>จงเขียน Wireshark Display Filter สำหรับ: (ก) HTTP POST Request (ข) DNS Query ที่มีคำว่า "malware" (ค) TCP SYN Flood (ง) ARP ที่มี Duplicate IP</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> (ก) <code>http.request.method == "POST"</code> — (ข) <code>dns.qry.name contains "malware"</code> — (ค) <code>tcp.flags.syn == 1 and tcp.flags.ack == 0</code> ใช้หา SYN Packet ที่ไม่มี ACK ตอบกลับ บ่งชี้ SYN Scan หรือ SYN Flood — (ง) <code>arp.duplicate-address-detected or arp.opcode == 2</code> ใช้ตรวจหา ARP Spoofing ที่มี IP เดียวกันแต่ MAC ต่างกัน</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="5">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 5</span>
+    <p>จงอธิบาย Pyramid of Pain (David Bianco) และยกตัวอย่าง IoC แต่ละระดับ</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Pyramid of Pain</strong> แสดงระดับความยากในการเปลี่ยน Indicator ของผู้โจมตี จากง่ายไปยาก: <strong>Hash Values</strong> (MD5/SHA) — เปลี่ยนได้ง่ายที่สุด <strong>IP Addresses</strong> — หาใหม่ได้ไม่ยาก <strong>Domain Names</strong> — ต้องจดทะเบียนใหม่ <strong>Network/Host Artifacts</strong> — เช่น User-Agent, Registry Key <strong>Tools</strong> — เครื่องมือโจมตีที่ต้องพัฒนาใหม่ <strong>TTPs</strong> — Tactics, Techniques, Procedures ยากที่สุดที่จะเปลี่ยน</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="6">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 6</span>
+    <p>Threat Intelligence (TI) มีกี่ระดับ? จงอธิบาย Strategic, Operational, Tactical, Technical พร้อมตัวอย่าง</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> TI แบ่งเป็น 4 ระดับ: <strong>Strategic</strong> — ภาพรวมแนวโน้มสำหรับผู้บริหาร เช่น "Ransomware เป้าหมายธนาคารไทยปี 2024" <strong>Operational</strong> — การโจมตีที่กำลังเกิดขึ้น เช่น "APT41 โจมตี VPN Gateway ด้วย CVE-2023-XXXX" <strong>Tactical</strong> — TTPs วิธีการโจมตี เช่น "T1566 Phishing + T1059 PowerShell" <strong>Technical</strong> — IoCs ข้อมูลจำเพาะ เช่น IP C2, Domain, File Hash, YARA Rule</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="7">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 7</span>
+    <p>Traffic Anomaly Detection ต้องสร้าง Baseline อย่างไร? จงยกตัวอย่างการใช้ Threshold เพื่อตรวจจับ DDoS</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> การสร้าง <strong>Baseline</strong> ใช้ Window ประมาณ 4 สัปดาห์ (28 วัน) วัด Metrics เช่น Bytes/sec, Packets/sec, Connections/min, DNS Queries/min, New Flows/sec และ Protocol Distribution จากนั้นคำนวณ Mean และ Standard Deviation ตามช่วงเวลา <strong>Threshold</strong> มักกำหนดเป็น Mean + 3SD ตัวอย่าง DDoS Detection: Baseline Inbound Traffic = 200-500 Mbps หาก Traffic พุ่งเป็น 8 Gbps ใน 30 วินาที พร้อม Source IP 50,000+ และ SYN Flood ถือว่าเกิน Threshold ต้อง Reroute ไปยัง DDoS Mitigation</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="8">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 8</span>
+    <p>NIST Incident Response Lifecycle มีกี่ขั้นตอน? จงอธิบายแต่ละขั้นตอนพร้อมตัวอย่างกิจกรรม</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> NIST SP 800-61 กำหนด 4 ขั้นตอน: <strong>Preparation</strong> — จัดทำ IR Policy, IRP, CSIRT, เตรียม Tools และ Training <strong>Detection &amp; Analysis</strong> — ตรวจจับจาก SIEM/EDR/IDS/User Report ทำ Triage และ Severity Classification <strong>Containment, Eradication &amp; Recovery</strong> — ควบคุมด้วย Isolate Host/Block IP กำจัด Malware/Backdoor กู้คืนจาก Backup และ Monitor 72 ชม. <strong>Post-Incident Activity</strong> — ทำ Timeline Reconstruction, RCA, Improvement Plan และ Report to Management</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="9">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 9</span>
+    <p>จงเขียน Incident Response Playbook สำหรับ Phishing Attack ที่พนักงานคลิก Link — ตั้งแต่ Detection ถึง Lessons Learned</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>Step 1 — DETECT:</strong> User Report หรือ Email Gateway Alert <strong>Step 2 — TRIAGE:</strong> ยืนยันว่าเป็น Phishing จริง ประเมิน Scope (จำนวนผู้คลิก ข้อมูลที่กรอก) <strong>Step 3 — CONTAIN:</strong> ระงับ Account ที่ถูก Compromise, Block URL/Domain บน Firewall/Proxy, ส่งข้อมูลไปยัง Email Gateway <strong>Step 4 — ERADICATE:</strong> ตรวจหา Malware บน Endpoint, Reset Password, Revoke Session <strong>Step 5 — RECOVER:</strong> คืนสิทธิ Account หลังตรวจสอบความสะอาด, Monitor 72 ชม. <strong>Step 6 — POST-MORTEM:</strong> วิเคราะห์ว่าทำไม Email ผ่าน Gateway, ปรับปรุง Rule, เพิ่ม Training</p>
+  </div>
+</div>
+
+<div class="quiz-card" data-question="10">
+  <div class="quiz-question">
+    <span class="q-number">ข้อ 10</span>
+    <p>จากกรณี Ransomware จงอธิบาย Standard Operating Procedure (SOP) สำหรับการ Containment (ทำอะไรก่อน-หลัง พร้อมเหตุผล)</p>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer(this)">ดูเฉลย</button>
+  <div class="quiz-answer hidden">
+    <p><strong>เฉลย:</strong> <strong>ทำก่อน (Short-term):</strong> 1) Isolate infected host ทันที — หยุด Lateral Movement 2) Block C2 IP บน Perimeter Firewall — ป้องกัน Encryption Command และ Data Exfiltration 3) Snapshot Memory และ Disk — เก็บ Forensic Evidence ก่อน Wipe 4) Scan Network หา Lateral Movement 5) Notify IR Team + Legal + Management <strong>ทำหลัง (Long-term):</strong> Patch ช่องโหว่, Update Firewall Rules, Segment Network, Deploy WAF Rule, Enable MFA — เพื่อลดโอกาสเกิดซ้ำและเพิ่มความสามารถในการต้านทาน</p>
+  </div>
+</div>
+</section>
+<hr>
+
+<!-- INTERACTIVE QUIZ -->
+<section id="interactive-quiz" class="section-ref">
+<h2><i class="fas fa-clipboard-check" aria-hidden="true"></i> แบบทดสอบออนไลน์ (20 ข้อ)</h2>
+<p style="color:var(--text-secondary);margin-bottom:1.5rem;">เลือกคำตอบที่ถูกต้องที่สุด แล้วกด <strong>"ตรวจคำตอบ"</strong> เพื่อดูคะแนน</p>
+<form id="mcq-form">
+
+<div class="quiz-card mcq-item" data-q="1" data-answer="a">
+  <div class="quiz-question"><span class="q-number">1</span><p>Network Monitoring Layer 1 เน้นตรวจสอบด้านใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q1" value="a"> Availability</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="b"> Performance</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="c"> Visibility</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="d"> Security</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="2" data-answer="b">
+  <div class="quiz-question"><span class="q-number">2</span><p>SOC Tier ใดรับผิดชอบการ Triage และยืนยัน True/False Positive?</p></div>
+  <label class="mcq-option"><input type="radio" name="q2" value="a"> Tier 3</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="b"> Tier 1</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="c"> Tier 2</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="d"> SOC Director</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="3" data-answer="c">
+  <div class="quiz-question"><span class="q-number">3</span><p>Syslog Severity Level "Error" มีค่า Code เท่าใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q3" value="a"> 1</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="b"> 2</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="c"> 3</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="d"> 4</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="4" data-answer="a">
+  <div class="quiz-question"><span class="q-number">4</span><p>NetFlow เก็บข้อมูลอะไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q4" value="a"> Flow Metadata (IP, Port, Bytes)</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="b"> Full Packet Payload</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="c"> DNS Query Content</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="d"> Email Header</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="5" data-answer="d">
+  <div class="quiz-question"><span class="q-number">5</span><p>ขั้นตอนใดใน SIEM ใช้ Correlation Rules เชื่อมโยงเหตุการณ์?</p></div>
+  <label class="mcq-option"><input type="radio" name="q5" value="a"> Normalize</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="b"> Alert</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="c"> Investigate</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="d"> Correlate</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="6" data-answer="b">
+  <div class="quiz-question"><span class="q-number">6</span><p>Wireshark Display Filter สำหรับ HTTP POST Request คือข้อใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q6" value="a"> tcp.port == 80</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="b"> http.request.method == "POST"</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="c"> dns.qry.name contains "POST"</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="d"> http.response.code == 200</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="7" data-answer="c">
+  <div class="quiz-question"><span class="q-number">7</span><p>tcpdump ใช้ option ใดเพื่อบันทึกเป็นไฟล์ .pcap?</p></div>
+  <label class="mcq-option"><input type="radio" name="q7" value="a"> -r</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="b"> -X</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="c"> -w</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="d"> -c</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="8" data-answer="d">
+  <div class="quiz-question"><span class="q-number">8</span><p>ใน Pyramid of Pain ระดับใดยากที่สุดต่อผู้โจมตีในการเปลี่ยน?</p></div>
+  <label class="mcq-option"><input type="radio" name="q8" value="a"> IP Addresses</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="b"> Domain Names</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="c"> Tools</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="d"> TTPs</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="9" data-answer="b">
+  <div class="quiz-question"><span class="q-number">9</span><p>File Hash (MD5/SHA256) จัดเป็น IoC ประเภทใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q9" value="a"> Network-based IoC</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="b"> Host-based IoC</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="c"> Behavioral IoC</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="d"> Strategic IoC</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="10" data-answer="a">
+  <div class="quiz-question"><span class="q-number">10</span><p>Threat Intelligence ระดับ Technical ให้ข้อมูลลักษณะใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q10" value="a"> IoCs เช่น IP, Domain, Hash</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="b"> ภาพรวมแนวโน้มสำหรับผู้บริหาร</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="c"> TTPs วิธีการโจมตี</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="d"> การโจมตีที่กำลังเกิดขึ้น</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="11" data-answer="c">
+  <div class="quiz-question"><span class="q-number">11</span><p>Traffic Anomaly Detection มักใช้ Threshold อย่างไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q11" value="a"> Mean - 3SD</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="b"> Mean + SD</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="c"> Mean + 3SD</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="d"> Mean / 2</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="12" data-answer="a">
+  <div class="quiz-question"><span class="q-number">12</span><p>NIST SP 800-61 Incident Response Lifecycle ขั้นแรกคืออะไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q12" value="a"> Preparation</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="b"> Detection &amp; Analysis</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="c"> Containment</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="d"> Post-Incident Activity</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="13" data-answer="d">
+  <div class="quiz-question"><span class="q-number">13</span><p>ขั้นตอนใดใน NIST IR ที่ทำ Root Cause Analysis และ Lessons Learned?</p></div>
+  <label class="mcq-option"><input type="radio" name="q13" value="a"> Preparation</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="b"> Detection &amp; Analysis</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="c"> Containment</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="d"> Post-Incident Activity</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="14" data-answer="b">
+  <div class="quiz-question"><span class="q-number">14</span><p>MTTD ย่อมาจากอะไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q14" value="a"> Mean Time to Track</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="b"> Mean Time to Detect</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="c"> Mean Time to Defend</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="d"> Mean Time to Deploy</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="15" data-answer="a">
+  <div class="quiz-question"><span class="q-number">15</span><p>sFlow แตกต่างจาก NetFlow อย่างไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q15" value="a"> sFlow ใช้ Statistical Sampling</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="b"> sFlow เก็บ Full Packet Payload</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="c"> sFlow ใช้ทรัพยากรมากกว่า NetFlow</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="d"> sFlow เป็น Proprietary ของ Cisco</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="16" data-answer="c">
+  <div class="quiz-question"><span class="q-number">16</span><p>STIX ใช้สำหรับอะไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q16" value="a"> Protocol ส่งข้อมูล TI</label>
+  <label class="mcq-option"><input type="radio" name="q16" value="b"> เก็บ Log จาก Network Device</label>
+  <label class="mcq-option"><input type="radio" name="q16" value="c"> มาตรฐานแลกเปลี่ยน CTI Data</label>
+  <label class="mcq-option"><input type="radio" name="q16" value="d"> วิเคราะห์ NetFlow</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="17" data-answer="a">
+  <div class="quiz-question"><span class="q-number">17</span><p>TAXII คืออะไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q17" value="a"> Protocol สำหรับส่ง STIX Data</label>
+  <label class="mcq-option"><input type="radio" name="q17" value="b"> รูปแบบข้อมูล IoC</label>
+  <label class="mcq-option"><input type="radio" name="q17" value="c"> SIEM Solution</label>
+  <label class="mcq-option"><input type="radio" name="q17" value="d"> Network Monitoring Tool</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="18" data-answer="d">
+  <div class="quiz-question"><span class="q-number">18</span><p>เหตุการณ์ใดควรจัด Severity เป็น Critical?</p></div>
+  <label class="mcq-option"><input type="radio" name="q18" value="a"> Phishing ที่ไม่สำเร็จ</label>
+  <label class="mcq-option"><input type="radio" name="q18" value="b"> Policy Violation</label>
+  <label class="mcq-option"><input type="radio" name="q18" value="c"> False Positive</label>
+  <label class="mcq-option"><input type="radio" name="q18" value="d"> Data Breach หรือ Ransomware</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="19" data-answer="b">
+  <div class="quiz-question"><span class="q-number">19</span><p>tcpdump command ใดใช้ตรวจจับ SYN Packet?</p></div>
+  <label class="mcq-option"><input type="radio" name="q19" value="a"> tcpdump -i eth0 'icmp[icmptype] = 8'</label>
+  <label class="mcq-option"><input type="radio" name="q19" value="b"> tcpdump -i eth0 'tcp[tcpflags] &amp; tcp-syn != 0'</label>
+  <label class="mcq-option"><input type="radio" name="q19" value="c"> tcpdump -i eth0 port 22</label>
+  <label class="mcq-option"><input type="radio" name="q19" value="d"> tcpdump -i eth0 -w syn.pcap</label>
+</div>
+
+<div class="quiz-card mcq-item" data-q="20" data-answer="c">
+  <div class="quiz-question"><span class="q-number">20</span><p>หลัง Recovery จาก Ransomware ควร Monitor ระบบกี่ชั่วโมงเพื่อตรวจหา Re-infection?</p></div>
+  <label class="mcq-option"><input type="radio" name="q20" value="a"> 12 ชั่วโมง</label>
+  <label class="mcq-option"><input type="radio" name="q20" value="b"> 24 ชั่วโมง</label>
+  <label class="mcq-option"><input type="radio" name="q20" value="c"> 72 ชั่วโมง</label>
+  <label class="mcq-option"><input type="radio" name="q20" value="d"> 1 สัปดาห์</label>
+</div>
+
+<div style="text-align:center;margin-top:1.5rem;">
+  <button type="button" id="mcq-submit" class="reveal-btn" style="font-size:1rem;padding:.6rem 1.5rem;">ตรวจคำตอบ</button>
+  <button type="reset" id="mcq-reset" class="reveal-btn" style="font-size:1rem;padding:.6rem 1.5rem;background:var(--text-muted);margin-left:.5rem;">เริ่มใหม่</button>
+</div>
+<div id="mcq-result" style="display:none;margin-top:1.5rem;padding:1rem;border-radius:var(--radius);background:var(--bg-tertiary);border:1px solid var(--border);text-align:center;">
+  <strong>คะแนนของคุณ:</strong> <span id="mcq-score" style="font-size:1.5rem;color:var(--accent);"></span><br>
+  <span id="mcq-feedback" style="color:var(--text-secondary);"></span>
+</div>
+</form>
+</section>
+<hr>
+
+<!-- REFERENCES -->
+<section id="references" class="section-ref">
+<h2><i class="fas fa-book" aria-hidden="true"></i> เอกสารอ้างอิง (References)</h2>
+<ol>
+  <li>NIST Special Publication 800-61 Rev. 2. (2012). <em>Computer Security Incident Handling Guide</em>. National Institute of Standards and Technology.</li>
+  <li>NIST Special Publication 800-86. (2006). <em>Guide to Integrating Forensic Techniques into Incident Response</em>. National Institute of Standards and Technology.</li>
+  <li>Stallings, W. (2022). <em>Cryptography and Network Security: Principles and Practice</em> (8th ed.). Chapter 22: Network Monitoring and Incident Response. Pearson.</li>
+  <li>Chappell, L. (2022). <em>Wireshark 101: Essential Skills for Network Analysis</em> (3rd ed.). Laura Chappell University.</li>
+  <li>IETF RFC 5424. (2009). <em>The Syslog Protocol</em>.</li>
+  <li>IETF RFC 3954. (2004). <em>Cisco Systems NetFlow Services Export Version 9</em>.</li>
+  <li>OASIS. (2022). <em>STIX™ Version 2.1. Committee Specification 01</em>.</li>
+  <li>MITRE Corporation. (2024). <em>ATT&amp;CK Framework — Detection and Mitigation</em>. Retrieved from https://attack.mitre.org/</li>
+  <li>Bianco, D. (2014). <em>Pyramid of Pain — Threat Intelligence.</em> Retrieved from https://detect-respond.blogspot.com/</li>
+  <li>Cichonski, P., et al. (2012). <em>NIST SP 800-61 Rev. 2: Computer Security Incident Handling Guide</em>.</li>
+</ol>
+</section>
+
+</main>
+</div>
+
+<footer class="site-footer" role="contentinfo">
+  <hr class="footer-divider">
+  <p><i class="fas fa-shield-halved" aria-hidden="true"></i> รายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+  <p style="margin-top:0.5rem;font-size:0.8rem;">เอกสารนี้เป็นส่วนหนึ่งของรายวิชา Network Security | ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
+</footer>
+
+<button id="back-to-top" aria-label="กลับไปด้านบน" title="กลับไปด้านบน">
+  <i class="fas fa-arrow-up" aria-hidden="true"></i>
+</button>
+
+<script>
+// ====== Loading Screen ======
+window.addEventListener("load", function() {
+  document.getElementById("loading-screen").classList.add("hidden");
+});
+
+// ====== Progress Bar ======
+window.addEventListener("scroll", function() {
+  var scrollTop = window.scrollY;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById("progress-bar").style.width = progress + "%";
+  document.getElementById("progress-bar").setAttribute("aria-valuenow", Math.round(progress));
+});
+
+// ====== Dark Mode ======
+(function() {
+  var toggle = document.getElementById("dark-mode-toggle");
+  var icon = toggle.querySelector("i");
+  var theme = localStorage.getItem("theme");
+  if (theme === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+    icon.className = "fas fa-sun";
+  }
+  toggle.addEventListener("click", function() {
+    var current = document.documentElement.getAttribute("data-theme");
+    if (current === "dark") {
+      document.documentElement.removeAttribute("data-theme");
+      localStorage.setItem("theme", "light");
+      icon.className = "fas fa-moon";
+    } else {
+      document.documentElement.setAttribute("data-theme", "dark");
+      localStorage.setItem("theme", "dark");
+      icon.className = "fas fa-sun";
+    }
+  });
+})();
+
+// ====== Sidebar Toggle (mobile) ======
+(function() {
+  var btn = document.getElementById("sidebar-toggle");
+  var sidebar = document.getElementById("sidebar");
+  var overlay = document.getElementById("sidebar-overlay");
+  if (!btn || !sidebar || !overlay) return;
+  btn.addEventListener("click", function() {
+    var open = sidebar.classList.toggle("open");
+    overlay.classList.toggle("active");
+    btn.setAttribute("aria-expanded", open);
+  });
+  overlay.addEventListener("click", function() {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("active");
+    btn.setAttribute("aria-expanded", "false");
+  });
+})();
+
+// ====== Scroll Spy ======
+(function() {
+  var tocLinks = document.querySelectorAll(".toc-link");
+  var sections = [];
+  tocLinks.forEach(function(link) {
+    var targetId = link.getAttribute("data-target");
+    var el = document.getElementById(targetId);
+    if (el) sections.push({ id: targetId, el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollPos = window.scrollY + 120;
+    var currentId = null;
+    for (var i = 0; i < sections.length; i++) {
+      var s = sections[i];
+      if (s.el.offsetTop <= scrollPos) {
+        currentId = s.id;
+      }
+    }
+    tocLinks.forEach(function(l) { l.classList.remove("active"); });
+    if (currentId) {
+      var activeLink = document.querySelector('.toc-link[data-target="' + currentId + '"]');
+      if (activeLink) {
+        activeLink.classList.add("active");
+        var sidebar = document.getElementById("sidebar");
+        if (sidebar) {
+          var itemTop = activeLink.offsetTop - sidebar.offsetTop;
+          var itemBottom = itemTop + activeLink.offsetHeight;
+          var sidebarScrollTop = sidebar.scrollTop;
+          var sidebarHeight = sidebar.clientHeight;
+          if (itemTop < sidebarScrollTop || itemBottom > sidebarScrollTop + sidebarHeight) {
+            activeLink.scrollIntoView({ block: "nearest" });
+          }
+        }
+      }
+    }
+  }
+
+  window.addEventListener("scroll", updateActive);
+  window.addEventListener("load", updateActive);
+  setTimeout(updateActive, 500);
+})();
+
+// ====== Smooth scroll for TOC links ======
+document.querySelectorAll(".toc-link").forEach(function(link) {
+  link.addEventListener("click", function(e) {
+    e.preventDefault();
+    var targetId = this.getAttribute("data-target");
+    var target = document.getElementById(targetId);
+    if (target) {
+      var offset = 80;
+      var targetPos = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: targetPos, behavior: "smooth" });
+    }
+    var sidebar = document.getElementById("sidebar");
+    var overlay = document.getElementById("sidebar-overlay");
+    if (sidebar && sidebar.classList.contains("open")) {
+      sidebar.classList.remove("open");
+      overlay.classList.remove("active");
+      document.getElementById("sidebar-toggle").setAttribute("aria-expanded", "false");
+    }
+  });
+});
+
+// ====== Back to Top ======
+(function() {
+  var btn = document.getElementById("back-to-top");
+  window.addEventListener("scroll", function() {
+    if (window.scrollY > 400) {
+      btn.classList.add("visible");
+    } else {
+      btn.classList.remove("visible");
+    }
+  });
+  btn.addEventListener("click", function() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+})();
+
+// ====== Copy Code ======
+function copyCode(btn) {
+  var pre = btn.closest("pre");
+  var code = pre.textContent;
+  code = code.replace(/คัดลอก/g, "").trim();
+  navigator.clipboard.writeText(code).then(function() {
+    btn.innerHTML = "<i class=\"fas fa-check\" aria-hidden=\"true\"></i> คัดลอกแล้ว";
+    btn.classList.add("copied");
+    setTimeout(function() {
+      btn.innerHTML = "<i class=\"fas fa-copy\" aria-hidden=\"true\"></i> คัดลอก";
+      btn.classList.remove("copied");
+    }, 2000);
+  }).catch(function() {
+    var textarea = document.createElement("textarea");
+    textarea.value = code;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+    btn.innerHTML = "<i class=\"fas fa-check\" aria-hidden=\"true\"></i> คัดลอกแล้ว";
+    btn.classList.add("copied");
+    setTimeout(function() {
+      btn.innerHTML = "<i class=\"fas fa-copy\" aria-hidden=\"true\"></i> คัดลอก";
+      btn.classList.remove("copied");
+    }, 2000);
+  });
+}
+
+// ====== Expandable Sections ======
+function toggleExpand(header) {
+  var expandable = header.closest(".expandable");
+  if (!expandable) return;
+  var isExpanded = expandable.classList.toggle("expanded");
+  header.setAttribute("aria-expanded", isExpanded);
+}
+
+// ====== Reveal Answer (Review Questions) ======
+function revealAnswer(btn) {
+  var card = btn.closest(".quiz-card");
+  if (!card) return;
+  card.classList.add("revealed");
+  var answer = card.querySelector(".quiz-answer");
+  if (answer) {
+    answer.classList.remove("hidden");
+  }
+  btn.textContent = "ดูเฉลยแล้ว";
+  btn.disabled = true;
+}
+
+// ====== Interactive MCQ Quiz ======
+(function() {
+  var form = document.getElementById("mcq-form");
+  var submitBtn = document.getElementById("mcq-submit");
+  var resetBtn = document.getElementById("mcq-reset");
+  var resultBox = document.getElementById("mcq-result");
+  var scoreSpan = document.getElementById("mcq-score");
+  var feedbackSpan = document.getElementById("mcq-feedback");
+  if (!form || !submitBtn) return;
+
+  submitBtn.addEventListener("click", function() {
+    var items = form.querySelectorAll(".mcq-item");
+    var score = 0;
+    var total = items.length;
+    items.forEach(function(item) {
+      var answer = item.getAttribute("data-answer");
+      var radios = item.querySelectorAll('input[type="radio"]');
+      var selected = null;
+      radios.forEach(function(r) {
+        if (r.checked) selected = r.value;
+        r.disabled = true;
+      });
+      var options = item.querySelectorAll(".mcq-option");
+      options.forEach(function(opt) {
+        var val = opt.querySelector('input').value;
+        if (val === answer) {
+          opt.classList.add("correct-opt");
+        }
+        if (val === selected && val !== answer) {
+          opt.classList.add("wrong-opt");
+        }
+      });
+      if (selected === answer) {
+        score++;
+        item.classList.add("correct");
+      } else {
+        item.classList.add("wrong");
+      }
+    });
+
+    var percent = Math.round((score / total) * 100);
+    scoreSpan.textContent = score + "/" + total + " (" + percent + "%)";
+    if (score >= 14) {
+      resultBox.className = "success";
+      resultBox.style.display = "block";
+      feedbackSpan.textContent = "ผ่าน! คุณเข้าใจเนื้อหาบทนี้ได้ดีแล้ว";
+    } else {
+      resultBox.className = "fail";
+      resultBox.style.display = "block";
+      feedbackSpan.textContent = "ยังไม่ผ่าน ลองทบทวนเนื้อหาแล้วทำใหม่";
+    }
+    submitBtn.disabled = true;
+  });
+
+  resetBtn.addEventListener("click", function() {
+    form.reset();
+    var items = form.querySelectorAll(".mcq-item");
+    items.forEach(function(item) {
+      item.classList.remove("correct", "wrong");
+      item.querySelectorAll('input[type="radio"]').forEach(function(r) { r.disabled = false; });
+      item.querySelectorAll(".mcq-option").forEach(function(opt) {
+        opt.classList.remove("correct-opt", "wrong-opt");
+      });
+    });
+    resultBox.style.display = "none";
+    resultBox.className = "";
+    submitBtn.disabled = false;
+  });
+})();
+
+// ====== Search ======
+(function() {
+  var searchToggle = document.getElementById("search-toggle-btn");
+  var searchOverlay = document.getElementById("search-overlay");
+  var searchInput = document.getElementById("search-input");
+  var searchResults = document.getElementById("search-results");
+  var searchCount = document.getElementById("search-count");
+  var searchClose = document.getElementById("search-close-btn");
+
+  var mainContent = document.getElementById("main-content");
+  var searchData = [];
+
+  function buildSearchIndex() {
+    searchData = [];
+    var sections = mainContent.querySelectorAll("h2, h3, h4, p, li, td, th, pre");
+    sections.forEach(function(el) {
+      var text = el.textContent.trim();
+      if (text.length > 10) {
+        var heading = "";
+        var parent = el.parentElement;
+        while (parent && parent !== mainContent) {
+          var prevHeading = parent.querySelector("h2, h3, h4");
+          if (prevHeading) { heading = prevHeading.textContent.trim(); break; }
+          parent = parent.parentElement;
+        }
+        searchData.push({
+          text: text,
+          heading: heading || "เนื้อหา",
+          element: el
+        });
+      }
+    });
+  }
+
+  buildSearchIndex();
+
+  function performSearch(query) {
+    if (!query || query.length < 2) {
+      searchResults.innerHTML = "<div class=\"no-results\">กรุณาป้อนคำค้นหาอย่างน้อย 2 ตัวอักษร</div>";
+      searchCount.textContent = "";
+      return;
+    }
+
+    var q = query.toLowerCase();
+    var results = [];
+    var totalMatches = 0;
+
+    searchData.forEach(function(item) {
+      var lower = item.text.toLowerCase();
+      var idx = lower.indexOf(q);
+      if (idx !== -1) {
+        var count = 0;
+        var pos = -1;
+        while ((pos = lower.indexOf(q, pos + 1)) !== -1) count++;
+        totalMatches += count;
+
+        var snippet = item.text.substring(Math.max(0, idx - 60), idx + q.length + 120);
+        if (idx > 60) snippet = "..." + snippet;
+        if (idx + q.length + 120 < item.text.length) snippet = snippet + "...";
+
+        snippet = snippet.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        snippet = snippet.replace(new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi"), "<mark>$1</mark>");
+
+        results.push({
+          heading: item.heading,
+          snippet: snippet,
+          element: item.element,
+          count: count
+        });
+      }
+    });
+
+    if (results.length > 50) results = results.slice(0, 50);
+
+    searchCount.textContent = totalMatches + " ผลลัพธ์";
+
+    if (results.length === 0) {
+      searchResults.innerHTML = "<div class=\"no-results\">ไม่พบผลลัพธ์สำหรับ \"" + query + "\"</div>";
+      return;
+    }
+
+    var html = "";
+    results.forEach(function(r) {
+      html += "<div class=\"search-result-item\" data-heading=\"" + r.heading.replace(/"/g, "&quot;") + "\">";
+      html += "<div class=\"result-heading\">" + r.heading + "</div>";
+      html += "<div class=\"result-snippet\">" + r.snippet + "</div>";
+      html += "</div>";
+    });
+    searchResults.innerHTML = html;
+
+    searchResults.querySelectorAll(".search-result-item").forEach(function(item, i) {
+      item.addEventListener("click", function() {
+        var el = results[i].element;
+        if (el) {
+          var offset = 100;
+          var pos = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: pos, behavior: "smooth" });
+          searchOverlay.classList.remove("active");
+          el.style.transition = "background 0.5s ease";
+          el.style.background = "var(--bg-tertiary)";
+          setTimeout(function() {
+            el.style.background = "";
+          }, 1500);
+        }
+      });
+    });
+  }
+
+  var searchTimeout = null;
+  searchInput.addEventListener("input", function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      performSearch(searchInput.value);
+    }, 300);
+  });
+
+  searchToggle.addEventListener("click", function() {
+    searchOverlay.classList.add("active");
+    setTimeout(function() { searchInput.focus(); }, 100);
+  });
+
+  searchClose.addEventListener("click", function() {
+    searchOverlay.classList.remove("active");
+    searchInput.value = "";
+    searchResults.innerHTML = "";
+    searchCount.textContent = "";
+  });
+
+  searchOverlay.addEventListener("click", function(e) {
+    if (e.target === searchOverlay) {
+      searchOverlay.classList.remove("active");
+      searchInput.value = "";
+      searchResults.innerHTML = "";
+      searchCount.textContent = "";
+    }
+  });
+
+  document.addEventListener("keydown", function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+      e.preventDefault();
+      searchToggle.click();
+    }
+    if (e.key === "Escape") {
+      searchOverlay.classList.remove("active");
+    }
+  });
+})();
+
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll(".expandable.expanded").forEach(function(el) {
+    var header = el.querySelector(".expandable-header");
+    if (header) header.setAttribute("aria-expanded", "true");
+  });
+});
+</script>
+</body>
+</html>
