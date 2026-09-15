@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บทที่ 13: Security Testing (SAST, DAST, Penetration Testing)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#1a56db;--primary-dark:#1340a0;--primary-light:#e8effc;--navy:#1e293b;--navy-light:#334155;--success:#059669;--success-light:#d1fae5;--danger:#dc2626;--danger-light:#fee2e2;--warning:#d97706;--warning-light:#fef3c7;--purple:#7c3aed;--purple-light:#ede9fe;--bg:#f8fafc;--bg-card:#fff;--text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--radius:12px;--radius-sm:8px;--sidebar-w:292px;--font-thai:'Sarabun',sans-serif;--font-mono:'IBM Plex Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.8;display:flex;min-height:100vh}a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);height:100vh;background:var(--navy);color:#fff;overflow-y:auto;z-index:100;transition:transform .3s}.sidebar-header{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}.sidebar-header h1{font-size:1rem;font-weight:600;color:#fff;line-height:1.4}.sidebar-header .sub{font-size:.75rem;color:#94a3b8;margin-top:.25rem}.sidebar-nav{padding:.75rem 0}.sidebar-nav a{display:block;padding:.5rem 1.25rem;color:#cbd5e1;font-size:.84rem;transition:all .15s;border-left:3px solid transparent}.sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--primary);text-decoration:none}.sidebar-nav .section-label{padding:.6rem 1.25rem .25rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#64748b;font-weight:600}.sidebar-nav .sub-link{padding-left:2.35rem;font-size:.78rem}.sidebar-toggle{display:none;position:fixed;top:.75rem;left:.75rem;z-index:200;background:var(--navy);color:#fff;border:none;width:44px;height:44px;border-radius:var(--radius-sm);cursor:pointer;font-size:1.5rem;align-items:center;justify-content:center}.sidebar-overlay{display:none}.main{flex:1;margin-left:var(--sidebar-w);max-width:100%;padding:0}.topbar{position:sticky;top:0;z-index:50;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between}.topbar-title{font-size:.85rem;color:var(--text-muted)}.topbar-title strong{color:var(--text);font-weight:600}.topbar-progress{font-size:.8rem;color:var(--text-muted)}.topbar-home{color:var(--text-muted);font-size:.85rem;text-decoration:none;margin-right:.75rem;transition:color.15s;white-space:nowrap}.topbar-home:hover{color:var(--primary);text-decoration:none}.content{padding:2rem;max-width:1040px;margin:0 auto}.content h2{margin:2.5rem 0 1rem;padding-bottom:.5rem;border-bottom:3px solid var(--primary);color:var(--navy);font-size:1.5rem;font-weight:600;scroll-margin-top:5rem}.content h3{margin:2rem 0 .75rem;color:var(--navy);font-size:1.2rem;font-weight:600;scroll-margin-top:5rem}.content h4{margin:1.5rem 0 .5rem;color:var(--navy);font-size:1.05rem;font-weight:600;scroll-margin-top:5rem}.content p{margin:.75rem 0}.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1.25rem 0;box-shadow:var(--shadow)}.card-header{font-size:1.1rem;font-weight:600;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:2px solid var(--primary)}.table-wrap{overflow-x:auto;margin:1rem 0;border-radius:var(--radius-sm);border:1px solid var(--border)}table{width:100%;border-collapse:collapse;font-size:.88rem}thead{background:var(--navy);color:#fff}th,td{padding:.65rem .85rem;text-align:left;border-bottom:1px solid var(--border)}tbody tr:hover{background:var(--primary-light)}tbody tr:nth-child(even){background:rgba(0,0,0,.02)}pre{background:#1e293b;color:#e2e8f0;padding:1rem 1.25rem;border-radius:var(--radius-sm);overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;line-height:1.6;margin:.75rem 0}code{font-family:var(--font-mono);font-size:.85em;background:#f1f5f9;padding:.15em .4em;border-radius:4px;color:var(--danger)}pre code{background:0 0;padding:0;color:inherit;font-size:.82rem}.info-box{display:flex;gap:.85rem;padding:1rem 1.25rem;border-radius:var(--radius-sm);margin:1rem 0;align-items:flex-start}.info-box .icon{font-size:1.3rem;flex-shrink:0;margin-top:2px}.info-box.remember{background:var(--primary-light);border-left:4px solid var(--primary)}.info-box.warning{background:var(--warning-light);border-left:4px solid var(--warning)}.info-box.question{background:var(--purple-light);border-left:4px solid var(--purple)}.example-box{background:var(--bg-card);border:1px dashed var(--primary);border-radius:var(--radius-sm);padding:1rem 1.25rem;margin:1rem 0}.example-label{font-size:.8rem;font-weight:600;color:var(--primary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}.interactive{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin:1.25rem 0;box-shadow:var(--shadow)}.interactive h4{margin:0 0 .35rem;color:var(--navy)}.interactive p{margin:0 0 .75rem;color:var(--text-muted);font-size:.9rem}.control-row{display:flex;gap:.5rem;margin:.75rem 0;flex-wrap:wrap}select{flex:1;min-width:180px;padding:.55rem .75rem;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-thai);font-size:.9rem;background:#fff}.btn{background:var(--primary);color:#fff;border:none;padding:.55rem 1.25rem;border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-thai);font-size:.9rem;font-weight:500;transition:background .15s;white-space:nowrap}.btn:hover{background:var(--primary-dark)}.result{padding:.75rem 1rem;border-radius:var(--radius-sm);margin:.75rem 0;font-size:.9rem;background:var(--bg);border:1px solid var(--border)}.result.ok{background:var(--success-light);border-color:var(--success);color:#065f46}.result.bad{background:var(--danger-light);border-color:var(--danger);color:#991b1b}.result.mid{background:var(--warning-light);border-color:var(--warning);color:#92400e}.slider-row{display:flex;align-items:center;gap:.75rem;margin:.5rem 0}.slider-row label{min-width:140px;font-size:.85rem;font-weight:500}.slider-row input[type=range]{flex:1;max-width:200px}.slider-row .val{min-width:80px;font-size:.82rem;color:var(--text-muted)}.checklist{display:flex;flex-direction:column;gap:.5rem;margin:.75rem 0}.checklist label{display:flex;align-items:center;gap:.5rem;font-size:.88rem;cursor:pointer}.checklist input[type=checkbox]{width:18px;height:18px;cursor:pointer}.meter{height:10px;background:var(--border);border-radius:10px;overflow:hidden;margin:.5rem 0}.meter-fill{height:100%;background:var(--primary);border-radius:10px;transition:width .4s;width:0%}.quiz-option{display:block;width:100%;text-align:left;padding:.7rem 1rem;margin:.35rem 0;border:2px solid var(--border);border-radius:var(--radius-sm);background:#fff;cursor:pointer;font-family:var(--font-thai);font-size:.9rem;transition:all .15s}.quiz-option:hover{border-color:var(--primary);background:var(--primary-light)}.quiz-option.correct{border-color:var(--success);background:var(--success-light)}.quiz-option.wrong{border-color:var(--danger);background:var(--danger-light)}.tabs{display:flex;flex-wrap:wrap;gap:4px;margin:.75rem 0}.tab-btn{padding:.5rem 1rem;border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-thai);font-size:.85rem;transition:all .15s}.tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}.tab-btn:hover:not(.active){background:var(--primary-light)}.tab-panel{display:none;padding:1rem;background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);margin:4px 0}.tab-panel.active{display:block}.case-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin:1rem 0;box-shadow:var(--shadow)}.case-card .meta{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem}.case-card .meta span{font-size:.78rem;padding:.2rem .65rem;border-radius:50px;background:var(--primary-light);color:var(--primary);font-weight:500}.case-card .meta .year{background:var(--danger);color:#fff}.case-card .lessons{margin-top:.75rem;padding:.75rem 1rem;background:#f8fafc;border-radius:var(--radius-sm)}.case-card .lessons h5{color:var(--navy);margin-bottom:.35rem}.scroll-top{position:fixed;bottom:2rem;right:2rem;width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;border:none;font-size:1.5rem;cursor:pointer;opacity:0;visibility:hidden;transition:all .3s;z-index:50;box-shadow:var(--shadow-lg)}.scroll-top.visible{opacity:1;visibility:visible}.scroll-top:hover{background:var(--navy-light)}@media(max-width:1024px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sidebar-toggle{display:flex}.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}.sidebar-overlay.show{display:block}.main{margin-left:0}.content{padding:1.25rem}}@media(max-width:640px){.content{padding:1rem}.topbar{padding:.5rem 1rem}.topbar-title{font-size:.75rem}.content h2{font-size:1.25rem}.content h3{font-size:1.05rem}.table-wrap{font-size:.8rem}.slider-row{flex-wrap:wrap}.slider-row label{min-width:100px}.slider-row input[type=range]{max-width:100%}}
+</style>
+</head>
+<body>
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="เปิดเมนู">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-header"><h1>ความมั่นคงปลอดภัยของซอฟต์แวร์</h1><div class="sub">บทที่ 13 · Security Testing</div></div>
+  <div class="sidebar-nav">
+    <div class="section-label">เนื้อหา</div>
+    <a href="#s13-1">13.1 ภาพรวม Security Testing</a>
+    <a href="#s13-1-1" class="sub-link">13.1.1 ความสำคัญ</a>
+    <a href="#s13-1-2" class="sub-link">13.1.2 NIST SP 800-115</a>
+    <a href="#s13-1-3" class="sub-link">13.1.3 ประเภท Tools</a>
+    <a href="#s13-2">13.2 SAST</a>
+    <a href="#s13-2-1" class="sub-link">13.2.1 หลักการทำงาน</a>
+    <a href="#s13-2-2" class="sub-link">13.2.2 เครื่องมือ SAST</a>
+    <a href="#s13-2-3" class="sub-link">13.2.3 False Positives</a>
+    <a href="#s13-2-4" class="sub-link">13.2.4 Workflow</a>
+    <a href="#s13-2-5" class="sub-link">13.2.5 ข้อจำกัด</a>
+    <a href="#s13-3">13.3 DAST</a>
+    <a href="#s13-3-1" class="sub-link">13.3.1 หลักการทำงาน</a>
+    <a href="#s13-3-2" class="sub-link">13.3.2 Active vs Passive</a>
+    <a href="#s13-3-3" class="sub-link">13.3.3 เครื่องมือ DAST</a>
+    <a href="#s13-3-4" class="sub-link">13.3.4 API Testing</a>
+    <a href="#s13-3-5" class="sub-link">13.3.5 Authentication</a>
+    <a href="#s13-4">13.4 IAST</a>
+    <a href="#s13-4-1" class="sub-link">13.4.1 หลักการ IAST</a>
+    <a href="#s13-4-2" class="sub-link">13.4.2 Taint Analysis</a>
+    <a href="#s13-4-3" class="sub-link">13.4.3 เปรียบเทียบ</a>
+    <a href="#s13-4-4" class="sub-link">13.4.4 เครื่องมือ IAST</a>
+    <a href="#s13-5">13.5 RASP</a>
+    <a href="#s13-5-1" class="sub-link">13.5.1 หลักการ RASP</a>
+    <a href="#s13-5-2" class="sub-link">13.5.2 RASP vs Testing Tools</a>
+    <a href="#s13-5-3" class="sub-link">13.5.3 RASP vs WAF</a>
+    <a href="#s13-5-4" class="sub-link">13.5.4 เครื่องมือ RASP</a>
+    <a href="#s13-6">13.6 Penetration Testing</a>
+    <a href="#s13-6-1" class="sub-link">13.6.1 มาตรฐาน</a>
+    <a href="#s13-6-2" class="sub-link">13.6.2 PTES ขั้นตอน</a>
+    <a href="#s13-6-3" class="sub-link">13.6.3 แนวทางการทดสอบ</a>
+    <a href="#s13-6-4" class="sub-link">13.6.4 Rules of Engagement</a>
+    <a href="#s13-6-5" class="sub-link">13.6.5 OWASP WSTG</a>
+    <a href="#s13-7">13.7 SCA</a>
+    <a href="#s13-7-1" class="sub-link">13.7.1 ความสำคัญ</a>
+    <a href="#s13-7-2" class="sub-link">13.7.2 เครื่องมือ SCA</a>
+    <a href="#s13-7-3" class="sub-link">13.7.3 Trivy</a>
+    <a href="#s13-7-5" class="sub-link">13.7.5 SBOM</a>
+    <a href="#s13-8">13.8 Fuzz Testing</a>
+    <a href="#s13-9">13.9 DevSecOps Pipeline</a>
+    <a href="#s13-9-2" class="sub-link">13.9.2 Quality Gates</a>
+    <a href="#s13-9-3" class="sub-link">13.9.3 NIST SSDF</a>
+    <a href="#s13-9-5" class="sub-link">13.9.5 Shift Left</a>
+    <a href="#s13-10">13.10 การเขียนรายงาน</a>
+    <div class="section-label">Interactive</div>
+    <a href="#play-compare">Testing Type Comparator</a>
+    <a href="#play-cvss">CVSS Calculator</a>
+    <a href="#play-tpfp">TP vs FP Quiz</a>
+    <a href="#play-toolquiz">Security Tool Quiz</a>
+    <a href="#play-checklist">Lab Checklists</a>
+    <div class="section-label">กิจกรรมปฏิบัติการ</div>
+    <a href="#lab13-1">Lab 13.1: Semgrep</a>
+    <a href="#lab13-2">Lab 13.2: OWASP ZAP</a>
+    <a href="#lab13-3">Lab 13.3: Trivy</a>
+    <a href="#lab13-4">Lab 13.4: PTES Report</a>
+    <div class="section-label">ท้ายบท</div>
+    <a href="#questions">คำถามท้ายบท</a>
+    <a href="#summary">สรุปท้ายบท</a>
+    <a href="#keywords">Keywords</a>
+    <a href="#refs">เอกสารอ้างอิง</a>
+  </div>
+</nav>
+  <div class="main">
+    <header class="topbar"><a href="index.html" class="topbar-home" aria-label="กลับหน้าแรก">← HOME</a><div class="topbar-title"><strong>บทที่ 13</strong> · Security Testing (SAST, DAST, Penetration Testing)</div><div class="topbar-progress" id="readingProgress">Software Security</div></header>
+    <div class="content">
+      <div style="text-align:center;padding:2rem 0 1rem">
+        <span style="display:inline-block;background:var(--primary);color:#fff;padding:.25rem 1rem;border-radius:50px;font-size:.85rem;margin-bottom:1rem">บทที่ 13</span>
+        <h1 style="font-size:2.25rem;color:var(--navy);margin-bottom:.5rem;border:none">Security Testing (SAST, DAST, Penetration Testing)</h1>
+        <p style="color:var(--text-muted);font-size:1rem">บรรยาย 2 ชม. + ปฏิบัติการ 3 ชม. | รวม 5 ชม.</p>
+      </div>
+      <div class="card" style="background:linear-gradient(135deg,var(--navy),#0f172a);color:#fff;border:none">
+        <div class="card-header" style="color:#fff">วัตถุประสงค์การเรียนรู้</div>
+        <ol style="color:#cbd5e1;padding-left:1.25rem">
+          <li style="margin-bottom:.5rem">อธิบายภาพรวมของ Security Testing ประเภทต่าง ๆ ได้แก่ SAST, DAST, IAST, RASP, SCA และ Fuzz Testing รวมถึงความแตกต่างด้านการทำงาน จุดแข็ง และข้อจำกัดของแต่ละประเภท</li>
+          <li style="margin-bottom:.5rem">ใช้เครื่องมือ SAST เช่น Semgrep และ SonarQube ในการสแกน Source Code เพื่อค้นหาช่องโหว่ และวิเคราะห์ผลลัพธ์เพื่อแยกแยะ True Positive ออกจาก False Positive</li>
+          <li style="margin-bottom:.5rem">ใช้เครื่องมือ DAST เช่น OWASP ZAP และ Burp Suite ในการสแกน Web Application แบบ Active Scan และ Passive Scan พร้อมวิเคราะห์ผลลัพธ์ที่ได้</li>
+          <li style="margin-bottom:.5rem">อธิบายมาตรฐานการทดสอบเจาะระบบ (Penetration Testing) ได้แก่ PTES, OWASP WSTG, NIST SP 800-115 และ OSSTMM และดำเนินการทดสอบตามขั้นตอนของ PTES</li>
+          <li style="margin-bottom:.5rem">ใช้เครื่องมือ SCA เช่น Trivy, Snyk และ OWASP Dependency-Check ในการสแกน Dependencies และ Container Images รวมถึงการสร้างและใช้งาน SBOM</li>
+          <li style="margin-bottom:.5rem">บูรณาการเครื่องมือ Security Testing ใน CI/CD Pipeline ตามหลักการ DevSecOps และ Shift Left</li>
+          <li style="margin-bottom:.5rem">เขียนรายงานผล Security Testing ที่ครอบคลุม Executive Summary, Technical Findings, Risk Rating ด้วย CVSS และ Remediation Recommendations</li>
+        </ol>
+      </div>
+
+      <div class="info-box warning">
+        <span class="icon">\u26a0\ufe0f</span>
+        <div>
+          <strong>ขอบเขตและข้อกำหนดด้านจริยธรรมของบทนี้</strong>
+          <p style="margin:.35rem 0 0">บทนี้ครอบคลุมหลักการและเครื่องมือสำหรับการทดสอบความปลอดภัยของซอฟต์แวร์ในทุกขั้นตอนของการพัฒนา ตั้งแต่การวิเคราะห์ Source Code (SAST) การทดสอบขณะรันไทม์ (DAST/IAST) ไปจนถึงการทดสอบเจาะระบบ (Penetration Testing) เนื้อหามีตัวอย่างเกี่ยวกับเทคนิคการโจมตีเพื่อการเรียนรู้เชิงป้องกันเท่านั้น กิจกรรมปฏิบัติการทั้งหมดต้องทำในสภาพแวดล้อมที่ได้รับอนุญาต เช่น เครื่องเสมือน (Virtual Machine), สภาพแวดล้อม Docker ที่แยกออกจากระบบจริง หรือแอปพลิเคชันตัวอย่างที่อาจารย์จัดให้เท่านั้น</p>
+        </div>
+      </div>
+      <div class="info-box remember">
+        <span class="icon">\U0001f4cc</span>
+        <div>
+          <strong>ข้อควรจำ:</strong>
+          <ul style="margin:.35rem 0 0;padding-left:1.25rem">
+            <li>ห้ามนำเทคนิคและเครื่องมือในบทนี้ไปทดสอบกับระบบของบุคคลอื่นโดยไม่ได้รับอนุญาตเป็นลายลักษณ์อักษร</li>
+            <li>การใช้เครื่องมือเช่น Semgrep, OWASP ZAP, Burp Suite, Trivy หรือเทคนิคการทดสอบเจาะระบบกับระบบที่ไม่ใช่ของตนเองหรือไม่ได้รับอนุญาตอาจมีความผิดทั้งทางอาญาตาม พ.ร.บ. ว่าด้วยการกระทำผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560 และทางแพ่งตามประมวลกฎหมายแพ่งและพาณิชย์ มาตรา 420</li>
+            <li>หากพบข้อมูลส่วนบุคคลระหว่างการทดสอบ ต้องปฏิบัติตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) ด้วย</li>
+            <li>การทดสอบระบบต้องได้รับอนุญาตเป็นลายลักษณ์อักษรก่อนดำเนินการทุกครั้ง รวมถึงต้องมี Rules of Engagement ที่ชัดเจน</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Learning Plan Table -->
+      <h2 id="s13-1">13.1 ภาพรวมของ Security Testing</h2>
+      <p>Security Testing เป็นกระบวนการประเมินความปลอดภัยของซอฟต์แวร์เพื่อค้นหาช่องโหว่ จุดอ่อน และการกำหนดค่าที่ไม่ปลอดภัยก่อนที่ผู้ไม่หวังดีจะนำไปใช้ในการโจมตี การทดสอบความปลอดภัยที่มีประสิทธิภาพต้องครอบคลุมหลายมิติ ตั้งแต่การวิเคราะห์ Source Code ไปจนถึงการทดสอบในสภาพแวดล้อมจริง</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ช่วงเวลา</th><th>หัวข้อ</th><th>เป้าหมายการเรียนรู้</th><th>กิจกรรมในชั้นเรียน</th></tr></thead>
+          <tbody>
+            <tr><td>ชั่วโมงที่ 1</td><td>ภาพรวม Security Testing, SAST, และ DAST</td><td>เข้าใจความสำคัญของ Security Testing, Cost of Late Discovery, ความแตกต่างระหว่าง SAST vs DAST</td><td>วิเคราะห์กรณี CVE-2026-5394 (Pimcore SQL Injection) และ CVE-2026-24765 (PHPUnit RCE)</td></tr>
+            <tr><td>ชั่วโมงที่ 2</td><td>IAST, RASP, Penetration Testing, และ SCA</td><td>เข้าใจ IAST และ RASP, มาตรฐาน PTES และ OWASP WSTG, SCA และ SBOM</td><td>เปรียบเทียบ SAST/DAST/IAST/RASP/SCA, วิเคราะห์ CVE-2026-33634 (Trivy Supply Chain Attack)</td></tr>
+            <tr><td>ชั่วโมงที่ 3</td><td>Lab 13.1 และ Lab 13.2</td><td>ฝึกใช้ Semgrep สแกน Source Code และใช้ OWASP ZAP สแกน Web Application</td><td>วิเคราะห์ True Positive vs False Positive, เปรียบเทียบ Active vs Passive Scan</td></tr>
+            <tr><td>ชั่วโมงที่ 4</td><td>Lab 13.3</td><td>ฝึกใช้ Trivy สแกน Container Image และ Dependencies, สร้าง SBOM</td><td>วิเคราะห์ผลการสแกน, ระบุ CVE ที่พบ และเสนอแนวทางแก้ไข</td></tr>
+            <tr><td>ชั่วโมงที่ 5</td><td>Lab 13.4 และการเขียนรายงาน</td><td>ดำเนินการ Penetration Testing ขนาดเล็กตาม PTES และเขียนรายงานผล</td><td>ฝึกเขียนรายงานที่มี Executive Summary, Technical Findings, CVSS Scoring, Remediation</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-1-1">13.1.1 ความสำคัญของการทดสอบความปลอดภัย</h3>
+      <p>การค้นพบช่องโหว่ในช่วงท้ายของวงจรการพัฒนาซอฟต์แวร์มีค่าใช้จ่ายที่สูงกว่าการค้นพบในช่วงต้นอย่างมีนัยสำคัญ แบบจำลองค่าใช้จ่ายสัมพัทธ์ในการแก้ไขช่องโหว่ที่ยอมรับในอุตสาหกรรม (industry-accepted model) มีดังนี้:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ช่วงที่ค้นพบช่องโหว่</th><th>ค่าใช้จ่ายสัมพัทธ์ในการแก้ไข</th></tr></thead>
+          <tbody>
+            <tr><td>Requirements / Design</td><td>1 เท่า (ฐานอ้างอิง)</td></tr>
+            <tr><td>Implementation / Coding</td><td>6.5 เท่า</td></tr>
+            <tr><td>Integration / Testing</td><td>15 เท่า</td></tr>
+            <tr><td>Staging / Pre-Production</td><td>40 เท่า</td></tr>
+            <tr><td>Production</td><td>60–100 เท่า</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>การทดสอบความปลอดภัยในวงจรการพัฒนาซอฟต์แวร์จึงมุ่งเน้นแนวคิด <strong>Shift Left</strong> — การเลื่อนการทดสอบไปยังช่วงต้นของ SDLC ให้มากที่สุด เพื่อลดค่าใช้จ่ายและเวลาในการแก้ไขช่องโหว่</p>
+
+      <h3 id="s13-1-2">13.1.2 ประเภทของ Security Testing ตามแนวทาง NIST SP 800-115</h3>
+      <p>NIST SP 800-115 (Technical Guide to Information Security Testing and Assessment) แบ่งการทดสอบความปลอดภัยออกเป็น 3 ประเภทหลักตามลักษณะการดำเนินการ:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ประเภท</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Review Techniques</strong></td><td>การตรวจสอบโดยไม่ต้องรันระบบ</td><td>Architecture Review, Code Review, Policy Review</td></tr>
+            <tr><td><strong>Target Identification and Analysis Techniques</strong></td><td>การระบุและวิเคราะห์เป้าหมาย</td><td>Network Discovery, Vulnerability Scanning, SAST</td></tr>
+            <tr><td><strong>Target Vulnerability Validation Techniques</strong></td><td>การยืนยันช่องโหว่ของเป้าหมาย</td><td>Penetration Testing, DAST, IAST</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>นอกจากนี้ OWASP ASVS (Application Security Verification Standard) ยังเป็นกรอบที่ใช้ในการตรวจสอบความปลอดภัยของแอปพลิเคชันในเชิงลึก ครอบคลุมทั้งการตรวจสอบโค้ด, การทดสอบเจาะระบบ, และการตรวจสอบการออกแบบ</p>
+
+      <h3 id="s13-1-3">13.1.3 ประเภทของ Security Testing Tools</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ประเภท</th><th>แนวทางการทดสอบ</th><th>ต้องใช้ Source Code?</th><th>แอปพลิเคชันต้องรัน?</th><th>ช่วง SDLC</th><th>พบ Runtime Issues?</th><th>อัตรา False Positive</th></tr></thead>
+          <tbody>
+            <tr><td><strong>SAST</strong></td><td>White-box (วิเคราะห์ Source Code)</td><td>ใช่</td><td>ไม่</td><td>Dev, Build</td><td>ไม่</td><td>ปานกลาง–สูง</td></tr>
+            <tr><td><strong>DAST</strong></td><td>Black-box (ทดสอบจากภายนอก)</td><td>ไม่</td><td>ใช่</td><td>Test, Staging, Prod</td><td>ใช่</td><td>ต่ำ–ปานกลาง</td></tr>
+            <tr><td><strong>IAST</strong></td><td>Grey-box (Agent ใน Runtime)</td><td>ไม่ (แต่ต้องติดตั้ง Agent)</td><td>ใช่</td><td>Test, Staging</td><td>ใช่</td><td>ต่ำมาก</td></tr>
+            <tr><td><strong>RASP</strong></td><td>Protection (ป้องกันขณะรันไทม์)</td><td>ไม่ (แต่ติดตั้งเป็น Agent)</td><td>ใช่</td><td>Production</td><td>ใช่ (ป้องกัน)</td><td>ไม่มี (เป็น Protection)</td></tr>
+            <tr><td><strong>SCA</strong></td><td>Dependency Analysis</td><td>ใช่ (manifest files)</td><td>ไม่</td><td>Dev, Build</td><td>ไม่ (แต่ระบุ known CVEs)</td><td>ต่ำ</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box remember">
+        <span class="icon">📌</span>
+        <div>
+          <strong>ข้อควรจำ:</strong>
+          <p style="margin:.35rem 0 0">ไม่มีเครื่องมือใดที่สามารถค้นหาช่องโหว่ได้ครบถ้วนทุกประเภท การใช้เครื่องมือหลายประเภทประกอบกันให้ครอบคลุมทั้ง Static, Dynamic และ Dependency Analysis จึงเป็นแนวทางที่แนะนำ</p>
+        </div>
+      </div>
+
+      <!-- Interactive: Security Testing Type Comparator -->
+      <div class="interactive" id="play-compare">
+        <h4>Interactive: SAST vs DAST vs IAST vs RASP vs SCA Comparator</h4>
+        <p>เลือกประเภทของ Security Testing เพื่อดูรายละเอียดเปรียบเทียบ</p>
+        <div class="control-row">
+          <select id="compareType">
+            <option value="sast">SAST - Static Application Security Testing</option>
+            <option value="dast">DAST - Dynamic Application Security Testing</option>
+            <option value="iast">IAST - Interactive Application Security Testing</option>
+            <option value="rasp">RASP - Runtime Application Self-Protection</option>
+            <option value="sca">SCA - Software Composition Analysis</option>
+          </select>
+          <button class="btn" id="compareBtn">แสดงรายละเอียด</button>
+        </div>
+        <div id="compareResult" class="result">เลือกประเภทแล้วกดแสดงรายละเอียด</div>
+      </div>
+
+      <!-- 13.2 SAST -->
+      <h2 id="s13-2">13.2 SAST (Static Application Security Testing)</h2>
+      <p>SAST เป็นวิธีการทดสอบความปลอดภัยแบบ White-box ที่วิเคราะห์ Source Code, Bytecode หรือ Binary โดยไม่ต้องรันโปรแกรม เครื่องมือ SAST จะตรวจสอบโค้ดในเชิงสถิติเพื่อหารูปแบบที่อาจเป็นช่องโหว่ เช่น Buffer Overflow, SQL Injection, Cross-Site Scripting, Insecure Cryptographic Storage และอื่น ๆ</p>
+
+      <h3 id="s13-2-1">13.2.1 หลักการทำงานของ SAST</h3>
+      <p>เครื่องมือ SAST ใช้เทคนิคการวิเคราะห์โค้ดแบบต่าง ๆ ดังนี้:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>เทคนิค</th><th>คำอธิบาย</th><th>จุดแข็ง</th><th>จุดอ่อน</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Pattern Matching</strong></td><td>เปรียบเทียบโค้ดกับรูปแบบที่กำหนดไว้ล่วงหน้า (Rule-based)</td><td>ง่าย เร็ว ตรวจจับรูปแบบที่รู้จักได้ดี</td><td>False Positive สูง, ไม่พบช่องโหว่ที่ไม่ตรงกับรูปแบบ</td></tr>
+            <tr><td><strong>Data Flow Analysis</strong></td><td>วิเคราะห์เส้นทางการไหลของข้อมูลจาก Source (ผู้ใช้) ไปยัง Sink (ฟังก์ชันอันตราย)</td><td>พบช่องโหว่แบบ Taint Analysis เช่น SQLi, XSS</td><td>ใช้ทรัพยากรมาก, อาจพลาดช่องโหว่ที่ซับซ้อน</td></tr>
+            <tr><td><strong>Control Flow Analysis</strong></td><td>วิเคราะห์ลำดับการทำงานของโปรแกรม</td><td>ตรวจจับ Resource Leak, Unreachable Code</td><td>ไม่ครอบคลุม Data Flow</td></tr>
+            <tr><td><strong>Abstract Syntax Tree (AST)</strong></td><td>วิเคราะห์โครงสร้างไวยากรณ์ของโค้ดแบบต้นไม้</td><td>ตรวจจับ Syntax Error และโครงสร้างที่ไม่ปลอดภัย</td><td>ไม่ครอบคลุมความหมายในเชิงลึก</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-2-2">13.2.2 เครื่องมือ SAST ที่นิยม</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>เครื่องมือ</th><th>ประเภท</th><th>ภาษา/แพลตฟอร์มที่รองรับ</th><th>จุดเด่น</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Semgrep</strong></td><td>Open Source</td><td>Python, Java, Go, JS/TS, Ruby, C, OCaml</td><td>กฎที่ปรับแต่งได้ง่าย, รองรับ CI/CD, ชุมชนขนาดใหญ่</td></tr>
+            <tr><td><strong>SonarQube</strong></td><td>Open Source / Commercial</td><td>30+ ภาษา</td><td>Quality Gates, Technical Debt, CI/CD Integration</td></tr>
+            <tr><td><strong>CodeQL</strong> (GitHub)</td><td>Commercial (ฟรีสำหรับ OSS)</td><td>C/C++, C#, Go, Java, JS/TS, Python</td><td>Query-based, GitHub Integration, Code Scanning</td></tr>
+            <tr><td><strong>Bandit</strong></td><td>Open Source</td><td>Python</td><td>เฉพาะ Python, ติดตั้งและใช้งานง่าย</td></tr>
+            <tr><td><strong>Checkmarx</strong></td><td>Commercial</td><td>25+ ภาษา</td><td>CxSAST, CxFlow สำหรับ CI/CD</td></tr>
+            <tr><td><strong>Fortify</strong> (Micro Focus)</td><td>Commercial</td><td>25+ ภาษา</td><td>Audit Workbench, CloudScan</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>ตัวอย่างการใช้ Semgrep:</strong></p>
+      <pre><code># semgrep-rules/sql-injection.yaml
+# กฎ Semgrep สำหรับตรวจจับ SQL Injection ใน Python
+rules:
+  - id: python-sqli-detected
+    patterns:
+      - pattern: |
+          cursor.execute("..." + $QUERY + "...")
+      - pattern-not: |
+          cursor.execute("... %s ..." % ($SAFE,))
+    message: >
+      Detected potential SQL injection. Use parameterized queries
+      instead of string concatenation.
+    languages: [python]
+    severity: WARNING
+    metadata:
+      cwe: "CWE-89: SQL Injection"
+      owasp: "A05:2025 - Injection"
+      category: security</code></pre>
+
+      <pre><code># รัน Semgrep เพื่อสแกนโปรเจกต์
+semgrep --config=auto /path/to/project
+
+# รัน Semgrep ด้วยกฎที่กำหนดเอง
+semgrep --config=/path/to/semgrep-rules/ /path/to/project
+
+# รัน Semgrep และส่งออกผลลัพธ์ในรูปแบบ JSON
+semgrep --config=auto --json /path/to/project
+
+# รัน Semgrep แบบไม่ระบุ severity ต่ำ
+semgrep --config=auto --severity ERROR,WARNING /path/to/project</code></pre>
+
+      <p><strong>ตัวอย่างการใช้ Bandit สำหรับ Python:</strong></p>
+      <pre><code># ติดตั้ง Bandit
+pip install bandit
+
+# สแกนโปรเจกต์ Python
+bandit -r /path/to/project
+
+# ส่งออกผลลัพธ์ในรูปแบบ JSON
+bandit -r /path/to/project -f json -o bandit-report.json
+
+# ละเว้นเส้นทางที่ไม่ต้องการสแกน
+bandit -r /path/to/project --exclude /path/to/project/tests</code></pre>
+
+      <h3 id="s13-2-3">13.2.3 การจัดการ False Positives</h3>
+      <p>ปัญหาหลักของ SAST คือ False Positive - ผลลัพธ์ที่แจ้งเตือนช่องโหว่ที่ไม่มีอยู่จริง แนวทางในการจัดการ:</p>
+      <ol>
+        <li><strong>Triage Findings:</strong> จัดลำดับความสำคัญของผลลัพธ์ตามความรุนแรง (CVSS Score), ความน่าเชื่อถือของกฎ (Rule Confidence), และบริบทของโค้ด</li>
+        <li><strong>Suppression with Justification:</strong> ระงับ False Positive ที่ชัดเจนพร้อมระบุเหตุผล (Audit Trail)</li>
+        <li><strong>Custom Rules Tuning:</strong> ปรับแต่งกฎให้เหมาะสมกับบริบทของโปรเจกต์</li>
+        <li><strong>Baseline Comparison:</strong> ใช้ Baselines เพื่อระบุเฉพาะ Finding ใหม่ที่เพิ่มเข้ามาในโค้ดที่เปลี่ยนแปลง</li>
+        <li><strong>Verify with DAST:</strong> ยืนยันช่องโหว่ที่ SAST พบด้วย DAST หรือการตรวจสอบด้วยตนเอง</li>
+      </ol>
+      <pre><code># ตัวอย่างการ Suppress False Positive ใน Bandit
+import hashlib  # nosec  # แจ้ง Bandit ว่าไม่ต้องตรวจสอบบรรทัดนี้
+
+# หรือใช้ # nosec เพื่อระงับการแจ้งเตือนทุกรายการในบรรทัด
+password = "supersecret"  # nosec</code></pre>
+
+      <h3 id="s13-2-4">13.2.4 SAST Workflow ใน IDE และ CI/CD</h3>
+      <p><strong>IDE Integration:</strong></p>
+      <ul>
+        <li><strong>VS Code:</strong> ใช้ Semgrep Extension, SonarLint</li>
+        <li><strong>IntelliJ IDEA:</strong> ใช้ SonarLint, Qodana</li>
+        <li><strong>GitHub Code Scanning:</strong> ใช้ CodeQL ใน GitHub Actions</li>
+      </ul>
+      <p><strong>CI/CD Integration:</strong></p>
+      <pre><code># .github/workflows/semgrep.yml
+name: Semgrep SAST Scan
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Semgrep
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: p/default
+          audit_on: push
+          severity: ERROR,WARNING</code></pre>
+
+      <h3 id="s13-2-5">13.2.5 ข้อจำกัดของ SAST</h3>
+      <ol>
+        <li><strong>ไม่สามารถตรวจสอบ Runtime Behavior:</strong> SAST ไม่ทราบว่าโปรแกรมทำงานอย่างไรในสภาพแวดล้อมจริง</li>
+        <li><strong>ไม่พบช่องโหว่ที่เกิดจาก Configuration:</strong> ปัญหาเช่น Misconfigured Cloud Services หรือ Weak TLS Configuration ไม่สามารถตรวจพบได้จาก Source Code</li>
+        <li><strong>False Positive สูง:</strong> โดยเฉพาะกับภาษาที่มี Dynamic Typing หรือ Reflection</li>
+        <li><strong>การวิเคราะห์ Dependency Chains:</strong> การติดตาม Data Flow ผ่านหลาย Layer อาจไม่สมบูรณ์</li>
+        <li><strong>ภาษาและ Framework ที่ไม่รองรับ:</strong> เครื่องมือบางตัวไม่ครอบคลุมภาษาเฉพาะหรือ Framework ใหม่</li>
+      </ol>
+      <div class="info-box remember">
+        <span class="icon">📌</span>
+        <div>
+          <strong>ข้อควรจำ:</strong>
+          <p style="margin:.35rem 0 0">SAST ควรใช้เป็นส่วนหนึ่งของการทดสอบความปลอดภัย ไม่ใช่เครื่องมือเดียวที่พึ่งพา การใช้ SAST ร่วมกับ DAST และการตรวจสอบด้วยมนุษย์ให้ผลลัพธ์ที่ดีที่สุด</p>
+        </div>
+      </div>
+
+      <!-- 13.3 DAST -->
+      <h2 id="s13-3">13.3 DAST (Dynamic Application Security Testing)</h2>
+      <p>DAST เป็นวิธีการทดสอบความปลอดภัยแบบ Black-box ที่ทดสอบแอปพลิเคชันขณะทำงานจริง (Runtime) โดยไม่ต้องเข้าถึง Source Code เครื่องมือ DAST จะส่งคำขอที่ออกแบบมาเพื่อโจมตีไปยังแอปพลิเคชันและวิเคราะห์การตอบสนองเพื่อหาช่องโหว่</p>
+
+      <h3 id="s13-3-1">13.3.1 หลักการทำงานของ DAST</h3>
+      <p>DAST ทำงานโดยการจำลองการโจมตีจากมุมมองของผู้ไม่หวังดีที่อยู่ภายนอกระบบ:</p>
+      <ol>
+        <li><strong>Crawling/Spidering:</strong> สำรวจโครงสร้างของแอปพลิเคชันเพื่อค้นหา URL, Parameters, Forms</li>
+        <li><strong>Passive Scanning:</strong> วิเคราะห์ HTTP Request/Response โดยไม่ส่งคำขอที่เปลี่ยนแปลง</li>
+        <li><strong>Active Scanning:</strong> ส่ง Payload ที่ออกแบบมาเพื่อกระตุ้นช่องโหว่</li>
+        <li><strong>Analysis:</strong> วิเคราะห์การตอบสนองเพื่อตรวจสอบว่าช่องโหว่ถูกกระตุ้นสำเร็จหรือไม่</li>
+      </ol>
+
+      <h3 id="s13-3-2">13.3.2 Active Scan vs Passive Scan</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>มิติ</th><th>Passive Scan</th><th>Active Scan</th></tr></thead>
+          <tbody>
+            <tr><td>ลักษณะ</td><td>วิเคราะห์การรับส่งข้อมูลปกติ ไม่เปลี่ยนแปลง Request</td><td>ส่งคำขอที่ดัดแปลง (Payload) เพื่อทดสอบช่องโหว่</td></tr>
+            <tr><td>ผลกระทบ</td><td>ไม่กระทบต่อระบบ (ปลอดภัย)</td><td>อาจทำให้ระบบเสียหายหรือทำงานผิดปกติได้</td></tr>
+            <tr><td>ความเร็ว</td><td>รวดเร็ว</td><td>ช้า เนื่องจากต้องส่งหลาย Payload ต่อจุด</td></tr>
+            <tr><td>การครอบคลุม</td><td>จำกัดเฉพาะสิ่งที่สังเกตเห็นในการรับส่งข้อมูล</td><td>ครอบคลุมหลายรูปแบบการโจมตี</td></tr>
+            <tr><td>ความเสี่ยง</td><td>ต่ำมาก</td><td>ปานกลางถึงสูง (ต้องใช้ในสภาพแวดล้อมที่ไม่ใช่ Production)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-3-3">13.3.3 เครื่องมือ DAST ที่นิยม</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>เครื่องมือ</th><th>ประเภท</th><th>จุดเด่น</th></tr></thead>
+          <tbody>
+            <tr><td><strong>OWASP ZAP</strong> (Zed Attack Proxy)</td><td>Open Source</td><td>ฟรี, รองรับ Passive/Active Scan, API Testing, Automation Framework, มี Community Add-ons</td></tr>
+            <tr><td><strong>Burp Suite</strong> (PortSwigger)</td><td>Commercial (มี Community Edition ฟรี)</td><td>Professional Edition มีความสามารถขั้นสูง, Scanner, Repeater, Intruder, Extender</td></tr>
+            <tr><td><strong>StackHawk</strong></td><td>Commercial</td><td>CI/CD-native, รองรับ GraphQL, gRPC, การทดสอบ API</td></tr>
+            <tr><td><strong>Netsparker / Invicti</strong></td><td>Commercial</td><td>Proof-Based Scanning - ยืนยันช่องโหว่อัตโนมัติโดยไม่ต้องตรวจสอบด้วยคน</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>ตัวอย่างการใช้ OWASP ZAP ผ่าน Command Line:</strong></p>
+      <pre><code># 1. รัน ZAP ในโหมด Headless (ไม่มี GUI)
+zap.sh -daemon -host 0.0.0.0 -port 8080
+
+# 2. ใช้ ZAP API เพื่อเริ่ม Spider (Quick Scan)
+curl "http://localhost:8080/JSON/spider/action/scan/?url=http://target-site.com&maxChildren=10"
+
+# 3. ตรวจสอบสถานะ Spider
+curl "http://localhost:8080/JSON/spider/view/status/"
+
+# 4. เริ่ม Active Scan
+curl "http://localhost:8080/JSON/ascan/action/scan/?url=http://target-site.com&recurse=true"
+
+# 5. ดึงผลลัพธ์การสแกน
+curl "http://localhost:8080/JSON/ascan/view/scanProgress/?scanId=0"
+
+# 6. ตรวจสอบ Alerts ที่พบ
+curl "http://localhost:8080/JSON/core/view/alerts/?baseurl=http://target-site.com"</code></pre>
+
+      <p><strong>ตัวอย่างการใช้ OWASP ZAP API ผ่าน Python (zapv2):</strong></p>
+      <pre><code>from zapv2 import ZAPv2
+
+# เชื่อมต่อกับ ZAP Daemon
+zap = ZAPv2(apikey='', proxies={'http': 'http://127.0.0.1:8080', 'https': 'http://127.0.0.1:8080'})
+
+target = 'http://test-site.com'
+
+# เริ่ม Spider
+print(f'Spidering target {target}')
+scan_id = zap.spider.scan(target)
+while int(zap.spider.status(scan_id)) < 100:
+    print(f'Spider progress: {zap.spider.status(scan_id)}%')
+zap.spider.stop(scan_id)
+
+# เริ่ม Active Scan
+print(f'Active Scanning target {target}')
+scan_id = zap.ascan.scan(target)
+while int(zap.ascan.status(scan_id)) < 100:
+    print(f'Active Scan progress: {zap.ascan.status(scan_id)}%')
+
+# แสดงผลลัพธ์
+alerts = zap.core.alerts()
+for alert in alerts:
+    print(f'Alert: {alert["alert"]} | Risk: {alert["risk"]} | URL: {alert["url"]}')</code></pre>
+
+      <h3 id="s13-3-4">13.3.4 API Testing ด้วย DAST</h3>
+      <p>DAST สมัยใหม่รองรับการทดสอบ API โดยตรง ไม่ใช่แค่การโจมตีผ่านหน้าเว็บ:</p>
+      <pre><code># ตัวอย่าง ZAP API Scan Configuration (openapi-scan.yaml)
+env:
+  contexts:
+    - name: "API Context"
+      urls:
+        - "http://api.example.com"
+  parameters:
+    failOnError: true
+    progressStats: true
+
+jobs:
+  - type: openapi
+    parameters:
+      apiFile: "/path/to/openapi-spec.yaml"
+      targetUrl: "http://api.example.com"
+  
+  - type: activeScan
+    parameters:
+      context: "API Context"
+      
+  - type: alertFilter
+    parameters:
+      - ruleId: 10003
+        newRisk: FalsePositive</code></pre>
+
+      <h3 id="s13-3-5">13.3.5 Authentication Handling ใน DAST</h3>
+      <p>การทดสอบแอปพลิเคชันที่ต้องมีการยืนยันตัวตนเป็นความท้าทายของ DAST:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>วิธีการ</th><th>คำอธิบาย</th><th>ข้อดี</th><th>ข้อเสีย</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Session Management</strong></td><td>กำหนด Session Token ให้ DAST ใช้</td><td>ง่าย เร็ว</td><td>Token อาจหมดอายุระหว่างการสแกน</td></tr>
+            <tr><td><strong>Form-Based Auth</strong></td><td>DAST กรอกฟอร์ม Login อัตโนมัติ</td><td>ครอบคลุมมากขึ้น</td><td>ต้องกำหนดค่าฟอร์ม, CAPTCHA อาจเป็นอุปสรรค</td></tr>
+            <tr><td><strong>API Key/Bearer Token</strong></td><td>ใช้ API Key หรือ JWT ในการยืนยันตัวตน</td><td>เหมาะสำหรับ API Testing</td><td>ต้องเตรียม Token ที่ถูกต้อง</td></tr>
+            <tr><td><strong>OAuth 2.0</strong></td><td>DAST รองรับ OAuth 2.0 Flow</td><td>ครอบคลุมการทดสอบ Flow จริง</td><td>ตั้งค่าซับซ้อน</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box warning">
+        <span class="icon">\u26a0\ufe0f</span>
+        <div>
+          <strong>ข้อควรจำ:</strong>
+          <p style="margin:.35rem 0 0">การทดสอบ DAST กับสภาพแวดล้อม Production ต้องได้รับการอนุญาตเป็นลายลักษณ์อักษรและควรใช้เฉพาะ Passive Scan หรือกำหนดขอบเขตให้ชัดเจน Active Scan ควรดำเนินการในสภาพแวดล้อม Staging หรือ Test เท่านั้น</p>
+        </div>
+      </div>
+
+      <!-- 13.4 IAST -->
+      <h2 id="s13-4">13.4 IAST (Interactive Application Security Testing)</h2>
+      <p>IAST เป็นวิธีการทดสอบความปลอดภัยแบบ Grey-box ที่ทำงานโดยการติดตั้ง Agent ภายในแอปพลิเคชัน (Instrumentation Agent) เพื่อวิเคราะห์การทำงานของแอปพลิเคชันในระหว่างการทดสอบ (ทั้ง Manual และ Automated Test) แบบ Real-time</p>
+
+      <h3 id="s13-4-1">13.4.1 หลักการทำงานของ IAST</h3>
+      <p>IAST Agent จะถูกติดตั้งใน Application Server (หรือ Sidecar) และเฝ้าสังเกต:</p>
+      <ol>
+        <li><strong>Data Flow (Taint Analysis):</strong> ติดตามเส้นทางการไหลของข้อมูลจากอินพุตของผู้ใช้ไปยังฟังก์ชันอันตราย</li>
+        <li><strong>Control Flow:</strong> วิเคราะห์ว่าข้อมูลที่ป้อนเข้าไปถูกนำไปใช้ในบริบทที่ปลอดภัยหรือไม่</li>
+        <li><strong>Code Coverage:</strong> แจ้งเตือนเมื่อมีโค้ดที่ไม่ได้ถูกทดสอบ</li>
+        <li><strong>Configuration Analysis:</strong> ตรวจสอบการตั้งค่าความปลอดภัยของเฟรมเวิร์ก</li>
+      </ol>
+
+      <h3 id="s13-4-2">13.4.2 Taint Analysis ใน IAST</h3>
+      <p>Taint Analysis เป็นเทคนิคหลักของ IAST ที่ติดตามข้อมูลจาก <strong>Source</strong> (แหล่งที่มาที่ไม่น่าเชื่อถือ) ไปยัง <strong>Sink</strong> (ฟังก์ชันที่อาจเป็นอันตราย):</p>
+      <pre><code># ตัวอย่าง Taint Analysis ที่ IAST ตรวจจับ
+from flask import request, render_template_string
+
+@app.route('/greet')
+def greet():
+    name = request.args.get('name', '')  # Source: Input จากผู้ใช้
+    # Sink: IAST ตรวจจับว่า name ถูกส่งไปยัง render_template_string
+    return render_template_string(f"Hello {{name}}")  # Safe
+
+    # ถ้าเป็น:
+    # return render_template_string(f"Hello {name}")  # SSTI
+    # IAST จะ Alert ทันที</code></pre>
+
+      <h3 id="s13-4-3">13.4.3 ข้อดีของ IAST เมื่อเทียบกับ SAST และ DAST</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>มิติ</th><th>SAST</th><th>DAST</th><th>IAST</th></tr></thead>
+          <tbody>
+            <tr><td>อัตรา False Positive</td><td>สูง</td><td>ปานกลาง</td><td><strong>ต่ำที่สุด</strong></td></tr>
+            <tr><td>การครอบคลุม Code</td><td>ทั้งหมด (Static)</td><td>เฉพาะที่เข้าถึงได้</td><td><strong>เฉพาะที่ถูกทดสอบจริง</strong></td></tr>
+            <tr><td>การระบุตำแหน่ง</td><td>ระดับบรรทัดโค้ด</td><td>ระดับ URL/Parameter</td><td><strong>ระดับบรรทัดโค้ด</strong></td></tr>
+            <tr><td>การทำงานใน CI/CD</td><td>ดี</td><td>ปานกลาง</td><td><strong>ดี</strong></td></tr>
+            <tr><td>Resource Usage</td><td>ต่ำ</td><td>ปานกลาง</td><td><strong>ต่ำ</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-4-4">13.4.4 เครื่องมือ IAST</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>เครื่องมือ</th><th>ประเภท</th><th>แพลตฟอร์ม</th><th>จุดเด่น</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Contrast Assess</strong></td><td>Commercial</td><td>Java, .NET, Node.js, Python, Go</td><td>IAST ชั้นนำ, False Positive Rate ต่ำมาก, CI/CD Integration</td></tr>
+            <tr><td><strong>HCL AppScan</strong> (IAST Option)</td><td>Commercial</td><td>Java, .NET</td><td>รองรับทั้ง SAST+DAST+IAST</td></tr>
+            <tr><td><strong>Seeker (Synopsys)</strong></td><td>Commercial</td><td>Java, .NET, Node.js, Python</td><td>รองรับการวิเคราะห์หลายภาษา</td></tr>
+            <tr><td><strong>Veracode Interactive Analysis</strong></td><td>Commercial</td><td>Java, .NET</td><td>แพลตฟอร์ม Cloud-based</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 13.5 RASP -->
+      <h2 id="s13-5">13.5 RASP (Runtime Application Self-Protection)</h2>
+      <p>RASP เป็นเทคโนโลยีที่แตกต่างจากเครื่องมือทดสอบความปลอดภัยอื่น ๆ ตรงที่ RASP ไม่ใช่เครื่องมือสำหรับค้นหาช่องโหว่ แต่เป็นเครื่องมือสำหรับ <strong>ป้องกัน</strong> การโจมตีในขณะที่แอปพลิเคชันทำงานจริง (Production)</p>
+
+      <h3 id="s13-5-1">13.5.1 หลักการทำงานของ RASP</h3>
+      <p>RASP ถูกติดตั้งเป็น Agent หรือ Library ใน Application Server และทำงานใน 3 โหมดหลัก:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>โหมด</th><th>คำอธิบาย</th><th>การใช้งาน</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Monitor Mode</strong></td><td>บันทึกและแจ้งเตือนเมื่อตรวจพบการโจมตี แต่ไม่บล็อก</td><td>ใช้ในช่วงเริ่มต้นเพื่อทำความเข้าใจพฤติกรรม</td></tr>
+            <tr><td><strong>Block Mode</strong></td><td>บล็อกการโจมตีทันทีที่ตรวจพบ</td><td>ใช้ใน Production เมื่อมั่นใจในความถูกต้อง</td></tr>
+            <tr><td><strong>Protect Mode</strong></td><td>ป้องกันโดยการ Cleanse Input หรือ Redirect</td><td>ใช้เมื่อต้องการความยืดหยุ่น</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-5-2">13.5.2 ความแตกต่างระหว่าง RASP และ Testing Tools</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>มิติ</th><th>SAST/DAST/IAST</th><th>RASP</th></tr></thead>
+          <tbody>
+            <tr><td>วัตถุประสงค์</td><td>ค้นหาช่องโหว่ (Testing)</td><td>ป้องกันการโจมตี (Protection)</td></tr>
+            <tr><td>ช่วง SDLC</td><td>Dev, Test, Staging</td><td><strong>Production</strong></td></tr>
+            <tr><td>การตอบสนอง</td><td>รายงาน (Report)</td><td><strong>แทรกแซงและบล็อก</strong> (Block)</td></tr>
+            <tr><td>ผลกระทบต่อประสิทธิภาพ</td><td>ไม่มี (วิเคราะห์ภายนอก)</td><td>มี (แทรกแซงใน Runtime) - ต้องปรับแต่ง</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-5-3">13.5.3 RASP vs WAF</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>มิติ</th><th>WAF</th><th>RASP</th></tr></thead>
+          <tbody>
+            <tr><td>ตำแหน่ง</td><td>หน้าแอปพลิเคชัน (Network Edge)</td><td><strong>ใน</strong>แอปพลิเคชัน</td></tr>
+            <tr><td>การมองเห็น</td><td>เห็น HTTP Request/Response</td><td>เห็น Code, Data Flow, Runtime Context</td></tr>
+            <tr><td>การตรวจจับ</td><td>Signature-based + Behavioral</td><td><strong>Context-aware</strong></td></tr>
+            <tr><td>Bypass</td><td>สามารถ Bypass ได้</td><td>ยากที่จะ Bypass</td></tr>
+            <tr><td>การจัดการ</td><td>ตั้งค่ากฎที่ WAF</td><td>ตั้งค่าใน Agent</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-5-4">13.5.4 เครื่องมือ RASP</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>เครื่องมือ</th><th>ประเภท</th><th>แพลตฟอร์ม</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Contrast Protect</strong></td><td>Commercial</td><td>Java, .NET, Node.js, Python, Go</td></tr>
+            <tr><td><strong>HCL AppScan</strong> (RASP Option)</td><td>Commercial</td><td>Java, .NET</td></tr>
+            <tr><td><strong>Imperva RASP</strong></td><td>Commercial</td><td>Java, .NET</td></tr>
+            <tr><td><strong>Signal Sciences (Fastly)</strong></td><td>Commercial</td><td>ทำงานเป็น Agent ใน Web Server</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box remember">
+        <span class="icon">📌</span>
+        <div>
+          <strong>ข้อควรจำ:</strong>
+          <p style="margin:.35rem 0 0">RASP ไม่ใช่ Test Tool - ไม่ควรใช้ RASP แทนการทดสอบความปลอดภัย แต่ควรใช้เป็นชั้นป้องกันเสริมหลังจากที่ได้ทดสอบและแก้ไขช่องโหว่ด้วย SAST/DAST แล้ว</p>
+        </div>
+      </div>
+
+      <!-- 13.6 Penetration Testing -->
+      <h2 id="s13-6">13.6 Penetration Testing</h2>
+      <p>Penetration Testing (การทดสอบเจาะระบบ) เป็นกระบวนการจำลองการโจมตีจริงต่อระบบเป้าหมายเพื่อประเมินความปลอดภัยในมุมมองของผู้โจมตี แตกต่างจาก SAST/DAST ที่เป็น Automated Scanning ตรงที่ Penetration Testing ต้องอาศัยทักษะ ความคิดสร้างสรรค์ และการตีความของมนุษย์ร่วมกับเครื่องมือ</p>
+
+      <h3 id="s13-6-1">13.6.1 มาตรฐานและระเบียบวิธี</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>มาตรฐาน</th><th>หน่วยงาน</th><th>รายละเอียด</th></tr></thead>
+          <tbody>
+            <tr><td><strong>PTES</strong></td><td>ชุมชนความปลอดภัย</td><td>7 ขั้นตอน: Pre-engagement → Intelligence Gathering → Threat Modeling → Vulnerability Analysis → Exploitation → Post-Exploitation → Reporting</td></tr>
+            <tr><td><strong>OWASP WSTG</strong> v4.2</td><td>OWASP</td><td>12 หมวดหมู่, 91 Test Cases</td></tr>
+            <tr><td><strong>NIST SP 800-115</strong></td><td>NIST</td><td>Technical Guide to Information Security Testing and Assessment</td></tr>
+            <tr><td><strong>OSSTMM</strong></td><td>ISECOM</td><td>ครอบคลุม Human Security, Physical Security, Wireless, Telecom, Data Networks</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-6-2">13.6.2 ขั้นตอนของ Penetration Testing ตาม PTES</h3>
+      <p><strong>1. Pre-engagement Interactions:</strong></p>
+      <ul>
+        <li>การกำหนดขอบเขต (Scope) - ระบบใดบ้างที่ได้รับอนุญาตให้ทดสอบ</li>
+        <li>Rules of Engagement (RoE) - เวลาทดสอบ, วิธีการ, การแจ้งเตือน</li>
+        <li>การเซ็นสัญญาอนุญาต (Authorization Letter)</li>
+        <li>ช่องทางการติดต่อกรณีฉุกเฉิน (Emergency Contact)</li>
+      </ul>
+
+      <p><strong>2. Intelligence Gathering / Reconnaissance:</strong></p>
+      <ul>
+        <li>Passive Recon: OSINT (Shodan, Censys, Google Dork, WHOIS, DNS Records)</li>
+        <li>Active Recon: nmap, dnsrecon, subdomain enumeration</li>
+        <li>เทคโนโลยีเป้าหมาย (Wappalyzer, WhatWeb, BuiltWith)</li>
+      </ul>
+      <pre><code># Passive Recon - ใช้ Shodan API
+curl -s "https://api.shodan.io/shodan/host/203.0.113.50?key=SHODAN_API_KEY"
+
+# Active Recon - Scan พอร์ตด้วย nmap
+nmap -sV -sC -p- -T4 target.com
+
+# Subdomain Enumeration
+sublist3r -d target.com</code></pre>
+
+      <p><strong>3. Threat Modeling:</strong></p>
+      <ul>
+        <li>ระบุทรัพย์สินที่มีค่า (Crown Jewels)</li>
+        <li>วิเคราะห์เส้นทางการโจมตี (Attack Path)</li>
+        <li>ใช้ Framework เช่น STRIDE</li>
+      </ul>
+
+      <p><strong>4. Vulnerability Analysis:</strong></p>
+      <ul>
+        <li>สแกนช่องโหว่อัตโนมัติด้วย Nessus, OpenVAS, OWASP ZAP</li>
+        <li>Manual Verification - ยืนยันผลลัพธ์และลด False Positive</li>
+        <li>การค้นหาช่องโหว่ที่ไม่ครอบคลุมโดย Automatic Scanner</li>
+      </ul>
+
+      <p><strong>5. Exploitation:</strong></p>
+      <ul>
+        <li>ยืนยันว่าช่องโหว่สามารถถูกโจมตีได้จริง</li>
+        <li>ใช้เครื่องมือเช่น Metasploit, Burp Suite, SQLMap</li>
+        <li><strong>ข้อจำกัด:</strong> ดำเนินการตาม RoE เท่านั้น</li>
+      </ul>
+
+      <p><strong>6. Post-Exploitation:</strong></p>
+      <ul>
+        <li>การยกระดับสิทธิ์ (Privilege Escalation)</li>
+        <li>การเคลื่อนที่ในแนวราบ (Lateral Movement)</li>
+        <li>การรักษาการเข้าถึง (Persistence)</li>
+        <li>การรวบรวมข้อมูล (Data Exfiltration Simulation)</li>
+      </ul>
+
+      <p><strong>7. Reporting:</strong></p>
+      <ul>
+        <li>Executive Summary - สำหรับผู้บริหาร</li>
+        <li>Technical Findings - สำหรับทีมพัฒนา</li>
+        <li>Risk Rating - CVSS Scoring</li>
+        <li>Remediation Recommendations</li>
+        <li>Screenshots และ PoC Code</li>
+      </ul>
+
+      <h3 id="s13-6-3">13.6.3 แนวทางการทดสอบ: Black-box, White-box, Grey-box</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>แนวทาง</th><th>คำอธิบาย</th><th>ข้อมูลที่ให้ผู้ทดสอบ</th><th>ข้อดี</th><th>ข้อเสีย</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Black-box</strong></td><td>ไม่ทราบข้อมูลภายในระบบเลย</td><td>เฉพาะ URL หรือ IP</td><td>จำลองการโจมตีจากภายนอกได้สมจริง</td><td>ใช้เวลานาน, อาจพลาดช่องโหว่ภายใน</td></tr>
+            <tr><td><strong>White-box</strong></td><td>ทราบข้อมูลทั้งหมด</td><td>Full Access</td><td>ครอบคลุมมากที่สุด, พบช่องโหว่ลึก</td><td>ไม่สมจริง, ใช้ทรัพยากรมาก</td></tr>
+            <tr><td><strong>Grey-box</strong></td><td>ทราบข้อมูลบางส่วน</td><td>Limited Access</td><td>สมดุลระหว่างความสมจริงและความครอบคลุม</td><td>ต้องกำหนดระดับข้อมูลที่ให้</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-6-4">13.6.4 Rules of Engagement (RoE)</h3>
+      <p>RoE เป็นเอกสารที่กำหนดกติกาในการทดสอบเจาะระบบ:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>หัวข้อ</th><th>รายละเอียด</th></tr></thead>
+          <tbody>
+            <tr><td><strong>ขอบเขต (Scope)</strong></td><td>IP Address, Domain Name, API Endpoint, Application ที่ได้รับอนุญาต</td></tr>
+            <tr><td><strong>นอกขอบเขต (Out of Scope)</strong></td><td>ระบบที่ไม่ได้รับอนุญาต, ระบบของบุคคลที่สาม, ข้อมูลส่วนบุคคล</td></tr>
+            <tr><td><strong>เวลาทดสอบ</strong></td><td>ช่วงเวลาที่อนุญาตให้ทดสอบ</td></tr>
+            <tr><td><strong>วิธีการที่อนุญาต</strong></td><td>Social Engineering, Physical Access, DoS (ถ้าได้รับอนุญาต)</td></tr>
+            <tr><td><strong>การแจ้งเตือน</strong></td><td>ต้องแจ้งทีม SOC/Security ก่อนและระหว่างการทดสอบ</td></tr>
+            <tr><td><strong>ข้อมูลติดต่อฉุกเฉิน</strong></td><td>ผู้ประสานงานที่ติดต่อได้ 24/7</td></tr>
+            <tr><td><strong>การจัดการข้อมูล</strong></td><td>ข้อมูลที่พบระหว่างการทดสอบต้องถูกทำลายหลังส่งรายงาน</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box warning">
+        <span class="icon">\u26a0\ufe0f</span>
+        <div>
+          <strong>ข้อควรจำ:</strong>
+          <p style="margin:.35rem 0 0">การทดสอบเจาะระบบโดยไม่มี RoE ที่ชัดเจนหรือไม่ได้รับอนุญาตเป็นลายลักษณ์อักษรอาจเข้าข่ายความผิดทางอาญาตาม พ.ร.บ. ว่าด้วยการกระทำผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560</p>
+        </div>
+      </div>
+
+      <h3 id="s13-6-5">13.6.5 OWASP Web Security Testing Guide (WSTG) v4.2</h3>
+      <p>WSTG v4.2 เป็นแนวทางการทดสอบความปลอดภัยของเว็บแอปพลิเคชันที่ละเอียดและได้รับการยอมรับในวงกว้าง ประกอบด้วย 12 หมวดหมู่หลัก:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>หมวดหมู่</th><th>รหัส</th><th>ขอบเขต</th></tr></thead>
+          <tbody>
+            <tr><td>1. Information Gathering</td><td>WSTG-INFO</td><td>การรวบรวมข้อมูลเบื้องต้น, Fingerprint เทคโนโลยี</td></tr>
+            <tr><td>2. Configuration and Deployment Management</td><td>WSTG-CONF</td><td>การกำหนดค่าเซิร์ฟเวอร์, TLS, HTTP Methods</td></tr>
+            <tr><td>3. Identity Management</td><td>WSTG-IDNT</td><td>Account Enumeration, Username Policy</td></tr>
+            <tr><td>4. Authentication</td><td>WSTG-ATHN</td><td>Default Credentials, Brute Force, MFA Bypass</td></tr>
+            <tr><td>5. Authorization</td><td>WSTG-AUTHZ</td><td>IDOR, Path Traversal, Privilege Escalation</td></tr>
+            <tr><td>6. Session Management</td><td>WSTG-SESS</td><td>Cookie Attributes, CSRF, Session Fixation</td></tr>
+            <tr><td>7. Input Validation</td><td>WSTG-INPV</td><td>SQLi, XSS, SSTI, Command Injection, XXE</td></tr>
+            <tr><td>8. Error Handling</td><td>WSTG-ERRH</td><td>Stack Trace Disclosure, Error Message Verbosity</td></tr>
+            <tr><td>9. Cryptography</td><td>WSTG-CRYP</td><td>Weak Ciphers, Insecure TLS, Padding Oracle</td></tr>
+            <tr><td>10. Business Logic</td><td>WSTG-BUSL</td><td>Race Conditions, Price Manipulation, Workflow Bypass</td></tr>
+            <tr><td>11. Client-Side</td><td>WSTG-CLNT</td><td>DOM XSS, Clickjacking, HTML Injection</td></tr>
+            <tr><td>12. API Testing</td><td>WSTG-APIT</td><td>REST/GraphQL/gRPC, Mass Assignment, API Key Exposure</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 13.7 SCA -->
+      <h2 id="s13-7">13.7 Software Composition Analysis (SCA)</h2>
+      <p>SCA เป็นกระบวนการวิเคราะห์ความปลอดภัยของ Component และ Dependency ของบุคคลที่สามที่ถูกนำมาใช้ในซอฟต์แวร์ โดยเปรียบเทียบ Version ของ Library กับฐานข้อมูล CVE ที่รู้จัก</p>
+
+      <h3 id="s13-7-1">13.7.1 ความสำคัญของ SCA</h3>
+      <p>ตามรายงาน OWASP Top 10:2025, A03 - Software Supply Chain Failures เป็นหมวดหมู่ใหม่ที่สะท้อนถึงความเสี่ยงที่เพิ่มขึ้นจาก Dependency ที่ไม่ปลอดภัย</p>
+      <ul>
+        <li>มากกว่า 90% ของแอปพลิเคชันสมัยใหม่ใช้ Open Source Components</li>
+        <li>โดยเฉลี่ยแอปพลิเคชันหนึ่งมี Dependency มากกว่า 500 ตัว (รวม Transitive)</li>
+        <li>ช่องโหว่ใน Transitive Dependency คิดเป็น 40-60% ของช่องโหว่ทั้งหมด</li>
+      </ul>
+
+      <h3 id="s13-7-2">13.7.2 เครื่องมือ SCA</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>เครื่องมือ</th><th>ประเภท</th><th>ภาษา/แพลตฟอร์ม</th><th>จุดเด่น</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Snyk</strong></td><td>Commercial (มี Free Tier)</td><td>30+ ภาษา</td><td>Fix PRs อัตโนมัติ, Container Scanning, IaC Scanning</td></tr>
+            <tr><td><strong>Dependabot</strong> (GitHub)</td><td>ฟรี (สำหรับ GitHub)</td><td>GitHub Ecosystem</td><td>Security Updates อัตโนมัติ, Integrated with GitHub</td></tr>
+            <tr><td><strong>Trivy</strong> (Aqua Security)</td><td>Open Source</td><td>Container, OS Packages, ภาษา</td><td>สแกน Container Image, Filesystem, Git Repo, SBOM</td></tr>
+            <tr><td><strong>OWASP Dependency-Check</strong></td><td>Open Source</td><td>Java, .NET, Python, Ruby, Node.js</td><td>ฟรี, OWASP Project, Jenkins/CLI/Maven Plugin</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-7-3">13.7.3 ตัวอย่างการใช้ Trivy</h3>
+      <pre><code># ติดตั้ง Trivy บน macOS
+brew install trivy
+
+# สแกน Container Image
+trivy image nginx:1.25
+
+# สแกน Container Image ด้วยรูปแบบผลลัพธ์ที่กำหนด
+trivy image --severity CRITICAL,HIGH nginx:1.25
+
+# สแกน Filesystem
+trivy fs /path/to/project
+
+# สแกน Git Repository
+trivy repo https://github.com/aquasecurity/trivy
+
+# สร้าง SBOM ในรูปแบบ CycloneDX
+trivy image --format cyclonedx --output sbom.json nginx:1.25
+
+# สแกน SBOM ที่มีอยู่
+trivy sbom sbom.json
+
+# ส่งออกผลลัพธ์ในรูปแบบ HTML
+trivy image --format template --template "html" nginx:1.25</code></pre>
+
+      <p><strong>ตัวอย่างผลลัพธ์ของ Trivy:</strong></p>
+      <pre><code>trivy image nginx:1.25
+
+nginx:1.25 (debian 12.9)
+========================
+Total: 45 (UNKNOWN: 0, LOW: 12, MEDIUM: 18, HIGH: 13, CRITICAL: 2)
+
+Library        | Vulnerability | Severity | Installed Version | Fixed Version
+libcrypto3     | CVE-2026-2673 | HIGH     | 3.1.6             | 3.1.7
+libssl3        | CVE-2026-2673 | HIGH     | 3.1.6             | 3.1.7
+curl           | CVE-2025-15224| MEDIUM   | 8.9.1             | 8.9.2
+systemd        | CVE-2025-68152| CRITICAL | 252.30            |</code></pre>
+
+      <p><strong>ตัวอย่างการใช้ OWASP Dependency-Check:</strong></p>
+      <pre><code># สแกนโปรเจกต์ Maven
+dependency-check --project "MyApp" --scan ./pom.xml --format HTML
+
+# สแกนหลายไดเรกทอรี
+dependency-check --project "MyApp" --scan ./backend/pom.xml --scan ./frontend/package.json
+
+# ระบุ Suppression File สำหรับ False Positive
+dependency-check --project "MyApp" --scan ./pom.xml --suppression ./suppression.xml</code></pre>
+
+      <h3 id="s13-7-4">13.7.4 การจัดการ License Compliance</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>หมวด License</th><th>ตัวอย่าง</th><th>ข้อควรระวัง</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Permissive</strong></td><td>MIT, Apache 2.0, BSD</td><td>ใช้งานได้อิสระ, ต้องระบุ Copyright</td></tr>
+            <tr><td><strong>Weak Copyleft</strong></td><td>LGPL, MPL</td><td>ใช้ใน Library ได้ถ้า Dynamic Link</td></tr>
+            <tr><td><strong>Strong Copyleft</strong></td><td>GPL, AGPL</td><td>ห้ามรวมใน Commercial Code ถ้าไม่เปิด Source ทั้งหมด</td></tr>
+            <tr><td><strong>Proprietary</strong></td><td>Commercial Licenses</td><td>ต้องซื้อสิทธิ์การใช้งาน</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-7-5">13.7.5 SBOM (Software Bill of Materials)</h3>
+      <p>SBOM เป็นรายการของ Component ทั้งหมดที่ประกอบขึ้นเป็นซอฟต์แวร์ รวมถึง Version, License, และ Dependency Relationship</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>มาตรฐาน</th><th>รายละเอียด</th><th>จุดเด่น</th></tr></thead>
+          <tbody>
+            <tr><td><strong>CycloneDX</strong> (OWASP)</td><td>มาตรฐานแบบ XML/JSON ที่เน้นความปลอดภัย</td><td>รองรับ Component Metadata, License, Service, Vulnerability</td></tr>
+            <tr><td><strong>SPDX</strong> (Linux Foundation)</td><td>มาตรฐาน ISO/IEC 5962:2021</td><td>เน้น License Compliance, ISO มาตรฐานสากล</td></tr>
+            <tr><td><strong>SWID</strong> (ISO/IEC 19770-2)</td><td>มาตรฐาน ISO สำหรับ Tagging</td><td>เน้น Identification และ Inventory</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>ความสำคัญของ SBOM:</strong></p>
+      <ol>
+        <li><strong>Visibility:</strong> ทราบว่า Dependency อะไรบ้างที่ถูกใช้งาน</li>
+        <li><strong>Vulnerability Management:</strong> เมื่อมี CVE ใหม่ - ตรวจสอบได้ทันที</li>
+        <li><strong>License Compliance:</strong> ตรวจสอบ License ของทุก Component</li>
+        <li><strong>Supply Chain Security:</strong> ปฏิบัติตาม Executive Order 14028</li>
+      </ol>
+
+      <pre><code># สร้าง SBOM ด้วย CycloneDX (Node.js)
+npx @cyclonedx/cyclonedx-npm --output-file sbom.json
+
+# สร้าง SBOM ด้วย Trivy
+trivy image --format cyclonedx --output sbom.json my-app:latest
+
+# สร้าง SBOM ในรูปแบบ SPDX
+trivy image --format spdx-json --output spdx.json my-app:latest</code></pre>
+
+      <h3 id="s13-7-6">13.7.6 Continuous Monitoring with SCA</h3>
+      <p>SCA ไม่ใช่กิจกรรมที่ทำครั้งเดียว แต่ต้องทำอย่างต่อเนื่อง:</p>
+      <pre><code># .github/dependabot.yml
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "security"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"</code></pre>
+
+      <!-- 13.8 Fuzz Testing -->
+      <h2 id="s13-8">13.8 Fuzz Testing</h2>
+      <p>Fuzz Testing หรือ Fuzzing เป็นเทคนิคการทดสอบความปลอดภัยที่ป้อนข้อมูลที่ผิดปกติ ไม่คาดคิด หรือสุ่ม (Fuzz) เข้าไปในโปรแกรมเพื่อกระตุ้นให้เกิดพฤติกรรมที่ไม่ปลอดภัย เช่น Crash, Memory Corruption, หรือ Assertion Failure</p>
+
+      <h3 id="s13-8-1">13.8.1 ประเภทของ Fuzzing</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ประเภท</th><th>คำอธิบาย</th><th>ข้อดี</th><th>ข้อเสีย</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Dumb Fuzzing</strong></td><td>ป้อนข้อมูลสุ่มโดยไม่รู้โครงสร้าง</td><td>ง่าย, เร็ว</td><td>ครอบคลุมน้อย</td></tr>
+            <tr><td><strong>Smart/Generational Fuzzing</strong></td><td>ป้อนข้อมูลตามรูปแบบที่รู้จัก</td><td>ครอบคลุมมากกว่า</td><td>ต้องมีความรู้เรื่องรูปแบบข้อมูล</td></tr>
+            <tr><td><strong>Mutation-based Fuzzing</strong></td><td>เริ่มจากข้อมูลที่ถูกต้องแล้วเปลี่ยนแปลง</td><td>ได้ผลดีกับ Input ที่ซับซ้อน</td><td>อาจพลาดกรณีที่ต้องเปลี่ยนโครงสร้าง</td></tr>
+            <tr><td><strong>Coverage-guided Fuzzing</strong></td><td>ติดตาม Code Coverage</td><td>ครอบคลุมมากที่สุด</td><td>ซับซ้อน, ใช้ทรัพยากรมาก</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-8-2">13.8.2 ช่องโหว่ที่ Fuzzing ช่วยค้นหา</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ประเภทช่องโหว่</th><th>คำอธิบาย</th><th>ตัวอย่าง CVE</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Buffer Overflow</strong></td><td>การเขียนข้อมูลเกินขนาด Buffer</td><td>CVE-2024-2961 (glibc)</td></tr>
+            <tr><td><strong>Integer Overflow</strong></td><td>การคำนวณเลขเกินขอบเขต</td><td>CVE-2025-31496 (Linux Kernel)</td></tr>
+            <tr><td><strong>Format String</strong></td><td>การใช้ User Input เป็น Format String</td><td>CVE-2025-1394 (GNU Tar)</td></tr>
+            <tr><td><strong>Use-After-Free</strong></td><td>การใช้หน่วยความจำที่ถูกปล่อยไปแล้ว</td><td>CVE-2025-24816 (Linux Kernel)</td></tr>
+            <tr><td><strong>Null Pointer Dereference</strong></td><td>การเข้าถึง Null Pointer</td><td>CVE-2025-11571 (PHP)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-8-3">13.8.3 เครื่องมือ Fuzzing</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>เครื่องมือ</th><th>ประเภท</th><th>เหมาะกับ</th></tr></thead>
+          <tbody>
+            <tr><td><strong>AFL</strong> (American Fuzzy Lop)</td><td>Coverage-guided</td><td>C/C++ Binary</td></tr>
+            <tr><td><strong>libFuzzer</strong></td><td>Coverage-guided (In-process)</td><td>C/C++ Library</td></tr>
+            <tr><td><strong>Jazzer</strong></td><td>Coverage-guided</td><td>Java/Kotlin</td></tr>
+            <tr><td><strong>zzuf</strong></td><td>Mutation-based</td><td>File Input, Network Input</td></tr>
+            <tr><td><strong>Burp Suite Intruder</strong></td><td>Mutation-based</td><td>Web Application, API</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 13.9 DevSecOps -->
+      <h2 id="s13-9">13.9 DevSecOps Pipeline Integration</h2>
+      <p>DevSecOps คือการบูรณาการความปลอดภัยในทุกขั้นตอนของ CI/CD Pipeline เพื่อให้การทดสอบความปลอดภัยเป็นส่วนหนึ่งของกระบวนการพัฒนาอัตโนมัติ</p>
+
+      <h3 id="s13-9-1">13.9.1 การวาง Security Testing ใน CI/CD Pipeline</h3>
+      <pre><code>Pre-commit: SAST, Secret Scanning, Formatting
+    -> PR: SAST (Full), SCA, Lint, Dep. Review
+    -> Build: SCA, Container Scanning, SAST
+    -> Test/Staging: DAST, IAST, Fuzz Test, API Test
+    -> Pre-Prod: DAST (Full), Pentest Automation, SAST (Full)
+    -> Production: RASP, SIEM, Monitor, WAF</code></pre>
+
+      <h3 id="s13-9-2">13.9.2 Quality Gates</h3>
+      <p>Quality Gates เป็นเกณฑ์ที่ใช้ตัดสินว่า Build ผ่านหรือไม่ผ่านตามผลการทดสอบความปลอดภัย:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Quality Gate</th><th>ตัวอย่างค่า</th><th>การกระทำ</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Critical Severity</strong></td><td>0 พบ</td><td>Blocker - ห้าม Deploy</td></tr>
+            <tr><td><strong>High Severity</strong></td><td>≤ 3 รายการ</td><td>Blocker - ห้าม Deploy</td></tr>
+            <tr><td><strong>Medium Severity</strong></td><td>≤ 10 รายการ</td><td>Warning - ต้องแก้ไขภายใน 7 วัน</td></tr>
+            <tr><td><strong>Low Severity</strong></td><td>≤ 20 รายการ</td><td>Info - บันทึกใน Backlog</td></tr>
+            <tr><td><strong>Code Coverage</strong></td><td>≥ 80%</td><td>Warning หากต่ำกว่า</td></tr>
+            <tr><td><strong>Dependency Check</strong></td><td>0 Known Critical CVE</td><td>Blocker - ห้าม Deploy</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-9-3">13.9.3 NIST SSDF v1.2</h3>
+      <p>NIST SP 800-218 (SSDF v1.2) เป็นกรอบมาตรฐานสำหรับการพัฒนาซอฟต์แวร์อย่างปลอดภัย มี 4 กลุ่มหลัก:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>กลุ่ม</th><th>รหัส</th><th>แนวทางปฏิบัติ</th><th>เครื่องมือ</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Prepare</strong> (PO)</td><td>PO.1-PO.5</td><td>กำหนด Security Requirements, Training, Risk Mgmt</td><td>Threat Modeling Tools</td></tr>
+            <tr><td><strong>Protect</strong> (PS)</td><td>PS.1-PS.3</td><td>ปกป้อง Source Code, Integrity, Artifacts</td><td>Code Signing, SBOM</td></tr>
+            <tr><td><strong>Produce</strong> (PW)</td><td>PW.1-PW.9</td><td>SAST, DAST, SCA, Fuzz Testing, Hardening</td><td>SAST/DAST/SCA Tools</td></tr>
+            <tr><td><strong>Respond</strong> (RV)</td><td>RV.1-RV.3</td><td>Vulnerability Disclosure, Incident Response</td><td>SCA Continuous Monitoring</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="s13-9-4">13.9.4 Policy-as-Code และ Security Gates อัตโนมัติ</h3>
+      <p>Policy-as-Code คือการกำหนดนโยบายความปลอดภัยในรูปแบบของโค้ดที่สามารถตรวจสอบได้โดยอัตโนมัติ:</p>
+      <pre><code># rego-policy/deny_high_critical.rego
+package security
+
+# ปฏิเสธการ Deploy หากมี Critical Severity Finding
+deny[reason] {
+    finding := data.findings[_]
+    finding.severity == "CRITICAL"
+    reason := sprintf("Cannot deploy: %s found in %s (CVE: %s)",
+        [finding.severity, finding.file, finding.id])
+}</code></pre>
+
+      <p><strong>ตัวอย่างการกำหนด Security Gates ด้วย GitHub Actions:</strong></p>
+      <pre><code># .github/workflows/security-gate.yml
+name: Security Gate
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Semgrep SAST
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: p/ci
+          severity: ERROR,WARNING
+
+  sca:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Trivy FS Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-results.sarif
+          severity: CRITICAL,HIGH
+
+  security-gate:
+    runs-on: ubuntu-latest
+    needs: [sast, sca]
+    if: failure()
+    steps:
+      - name: Block PR
+        run: |
+          echo "Security Gate FAILED - Critical/High findings detected"
+          echo "Please review and fix the findings before merging."
+          exit 1</code></pre>
+
+      <h3 id="s13-9-5">13.9.5 Shift Left - การเลื่อนการทดสอบความปลอดภัยไปทางซ้าย</h3>
+      <p>Shift Left เป็นแนวคิดในการทำ Security Testing ให้เร็วที่สุดใน SDLC เพื่อลดค่าใช้จ่ายและเวลาในการแก้ไข:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ขั้นตอน</th><th>Shift Left (ทำเร็ว)</th><th>Shift Right (ทำช้า)</th></tr></thead>
+          <tbody>
+            <tr><td>Pre-commit</td><td>SAST (เฉพาะไฟล์ที่เปลี่ยน), Pre-commit Hooks</td><td>-</td></tr>
+            <tr><td>PR Review</td><td>SAST (Full), SCA, Linting</td><td>-</td></tr>
+            <tr><td>Build</td><td>SAST (Full), Container Scan</td><td>-</td></tr>
+            <tr><td>Test/Staging</td><td>DAST (Active + Passive), IAST</td><td>SAST (Deep Scan)</td></tr>
+            <tr><td>Staging / Pre-Prod</td><td>DAST (Full), Fuzz Testing</td><td>DAST, Pentest</td></tr>
+            <tr><td>Production</td><td>-</td><td>RASP, WAF, DAST (Passive)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box remember">
+        <span class="icon">📌</span>
+        <div>
+          <strong>ข้อควรจำ:</strong>
+          <p style="margin:.35rem 0 0">Shift Left ไมใช่ทำทุกอย่างทางซ้าย การทดสอบบางประเภท (เช่น DAST Active Scan, Penetration Testing) ควรทำในสภาพแวดล้อมที่เหมือน Production</p>
+        </div>
+      </div>
+
+      <!-- 13.10 การเขียนรายงาน -->
+      <h2 id="s13-10">13.10 การเขียนรายงานผล Security Testing</h2>
+      <p>รายงานผล Security Testing ที่มีประสิทธิภาพต้องสามารถสื่อสารกับผู้มีส่วนได้ส่วนเสียทุกระดับ ตั้งแต่ผู้บริหารไปจนถึงทีมพัฒนา</p>
+
+      <h3 id="s13-10-1">13.10.1 โครงสร้างรายงาน</h3>
+      <p><strong>1. Executive Summary (สรุปสำหรับผู้บริหาร):</strong></p>
+      <ul>
+        <li>ภาพรวมของขอบเขตและวัตถุประสงค์การทดสอบ</li>
+        <li>จำนวนช่องโหว่ที่พบแยกตามระดับความรุนแรง</li>
+        <li>ความเสี่ยงโดยรวมของระบบ</li>
+        <li>คำแนะนำเชิงกลยุทธ์</li>
+      </ul>
+
+      <p><strong>2. Scope และ Methodology:</strong></p>
+      <ul>
+        <li>ระบบที่ได้รับการทดสอบ (IP, URL, Application Name)</li>
+        <li>วันที่และระยะเวลาที่ทดสอบ</li>
+        <li>วิธีการทดสอบ (SAST, DAST, Manual Pentest)</li>
+        <li>ข้อจำกัด (Limitations)</li>
+      </ul>
+
+      <p><strong>3. Technical Findings:</strong></p>
+      <ul>
+        <li>ชื่อและประเภทของช่องโหว่ (CWE, OWASP Category)</li>
+        <li>ตำแหน่งที่พบ (File, Line, URL, Parameter)</li>
+        <li>ความรุนแรง (CVSS 3.1 Score)</li>
+        <li>รายละเอียดของช่องโหว่ (Root Cause, Impact)</li>
+        <li>หลักฐาน (Screenshot, Request/Response, PoC Code)</li>
+        <li>คำแนะนำในการแก้ไข (Remediation)</li>
+      </ul>
+
+      <p><strong>4. Risk Rating Matrix:</strong></p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ระดับความรุนแรง</th><th>คะแนน CVSS</th><th>จำนวน</th><th>สถานะ</th></tr></thead>
+          <tbody>
+            <tr><td>Critical</td><td>9.0-10.0</td><td>2</td><td>ต้องแก้ไขทันที</td></tr>
+            <tr><td>High</td><td>7.0-8.9</td><td>5</td><td>ต้องแก้ไขภายใน 7 วัน</td></tr>
+            <tr><td>Medium</td><td>4.0-6.9</td><td>8</td><td>ต้องแก้ไขภายใน 30 วัน</td></tr>
+            <tr><td>Low</td><td>0.1-3.9</td><td>12</td><td>ต้องแก้ไขภายใน 90 วัน</td></tr>
+            <tr><td>Info</td><td>0.0</td><td>15</td><td>บันทึกใน Backlog</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>5. Remediation Recommendations:</strong></p>
+      <ul>
+        <li>คำแนะนำเฉพาะสำหรับแต่ละ Finding</li>
+        <li>ลำดับความสำคัญในการแก้ไข</li>
+        <li>แนวทางแก้ไขระยะสั้น (Workaround) และระยะยาว (Fix)</li>
+      </ul>
+
+      <p><strong>6. Screenshots / Evidence:</strong></p>
+      <ul>
+        <li>ภาพหน้าจอของช่องโหว่ (Screenshot)</li>
+        <li>Request/Response ที่พิสูจน์ช่องโหว่</li>
+        <li>Proof-of-Concept (PoC) Code (ถ้ามี)</li>
+      </ul>
+
+      <p><strong>7. Appendix:</strong></p>
+      <ul>
+        <li>รายการเครื่องมือที่ใช้และ Version</li>
+        <li>CVSS Vector Strings</li>
+        <li>Glossary</li>
+      </ul>
+
+      <h3 id="s13-10-2">13.10.2 ตัวอย่างการรายงาน Findings</h3>
+      <p><strong>Example Finding: SQL Injection ใน Login Endpoint</strong></p>
+      <div class="example-box">
+        <div class="example-label">ตัวอย่างรายงาน</div>
+        <pre><code>หัวขอ: SQL Injection ใน /api/login
+ประเภท: A05:2025 - Injection (CWE-89: SQL Injection)
+ความรุนแรง: CVSS 3.1: 9.1 (CRITICAL)
+ตำแหน่ง: POST /api/login (Parameter: username)
+
+รายละเอียด:
+Endpoint /api/login ไมไดใช Parameterized Query
+
+คำขอที่ใช้ทดสอบ:
+POST /api/login HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
+
+{"username": "admin' OR '1'='1", "password": "test"}
+
+การตอบสนอง:
+HTTP/1.1 200 OK
+{"token": "eyJhbGciOiJIUzI1NiIs...", "role": "admin"}
+
+คำแนะนำ:
+1. เปลี่ยนเป็น Parameterized Query ทันที
+2. เพิ่ม Input Validation
+3. ใช้ ORM (SQLAlchemy)
+4. เพิ่ม Rate Limiting</code></pre>
+      </div>
+
+      <!-- Interactive: CVSS Calculator -->
+      <div class="interactive" id="play-cvss">
+        <h4>Interactive: CVSS Score Calculator Simulator</h4>
+        <p>ปรับค่า Base Metrics เพื่อดูช่วงคะแนน CVSS v3 โดยประมาณ</p>
+        <div class="slider-row"><label>Attack Vector (AV):</label><input type="range" id="cvssAv" min="0" max="2" step="1" value="2"><span class="val" id="cvssAvVal">Network</span></div>
+        <div class="slider-row"><label>Attack Complexity (AC):</label><input type="range" id="cvssAc" min="0" max="1" step="1" value="1"><span class="val" id="cvssAcVal">Low</span></div>
+        <div class="slider-row"><label>Privileges Required (PR):</label><input type="range" id="cvssPr" min="0" max="1" step="1" value="1"><span class="val" id="cvssPrVal">None</span></div>
+        <div class="slider-row"><label>User Interaction (UI):</label><input type="range" id="cvssUi" min="0" max="1" step="1" value="1"><span class="val" id="cvssUiVal">None</span></div>
+        <div class="slider-row"><label>Scope (S):</label><input type="range" id="cvssS" min="0" max="1" step="1" value="1"><span class="val" id="cvssSVal">Changed</span></div>
+        <div class="slider-row"><label>Confidentiality (C):</label><input type="range" id="cvssC" min="0" max="2" step="1" value="2"><span class="val" id="cvssCVal">High</span></div>
+        <div class="slider-row"><label>Integrity (I):</label><input type="range" id="cvssI" min="0" max="2" step="1" value="2"><span class="val" id="cvssIVal">High</span></div>
+        <div class="slider-row"><label>Availability (A):</label><input type="range" id="cvssA" min="0" max="2" step="1" value="2"><span class="val" id="cvssAVal">High</span></div>
+        <button class="btn" id="cvssCalcBtn">คำนวณคะแนน CVSS</button>
+        <div id="cvssCalcResult" class="result">ปรับค่า Base Metrics แล้วกดคำนวณ</div>
+      </div>
+
+      <!-- Interactive: TP vs FP Quiz -->
+      <div class="interactive" id="play-tpfp">
+        <h4>Interactive: True Positive vs False Positive Quiz</h4>
+        <p><strong>สถานการณ์ที่ 1:</strong> SAST รายงาน SQL Injection ที่บรรทัด 42 - พบวา user_input ถูก sanitize กอนแลว</p>
+        <button class="quiz-option" data-quiz="tpfp1" data-correct="false">True Positive</button>
+        <button class="quiz-option" data-quiz="tpfp1" data-correct="true">False Positive - SAST ไมเห็นการ sanitize</button>
+        <div id="tpfp1Result" class="result">เลือกคำตอบเพื่อดูเฉลย</div>
+      </div>
+
+      <div class="interactive">
+        <p><strong>สถานการณ์ที่ 2:</strong> DAST สง payload XSS ไปยังชองคนหา และพบวา script ถูก render โดยไม่มีการ escape</p>
+        <button class="quiz-option" data-quiz="tpfp2" data-correct="true">True Positive - XSS ทำงานไดจริง</button>
+        <button class="quiz-option" data-quiz="tpfp2" data-correct="false">False Positive - DAST รายงานผิดพลาด</button>
+        <div id="tpfp2Result" class="result">เลือกคำตอบเพื่อดูเฉลย</div>
+      </div>
+
+      <div class="interactive">
+        <p><strong>สถานการณ์ที่ 3:</strong> SCA รายงาน CVE ใน lodash v4.17.20 แตโคดไมไดเรียกฟังก์ชันที่มีช่องโหว่</p>
+        <button class="quiz-option" data-quiz="tpfp3" data-correct="false">True Positive - library มี CVE จริง</button>
+        <button class="quiz-option" data-quiz="tpfp3" data-correct="true">False Positive - vulnerable function ไมถูกเรียก</button>
+        <div id="tpfp3Result" class="result">เลือกคำตอบเพื่อดูเฉลย</div>
+      </div>
+
+      <!-- Interactive: Security Testing Tool Quiz -->
+      <div class="interactive" id="play-toolquiz">
+        <h4>Interactive: Security Testing Tool Quiz</h4>
+        <p><strong>ข้อ 1:</strong> เครื่องมือ Open Source สำหรับ DAST รองรับ Passive/Active Scan, API Testing</p>
+        <button class="quiz-option" data-quiz="tool1" data-correct="false">Burp Suite</button>
+        <button class="quiz-option" data-quiz="tool1" data-correct="true">OWASP ZAP</button>
+        <button class="quiz-option" data-quiz="tool1" data-correct="false">Semgrep</button>
+        <button class="quiz-option" data-quiz="tool1" data-correct="false">Trivy</button>
+        <div id="tool1Result" class="result">เลือกคำตอบ</div>
+      </div>
+
+      <div class="interactive">
+        <p><strong>ข้อ 2:</strong> เครื่องมือ SAST แบบ Rule-based กฎชุมชนขนาดใหญ่ รองรับหลายภาษา</p>
+        <button class="quiz-option" data-quiz="tool2" data-correct="false">SonarQube</button>
+        <button class="quiz-option" data-quiz="tool2" data-correct="true">Semgrep</button>
+        <button class="quiz-option" data-quiz="tool2" data-correct="false">OWASP ZAP</button>
+        <button class="quiz-option" data-quiz="tool2" data-correct="false">Snyk</button>
+        <div id="tool2Result" class="result">เลือกคำตอบ</div>
+      </div>
+
+      <div class="interactive">
+        <p><strong>ข้อ 3:</strong> เครื่องมือ SCA Open Source สแกน Container Image, Filesystem, Git Repo, สราง SBOM</p>
+        <button class="quiz-option" data-quiz="tool3" data-correct="false">Dependabot</button>
+        <button class="quiz-option" data-quiz="tool3" data-correct="false">Snyk</button>
+        <button class="quiz-option" data-quiz="tool3" data-correct="true">Trivy</button>
+        <button class="quiz-option" data-quiz="tool3" data-correct="false">OWASP Dependency-Check</button>
+        <div id="tool3Result" class="result">เลือกคำตอบ</div>
+      </div>
+
+      <!-- Interactive: Lab Checklists -->
+      <div class="interactive" id="play-checklist">
+        <h4>Interactive: Lab Activity Checklist</h4>
+        <p>ทำเครื่องหมายกิจกรรมปฏิบัติการที่ทำเสร็จแล้ว</p>
+        <div class="checklist" id="labChecks">
+          <label><input type="checkbox" value="lab1"> Lab 13.1: Semgrep — วิเคราะห์ True Positive vs False Positive</label>
+          <label><input type="checkbox" value="lab2a"> Lab 13.2: ติดตั้งและรัน OWASP Juice Shop ด้วย Docker</label>
+          <label><input type="checkbox" value="lab2b"> Lab 13.2: Passive Scan ด้วย OWASP ZAP</label>
+          <label><input type="checkbox" value="lab2c"> Lab 13.2: Active Scan ด้วย OWASP ZAP</label>
+          <label><input type="checkbox" value="lab3a"> Lab 13.3: ติดตั้ง Trivy และสแกน Container Image</label>
+          <label><input type="checkbox" value="lab3b"> Lab 13.3: สร้างและสแกน SBOM ด้วย Trivy</label>
+          <label><input type="checkbox" value="lab4a"> Lab 13.4: Penetration Testing — Intelligence Gathering</label>
+          <label><input type="checkbox" value="lab4b"> Lab 13.4: Vulnerability Analysis และ Exploitation</label>
+          <label><input type="checkbox" value="lab4c"> Lab 13.4: เขียนรายงาน PTES</label>
+        </div>
+        <div class="meter"><div class="meter-fill" id="labMeter"></div></div>
+        <div id="labResult" class="result">ทำเครื่องหมายกิจกรรมที่ทำเสร็จแล้ว</div>
+      </div>
+
+      <!-- คำถามสำหรับการอภิปราย -->
+      <div class="info-box question">
+        <span class="icon">\U0001f4ac</span>
+        <div>
+          <strong>คำถามสำหรับการอภิปรายในชั้นเรียน:</strong>
+          <p style="margin:.25rem 0 0">1. ในสถานการณที่ทีมพัฒนามีงบประมาณจำกัดและสามารถเลือกใช้ Security Testing ไดเพียง 2 ประเภท นักศึกษาจะเลือกประเภทใด เพราะเหตุใด</p>
+          <p style="margin:.25rem 0 0">2. SAST มีอัตรา False Positive ที่สูงกวา DAST และ IAST นักศึกษาคิดว่าการมี False Positive จำนวนมากเป็นปัญหาที่ร้ายแรงหรือไม</p>
+          <p style="margin:.25rem 0 0">3. การตองรอให SAST/SCA Scan เสร็จกอน Merge Pull Request อาจทำให้ประสิทธิภาพลดลง มีข้อเสนอแนะอย่างไร</p>
+          <p style="margin:.25rem 0 0">4. CVE-2026-33634 (Trivy Supply Chain Attack) สอนบทเรียนอะไรบางเกี่ยวกับความปลอดภัยของเครื่องมือ Security Testing</p>
+          <p style="margin:.25rem 0 0">5. องคกรควรเลือกแนวทางใดระหว่าง White-box และ Black-box เพราะเหตุใด</p>
+        </div>
+      </div>
+
+      <!-- Labs -->
+      <h2 id="labs">กิจกรรมปฏิบัติการ</h2>
+      <div class="info-box warning">
+        <span class="icon">\u26a0\ufe0f</span>
+        <div>
+          <strong>ข้อควรระวัง:</strong>
+          <p style="margin:.35rem 0 0">กิจกรรมทั้งหมดต้องทำในสภาพแวดล้อมที่ได้รับอนุญาตเท่านั้น</p>
+        </div>
+      </div>
+
+      <h3 id="lab13-1">Lab 13.1: การใช้ Semgrep สแกน Source Code ตัวอย่าง — วิเคราะห์ True Positive vs False Positive</h3>
+      <div class="card">
+        <p><strong>วัตถุประสงค์:</strong> เรียนรู้การใช้ Semgrep สแกน Source Code เพื่อค้นหาช่องโหว่ และแยกแยะระหว่าง True Positive กับ False Positive</p>
+        <p><strong>เวลาที่ใช้:</strong> 45-60 นาที</p>
+        <p><strong>เครื่องมือ:</strong> Semgrep, Source Code ตัวอย่าง (Python/JavaScript)</p>
+        <p><strong>ขั้นตอน:</strong></p>
+        <ol>
+          <li>ติดตั้ง Semgrep: <code>pip install semgrep</code></li>
+          <li>สร้างไฟล์ vulnerable_app.py ที่มีช่องโหว่ (SQL Injection, Hardcoded Password, MD5, Command Injection, SSTI)</li>
+          <li>รัน Semgrep ด้วยกฎเริ่มต้น: <code>semgrep --config=auto vulnerable_app.py</code></li>
+          <li>รัน Semgrep ด้วยกฎเฉพาะ Python: <code>semgrep --config=p/python vulnerable_app.py</code></li>
+          <li>วิเคราะห์ผลลัพธ์และปรับปรุงโค้ด</li>
+        </ol>
+        <div class="info-box remember">
+          <span class="icon">📌</span>
+          <div><strong>สิ่งที่ต้องส่ง:</strong> Screenshot Findings, ตารางวิเคราะห์ TP/FP, โค้ดที่แก้ไขแล้ว</div>
+        </div>
+      </div>
+
+      <h3 id="lab13-2">Lab 13.2: การใช้ OWASP ZAP สแกน Web Application (Juice Shop) — Active vs Passive Scan</h3>
+      <div class="card">
+        <p><strong>วัตถุประสงค์:</strong> เรียนรู้การใช้ OWASP ZAP เปรียบเทียบ Active Scan และ Passive Scan</p>
+        <p><strong>เวลาที่ใช้:</strong> 45-60 นาที</p>
+        <p><strong>เครื่องมือ:</strong> OWASP ZAP, Docker, OWASP Juice Shop</p>
+        <p><strong>ขั้นตอน:</strong></p>
+        <ol>
+          <li>รัน Juice Shop: <code>docker run --rm -d -p 3000:3000 bkimminich/juice-shop</code></li>
+          <li>ติดตั้ง OWASP ZAP ตั้งค่า Local Proxy</li>
+          <li>ทำ Passive Scan โดยนำทางไปยังหน้าต่างของ Juice Shop</li>
+          <li>ทำ Active Scan: Attack → Active Scan</li>
+          <li>เปรียบเทียบผลลัพธ์และส่งออกรายงาน</li>
+        </ol>
+      </div>
+
+      <h3 id="lab13-3">Lab 13.3: การใช้ Trivy สแกน Container Image และ Dependencies</h3>
+      <div class="card">
+        <p><strong>วัตถุประสงค์:</strong> เรียนรู้การใช้ Trivy สแกน Container Image, Dependencies และสร้าง SBOM</p>
+        <p><strong>เวลาที่ใช้:</strong> 45-60 นาที</p>
+        <p><strong>เครื่องมือ:</strong> Trivy, Docker</p>
+        <p><strong>ขั้นตอน:</strong></p>
+        <ol>
+          <li>ติดตั้ง Trivy: <code>brew install trivy</code></li>
+          <li>สแกน Image: <code>trivy image node:20-alpine</code></li>
+          <li>สแกนเฉพาะ Critical/High: <code>trivy image --severity CRITICAL,HIGH node:20-alpine</code></li>
+          <li>สร้าง SBOM: <code>trivy image --format cyclonedx --output sbom.json node:20-alpine</code></li>
+          <li>สแกน SBOM: <code>trivy sbom sbom.json</code></li>
+        </ol>
+      </div>
+
+      <h3 id="lab13-4">Lab 13.4: ดำเนินการ Penetration Testing ขนาดเล็กตาม PTES — เขียนรายงาน</h3>
+      <div class="card">
+        <p><strong>วัตถุประสงค์:</strong> ดำเนินการทดสอบเจาะระบบตาม PTES และเขียนรายงานผล</p>
+        <p><strong>เวลาที่ใช้:</strong> 60-75 นาที</p>
+        <p><strong>เครื่องมือ:</strong> OWASP ZAP, Burp Suite, nmap, curl</p>
+        <p><strong>ขอบเขต:</strong> OWASP Juice Shop (http://localhost:3000)</p>
+        <p><strong>ขั้นตอน 7 Phases ตาม PTES:</strong> Pre-engagement, Intelligence Gathering, Threat Modeling, Vulnerability Analysis, Exploitation, Post-Exploitation, Reporting</p>
+      </div>
+
+      <h2 id="questions">คำถามท้ายบท</h2>
+      <div class="card">
+        <ol>
+          <li style="margin-bottom:.5rem">จงเปรียบเทียบ SAST, DAST, IAST, RASP และ SCA ในด้านแนวทางการทดสอบ, ช่วง SDLC, ความสามารถในการค้นหา Runtime Issues และอัตรา False Positive</li>
+          <li style="margin-bottom:.5rem">Penetration Testing ตาม PTES มี 7 ขั้นตอน จงอธิบายแต่ละขั้นตอนพร้อมเครื่องมือที่ใช้</li>
+          <li style="margin-bottom:.5rem">CVE-2026-33634 (Trivy Supply Chain Attack) และ CVE-2026-24069 (Kiuwan SAST SSO Bypass) วิเคราะห์บทเรียนและแนวทางป้องกัน</li>
+          <li style="margin-bottom:.5rem">Shift Left คืออะไร ข้อดีและข้อจำกัด พร้อมยกตัวอย่างการวางตำแหน่ง SAST, SCA, DAST, Pentest ใน CI/CD Pipeline</li>
+          <li style="margin-bottom:.5rem">จงเขียนตัวอย่างรายงาน Security Testing สำหรับ SQL Injection ใน API Endpoint</li>
+        </ol>
+      </div>
+
+      <h2 id="summary">สรุปท้ายบท</h2>
+      <div class="card" style="background:linear-gradient(135deg,var(--navy),#0f172a);color:#fff;border:none">
+        <p style="color:#cbd5e1;margin-bottom:.75rem">Security Testing เป็นกระบวนการที่จำเป็นในการพัฒนาซอฟต์แวร์อย่างปลอดภัย โดยครอบคลุมหลายมิติ:</p>
+        <ul style="color:#cbd5e1;padding-left:1.25rem">
+          <li style="margin-bottom:.4rem">SAST วิเคราะห์โค้ดได้ครอบคลุมทุกบรรทัดแต่มี False Positive สูงและไม่พบ Runtime Issues</li>
+          <li style="margin-bottom:.4rem">DAST ทดสอบจากมุมมองผู้โจมตีได้สมจริงแต่ครอบคลุมเฉพาะฟังก์ชันที่เข้าถึงได้</li>
+          <li style="margin-bottom:.4rem">IAST มี False Positives ต่ำที่สุดเนื่องจากตรวจสอบยืนยันที่ Runtime</li>
+          <li style="margin-bottom:.4rem">RASP ป้องกันการโจมตีแบบ Real-time ใน Production</li>
+          <li style="margin-bottom:.4rem">SCA ตรวจสอบ Dependency และ License Compliance</li>
+        </ul>
+        <p style="color:#cbd5e1;margin-top:.75rem">Penetration Testing ตาม PTES, OWASP WSTG, NIST SP 800-115 เป็นกระบวนการจำลองการโจมตี DevSecOps และ Shift Left ช่วยบูรณาการ Security Testing ใน CI/CD Pipeline</p>
+      </div>
+
+      <h2 id="keywords">Keywords</h2>
+      <div class="card">
+        <p>Security Testing, SAST, DAST, IAST, RASP, SCA, Fuzz Testing, Penetration Testing, Shift Left, DevSecOps, PTES, OWASP WSTG, NIST SP 800-115, OSSTMM, Semgrep, SonarQube, CodeQL, Bandit, OWASP ZAP, Burp Suite, Snyk, Trivy, SBOM, CycloneDX, SPDX, CVSS, False Positive, True Positive, Taint Analysis, White-box Testing, Black-box Testing, Grey-box Testing, Rules of Engagement, Quality Gate, Policy-as-Code, NIST SSDF v1.2</p>
+      </div>
+
+      <h2 id="refs">เอกสารอ้างอิง</h2>
+      <div class="card">
+        <ol>
+          <li>OWASP WSTG v4.2 - https://owasp.org/www-project-web-security-testing-guide/</li>
+          <li>OWASP Top 10:2025 - https://owasp.org/Top10/2025/en/</li>
+          <li>OWASP Dependency-Check - https://owasp.org/www-project-dependency-check/</li>
+          <li>CycloneDX SBOM Standard - https://cyclonedx.org/</li>
+          <li>PTES - http://www.pentest-standard.org/</li>
+          <li>NIST SP 800-115 - https://csrc.nist.gov/publications/detail/sp/800-115/final</li>
+          <li>NIST SP 800-218 (SSDF v1.2) - https://csrc.nist.gov/publications/detail/sp/800-218/final</li>
+          <li>Semgrep - https://semgrep.dev/docs/</li>
+          <li>OWASP ZAP - https://www.zaproxy.org/docs/</li>
+          <li>Trivy - https://trivy.dev/</li>
+          <li>Snyk - https://docs.snyk.io/</li>
+          <li>SonarQube - https://docs.sonarsource.com/sonarqube/</li>
+          <li>Burp Suite - https://portswigger.net/burp/documentation</li>
+          <li>Dependabot - https://docs.github.com/en/code-security/dependabot</li>
+          <li>Contrast Assess IAST - https://docs.contrastsecurity.com/</li>
+          <li>CVE-2026-33634 - https://nvd.nist.gov/vuln/detail/CVE-2026-33634</li>
+          <li>CVE-2026-24069 - https://nvd.nist.gov/vuln/detail/CVE-2026-24069</li>
+          <li>CVE-2026-24765 - https://nvd.nist.gov/vuln/detail/CVE-2026-24765</li>
+          <li>CVE-2026-5394 - https://nvd.nist.gov/vuln/detail/CVE-2026-5394</li>
+          <li>OWASP API Security Top 10 - https://owasp.org/www-project-api-security/</li>
+          <li>Executive Order 14028 - https://www.nist.gov/itl/executive-order-14028-improving-nations-cybersecurity</li>
+        </ol>
+      </div>
+
+      <div style="text-align:center;padding:2rem 0;color:var(--text-muted);font-size:.85rem">
+        <p>— จบบทที่ 13 —</p>
+        <p>ความมั่นคงปลอดภัยของซอฟต์แวร์ (Software Security)</p>
+      </div>
+
+    </div>
+  </div>
+
+  <button class="scroll-top" id="scrollTopBtn" aria-label="กลับดานบน">\u2191</button>
+
+<script>
+(function(){
+  var sidebar=document.getElementById('sidebar'),toggle=document.getElementById('sidebarToggle'),overlay=document.getElementById('sidebarOverlay');
+  function openSidebar(){sidebar.classList.add('open');overlay.classList.add('show')}
+  function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('show')}
+  if(toggle)toggle.addEventListener('click',function(){sidebar.classList.contains('open')?closeSidebar():openSidebar()});
+  if(overlay)overlay.addEventListener('click',closeSidebar);
+  document.querySelectorAll('.sidebar-nav a').forEach(function(l){l.addEventListener('click',function(){if(window.innerWidth<=1024)closeSidebar()})});
+  var scrollBtn=document.getElementById('scrollTopBtn');
+  window.addEventListener('scroll',function(){if(window.scrollY>300)scrollBtn.classList.add('visible');else scrollBtn.classList.remove('visible')});
+  if(scrollBtn)scrollBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+  var sections=[],anchors=document.querySelectorAll('.sidebar-nav a');
+  anchors.forEach(function(a){var h=a.getAttribute('href');if(h&&h.startsWith('#')){var t=document.getElementById(h.substring(1));if(t)sections.push({el:t,link:a})}});
+  function updateActive(){var p=window.scrollY+120,c=null;sections.forEach(function(s){if(s.el.offsetTop<=p)c=s});anchors.forEach(function(a){a.classList.remove('active')});if(c)c.link.classList.add('active')}
+  window.addEventListener('scroll',updateActive);updateActive();
+
+  function setResult(id,msg,cls){var el=document.getElementById(id);if(!el)return;el.className='result '+(cls||'');el.textContent=msg}
+
+  // Security Testing Type Comparator
+  var compareBtn=document.getElementById('compareBtn');
+  if(compareBtn)compareBtn.addEventListener('click',function(){
+    var v=document.getElementById('compareType').value;
+    var info={
+      'sast':['SAST - Static Application Security Testing','White-box testing วิเคราะห Source Code โดยไมตองรันโปรแกรม','ชวง SDLC: Dev, Build','ขอดี: ครอบคลุมทุกบรรทัดของโคด, ระบุตำแหนงไดระดับบรรทัด','ขอเสีย: False Positive สง, ไมพบ Runtime Issues','เครื่องมือ: Semgrep, SonarQube, CodeQL, Bandit, Checkmarx'],
+      'dast':['DAST - Dynamic Application Security Testing','Black-box testing ทดสอบแอปพลิเคชนขณะทำงานจริง (Runtime)','ชวง SDLC: Test, Staging, Prod','ขอดี: ทดสอบจากมุมมองผูโจมตี, พบ Runtime Issues','ขอเสีย: ครอบคลุมเฉพาะฟังก์ชันทเขาถึงได','เครื่องมือ: OWASP ZAP, Burp Suite, StackHawk, Netsparker'],
+      'iast':['IAST - Interactive Application Security Testing','Grey-box testing ติดตั้ง Agent ในแอปพลิเคชน เพือวิเคราะห Real-time','ชวง SDLC: Test, Staging','ขอดี: False Positive ตำมาก, ระบุตำแหนงไดระดับบรรทัด','ขอเสีย: ตองติดตั้ง Agent, ครอบคลุมเฉพาะทถกทดสอบ','เครื่องมือ: Contrast Assess, HCL AppScan, Seeker, Veracode'],
+      'rasp':['RASP - Runtime Application Self-Protection','เปน Protection ไมใช Testing — ปองกันการโจมตแบบ Real-time ใน Production','ชวง SDLC: Production','ขอดี: Context-aware, ปองกันไดทนท','ขอเสีย: ไมใช Test Tool, มีผลตอประสิทธิภาพ','เครื่องมือ: Contrast Protect, HCL AppScan RASP, Imperva RASP'],
+      'sca':['SCA - Software Composition Analysis','Dependency Analysis — เปรียบเทียบ Version Library กบฐานขอมูล CVE','ชวง SDLC: Dev, Build','ขอดี: ตรวจจับ Known CVEs ใน Dependencies, License Compliance','ขอเสีย: ตรวจไมไดวา vulnerable function ถกเรียกใชหรือไม','เครื่องมือ: Snyk, Dependabot, Trivy, OWASP Dependency-Check']
+    };
+    var d=info[v];
+    var html=d[0]+'<br><br><strong>หลักการ:</strong> '+d[1]+'<br><strong>'+d[2]+'</strong><br><br><strong>ขอดี:</strong> '+d[3]+'<br><strong>ขอเสีย:</strong> '+d[4]+'<br><strong>'+d[5]+'</strong>';
+    setResult('compareResult',html,'ok');
+  });
+
+  // CVSS Calculator
+  var cvssLabelKeys=[{0:'Physical',1:'Local',2:'Network'},{0:'High',1:'Low'},{0:'High',1:'None'},{0:'Required',1:'None'},{0:'Unchanged',1:'Changed'},{0:'None',1:'Low',2:'High'},{0:'None',1:'Low',2:'High'},{0:'None',1:'Low',2:'High'}];
+  var cvssIds=['cvssAv','cvssAc','cvssPr','cvssUi','cvssS','cvssC','cvssI','cvssA'];
+  var cvssValIds=['cvssAvVal','cvssAcVal','cvssPrVal','cvssUiVal','cvssSVal','cvssCVal','cvssIVal','cvssAVal'];
+  for(var i=0;i<8;i++){(function(idx){var el=document.getElementById(cvssIds[idx]);if(!el)return;var vl=document.getElementById(cvssValIds[idx]);el.addEventListener('input',function(){vl.textContent=cvssLabelKeys[idx][parseInt(el.value)]})})(i)}
+
+  var cvssBtn=document.getElementById('cvssCalcBtn');
+  if(cvssBtn)cvssBtn.addEventListener('click',function(){
+    var av=parseInt(document.getElementById('cvssAv').value);
+    var ac=parseInt(document.getElementById('cvssAc').value);
+    var pr=parseInt(document.getElementById('cvssPr').value);
+    var ui=parseInt(document.getElementById('cvssUi').value);
+    var sc=parseInt(document.getElementById('cvssS').value);
+    var c=parseInt(document.getElementById('cvssC').value);
+    var i2=parseInt(document.getElementById('cvssI').value);
+    var a=parseInt(document.getElementById('cvssA').value);
+    var exploitability=av*0.2+ac*0.15+pr*0.15+ui*0.1+sc*0.1;
+    var impact=c*0.15+i2*0.1+a*0.1;
+    var baseScore=Math.min(10,Math.round((exploitability+impact*1.5+sc*0.5)*10)/10);
+    if(baseScore<0.1)baseScore=0;
+    var sev=baseScore>=9?'Critical':baseScore>=7?'High':baseScore>=4?'Medium':baseScore>=0.1?'Low':'None';
+    var cls=baseScore>=7?'bad':baseScore>=4?'mid':'ok';
+    setResult('cvssCalcResult','คะแนน CVSS โดยประมาณ: '+baseScore.toFixed(1)+' ('+sev+') | Vector: AV:'+['P','L','N'][av]+'/AC:'+['H','L'][ac]+'/PR:'+['H','L','N'][pr]+'/UI:'+['R','N'][ui]+'/S:'+['U','C'][sc]+'/C:'+['N','L','H'][c]+'/I:'+['N','L','H'][i2]+'/A:'+['N','L','H'][a],cls);
+  });
+
+  // TP/FP Quiz
+  var tpMsgs={'tpfp1':'เฉลย: False Positive — SAST ตรวจพบ pattern การตอ string แตไมเห็นวามีการ sanitize กอนหนา','tpfp2':'เฉลย: True Positive — XSS สามารถทำงานไดจริง เนองจากไมมีการ Escape','tpfp3':'เฉลย: False Positive — แม library จะมี CVE แตถาไมไดเรียกฟังก์ชันทมช่องโหว กไมมีความเสี่ยงในทางปฏิบัติ'};
+  document.querySelectorAll('.quiz-option').forEach(function(btn){btn.addEventListener('click',function(){
+    var q=btn.dataset.quiz,ok=btn.dataset.correct==='true';
+    document.querySelectorAll('[data-quiz="'+q+'"]').forEach(function(b){b.classList.remove('correct','wrong')});
+    btn.classList.add(ok?'correct':'wrong');
+    var msg=tpMsgs[q]||(ok?'ถกตอง':'ยงไมถกตอง');
+    setResult(q+'Result',msg,ok?'ok':'bad');
+  })});
+
+  // Tool Quiz
+  var toolMsgs={'tool1':'เฉลย: OWASP ZAP — Open Source DAST Tool รองรับ Passive/Active Scan และ API Testing','tool2':'เฉลย: Semgrep — Rule-based SAST Tool กฎชุมชนขนาดใหญ ปรับแตงกฎไดงาย','tool3':'เฉลย: Trivy — Open Source SCA Tool สแกน Container Image, Filesystem และสราง SBOM'};
+  document.querySelectorAll('[data-quiz^="tool"]').forEach(function(btn){btn.addEventListener('click',function(){
+    var q=btn.dataset.quiz,ok=btn.dataset.correct==='true';
+    document.querySelectorAll('[data-quiz="'+q+'"]').forEach(function(b){b.classList.remove('correct','wrong')});
+    btn.classList.add(ok?'correct':'wrong');
+    var msg=toolMsgs[q]||(ok?'ถกตอง':'ยงไมถกตอง');
+    setResult(q+'Result',msg,ok?'ok':'bad');
+  })});
+
+  // Lab Checklist
+  function updateLabMeter(){
+    var boxes=document.querySelectorAll('#labChecks input'),ck=0;
+    boxes.forEach(function(b){if(b.checked)ck++});
+    var pct=boxes.length?Math.round(ck/boxes.length*100):0;
+    document.getElementById('labMeter').style.width=pct+'%';
+    var cls=pct>=75?'ok':pct>=40?'mid':'bad';
+    setResult('labResult','ความกาวหนา: '+pct+'% ('+ck+'/'+boxes.length+')'+(pct>=75?' — ดมาก!':pct>=40?' — กำลังดำเนินการ':' — ยังไมเรียบรอย'),cls);
+  }
+  var labBox=document.getElementById('labChecks');
+  if(labBox)labBox.addEventListener('change',updateLabMeter);
+
+})();
+</script>
+<div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--text-muted, #64748b);border-top:1px solid var(--border, #e2e8f0)">Powered by: IceSuntisuk</div></body>
+</html>
