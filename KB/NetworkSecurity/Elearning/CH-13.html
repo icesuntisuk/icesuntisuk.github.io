@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-13: การรักษาความปลอดภัยสำหรับระบบคลาวด์ และ Software-Defined Networking (SDN) | วิชา Network Security</title>
+<meta name="description" content="บทที่ 13 วิชา Network Security — การรักษาความปลอดภัยสำหรับระบบคลาวด์ และ Software-Defined Networking (SDN): Shared Responsibility Model, Security Group, NACL, Cloud Firewall, SASE, ZTNA, SDN, NFV, Hybrid Cloud, Multi-Cloud Security, กรณีศึกษาการออกแบบเครือข่ายที่ปลอดภัยบน Cloud">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "CH-13: การรักษาความปลอดภัยสำหรับระบบคลาวด์ และ Software-Defined Networking (SDN)",
+  "description": "บทที่ 13 ของวิชา Network Security — ครอบคลุม Shared Responsibility Model, Security Group, Network ACL, Cloud Firewall, SASE, Zero Trust Network Access (ZTNA), Software-Defined Networking (SDN), Network Function Virtualization (NFV), Hybrid Cloud Security, Multi-Cloud Security, และกรณีศึกษาการออกแบบเครือข่ายที่ปลอดภัยบน Cloud",
+  "educationalLevel": "Undergraduate",
+  "educationalRole": "Instructor",
+  "teaches": [
+    "Cloud Network Security",
+    "Shared Responsibility Model",
+    "Security Group",
+    "Network ACL",
+    "Cloud Firewall",
+    "SASE",
+    "ZTNA",
+    "Zero Trust Network Access",
+    "SDN",
+    "Software-Defined Networking",
+    "NFV",
+    "Network Function Virtualization",
+    "Hybrid Cloud Security",
+    "Multi-Cloud Security",
+    "Cloud Security Architecture"
+  ],
+  "inLanguage": "th"
+}
+</script>
+<style>
+:root{--primary:#1a3a5c;--primary-dark:#0f2440;--primary-light:#2c5a8c;--accent:#2563eb;--accent-hover:#1d4ed8;--bg:#ffffff;--bg-secondary:#f8fafc;--bg-tertiary:#f1f5f9;--text:#1e293b;--text-secondary:#475569;--text-muted:#94a3b8;--border:#e2e8f0;--border-light:#f1f5f9;--code-bg:#0f172a;--code-text:#e2e8f0;--table-stripe:#f8fafc;--sidebar-bg:#f8fafc;--sidebar-border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);--radius:8px;--radius-sm:4px;--radius-lg:12px;--font-thai:'Sarabun','IBM Plex Sans Thai','Kanit','Noto Sans Thai',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--font-mono:'JetBrains Mono','Fira Code','Cascadia Code','Source Code Pro','Menlo','Consolas',monospace;--transition:0.2s ease;--header-height:64px;--toc-width:280px}
+[data-theme="dark"]{--primary:#60a5fa;--primary-dark:#1e3a5f;--accent:#3b82f6;--accent-hover:#60a5fa;--bg:#0f172a;--bg-secondary:#1e293b;--bg-tertiary:#334155;--text:#f1f5f9;--text-secondary:#cbd5e1;--text-muted:#64748b;--border:#334155;--code-bg:#020617;--table-stripe:#1e293b;--sidebar-bg:#1e293b;--sidebar-border:#334155;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+h1,h2,h3,h4,h5,h6{line-height:1.3;font-weight:700;color:var(--text);margin-top:1.5em;margin-bottom:.75em}
+h1{font-size:2.25rem;margin-top:0}
+h2{font-size:1.75rem;border-bottom:2px solid var(--border);padding-bottom:.4em}
+h3{font-size:1.35rem}
+h4{font-size:1.1rem}
+p{margin-bottom:1em}
+hr{border:none;border-top:2px solid var(--border);margin:2.5em 0}
+strong,b{font-weight:700}
+ul,ol{margin-bottom:1em;padding-left:1.5em}
+li{margin-bottom:.35em}
+#loading-screen{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s ease}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-secondary);font-size:1rem}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#818cf8);z-index:9998;width:0%;transition:width .15s ease-out}
+.top-nav{position:fixed;top:3px;left:0;right:0;z-index:9997;height:var(--header-height);background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-nav .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem;color:var(--text);white-space:nowrap}
+.top-nav .logo i{color:var(--accent);font-size:1.3rem}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-actions button,.nav-actions .search-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:1rem}
+.nav-actions button:hover,.nav-actions .search-toggle:hover{background:var(--bg-tertiary);color:var(--text);border-color:var(--text-muted)}
+#sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.search-overlay{position:fixed;inset:0;z-index:9996;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(4px)}
+.search-overlay.active{display:flex}
+.search-panel{background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:90%;max-width:640px;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
+.search-input-wrap{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);gap:.5rem}
+.search-input-wrap i{color:var(--text-muted)}
+.search-input-wrap input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:1rem;font-family:var(--font-thai)}
+.search-input-wrap input::placeholder{color:var(--text-muted)}
+.search-count{font-size:.8rem;color:var(--text-muted);white-space:nowrap;padding:.25rem .5rem;background:var(--bg-tertiary);border-radius:var(--radius-sm)}
+.search-results{overflow-y:auto;padding:.5rem;flex:1;max-height:50vh}
+.search-results .no-results{padding:2rem;text-align:center;color:var(--text-muted)}
+.search-result-item{padding:.75rem;border-radius:var(--radius);cursor:pointer;transition:background .2s ease;border-bottom:1px solid var(--border-light)}
+.search-result-item:hover{background:var(--bg-tertiary)}
+.search-result-item .result-heading{font-weight:600;font-size:.9rem;color:var(--accent);margin-bottom:.2rem}
+.search-result-item .result-snippet{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.search-result-item .result-snippet mark,.highlight{background:#fef08a;color:#1e293b;padding:0 2px;border-radius:2px}
+[data-theme="dark"] .search-result-item .result-snippet mark,[data-theme="dark"] .highlight{background:#854d0e;color:#fef9c3}
+.layout{display:flex;padding-top:calc(var(--header-height) + 3px);min-height:100vh}
+.sidebar{width:var(--toc-width);flex-shrink:0;position:sticky;top:calc(var(--header-height) + 3px);height:calc(100vh - var(--header-height) - 3px);overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:1.25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--text-muted) transparent;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:4px}
+.sidebar-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{margin-bottom:.15rem}
+.toc-link{display:block;padding:.4rem .6rem;border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-secondary);transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;line-height:1.4}
+.toc-link:hover{background:var(--bg-tertiary);color:var(--text);text-decoration:none}
+.toc-link.active{color:var(--accent);background:rgba(37,99,235,.08);border-left-color:var(--accent);font-weight:600}
+.toc-link.sub{padding-left:1.4rem;font-size:.8rem}
+.toc-link.sub2{padding-left:2.2rem;font-size:.78rem}
+.main-content{flex:1;min-width:0;padding:2rem 2.5rem;max-width:calc(100vw - var(--toc-width))}
+.main-content>section{margin-bottom:2.5rem}
+.section-ref{scroll-margin-top:calc(var(--header-height) + 16px)}
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:2.5rem 2rem;border-radius:var(--radius-lg);margin-bottom:2.5rem}
+.hero h1{color:#fff;font-size:2rem;margin-bottom:.5rem}
+.hero .subtitle{color:rgba(255,255,255,.85);font-size:1.1rem;margin-bottom:1.25rem}
+.hero .meta-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.hero .meta-tag{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);padding:.25rem .75rem;border-radius:20px;font-size:.8rem}
+.learning-objectives{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+.learning-objectives h3{margin-top:0;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.learning-objectives ol{margin:.75rem 0 0;padding-left:1.25rem}
+.learning-objectives li{margin-bottom:.5rem;color:var(--text-secondary);font-size:.95rem}
+.table-wrap{overflow-x:auto;margin:1.25em 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}
+thead{background:var(--bg-tertiary)}
+th,td{padding:.6rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}
+th{font-weight:700;color:var(--text)}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+tbody tr:hover{background:var(--bg-tertiary)}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:1.25em 0;position:relative}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+code{background:var(--bg-tertiary);color:var(--accent);padding:.15em .4em;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.85em}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:0}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.expandable{margin:1.25em 0}
+.expandable-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease;user-select:none;font-weight:600;font-size:.95rem}
+.expandable-header:hover{background:var(--border)}
+.expandable-header i{transition:transform .2s ease;font-size:.85rem;color:var(--text-muted)}
+.expandable.expanded .expandable-header i{transform:rotate(180deg)}
+.expandable-content{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;border:1px solid transparent}
+.expandable.expanded .expandable-content{max-height:50000px;padding:1rem;border-color:var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.quiz-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:all .2s ease}
+.quiz-card.revealed{border-left:4px solid #22c55e}
+.quiz-question{display:flex;gap:.75rem;align-items:flex-start}
+.q-number{background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.quiz-question p{margin:0;font-weight:500;color:var(--text);font-size:.95rem}
+.quiz-card .reveal-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-family:var(--font-thai);transition:all .2s ease}
+.quiz-card .reveal-btn:hover{background:var(--accent-hover)}
+.quiz-card.revealed .reveal-btn{background:var(--text-muted)}
+.quiz-answer{margin-top:.75rem;padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border);font-size:.9rem}
+.hidden{display:none}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:9995;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-lg);transition:all .2s ease;opacity:0;visibility:hidden;transform:translateY(10px)}
+#back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+#back-to-top:hover{background:var(--accent-hover);transform:translateY(-2px)}
+.site-footer{margin-top:3rem;padding:1.5rem 2rem;background:var(--bg-secondary);border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+@media print{.top-nav,.sidebar,#back-to-top,#progress-bar,.copy-btn,.search-overlay,#sidebar-toggle,.nav-actions{display:none!important}.layout{display:block;padding-top:0}.main-content{max-width:100%;padding:0}.hero{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hero h1,.hero .subtitle{color:#fff!important}table{font-size:.8rem}pre{white-space:pre-wrap;word-break:break-all}.expandable-content{max-height:none!important;padding:1rem!important;border-color:var(--border)!important}.expandable-header i{display:none}.table-wrap{overflow:visible}.quiz-answer.hidden{display:block!important}.quiz-card .reveal-btn{display:none}body{font-size:11pt}section{page-break-inside:avoid}h2,h3{page-break-after:avoid}}
+@media(max-width:1024px){:root{--toc-width:240px}.main-content{padding:1.5rem}}
+@media(max-width:768px){:root{--toc-width:0px}#sidebar-toggle{display:flex}.sidebar{position:fixed;left:-280px;top:calc(var(--header-height) + 3px);width:280px;height:calc(100vh - var(--header-height) - 3px);transition:left .3s ease;z-index:9990;box-shadow:var(--shadow-lg)}.sidebar.open{left:0}.sidebar-overlay{position:fixed;inset:0;z-index:9989;background:rgba(0,0,0,.4);display:none}.sidebar-overlay.active{display:block}.main-content{max-width:100%;padding:1rem}.hero{padding:1.5rem 1rem}.hero h1{font-size:1.5rem}h2{font-size:1.4rem}h3{font-size:1.15rem}.top-nav{padding:0 .75rem}.top-nav .logo{font-size:.85rem}table{font-size:.8rem}th,td{padding:.4rem .6rem}.quiz-card{padding:1rem}}
+@media(max-width:480px){.nav-actions button,.nav-actions .search-toggle{width:36px;height:36px}#back-to-top{bottom:1rem;right:1rem;width:40px;height:40px}.search-panel{width:95%}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.mcq-item .mcq-option{display:block;margin:.35rem 0;padding:.5rem .75rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease}
+.mcq-item .mcq-option:hover{background:var(--bg-tertiary)}
+.mcq-item .mcq-option input{margin-right:.5rem;cursor:pointer}
+.mcq-item.correct{border-left:4px solid #22c55e}
+.mcq-item.wrong{border-left:4px solid #ef4444}
+.mcq-option.correct-opt{background:#dcfce7 !important;border-color:#22c55e !important;color:#14532d}
+.mcq-option.wrong-opt{background:#fee2e2 !important;border-color:#ef4444 !important;color:#7f1d1d}
+#mcq-result.success{background:#dcfce7;border-color:#22c55e}
+#mcq-result.fail{background:#fee2e2;border-color:#ef4444}
+.mcq-score-panel{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin:1rem 0;text-align:center}
+.mcq-score-panel .score-number{font-size:2rem;font-weight:700;color:var(--accent)}
+</style>
+</head>
+<body>
+<div id="loading-screen" role="status" aria-label="กำลังโหลดเนื้อหา">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">กำลังโหลดเนื้อหา...</div>
+</div>
+<div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้าการอ่าน"></div>
+<header class="top-nav" role="banner">
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button id="sidebar-toggle" aria-label="เปิดเมนูสารบัญ" aria-expanded="false"><i class="fas fa-bars"></i></button>
+    <div class="logo"><i class="fas fa-shield-halved" aria-hidden="true"></i><span>Network Security — บทที่ 13</span></div>
+  </div>
+  <div class="nav-actions">
+    <button class="search-toggle" id="search-toggle-btn" aria-label="ค้นหา" title="ค้นหา (Ctrl+K / ⌘K)"><i class="fas fa-search" aria-hidden="true"></i></button>
+    <button id="dark-mode-toggle" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง"><i class="fas fa-moon" aria-hidden="true"></i></button>
+  </div>
+</header>
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="ค้นหาเนื้อหา">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="ค้นหาในเนื้อหาทั้งหมด..." aria-label="ป้อนคำค้นหา" autocomplete="off">
+      <span class="search-count" id="search-count"></span>
+      <button id="search-close-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;" aria-label="ปิดค้นหา"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="layout">
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-title"><i class="fas fa-list" aria-hidden="true"></i> สารบัญ</div>
+  <ul class="toc-list" id="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#hero-section" data-target="hero-section">บทนำ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#learning-objectives" data-target="learning-objectives">วัตถุประสงค์การเรียนรู้</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section1" data-target="section1">ส่วนที่ 1: Cloud Network Security</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-1" data-target="section1-1">1. Shared Responsibility Model</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-1-1" data-target="section1-1-1">1.1 หลักการ</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-1-2" data-target="section1-1-2">1.2 ความรับผิดชอบตาม Service Model</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-1-3" data-target="section1-1-3">1.3 ข้อผิดพลาดที่พบบ่อย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-2" data-target="section1-2">2. Cloud Network Security Components</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-2-1" data-target="section1-2-1">2.1 Security Group</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-2-2" data-target="section1-2-2">2.2 Network ACL</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-2-3" data-target="section1-2-3">2.3 Cloud Firewall</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-2-4" data-target="section1-2-4">2.4 ตัวอย่างการออกแบบบน AWS</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-3" data-target="section1-3">3. SASE และ ZTNA</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-3-1" data-target="section1-3-1">3.1 SASE</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-3-2" data-target="section1-3-2">3.2 ZTNA</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section2" data-target="section2">ส่วนที่ 2: SDN และ NFV Security</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-1" data-target="section2-1">4. Software-Defined Networking (SDN)</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-1-1" data-target="section2-1-1">4.1 โมเดล SDN</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-1-2" data-target="section2-1-2">4.2 SDN Architecture</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-1-3" data-target="section2-1-3">4.3 ความท้าทายด้านความปลอดภัย</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-1-4" data-target="section2-1-4">4.4 แนวทางการรักษาความปลอดภัย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-2" data-target="section2-2">5. Network Function Virtualization (NFV)</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-2-1" data-target="section2-2-1">5.1 หลักการของ NFV</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-2-2" data-target="section2-2-2">5.2 NFV Architecture</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-2-3" data-target="section2-2-3">5.3 ความปลอดภัยของ NFV</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-3" data-target="section2-3">6. Hybrid Cloud และ Multi-Cloud Security</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-3-1" data-target="section2-3-1">6.1 Hybrid Cloud Architecture</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-3-2" data-target="section2-3-2">6.2 Multi-Cloud Architecture</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-3-3" data-target="section2-3-3">6.3 ความท้าทาย</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-3-4" data-target="section2-3-4">6.4 เครื่องมือรักษาความปลอดภัย</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-4" data-target="section2-4">7. กรณีศึกษา: การออกแบบเครือข่ายที่ปลอดภัยบน Cloud</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-4-1" data-target="section2-4-1">7.1 ความต้องการ</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-4-2" data-target="section2-4-2">7.2 สถาปัตยกรรมบน AWS</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-4-3" data-target="section2-4-3">7.3 Security Group Rules</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-4-4" data-target="section2-4-4">7.4 บทเรียนและข้อเสนอแนะ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#summary" data-target="summary">สรุปท้ายบท</a></li>
+    <li class="toc-item"><a class="toc-link" href="#review-questions" data-target="review-questions">คำถามทบทวน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#interactive-quiz" data-target="interactive-quiz">แบบทดสอบ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#references" data-target="references">เอกสารอ้างอิง</a></li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content" role="main">
+
+<section id="hero-section" class="hero section-ref">
+  <h1><i class="fas fa-cloud" aria-hidden="true"></i> CH-13: การรักษาความปลอดภัยสำหรับระบบคลาวด์ และ Software-Defined Networking (SDN)</h1>
+  <p class="subtitle">Cloud Network Security &amp; SDN/NFV Security — Shared Responsibility Model, Security Group, NACL, Cloud Firewall, SASE, ZTNA, SDN, NFV, Hybrid Cloud, Multi-Cloud Security, กรณีศึกษาการออกแบบเครือข่ายที่ปลอดภัยบน Cloud</p>
+  <div class="meta-tags">
+    <span class="meta-tag"><i class="fas fa-graduation-cap" aria-hidden="true"></i> วิชา Network Security</span>
+    <span class="meta-tag"><i class="fas fa-calendar" aria-hidden="true"></i> ภาคเรียนที่ 1/2569</span>
+    <span class="meta-tag"><i class="fas fa-book-open" aria-hidden="true"></i> บทที่ 13</span>
+  </div>
+</section>
+
+<div class="learning-objectives section-ref" id="learning-objectives">
+  <h3><i class="fas fa-bullseye" aria-hidden="true"></i> วัตถุประสงค์การเรียนรู้ (Learning Objectives)</h3>
+  <p>เมื่อจบบทนี้แล้ว ผู้เรียนสามารถ:</p>
+  <ol>
+    <li>อธิบายแบบจำลองความรับผิดชอบร่วม (Shared Responsibility Model) ในระบบคลาวด์ได้</li>
+    <li>กำหนดค่า Security Group, NACL, และ Cloud Firewall เพื่อรักษาความปลอดภัยเครือข่ายในคลาวด์ได้</li>
+    <li>อธิบายแนวคิด SASE (Secure Access Service Edge) และ Zero Trust Network Access (ZTNA) ได้</li>
+    <li>อธิบายความท้าทายด้านความปลอดภัยของ SDN และ NFV ได้</li>
+    <li>ออกแบบสถาปัตยกรรมเครือข่ายที่ปลอดภัยบน Hybrid Cloud และ Multi-Cloud Environment ได้</li>
+    <li>วิเคราะห์กรณีศึกษาการออกแบบเครือข่ายที่ปลอดภัยบน AWS/Azure/GCP ได้</li>
+  </ol>
+</div>
+
+<hr>
+
+<!-- SECTION 1 -->
+<section id="section1" class="section-ref">
+<h3>ส่วนที่ 1: Cloud Network Security</h3>
+
+<h2 id="section1-1">1. Shared Responsibility Model</h2>
+
+<h4 id="section1-1-1">1.1 หลักการ</h4>
+<p>Cloud Security เป็นความรับผิดชอบร่วมกันระหว่าง <strong>Cloud Provider</strong> และ <strong>Customer</strong> — แต่ละฝ่ายรับผิดชอบคนละส่วนขึ้นอยู่กับ Service Model:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Shared Responsibility Model:
+────────────────────────────
+                    ┌────────────────────────────┐
+                    │        ON-PREMISES          │
+                    │  (คุณรับผิดชอบทุกอย่าง)      │
+                    └────────────────────────────┘
+
+                    ┌────────────────────────────┐
+                    │            IaaS             │
+                    │  ┌──────────────────────┐  │
+                    │  │  คุณรับผิดชอบ:         │  │
+                    │  │  Data, App, OS         │  │
+                    │  │  Network Config       │  │
+                    │  │  Firewall Rules        │  │
+                    │  ├──────────────────────┤  │
+                    │  │ Provider รับผิดชอบ:    │  │
+                    │  │ Hypervisor            │  │
+                    │  │ Physical Network      │  │
+                    │  │ Physical Security     │  │
+                    │  └──────────────────────┘  │
+                    └────────────────────────────┘
+
+                    ┌────────────────────────────┐
+                    │            PaaS             │
+                    │  ┌──────────────────────┐  │
+                    │  │  คุณรับผิดชอบ:         │  │
+                    │  │  Data, App Code       │  │
+                    │  ├──────────────────────┤  │
+                    │  │ Provider รับผิดชอบ:    │  │
+                    │  │ Runtime, OS, Network  │  │
+                    │  │ Middleware, Database   │  │
+                    │  └──────────────────────┘  │
+                    └────────────────────────────┘
+
+                    ┌────────────────────────────┐
+                    │            SaaS             │
+                    │  ┌──────────────────────┐  │
+                    │  │  คุณรับผิดชอบ:         │  │
+                    │  │  Data Access          │  │
+                    │  │  User Permissions     │  │
+                    │  ├──────────────────────┤  │
+                    │  │ Provider รับผิดชอบ:    │  │
+                    │  │ ทุกอย่างด้านล่าง       │  │
+                    │  └──────────────────────┘  │
+                    └────────────────────────────┘</pre>
+
+<h4 id="section1-1-2">1.2 ความรับผิดชอบตาม Service Model</h4>
+<div class="table-wrap"><table>
+  <thead><tr><th>ชั้น</th><th>บน-premises</th><th>IaaS</th><th>PaaS</th><th>SaaS</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ข้อมูล (Data)</strong></td><td>คุณ</td><td>คุณ</td><td>คุณ</td><td>คุณ</td></tr>
+    <tr><td><strong>แอปพลิเคชัน</strong></td><td>คุณ</td><td>คุณ</td><td>คุณ</td><td>Provider</td></tr>
+    <tr><td><strong>Runtime</strong></td><td>คุณ</td><td>คุณ</td><td>Provider</td><td>Provider</td></tr>
+    <tr><td><strong>OS</strong></td><td>คุณ</td><td>คุณ</td><td>Provider</td><td>Provider</td></tr>
+    <tr><td><strong>Middleware</strong></td><td>คุณ</td><td>คุณ</td><td>Provider</td><td>Provider</td></tr>
+    <tr><td><strong>Virtualization</strong></td><td>คุณ</td><td>Provider</td><td>Provider</td><td>Provider</td></tr>
+    <tr><td><strong>Physical Server</strong></td><td>คุณ</td><td>Provider</td><td>Provider</td><td>Provider</td></tr>
+    <tr><td><strong>Network</strong></td><td>คุณ</td><td>Provider</td><td>Provider</td><td>Provider</td></tr>
+    <tr><td><strong>Physical Security</strong></td><td>คุณ</td><td>Provider</td><td>Provider</td><td>Provider</td></tr>
+  </tbody>
+</table></div>
+
+<h4 id="section1-1-3">1.3 ข้อผิดพลาดที่พบบ่อย (Cloud Misconfiguration)</h4>
+<div class="table-wrap"><table>
+  <thead><tr><th>ปัญหา</th><th>รายละเอียด</th><th>ผลกระทบ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>S3 Bucket Public Read</strong></td><td>Bucket เปิด Public โดยไม่ตั้งใจ</td><td>Data Breach (Accenture, Dow Jones)</td></tr>
+    <tr><td><strong>Security Group เปิด 0.0.0.0/0</strong></td><td>เปิด RDP/SSH จากอินเทอร์เน็ต</td><td>Ransomware, Bitcoin Miner</td></tr>
+    <tr><td><strong>IAM Key รั่วไหล</strong></td><td>Access Key ถูก Commit ใน GitHub</td><td>Cloud Account Compromise</td></tr>
+    <tr><td><strong>Public RDS</strong></td><td>Database เปิด Public Access</td><td>Data Theft</td></tr>
+    <tr><td><strong>No Encryption at Rest</strong></td><td>ข้อมูลใน Cloud Storage ไม่เข้ารหัส</td><td>Data Breach</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="section1-2">2. Cloud Network Security Components</h2>
+
+<h4 id="section1-2-1">2.1 Security Group (AWS) / Network Security Group (Azure)</h4>
+<p>Security Group เป็น <strong>Stateful Firewall</strong> ที่ทำงานในระดับ Instance (VM Level):</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>AWS Security Group — Stateful:
+───────────────────────────────
+┌──────────────────────────────┐
+│  Security Group: Web_SG       │
+│  Inbound Rules:               │
+│  ┌──────┬────┬────────┬─────┐ │
+│  │ Type│Port│ Source  │ Desc│ │
+│  ├──────┼────┼────────┼─────┤ │
+│  │ HTTP │ 80 │ 0.0.0.0│ Web │ │
+│  │HTTPS │443 │ 0.0.0.0│ Web │ │
+│  │ SSH  │ 22 │10.0.0.0│ Mgt │ │
+│  └──────┴────┴────────┴─────┘ │
+│  Outbound Rules:              │
+│  ┌──────┬────┬────────┬─────┐ │
+│  │ ALL  │ ALL│ 0.0.0.0│     │ │
+│  └──────┴────┴────────┴─────┘ │
+└──────────────────────────────┘</pre>
+<p><strong>ลักษณะสำคัญของ Security Group:</strong></p>
+<ul>
+  <li><strong>Stateful:</strong> Return Traffic ผ่านโดยอัตโนมัติ (ไม่ต้องเขียน Outbound Rule)</li>
+  <li><strong>Allow Rules Only:</strong> ไม่มี Deny Rule — ถ้าไม่มี Allow = Deny</li>
+  <li><strong>Instance Level:</strong> ใช้กับ EC2, RDS, ELB, Lambda</li>
+  <li><strong>สามารถมีหลาย SG ต่อ Instance ได้</strong></li>
+</ul>
+
+<h4 id="section1-2-2">2.2 Network ACL (NACL)</h4>
+<p>NACL เป็น <strong>Stateless Firewall</strong> ที่ทำงานในระดับ Subnet:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>AWS NACL — Stateless:
+──────────────────────
+┌──────────────────────────────────┐
+│  Network ACL: Public_Subnet_ACL  │
+│  Inbound Rules (เรียงลำดับ):      │
+│  ┌────┬──────┬──────┬─────────┐ │
+│  │ #  │ Type │ Port │ Source  │ │
+│  ├────┼──────┼──────┼─────────┤ │
+│  │ 100│ HTTP │  80  │0.0.0.0 │ │
+│  │ 110│ HTTPS│ 443  │0.0.0.0 │ │
+│  │ 120│ Ephem│ 1024-│0.0.0.0 │ │  ← ต้องเขียน Return Traffic
+│  │ *  │ ALL  │ ALL  │0.0.0.0 │ │  ← Implicit Deny
+│  └────┴──────┴──────┴─────────┘ │
+│  Outbound Rules (เรียงลำดับ):    │
+│  ┌────┬──────┬──────┬─────────┐ │
+│  │ #  │ Type │ Port │ Dest    │ │
+│  ├────┼──────┼──────┼─────────┤ │
+│  │ 100│ HTTP │  80  │0.0.0.0 │ │
+│  │ 110│ HTTPS│ 443  │0.0.0.0 │ │
+│  │ 120│ Ephem│ 1024-│0.0.0.0 │ │
+│  │ *  │ ALL  │ ALL  │0.0.0.0 │ │
+│  └────┴──────┴──────┴─────────┘ │
+└──────────────────────────────────┘</pre>
+<p><strong>Security Group vs NACL:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>Security Group</th><th>Network ACL</th></tr></thead>
+  <tbody>
+    <tr><td>Stateful/Stateless</td><td>Stateful</td><td>Stateless</td></tr>
+    <tr><td>ระดับ</td><td>Instance</td><td>Subnet</td></tr>
+    <tr><td>Allow/Deny</td><td>Allow Only</td><td>Allow + Deny</td></tr>
+    <tr><td>Rule Order</td><td>All Rules (ไม่เรียง)</td><td>Numbered Order</td></tr>
+    <tr><td>Return Traffic</td><td>อัตโนมัติ</td><td>ต้องเขียน Rule</td></tr>
+    <tr><td>เมื่อใดใช้</td><td>Instance Protection</td><td>Subnet Protection Layer</td></tr>
+  </tbody>
+</table></div>
+
+<h4 id="section1-2-3">2.3 Cloud Firewall (WAF + Firewall Manager)</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Defense in Depth on Cloud:
+───────────────────────────
+[Internet] ──▶ [Cloud WAF] ──▶ [Cloud Firewall] ──▶ [NACL] ──▶ [SG] ──▶ [Instance]
+                    │                   │                  │         │
+               Application           Network Layer      Subnet     Instance
+               Layer 7               Layer 3-4           Layer 3-4  Layer 3-4</pre>
+<p><strong>Cloud WAF (Web Application Firewall):</strong></p>
+<ul>
+  <li>AWS WAF, Azure WAF, Cloud Armor (GCP)</li>
+  <li>ป้องกัน SQLi, XSS, OWASP Top 10</li>
+  <li>Rate-based Rules (DDoS Protection)</li>
+</ul>
+<p><strong>Cloud Firewall (NGFW):</strong></p>
+<ul>
+  <li>AWS Network Firewall, Azure Firewall, GCP Cloud Firewall</li>
+  <li>Stateful Inspection, IPS, DNS Filtering</li>
+  <li>Central Policy Management</li>
+</ul>
+
+<h4 id="section1-2-4">2.4 ตัวอย่างการออกแบบ Network Security บน AWS</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>3-Tier Web Application on AWS:
+───────────────────────────────
+                     [Internet]
+                         │
+                    [CloudFront CDN]
+                    + AWS WAF (OWASP CRS)
+                         │
+                   [ALB (Load Balancer)]
+                     SG: Allow 80,443 from CloudFront
+                         │
+             ┌────────────┴────────────┐
+             │                         │
+       [Web Tier]                [App Tier]
+       Auto Scaling Group        Auto Scaling Group
+       SG: Allow 80,443          SG: Allow 8080
+       from ALB                  from Web SG only
+             │                         │
+             └────────────┬────────────┘
+                          │
+                    [DB Tier]
+                     RDS Multi-AZ
+                     SG: Allow 3306
+                     from App SG only
+                          │
+                     [S3 Bucket]
+                     (Encrypted at Rest)
+                     Block Public Access</pre>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Web Tier SG:
+├── Inbound:  TCP 80,443 from ALB SG
+├── Inbound:  TCP 22 from Bastion SG (SSH)
+└── Outbound: ALL (default — แต่ควรจำกัด)
+
+App Tier SG:
+├── Inbound:  TCP 8080 from Web SG only
+├── Inbound:  TCP 22 from Bastion SG
+└── Outbound: TCP 443 to Internet (API calls)
+
+DB Tier SG:
+├── Inbound:  TCP 3306 from App SG only
+└── Outbound: ❌ No outbound needed
+
+Bastion SG:
+├── Inbound:  TCP 22 from Admin IP (บริษัท) only
+└── Outbound: TCP 22 to Web, App SG</pre>
+
+<h2 id="section1-3">3. SASE และ ZTNA</h2>
+
+<h4 id="section1-3-1">3.1 SASE (Secure Access Service Edge)</h4>
+<p>SASE (อ่านว่า "sassy") ถูกนิยามโดย Gartner ในปี 2019 — รวม Network และ Security Functions เป็น Cloud-based Service:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>SASE Architecture:
+───────────────────
+[User] ──▶ [SASE POP] ──▶ [Internet / SaaS / Cloud / DC]
+                 │
+            SASE Functions:
+            ├── SD-WAN
+            ├── SWG (Secure Web Gateway)
+            ├── CASB (Cloud Access Security Broker)
+            ├── ZTNA (Zero Trust Network Access)
+            ├── FWaaS (Firewall as a Service)
+            └── DLP (Data Loss Prevention)</pre>
+<p><strong>หลักการของ SASE:</strong></p>
+<ol>
+  <li><strong>Identity-based Access:</strong> Policy ขึ้นอยู่กับ Identity ไม่ใช่ IP</li>
+  <li><strong>Cloud-native:</strong> Service ทำงานจาก Cloud POP ทั่วโลก</li>
+  <li><strong>Edge:</strong> ตรวจสอบ Traffic ใกล้ผู้ใช้ที่สุด</li>
+  <li><strong>Converged:</strong> รวม Network + Security Functions ในบริการเดียว</li>
+</ol>
+<div class="table-wrap"><table>
+  <thead><tr><th>Traditional</th><th>SASE</th></tr></thead>
+  <tbody>
+    <tr><td>MPLS + VPN + Firewall ใน Data Center</td><td>SD-WAN + SWG + FWaaS จาก Cloud</td></tr>
+    <tr><td>Branch → HQ → Internet</td><td>Branch → SASE POP → Internet</td></tr>
+    <tr><td>Hardware Appliance ที่ Branch</td><td>Software Agent หรือ uCPE</td></tr>
+    <tr><td>Security Backhaul (Branch→HQ→Internet)</td><td>Local Breakout (ตรงถึง Cloud/Internet)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>ผู้ให้บริการ SASE:</strong></p>
+<ul>
+  <li><strong>Zscaler</strong> (Cloud Security) + <strong>Cloudflare</strong></li>
+  <li><strong>Palo Alto Prisma Access</strong></li>
+  <li><strong>Cisco Umbrella + Meraki</strong></li>
+  <li><strong>Fortinet FortiSASE</strong></li>
+  <li><strong>Netskope</strong> (SASE + CASB)</li>
+</ul>
+
+<h4 id="section1-3-2">3.2 ZTNA (Zero Trust Network Access)</h4>
+<p>ZTNA เป็นหัวใจของ SASE — เข้าใกล้ทรัพยากรโดยไม่ต้องต่อ VPN:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ZTNA vs VPN:
+─────────────
+Traditional VPN:
+[User] ──▶ [VPN Gateway] ──▶ [Corporate Network] ──▶ [App]
+                 │                        │
+           Full Network Access      Once in = access ALL
+
+ZTNA:
+[User] ──▶ [ZTNA Broker] ──▶ [App]
+                 │
+           App-specific Access
+           User → [เฉพาะ App A] เท่านั้น
+           ไม่มี Network-level Access</pre>
+<p><strong>หลักการ ZTNA:</strong></p>
+<ol>
+  <li><strong>Never Trust, Always Verify</strong> — ไม่เชื่อถือผู้ใช้หรืออุปกรณ์โดยอัตโนมัติ</li>
+  <li><strong>Least Privilege</strong> — เข้าถึงเฉพาะ App ที่จำเป็น</li>
+  <li><strong>App-specific Connection</strong> — ไม่ใช่ Network Connection</li>
+  <li><strong>Continuous Verification</strong> — ตรวจสอบตลอดเวลา</li>
+</ol>
+<div class="table-wrap"><table>
+  <thead><tr><th>Model</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Endpoint-initiated (Client)</strong></td><td>ติดตั้ง Agent บนเครื่อง — เชื่อมต่อไปยัง ZTNA Gateway</td><td>Zscaler ZPA, Cloudflare Access</td></tr>
+    <tr><td><strong>Service-initiated (Agentless)</strong></td><td>ZTNA Gateway เชื่อมต่อไปยัง Private App — ไม่ต้องติดตั้ง Agent</td><td>Tailscale, Twingate</td></tr>
+    <tr><td><strong>Browser-based</strong></td><td>ใช้ Browser — Remote Browser Isolation</td><td>Cloudflare Browser Isolation</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<hr>
+
+<!-- SECTION 2 -->
+<section id="section2" class="section-ref">
+<h3>ส่วนที่ 2: SDN และ NFV Security</h3>
+
+<h2 id="section2-1">4. Software-Defined Networking (SDN)</h2>
+
+<h4 id="section2-1-1">4.1 โมเดล SDN</h4>
+<p>SDN แยก <strong>Control Plane</strong> (การตัดสินใจ) ออกจาก <strong>Data Plane</strong> (การส่งข้อมูล):</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Traditional Network (Distributed Control):
+─────────────────────────────────────────
+[Switch 1]     [Switch 2]     [Switch 3]
+Control+Data   Control+Data   Control+Data
+(แต่ละ Switch ตัดสินใจเอง — OSPF, BGP, STP แยกกัน)
+
+SDN (Centralized Control):
+──────────────────────────
+┌──────────────────────────────────────┐
+│           SDN Controller              │
+│  (OpenDaylight, ONOS, Ryu)           │
+│  Control Plane — รู้ Topology ทั้งหมด  │
+└──────┬──────────┬──────────┬─────────┘
+       │          │          │
+       ▼          ▼          ▼
+   [OpenFlow Switch] [OpenFlow Switch] [OpenFlow Switch]
+   Data Plane       Data Plane        Data Plane
+   (Forwarding according to Controller)</pre>
+
+<h4 id="section2-1-2">4.2 SDN Architecture</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>SDN Architecture (ONF Model):
+─────────────────────────────
+┌──────────────────────────────────────────────┐
+│         APPLICATION LAYER                     │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐        │
+│  │Security │ │Network  │ │Load     │         │
+│  │App      │ │Policy   │ │Balancer │         │
+│  └────┬────┘ └────┬────┘ └────┬────┘        │
+│       │           │           │              │
+│  ┌────┴───────────┴───────────┴────┐         │
+│  │   Northbound API (REST, JSON)    │         │
+│  └──────────────────────────────────┘         │
+├──────────────────────────────────────────────┤
+│         CONTROL LAYER                         │
+│  ┌──────────────────────────────────────┐    │
+│  │        SDN Controller                │    │
+│  │  (Network OS — Topology, Routing)    │    │
+│  └──────────────────────────────────────┘    │
+│  ┌──────────────────────────────────────┐    │
+│  │   Southbound API (OpenFlow, NETCONF) │    │
+│  └──────────────────────────────────────┘    │
+├──────────────────────────────────────────────┤
+│         INFRASTRUCTURE LAYER (Data Plane)     │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐        │
+│  │Switch 1 │ │Switch 2 │ │Switch 3 │        │
+│  └─────────┘ └─────────┘ └─────────┘        │
+└──────────────────────────────────────────────┘</pre>
+
+<h4 id="section2-1-3">4.3 ความท้าทายด้านความปลอดภัยของ SDN</h4>
+<div class="table-wrap"><table>
+  <thead><tr><th>ความท้าทาย</th><th>คำอธิบาย</th><th>แนวทางป้องกัน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Single Point of Failure</strong></td><td>Controller ถูกโจมตี = ทั้ง Network พัง</td><td>Controller Cluster (High Availability)</td></tr>
+    <tr><td><strong>Controller Hijack</strong></td><td>ผู้โจมตีควบคุม Controller</td><td>Authentication + TLS ระหว่าง Controller-Switch</td></tr>
+    <tr><td><strong>Flow Table Flooding</strong></td><td>ส่ง Flow ใหม่จำนวนมาก — ทำให้ Switch ทำงานหนักเกินไป (Overload)</td><td>Rate Limiting, Flow Entry Timeout</td></tr>
+    <tr><td><strong>Man-in-the-Middle</strong></td><td>โจมตี Northbound/Southbound API</td><td>mTLS (Mutual TLS)</td></tr>
+    <tr><td><strong>Application Malicious</strong></td><td>App ที่รันบน Controller เป็น Malware</td><td>Application Sandbox, Code Review</td></tr>
+    <tr><td><strong>Data Plane Spoofing</strong></td><td>ปลอมแปลง Packet เพื่อหลบเลี่ยง Forwarding</td><td>OpenFlow Flow Table Validation</td></tr>
+  </tbody>
+</table></div>
+
+<h4 id="section2-1-4">4.4 แนวทางการรักษาความปลอดภัย SDN</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>SDN Security Best Practices:
+─────────────────────────────
+1. Controller Redundancy — Cluster อย่างน้อย 3 Nodes
+2. mTLS — Southbound API (Controller ↔ Switch) ทั้งหมด
+3. TLS — Northbound API (Controller ↔ App) ทั้งหมด
+4. Authentication — ถ้า API ต้อง Authenticate ทุก Request
+5. Flow Table Limits — จำกัดจำนวน Flow Entry ต่อ Switch
+6. Logging — Log การเปลี่ยนแปลง Flow Table ทั้งหมด
+7. Network Segmentation — แยก Management Network ของ SDN
+8. SDN App Vetting — ตรวจสอบ App ก่อนติดตั้งบน Controller
+9. Rate Limiting — จำกัด Packet-In Rate (ป้องกัน Controller DoS)
+10. Update — อัปเดต SDN Controller Software สม่ำเสมอ</pre>
+
+<h2 id="section2-2">5. Network Function Virtualization (NFV)</h2>
+
+<h4 id="section2-2-1">5.1 หลักการของ NFV</h4>
+<p>NFV ย้าย Network Functions จาก Hardware Appliance ไปเป็น Virtual Machine หรือ Container:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Traditional vs NFV:
+────────────────────
+Traditional:
+┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐
+│Router│ │FW    │ │IDS   │ │LB    │
+│HW    │ │HW    │ │HW    │ │HW    │
+└──────┘ └──────┘ └──────┘ └──────┘
+(แต่ละ Function = Hardware แยกกัน)
+
+NFV:
+┌────────────────────────────────┐
+│     Standard Server (x86)       │
+│  ┌─────┐ ┌─────┐ ┌─────┐     │
+│  │vRouter│ │vFW   │ │vIDS  │     │
+│  │(VM)   │ │(VM)  │ │(VM)  │     │
+│  └─────┘ └─────┘ └─────┘     │
+│  ┌────────────────────────┐    │
+│  │    Hypervisor (ESXi/KVM)│    │
+│  └────────────────────────┘    │
+│  ┌────────────────────────┐    │
+│  │    Server Hardware      │    │
+│  └────────────────────────┘    │
+└────────────────────────────────┘</pre>
+
+<h4 id="section2-2-2">5.2 NFV Architecture (ETSI)</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ETSI NFV Architectural Framework:
+──────────────────────────────────
+┌─────────────────────────────────────────────────┐
+│         NFV Orchestrator (NFVO)                  │
+│  ─ Lifecycle Management of NS + Resources        │
+├─────────────────────────────────────────────────┤
+│  ┌─────────────────┐  ┌──────────────────────┐  │
+│  │ VNF Manager (VNFM)│  │ Virtual Infrastructure │
+│  │ Manage VNF        │  │ Manager (VIM)         │
+│  │ (FW, LB, Router)  │  │ (OpenStack, vCenter)  │
+│  └─────────────────┘  └──────────────────────┘  │
+├─────────────────────────────────────────────────┤
+│         NFV Infrastructure (NFVI)                │
+│  ┌────────┐ ┌────────┐ ┌────────┐              │
+│  │ VNF 1  │ │ VNF 2  │ │ VNF 3  │              │
+│  │(vFW)   │ │(vIDS)  │ │(vRouter)│              │
+│  └────────┘ └────────┘ └────────┘              │
+│  ┌──────────────────────────────────────────┐   │
+│  │  Virtual Compute / Network / Storage      │   │
+│  ├──────────────────────────────────────────┤   │
+│  │  Hypervisor (KVM, ESXi)                   │   │
+│  ├──────────────────────────────────────────┤   │
+│  │  Hardware (Compute, Network, Storage)     │   │
+│  └──────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────┘</pre>
+
+<h4 id="section2-2-3">5.3 ความปลอดภัยของ NFV</h4>
+<div class="table-wrap"><table>
+  <thead><tr><th>ความกังวล</th><th>ปัญหา</th><th>แนวทางป้องกัน</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Hypervisor Escape</strong></td><td>Malware หนีจาก VM ไปยัง Hypervisor</td><td>Micro-segmentation, Hypervisor Hardening</td></tr>
+    <tr><td><strong>VNF Isolation</strong></td><td>VNF หนึ่งส่งผลกระทบ VNF อื่น</td><td>CPU Pinning, Memory Isolation</td></tr>
+    <tr><td><strong>VNF Image Tampering</strong></td><td>VNF Image ถูกแก้ไขก่อน Deploy</td><td>Image Signing + Integrity Check</td></tr>
+    <tr><td><strong>VNF Sprawl</strong></td><td>VNF จำนวนมากไม่ถูกจัดการ</td><td>VNF Lifecycle Management</td></tr>
+    <tr><td><strong>MANO Security</strong></td><td>NFV MANO Components ถูกโจมตี</td><td>RBAC, API Security</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="section2-3">6. Hybrid Cloud และ Multi-Cloud Security</h2>
+
+<h4 id="section2-3-1">6.1 Hybrid Cloud Architecture</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Hybrid Cloud:
+─────────────
+┌─────────────────────┐     ┌─────────────────────┐
+│     ON-PREMISES     │     │       CLOUD         │
+│  ┌───────────────┐  │     │  ┌───────────────┐  │
+│  │  Internal App   │  │     │  │ Cloud App     │  │
+│  │  Database       │  │     │  │ Serverless     │  │
+│  └───────┬───────┘  │     │  └───────┬───────┘  │
+│          │          │     │          │          │
+│  ┌───────▼───────┐  │     │  ┌───────▼───────┐  │
+│  │  VPN/Direct    │──│─────│──│  VPC/Gateway   │  │
+│  │  Connect       │  │     │  │  AWS DX/Azure  │  │
+│  └───────────────┘  │     │  │  ExpressRoute   │  │
+│                     │     │  └───────────────┘  │
+└─────────────────────┘     └─────────────────────┘</pre>
+
+<h4 id="section2-3-2">6.2 Multi-Cloud Architecture</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Multi-Cloud:
+────────────
+                    ┌─────────────────────────────┐
+                    │       Management Layer        │
+                    │  (Terraform, Ansible, K8s)     │
+                    └──────────────┬──────────────┘
+                                   │
+         ┌─────────────────────────┼─────────────────────────┐
+         │                         │                         │
+         ▼                         ▼                         ▼
+┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐
+│    AWS            │    │    Azure          │    │    GCP            │
+│  ┌────────────┐  │    │  ┌────────────┐  │    │  ┌────────────┐  │
+│  │ VPC        │  │    │  │ VNet       │  │    │  │ VPC        │  │
+│  │ SG         │  │    │  │ NSG        │  │    │  │ FW Rules   │  │
+│  │ IAM        │  │    │  │ RBAC       │  │    │  │ IAM        │  │
+│  │ KMS        │  │    │  │ Azure AD   │  │    │  │ CMEK       │  │
+│  └────────────┘  │    │  └────────────┘  │    │  └────────────┘  │
+│  ┌────────────┐  │    │  ┌────────────┐  │    │  ┌────────────┐  │
+│  │ CloudWatch  │  │    │  │ Azure      │  │    │  │ Operations │  │
+│  │ GuardDuty   │  │    │  │ Sentinel   │  │    │  │ Suite      │  │
+│  └────────────┘  │    │  └────────────┘  │    │  └────────────┘  │
+└──────────────────┘    └──────────────────┘    └──────────────────┘</pre>
+
+<h4 id="section2-3-3">6.3 ความท้าทายของ Hybrid/Multi-Cloud</h4>
+<div class="table-wrap"><table>
+  <thead><tr><th>ความท้าทาย</th><th>ปัญหา</th><th>แนวทางแก้ไข</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Identity Fragmentation</strong></td><td>ผู้ใช้หลาย Identity ในแต่ละ Cloud</td><td>Federated Identity (Azure AD, Okta)</td></tr>
+    <tr><td><strong>Network Connectivity</strong></td><td>VPN/Connection ระหว่าง On-premises ↔ Cloud</td><td>Direct Connect, SD-WAN</td></tr>
+    <tr><td><strong>Security Policy Consistency</strong></td><td>Policy แตกต่างกันในแต่ละ Cloud</td><td>CSPM (Cloud Security Posture Management)</td></tr>
+    <tr><td><strong>Visibility</strong></td><td>ไม่มี Dashboard กลางที่เห็นทุก Cloud</td><td>SIEM + Cloud Monitoring (Datadog, Splunk)</td></tr>
+    <tr><td><strong>Compliance</strong></td><td>ข้อมูลต้องอยู่ในประเทศ (PDPA)</td><td>Data Residency Policy, Region Restriction</td></tr>
+    <tr><td><strong>Cost Management</strong></td><td>Cloud Sprawl — Control</td><td>FinOps + Governance Policy</td></tr>
+  </tbody>
+</table></div>
+
+<h4 id="section2-3-4">6.4 เครื่องมือรักษาความปลอดภัยสำหรับ Multi-Cloud</h4>
+<div class="table-wrap"><table>
+  <thead><tr><th>เครื่องมือ</th><th>ฟังก์ชัน</th><th>Cloud ที่รองรับ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>AWS GuardDuty</strong></td><td>Threat Detection</td><td>AWS</td></tr>
+    <tr><td><strong>Azure Defender</strong></td><td>CSPM + Threat Detection</td><td>Azure</td></tr>
+    <tr><td><strong>GCP Security Command Center</strong></td><td>CSPM + Threat Detection</td><td>GCP</td></tr>
+    <tr><td><strong>Prisma Cloud (Palo Alto)</strong></td><td>CSPM + CWPP + CNAPP</td><td>Multi-Cloud</td></tr>
+    <tr><td><strong>Wiz</strong></td><td>CSPM + Vulnerability Scanning</td><td>Multi-Cloud</td></tr>
+    <tr><td><strong>Aqua Security</strong></td><td>Container + K8s Security</td><td>Multi-Cloud</td></tr>
+    <tr><td><strong>Checkov (Bridgecrew)</strong></td><td>IaC Security Scanning (Terraform, CloudFormation)</td><td>Multi-Cloud</td></tr>
+    <tr><td><strong>Crossplane</strong></td><td>Multi-Cloud Control Plane</td><td>Multi-Cloud</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="section2-4">7. กรณีศึกษา: การออกแบบเครือข่ายที่ปลอดภัยบน Cloud</h2>
+
+<h4 id="section2-4-1">7.1 ความต้องการ</h4>
+<p>องค์กรขนาดกลาง (พนักงาน 200 คน):</p>
+<ul>
+  <li>Web Application ให้บริการลูกค้า</li>
+  <li>Backend API Server</li>
+  <li>Database (PostgreSQL)</li>
+  <li>File Storage สำหรับ User Upload</li>
+  <li>CI/CD Pipeline สำหรับพัฒนา</li>
+  <li>Compliance: PDPA (ข้อมูลอยู่ไทย)</li>
+</ul>
+
+<h4 id="section2-4-2">7.2 สถาปัตยกรรมบน AWS</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>┌────────────────────────────────────────────────────────────┐
+│                    AWS Cloud                                │
+│  ┌──────────────────────────────────────────────────────┐ │
+│  │  Region: ap-southeast-1 (Singapore)                   │ │
+│  │  Region? — แต่ข้อมูลต้องอยู่ในไทย? ใช้เป็น ap-southeast-7│ │
+│  │  (Bangkok Region) ถ้ามี — หรือ Direct Connect ไปไทย   │ │
+│  └──────────────────────────────────────────────────────┘ │
+│                                                            │
+│  ┌──────────────────────────────────────────────────────┐ │
+│  │  VPC: 10.0.0.0/16                                    │ │
+│  │                                                        │ │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐│ │
+│  │  │ Public Subnet  │  │ Private      │  │ Private DB   ││ │
+│  │  │ 10.0.1.0/24   │  │ 10.0.2.0/24  │  │ 10.0.3.0/24  ││ │
+│  │  │                │  │              │  │              ││ │
+│  │  │ • ALB          │  │ • App Server │  │ • RDS        ││ │
+│  │  │ • NAT Gateway  │  │ • API Server │  │ • ElastiCache││ │
+│  │  │ • Bastion Host │  │ • ECS/Fargate│  │              ││ │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘│ │
+│  │                                                        │ │
+│  │  Security:                                              │ │
+│  │  ├── WAF (AWS WAF + OWASP CRS)                         │ │
+│  │  ├── Shield Advanced (DDoS Protection)                 │ │
+│  │  ├── GuardDuty (Threat Detection)                      │ │
+│  │  ├── Security Hub (CSPM + Compliance)                  │ │
+│  │  └── KMS (Encryption at Rest)                          │ │
+│  └──────────────────────────────────────────────────────┘ │
+│                                                            │
+│  ┌──────────────────────────────────────────────────────┐ │
+│  │  Security Policies:                                   │ │
+│  │  ├── IAM (Least Privilege — เข้าถึงเฉพาะ Resource ที่จำเป็น)│ │
+│  │  ├── S3: Block Public Access + SSE-S3 Encryption     │ │
+│  │  ├── RDS: Encryption at Rest + TLS for Connection    │ │
+│  │  ├── ALB: HTTPS Only (Redirect HTTP→HTTPS)           │ │
+│  │  ├── CloudTrail: Log API Calls ทั้งหมด                  │ │
+│  │  └── Config: Managed Rules — ตรวจสอบ Compliance     │ │
+│  └──────────────────────────────────────────────────────┘ │
+└────────────────────────────────────────────────────────────┘</pre>
+
+<h4 id="section2-4-3">7.3 Security Group Rules</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ALB SG:
+├── Inbound: 80, 443 from 0.0.0.0/0 (ผ่าน WAF)
+├── Inbound: 443 from CloudFront
+└── Outbound: 8080 → App SG
+
+App/API SG:
+├── Inbound: 8080 from ALB SG
+├── Inbound: 22 from Bastion SG (SSH)
+├── Inbound: 8443 from Jenkins SG (CI/CD Webhook)
+└── Outbound: 443 to Internet (API call ภายนอก)
+
+DB SG:
+├── Inbound: 5432 from App SG (PostgreSQL)
+├── Inbound: 6379 from App SG (Redis)
+└── Inbound: 22 from Bastion SG (SSH — Emergency)
+
+S3 Bucket Policy:
+├── Block Public Access: ✅ On
+├── Server-Side Encryption: AES-256
+├── Bucket Policy: อนุญาตเฉพาะ App Role เท่านั้น
+└── Versioning: ✅ On (สำหรับ Ransomware Protection)</pre>
+
+<h4 id="section2-4-4">7.4 บทเรียนและข้อเสนอแนะ</h4>
+<ol>
+  <li><strong>ใช้ Infrastructure as Code (IaC):</strong> Terraform หรือ AWS CDK — ทุก Resource ต้องสร้างผ่าน IaC</li>
+  <li><strong>Least Privilege IAM:</strong> ไม่ใช้ Root Account — ทุก Service ใช้ IAM Role</li>
+  <li><strong>Encryption ทุกชั้น:</strong> At Rest (KMS) + In Transit (TLS)</li>
+  <li><strong>Logging:</strong> CloudTrail + VPC Flow Logs + ALB Access Logs → ส่ง SIEM</li>
+  <li><strong>Backup:</strong> Automated Backup + Cross-Region Replication</li>
+  <li><strong>Monitoring:</strong> CloudWatch Alarm + GuardDuty + Security Hub</li>
+  <li><strong>Patch Management:</strong> Systems Manager — Patch ทุกเดือน</li>
+  <li><strong>Incident Response:</strong> CloudFormation Stack สำหรับ IR (Deploy Forensic Environment)</li>
+</ol>
+</section>
+
+<hr>
+
+<!-- SUMMARY -->
+<section id="summary" class="section-ref">
+<h2>สรุปท้ายบท (Chapter Summary)</h2>
+<ol>
+  <li><strong>Shared Responsibility Model</strong> — Cloud Provider รับผิดชอบ Security <strong>ของ</strong> Cloud, Customer รับผิดชอบ Security <strong>ใน</strong> Cloud</li>
+  <li><strong>Cloud Network Security</strong> ใช้ Security Group (Stateful, Instance Level) + NACL (Stateless, Subnet Level) + WAF + Cloud Firewall</li>
+  <li><strong>SASE</strong> รวม Network + Security Functions ใน Cloud Service เดียว — ใช้ SD-WAN + SWG + CASB + ZTNA</li>
+  <li><strong>ZTNA</strong> เข้าถึง App โดยตรง — ไม่ต้อง VPN — ใช้หลัก "Never Trust, Always Verify" + Least Privilege</li>
+  <li><strong>SDN</strong> แยก Control Plane และ Data Plane — มีความเสี่ยงเรื่อง Controller Hijack, Flow Table Flooding, API Security</li>
+  <li><strong>NFV</strong> ย้าย Network Functions จาก Hardware → VM/Container — ต้องระวัง Hypervisor Escape, VNF Isolation</li>
+  <li><strong>Hybrid/Multi-Cloud</strong> ต้องจัดการ Identity, Network, Policy, Visibility, และ Compliance — ใช้ CSPM Tools (Prisma, Wiz)</li>
+  <li><strong>กรณีศึกษา AWS</strong> แสดงแนวทาง Defense in Depth: WAF → Shield → ALB → SG → NACL → IAM → Encryption → Logging</li>
+</ol>
+</section>
+
+<hr>
+
+<!-- REVIEW QUESTIONS -->
+<section id="review-questions" class="section-ref">
+<h2>คำถามทบทวน (Review Questions)</h2>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">1</span><p>จงอธิบาย Shared Responsibility Model ในระบบคลาวด์ — เปรียบเทียบ IaaS, PaaS, SaaS ว่าคุณและ Provider รับผิดชอบอะไรบ้าง</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p>ใน <strong>IaaS</strong> Customer รับผิดชอบ Data, App, OS, Network Config, Firewall Rules ส่วน Provider รับผิดชอบ Hypervisor, Physical Network, Physical Security ใน <strong>PaaS</strong> Customer รับผิดชอบ Data และ App Code ส่วน Provider รับผิดชอบ Runtime, OS, Network, Middleware, Database ใน <strong>SaaS</strong> Customer รับผิดชอบ Data Access และ User Permissions ส่วน Provider รับผิดชอบทุกอย่างด้านล่าง</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">2</span><p>ความแตกต่างระหว่าง Security Group และ Network ACL (NACL) ใน AWS คืออะไร? จงเปรียบเทียบ Stateful/Stateless, Rule Order, และ Use Case</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>Security Group</strong> เป็น Stateful, ทำงานระดับ Instance, Allow Rules Only, ไม่เรียงลำดับ Rule, Return Traffic ผ่านอัตโนมัติ เหมาะกับ Instance Protection <strong>NACL</strong> เป็น Stateless, ทำงานระดับ Subnet, มี Allow + Deny, เรียงลำดับ Rule, ต้องเขียน Rule สำหรับ Return Traffic เหมาะกับ Subnet Protection Layer</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">3</span><p>SASE คืออะไร? จงอธิบาย components หลักของ SASE (SD-WAN, SWG, CASB, ZTNA, FWaaS, DLP)</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>SASE</strong> คือแนวคิดที่รวม Network และ Security Functions เป็น Cloud-based Service ประกอบด้วย SD-WAN (เชื่อมต่อสาขา), SWG (กรองเว็บ), CASB (ควบคุมการเข้าถึง Cloud App), ZTNA (เข้าถึง App แบบ Zero Trust), FWaaS (Firewall จาก Cloud), และ DLP (ป้องกันการสูญหายของข้อมูล)</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">4</span><p>ZTNA แตกต่างจาก VPN อย่างไร? จงอธิบายหลักการ "Never Trust, Always Verify" และ "Least Privilege"</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>VPN</strong> ให้ Full Network Access เมื่อเชื่อมต่อแล้วสามารถเข้าถึงทรัพยากรในเครือข่ายได้เกือบทั้งหมด <strong>ZTNA</strong> ให้ App-specific Access เท่านั้น ไม่มี Network-level Access โดยใช้หลัก <strong>Never Trust, Always Verify</strong> คือตรวจสอบผู้ใช้และอุปกรณ์ตลอดเวลา และ <strong>Least Privilege</strong> คือเข้าถึงเฉพาะ App ที่จำเป็น</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">5</span><p>SDN มีกี่ Layer (Application, Control, Infrastructure)? จงอธิบายความท้าทายด้านความปลอดภัยของแต่ละ Layer</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p>SDN มี 3 Layers: <strong>Application Layer</strong> (Security App, Network Policy, Load Balancer) มีความเสี่ยงจาก Malicious App <strong>Control Layer</strong> (SDN Controller) มีความเสี่ยง Controller Hijack, Single Point of Failure, DoS <strong>Infrastructure Layer</strong> (OpenFlow Switches) มีความเสี่ยง Flow Table Flooding, Data Plane Spoofing</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">6</span><p>NFV คืออะไร? จงอธิบายความแตกต่างระหว่าง Traditional Network Appliance และ NFV</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>NFV</strong> คือการย้าย Network Functions เช่น Router, Firewall, IDS, Load Balancer จาก Hardware Appliance ไปเป็น Virtual Machine หรือ Container บน Standard Server ข้อดีคือลดค่าใช้จ่าย Hardware ยืดหยุ่นในการ Deploy และ Scale แต่ต้องระวัง Hypervisor Escape, VNF Isolation, VNF Image Tampering</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">7</span><p>Hybrid Cloud และ Multi-Cloud แตกต่างกันอย่างไร? จงอธิบายความท้าทายด้านความปลอดภัยอย่างน้อย 4 ข้อ</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>Hybrid Cloud</strong> คือการเชื่อมต่อ On-premises กับ Cloud หนึ่ง Provider <strong>Multi-Cloud</strong> คือการใช้หลาย Cloud Provider พร้อมกัน ความท้าทายได้แก่ Identity Fragmentation, Network Connectivity, Security Policy Consistency, Visibility, Compliance, และ Cost Management</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">8</span><p>จงอธิบายหลักการออกแบบ Network Security สำหรับ Web Application บน Cloud — ครอบคลุม WAF, Shield, ALB, SG, NACL, IAM</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p>ออกแบบแบบ Defense in Depth: <strong>WAF</strong> กรอง Layer 7 (SQLi, XSS) <strong>Shield</strong> ป้องกัน DDoS <strong>ALB</strong> กระจายภาระและทำ HTTPS Termination <strong>SG</strong> ควบคุม Traffic ระดับ Instance <strong>NACL</strong> ควบคุมระดับ Subnet <strong>IAM</strong> ให้สิทธิ์เฉพาะที่จำเป็น (Least Privilege) รวมถึง Encryption และ Logging ทุกชั้น</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">9</span><p>จากกรณีศึกษาในบทนี้ จงอธิบายว่าเหตุใด RDS ต้องอยู่ใน Private Subnet และ SG ต้อง Allow Traffic จาก App SG เท่านั้น</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p>RDS อยู่ใน <strong>Private Subnet</strong> เพื่อไม่ให้มี Public IP และไม่สามารถเข้าถึงได้โดยตรงจากอินเทอร์เน็ต ลดพื้นที่ผิวที่ถูกโจมตี SG อนุญาต Traffic จาก <strong>App SG เท่านั้น</strong> เพื่อบังคับให้ทุกการเข้าถึง Database ต้องผ่าน Application Layer ตามหลัก Least Privilege และ Defense in Depth</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">10</span><p>จงเขียน Terraform snippet สำหรับ Security Group ที่อนุญาต HTTPS จาก ALB ไปยัง Web Server และ SSH จาก Bastion Host</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><pre style="margin:0;"><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>resource "aws_security_group" "web_sg" {
+  name        = "web_sg"
+  description = "Allow HTTPS from ALB and SSH from Bastion"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]
+    description     = "HTTPS from ALB"
+  }
+
+  ingress {
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.bastion_sg.id]
+    description     = "SSH from Bastion"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}</pre></div>
+</div>
+</section>
+
+<hr>
+
+<!-- INTERACTIVE QUIZ -->
+<section id="interactive-quiz" class="section-ref">
+<h2><i class="fas fa-clipboard-question" aria-hidden="true"></i> แบบทดสอบ (Interactive Quiz)</h2>
+<p>ทดสอบความเข้าใจด้วยคำถามปรนัย 20 ข้อ ครอบคลุมเนื้อหาทั้งหมดในบท</p>
+
+<div id="mcq-container">
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">1</span><p>ใน Shared Responsibility Model ของ IaaS ใครเป็นผู้รับผิดชอบ OS?</p></div>
+  <label class="mcq-option"><input type="radio" name="q0" value="0"> Cloud Provider</label>
+  <label class="mcq-option"><input type="radio" name="q0" value="1"> Customer</label>
+  <label class="mcq-option"><input type="radio" name="q0" value="2"> Third-party Vendor</label>
+  <label class="mcq-option"><input type="radio" name="q0" value="3"> Network Operator</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">2</span><p>ใน SaaS Provider รับผิดชอบส่วนใดต่อไปนี้?</p></div>
+  <label class="mcq-option"><input type="radio" name="q1" value="0"> Runtime, OS, Network, Middleware, Database</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="1"> Data และ App Code เท่านั้น</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="2"> Physical Security เท่านั้น</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="3"> User Permissions เท่านั้น</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">3</span><p>Security Group ใน AWS เป็น Stateful หรือ Stateless?</p></div>
+  <label class="mcq-option"><input type="radio" name="q2" value="0"> Stateful</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="1"> Stateless</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="2"> Connectionless</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="3"> Proxy-based</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">4</span><p>NACL ทำงานในระดับใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q3" value="0"> Instance Level</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="1"> Subnet Level</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="2"> Application Level</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="3"> VPC Level</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">5</span><p>Cloud WAF ป้องกันการโจมตีใดเป็นหลัก?</p></div>
+  <label class="mcq-option"><input type="radio" name="q4" value="0"> SQL Injection, XSS, OWASP Top 10</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="1"> Physical Theft</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="2"> DNS Cache Poisoning</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="3"> BGP Hijacking</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">6</span><p>SASE ถูกนิยามโดย Gartner ในปีใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q5" value="0"> 2015</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="1"> 2019</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="2"> 2021</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="3"> 2024</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">7</span><p>ข้อใดเป็นหลักการหลักของ ZTNA?</p></div>
+  <label class="mcq-option"><input type="radio" name="q6" value="0"> Never Trust, Always Verify</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="1"> Trust but Verify</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="2"> Full Network Access</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="3"> Implicit Trust ภายในเครือข่าย</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="2">
+  <div class="quiz-question"><span class="q-number">8</span><p>SDN แยกสองส่วนหลักคืออะไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q7" value="0"> LAN และ WAN</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="1"> Public และ Private</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="2"> Control Plane และ Data Plane</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="3"> TCP และ UDP</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">9</span><p>API ระหว่าง SDN Controller กับ OpenFlow Switch เรียกว่า?</p></div>
+  <label class="mcq-option"><input type="radio" name="q8" value="0"> Northbound API</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="1"> Southbound API</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="2"> Eastbound API</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="3"> Westbound API</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">10</span><p>ข้อใดเป็นแนวทางป้องกัน Controller Hijack ใน SDN?</p></div>
+  <label class="mcq-option"><input type="radio" name="q9" value="0"> Authentication + TLS ระหว่าง Controller-Switch</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="1"> ปิด Controller เมื่อไม่ใช้งาน</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="2"> ใช้ Public IP สำหรับ Controller</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="3"> ลบ Flow Table ทั้งหมด</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">11</span><p>NFV ย้าย Network Functions จาก Hardware Appliance ไปที่ใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q10" value="0"> On-premises Server Rack</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="1"> Virtual Machine หรือ Container</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="2"> Tape Backup</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="3"> Workstation ของผู้ใช้</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">12</span><p>ข้อใดเป็นแนวทางป้องกัน Hypervisor Escape?</p></div>
+  <label class="mcq-option"><input type="radio" name="q11" value="0"> Micro-segmentation, Hypervisor Hardening</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="1"> เปิด RDP ทุก VM</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="2"> ใช้ VM เดียวทั้งหมด</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="3"> ปิดการ Update Hypervisor</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="2">
+  <div class="quiz-question"><span class="q-number">13</span><p>องค์ประกอบใดใน NFV Architecture รับผิดชอบ Lifecycle Management?</p></div>
+  <label class="mcq-option"><input type="radio" name="q12" value="0"> VIM</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="1"> VNFM</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="2"> NFVO</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="3"> NFVI</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">14</span><p>Hybrid Cloud เชื่อมต่อ On-premises กับ Cloud ผ่านอะไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q13" value="0"> VPN/Direct Connect</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="1"> Bluetooth</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="2"> Infrared</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="3"> NFC</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">15</span><p>ความท้าทายใดของ Multi-Cloud ที่แก้ไขด้วย Federated Identity?</p></div>
+  <label class="mcq-option"><input type="radio" name="q14" value="0"> Network Connectivity</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="1"> Identity Fragmentation</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="2"> Cost Management</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="3"> Data Residency</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="2">
+  <div class="quiz-question"><span class="q-number">16</span><p>เครื่องมือใดใช้สำหรับ IaC Security Scanning?</p></div>
+  <label class="mcq-option"><input type="radio" name="q15" value="0"> AWS GuardDuty</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="1"> Azure Sentinel</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="2"> Checkov</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="3"> CloudWatch</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">17</span><p>ข้อใดเป็น Cloud Misconfiguration ที่พบบ่อย?</p></div>
+  <label class="mcq-option"><input type="radio" name="q16" value="0"> S3 Bucket Public Read</label>
+  <label class="mcq-option"><input type="radio" name="q16" value="1"> การใช้ KMS Encryption</label>
+  <label class="mcq-option"><input type="radio" name="q16" value="2"> การเปิด CloudTrail</label>
+  <label class="mcq-option"><input type="radio" name="q16" value="3"> การ Block Public Access</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">18</span><p>ในกรณีศึกษา AWS RDS ควรอยู่ใน Subnet ประเภทใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q17" value="0"> Public Subnet</label>
+  <label class="mcq-option"><input type="radio" name="q17" value="1"> Private Subnet</label>
+  <label class="mcq-option"><input type="radio" name="q17" value="2"> DMZ Subnet</label>
+  <label class="mcq-option"><input type="radio" name="q17" value="3"> Isolated Subnet แยกจาก VPC</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">19</span><p>ข้อใดเป็นเป้าหมายของการใช้ S3 Block Public Access?</p></div>
+  <label class="mcq-option"><input type="radio" name="q18" value="0"> ป้องกันไม่ให้ Bucket เปิด Public โดยไม่ตั้งใจ</label>
+  <label class="mcq-option"><input type="radio" name="q18" value="1"> เพิ่มความเร็วในการเข้าถึง</label>
+  <label class="mcq-option"><input type="radio" name="q18" value="2"> ลดค่าใช้จ่าย Storage</label>
+  <label class="mcq-option"><input type="radio" name="q18" value="3"> ยกเลิก Encryption</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">20</span><p>ข้อใดเป็นแนวทางที่ถูกต้องสำหรับ SDN Southbound API?</p></div>
+  <label class="mcq-option"><input type="radio" name="q19" value="0"> ใช้ HTTP ธรรมดา</label>
+  <label class="mcq-option"><input type="radio" name="q19" value="1"> ใช้ mTLS</label>
+  <label class="mcq-option"><input type="radio" name="q19" value="2"> ไม่ต้อง Authenticate</label>
+  <label class="mcq-option"><input type="radio" name="q19" value="3"> เปิด Port ไว้ทั้งหมด</label>
+</div>
+
+</div>
+
+<div class="mcq-score-panel">
+  <p>คะแนนของคุณ</p>
+  <div class="score-number" id="score-number">0/20</div>
+  <p style="font-size:.85rem;color:var(--text-secondary);margin-top:.25rem;">เลือกคำตอบแล้วกด "ตรวจคำตอบ"</p>
+</div>
+<div style="text-align:center;margin:1rem 0;">
+  <button id="check-mcq-btn" class="reveal-btn" style="font-size:1rem;padding:.6rem 1.5rem;"><i class="fas fa-check-circle" aria-hidden="true"></i> ตรวจคำตอบ</button>
+  <button id="reset-mcq-btn" class="reveal-btn" style="font-size:1rem;padding:.6rem 1.5rem;background:var(--text-muted);margin-left:.5rem;"><i class="fas fa-rotate-right" aria-hidden="true"></i> เริ่มใหม่</button>
+</div>
+<div id="mcq-result" class="quiz-card" style="display:none;"></div>
+</section>
+
+<hr>
+
+<!-- REFERENCES -->
+<section id="references" class="section-ref">
+<h2>เอกสารอ้างอิง (References)</h2>
+<ol>
+  <li>NIST Special Publication 800-207. (2020). <em>Zero Trust Architecture</em>. National Institute of Standards and Technology.</li>
+  <li>Stallings, W. (2022). <em>Cryptography and Network Security: Principles and Practice</em> (8th ed.). Chapter 23: Cloud and IoT Security. Pearson.</li>
+  <li>Gartner. (2019). <em>The Future of Network Security is in the Cloud</em>. Gartner Research.</li>
+  <li>AWS Documentation. (2024). <em>AWS Security Best Practices</em>. Amazon Web Services. Retrieved from https://docs.aws.amazon.com/</li>
+  <li>Microsoft Azure Documentation. (2024). <em>Azure Network Security</em>. Retrieved from https://docs.microsoft.com/en-us/azure/</li>
+  <li>Google Cloud Documentation. (2024). <em>Google Cloud Network Security</em>. Retrieved from https://cloud.google.com/docs/</li>
+  <li>ONF (Open Networking Foundation). (2015). <em>SDN Architecture Overview</em>. Open Networking Foundation.</li>
+  <li>ETSI NFV ISG. (2014). <em>Network Functions Virtualisation (NFV): Architectural Framework</em>.</li>
+  <li>Kreutz, D., et al. (2015). "Software-Defined Networking: A Comprehensive Survey." <em>Proceedings of the IEEE, 103(1)</em>.</li>
+  <li>CSA (Cloud Security Alliance). (2024). <em>Cloud Controls Matrix (CCM)</em>. Retrieved from https://cloudsecurityalliance.org/</li>
+</ol>
+</section>
+
+</main>
+</div>
+<footer class="site-footer">
+  <p><i class="fas fa-shield-halved" aria-hidden="true"></i> Network Security — บทที่ 13 | CH-13: การรักษาความปลอดภัยสำหรับระบบคลาวด์ และ Software-Defined Networking (SDN)</p>
+  <p style="margin-top:.25rem;font-size:.75rem;">เนื้อหาจัดทำเพื่อการศึกษา สำหรับใช้ในชั้นเรียนเท่านั้น</p>
+</footer>
+<button id="back-to-top" aria-label="กลับไปด้านบน" title="กลับไปด้านบน"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+<script>
+(function(){
+  'use strict';
+
+  // Loading screen
+  document.addEventListener('DOMContentLoaded', function(){
+    var loader = document.getElementById('loading-screen');
+    if(loader){
+      setTimeout(function(){
+        loader.classList.add('hidden');
+      }, 400);
+    }
+  });
+
+  // Dark mode toggle
+  var themeToggle = document.getElementById('dark-mode-toggle');
+  var html = document.documentElement;
+  var savedTheme = localStorage.getItem('ns-ch13-theme');
+  if(savedTheme === 'dark'){ html.setAttribute('data-theme','dark'); }
+  function updateThemeIcon(){
+    if(!themeToggle) return;
+    var icon = themeToggle.querySelector('i');
+    if(html.getAttribute('data-theme') === 'dark'){
+      icon.className = 'fas fa-sun';
+      themeToggle.setAttribute('title','สลับโหมดสว่าง');
+    } else {
+      icon.className = 'fas fa-moon';
+      themeToggle.setAttribute('title','สลับโหมดมืด');
+    }
+  }
+  updateThemeIcon();
+  if(themeToggle){
+    themeToggle.addEventListener('click', function(){
+      if(html.getAttribute('data-theme') === 'dark'){
+        html.removeAttribute('data-theme');
+        localStorage.setItem('ns-ch13-theme','light');
+      } else {
+        html.setAttribute('data-theme','dark');
+        localStorage.setItem('ns-ch13-theme','dark');
+      }
+      updateThemeIcon();
+    });
+  }
+
+  // Sidebar toggle (mobile)
+  var sidebarToggle = document.getElementById('sidebar-toggle');
+  var sidebar = document.getElementById('sidebar');
+  var sidebarOverlay = document.getElementById('sidebar-overlay');
+  function openSidebar(){
+    if(sidebar) sidebar.classList.add('open');
+    if(sidebarOverlay) sidebarOverlay.classList.add('active');
+    if(sidebarToggle) sidebarToggle.setAttribute('aria-expanded','true');
+  }
+  function closeSidebar(){
+    if(sidebar) sidebar.classList.remove('open');
+    if(sidebarOverlay) sidebarOverlay.classList.remove('active');
+    if(sidebarToggle) sidebarToggle.setAttribute('aria-expanded','false');
+  }
+  if(sidebarToggle){ sidebarToggle.addEventListener('click', function(){ if(sidebar.classList.contains('open')) closeSidebar(); else openSidebar(); }); }
+  if(sidebarOverlay){ sidebarOverlay.addEventListener('click', closeSidebar); }
+
+  // Search overlay
+  var searchToggle = document.getElementById('search-toggle-btn');
+  var searchOverlay = document.getElementById('search-overlay');
+  var searchClose = document.getElementById('search-close-btn');
+  var searchInput = document.getElementById('search-input');
+  var searchResults = document.getElementById('search-results');
+  var searchCount = document.getElementById('search-count');
+  var mainContent = document.getElementById('main-content');
+  var searchIndex = [];
+
+  function buildSearchIndex(){
+    searchIndex = [];
+    if(!mainContent) return;
+    var sections = mainContent.querySelectorAll('section, .learning-objectives');
+    sections.forEach(function(sec){
+      var heading = sec.querySelector('h1, h2, h3, h4');
+      var id = sec.id || (heading && heading.id) || '';
+      var text = sec.textContent || '';
+      text = text.replace(/\s+/g,' ').trim();
+      if(!id && heading){
+        id = heading.id;
+      }
+      if(id && text.length > 30){
+        searchIndex.push({id:id, heading: heading ? heading.textContent.trim() : 'เนื้อหา', text:text});
+      }
+    });
+  }
+
+  function highlightText(text, query){
+    var regex = new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+    return text.replace(regex,'<mark>$1</mark>');
+  }
+
+  function openSearch(){
+    if(searchOverlay) searchOverlay.classList.add('active');
+    if(searchInput){ searchInput.value = ''; searchInput.focus(); }
+    if(searchResults) searchResults.innerHTML = '';
+    if(searchCount) searchCount.textContent = '';
+    buildSearchIndex();
+  }
+  function closeSearch(){
+    if(searchOverlay) searchOverlay.classList.remove('active');
+  }
+  if(searchToggle){ searchToggle.addEventListener('click', openSearch); }
+  if(searchClose){ searchClose.addEventListener('click', closeSearch); }
+  if(searchOverlay){
+    searchOverlay.addEventListener('click', function(e){ if(e.target === searchOverlay) closeSearch(); });
+  }
+  document.addEventListener('keydown', function(e){
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+      e.preventDefault();
+      if(searchOverlay && searchOverlay.classList.contains('active')) closeSearch(); else openSearch();
+    }
+    if(e.key === 'Escape'){
+      closeSearch();
+      closeSidebar();
+    }
+  });
+
+  if(searchInput){
+    searchInput.addEventListener('input', function(){
+      var query = this.value.trim();
+      if(!query || query.length < 2){ searchResults.innerHTML = ''; searchCount.textContent = ''; return; }
+      var qLower = query.toLowerCase();
+      var matches = searchIndex.filter(function(item){ return item.text.toLowerCase().indexOf(qLower) !== -1; }).slice(0,12);
+      searchCount.textContent = matches.length + ' ผลลัพธ์';
+      if(matches.length === 0){ searchResults.innerHTML = '<div class="no-results">ไม่พบผลลัพธ์</div>'; return; }
+      var htmlOut = '';
+      matches.forEach(function(item){
+        var idx = item.text.toLowerCase().indexOf(qLower);
+        var snippet = item.text.substring(Math.max(0, idx - 60), Math.min(item.text.length, idx + 160));
+        htmlOut += '<div class="search-result-item" data-target="'+item.id+'">'+
+          '<div class="result-heading">'+highlightText(item.heading, query)+'</div>'+
+          '<div class="result-snippet">...'+highlightText(snippet, query)+'...</div>'+
+          '</div>';
+      });
+      searchResults.innerHTML = htmlOut;
+      searchResults.querySelectorAll('.search-result-item').forEach(function(item){
+        item.addEventListener('click', function(){
+          var target = this.getAttribute('data-target');
+          closeSearch();
+          var el = document.getElementById(target);
+          if(el){ el.scrollIntoView({behavior:'smooth'}); }
+        });
+      });
+    });
+  }
+
+  // Progress bar
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    if(!progressBar || !mainContent) return;
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+    progressBar.setAttribute('aria-valuenow', Math.round(pct));
+  }
+
+  // Back to top
+  var backToTop = document.getElementById('back-to-top');
+  function updateBackToTop(){
+    if(!backToTop) return;
+    if((window.scrollY || document.documentElement.scrollTop) > 300){ backToTop.classList.add('visible'); }
+    else { backToTop.classList.remove('visible'); }
+  }
+  if(backToTop){ backToTop.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); }); }
+
+  // TOC scroll spy
+  var tocLinks = document.querySelectorAll('.toc-link[data-target]');
+  var sectionRefs = document.querySelectorAll('.section-ref[id]');
+  function updateActiveToc(){
+    var scrollPos = (window.scrollY || document.documentElement.scrollTop) + 100;
+    var current = '';
+    sectionRefs.forEach(function(sec){
+      if(sec.offsetTop <= scrollPos){ current = sec.id; }
+    });
+    tocLinks.forEach(function(link){
+      link.classList.remove('active');
+      if(link.getAttribute('data-target') === current){ link.classList.add('active'); }
+    });
+  }
+
+  window.addEventListener('scroll', function(){
+    updateProgress();
+    updateBackToTop();
+    updateActiveToc();
+  });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+  updateActiveToc();
+
+  // Copy code buttons
+  window.copyCode = function(btn){
+    var pre = btn.closest('pre');
+    if(!pre) return;
+    var codeText = pre.textContent.replace(/^\s*คัดลอก\s*/,'').trim();
+    navigator.clipboard.writeText(codeText).then(function(){
+      var original = btn.innerHTML;
+      btn.classList.add('copied');
+      btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+      setTimeout(function(){ btn.classList.remove('copied'); btn.innerHTML = original; }, 2000);
+    }).catch(function(){
+      var textarea = document.createElement('textarea');
+      textarea.value = codeText;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      var original = btn.innerHTML;
+      btn.classList.add('copied');
+      btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+      setTimeout(function(){ btn.classList.remove('copied'); btn.innerHTML = original; }, 2000);
+    });
+  };
+
+  // Review questions toggle
+  window.toggleAnswer = function(btn){
+    var card = btn.closest('.quiz-card');
+    var answer = card.querySelector('.quiz-answer');
+    if(answer.classList.contains('hidden')){
+      answer.classList.remove('hidden');
+      card.classList.add('revealed');
+      btn.innerHTML = '<i class="fas fa-eye-slash" aria-hidden="true"></i> ซ่อนเฉลย';
+    } else {
+      answer.classList.add('hidden');
+      card.classList.remove('revealed');
+      btn.innerHTML = '<i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย';
+    }
+  };
+
+  // MCQ Quiz
+  var checkBtn = document.getElementById('check-mcq-btn');
+  var resetBtn = document.getElementById('reset-mcq-btn');
+  var scoreNumber = document.getElementById('score-number');
+  var mcqResult = document.getElementById('mcq-result');
+  var mcqItems = document.querySelectorAll('.mcq-item');
+
+  function checkMcq(){
+    var score = 0;
+    var total = mcqItems.length;
+    mcqItems.forEach(function(item){
+      var correct = parseInt(item.getAttribute('data-correct'),10);
+      var selected = item.querySelector('input[type="radio"]:checked');
+      var options = item.querySelectorAll('.mcq-option');
+      options.forEach(function(opt, idx){
+        opt.classList.remove('correct-opt','wrong-opt');
+        if(idx === correct){ opt.classList.add('correct-opt'); }
+      });
+      item.classList.remove('correct','wrong');
+      if(!selected){ item.classList.add('wrong'); }
+      else if(parseInt(selected.value,10) === correct){
+        score++;
+        item.classList.add('correct');
+      } else {
+        item.classList.add('wrong');
+        selected.closest('.mcq-option').classList.add('wrong-opt');
+      }
+    });
+    if(scoreNumber){ scoreNumber.textContent = score + '/' + total; }
+    if(mcqResult){
+      var pct = Math.round((score/total)*100);
+      var msg = '';
+      if(pct >= 80) msg = 'ยอดเยี่ยม! คุณเข้าใจเนื้อหาบทนี้เป็นอย่างดี';
+      else if(pct >= 60) msg = 'ผ่านเกณฑ์ แต่ควรทบทวนจุดที่ตอบผิดอีกครั้ง';
+      else msg = 'ควรทบทวนเนื้อหาในบทนี้เพิ่มเติม';
+      mcqResult.className = 'quiz-card ' + (pct >= 60 ? 'success' : 'fail');
+      mcqResult.style.display = 'block';
+      mcqResult.innerHTML = '<strong>ผลลัพธ์:</strong> ' + score + '/' + total + ' (' + pct + '%) — ' + msg;
+    }
+    if(mcqResult){ mcqResult.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+  }
+
+  function resetMcq(){
+    mcqItems.forEach(function(item){
+      item.classList.remove('correct','wrong');
+      item.querySelectorAll('.mcq-option').forEach(function(opt){ opt.classList.remove('correct-opt','wrong-opt'); });
+      item.querySelectorAll('input[type="radio"]').forEach(function(r){ r.checked = false; });
+    });
+    if(scoreNumber){ scoreNumber.textContent = '0/20'; }
+    if(mcqResult){ mcqResult.style.display = 'none'; mcqResult.innerHTML = ''; }
+  }
+
+  if(checkBtn){ checkBtn.addEventListener('click', checkMcq); }
+  if(resetBtn){ resetBtn.addEventListener('click', resetMcq); }
+
+})();
+</script>
+</body>
+</html>
