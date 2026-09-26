@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-14: Network Access Control (NAC), Endpoint Security และ IoT Security | วิชา Network Security</title>
+<meta name="description" content="บทที่ 14 วิชา Network Security — Network Access Control (NAC), 802.1X, EAP, RADIUS, EDR, XDR, MDM, BYOD, IoT Security, OT Security, Network Segmentation, IoT Botnet (Mirai, Mozi)">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "CH-14: Network Access Control (NAC), Endpoint Security และ IoT Security",
+  "description": "บทที่ 14 ของวิชา Network Security — ครอบคลุม Network Access Control (NAC), 802.1X, EAP, RADIUS, EDR, XDR, MDM, BYOD Policy, IoT Security, OT Security, OWASP IoT Top 10, Network Segmentation สำหรับ IoT, IoT Gateway, กรณีศึกษา Mirai Botnet และ Mozi Botnet",
+  "educationalLevel": "Undergraduate",
+  "educationalRole": "Instructor",
+  "teaches": [
+    "Network Access Control",
+    "NAC",
+    "802.1X",
+    "EAP",
+    "RADIUS",
+    "EDR",
+    "XDR",
+    "Endpoint Detection and Response",
+    "Extended Detection and Response",
+    "MDM",
+    "Mobile Device Management",
+    "BYOD",
+    "IoT Security",
+    "OT Security",
+    "OWASP IoT Top 10",
+    "Network Segmentation",
+    "IoT Gateway",
+    "Mirai Botnet",
+    "Mozi Botnet"
+  ],
+  "inLanguage": "th"
+}
+</script>
+<style>
+:root{--primary:#1a3a5c;--primary-dark:#0f2440;--primary-light:#2c5a8c;--accent:#2563eb;--accent-hover:#1d4ed8;--bg:#ffffff;--bg-secondary:#f8fafc;--bg-tertiary:#f1f5f9;--text:#1e293b;--text-secondary:#475569;--text-muted:#94a3b8;--border:#e2e8f0;--border-light:#f1f5f9;--code-bg:#0f172a;--code-text:#e2e8f0;--table-stripe:#f8fafc;--sidebar-bg:#f8fafc;--sidebar-border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);--radius:8px;--radius-sm:4px;--radius-lg:12px;--font-thai:'Sarabun','IBM Plex Sans Thai','Kanit','Noto Sans Thai',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--font-mono:'JetBrains Mono','Fira Code','Cascadia Code','Source Code Pro','Menlo','Consolas',monospace;--transition:0.2s ease;--header-height:64px;--toc-width:280px}
+[data-theme="dark"]{--primary:#60a5fa;--primary-dark:#1e3a5f;--accent:#3b82f6;--accent-hover:#60a5fa;--bg:#0f172a;--bg-secondary:#1e293b;--bg-tertiary:#334155;--text:#f1f5f9;--text-secondary:#cbd5e1;--text-muted:#64748b;--border:#334155;--code-bg:#020617;--table-stripe:#1e293b;--sidebar-bg:#1e293b;--sidebar-border:#334155;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+h1,h2,h3,h4,h5,h6{line-height:1.3;font-weight:700;color:var(--text);margin-top:1.5em;margin-bottom:.75em}
+h1{font-size:2.25rem;margin-top:0}
+h2{font-size:1.75rem;border-bottom:2px solid var(--border);padding-bottom:.4em}
+h3{font-size:1.35rem}
+h4{font-size:1.1rem}
+p{margin-bottom:1em}
+hr{border:none;border-top:2px solid var(--border);margin:2.5em 0}
+strong,b{font-weight:700}
+ul,ol{margin-bottom:1em;padding-left:1.5em}
+li{margin-bottom:.35em}
+#loading-screen{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s ease}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-secondary);font-size:1rem}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#818cf8);z-index:9998;width:0%;transition:width .15s ease-out}
+.top-nav{position:fixed;top:3px;left:0;right:0;z-index:9997;height:var(--header-height);background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-nav .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem;color:var(--text);white-space:nowrap}
+.top-nav .logo i{color:var(--accent);font-size:1.3rem}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-actions button,.nav-actions .search-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:1rem}
+.nav-actions button:hover,.nav-actions .search-toggle:hover{background:var(--bg-tertiary);color:var(--text);border-color:var(--text-muted)}
+#sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.search-overlay{position:fixed;inset:0;z-index:9996;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(4px)}
+.search-overlay.active{display:flex}
+.search-panel{background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:90%;max-width:640px;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
+.search-input-wrap{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);gap:.5rem}
+.search-input-wrap i{color:var(--text-muted)}
+.search-input-wrap input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:1rem;font-family:var(--font-thai)}
+.search-input-wrap input::placeholder{color:var(--text-muted)}
+.search-count{font-size:.8rem;color:var(--text-muted);white-space:nowrap;padding:.25rem .5rem;background:var(--bg-tertiary);border-radius:var(--radius-sm)}
+.search-results{overflow-y:auto;padding:.5rem;flex:1;max-height:50vh}
+.search-results .no-results{padding:2rem;text-align:center;color:var(--text-muted)}
+.search-result-item{padding:.75rem;border-radius:var(--radius);cursor:pointer;transition:background .2s ease;border-bottom:1px solid var(--border-light)}
+.search-result-item:hover{background:var(--bg-tertiary)}
+.search-result-item .result-heading{font-weight:600;font-size:.9rem;color:var(--accent);margin-bottom:.2rem}
+.search-result-item .result-snippet{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.search-result-item .result-snippet mark,.highlight{background:#fef08a;color:#1e293b;padding:0 2px;border-radius:2px}
+[data-theme="dark"] .search-result-item .result-snippet mark,[data-theme="dark"] .highlight{background:#854d0e;color:#fef9c3}
+.layout{display:flex;padding-top:calc(var(--header-height) + 3px);min-height:100vh}
+.sidebar{width:var(--toc-width);flex-shrink:0;position:sticky;top:calc(var(--header-height) + 3px);height:calc(100vh - var(--header-height) - 3px);overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:1.25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--text-muted) transparent;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:4px}
+.sidebar-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{margin-bottom:.15rem}
+.toc-link{display:block;padding:.4rem .6rem;border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-secondary);transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;line-height:1.4}
+.toc-link:hover{background:var(--bg-tertiary);color:var(--text);text-decoration:none}
+.toc-link.active{color:var(--accent);background:rgba(37,99,235,.08);border-left-color:var(--accent);font-weight:600}
+.toc-link.sub{padding-left:1.4rem;font-size:.8rem}
+.toc-link.sub2{padding-left:2.2rem;font-size:.78rem}
+.main-content{flex:1;min-width:0;padding:2rem 2.5rem;max-width:calc(100vw - var(--toc-width))}
+.main-content>section{margin-bottom:2.5rem}
+.section-ref{scroll-margin-top:calc(var(--header-height) + 16px)}
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:2.5rem 2rem;border-radius:var(--radius-lg);margin-bottom:2.5rem}
+.hero h1{color:#fff;font-size:2rem;margin-bottom:.5rem}
+.hero .subtitle{color:rgba(255,255,255,.85);font-size:1.1rem;margin-bottom:1.25rem}
+.hero .meta-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.hero .meta-tag{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);padding:.25rem .75rem;border-radius:20px;font-size:.8rem}
+.learning-objectives{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+.learning-objectives h3{margin-top:0;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.learning-objectives ol{margin:.75rem 0 0;padding-left:1.25rem}
+.learning-objectives li{margin-bottom:.5rem;color:var(--text-secondary);font-size:.95rem}
+.table-wrap{overflow-x:auto;margin:1.25em 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}
+thead{background:var(--bg-tertiary)}
+th,td{padding:.6rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}
+th{font-weight:700;color:var(--text)}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+tbody tr:hover{background:var(--bg-tertiary)}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:1.25em 0;position:relative}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+code{background:var(--bg-tertiary);color:var(--accent);padding:.15em .4em;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.85em}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:0}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.expandable{margin:1.25em 0}
+.expandable-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease;user-select:none;font-weight:600;font-size:.95rem}
+.expandable-header:hover{background:var(--border)}
+.expandable-header i{transition:transform .2s ease;font-size:.85rem;color:var(--text-muted)}
+.expandable.expanded .expandable-header i{transform:rotate(180deg)}
+.expandable-content{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;border:1px solid transparent}
+.expandable.expanded .expandable-content{max-height:50000px;padding:1rem;border-color:var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.quiz-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:all .2s ease}
+.quiz-card.revealed{border-left:4px solid #22c55e}
+.quiz-question{display:flex;gap:.75rem;align-items:flex-start}
+.q-number{background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.quiz-question p{margin:0;font-weight:500;color:var(--text);font-size:.95rem}
+.quiz-card .reveal-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-family:var(--font-thai);transition:all .2s ease}
+.quiz-card .reveal-btn:hover{background:var(--accent-hover)}
+.quiz-card.revealed .reveal-btn{background:var(--text-muted)}
+.quiz-answer{margin-top:.75rem;padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border);font-size:.9rem}
+.hidden{display:none}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:9995;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-lg);transition:all .2s ease;opacity:0;visibility:hidden;transform:translateY(10px)}
+#back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+#back-to-top:hover{background:var(--accent-hover);transform:translateY(-2px)}
+.site-footer{margin-top:3rem;padding:1.5rem 2rem;background:var(--bg-secondary);border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+@media print{.top-nav,.sidebar,#back-to-top,#progress-bar,.copy-btn,.search-overlay,#sidebar-toggle,.nav-actions{display:none!important}.layout{display:block;padding-top:0}.main-content{max-width:100%;padding:0}.hero{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hero h1,.hero .subtitle{color:#fff!important}table{font-size:.8rem}pre{white-space:pre-wrap;word-break:break-all}.expandable-content{max-height:none!important;padding:1rem!important;border-color:var(--border)!important}.expandable-header i{display:none}.table-wrap{overflow:visible}.quiz-answer.hidden{display:block!important}.quiz-card .reveal-btn{display:none}body{font-size:11pt}section{page-break-inside:avoid}h2,h3{page-break-after:avoid}}
+@media(max-width:1024px){:root{--toc-width:240px}.main-content{padding:1.5rem}}
+@media(max-width:768px){:root{--toc-width:0px}#sidebar-toggle{display:flex}.sidebar{position:fixed;left:-280px;top:calc(var(--header-height) + 3px);width:280px;height:calc(100vh - var(--header-height) - 3px);transition:left .3s ease;z-index:9990;box-shadow:var(--shadow-lg)}.sidebar.open{left:0}.sidebar-overlay{position:fixed;inset:0;z-index:9989;background:rgba(0,0,0,.4);display:none}.sidebar-overlay.active{display:block}.main-content{max-width:100%;padding:1rem}.hero{padding:1.5rem 1rem}.hero h1{font-size:1.5rem}h2{font-size:1.4rem}h3{font-size:1.15rem}.top-nav{padding:0 .75rem}.top-nav .logo{font-size:.85rem}table{font-size:.8rem}th,td{padding:.4rem .6rem}.quiz-card{padding:1rem}}
+@media(max-width:480px){.nav-actions button,.nav-actions .search-toggle{width:36px;height:36px}#back-to-top{bottom:1rem;right:1rem;width:40px;height:40px}.search-panel{width:95%}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.mcq-item .mcq-option{display:block;margin:.35rem 0;padding:.5rem .75rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease}
+.mcq-item .mcq-option:hover{background:var(--bg-tertiary)}
+.mcq-item .mcq-option input{margin-right:.5rem;cursor:pointer}
+.mcq-item.correct{border-left:4px solid #22c55e}
+.mcq-item.wrong{border-left:4px solid #ef4444}
+.mcq-option.correct-opt{background:#dcfce7 !important;border-color:#22c55e !important;color:#14532d}
+.mcq-option.wrong-opt{background:#fee2e2 !important;border-color:#ef4444 !important;color:#7f1d1d}
+#mcq-result.success{background:#dcfce7;border-color:#22c55e}
+#mcq-result.fail{background:#fee2e2;border-color:#ef4444}
+.mcq-score-panel{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin:1rem 0;text-align:center}
+.mcq-score-panel .score-number{font-size:2rem;font-weight:700;color:var(--accent)}
+</style>
+</head>
+<body>
+<div id="loading-screen" role="status" aria-label="กำลังโหลดเนื้อหา">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">กำลังโหลดเนื้อหา...</div>
+</div>
+<div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้าการอ่าน"></div>
+<header class="top-nav" role="banner">
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button id="sidebar-toggle" aria-label="เปิดเมนูสารบัญ" aria-expanded="false"><i class="fas fa-bars"></i></button>
+    <div class="logo"><i class="fas fa-shield-halved" aria-hidden="true"></i><span>Network Security — บทที่ 14</span></div>
+  </div>
+  <div class="nav-actions">
+    <button class="search-toggle" id="search-toggle-btn" aria-label="ค้นหา" title="ค้นหา (Ctrl+K / ⌘K)"><i class="fas fa-search" aria-hidden="true"></i></button>
+    <button id="dark-mode-toggle" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง"><i class="fas fa-moon" aria-hidden="true"></i></button>
+  </div>
+</header>
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="ค้นหาเนื้อหา">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="ค้นหาในเนื้อหาทั้งหมด..." aria-label="ป้อนคำค้นหา" autocomplete="off">
+      <span class="search-count" id="search-count"></span>
+      <button id="search-close-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;" aria-label="ปิดค้นหา"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="layout">
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-title"><i class="fas fa-list" aria-hidden="true"></i> สารบัญ</div>
+  <ul class="toc-list" id="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#hero-section" data-target="hero-section">บทนำ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#learning-objectives" data-target="learning-objectives">วัตถุประสงค์การเรียนรู้</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section1" data-target="section1">ส่วนที่ 1: Network Access Control (NAC)</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-1" data-target="section1-1">1. หลักการของ NAC</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-1-1" data-target="section1-1-1">1.1 NAC คืออะไร</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-1-2" data-target="section1-1-2">1.2 NAC Policy Enforcement</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-1-3" data-target="section1-1-3">1.3 Cisco ISE</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-2" data-target="section1-2">2. 802.1X, EAP, และ RADIUS</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-2-1" data-target="section1-2-1">2.1 802.1X สำหรับ Wired Network</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-2-2" data-target="section1-2-2">2.2 MAC Authentication Bypass (MAB)</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section1-2-3" data-target="section1-2-3">2.3 RADIUS CoA</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section2" data-target="section2">ส่วนที่ 2: Endpoint Security</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-1" data-target="section2-1">3. EDR</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-1-1" data-target="section2-1-1">3.1 หลักการของ EDR</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-1-2" data-target="section2-1-2">3.2 EDR vs Antivirus</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-1-3" data-target="section2-1-3">3.3 EDR Solutions</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-1-4" data-target="section2-1-4">3.4 ตัวอย่าง EDR Detection</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-2" data-target="section2-2">4. XDR</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-2-1" data-target="section2-2-1">4.1 หลักการของ XDR</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-2-2" data-target="section2-2-2">4.2 EDR vs XDR</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-2-3" data-target="section2-2-3">4.3 ตัวอย่าง XDR Detection</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-3" data-target="section2-3">5. MDM</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-3-1" data-target="section2-3-1">5.1 หลักการของ MDM</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-3-2" data-target="section2-3-2">5.2 BYOD Policy</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-3-3" data-target="section2-3-3">5.3 iOS vs Android Security</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section2-3-4" data-target="section2-3-4">5.4 Pegasus Spyware</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section3" data-target="section3">ส่วนที่ 3: IoT Security และ OT Security</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-1" data-target="section3-1">6. IoT Security Challenges</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section3-1-1" data-target="section3-1-1">6.1 ลักษณะของ IoT Devices</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section3-1-2" data-target="section3-1-2">6.2 OWASP IoT Top 10</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section3-1-3" data-target="section3-1-3">6.3 OT Security</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-2" data-target="section3-2">7. Network Segmentation สำหรับ IoT</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section3-2-1" data-target="section3-2-1">7.1 IoT VLAN Design</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section3-2-2" data-target="section3-2-2">7.2 ACL Rules for IoT</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section3-2-3" data-target="section3-2-3">7.3 IoT Gateway Architecture</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-3" data-target="section3-3">8. กรณีศึกษา: IoT Botnet</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section3-3-1" data-target="section3-3-1">8.1 Mirai Botnet</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section3-3-2" data-target="section3-3-2">8.2 Mozi Botnet</a></li>
+    <li class="toc-item"><a class="toc-link sub2" href="#section3-3-3" data-target="section3-3-3">8.3 แนวทางการป้องกัน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#summary" data-target="summary">สรุปท้ายบท</a></li>
+    <li class="toc-item"><a class="toc-link" href="#review-questions" data-target="review-questions">คำถามทบทวน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#interactive-quiz" data-target="interactive-quiz">แบบทดสอบ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#references" data-target="references">เอกสารอ้างอิง</a></li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content" role="main">
+
+<section id="hero-section" class="hero section-ref">
+  <h1><i class="fas fa-network-wired" aria-hidden="true"></i> CH-14: Network Access Control (NAC), Endpoint Security และ IoT Security</h1>
+  <p class="subtitle">NAC, 802.1X, RADIUS, EDR, XDR, MDM, BYOD, IoT Security, OT Security, Network Segmentation, IoT Botnet (Mirai, Mozi)</p>
+  <div class="meta-tags">
+    <span class="meta-tag"><i class="fas fa-graduation-cap" aria-hidden="true"></i> วิชา Network Security</span>
+    <span class="meta-tag"><i class="fas fa-calendar" aria-hidden="true"></i> ภาคเรียนที่ 1/2569</span>
+    <span class="meta-tag"><i class="fas fa-book-open" aria-hidden="true"></i> บทที่ 14</span>
+  </div>
+</section>
+
+<div class="learning-objectives section-ref" id="learning-objectives">
+  <h3><i class="fas fa-bullseye" aria-hidden="true"></i> วัตถุประสงค์การเรียนรู้ (Learning Objectives)</h3>
+  <p>เมื่อจบบทนี้แล้ว ผู้เรียนสามารถ:</p>
+  <ol>
+    <li>อธิบายหลักการ Network Access Control (NAC) — ทั้งก่อนการเชื่อมต่อและหลังการเชื่อมต่อได้</li>
+    <li>อธิบายการทำงานของ 802.1X, EAP, และ RADIUS ในการควบคุมการเข้าถึงเครือข่ายได้</li>
+    <li>อธิบายความแตกต่างระหว่าง EDR และ XDR และบทบาทในการป้องกัน Endpoint ได้</li>
+    <li>อธิบายแนวทางการรักษาความปลอดภัยสำหรับอุปกรณ์เคลื่อนที่ด้วย MDM และ BYOD Policy ได้</li>
+    <li>อธิบายความปลอดภัยของอุปกรณ์ IoT และ OT ในเครือข่ายองค์กรได้</li>
+    <li>ออกแบบ Network Segmentation สำหรับ IoT ด้วย VLAN segregation และ IoT Gateway ได้</li>
+    <li>วิเคราะห์กรณีศึกษาการโจมตีผ่าน IoT Botnet (Mirai, Mozi) และเสนอแนวทางการป้องกันได้</li>
+  </ol>
+</div>
+
+<hr>
+
+<!-- SECTION 1: Network Access Control (NAC) -->
+<section id="section1" class="section-ref">
+<h3>ส่วนที่ 1: Network Access Control (NAC)</h3>
+
+<h2 id="section1-1">1. หลักการของ NAC</h2>
+
+<h4 id="section1-1-1">1.1 NAC คืออะไร</h4>
+<p>NAC (Network Access Control) คือระบบที่ <strong>ตรวจสอบและควบคุม</strong> อุปกรณ์ที่ขอเชื่อมต่อเข้ากับเครือข่าย — ก่อน (Pre-admission) และ หลัง (Post-admission) การเชื่อมต่อ:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>NAC Workflow:
+──────────────
+[Endpoint] ──▶ [NAC] ──▶ [Network Access]
+    │            │            │
+    │        ตรวจสอบ:      │
+    │        ├── OS Patch   │
+    │        ├── Antivirus  │
+    │        ├── Firewall   │
+    │        ├── Disk Encrypt│
+    │        └── Certificate│
+    │            │            │
+    │        ✗ Fail → Quarantine VLAN
+    │        ✓ Pass → Corporate VLAN</pre>
+
+<p><strong>ประเภทของ NAC:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>ประเภท</th><th>คำอธิบาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Pre-admission NAC</strong></td><td>ตรวจสอบก่อนเข้าเครือข่าย — ต้องผ่าน Policy → ถึงเข้าได้</td></tr>
+    <tr><td><strong>Post-admission NAC</strong></td><td>ตรวจสอบต่อเนื่องหลังเข้าเครือข่าย — ถ้าผิดปกติ → ถูกถอด</td></tr>
+    <tr><td><strong>Agent-based NAC</strong></td><td>ติดตั้ง Agent บนเครื่อง — ตรวจสอบละเอียด</td></tr>
+    <tr><td><strong>Agentless NAC</strong></td><td>ตรวจสอบผ่าน Network Scan — ไม่ต้องติดตั้ง Agent</td></tr>
+    <tr><td><strong>Dissolvable Agent</strong></td><td>Agent ชั่วคราว — ทำงานผ่าน Browser แล้วหายไป</td></tr>
+  </tbody>
+</table></div>
+
+<h4 id="section1-1-2">1.2 NAC Policy Enforcement</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>นโยบาย NAC ทั่วไป:
+────────────────────
+
+Policy 1 — Corporate Devices (Managed):
+├── Device: Company-issued Laptop
+├── Domain-joined: ✅
+├── Antivirus: ✅ (Defender updated)
+├── OS Patch: ✅ (Within 7 days)
+├── Disk Encryption: ✅ (BitLocker)
+├── Firewall: ✅ (Enabled)
+└── Result: → Corporate VLAN (Full Access)
+
+Policy 2 — BYOD (Unmanaged):
+├── Device: Personal Smartphone
+├── Certificate: ✅ (MDM Enrolled)
+├── Passcode: ✅ (6-digit+)
+├── OS Version: ✅ (iOS 17+)
+├── Jailbreak: ❌ (Not detected)
+└── Result: → BYOD VLAN (Limited Access)
+
+Policy 3 — Guest:
+├── Device: Unknown Laptop
+├── Authentication: ✅ (Captive Portal — Voucher Code)
+├── Acceptable Use: ✅ (Accepted)
+└── Result: → Guest VLAN (Internet Only)
+
+Policy 4 — Non-Compliant:
+├── Antivirus: ❌ (Disabled)
+├── OS Patch: ❌ (Missing Critical Patch)
+└── Result: → Quarantine VLAN (Fix → Re-scan)</pre>
+
+<h4 id="section1-1-3">1.3 Cisco ISE — NAC Solution ตัวอย่าง</h4>
+<p>Cisco Identity Services Engine (ISE) เป็น Enterprise NAC Solution:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Cisco ISE Architecture:
+────────────────────────
+┌──────────────────────────────────────────────┐
+│           Cisco ISE (Policy Decision)         │
+│  Rule:                                      │
+│  User: AD Group = IT_Admin                   │
+│  Device: Antivirus = Updated                 │
+│  Location: Office                            │
+│  → Allow: Full Access                        │
+├──────────────────────────────────────────────┤
+│           Policy Enforcement Points           │
+│  ┌────────┐  ┌────────┐  ┌────────┐         │
+│  │Switch  │  │Wireless │  │VPN     │         │
+│  │(802.1X)│  │Controller│  │Gateway │         │
+│  └────────┘  └────────┘  └────────┘         │
+└──────────────────────────────────────────────┘</pre>
+<p><strong>Cisco ISE Features:</strong></p>
+<ul>
+  <li><strong>802.1X Authentication:</strong> ใช้กับ Wired + Wireless</li>
+  <li><strong>Profiling:</strong> ระบุ Device Type (Windows, macOS, iPhone, Printer, Camera)</li>
+  <li><strong>Posture Assessment:</strong> ตรวจสอบ Health ของอุปกรณ์</li>
+  <li><strong>Guest Management:</strong> Captive Portal + Self-registration</li>
+  <li><strong>BYOD Onboarding:</strong> อุปกรณ์ส่วนตัวเข้าสู่ระบบ Enterprise</li>
+  <li><strong>Endpoint Compliance:</strong> ตรวจสอบ Antivirus, Patch, Firewall</li>
+</ul>
+
+<h2 id="section1-2">2. 802.1X, EAP, และ RADIUS (NAC Context)</h2>
+
+<h4 id="section1-2-1">2.1 802.1X สำหรับ Wired Network</h4>
+<p>802.1X ไม่ใช่แค่สำหรับ Wi-Fi — ใช้กับ Switch Port (Wired) ได้ด้วย:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>802.1X on Wired Switch:
+────────────────────────
+[User PC] ──▶ [Switch Port] ──▶ [RADIUS Server]
+                │
+           Port State:
+           ├── Unauthorized — Allow only EAPOL (802.1X Traffic)
+           ├── Authenticating — EAP Exchange
+           └── Authorized — Allow Normal Traffic
+
+เมื่อ PC ถอดสาย — Port กลับเป็น Unauthorized
+เมื่อเสียบใหม่ — ต้อง Authenticate ใหม่</pre>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>! Cisco Switch Configuration for 802.1X
+interface GigabitEthernet1/0/1
+    switchport mode access
+    authentication port-control auto          # เปิด 802.1X
+    dot1x pae authenticator                    # ตั้ง Switch เป็น Authenticator
+    dot1x timeout tx-period 30                 # Timeout
+    spanning-tree portfast                     # Boot สั้นลง
+    
+! RADIUS Server
+radius server ISE-SERVER
+    address ipv4 192.168.1.100 auth-port 1812 acct-port 1813
+    key radius-secret-key
+
+! VLAN Assignment จาก RADIUS (Dynamic VLAN)
+aaa new-model
+aaa authentication dot1x default group radius
+aaa authorization network default group radius</pre>
+
+<h4 id="section1-2-2">2.2 MAC Authentication Bypass (MAB)</h4>
+<p>สำหรับอุปกรณ์ที่ไม่รองรับ 802.1X (Printer, IP Phone, IoT) — ใช้ MAC Address เป็นตัว Authentication:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>MAB Flow:
+─────────
+[Printer] ──▶ [Switch] ──▶ [RADIUS]
+   |              |             |
+   |   (No 802.1X)|             |
+   |──────────────|             |
+   |  MAC: AA:BB:CC:DD:EE:FF   |
+   |              |───RADIUS Access-Request──▶|
+   |              |    (MAC = Username+Password)│
+   |              |◀──RADIUS Access-Accept────|
+   |              |    (VLAN = IoT_VLAN)      |
+   |   ✅ Access  |                            |</pre>
+<p><strong>ข้อควรระวังของ MAB:</strong></p>
+<ul>
+  <li>MAC Address ปลอมแปลงได้ง่าย (MAC Spoofing)</li>
+  <li>ใช้เป็น Secondary Method — 802.1X ก่อน → Fallback MAB</li>
+  <li>ร่วมกับ Device Profiling เพื่อยืนยัน Device Type</li>
+</ul>
+
+<h4 id="section1-2-3">2.3 RADIUS CoA (Change of Authorization)</h4>
+<p>RADIUS สามารถเปลี่ยน Authorization หลังเชื่อมต่อแล้ว — เช่น เมื่อตรวจพบว่าเครื่องติด Malware:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>RADIUS CoA Flow:
+─────────────────
+[ISE] ──▶ RADIUS CoA Request ──▶ [Switch]
+            "Change VLAN for user john"
+            "From: Corp_VLAN → Quarantine_VLAN"
+
+[Switch] ──▶ เครื่องของ John ถูกย้ายไป Quarantine โดยอัตโนมัติ
+            โดยไม่ต้อง Deauth!</pre>
+</section>
+
+<hr>
+
+<!-- SECTION 2: Endpoint Security -->
+<section id="section2" class="section-ref">
+<h3>ส่วนที่ 2: Endpoint Security</h3>
+
+<h2 id="section2-1">3. EDR (Endpoint Detection and Response)</h2>
+
+<h4 id="section2-1-1">3.1 หลักการของ EDR</h4>
+<p>EDR คือระบบที่ติดตั้ง Agent บน Endpoint (Laptop, Server) เพื่อ:</p>
+<ul>
+  <li>เก็บข้อมูลกิจกรรมทุกระบบ (Process, File, Registry, Network, Memory)</li>
+  <li>ตรวจจับพฤติกรรมต้องสงสัย (ไม่ใช่แค่ Signature)</li>
+  <li>ตอบสนองอัตโนมัติ (Isolate, Kill Process, Quarantine File)</li>
+</ul>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>EDR Capabilities:
+─────────────────
+Continuous Recording:
+├── Process Create/Terminate
+├── File Create/Modify/Delete
+├── Registry Modification
+├── Network Connection
+├── DLL/Load Library
+├── Scheduled Task
+└── PowerShell/Command Line
+
+Detection:
+├── MITRE ATT&amp;CK Mapping — ตรงกับ Tactic/Technique
+├── Behavioral Detection — ผิดปกติ
+├── IOC Scan — ตรงกับ Known Malware
+└── ML-based — Zero-day Detection
+
+Response:
+├── Isolate Host (ตัด Network)
+├── Kill Malicious Process
+├── Quarantine File
+├── Block IP/Domain
+├── Rollback Registry
+└── Live Response (Remote Shell)</pre>
+
+<h4 id="section2-1-2">3.2 EDR vs Traditional Antivirus</h4>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>Antivirus (AV)</th><th>EDR</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Detection Method</strong></td><td>Signature-based</td><td>Behavioral + ML + IOC</td></tr>
+    <tr><td><strong>Zero-day Detection</strong></td><td>❌ ไม่ได้</td><td>✅ Behavioral Analysis</td></tr>
+    <tr><td><strong>Forensic Record</strong></td><td>❌ ไม่เก็บ</td><td>✅ เก็บทุกกิจกรรม (90 วัน)</td></tr>
+    <tr><td><strong>Response</strong></td><td>Quarantine File</td><td>Isolate Host + Kill + Remediate</td></tr>
+    <tr><td><strong>MITRE Mapping</strong></td><td>❌</td><td>✅</td></tr>
+    <tr><td><strong>Threat Hunting</strong></td><td>❌</td><td>✅</td></tr>
+    <tr><td><strong>การทำงาน</strong></td><td>Scheduled Scan</td><td>Real-time 24/7</td></tr>
+    <tr><td><strong>ย้อนกลับการโจมตี</strong></td><td>❌ ไม่ได้</td><td>✅ Rollback</td></tr>
+  </tbody>
+</table></div>
+
+<h4 id="section2-1-3">3.3 EDR Solutions</h4>
+<div class="table-wrap"><table>
+  <thead><tr><th>โซลูชัน</th><th>จุดเด่น</th></tr></thead>
+  <tbody>
+    <tr><td><strong>CrowdStrike Falcon</strong></td><td>Cloud-native, AI Detection, อันดับ 1 Gartner</td></tr>
+    <tr><td><strong>Microsoft Defender for Endpoint</strong></td><td>ถ้าองค์กรใช้ Microsoft 365 — รวมกับ SIEM</td></tr>
+    <tr><td><strong>SentinelOne</strong></td><td>Autonomous AI — ตอบสนองโดยไม่ต้องมนุษย์</td></tr>
+    <tr><td><strong>Carbon Black (VMware)</strong></td><td>Behavioral Analysis, Live Response</td></tr>
+    <tr><td><strong>Cybereason</strong></td><td>MalOp (Malicious Operation) Correlation</td></tr>
+    <tr><td><strong>Palo Alto Cortex XDR</strong></td><td>Network + Endpoint + Cloud รวมกัน</td></tr>
+    <tr><td><strong>Wazuh</strong></td><td>Open Source (ใช้ OSSEC Agent)</td></tr>
+  </tbody>
+</table></div>
+
+<h4 id="section2-1-4">3.4 ตัวอย่าง EDR Detection</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>EDR Alert — Ransomware Behavioral Detection:
+─────────────────────────────────────────────
+Alert: 🔴 MDE — Ransomware Behavior Detected
+Host:  WS-042 (john.doe)
+Time:  2024-11-15 14:32:00
+
+Process Tree:
+├── winword.exe (PID 4521) ← User opens document
+│   └── cmd.exe (PID 5200) ← Macro executes
+│       └── powershell.exe (PID 5300) ← Download payload
+│           └── ransomware.exe (PID 5400) ← Encrypt files
+
+Indicators:
+├── T1566.001 — Spearphishing Attachment
+├── T1059.001 — PowerShell
+├── T1486 — Data Encrypted for Impact
+└── T1070.004 — File Deletion (shadow copy)
+
+Response:
+├── ✅ Isolate host (Network disconnected)
+├── ✅ Kill process ransomware.exe
+├── ✅ Block IP 203.0.113.5 (C2)
+├── ✅ Rollback encrypted files (ถ้า MDE ย้อนกลับได้)
+└── 🔍 Scan network for lateral movement</pre>
+
+<h2 id="section2-2">4. XDR (Extended Detection and Response)</h2>
+
+<h4 id="section2-2-1">4.1 หลักการของ XDR</h4>
+<p>XDR ขยายขอบเขตจาก EDR — รวม Data จากหลาย Sources:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>XDR Coverage:
+──────────────
+┌─────────────────────────────────────────────────────┐
+│                     XDR Platform                      │
+│                                                        │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐           │
+│  │ Endpoint  │  │ Network   │  │ Cloud     │           │
+│  │ (EDR)     │  │ (NTA/IDS) │  │ (CSPM)    │           │
+│  └──────────┘  └──────────┘  └──────────┘           │
+│                                                        │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐           │
+│  │ Email     │  │ Identity  │  │ SaaS      │           │
+│  │ (Email GW)│  │ (AD/Azure)│  │ (M365)    │           │
+│  └──────────┘  └──────────┘  └──────────┘           │
+│                                                        │
+│  ┌──────────────────────────────────────────────────┐ │
+│  │  Correlation Engine — เชื่อมโยงทุกแหล่งข้อมูล     │ │
+│  └──────────────────────────────────────────────────┘ │
+│                                                        │
+│  ┌──────────────────────────────────────────────────┐ │
+│  │  Automated Response (SOAR Playbook)               │ │
+│  └──────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────┘</pre>
+
+<h4 id="section2-2-2">4.2 EDR vs XDR</h4>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>EDR</th><th>XDR</th></tr></thead>
+  <tbody>
+    <tr><td><strong>แหล่งข้อมูล</strong></td><td>Endpoint เท่านั้น</td><td>Endpoint + Network + Email + Cloud + Identity</td></tr>
+    <tr><td><strong>Correlation</strong></td><td>เฉพาะ Endpoint Events</td><td>ข้าม Data Source — รู้ภาพรวม</td></tr>
+    <tr><td><strong>Visibility</strong></td><td>เห็นเฉพาะเครื่อง</td><td>เห็นทั้ง Network, Cloud, User</td></tr>
+    <tr><td><strong>Detection</strong></td><td>Endpoint Attack</td><td>Multi-vector Attack</td></tr>
+    <tr><td><strong>Response</strong></td><td>Isolate Host</td><td>Isolate + Block IP + Reset Password + Disable User</td></tr>
+    <tr><td><strong>Complexity</strong></td><td>ต่ำ-กลาง</td><td>กลาง-สูง</td></tr>
+  </tbody>
+</table></div>
+
+<h4 id="section2-2-3">4.3 ตัวอย่าง XDR Detection (Multi-vector)</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>XDR Alert — Multi-vector Attack:
+─────────────────────────────────
+Alert: 🔴 XDR — Credential Theft + Lateral Movement
+
+Data Sources Correlated:
+├── Identity (Azure AD):
+│   └── User: john.doe → Failed Login 10 ครั้ง จาก IP 185.130.5.253
+├── Email (M365):
+│   └── Phishing Email Sent to john.doe — "Password Reset"
+├── Endpoint (MDE):
+│   └── john.doe's laptop → PowerShell downloading mimikatz.exe
+├── Network (NTA):
+│   └── SMB Lateral Movement from 10.0.0.50 to 10.0.0.100
+└── Cloud (Azure):
+    └── New App Registration from john.doe's account (Abnormal)
+
+Automated Response:
+├── 🛑 Disable john.doe's Azure AD account
+├── 🛑 Isolate both endpoints (10.0.0.50 and 10.0.0.100)
+├── 🛑 Block IP 185.130.5.253 on Firewall
+├── 🛑 Revoke OAuth tokens for new App Registration
+└── 📧 Notify IR Team</pre>
+
+<h2 id="section2-3">5. MDM (Mobile Device Management)</h2>
+
+<h4 id="section2-3-1">5.1 หลักการของ MDM</h4>
+<p>MDM จัดการและรักษาความปลอดภัยอุปกรณ์เคลื่อนที่ในองค์กร:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>MDM Capabilities:
+──────────────────
+Policy Enforcement:
+├── Passcode Policy — ต้องมี PIN 6 หลัก+
+├── Encryption — Device Encryption บังคับ
+├── OS Update — บังคับอัปเดต Version ล่าสุด
+├── App Management — อนุญาต/Block App
+└── Remote Wipe — ลบข้อมูลเมื่ออุปกรณ์หาย
+
+Compliance:
+├── Jailbreak/Root Detection
+├── Certificate Installation
+├── Wi-Fi/VPN Configuration
+└── Network Access — อุปกรณ์ที่ Compliant → เข้า Corporate Wi-Fi
+
+Inventory:
+├── Device Model, OS Version, Storage
+├── Installed Apps
+├── Location (GPS)
+└── Security Status</pre>
+<p><strong>MDM Solutions:</strong></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>โซลูชัน</th><th>จุดเด่น</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Microsoft Intune</strong></td><td>รวมกับ Azure AD/Office 365</td></tr>
+    <tr><td><strong>Jamf</strong></td><td>Apple Device Management ที่ดีที่สุด</td></tr>
+    <tr><td><strong>VMware Workspace ONE</strong></td><td>Unified Endpoint Management (UEM)</td></tr>
+    <tr><td><strong>MobileIron</strong></td><td>Enterprise MDM</td></tr>
+    <tr><td><strong>Cisco Meraki SM</strong></td><td>ง่าย — เหมาะกับ SME</td></tr>
+  </tbody>
+</table></div>
+
+<h4 id="section2-3-2">5.2 BYOD (Bring Your Own Device) Policy</h4>
+<p>BYOD Policy คือแนวทางให้พนักงานนำอุปกรณ์ส่วนตัวมาใช้ทำงาน:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>BYOD Architecture:
+───────────────────
+┌─────────────────────────────────────────────┐
+│               BYOD Framework                  │
+│                                                │
+│  1. Containerization (Work Profile):          │
+│     ├── Android Work Profile                   │
+│     ├── iOS Managed Apple ID                   │
+│     └── Data แยกจาก Personal                   │
+│                                                │
+│  2. Enrollment:                                │
+│     ├── Self-service Portal                      │
+│     ├── Certificate Installation               │
+│     └── MDM Profile ติดตั้ง                      │
+│                                                │
+│  3. Security Policy:                           │
+│     ├── PIN/Passcode (6 หลัก+)                 │
+│     ├── Encryption (Device-level)              │
+│     ├── No Jailbreak/Root                      │
+│     └── OS Version ล่าสุด                       │
+│                                                │
+│  4. Data Protection:                           │
+│     ├── Work Data Encrypted                     │
+│     ├── Remote Wipe เฉพาะ Work Data             │
+│     ├── No Copy/Paste ข้าม Profile              │
+│     └── VPN สำหรับ Work Traffic                 │
+└─────────────────────────────────────────────┘</pre>
+<p><strong>COPE (Corporate Owned, Personally Enabled):</strong></p>
+<p>องค์กรซื้ออุปกรณ์ให้พนักงาน — พนักงานใช้ส่วนตัวได้บางส่วน:</p>
+<ul>
+  <li>องค์กรควบคุม Device เต็มรูปแบบ</li>
+  <li>Wipe ได้ทั้ง Device (ไม่ใช่แค่ Work Profile)</li>
+  <li>เหมาะกับผู้บริหาร, พนักงานที่ต้องการ Security สูง</li>
+</ul>
+
+<h4 id="section2-3-3">5.3 iOS vs Android Security</h4>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>iOS</th><th>Android (Enterprise)</th></tr></thead>
+  <tbody>
+    <tr><td><strong>App Store Control</strong></td><td>✅ เฉพาะ App Store</td><td>⚠️ Sideloading (ปิดได้)</td></tr>
+    <tr><td><strong>Sandboxing</strong></td><td>✅ แข็งแรง</td><td>✅ Android Work Profile</td></tr>
+    <tr><td><strong>Encryption</strong></td><td>✅ Hardware-backed</td><td>✅ File-based Encryption</td></tr>
+    <tr><td><strong>OS Update</strong></td><td>✅ ทุกเครื่องพร้อมกัน</td><td>⚠️ ขึ้นอยู่กับ OEM</td></tr>
+    <tr><td><strong>MDM Control</strong></td><td>✅ Apple MDM Protocol</td><td>✅ Android Enterprise</td></tr>
+    <tr><td><strong>Zero-day</strong></td><td>⚠️ มีน้อย (Pegasus)</td><td>⚠️ มีมากกว่า</td></tr>
+    <tr><td><strong>Jailbreak/Root</strong></td><td>❌ ยาก (No JB)</td><td>⚠️ Root ได้บ่อย</td></tr>
+  </tbody>
+</table></div>
+
+<h4 id="section2-3-4">5.4 Pegasus Spyware — กรณีศึกษา Mobile Threat</h4>
+<p><strong>Pegasus ของ NSO Group:</strong></p>
+<ul>
+  <li><strong>Zero-click Exploit:</strong> ไม่ต้องคลิก — แค่รับ iMessage ก็ติด</li>
+  <li><strong>Target:</strong> นักข่าว, นักเคลื่อนไหว, นักการเมือง</li>
+  <li><strong>ความสามารถ:</strong> อ่าน Message, เปิดกล้อง, บันทึกเสียง, GPS</li>
+  <li><strong>การป้องกัน:</strong> Lockdown Mode ใน iOS 16+ (ปิดฟังก์ชันที่ Pegasus ใช้)</li>
+</ul>
+<p><strong>บทเรียน:</strong></p>
+<ol>
+  <li>Zero-day บน Mobile มีมูลค่าสูง — องค์กรที่มีความเสี่ยงสูงต้องใช้ Lockdown Mode</li>
+  <li>อัปเดต OS ทันทีที่มี Patch</li>
+  <li>ใช้ MDM ตรวจสอบ Device Health (Jailbreak Detection)</li>
+  <li>Mobile Threat Defense (MTD) — Lookout, Zimperium</li>
+</ol>
+</section>
+
+<hr>
+
+<!-- SECTION 3: IoT Security และ OT Security -->
+<section id="section3" class="section-ref">
+<h3>ส่วนที่ 3: IoT Security และ OT Security</h3>
+
+<h2 id="section3-1">6. IoT Security Challenges</h2>
+
+<h4 id="section3-1-1">6.1 ลักษณะของ IoT Devices</h4>
+<div class="table-wrap"><table>
+  <thead><tr><th>ลักษณะ</th><th>คำอธิบาย</th><th>ผลกระทบความปลอดภัย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Resource constrained</strong></td><td>CPU/RAM ต่ำ, Flash น้อย</td><td>เข้ารหัสไม่ได้, อัปเดตยาก</td></tr>
+    <tr><td><strong>Heterogeneous</strong></td><td>OS/Platform หลากหลาย</td><td>Patch Management ซับซ้อน</td></tr>
+    <tr><td><strong>Long lifecycle</strong></td><td>ใช้ 5-15 ปี</td><td>Firmware ไม่มี Patch</td></tr>
+    <tr><td><strong>Physical access</strong></td><td>วางในที่สาธารณะ</td><td>Physical Tampering</td></tr>
+    <tr><td><strong>Networked</strong></td><td>เชื่อมต่อ Internet โดยตรง</td><td>Exploit จากภายนอก</td></tr>
+    <tr><td><strong>Default credentials</strong></td><td>admin/admin, root/root</td><td>Brute-force ทันที</td></tr>
+    <tr><td><strong>No update mechanism</strong></td><td>อัปเดตต้อง Manual</td><td>ช่องโหว่ไม่ถูกแก้</td></tr>
+  </tbody>
+</table></div>
+
+<h4 id="section3-1-2">6.2 OWASP IoT Top 10</h4>
+<div class="table-wrap"><table>
+  <thead><tr><th>อันดับ</th><th>ช่องโหว่</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Weak, Guessable, or Hardcoded Passwords</td></tr>
+    <tr><td>2</td><td>Insecure Network Services</td></tr>
+    <tr><td>3</td><td>Insecure Ecosystem Interfaces</td></tr>
+    <tr><td>4</td><td>Lack of Secure Update Mechanism</td></tr>
+    <tr><td>5</td><td>Use of Insecure or Outdated Components</td></tr>
+    <tr><td>6</td><td>Insufficient Privacy Protection</td></tr>
+    <tr><td>7</td><td>Insecure Data Transfer and Storage</td></tr>
+    <tr><td>8</td><td>Lack of Device Management</td></tr>
+    <tr><td>9</td><td>Insecure Default Settings</td></tr>
+    <tr><td>10</td><td>Lack of Physical Hardening</td></tr>
+  </tbody>
+</table></div>
+
+<h4 id="section3-1-3">6.3 OT Security (Operational Technology)</h4>
+<p>OT คือระบบที่ควบคุมกระบวนการทางกายภาพ (Industrial Control Systems — ICS, SCADA):</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>IT vs OT:
+──────────
+┌────────────────────────┬────────────────────────┐
+│       IT Network        │       OT Network        │
+│────────────────────────│────────────────────────│
+│ Confidentiality ↑      │ Availability ↑          │
+│ Integrity ↑            │ Safety ↑                │
+│ Availability ↑         │ Integrity ↑             │
+│────────────────────────│────────────────────────│
+│ Patching = ปกติ         │ Patching = ต้อง Downtime │
+│ Windows/Linux          │ RTOS, VxWorks, PLC      │
+│ Change = ทุกวัน         │ Change = ต้อง Approval   │
+│ อายุ Hardware = 3-5 ปี │ อายุ Hardware = 10-20 ปี │
+└────────────────────────┴────────────────────────┘</pre>
+<p><strong>Purdue Model for ICS Security:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Purdue Model (IEC 62443):
+──────────────────────────
+Level 5: Enterprise Network (ERP, Email)
+Level 4: Site Business Planning (Historian, Asset Mgmt)
+    ── DMZ ──
+Level 3: Site Operations (SCADA, HMI)
+Level 2: Control (PLC, DCS Controllers)
+Level 1: Basic Control (Sensors, Actuators)
+Level 0: Physical Process (Machines, Robots)</pre>
+<p><strong>การรักษาความปลอดภัย OT:</strong></p>
+<ul>
+  <li><strong>Network Segmentation:</strong> IT และ OT แยก Network เด็ดขาด — ใช้ One-way Data Diode</li>
+  <li><strong>NIST SP 800-82:</strong> Guide to ICS Security</li>
+  <li><strong>IEC 62443:</strong> มาตรฐานความปลอดภัยอุตสาหกรรม</li>
+  <li><strong>OT-specific IDS:</strong> Nozomi, Dragos, Claroty</li>
+</ul>
+
+<h2 id="section3-2">7. Network Segmentation สำหรับ IoT</h2>
+
+<h4 id="section3-2-1">7.1 IoT VLAN Design</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>IoT Segmentation:
+─────────────────
+┌────────────────────────────────────────────────┐
+│              Core Network                        │
+│                                                   │
+│  ┌─────────┐  ┌──────────┐  ┌───────────┐      │
+│  │ VLAN 10 │  │ VLAN 20  │  │ VLAN 30    │      │
+│  │ Corporate│  │ Guest    │  │ IoT        │      │
+│  │ 10.0.10 │  │10.0.20.0│  │ 10.0.30.0  │      │
+│  └─────────┘  └──────────┘  └───────────┘      │
+│          │          │               │           │
+│          ▼          ▼               ▼           │
+│    Corporate    Guest VPN      IoT Gateway      │
+│    Servers      Internet       │                │
+│                                │                │
+│                    ┌───────────┴───────────┐    │
+│                    │  IoT Sub-VLANs         │    │
+│                    │  VLAN 31: Camera       │    │
+│                    │  VLAN 32: HVAC         │    │
+│                    │  VLAN 33: Access Ctrl  │    │
+│                    │  VLAN 34: Medical      │    │
+│                    │  VLAN 35: Printers     │    │
+│                    └───────────────────────┘    │
+└────────────────────────────────────────────────┘</pre>
+
+<h4 id="section3-2-2">7.2 ACL Rules for IoT</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ACL: IoT VLAN → Corporate (Outbound)
+─────────────────────────────────────
+permit tcp 10.0.30.0 0.0.0.255 host 10.0.10.10 eq 443    # IoT Gateway API
+permit tcp 10.0.31.0 0.0.0.255 host 10.0.10.20 eq 554    # Camera → NVR (RTSP)
+permit udp 10.0.34.0 0.0.0.255 host 10.0.10.30 eq 162    # Medical Alert (SNMP)
+deny ip 10.0.30.0 0.0.0.255 10.0.0.0 0.255.255.255       # Block อื่นๆ
+permit ip 10.0.30.0 0.0.0.255 any                        # Internet (ถ้าจำเป็น)
+
+ACL: Corporate → IoT VLAN (Inbound)
+─────────────────────────────────────
+permit tcp host 10.0.10.10 10.0.30.0 0.0.0.255 eq 22    # Management SSH
+permit tcp host 10.0.10.20 10.0.31.0 0.0.0.255 eq 554   # NVR → Camera
+deny ip any 10.0.30.0 0.0.0.255                          # Block อื่นๆ</pre>
+
+<h4 id="section3-2-3">7.3 IoT Gateway Architecture</h4>
+<p>IoT Gateway ทำหน้าที่เป็นตัวกลางระหว่าง IoT Devices และ Cloud:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>IoT Gateway:
+────────────
+[IoT Device] ──[Local Protocol]──▶ [IoT Gateway] ──[MQTTS/HTTPS]──▶ [Cloud]
+    |                   |                   |                  |
+  Sensor/            Zigbee,           Protocol           AWS IoT/
+  Camera             Z-Wave,           Translation         Azure IoT
+                     BLE,              Local Processing    Data Lake
+                     LoRaWAN           Edge Analytics      ML Model
+                                        
+ประโยชน์ของ IoT Gateway:
+├── Protocol Translation — IoT Device ใช้ Protocol ต่างๆ → Gateway แปลงเป็น MQTT/HTTP
+├── Local Processing — ประมวลผลใกล้ Device — ลด Latency
+├── Security Hub — Authentication, Encryption, Firewall สำหรับ IoT
+├── Firmware Management — อัปเดต Firmware IoT Device ผ่าน Gateway
+└── Data Filtering — กรองข้อมูลก่อนส่ง Cloud — ลด Bandwidth</pre>
+
+<h2 id="section3-3">8. กรณีศึกษา: การโจมตี IoT Botnet</h2>
+
+<h4 id="section3-3-1">8.1 Mirai Botnet (2016)</h4>
+<p><strong>เหตุการณ์:</strong> โจมตี DDoS สูงสุด 1.2 Tbps — Dyn DNS ล่ม — Twitter, Netflix, Reddit, GitHub ไม่สามารถใช้งานได้</p>
+<p><strong>วิธีการทำงาน:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>1. Scanner — สแกนพอร์ต Telnet (23) ทั่วโลก
+2. Credential Brute Force — ทดสอบ Default Password
+   ├── root:root, admin:admin, support:support
+   ├── 61 คู่ Credentials — ครอบคลุมอุปกรณ์ 90%
+   └── (อุปกรณ์ IoT ส่วนใหญ่เปลี่ยน Password ไม่เป็น)
+3. Infection — ติดตั้ง Malware บน Device
+4. C2 Communication — Bot รอ Command จาก C2 Server
+5. DDoS Attack:
+   ├── SYN Flood
+   ├── DNS Amplification
+   ├── HTTP GET Flood
+   └── GRE IP/ETH Flood</pre>
+<p><strong>อุปกรณ์ที่ถูกโจมตี:</strong></p>
+<ul>
+  <li>IP Camera (Hikvision, Dahua)</li>
+  <li>DVR (Digital Video Recorder)</li>
+  <li>Router (Linksys, Netgear)</li>
+  <li>CCTV Systems</li>
+</ul>
+<p><strong>Mirai Source Code (เปิดเผยปี 2016):</strong> หลังจาก Mirai Source Code ถูกปล่อย — มี Botnet หลายตัวที่ Fork จาก Mirai (Satori, Reaper, Mozi)</p>
+
+<h4 id="section3-3-2">8.2 Mozi Botnet (2019-2022)</h4>
+<p><strong>ลักษณะของ Mozi:</strong></p>
+<ul>
+  <li>Fork จาก Mirai — เพิ่ม P2P (Peer-to-Peer Architecture)</li>
+  <li>ใช้ Protocol ของ eMule / Kad — กระจาย Command แบบ P2P</li>
+  <li>ตรวจจับและกำจัดยากกว่า Mirai (ไม่มี C2 Server จุดเดียว)</li>
+  <li>เป้าหมาย: Router IoT, Netgear, D-Link, Huawei</li>
+</ul>
+<p><strong>P2P Architecture Advantage:</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Mirai (C2 Model):
+[Bot] ◀───▶ [C2 Server] ← จุดอ่อน — ปิด C2 = Botnet ตาย
+
+Mozi (P2P Model):
+[Bot 1] ◀───▶ [Bot 2] ◀───▶ [Bot 3] ◀───▶ [Bot N]
+ไม่มี C2 จุดเดียว — ปิด C2 ไม่ได้ (P2P Network)</pre>
+
+<h4 id="section3-3-3">8.3 แนวทางการป้องกัน IoT Botnet</h4>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>มาตรการป้องกันองค์กร:
+──────────────────────
+1. Network Segmentation:
+   ├── IoT VLAN แยกจาก Corporate Network
+   ├── IoT Traffic ต้องผ่าน Gateway (ไม่ตรงถึง Internet)
+   └── ACL: IoT → Internet = เฉพาะที่จำเป็น
+
+2. Default Credentials:
+   ├── เปลี่ยนทันทีที่ติดตั้ง
+   ├── ใช้ Strong Password (12+ ตัว)
+   └── เปลี่ยนจาก Factory Default
+
+3. Firmware Updates:
+   ├── ตรวจสอบ Firmware Version เป็นประจำ
+   ├── อัปเดตเมื่อมี Patch
+   └── ถ้า Vendor ไม่มี Patch → เปลี่ยนอุปกรณ์
+
+4. Disable Unused Services:
+   ├── ปิด Telnet (ใช้ SSH แทน)
+   ├── ปิด UPnP ถ้าไม่จำเป็น
+   ├── ปิด Remote Access ถ้าไม่ใช้
+   └── ปิด WAN Administration บน Router
+
+5. Monitoring:
+   ├── ตรวจจับ IoT Device ที่ติดต่อ C2
+   ├── ใช้ DNS Sinkhole สำหรับ Malware Domain
+   ├── ตรวจสอบ Traffic ขาออก (Outbound) ที่ผิดปกติ
+   └── SIEM Alert สำหรับ IoT Anomaly
+
+6. Vendor Assessment:
+   ├── เลือกอุปกรณ์ IoT ที่มี Security Feature
+   ├── ตรวจสอบว่า Vendor มีกระบวนการ Patch
+   └── หลีกเลี่ยงอุปกรณ์ที่ไม่เคยอัปเดต Firmware</pre>
+</section>
+
+<hr>
+
+<!-- SUMMARY -->
+<section id="summary" class="section-ref">
+<h2>สรุปท้ายบท (Chapter Summary)</h2>
+<ol>
+  <li><strong>NAC</strong> ควบคุมอุปกรณ์ที่เข้าเครือข่าย — ตรวจสอบ Compliance (Patch, Antivirus, Encryption) — ก่อน (Pre-admission) และ หลัง (Post-admission) การเชื่อมต่อ</li>
+  <li><strong>802.1X + RADIUS</strong> — ใช้กับ Wired (Switch Port) และ Wireless — รองรับ Dynamic VLAN Assignment และ CoA (Change of Authorization)</li>
+  <li><strong>EDR</strong> ตรวจจับและตอบสนองต่อภัยคุกคามบน Endpoint — Behavioral Detection, MITRE ATT&amp;CK Mapping, Live Response — ดีกว่า Antivirus แบบเดิม</li>
+  <li><strong>XDR</strong> ขยายจาก EDR — รวม Data จาก Endpoint + Network + Email + Cloud + Identity — Correlate Multi-vector Attack</li>
+  <li><strong>MDM + BYOD</strong> จัดการอุปกรณ์เคลื่อนที่ — Enforce Passcode, Encryption, Remote Wipe, Work Profile — BYOD ใช้ Containerization แยกข้อมูลส่วนตัวและงาน</li>
+  <li><strong>IoT Security</strong> — อุปกรณ์ IoT มีข้อจำกัด (Resource, Update, Credential) — ต้องแยก VLAN, ใช้ IoT Gateway, เปลี่ยน Default Password, ตรวจสอบ Firmware</li>
+  <li><strong>OT Security</strong> — ระบบควบคุมอุตสาหกรรม — Availability และ Safety สำคัญที่สุด — ใช้ Purdue Model + Network Isolation + OT-specific IDS</li>
+  <li><strong>Mirai/Mozi Botnet</strong> — โจมตี IoT Device ด้วย Default Credentials — ป้องกันด้วย Network Segmentation, Firmware Update, และ Monitoring</li>
+</ol>
+</section>
+
+<hr>
+
+<!-- REVIEW QUESTIONS -->
+<section id="review-questions" class="section-ref">
+<h2><i class="fas fa-question-circle" aria-hidden="true"></i> คำถามทบทวน (Review Questions)</h2>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">1</span><p>NAC คืออะไร? จงอธิบายความแตกต่างระหว่าง Pre-admission NAC และ Post-admission NAC</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>NAC (Network Access Control)</strong> คือระบบที่ตรวจสอบและควบคุมอุปกรณ์ที่ขอเชื่อมต่อเข้ากับเครือข่าย <strong>Pre-admission NAC</strong> ตรวจสอบก่อนเข้าเครือข่าย โดยอุปกรณ์ต้องผ่าน Policy (เช่น มี Antivirus, OS Patch ทันสมัย, Disk Encryption) ก่อนจะได้รับอนุญาตเข้าเครือข่าย <strong>Post-admission NAC</strong> ตรวจสอบต่อเนื่องหลังเข้าเครือข่ายแล้ว ถ้าพบว่าอุปกรณ์ไม่เป็นไปตาม Policy หรือมีพฤติกรรมผิดปกติ จะถูกย้ายไป Quarantine VLAN หรือถูกตัดการเชื่อมต่อ</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">2</span><p>802.1X ทำงานอย่างไรบน Switch Port? จงอธิบายขั้นตอนการ Authentication — ตั้งแต่เสียบสายจนถึงได้รับ VLAN</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p>เมื่อ PC เสียบสายเข้า Switch Port ที่เปิด 802.1X Port จะอยู่ในสถานะ <strong>Unauthorized</strong> อนุญาตเฉพาะ EAPOL (802.1X Traffic) จากนั้น Switch (Authenticator) จะส่ง EAP-Request Identity ไปยัง PC (Supplicant) PC ตอบกลับด้วย Identity แล้ว Switch ส่งต่อไปยัง <strong>RADIUS Server</strong> (Authentication Server) ผ่าน RADIUS Protocol เมื่อ RADIUS ตรวจสอบ Credentials สำเร็จ จะส่ง <strong>Access-Accept</strong> พร้อม VLAN Assignment (Dynamic VLAN) กลับมา Switch จึงเปลี่ยน Port เป็น <strong>Authorized</strong> และกำหนด VLAN ตาม RADIUS Response</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">3</span><p>MAB (MAC Authentication Bypass) คืออะไร และข้อควรระวังในการใช้งานคืออะไร?</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>MAB</strong> คือวิธี Authentication สำหรับอุปกรณ์ที่ไม่รองรับ 802.1X (เช่น Printer, IP Phone, IoT) โดยใช้ MAC Address เป็นตัว Authentication ส่งไปยัง RADIUS Server เป็น Username และ Password <strong>ข้อควรระวัง:</strong> MAC Address ปลอมแปลงได้ง่าย (MAC Spoofing) จึงควรใช้เป็น Secondary Method โดย 802.1X ก่อน แล้ว Fallback เป็น MAB และควรใช้ร่วมกับ Device Profiling เพื่อยืนยัน Device Type</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">4</span><p>EDR แตกต่างจาก Antivirus แบบดั้งเดิมอย่างไร? จงอธิบาย Detection, Forensic, และ Response ที่ EDR ทำได้</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>Antivirus</strong> ใช้ Signature-based Detection ตรวจจับ Malware ที่รู้จักแล้ว ไม่เก็บ Forensic Record และตอบสนองเพียง Quarantine File <strong>EDR</strong> ใช้ Behavioral + ML + IOC Detection สามารถตรวจจับ Zero-day ได้ เก็บทุกกิจกรรมบน Endpoint (Process, File, Registry, Network) 90 วัน สามารถ Threat Hunting และ MITRE ATT&amp;CK Mapping ได้ Response ของ EDR ได้แก่ Isolate Host, Kill Malicious Process, Quarantine File, Block IP/Domain, Rollback Registry, และ Live Response (Remote Shell)</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">5</span><p>XDR คืออะไร? จงอธิบายความแตกต่างระหว่าง EDR และ XDR พร้อมยกตัวอย่างการตรวจจับ Multi-vector Attack</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>XDR (Extended Detection and Response)</strong> ขยายขอบเขตจาก EDR โดยรวม Data จากหลาย Sources ได้แก่ Endpoint, Network, Email, Cloud, Identity <strong>ความแตกต่าง:</strong> EDR เห็นเฉพาะ Endpoint Events แต่ XDR Correlate ข้ามหลาย Data Source เช่น ตรวจพบ Phishing Email (Email) → Failed Login (Identity) → PowerShell download mimikatz (Endpoint) → SMB Lateral Movement (Network) → Abnormal App Registration (Cloud) และตอบสนองแบบ Cross-platform เช่น Disable User, Isolate Host, Block IP พร้อมกัน</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">6</span><p>BYOD Policy ควรมีองค์ประกอบอะไรบ้าง? จงอธิบาย Containerization (Work Profile) และความสำคัญ</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p>BYOD Policy ควรมี: <strong>Containerization</strong> (Work Profile แยก Data งานและส่วนตัว), <strong>Enrollment</strong> (Self-service Portal, Certificate, MDM Profile), <strong>Security Policy</strong> (PIN/Passcode, Encryption, No Jailbreak/Root, OS Version ล่าสุด), <strong>Data Protection</strong> (Work Data Encrypted, Remote Wipe เฉพาะ Work Data, No Copy/Paste ข้าม Profile, VPN) <strong>Containerization</strong> สำคัญเพราะแยกข้อมูลองค์กรออกจากข้อมูลส่วนตัว ทำให้ Remote Wipe เฉพาะ Work Data ได้โดยไม่กระทบข้อมูลส่วนตัวของพนักงาน</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">7</span><p>MDM สามารถป้องกันภัยคุกคามบนอุปกรณ์เคลื่อนที่ (เช่น Pegasus) ได้อย่างไร?</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p>MDM ช่วยป้องกันภัยคุกคามบนอุปกรณ์เคลื่อนที่โดย: บังคับ <strong>OS Update</strong> ทันทีที่มี Patch, ตรวจจับ <strong>Jailbreak/Root</strong> (ซึ่ง Pegasus ใช้ช่องโหว่เหล่านี้), บังคับ <strong>Encryption</strong> และ Passcode Policy, จัดการ <strong>App Management</strong> อนุญาตเฉพาะ App ที่ปลอดภัย, และ <strong>Remote Wipe</strong> เมื่ออุปกรณ์หาย อย่างไรก็ตาม MDM ไม่สามารถป้องกัน Zero-click Exploit อย่าง Pegasus ได้ทั้งหมด ต้องใช้ร่วมกับ <strong>Lockdown Mode</strong> (iOS 16+) และ Mobile Threat Defense (MTD) เช่น Lookout, Zimperium</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">8</span><p>IoT Security มีความท้าทายอะไรบ้าง? จงอธิบาย OWASP IoT Top 10 อย่างน้อย 5 ข้อ</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p>IoT มีความท้าทายคือ Resource constrained, Heterogeneous, Long lifecycle, Default credentials, No update mechanism OWASP IoT Top 10: <strong>1) Weak/Hardcoded Passwords</strong> — รหัสผ่านง่ายหรือฝังในอุปกรณ์ <strong>2) Insecure Network Services</strong> — เปิดบริการที่ไม่จำเป็น <strong>3) Insecure Ecosystem Interfaces</strong> — API/Web Interface ไม่ปลอดภัย <strong>4) Lack of Secure Update Mechanism</strong> — ไม่มีกลไกอัปเดตที่ปลอดภัย <strong>5) Use of Insecure or Outdated Components</strong> — ใช้ Library/OS เก่าที่มีช่องโหว่</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">9</span><p>Mirai Botnet ทำงานอย่างไร? จงอธิบายตั้งแต่ Scanning ถึง DDoS Attack และเสนอแนวทางป้องกัน</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>Mirai Botnet</strong> ทำงาน 5 ขั้นตอน: 1) <strong>Scanner</strong> สแกนพอร์ต Telnet (23) ทั่วโลก 2) <strong>Credential Brute Force</strong> ทดสอบ Default Password 61 คู่ 3) <strong>Infection</strong> ติดตั้ง Malware 4) <strong>C2 Communication</strong> Bot รอคำสั่ง 5) <strong>DDoS Attack</strong> (SYN Flood, DNS Amplification, HTTP GET Flood) <strong>แนวทางป้องกัน:</strong> Network Segmentation แยก IoT VLAN, เปลี่ยน Default Credentials ทันที, อัปเดต Firmware, ปิด Telnet ใช้ SSH แทน, ปิด UPnP, ตรวจสอบ Outbound Traffic ผิดปกติ, ใช้ DNS Sinkhole</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">10</span><p>ให้ออกแบบ Network Segmentation สำหรับ Smart Building ที่มี: IP Cameras 50 ตัว, Access Control 20 จุด, HVAC 10 จุด, และ Corporate Network — ระบุ VLAN, ACL, และ IoT Gateway</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><pre style="margin:0;"><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Smart Building Network Segmentation:
+─────────────────────────────────────
+VLAN 10: Corporate Network (10.0.10.0/24) — Laptop, Desktop
+VLAN 20: Guest Network (10.0.20.0/24) — Internet Only
+VLAN 31: IP Cameras (10.0.31.0/24) — 50 ตัว
+VLAN 32: HVAC (10.0.32.0/24) — 10 จุด
+VLAN 33: Access Control (10.0.33.0/24) — 20 จุด
+VLAN 40: IoT Management (10.0.40.0/24) — IoT Gateway, NVR
+
+ACL:
+├── VLAN 31 → VLAN 40: permit TCP 554 (RTSP to NVR)
+├── VLAN 32 → VLAN 40: permit TCP 443 (HVAC API)
+├── VLAN 33 → VLAN 40: permit TCP 443 (Access Control API)
+├── VLAN 31,32,33 → VLAN 10: deny all
+├── VLAN 40 → Internet: permit TCP 443 (Cloud Sync)
+└── VLAN 10 → VLAN 40: permit TCP 22 (SSH Management)
+
+IoT Gateway:
+├── Protocol Translation สำหรับ BACnet (HVAC)
+├── Firmware Update Management
+├── Local Analytics + Alert
+└── Encrypted Tunnel to Cloud (MQTTS)</pre></div>
+</div>
+</section>
+
+<hr>
+
+<!-- INTERACTIVE QUIZ -->
+<section id="interactive-quiz" class="section-ref">
+<h2><i class="fas fa-clipboard-question" aria-hidden="true"></i> แบบทดสอบ (Interactive Quiz)</h2>
+<p>ทดสอบความเข้าใจด้วยคำถามปรนัย 20 ข้อ ครอบคลุมเนื้อหาทั้งหมดในบท</p>
+
+<div id="mcq-container">
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">1</span><p>NAC ประเภทใดตรวจสอบอุปกรณ์ก่อนเข้าเครือข่าย?</p></div>
+  <label class="mcq-option"><input type="radio" name="q0" value="0"> Pre-admission NAC</label>
+  <label class="mcq-option"><input type="radio" name="q0" value="1"> Post-admission NAC</label>
+  <label class="mcq-option"><input type="radio" name="q0" value="2"> Agentless NAC</label>
+  <label class="mcq-option"><input type="radio" name="q0" value="3"> Dissolvable NAC</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">2</span><p>อุปกรณ์ที่ไม่ผ่าน NAC Policy จะถูกส่งไปที่ใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q1" value="0"> Corporate VLAN</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="1"> Quarantine VLAN</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="2"> Guest VLAN</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="3"> BYOD VLAN</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="2">
+  <div class="quiz-question"><span class="q-number">3</span><p>802.1X ใช้ Protocol ใดในการสื่อสารระหว่าง Switch กับ RADIUS Server?</p></div>
+  <label class="mcq-option"><input type="radio" name="q2" value="0"> SNMP</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="1"> HTTP</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="2"> RADIUS</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="3"> LDAP</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">4</span><p>MAB ใช้อะไรเป็นตัว Authentication สำหรับอุปกรณ์ที่ไม่รองรับ 802.1X?</p></div>
+  <label class="mcq-option"><input type="radio" name="q3" value="0"> MAC Address</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="1"> IP Address</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="2"> Username/Password</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="3"> Digital Certificate</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">5</span><p>RADIUS CoA (Change of Authorization) มีประโยชน์อย่างไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q4" value="0"> สร้าง User Account ใหม่</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="1"> เปลี่ยน VLAN หลังเชื่อมต่อแล้วโดยไม่ต้อง Deauth</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="2"> ลบ MAC Address จาก Switch</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="3"> เพิ่ม Bandwidth ให้ผู้ใช้</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">6</span><p>EDR ใช้วิธีการตรวจจับแบบใดเป็นหลัก?</p></div>
+  <label class="mcq-option"><input type="radio" name="q5" value="0"> Signature-based เท่านั้น</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="1"> Behavioral + ML + IOC</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="2"> Scheduled Scan</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="3"> Manual Review</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">7</span><p>EDR สามารถทำข้อใดได้ที่ Antivirus แบบดั้งเดิมทำไม่ได้?</p></div>
+  <label class="mcq-option"><input type="radio" name="q6" value="0"> Isolate Host และ Live Response</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="1"> Quarantine File</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="2"> Scheduled Scan</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="3"> Signature Update</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="2">
+  <div class="quiz-question"><span class="q-number">8</span><p>XDR รวม Data จากแหล่งใดบ้าง?</p></div>
+  <label class="mcq-option"><input type="radio" name="q7" value="0"> Endpoint เท่านั้น</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="1"> Network เท่านั้น</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="2"> Endpoint + Network + Email + Cloud + Identity</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="3"> Email เท่านั้น</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">9</span><p>MDM สามารถทำข้อใดได้?</p></div>
+  <label class="mcq-option"><input type="radio" name="q8" value="0"> Remote Wipe อุปกรณ์ที่หาย</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="1"> เพิ่ม RAM ให้อุปกรณ์</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="2"> เปลี่ยน Hardware ของอุปกรณ์</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="3"> ติดตั้ง Physical Keyboard</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">10</span><p>BYOD ใช้เทคนิคใดในการแยกข้อมูลงานและส่วนตัว?</p></div>
+  <label class="mcq-option"><input type="radio" name="q9" value="0"> Full Disk Encryption</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="1"> Containerization (Work Profile)</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="2"> VPN Tunneling</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="3"> Dual SIM</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">11</span><p>Pegasus Spyware ใช้เทคนิคใดในการโจมตี?</p></div>
+  <label class="mcq-option"><input type="radio" name="q10" value="0"> Zero-click Exploit</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="1"> Phishing Email</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="2"> USB Drive</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="3"> Social Engineering ทางโทรศัพท์</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">12</span><p>ข้อใดเป็นอันดับ 1 ของ OWASP IoT Top 10?</p></div>
+  <label class="mcq-option"><input type="radio" name="q11" value="0"> Weak, Guessable, or Hardcoded Passwords</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="1"> Insecure Network Services</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="2"> Lack of Secure Update Mechanism</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="3"> Insecure Default Settings</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">13</span><p>ใน OT Security สิ่งใดมีความสำคัญสูงสุด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q12" value="0"> Confidentiality</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="1"> Availability และ Safety</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="2"> Performance</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="3"> Scalability</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="2">
+  <div class="quiz-question"><span class="q-number">14</span><p>Purdue Model Level 3 หมายถึงอะไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q13" value="0"> Physical Process</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="1"> Enterprise Network</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="2"> Site Operations (SCADA, HMI)</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="3"> Basic Control (Sensors)</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">15</span><p>การแยก IoT ออกจาก Corporate Network ใช้เทคนิคใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q14" value="0"> VLAN Segregation</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="1"> Load Balancing</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="2"> DNS Caching</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="3"> Port Mirroring</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">16</span><p>IoT Gateway มีประโยชน์ข้อใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q15" value="0"> เพิ่ม Bandwidth ให้ IoT Device</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="1"> Protocol Translation และ Local Processing</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="2"> ลดจำนวน IoT Device</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="3"> แทนที่ Firewall ทั้งหมด</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">17</span><p>Mirai Botnet ใช้พอร์ตใดในการ Scan?</p></div>
+  <label class="mcq-option"><input type="radio" name="q16" value="0"> Telnet (23)</label>
+  <label class="mcq-option"><input type="radio" name="q16" value="1"> SSH (22)</label>
+  <label class="mcq-option"><input type="radio" name="q16" value="2"> HTTP (80)</label>
+  <label class="mcq-option"><input type="radio" name="q16" value="3"> HTTPS (443)</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="2">
+  <div class="quiz-question"><span class="q-number">18</span><p>Mozi Botnet ต่างจาก Mirai อย่างไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q17" value="0"> ใช้ Signature-based Detection</label>
+  <label class="mcq-option"><input type="radio" name="q17" value="1"> ใช้ HTTP Protocol เท่านั้น</label>
+  <label class="mcq-option"><input type="radio" name="q17" value="2"> ใช้ P2P Architecture แทน C2 Server</label>
+  <label class="mcq-option"><input type="radio" name="q17" value="3"> โจมตีเฉพาะ Windows Server</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">19</span><p>ข้อใดเป็นแนวทางป้องกัน IoT Botnet ที่ถูกต้อง?</p></div>
+  <label class="mcq-option"><input type="radio" name="q18" value="0"> เปิด Telnet เพื่อ Remote Management</label>
+  <label class="mcq-option"><input type="radio" name="q18" value="1"> เปลี่ยน Default Password ทันทีที่ติดตั้ง</label>
+  <label class="mcq-option"><input type="radio" name="q18" value="2"> ให้ IoT Device เชื่อมต่อ Internet โดยตรง</label>
+  <label class="mcq-option"><input type="radio" name="q18" value="3"> ใช้ Password เดียวกันทุกอุปกรณ์</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">20</span><p>Cisco ISE เป็นเครื่องมือประเภทใด?</p></div>
+  <label class="mcq-option"><input type="radio" name="q19" value="0"> Enterprise NAC Solution</label>
+  <label class="mcq-option"><input type="radio" name="q19" value="1"> Cloud WAF</label>
+  <label class="mcq-option"><input type="radio" name="q19" value="2"> EDR Platform</label>
+  <label class="mcq-option"><input type="radio" name="q19" value="3"> MDM Solution</label>
+</div>
+
+</div>
+
+<div class="mcq-score-panel">
+  <p>คะแนนของคุณ</p>
+  <div class="score-number" id="score-number">0/20</div>
+  <p style="font-size:.85rem;color:var(--text-secondary);margin-top:.25rem;">เลือกคำตอบแล้วกด "ตรวจคำตอบ"</p>
+</div>
+<div style="text-align:center;margin:1rem 0;">
+  <button id="check-mcq-btn" class="reveal-btn" style="font-size:1rem;padding:.6rem 1.5rem;"><i class="fas fa-check-circle" aria-hidden="true"></i> ตรวจคำตอบ</button>
+  <button id="reset-mcq-btn" class="reveal-btn" style="font-size:1rem;padding:.6rem 1.5rem;background:var(--text-muted);margin-left:.5rem;"><i class="fas fa-rotate-right" aria-hidden="true"></i> เริ่มใหม่</button>
+</div>
+<div id="mcq-result" class="quiz-card" style="display:none;"></div>
+</section>
+
+<hr>
+
+<!-- REFERENCES -->
+<section id="references" class="section-ref">
+<h2>เอกสารอ้างอิง (References)</h2>
+<ol>
+  <li>NIST Special Publication 800-41 Rev. 1. (2014). <em>Guidelines on Firewalls and Firewall Policy</em>.</li>
+  <li>NIST Special Publication 800-82 Rev. 3. (2024). <em>Guide to Industrial Control Systems (ICS) Security</em>.</li>
+  <li>IETF RFC 3580. (2003). <em>IEEE 802.1X Remote Authentication Dial In User Service (RADIUS) Usage Guidelines</em>.</li>
+  <li>Cisco Systems. (2024). <em>Identity Services Engine (ISE) Administrator Guide</em>. Retrieved from https://www.cisco.com/</li>
+  <li>Microsoft. (2024). <em>Microsoft Defender for Endpoint Documentation</em>. Retrieved from https://docs.microsoft.com/</li>
+  <li>OWASP Foundation. (2024). <em>OWASP IoT Top 10</em>. Retrieved from https://owasp.org/www-project-internet-of-things/</li>
+  <li>Antonakakis, M., et al. (2017). "Understanding the Mirai Botnet." <em>Proceedings of the 26th USENIX Security Symposium</em>.</li>
+  <li>IEC 62443 Series. (2020). <em>Security for Industrial Automation and Control Systems</em>.</li>
+  <li>Verizon. (2023). <em>Mobile Security Index 2023</em>. Verizon Business.</li>
+  <li>NSO Group. (2021). <em>Pegasus Spyware — Technical Analysis</em>. Citizen Lab Research.</li>
+</ol>
+</section>
+
+</main>
+</div>
+<footer class="site-footer">
+  <p><i class="fas fa-shield-halved" aria-hidden="true"></i> Network Security — บทที่ 14 | CH-14: Network Access Control (NAC), Endpoint Security และ IoT Security</p>
+  <p style="margin-top:.25rem;font-size:.75rem;">เนื้อหาจัดทำเพื่อการศึกษา สำหรับใช้ในชั้นเรียนเท่านั้น</p>
+</footer>
+<button id="back-to-top" aria-label="กลับไปด้านบน" title="กลับไปด้านบน"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+<script>
+(function(){
+  'use strict';
+
+  // Loading screen
+  document.addEventListener('DOMContentLoaded', function(){
+    var loader = document.getElementById('loading-screen');
+    if(loader){
+      setTimeout(function(){
+        loader.classList.add('hidden');
+      }, 400);
+    }
+  });
+
+  // Dark mode toggle
+  var themeToggle = document.getElementById('dark-mode-toggle');
+  var html = document.documentElement;
+  var savedTheme = localStorage.getItem('ns-ch14-theme');
+  if(savedTheme === 'dark'){ html.setAttribute('data-theme','dark'); }
+  function updateThemeIcon(){
+    if(!themeToggle) return;
+    var icon = themeToggle.querySelector('i');
+    if(html.getAttribute('data-theme') === 'dark'){
+      icon.className = 'fas fa-sun';
+      themeToggle.setAttribute('title','สลับโหมดสว่าง');
+    } else {
+      icon.className = 'fas fa-moon';
+      themeToggle.setAttribute('title','สลับโหมดมืด');
+    }
+  }
+  updateThemeIcon();
+  if(themeToggle){
+    themeToggle.addEventListener('click', function(){
+      if(html.getAttribute('data-theme') === 'dark'){
+        html.removeAttribute('data-theme');
+        localStorage.setItem('ns-ch14-theme','light');
+      } else {
+        html.setAttribute('data-theme','dark');
+        localStorage.setItem('ns-ch14-theme','dark');
+      }
+      updateThemeIcon();
+    });
+  }
+
+  // Sidebar toggle (mobile)
+  var sidebarToggle = document.getElementById('sidebar-toggle');
+  var sidebar = document.getElementById('sidebar');
+  var sidebarOverlay = document.getElementById('sidebar-overlay');
+  function openSidebar(){
+    if(sidebar) sidebar.classList.add('open');
+    if(sidebarOverlay) sidebarOverlay.classList.add('active');
+    if(sidebarToggle) sidebarToggle.setAttribute('aria-expanded','true');
+  }
+  function closeSidebar(){
+    if(sidebar) sidebar.classList.remove('open');
+    if(sidebarOverlay) sidebarOverlay.classList.remove('active');
+    if(sidebarToggle) sidebarToggle.setAttribute('aria-expanded','false');
+  }
+  if(sidebarToggle){ sidebarToggle.addEventListener('click', function(){ if(sidebar.classList.contains('open')) closeSidebar(); else openSidebar(); }); }
+  if(sidebarOverlay){ sidebarOverlay.addEventListener('click', closeSidebar); }
+
+  // Search overlay
+  var searchToggle = document.getElementById('search-toggle-btn');
+  var searchOverlay = document.getElementById('search-overlay');
+  var searchClose = document.getElementById('search-close-btn');
+  var searchInput = document.getElementById('search-input');
+  var searchResults = document.getElementById('search-results');
+  var searchCount = document.getElementById('search-count');
+  var mainContent = document.getElementById('main-content');
+  var searchIndex = [];
+
+  function buildSearchIndex(){
+    searchIndex = [];
+    if(!mainContent) return;
+    var sections = mainContent.querySelectorAll('section, .learning-objectives');
+    sections.forEach(function(sec){
+      var heading = sec.querySelector('h1, h2, h3, h4');
+      var id = sec.id || (heading && heading.id) || '';
+      var text = sec.textContent || '';
+      text = text.replace(/\s+/g,' ').trim();
+      if(!id && heading){
+        id = heading.id;
+      }
+      if(id && text.length > 30){
+        searchIndex.push({id:id, heading: heading ? heading.textContent.trim() : 'เนื้อหา', text:text});
+      }
+    });
+  }
+
+  function highlightText(text, query){
+    var regex = new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+    return text.replace(regex,'<mark>$1</mark>');
+  }
+
+  function openSearch(){
+    if(searchOverlay) searchOverlay.classList.add('active');
+    if(searchInput){ searchInput.value = ''; searchInput.focus(); }
+    if(searchResults) searchResults.innerHTML = '';
+    if(searchCount) searchCount.textContent = '';
+    buildSearchIndex();
+  }
+  function closeSearch(){
+    if(searchOverlay) searchOverlay.classList.remove('active');
+  }
+  if(searchToggle){ searchToggle.addEventListener('click', openSearch); }
+  if(searchClose){ searchClose.addEventListener('click', closeSearch); }
+  if(searchOverlay){
+    searchOverlay.addEventListener('click', function(e){ if(e.target === searchOverlay) closeSearch(); });
+  }
+  document.addEventListener('keydown', function(e){
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+      e.preventDefault();
+      if(searchOverlay && searchOverlay.classList.contains('active')) closeSearch(); else openSearch();
+    }
+    if(e.key === 'Escape'){
+      closeSearch();
+      closeSidebar();
+    }
+  });
+
+  if(searchInput){
+    searchInput.addEventListener('input', function(){
+      var query = this.value.trim();
+      if(!query || query.length < 2){ searchResults.innerHTML = ''; searchCount.textContent = ''; return; }
+      var qLower = query.toLowerCase();
+      var matches = searchIndex.filter(function(item){ return item.text.toLowerCase().indexOf(qLower) !== -1; }).slice(0,12);
+      searchCount.textContent = matches.length + ' ผลลัพธ์';
+      if(matches.length === 0){ searchResults.innerHTML = '<div class="no-results">ไม่พบผลลัพธ์</div>'; return; }
+      var htmlOut = '';
+      matches.forEach(function(item){
+        var idx = item.text.toLowerCase().indexOf(qLower);
+        var snippet = item.text.substring(Math.max(0, idx - 60), Math.min(item.text.length, idx + 160));
+        htmlOut += '<div class="search-result-item" data-target="'+item.id+'">'+
+          '<div class="result-heading">'+highlightText(item.heading, query)+'</div>'+
+          '<div class="result-snippet">...'+highlightText(snippet, query)+'...</div>'+
+          '</div>';
+      });
+      searchResults.innerHTML = htmlOut;
+      searchResults.querySelectorAll('.search-result-item').forEach(function(item){
+        item.addEventListener('click', function(){
+          var target = this.getAttribute('data-target');
+          closeSearch();
+          var el = document.getElementById(target);
+          if(el){ el.scrollIntoView({behavior:'smooth'}); }
+        });
+      });
+    });
+  }
+
+  // Progress bar
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    if(!progressBar || !mainContent) return;
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+    progressBar.setAttribute('aria-valuenow', Math.round(pct));
+  }
+
+  // Back to top
+  var backToTop = document.getElementById('back-to-top');
+  function updateBackToTop(){
+    if(!backToTop) return;
+    if((window.scrollY || document.documentElement.scrollTop) > 300){ backToTop.classList.add('visible'); }
+    else { backToTop.classList.remove('visible'); }
+  }
+  if(backToTop){ backToTop.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); }); }
+
+  // TOC scroll spy
+  var tocLinks = document.querySelectorAll('.toc-link[data-target]');
+  var sectionRefs = document.querySelectorAll('.section-ref[id]');
+  function updateActiveToc(){
+    var scrollPos = (window.scrollY || document.documentElement.scrollTop) + 100;
+    var current = '';
+    sectionRefs.forEach(function(sec){
+      if(sec.offsetTop <= scrollPos){ current = sec.id; }
+    });
+    tocLinks.forEach(function(link){
+      link.classList.remove('active');
+      if(link.getAttribute('data-target') === current){ link.classList.add('active'); }
+    });
+  }
+
+  window.addEventListener('scroll', function(){
+    updateProgress();
+    updateBackToTop();
+    updateActiveToc();
+  });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+  updateActiveToc();
+
+  // Copy code buttons
+  window.copyCode = function(btn){
+    var pre = btn.closest('pre');
+    if(!pre) return;
+    var codeText = pre.textContent.replace(/^\s*คัดลอก\s*/,'').trim();
+    navigator.clipboard.writeText(codeText).then(function(){
+      var original = btn.innerHTML;
+      btn.classList.add('copied');
+      btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+      setTimeout(function(){ btn.classList.remove('copied'); btn.innerHTML = original; }, 2000);
+    }).catch(function(){
+      var textarea = document.createElement('textarea');
+      textarea.value = codeText;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      var original = btn.innerHTML;
+      btn.classList.add('copied');
+      btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+      setTimeout(function(){ btn.classList.remove('copied'); btn.innerHTML = original; }, 2000);
+    });
+  };
+
+  // Review questions toggle
+  window.toggleAnswer = function(btn){
+    var card = btn.closest('.quiz-card');
+    var answer = card.querySelector('.quiz-answer');
+    if(answer.classList.contains('hidden')){
+      answer.classList.remove('hidden');
+      card.classList.add('revealed');
+      btn.innerHTML = '<i class="fas fa-eye-slash" aria-hidden="true"></i> ซ่อนเฉลย';
+    } else {
+      answer.classList.add('hidden');
+      card.classList.remove('revealed');
+      btn.innerHTML = '<i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย';
+    }
+  };
+
+  // MCQ Quiz
+  var checkBtn = document.getElementById('check-mcq-btn');
+  var resetBtn = document.getElementById('reset-mcq-btn');
+  var scoreNumber = document.getElementById('score-number');
+  var mcqResult = document.getElementById('mcq-result');
+  var mcqItems = document.querySelectorAll('.mcq-item');
+
+  function checkMcq(){
+    var score = 0;
+    var total = mcqItems.length;
+    mcqItems.forEach(function(item){
+      var correct = parseInt(item.getAttribute('data-correct'),10);
+      var selected = item.querySelector('input[type="radio"]:checked');
+      var options = item.querySelectorAll('.mcq-option');
+      options.forEach(function(opt, idx){
+        opt.classList.remove('correct-opt','wrong-opt');
+        if(idx === correct){ opt.classList.add('correct-opt'); }
+      });
+      item.classList.remove('correct','wrong');
+      if(!selected){ item.classList.add('wrong'); }
+      else if(parseInt(selected.value,10) === correct){
+        score++;
+        item.classList.add('correct');
+      } else {
+        item.classList.add('wrong');
+        selected.closest('.mcq-option').classList.add('wrong-opt');
+      }
+    });
+    if(scoreNumber){ scoreNumber.textContent = score + '/' + total; }
+    if(mcqResult){
+      var pct = Math.round((score/total)*100);
+      var msg = '';
+      if(pct >= 80) msg = 'ยอดเยี่ยม! คุณเข้าใจเนื้อหาบทนี้เป็นอย่างดี';
+      else if(pct >= 60) msg = 'ผ่านเกณฑ์ แต่ควรทบทวนจุดที่ตอบผิดอีกครั้ง';
+      else msg = 'ควรทบทวนเนื้อหาในบทนี้เพิ่มเติม';
+      mcqResult.className = 'quiz-card ' + (pct >= 60 ? 'success' : 'fail');
+      mcqResult.style.display = 'block';
+      mcqResult.innerHTML = '<strong>ผลลัพธ์:</strong> ' + score + '/' + total + ' (' + pct + '%) — ' + msg;
+    }
+    if(mcqResult){ mcqResult.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+  }
+
+  function resetMcq(){
+    mcqItems.forEach(function(item){
+      item.classList.remove('correct','wrong');
+      item.querySelectorAll('.mcq-option').forEach(function(opt){ opt.classList.remove('correct-opt','wrong-opt'); });
+      item.querySelectorAll('input[type="radio"]').forEach(function(r){ r.checked = false; });
+    });
+    if(scoreNumber){ scoreNumber.textContent = '0/20'; }
+    if(mcqResult){ mcqResult.style.display = 'none'; mcqResult.innerHTML = ''; }
+  }
+
+  if(checkBtn){ checkBtn.addEventListener('click', checkMcq); }
+  if(resetBtn){ resetBtn.addEventListener('click', resetMcq); }
+
+})();
+</script>
+</body>
+</html>
