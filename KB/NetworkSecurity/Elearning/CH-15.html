@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-15: แนวโน้มและเทคโนโลยีขั้นสูงด้าน Network Security | วิชา Network Security</title>
+<meta name="description" content="บทที่ 15 วิชา Network Security — ทบทวนรายวิชา, Zero Trust (BeyondCorp, ZTNA, SASE), AI/ML และ UEBA, Post-Quantum Cryptography (FIPS 203/204/205, Crypto Agility), 5G Security (SUCI, Network Slicing, MEC), SOAR และ Security Playbook, เส้นทางสายอาชีพและ Certification (Security+, CISSP, PCNSE)">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "CH-15: แนวโน้มและเทคโนโลยีขั้นสูงด้าน Network Security",
+  "description": "บทที่ 15 ของวิชา Network Security — ทบทวนเนื้อหาทั้งรายวิชา 14 สัปดาห์, Zero Trust Architecture (NIST SP 800-207, BeyondCorp, ZTNA, SASE), AI และ Machine Learning (Anomaly Detection, UEBA), Post-Quantum Cryptography (NIST FIPS 203/204/205, Crypto Agility), 5G Security (SUCI, Network Slicing, MEC), SOAR และ Security Playbook, เส้นทางสายอาชีพและการรับรองมาตรฐาน",
+  "educationalLevel": "Undergraduate",
+  "educationalRole": "Instructor",
+  "teaches": [
+    "Zero Trust Architecture",
+    "BeyondCorp",
+    "ZTNA",
+    "SASE",
+    "AI in Network Security",
+    "Machine Learning",
+    "UEBA",
+    "Anomaly Detection",
+    "Post-Quantum Cryptography",
+    "CRYSTALS-Kyber",
+    "CRYSTALS-Dilithium",
+    "Crypto Agility",
+    "5G Security",
+    "Network Slicing",
+    "MEC",
+    "SOAR",
+    "Security Playbook",
+    "Career Path",
+    "CompTIA Security+",
+    "CISSP"
+  ],
+  "inLanguage": "th"
+}
+</script>
+<style>
+:root{--primary:#1a3a5c;--primary-dark:#0f2440;--primary-light:#2c5a8c;--accent:#2563eb;--accent-hover:#1d4ed8;--bg:#ffffff;--bg-secondary:#f8fafc;--bg-tertiary:#f1f5f9;--text:#1e293b;--text-secondary:#475569;--text-muted:#94a3b8;--border:#e2e8f0;--border-light:#f1f5f9;--code-bg:#0f172a;--code-text:#e2e8f0;--table-stripe:#f8fafc;--sidebar-bg:#f8fafc;--sidebar-border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);--radius:8px;--radius-sm:4px;--radius-lg:12px;--font-thai:'Sarabun','IBM Plex Sans Thai','Kanit','Noto Sans Thai',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--font-mono:'JetBrains Mono','Fira Code','Cascadia Code','Source Code Pro','Menlo','Consolas',monospace;--transition:0.2s ease;--header-height:64px;--toc-width:280px}
+[data-theme="dark"]{--primary:#60a5fa;--primary-dark:#1e3a5f;--accent:#3b82f6;--accent-hover:#60a5fa;--bg:#0f172a;--bg-secondary:#1e293b;--bg-tertiary:#334155;--text:#f1f5f9;--text-secondary:#cbd5e1;--text-muted:#64748b;--border:#334155;--code-bg:#020617;--table-stripe:#1e293b;--sidebar-bg:#1e293b;--sidebar-border:#334155;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-thai);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+h1,h2,h3,h4,h5,h6{line-height:1.3;font-weight:700;color:var(--text);margin-top:1.5em;margin-bottom:.75em}
+h1{font-size:2.25rem;margin-top:0}
+h2{font-size:1.75rem;border-bottom:2px solid var(--border);padding-bottom:.4em}
+h3{font-size:1.35rem}
+h4{font-size:1.1rem}
+p{margin-bottom:1em}
+hr{border:none;border-top:2px solid var(--border);margin:2.5em 0}
+strong,b{font-weight:700}
+ul,ol{margin-bottom:1em;padding-left:1.5em}
+li{margin-bottom:.35em}
+#loading-screen{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s ease}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text-secondary);font-size:1rem}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#818cf8);z-index:9998;width:0%;transition:width .15s ease-out}
+.top-nav{position:fixed;top:3px;left:0;right:0;z-index:9997;height:var(--header-height);background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-nav .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem;color:var(--text);white-space:nowrap}
+.top-nav .logo i{color:var(--accent);font-size:1.3rem}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.nav-actions button,.nav-actions .search-toggle{background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:1rem}
+.nav-actions button:hover,.nav-actions .search-toggle:hover{background:var(--bg-tertiary);color:var(--text);border-color:var(--text-muted)}
+#sidebar-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text-secondary);width:40px;height:40px;border-radius:var(--radius);cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center}
+.search-overlay{position:fixed;inset:0;z-index:9996;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(4px)}
+.search-overlay.active{display:flex}
+.search-panel{background:var(--bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:90%;max-width:640px;overflow:hidden;max-height:70vh;display:flex;flex-direction:column}
+.search-input-wrap{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);gap:.5rem}
+.search-input-wrap i{color:var(--text-muted)}
+.search-input-wrap input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:1rem;font-family:var(--font-thai)}
+.search-input-wrap input::placeholder{color:var(--text-muted)}
+.search-count{font-size:.8rem;color:var(--text-muted);white-space:nowrap;padding:.25rem .5rem;background:var(--bg-tertiary);border-radius:var(--radius-sm)}
+.search-results{overflow-y:auto;padding:.5rem;flex:1;max-height:50vh}
+.search-results .no-results{padding:2rem;text-align:center;color:var(--text-muted)}
+.search-result-item{padding:.75rem;border-radius:var(--radius);cursor:pointer;transition:background .2s ease;border-bottom:1px solid var(--border-light)}
+.search-result-item:hover{background:var(--bg-tertiary)}
+.search-result-item .result-heading{font-weight:600;font-size:.9rem;color:var(--accent);margin-bottom:.2rem}
+.search-result-item .result-snippet{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.search-result-item .result-snippet mark,.highlight{background:#fef08a;color:#1e293b;padding:0 2px;border-radius:2px}
+[data-theme="dark"] .search-result-item .result-snippet mark,[data-theme="dark"] .highlight{background:#854d0e;color:#fef9c3}
+.layout{display:flex;padding-top:calc(var(--header-height) + 3px);min-height:100vh}
+.sidebar{width:var(--toc-width);flex-shrink:0;position:sticky;top:calc(var(--header-height) + 3px);height:calc(100vh - var(--header-height) - 3px);overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:1.25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--text-muted) transparent;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:4px}
+.sidebar-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{margin-bottom:.15rem}
+.toc-link{display:block;padding:.4rem .6rem;border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-secondary);transition:all .2s ease;border-left:3px solid transparent;text-decoration:none;line-height:1.4}
+.toc-link:hover{background:var(--bg-tertiary);color:var(--text);text-decoration:none}
+.toc-link.active{color:var(--accent);background:rgba(37,99,235,.08);border-left-color:var(--accent);font-weight:600}
+.toc-link.sub{padding-left:1.4rem;font-size:.8rem}
+.toc-link.sub2{padding-left:2.2rem;font-size:.78rem}
+.main-content{flex:1;min-width:0;padding:2rem 2.5rem;max-width:calc(100vw - var(--toc-width))}
+.main-content>section{margin-bottom:2.5rem}
+.section-ref{scroll-margin-top:calc(var(--header-height) + 16px)}
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:2.5rem 2rem;border-radius:var(--radius-lg);margin-bottom:2.5rem}
+.hero h1{color:#fff;font-size:2rem;margin-bottom:.5rem}
+.hero .subtitle{color:rgba(255,255,255,.85);font-size:1.1rem;margin-bottom:1.25rem}
+.hero .meta-tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.hero .meta-tag{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);padding:.25rem .75rem;border-radius:20px;font-size:.8rem}
+.learning-objectives{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:2rem}
+.learning-objectives h3{margin-top:0;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.learning-objectives ol{margin:.75rem 0 0;padding-left:1.25rem}
+.learning-objectives li{margin-bottom:.5rem;color:var(--text-secondary);font-size:.95rem}
+.table-wrap{overflow-x:auto;margin:1.25em 0;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:500px}
+thead{background:var(--bg-tertiary)}
+th,td{padding:.6rem .85rem;text-align:left;border:1px solid var(--border);vertical-align:top}
+th{font-weight:700;color:var(--text)}
+tbody tr:nth-child(even){background:var(--table-stripe)}
+tbody tr:hover{background:var(--bg-tertiary)}
+pre{background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:1.25em 0;position:relative}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+code{background:var(--bg-tertiary);color:var(--accent);padding:.15em .4em;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.85em}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:0}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.copy-btn.copied{background:#22c55e;color:#fff;border-color:#22c55e}
+.expandable{margin:1.25em 0}
+.expandable-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease;user-select:none;font-weight:600;font-size:.95rem}
+.expandable-header:hover{background:var(--border)}
+.expandable-header i{transition:transform .2s ease;font-size:.85rem;color:var(--text-muted)}
+.expandable.expanded .expandable-header i{transform:rotate(180deg)}
+.expandable-content{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;border:1px solid transparent}
+.expandable.expanded .expandable-content{max-height:50000px;padding:1rem;border-color:var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.quiz-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:all .2s ease}
+.quiz-card.revealed{border-left:4px solid #22c55e}
+.quiz-question{display:flex;gap:.75rem;align-items:flex-start}
+.q-number{background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .65rem;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.quiz-question p{margin:0;font-weight:500;color:var(--text);font-size:.95rem}
+.quiz-card .reveal-btn{display:inline-flex;align-items:center;gap:.4rem;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-family:var(--font-thai);transition:all .2s ease}
+.quiz-card .reveal-btn:hover{background:var(--accent-hover)}
+.quiz-card.revealed .reveal-btn{background:var(--text-muted)}
+.quiz-answer{margin-top:.75rem;padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border);font-size:.9rem}
+.hidden{display:none}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:9995;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-lg);transition:all .2s ease;opacity:0;visibility:hidden;transform:translateY(10px)}
+#back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+#back-to-top:hover{background:var(--accent-hover);transform:translateY(-2px)}
+.site-footer{margin-top:3rem;padding:1.5rem 2rem;background:var(--bg-secondary);border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+@media print{.top-nav,.sidebar,#back-to-top,#progress-bar,.copy-btn,.search-overlay,#sidebar-toggle,.nav-actions{display:none!important}.layout{display:block;padding-top:0}.main-content{max-width:100%;padding:0}.hero{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hero h1,.hero .subtitle{color:#fff!important}table{font-size:.8rem}pre{white-space:pre-wrap;word-break:break-all}.expandable-content{max-height:none!important;padding:1rem!important;border-color:var(--border)!important}.expandable-header i{display:none}.table-wrap{overflow:visible}.quiz-answer.hidden{display:block!important}.quiz-card .reveal-btn{display:none}body{font-size:11pt}section{page-break-inside:avoid}h2,h3{page-break-after:avoid}}
+@media(max-width:1024px){:root{--toc-width:240px}.main-content{padding:1.5rem}}
+@media(max-width:768px){:root{--toc-width:0px}#sidebar-toggle{display:flex}.sidebar{position:fixed;left:-280px;top:calc(var(--header-height) + 3px);width:280px;height:calc(100vh - var(--header-height) - 3px);transition:left .3s ease;z-index:9990;box-shadow:var(--shadow-lg)}.sidebar.open{left:0}.sidebar-overlay{position:fixed;inset:0;z-index:9989;background:rgba(0,0,0,.4);display:none}.sidebar-overlay.active{display:block}.main-content{max-width:100%;padding:1rem}.hero{padding:1.5rem 1rem}.hero h1{font-size:1.5rem}h2{font-size:1.4rem}h3{font-size:1.15rem}.top-nav{padding:0 .75rem}.top-nav .logo{font-size:.85rem}table{font-size:.8rem}th,td{padding:.4rem .6rem}.quiz-card{padding:1rem}}
+@media(max-width:480px){.nav-actions button,.nav-actions .search-toggle{width:36px;height:36px}#back-to-top{bottom:1rem;right:1rem;width:40px;height:40px}.search-panel{width:95%}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.mcq-item .mcq-option{display:block;margin:.35rem 0;padding:.5rem .75rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s ease}
+.mcq-item .mcq-option:hover{background:var(--bg-tertiary)}
+.mcq-item .mcq-option input{margin-right:.5rem;cursor:pointer}
+.mcq-item.correct{border-left:4px solid #22c55e}
+.mcq-item.wrong{border-left:4px solid #ef4444}
+.mcq-option.correct-opt{background:#dcfce7 !important;border-color:#22c55e !important;color:#14532d}
+.mcq-option.wrong-opt{background:#fee2e2 !important;border-color:#ef4444 !important;color:#7f1d1d}
+#mcq-result.success{background:#dcfce7;border-color:#22c55e}
+#mcq-result.fail{background:#fee2e2;border-color:#ef4444}
+.mcq-score-panel{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin:1rem 0;text-align:center}
+.mcq-score-panel .score-number{font-size:2rem;font-weight:700;color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div id="loading-screen" role="status" aria-label="กำลังโหลดเนื้อหา">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">กำลังโหลดเนื้อหา...</div>
+</div>
+<div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้าการอ่าน"></div>
+<header class="top-nav" role="banner">
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button id="sidebar-toggle" aria-label="เปิดเมนูสารบัญ" aria-expanded="false"><i class="fas fa-bars"></i></button>
+    <div class="logo"><i class="fas fa-shield-halved" aria-hidden="true"></i><span>Network Security — บทที่ 15</span></div>
+  </div>
+  <div class="nav-actions">
+    <button class="search-toggle" id="search-toggle-btn" aria-label="ค้นหา" title="ค้นหา (Ctrl+K / ⌘K)"><i class="fas fa-search" aria-hidden="true"></i></button>
+    <button id="dark-mode-toggle" aria-label="สลับโหมดมืด/สว่าง" title="สลับโหมดมืด/สว่าง"><i class="fas fa-moon" aria-hidden="true"></i></button>
+  </div>
+</header>
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="ค้นหาเนื้อหา">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="ค้นหาในเนื้อหาทั้งหมด..." aria-label="ป้อนคำค้นหา" autocomplete="off">
+      <span class="search-count" id="search-count"></span>
+      <button id="search-close-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;" aria-label="ปิดค้นหา"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<div class="layout">
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="สารบัญ">
+  <div class="sidebar-title"><i class="fas fa-list" aria-hidden="true"></i> สารบัญ</div>
+  <ul class="toc-list" id="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#hero-section" data-target="hero-section">บทนำ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#learning-objectives" data-target="learning-objectives">วัตถุประสงค์การเรียนรู้</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section1" data-target="section1">ส่วนที่ 1: ทบทวนเนื้อหา (Review Session)</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-1" data-target="section1-1">1.1 ภาพรวมรายวิชา NET401</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section1-2" data-target="section1-2">1.2 หัวข้อสำคัญที่ควรจำ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section2" data-target="section2">ส่วนที่ 2: Zero Trust Architecture (ZTA)</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-1" data-target="section2-1">2.1 หลักการ Zero Trust</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-2" data-target="section2-2">2.2 BeyondCorp (Google)</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section2-3" data-target="section2-3">2.3 ZTNA (Zero Trust Network Access)</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section3" data-target="section3">ส่วนที่ 3: AI และ Machine Learning</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-1" data-target="section3-1">3.1 การประยุกต์ใช้ AI/ML</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-2" data-target="section3-2">3.2 UEBA</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section3-3" data-target="section3-3">3.3 ข้อจำกัดของ AI/ML</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section4" data-target="section4">ส่วนที่ 4: Post-Quantum Cryptography</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-1" data-target="section4-1">4.1 Quantum Computing และผลกระทบ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-2" data-target="section4-2">4.2 NIST PQC Standardization</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section4-3" data-target="section4-3">4.3 Crypto Agility</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section5" data-target="section5">ส่วนที่ 5: 5G Security</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-1" data-target="section5-1">5.1 สถาปัตยกรรมความปลอดภัยของ 5G</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-2" data-target="section5-2">5.2 Network Slicing</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section5-3" data-target="section5-3">5.3 MEC Security</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section6" data-target="section6">ส่วนที่ 6: SOAR และ Automation</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-1" data-target="section6-1">6.1 หลักการของ SOAR</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-2" data-target="section6-2">6.2 Security Playbook ตัวอย่าง</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section6-3" data-target="section6-3">6.3 SOAR Solutions</a></li>
+    <li class="toc-item"><a class="toc-link" href="#section7" data-target="section7">ส่วนที่ 7: เส้นทางสายอาชีพและการรับรองมาตรฐาน</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-1" data-target="section7-1">7.1 เส้นทางสายอาชีพ Network Security</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-2" data-target="section7-2">7.2 การรับรองมาตรฐานที่สำคัญ</a></li>
+    <li class="toc-item"><a class="toc-link sub" href="#section7-3" data-target="section7-3">7.3 คำแนะนำสำหรับผู้เรียน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#summary" data-target="summary">สรุปท้ายบท</a></li>
+    <li class="toc-item"><a class="toc-link" href="#review-questions" data-target="review-questions">คำถามทบทวน</a></li>
+    <li class="toc-item"><a class="toc-link" href="#interactive-quiz" data-target="interactive-quiz">แบบทดสอบ</a></li>
+    <li class="toc-item"><a class="toc-link" href="#references" data-target="references">เอกสารอ้างอิง</a></li>
+  </ul>
+</nav>
+<main class="main-content" id="main-content" role="main">
+<section id="hero-section" class="hero section-ref">
+  <h1><i class="fas fa-rocket" aria-hidden="true"></i> CH-15: แนวโน้มและเทคโนโลยีขั้นสูงด้าน Network Security</h1>
+  <p class="subtitle">ทบทวนรายวิชา NET401, Zero Trust (BeyondCorp, ZTNA, SASE), AI/ML และ UEBA, Post-Quantum Cryptography, 5G Security (Network Slicing, MEC), SOAR และ Automation, เส้นทางสายอาชีพและการรับรองมาตรฐาน</p>
+  <div class="meta-tags">
+    <span class="meta-tag"><i class="fas fa-graduation-cap" aria-hidden="true"></i> วิชา Network Security</span>
+    <span class="meta-tag"><i class="fas fa-calendar" aria-hidden="true"></i> ภาคเรียนที่ 1/2569</span>
+    <span class="meta-tag"><i class="fas fa-book-open" aria-hidden="true"></i> บทที่ 15</span>
+  </div>
+</section>
+
+<div class="learning-objectives section-ref" id="learning-objectives">
+  <h3><i class="fas fa-bullseye" aria-hidden="true"></i> วัตถุประสงค์การเรียนรู้ (Learning Objectives)</h3>
+  <p>เมื่อจบบทนี้แล้ว ผู้เรียนสามารถ:</p>
+  <ol>
+    <li>ทบทวนเนื้อหาทั้งหมด 14 สัปดาห์และเชื่อมโยงความสัมพันธ์ระหว่างหัวข้อได้</li>
+    <li>อธิบายหลักการ Zero Trust Architecture (BeyondCorp, ZTNA) และ SASE ได้</li>
+    <li>อธิบายบทบาทของ AI และ Machine Learning ใน Network Security — Anomaly Detection, UEBA ได้</li>
+    <li>อธิบายผลกระทบของ Quantum Computing ต่อ Network Security และ Post-Quantum Cryptography ได้</li>
+    <li>อธิบายการรักษาความปลอดภัยสำหรับเครือข่าย 5G — Network Slicing, Edge Security ได้</li>
+    <li>อธิบายแนวคิด SOAR และ Security Playbook ในการตอบสนองอัตโนมัติได้</li>
+    <li>วางแผนเส้นทางสายอาชีพและการรับรองมาตรฐาน (CompTIA Security+, CISSP, Palo Alto PCNSE) ได้</li>
+  </ol>
+</div>
+
+<hr>
+
+<!-- SECTION 1: ทบทวนเนื้อหา (Review Session) -->
+<section id="section1" class="section-ref">
+<h3>ส่วนที่ 1: ทบทวนเนื้อหา (Review Session)</h3>
+
+<h2 id="section1-1">1.1 ภาพรวมรายวิชา NET401</h2>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>แผนผังความสัมพันธ์ของเนื้อหาทั้ง 14 สัปดาห์:
+─────────────────────────────────────────────
+
+พื้นฐาน Network Security (CH-1)
+        │
+        ▼
+ภัยคุกคามและการโจมตี (CH-2) ──▶ MITRE ATT&amp;CK, Cyber Kill Chain
+        │
+        ▼
+การเข้ารหัสและ PKI (CH-3, CH-4) ──▶ Foundation ของ Security
+        │                                                      │
+        ▼                                                      ▼
+Secure Protocols (CH-5) ──▶ TLS, IPsec, SSH               เข้าใจการทำงาน
+        │                                                    ของ Encryption
+        ▼
+Firewall (CH-6) ──▶ IDS/IPS (CH-7) ──▶ Defense in Depth
+                                       │
+                                       ▼
+                  ┌────────────────────┼────────────────────┐
+                  ▼                    ▼                    ▼
+              VPN (CH-8)         Web Security (CH-9)    DNS+Email (CH-10)
+          (Remote Access)         (OWASP Top 10)       (SPF/DKIM/DMARC)
+                  │                    │                    │
+                  └────────────────────┼────────────────────┘
+                                       ▼
+                              Wireless (CH-11)
+                          (WPA3, 802.1X, KRACK)
+                                       │
+                                       ▼
+                  ┌─────────────────────────────────────┐
+                  │    Network Monitoring (CH-12)        │
+                  │    SOC + SIEM + Incident Response   │
+                  └─────────────────────────────────────┘
+                                       │
+                                       ▼
+                  ┌─────────────────────────────────────┐
+                  │  Cloud (CH-13) + NAC/Endpoint/IoT    │
+                  │  (CH-14)                              │
+                  └─────────────────────────────────────┘
+                                       │
+                                       ▼
+                              Trends (CH-15)
+                    Zero Trust + AI + Post-Quantum + 5G</pre>
+
+<h2 id="section1-2">1.2 หัวข้อสำคัญที่ควรจำ</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>หมวดหมู่</th><th>หัวข้อ</th><th>จำให้ได้</th></tr></thead>
+  <tbody>
+    <tr><td><strong>พื้นฐาน</strong></td><td>CIA Triad, AAA, Defense in Depth</td><td>หลักการ 3 ข้อนี้ครอบคลุมทุกอย่าง</td></tr>
+    <tr><td><strong>ภัยคุกคาม</strong></td><td>MITRE ATT&amp;CK 14 Tactics</td><td>รู้จัก Tactics หลัก — Initial Access → Exfiltration</td></tr>
+    <tr><td><strong>Cryptography</strong></td><td>AES-256, ECDHE, SHA-256, PFS</td><td>ใช้ในทุก Protocol ที่ปลอดภัย</td></tr>
+    <tr><td><strong>PKI</strong></td><td>X.509, CA Hierarchy, CRL/OCSP</td><td>Chain of Trust</td></tr>
+    <tr><td><strong>Protocols</strong></td><td>TLS 1.3 (1-RTT), IPsec (IKEv2)</td><td>TLS สำหรับ Web, IPsec สำหรับ VPN</td></tr>
+    <tr><td><strong>Firewall/IDS</strong></td><td>Stateful Firewall, NGFW, Snort/Suricata</td><td>Defense in Depth — หลายชั้น</td></tr>
+    <tr><td><strong>Wireless</strong></td><td>WPA3-SAE, 802.1X, PMF</td><td>SAE ป้องกัน Dictionary Attack</td></tr>
+    <tr><td><strong>Web</strong></td><td>SQLi → Parameterized Query, XSS → CSP</td><td>OWASP Top 10</td></tr>
+    <tr><td><strong>Email</strong></td><td>SPF/DKIM/DMARC</td><td>DMARC p=reject</td></tr>
+    <tr><td><strong>Monitoring</strong></td><td>SOC Tiers, SIEM, NIST IR</td><td>Preparation → Detection → Contain → Recovery</td></tr>
+    <tr><td><strong>Cloud</strong></td><td>Shared Responsibility, SG/NACL</td><td>Security Group = Instance Firewall</td></tr>
+    <tr><td><strong>Endpoint</strong></td><td>EDR (Behavioral) vs AV (Signature)</td><td>EDR ตรวจจับ Zero-day</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<hr>
+
+<!-- SECTION 2: Zero Trust Architecture (ZTA) -->
+<section id="section2" class="section-ref">
+<h3>ส่วนที่ 2: Zero Trust Architecture (ZTA)</h3>
+
+<h2 id="section2-1">2.1 หลักการ Zero Trust</h2>
+<p>Zero Trust (NIST SP 800-207, 2020) — "Never Trust, Always Verify":</p>
+<p><strong>หลักการ 7 ข้อของ Zero Trust (ตาม CISA):</strong></p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>1. Continuous Verification — ตรวจสอบตลอดเวลา ไม่ใช่แค่ครั้งแรก
+2. Limit Blast Radius — Micro-segmentation, Least Privilege
+3. Automate Context Collection — Identity, Device, Location, Behavior
+4. Assume Breach — ออกแบบระบบโดยคิดว่าถูกโจมตีแล้ว
+5. Never Trust, Always Verify — ไม่เชื่อถือ Internal/Local โดยอัตโนมัติ
+6. Least Privilege Access — ให้สิทธิ์เท่าที่จำเป็น
+7. Data-Centric Security — ปกป้อง Data ไม่ใช่ Perimeter</pre>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ZT vs Traditional:
+───────────────────
+Traditional (Castle-and-Moat):
+[Internet] ──▶ [Firewall ← Tight Security] ──▶ [Internal Network ← Loose]
+                    │                                     │
+                    │                                     │
+               ถ้าเจาะ Firewall ได้ → เข้าถึงทุกอย่างได้ ❌
+
+Zero Trust:
+[Internet] ──▶ [ZTNA] ──▶ [App A]     (User → แค่ App A)
+                           [App B]     (User → แค่ App B)
+                           [Database]  (User → ไม่ได้เลย)
+              │                               │
+         ทุก Connection ต้อง Verify       Micro-segmentation
+         + Authenticate                   + Least Privilege</pre>
+
+<h2 id="section2-2">2.2 BeyondCorp (Google)</h2>
+<p>Google BeyondCorp คือ Zero Trust Implementation ของ Google — เปลี่ยนจาก Network-Centric → User-Centric:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>BeyondCorp Model:
+──────────────────
+Traditional Google (ก่อน 2010):
+[Employee] ──▶ [VPN] ──▶ [Corporate Network] ──▶ [App]
+                     │                          │
+                เชื่อมต่อ VPN ก่อน         เข้าถึงทุก App
+
+BeyondCorp (2011+):
+[Employee] ──▶ [Internet] ──▶ [Access Proxy] ──▶ [App A]
+                     │               │
+                ไม่ต้อง VPN          ตรวจสอบ:
+                                    ├── User Identity
+                                    ├── Device Inventory
+                                    ├── Device Certificate
+                                    └── Context (Location, Time)</pre>
+<p><strong>บทเรียนจาก BeyondCorp:</strong></p>
+<ol>
+  <li>ไม่ต้อง VPN — พนักงานเข้าถึง App ได้จากทุกที่โดยตรง</li>
+  <li>Device Inventory ครบ — ทุกเครื่องต้องมี Certificate</li>
+  <li>Access Proxy — ทุก Request ผ่าน Proxy (ตรวจสอบทุกครั้ง)</li>
+  <li>App-level Access — พนักงานเข้าถึงเฉพาะ App ที่ได้รับอนุญาต</li>
+  <li>No Network-level Access — ไม่มีใครเห็น Network ทั้งหมด</li>
+</ol>
+
+<h2 id="section2-3">2.3 ZTNA (Zero Trust Network Access)</h2>
+<p>ZTNA (SASE Component) — เข้าใกล้ทรัพยากรโดยไม่ต้องต่อ VPN:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>ZTNA vs VPN:
+─────────────
+VPN:
+├── User ได้ IP ใน Corporate Network
+├── User เห็น Network ทั้งหมด (Lateral Movement ได้)
+├── Once Connected → Full Access
+└── เปิด Port ไปยัง Internal Network
+
+ZTNA:
+├── User เชื่อมต่อไปยัง App โดยตรง (ไม่ใช่ Network)
+├── User ไม่เห็น Network — ไม่มี Lateral Movement
+├── ทุก Request ถูกตรวจสอบ
+└── App ถูกซ่อนจาก Internet (ไม่ต้องเปิด Port)</pre>
+</section>
+
+<hr>
+<!-- SECTION 3: AI และ Machine Learning ใน Network Security -->
+<section id="section3" class="section-ref">
+<h3>ส่วนที่ 3: AI และ Machine Learning ใน Network Security</h3>
+
+<h2 id="section3-1">3.1 การประยุกต์ใช้ AI/ML</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>การใช้งาน</th><th>เทคนิค</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Network Anomaly Detection</strong></td><td>Autoencoder, LSTM</td><td>สร้าง Baseline → ตรวจจับ Deviation</td></tr>
+    <tr><td><strong>Malware Detection</strong></td><td>CNN, Random Forest</td><td>วิเคราะห์ PE Header, API Call Sequence</td></tr>
+    <tr><td><strong>Phishing Detection</strong></td><td>NLP, BERT</td><td>วิเคราะห์ Email Content, URL</td></tr>
+    <tr><td><strong>User Behavior Analytics (UEBA)</strong></td><td>Isolation Forest, Bayesian</td><td>Baseline User Behavior → Alert Deviation</td></tr>
+    <tr><td><strong>DNS Tunneling Detection</strong></td><td>ML on DNS Metadata</td><td>วิเคราะห์ Query Length, Frequency</td></tr>
+    <tr><td><strong>DDoS Mitigation</strong></td><td>Reinforcement Learning</td><td>Adaptive Traffic Filtering</td></tr>
+    <tr><td><strong>Fraud Detection</strong></td><td>Graph Neural Network</td><td>วิเคราะห์ Relationship ระหว่าง Entity</td></tr>
+    <tr><td><strong>Automated Incident Response</strong></td><td>AI Planning</td><td>เลือก Playbook อัตโนมัติตาม Incident Type</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="section3-2">3.2 UEBA (User and Entity Behavior Analytics)</h2>
+<p>UEBA ใช้ ML เพื่อสร้าง Profile พฤติกรรมปกติของผู้ใช้และ Entity (Device, App):</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>UEBA Example — Insider Threat Detection:
+──────────────────────────────────────────
+User: john.smith (HR Department, Level 3)
+Baseline (90 วัน):
+├── Login Time: 08:00-18:00 (99.9%)
+├── Login Location: Office (95%), Home (5%)
+├── Data Access: HR Database (200 req/day), No DB access
+├── File Download: &lt; 50 MB/day
+└── Email Recipients: Internal (90%), External (10%)
+
+Anomaly:
+├── Login Time: 03:15 AM (Sunday) 🔴
+├── Login Location: Tor Exit Node (185.220.101.x) 🔴
+├── Data Access: DB Server (first time!) 🔴
+├── File Download: 5 GB (from DB Server) 🔴
+└── Email: Forwarded 500 emails to external@gmail.com 🔴
+
+Risk Score: 96/100 — 🔴 CRITICAL
+Action: Disable account + Notify IR + Block IP</pre>
+
+<h2 id="section3-3">3.3 ข้อจำกัดของ AI/ML ด้านความปลอดภัย</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>ข้อจำกัด</th><th>ปัญหา</th><th>แนวทางแก้ไข</th></tr></thead>
+  <tbody>
+    <tr><td><strong>False Positive</strong></td><td>AI แจ้งเตือนปกติเป็นผิด</td><td>Human-in-the-loop, Feedback Loop</td></tr>
+    <tr><td><strong>Adversarial ML</strong></td><td>ผู้โจมตีสร้าง Input หลอก Model</td><td>Adversarial Training, Robust Model</td></tr>
+    <tr><td><strong>Data Quality</strong></td><td>Training Data ไม่ดี = Model ไม่แม่น</td><td>Data Validation, Label Quality</td></tr>
+    <tr><td><strong>Concept Drift</strong></td><td>Behavior เปลี่ยน — Model ล้าสมัย</td><td>Retrain สม่ำเสมอ (ทุกสัปดาห์)</td></tr>
+    <tr><td><strong>Explainability</strong></td><td>ไม่รู้ว่า Model ตัดสินใจอย่างไร</td><td>XAI (eXplainable AI) — SHAP, LIME</td></tr>
+    <tr><td><strong>Compute Cost</strong></td><td>Deep Learning ใช้ GPU แพง</td><td>Model Optimization, Edge Inference</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<hr>
+
+<!-- SECTION 4: Post-Quantum Cryptography -->
+<section id="section4" class="section-ref">
+<h3>ส่วนที่ 4: Post-Quantum Cryptography</h3>
+
+<h2 id="section4-1">4.1 Quantum Computing และผลกระทบ</h2>
+<p>เมื่อ Quantum Computer ที่มี Qubit เพียงพอ (หลายพัน Logical Qubit) มาถึง — การเข้ารหัสที่เป็นอยู่จะพัง:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Algorithm</th><th>จุดประสงค์</th><th>สถานะปัจจุบัน</th><th>ผลกระทบจาก Quantum</th></tr></thead>
+  <tbody>
+    <tr><td><strong>RSA-2048</strong></td><td>Digital Signature, Key Exchange</td><td>ใช้ทั่วไป</td><td>❌ Shor's Algorithm — แก้ได้ในไม่กี่นาที</td></tr>
+    <tr><td><strong>ECDSA / ECDH</strong></td><td>Key Exchange, Signature</td><td>ใช้ทั่วไป</td><td>❌ Shor's Algorithm — แก้ได้</td></tr>
+    <tr><td><strong>AES-256</strong></td><td>Symmetric Encryption</td><td>ใช้ทั่วไป</td><td>✅ Grover's Algorithm — Reduction ครึ่งนึง (ยังปลอดภัยที่ 128-bit)</td></tr>
+    <tr><td><strong>SHA-256</strong></td><td>Hashing</td><td>ใช้ทั่วไป</td><td>✅ Grover's Algorithm — Reduction ครึ่งนึง (ยังปลอดภัย)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Timeline ที่คาดการณ์:</strong></p>
+<ul>
+  <li><strong>2030:</strong> Quantum Computer ที่สามารถทำลาย RSA-2048 ได้? (ยังมีความไม่แน่นอนสูง)</li>
+  <li><strong>NIST PQC Standardization:</strong> 2024 — มาตรฐาน Post-Quantum Algorithms</li>
+  <li><strong>Migration:</strong> องค์กรควรเริ่มวางแผนตอนนี้ (Crypto Agility)</li>
+</ul>
+
+<h2 id="section4-2">4.2 NIST PQC Standardization</h2>
+<p>NIST Post-Quantum Cryptography Standardization (2016-2024):</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Algorithm</th><th>ประเภท</th><th>วัตถุประสงค์</th><th>Standard ปี</th></tr></thead>
+  <tbody>
+    <tr><td><strong>CRYSTALS-Kyber</strong></td><td>KEM (Key Encapsulation)</td><td>Key Exchange</td><td>2024 (FIPS 203)</td></tr>
+    <tr><td><strong>CRYSTALS-Dilithium</strong></td><td>Digital Signature</td><td>Signing</td><td>2024 (FIPS 204)</td></tr>
+    <tr><td><strong>FALCON</strong></td><td>Digital Signature</td><td>Signing (smaller)</td><td>2024 (FIPS 205)</td></tr>
+    <tr><td><strong>SPHINCS+</strong></td><td>Digital Signature</td><td>Signing (stateless)</td><td>2024 (FIPS 205)</td></tr>
+  </tbody>
+</table></div>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Post-Quantum Migration:
+────────────────────────
+ก่อน Quantum:
+TLS 1.3: ECDHE(X25519) + AES-256-GCM + RSA-2048 Signature
+
+ระหว่าง Quantum (Hybrid):
+TLS 1.3: ECDHE(X25519) + Kyber-768 + AES-256-GCM + Dilithium3 Signature
+
+หลัง Quantum (Pure):
+TLS 1.3: Kyber-1024 + AES-256-GCM + Dilithium5 Signature</pre>
+
+<h2 id="section4-3">4.3 Crypto Agility</h2>
+<p>Crypto Agility = ความสามารถในการเปลี่ยน Algorithm ได้โดยไม่ต้องเปลี่ยนระบบทั้งหมด:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Crypto Agility Requirements:
+─────────────────────────────
+1. Protocol Negotiation — รองรับ Algorithm หลายแบบ
+2. Algorithm Independence — ไม่ Hardcode Algorithm
+3. Hybrid Mode — รองรับ Classic + PQC พร้อมกัน
+4. Versioning — Version Algorithm ได้
+5. Migration Plan — เปลี่ยน Algorithm ได้โดย Downtime น้อย</pre>
+</section>
+
+<hr>
+
+<!-- SECTION 5: 5G Security -->
+<section id="section5" class="section-ref">
+<h3>ส่วนที่ 5: 5G Security</h3>
+
+<h2 id="section5-1">5.1 สถาปัตยกรรมความปลอดภัยของ 5G</h2>
+<p>5G ปรับปรุงความปลอดภัยจาก 4G/LTE อย่างมีนัยสำคัญ:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>คุณสมบัติ</th><th>4G (LTE)</th><th>5G</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Authentication</strong></td><td>EPS-AKA</td><td>5G-AKA + EAP-AKA'</td></tr>
+    <tr><td><strong>SUCI</strong></td><td>IMSI (Plaintext)</td><td>SUCI (Encrypted SUPI)</td></tr>
+    <tr><td><strong>Network Slicing</strong></td><td>❌ ไม่มี</td><td>✅</td></tr>
+    <tr><td><strong>Edge Computing</strong></td><td>❌ จำกัด</td><td>✅ MEC</td></tr>
+    <tr><td><strong>User Plane Integrity</strong></td><td>❌ ไม่มี</td><td>✅ (สำหรับ URLLC)</td></tr>
+    <tr><td><strong>Roaming Security</strong></td><td>ปานกลาง</td><td>SEAL (Security Edge Protection Proxy)</td></tr>
+    <tr><td><strong>Privacy</strong></td><td>IMSI ไม่เข้ารหัส</td><td>SUCI encrypts IMSI</td></tr>
+  </tbody>
+</table></div>
+<p><strong>SUCI (Subscription Concealed Identifier):</strong></p>
+<ul>
+  <li><strong>4G:</strong> IMSI (International Mobile Subscriber Identity) ส่งแบบ Plaintext — ใครก็ดักจับได้</li>
+  <li><strong>5G:</strong> SUCI = IMSI เข้ารหัสด้วย Public Key ของ Home Network — เฉพาะ Home Network เท่านั้นที่ถอดรหัสได้</li>
+</ul>
+
+<h2 id="section5-2">5.2 Network Slicing</h2>
+<p>5G Network Slicing สร้าง Virtual Network แยกตามการใช้งาน:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>5G Network Slicing:
+────────────────────
+┌─────────────────────────────────────────────────────────┐
+│                  5G Core Network                         │
+│                                                          │
+│  ┌────────────────┐  ┌────────────────┐  ┌────────────┐ │
+│  │  Slice 1       │  │  Slice 2       │  │  Slice 3    │ │
+│  │  eMBB          │  │  URLLC         │  │  mMTC       │ │
+│  │  Enhanced      │  │  Ultra-reliable│  │  Massive    │ │
+│  │  Mobile        │  │  Low-latency   │  │  IoT        │ │
+│  │  Broadband     │  │                │  │             │ │
+│  ├────────────────┤  ├────────────────┤  ├────────────┤ │
+│  │ Speed: 10 Gbps  │  │ Latency: 1 ms   │  │ Device: 1M   │ │
+│  │ Use: Video     │  │ Use: Auto,     │  │ /km²        │ │
+│  │ Streaming     │  │ Industry,      │  │ Use: Sensor │ │
+│  │ Smartphone    │  │ Remote Surgery │  │ Smart Meter │ │
+│  └────────────────┘  └────────────────┘  └────────────┘ │
+└─────────────────────────────────────────────────────────┘</pre>
+<p><strong>Security Implications ของ Network Slicing:</strong></p>
+<ul>
+  <li>แต่ละ Slice ต้อง Isolation แข็งแรง — บัคใน Slice หนึ่งไม่รั่วไปอีก Slice</li>
+  <li>Slice Authentication — แต่ละ Slice ต้อง Authenticate แยก</li>
+  <li>Slice-Specific Security Policy — Security Profile ต่างกันตาม Slice</li>
+  <li>5G Security Architecture กำหนดให้ Network Slicing ต้องมี Isolation ระดับ Network, Compute, Storage</li>
+</ul>
+
+<h2 id="section5-3">5.3 Multi-access Edge Computing (MEC) Security</h2>
+<p>MEC นำ Compute มาไว้ใกล้ผู้ใช้ (Edge) — ลด Latency:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>MEC Security:
+─────────────
+Traditional Cloud:
+[Device] ────▶ [Cloud DC] — Latency 50-100ms
+                      │
+                 Security = ที่ Cloud
+
+Edge (MEC):
+[Device] ──▶ [Edge Node] — Latency 1-5ms
+                 │            ─── ใกล้ Device
+            Security = Edge + Cloud
+                 │
+            Edge Challenges:
+            ├── Physical Security (Edge Node อยู่นอก Data Center)
+            ├── Limited Resource (CPU/RAM ที่ Edge)
+            ├── Update Management (Edge Node จำนวนมาก)
+            └── Trust Model (Edge Node เชื่อถือได้?)
+
+แนวทาง:
+├── Trusted Execution Environment (TEE) — Intel SGX, ARM TrustZone
+├── Attestation — ตรวจสอบ Integrity ของ Edge Node
+├── Encryption — Data ทุกชั้น (Edge ↔ Cloud)
+└── Zero Trust — Edge Node ต้อง Authentication ก่อนเชื่อมต่อ Cloud</pre>
+</section>
+
+<hr>
+<!-- SECTION 6: SOAR และ Automation -->
+<section id="section6" class="section-ref">
+<h3>ส่วนที่ 6: SOAR และ Automation</h3>
+
+<h2 id="section6-1">6.1 หลักการของ SOAR</h2>
+<p>SOAR (Security Orchestration, Automation and Response) เชื่อมต่อเครื่องมือความปลอดภัยและ Automation การตอบสนอง:</p>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>SOAR Architecture:
+───────────────────
+┌─────────────────────────────────────────────────────┐
+│                    SOAR Platform                      │
+│                                                        │
+│  ┌──────────────────────────────────────────────────┐ │
+│  │  1. Orchestration — เชื่อมต่อ Tools              │ │
+│  │  SIEM ↔ EDR ↔ Firewall ↔ Email ↔ IAM ↔ Ticketing│ │
+│  └──────────────────────────────────────────────────┘ │
+│  ┌──────────────────────────────────────────────────┐ │
+│  │  2. Automation — ตอบสนองอัตโนมัติ               │ │
+│  │  Playbook: Phishing → Block IP → Disable User    │ │
+│  │            → Quarantine Email → Create Ticket    │ │
+│  └──────────────────────────────────────────────────┘ │
+│  ┌──────────────────────────────────────────────────┐ │
+│  │  3. Response — ทำ Action บน Tools โดยอัตโนมัติ │ │
+│  │  API Call: Firewall Block IP, EDR Isolate Host   │ │
+│  │  API Call: Disable AD User, Create ServiceNow    │ │
+│  └──────────────────────────────────────────────────┘ │
+│  ┌──────────────────────────────────────────────────┐ │
+│  │  4. Case Management — ติดตาม Incident           │ │
+│  │  Timeline, Evidence, Communication, Report       │ │
+│  └──────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────┘</pre>
+
+<h2 id="section6-2">6.2 Security Playbook ตัวอย่าง</h2>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Playbook: Phishing Response (Automated)
+─────────────────────────────────────────
+Trigger: 🚨 User รายงานอีเมลต้องสงสัย / SIEM Alert
+
+Step 1 — Analyze Email:
+├── 🔍 Extract URLs, Attachments, Headers
+├── 🔍 Sandbox URL + Attachment
+├── 🔍 Check Threat Intelligence (VirusTotal, OTX)
+└── 🧠 ML Classification: Phishing (Confidence: 98%)
+
+Step 2 — Contain:
+├── 🛑 Block Sender Domain on Email Gateway
+├── 🛑 Block URLs on SWG (Secure Web Gateway)
+├── 🛑 Quarantine email from all recipients
+└── 📧 Notify: "You received a phishing email" + instructions
+
+Step 3 — Investigate:
+├── 🔍 SIEM Query: อีเมลนี้ถูกเปิดโดยกี่คน?
+├── 🔍 EDR Query: เครื่องที่คลิก Link มีพฤติกรรมผิดปกติหรือไม่?
+└── 📋 Create Incident Ticket (Priority: High)
+
+Step 4 — Remediate:
+├── 🛑 If machine infected → EDR Isolate Host
+├── 🛑 If credential phished → Force Password Reset + MFA Re-enroll
+├── 📧 Send Organization-wide Phishing Alert
+└── 📊 Update Phishing Metrics Dashboard
+
+Step 5 — Report:
+├── 📊 MITRE ATT&amp;CK Mapping
+├── 📊 Timeline + Impact
+└── 📊 Lessons Learned</pre>
+
+<h2 id="section6-3">6.3 SOAR Solutions</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>โซลูชัน</th><th>จุดเด่น</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Splunk SOAR (Phantom)</strong></td><td>Integration เยอะ, Community App</td></tr>
+    <tr><td><strong>Palo Alto XSOAR</strong></td><td>Cortex Ecosystem, Marketplace</td></tr>
+    <tr><td><strong>ServiceNow Security Operations</strong></td><td>ITSM Integration</td></tr>
+    <tr><td><strong>IBM QRadar SOAR</strong></td><td>รองรับ AI</td></tr>
+    <tr><td><strong>Swimlane</strong></td><td>Low-code, ใช้งานง่าย</td></tr>
+    <tr><td><strong>Shuffle</strong></td><td>Open Source SOAR</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<hr>
+
+<!-- SECTION 7: เส้นทางสายอาชีพและการรับรองมาตรฐาน -->
+<section id="section7" class="section-ref">
+<h3>ส่วนที่ 7: เส้นทางสายอาชีพและการรับรองมาตรฐาน</h3>
+
+<h2 id="section7-1">7.1 เส้นทางสายอาชีพ Network Security</h2>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>Entry Level (0-3 ปี):
+├── SOC Analyst (Tier 1)
+├── Network Administrator
+├── Junior Security Engineer
+├── IT Security Support
+└── Certification: CompTIA Security+, Network+
+
+Mid Level (3-7 ปี):
+├── Security Engineer (Network, Cloud, Endpoint)
+├── SOC Analyst (Tier 2-3)
+├── Penetration Tester
+├── Security Architect (Junior)
+└── Certification: CISSP, CEH, OSCP, PCNSE
+
+Senior Level (7-15 ปี):
+├── Security Architect
+├── SOC Manager
+├── CISO (Chief Information Security Officer)
+├── Principal Security Engineer
+├── Security Consultant
+└── Certification: CISSP, CISM, CCSP, SANS/GIAC
+
+Executive Level (15+ ปี):
+├── CISO / CSO
+├── VP of Security
+├── Security Director
+└── Board Advisory</pre>
+
+<h2 id="section7-2">7.2 การรับรองมาตรฐานที่สำคัญ</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>ใบรับรอง</th><th>ระดับ</th><th>เหมาะกับ</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>CompTIA Security+</strong></td><td>Entry</td><td>ทุกคนที่เริ่มต้นสาย Security</td><td>พื้นฐานความปลอดภัย, Governance, Risk</td></tr>
+    <tr><td><strong>CompTIA Network+</strong></td><td>Entry</td><td>Network Admin</td><td>พื้นฐาน Network — ควรมีก่อน Security+</td></tr>
+    <tr><td><strong>CISSP</strong></td><td>Professional</td><td>Security Engineer, Architect</td><td>8 Domains — กว้าง, ลึก, ประสบการณ์ต้องมี 5 ปี</td></tr>
+    <tr><td><strong>CEH (EC-Council)</strong></td><td>Intermediate</td><td>Penetration Tester</td><td>Ethical Hacking, Tools, Methodology</td></tr>
+    <tr><td><strong>OSCP (Offensive Security)</strong></td><td>Advanced</td><td>Pentester</td><td>Hands-on — ต้อง Hack Lab จริง</td></tr>
+    <tr><td><strong>PCNSE (Palo Alto)</strong></td><td>Professional</td><td>Network Security Engineer</td><td>Palo Alto NGFW — เฉพาะทาง</td></tr>
+    <tr><td><strong>CCNP Security (Cisco)</strong></td><td>Professional</td><td>Network Security</td><td>Cisco Security Solution — Firepower, ISE, VPN</td></tr>
+    <tr><td><strong>AWS Security Specialty</strong></td><td>Professional</td><td>Cloud Security</td><td>AWS Security Services</td></tr>
+    <tr><td><strong>GIAC (SANS)</strong></td><td>Advanced</td><td>เฉพาะทาง</td><td>Forensic, Malware Analysis, IR</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="section7-3">7.3 คำแนะนำสำหรับผู้เรียน</h2>
+<pre><button class="copy-btn" onclick="copyCode(this)" aria-label="คัดลอก"><i class="fas fa-copy" aria-hidden="true"></i> คัดลอก</button>สำหรับนักศึกษาปริญญาตรีที่เรียน Network Security:
+───────────────────────────────────────────────
+
+1️⃣ ปี 3 — เริ่ม:
+├── เรียนให้เข้าใจพื้นฐาน Network (CCNA-level)
+├── ฝึกใช้ Wireshark, Nmap, tcpdump
+├── ทำความเข้าใจ OWASP Top 10
+└── สอบ CompTIA Security+ (หรือเรียนแล้วสอบ)
+
+2️⃣ ปี 4 — ต่อยอด:
+├── ฝึกจาก Lab — TryHackMe, HackTheBox
+├── เข้าแข่งขัน CTF (Capture The Flag)
+├── ฝึกเขียน Python สำหรับ Security Automation
+└── ฝึกใช้ Cloud (AWS Free Tier, Azure Free)
+
+3️⃣ หลังเรียนจบ:
+├── สอบ CISSP (เมื่อมีประสบการณ์ครบ)
+├── เลือกสาขาที่ชอบ: Network Security / PenTest / Cloud / SOC
+├── หาประสบการณ์จริง (ทำงาน SOC, Security Engineer)
+└── อ่านข่าวความปลอดภัยทุกวัน — BleepingComputer, The Hacker News</pre>
+</section>
+
+<hr>
+
+<!-- SUMMARY -->
+<section id="summary" class="section-ref">
+<h2>สรุปท้ายบท (Chapter Summary)</h2>
+<ol>
+  <li><strong>Zero Trust (NIST SP 800-207)</strong> — Never Trust, Always Verify — ใช้ Micro-segmentation, ZTNA, Least Privilege</li>
+  <li><strong>AI/ML ใน Network Security</strong> — ใช้ UEBA (User Behavior Analytics) ตรวจจับ Insider Threat, Anomaly Detection — ต้องระวัง False Positive และ Adversarial ML</li>
+  <li><strong>Post-Quantum Cryptography</strong> — Shor's Algorithm ทำลาย RSA/ECC — NIST เลือก CRYSTALS-Kyber (KEM), Dilithium/FALCON (Signature) — องค์กรควรเตรียม Crypto Agility</li>
+  <li><strong>5G Security</strong> — 5G-AKA + SUCI (Encrypted IMI) + Network Slicing Isolation + MEC Edge Security</li>
+  <li><strong>SOAR</strong> — Automation การตอบสนอง — Orchestration เชื่อม Tools — Playbook = กระบวนการอัตโนมัติ</li>
+  <li><strong>สายอาชีพ</strong> — เริ่มจาก SOC Analyst, ต่อ Security Engineer, สู่ Security Architect / CISO — Certification: Security+ → CISSP → เฉพาะทาง</li>
+</ol>
+</section>
+
+<hr>
+<!-- REVIEW QUESTIONS -->
+<section id="review-questions" class="section-ref">
+<h2><i class="fas fa-question-circle" aria-hidden="true"></i> คำถามทบทวน (Review Questions)</h2>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">1</span><p>จงอธิบายหลักการ Zero Trust ตาม NIST SP 800-207 — "Never Trust, Always Verify" — และเปรียบเทียบกับ Traditional Castle-and-Moat Model</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>Zero Trust (NIST SP 800-207, 2020)</strong> ยึดหลัก "Never Trust, Always Verify" — ไม่เชื่อถืออะไรโดยอัตโนมัติทั้ง Internal และ Local Network ทุก Connection ต้องถูกตรวจสอบ (Verify) และพิสูจน์ตัวตน (Authenticate) ทุกครั้ง หลักการ 7 ข้อตาม CISA: Continuous Verification, Limit Blast Radius, Automate Context Collection, Assume Breach, Never Trust Always Verify, Least Privilege Access และ Data-Centric Security <strong>เปรียบเทียบกับ Castle-and-Moat:</strong> Traditional Model เน้นป้องกันที่ Perimeter (Firewall แน่นหนา) แต่ภายใน Internal Network หลวม — ถ้าผู้โจมตีเจาะ Firewall ได้จะเข้าถึงทุกอย่างได้ (Lateral Movement อิสระ) ส่วน Zero Trust ใช้ Micro-segmentation + Least Privilege — ผู้ใช้ได้สิทธิ์เฉพาะ App ที่อนุญาตเท่านั้น ไม่มี Network-level Access</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">2</span><p>BeyondCorp ของ Google เปลี่ยนวิธีรักษาความปลอดภัยอย่างไร? จงอธิบายความแตกต่างระหว่าง BeyondCorp และ VPN</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>BeyondCorp</strong> คือ Zero Trust Implementation ของ Google — เปลี่ยนจาก Network-Centric → User-Centric พนักงานเข้าถึง App ได้จากทุกที่<strong>โดยไม่ต้องต่อ VPN</strong> ทุก Request ผ่าน Access Proxy ที่ตรวจสอบ User Identity, Device Inventory, Device Certificate และ Context (Location, Time) ก่อนให้เข้าถึงเฉพาะ App ที่ได้รับอนุญาต (App-level Access) <strong>ความแตกต่างจาก VPN:</strong> VPN ให้ผู้ใช้ได้ IP ใน Corporate Network และเห็น Network ทั้งหมด — Once Connected → Full Access (Lateral Movement ได้) และต้องเปิด Port เข้า Internal Network ส่วน BeyondCorp/ZTNA ผู้ใช้เชื่อมต่อไปยัง App โดยตรง ไม่เห็น Network — App ถูกซ่อนจาก Internet และทุก Request ถูกตรวจสอบทุกครั้ง</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">3</span><p>AI/ML ถูกนำมาใช้ใน Network Security อย่างไร? จงอธิบาย UEBA และยกตัวอย่างพฤติกรรมที่ UEBA สามารถตรวจจับได้</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>การประยุกต์ใช้ AI/ML:</strong> Network Anomaly Detection (Autoencoder, LSTM), Malware Detection (CNN, Random Forest — วิเคราะห์ PE Header, API Call Sequence), Phishing Detection (NLP, BERT), DNS Tunneling Detection (ML on DNS Metadata), DDoS Mitigation (Reinforcement Learning), Fraud Detection (Graph Neural Network) และ Automated Incident Response (AI Planning) <strong>UEBA (User and Entity Behavior Analytics)</strong> ใช้ ML (Isolation Forest, Bayesian) สร้าง Baseline พฤติกรรมปกติของผู้ใช้และ Entity แล้วแจ้งเตือนเมื่อพบ Deviation <strong>ตัวอย่างการตรวจจับ Insider Threat:</strong> ผู้ใช้ที่ปกติ Login 08:00-18:00 จาก Office แต่จู่ๆ Login เวลา 03:15 น. วันอาทิตย์ ผ่าน Tor Exit Node, เข้าถึง DB Server เป็นครั้งแรก, Download ไฟล์ 5 GB และ Forward อีเมล 500 ฉบับไป external@gmail.com → Risk Score 96/100 (CRITICAL) → ระบบ Disable account + Notify IR + Block IP อัตโนมัติ</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">4</span><p>Quantum Computing มีผลกระทบต่อการเข้ารหัสแบบปัจจุบันอย่างไร? RSA-2048 และ AES-256 ต่างกันตรงไหน?</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p>เมื่อ Quantum Computer ที่มีหลายพัน Logical Qubit มาถึง การเข้ารหัสที่เป็นอยู่จะพัง <strong>RSA-2048 (และ ECDSA/ECDH)</strong> เป็นการเข้ารหัสแบบ Asymmetric ที่พึ่งพาปัญหาการแยกตัวประกอบ/Discrete Logarithm — <strong>Shor's Algorithm</strong> แก้ได้ในไม่กี่นาที ❌ ต้องย้ายไป Post-Quantum Algorithm <strong>AES-256</strong> เป็นการเข้ารหัสแบบ Symmetric — ถูกกระทบเพียง <strong>Grover's Algorithm</strong> ซึ่งลดความแข็งแรงลงครึ่งนึง (256-bit → effective 128-bit) แต่ยังถือว่าปลอดภัย ✅ <strong>Timeline:</strong> NIST ประกาศมาตรฐาน PQC ปี 2024, คาดการณ์ว่า Quantum Computer ที่ทำลาย RSA-2048 ได้อาจมาประมาณปี 2030 (ยังไม่แน่นอนสูง) — องค์กรควรเริ่มวางแผน Migration ตอนนี้ (Crypto Agility) เพราะข้อมูลที่ถูกดักจับไปวันนี้ อาจถูกถอดรหัสในอนาคต (Harvest Now, Decrypt Later)</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">5</span><p>NIST PQC Standardization เลือก Algorithm ใดบ้าง? จงอธิบาย CRYSTALS-Kyber และ CRYSTALS-Dilithium</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p>NIST Post-Quantum Cryptography Standardization (2016-2024) เลือก 4 Algorithms: <strong>1) CRYSTALS-Kyber</strong> — KEM (Key Encapsulation Mechanism) ใช้สำหรับ Key Exchange มาตรฐาน FIPS 203 <strong>2) CRYSTALS-Dilithium</strong> — Digital Signature สำหรับ Signing มาตรฐาน FIPS 204 <strong>3) FALCON</strong> — Digital Signature ขนาดเล็กกว่า (smaller) <strong>4) SPHINCS+</strong> — Digital Signature แบบ Stateless มาตรฐาน FIPS 205 <strong>CRYSTALS-Kyber</strong> ทำหน้าที่แทน ECDHE ในการแลก Key ส่วน <strong>CRYSTALS-Dilithium</strong> ทำหน้าที่แทน RSA Signature ในการยืนยันตัวตนของ Certificate — ช่วง Migration ใช้ Hybrid Mode เช่น TLS 1.3: ECDHE(X25519) + Kyber-768 + AES-256-GCM + Dilithium3 Signature</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">6</span><p>5G Network Slicing คืออะไร? จงอธิบาย Security Implications ของ Network Slicing (Isolation, Authentication)</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>Network Slicing</strong> คือการสร้าง Virtual Network แยกตามการใช้งานบน 5G Core Network เดียวกัน — 3 Slice หลัก: <strong>eMBB</strong> (Enhanced Mobile Broadband — Speed 10 Gbps สำหรับ Video Streaming, Smartphone), <strong>URLLC</strong> (Ultra-reliable Low-latency — Latency 1 ms สำหรับรถยนต์อัตโนมัติ, อุตสาหกรรม, Remote Surgery) และ <strong>mMTC</strong> (Massive IoT — 1 ล้าน Device/km² สำหรับ Sensor, Smart Meter) <strong>Security Implications:</strong> 1) แต่ละ Slice ต้องมี Isolation แข็งแรง — ช่องโหว่ใน Slice หนึ่งต้องไม่รั่วไปอีก Slice 2) Slice Authentication — แต่ละ Slice ต้อง Authenticate แยกกัน 3) Slice-Specific Security Policy — Security Profile ต่างกันตาม Slice 4) 5G Security Architecture กำหนดให้ต้องมี Isolation ระดับ Network, Compute และ Storage</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">7</span><p>SUCI ใน 5G แตกต่างจาก IMSI ใน 4G อย่างไร? จงอธิบายว่าการเข้ารหัส IMSI ช่วยป้องกันการติดตามผู้ใช้อย่างไร</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>4G:</strong> อุปกรณ์ส่ง IMSI (International Mobile Subscriber Identity) แบบ Plaintext เมื่อลงทะเบียนเข้าเครือข่าย — ใครก็ดักจับได้ (เช่น IMSI Catcher / Fake Base Station) ทำให้ระบุตัวตนและติดตามตำแหน่งผู้ใช้ได้ <strong>5G:</strong> ใช้ <strong>SUCI (Subscription Concealed Identifier)</strong> = IMSI/SUPI ที่เข้ารหัสด้วย Public Key ของ Home Network — เฉพาะ Home Network เท่านั้นที่ถอดรหัสได้ด้วย Private Key ของตนเอง <strong>การป้องกันการติดตาม:</strong> ผู้ดักฟังสัญญาณ (รวมถึงเครือข่าย_visited และอุปกรณ์ดักจับ) เห็นเพียง SUCI ที่เข้ารหัสและไม่ซ้ำรูปแบบ จึงไม่สามารถเชื่อมโยงการลงทะเบียนต่างๆ เข้ากับผู้ใช้คนเดิมหรือติดตามตำแหน่งได้ — Privacy ดีขึ้นอย่างมีนัยสำคัญ</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">8</span><p>SOAR มีองค์ประกอบอะไร? จงเขียน Security Playbook สำหรับ Incident Response (ตั้งแต่ Trigger → Report)</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>องค์ประกอบของ SOAR 4 ส่วน:</strong> 1) <strong>Orchestration</strong> — เชื่อมต่อ Tools (SIEM ↔ EDR ↔ Firewall ↔ Email ↔ IAM ↔ Ticketing) 2) <strong>Automation</strong> — ตอบสนองอัตโนมัติตาม Playbook 3) <strong>Response</strong> — ทำ Action บน Tools ผ่าน API (Firewall Block IP, EDR Isolate Host, Disable AD User, Create ServiceNow Ticket) 4) <strong>Case Management</strong> — ติดตาม Incident (Timeline, Evidence, Communication, Report) <strong>ตัวอย่าง Playbook — Phishing Response:</strong> <em>Trigger</em>: User รายงานอีเมลต้องสงสัย / SIEM Alert → <em>Step 1 Analyze</em>: Extract URLs/Attachments/Headers, Sandbox, Check Threat Intelligence (VirusTotal, OTX), ML Classification → <em>Step 2 Contain</em>: Block Sender Domain บน Email Gateway, Block URLs บน SWG, Quarantine อีเมลจากผู้รับทุกคน, แจ้งผู้ได้รับอีเมล → <em>Step 3 Investigate</em>: SIEM Query หาคนที่เปิดอีเมล, EDR Query หาพฤติกรรมผิดปกติ, สร้าง Incident Ticket (Priority: High) → <em>Step 4 Remediate</em>: ถ้าเครื่องติดเชื้อ → EDR Isolate Host, ถ้า Credential หลุด → Force Password Reset + MFA Re-enroll, แจ้งเตือนทั้งองค์กร, อัปเดต Dashboard → <em>Step 5 Report</em>: MITRE ATT&amp;CK Mapping, Timeline + Impact, Lessons Learned</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">9</span><p>Crypto Agility คืออะไร และเหตุใดจึงสำคัญต่อการเปลี่ยนผ่านสู่ Post-Quantum Cryptography?</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>Crypto Agility</strong> = ความสามารถในการเปลี่ยน Cryptographic Algorithm ได้โดยไม่ต้องเปลี่ยนระบบทั้งหมด Requirements 5 ข้อ: 1) Protocol Negotiation — รองรับ Algorithm หลายแบบ 2) Algorithm Independence — ไม่ Hardcode Algorithm 3) Hybrid Mode — รองรับ Classic + PQC พร้อมกัน 4) Versioning — Version Algorithm ได้ 5) Migration Plan — เปลี่ยน Algorithm ได้โดย Downtime น้อย <strong>ความสำคัญต่อการเปลี่ยนผ่านสู่ PQC:</strong> การ Migration สู่ Post-Quantum ไม่ได้เกิดขึ้นชั่วข้ามคืน และมาตรฐานยังพัฒนาต่อเนื่อง (เช่น TLS 1.3 แบบ Hybrid: ECDHE(X25519) + Kyber-768 ก่อนจะเปลี่ยนเป็น Pure PQC: Kyber-1024 + Dilithium5) — องค์กรที่มี Crypto Agility จะสลับ Algorithm ได้เร็วเมื่อมาตรฐานนิ่งหรือเมื่อ Algorithm เดิมถูกโจมตี โดยไม่ต้องรื้อระบบทั้งหมด ซึ่งลดความเสี่ยงจากภัยคุกคาม Quantum Computing ที่จะมาถึง</p></div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-question"><span class="q-number">10</span><p>จงวางแผนเส้นทางสายอาชีพ Network Security ของตนเอง — Certification ที่ควรสอบ, ตำแหน่งงาน, และทักษะที่ต้องพัฒนา</p></div>
+  <button class="reveal-btn" onclick="toggleAnswer(this)"><i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย</button>
+  <div class="quiz-answer hidden"><p><strong>ตัวอย่างแผนเส้นทางสายอาชีพ (คำตอบขึ้นกับแผนของแต่ละคน):</strong> <em>Entry Level (0-3 ปี):</em> SOC Analyst (Tier 1), Network Administrator, Junior Security Engineer — Certification: CompTIA Security+, Network+ — ทักษะ: พื้นฐาน Network (CCNA-level), Wireshark/Nmap/tcpdump, OWASP Top 10 <em>Mid Level (3-7 ปี):</em> Security Engineer (Network/Cloud/Endpoint), SOC Analyst Tier 2-3, Penetration Tester — Certification: CISSP, CEH, OSCP, PCNSE — ทักษะ: ฝึก Lab (TryHackMe, HackTheBox), CTF, Python สำหรับ Security Automation, Cloud (AWS/Azure) <em>Senior Level (7-15 ปี):</em> Security Architect, SOC Manager, Principal Engineer, Consultant — Certification: CISSP, CISM, CCSP, SANS/GIAC <em>Executive (15+ ปี):</em> CISO/CSO, VP of Security, Board Advisory — สิ่งที่ต้องทำตลอดสายอาชีพ: อ่านข่าวความปลอดภัยทุกวัน (BleepingComputer, The Hacker News) และเลือกสาขาที่ชอบให้ชัดเจน (Network Security / PenTest / Cloud / SOC)</p></div>
+</div>
+</section>
+
+<hr>
+
+<!-- INTERACTIVE QUIZ -->
+<section id="interactive-quiz" class="section-ref">
+<h2><i class="fas fa-clipboard-question" aria-hidden="true"></i> แบบทดสอบ (Interactive Quiz)</h2>
+<p>ทดสอบความเข้าใจด้วยคำถามปรนัย 20 ข้อ ครอบคลุมเนื้อหาทั้งหมดในบท</p>
+
+<div id="mcq-container">
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">1</span><p>หลักการสำคัญของ Zero Trust คืออะไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q0" value="0"> Never Trust, Always Verify</label>
+  <label class="mcq-option"><input type="radio" name="q0" value="1"> Trust but Verify ครั้งแรกครั้งเดียว</label>
+  <label class="mcq-option"><input type="radio" name="q0" value="2"> เชื่อถือทุกอุปกรณ์ใน Internal Network</label>
+  <label class="mcq-option"><input type="radio" name="q0" value="3"> เชื่อถือเฉพาะผู้ใช้ที่ต่อ VPN</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">2</span><p>เอกสารฉบับใดของ NIST ที่นิยาม Zero Trust Architecture?</p></div>
+  <label class="mcq-option"><input type="radio" name="q1" value="0"> SP 800-53</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="1"> SP 800-207</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="2"> SP 800-61</label>
+  <label class="mcq-option"><input type="radio" name="q1" value="3"> SP 800-171</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="3">
+  <div class="quiz-question"><span class="q-number">3</span><p>ข้อใด <strong>ไม่ใช่</strong> หลักการ 7 ข้อของ Zero Trust ตาม CISA?</p></div>
+  <label class="mcq-option"><input type="radio" name="q2" value="0"> Continuous Verification</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="1"> Assume Breach</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="2"> Least Privilege Access</label>
+  <label class="mcq-option"><input type="radio" name="q2" value="3"> Full Network Access สำหรับผู้ใช้ทุกคน</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">4</span><p>Zero Trust ใช้เทคนิคใดในการ Limit Blast Radius?</p></div>
+  <label class="mcq-option"><input type="radio" name="q3" value="0"> Micro-segmentation + Least Privilege</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="1"> เปิด Port ภายในทั้งหมด</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="2"> ใช้ Account เดียวร่วมกันทั้งองค์กร</label>
+  <label class="mcq-option"><input type="radio" name="q3" value="3"> ปิด Logging ทั้งหมดเพื่อลด Noise</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="2">
+  <div class="quiz-question"><span class="q-number">5</span><p>ในโมเดล BeyondCorp ของ Google พนักงานเข้าถึงแอปพลิเคชันอย่างไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q4" value="0"> ต้องต่อ VPN เข้า Corporate Network ก่อนเสมอ</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="1"> เข้าถึงได้ทุก App โดยไม่ต้องตรวจสอบ</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="2"> ไม่ต้อง VPN — ผ่าน Access Proxy ที่ตรวจสอบ User Identity + Device ทุกครั้ง</label>
+  <label class="mcq-option"><input type="radio" name="q4" value="3"> ใช้ได้เฉพาะเครื่องที่อยู่ใน Office</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">6</span><p>ZTNA ต่างจาก VPN อย่างไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q5" value="0"> ZTNA ให้ผู้ใช้เห็น Network ทั้งหมดเหมือน VPN</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="1"> ZTNA เชื่อมผู้ใช้ไปยัง App โดยตรง — ไม่เห็น Network, ไม่มี Lateral Movement</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="2"> ZTNA ไม่ต้องมีการตรวจสอบ Request</label>
+  <label class="mcq-option"><input type="radio" name="q5" value="3"> ZTNA ต้องเปิด Port จาก Internet เข้า Internal Network</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">7</span><p>เทคโนโลยี AI ใดเหมาะสำหรับตรวจจับ Insider Threat จากพฤติกรรมผู้ใช้?</p></div>
+  <label class="mcq-option"><input type="radio" name="q6" value="0"> UEBA (Isolation Forest, Bayesian)</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="1"> CNN วิเคราะห์รูปภาพ</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="2"> DNS Amplification</label>
+  <label class="mcq-option"><input type="radio" name="q6" value="3"> Port Scanning</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="2">
+  <div class="quiz-question"><span class="q-number">8</span><p>UEBA ต้องทำอะไรก่อนจึงจะตรวจจับ Anomaly ได้?</p></div>
+  <label class="mcq-option"><input type="radio" name="q7" value="0"> ติดตั้ง Signature Database</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="1"> ปิด Firewall ทั้งหมด</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="2"> สร้าง Baseline พฤติกรรมปกติของผู้ใช้และ Entity</label>
+  <label class="mcq-option"><input type="radio" name="q7" value="3"> ปิดการเข้ารหัสข้อมูลทั้งหมด</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">9</span><p>ปัญหาของ Adversarial ML คืออะไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q8" value="0"> Model เทรนเร็วเกินไป</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="1"> ผู้โจมตีสร้าง Input เพื่อหลอก Model ให้ตัดสินใจผิด</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="2"> GPU มีราคาแพง</label>
+  <label class="mcq-option"><input type="radio" name="q8" value="3"> Model อธิบายการตัดสินใจไม่ได้</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="3">
+  <div class="quiz-question"><span class="q-number">10</span><p>แนวทางใดช่วยแก้ปัญหา Explainability ของ AI (ไม่รู้ว่า Model ตัดสินใจอย่างไร)?</p></div>
+  <label class="mcq-option"><input type="radio" name="q9" value="0"> Concept Drift</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="1"> เพิ่ม Training Data อย่างเดียว</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="2"> อัปเกรด GPU</label>
+  <label class="mcq-option"><input type="radio" name="q9" value="3"> XAI (eXplainable AI) — SHAP, LIME</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">11</span><p>Quantum Algorithm ใดสามารถทำลาย RSA-2048 ได้?</p></div>
+  <label class="mcq-option"><input type="radio" name="q10" value="0"> Shor's Algorithm</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="1"> Grover's Algorithm</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="2"> Dijkstra's Algorithm</label>
+  <label class="mcq-option"><input type="radio" name="q10" value="3"> Diffie-Hellman Algorithm</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="2">
+  <div class="quiz-question"><span class="q-number">12</span><p>Grover's Algorithm ส่งผลกระทบต่อ AES-256 อย่างไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q11" value="0"> ทำลายได้สมบูรณ์ในไม่กี่นาที</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="1"> ไม่มีผลกระทบเลย</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="2"> ลดความแข็งแรงลงครึ่งนึง — ยังปลอดภัย (effective 128-bit)</label>
+  <label class="mcq-option"><input type="radio" name="q11" value="3"> ทำให้ต้องเพิ่ม Key Size เป็น 1024-bit</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">13</span><p>CRYSTALS-Kyber (FIPS 203) คืออะไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q12" value="0"> Digital Signature Algorithm แบบ Stateless</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="1"> KEM (Key Encapsulation Mechanism) สำหรับ Key Exchange</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="2"> Hash Function สำหรับ Blockchain</label>
+  <label class="mcq-option"><input type="radio" name="q12" value="3"> Symmetric Encryption Algorithm</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">14</span><p>Crypto Agility หมายถึงอะไร?</p></div>
+  <label class="mcq-option"><input type="radio" name="q13" value="0"> ความสามารถในการเปลี่ยน Algorithm ได้โดยไม่ต้องเปลี่ยนระบบทั้งหมด</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="1"> การใช้ Algorithm เดียวตลอดไปเพื่อความเสถียร</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="2"> การเข้ารหัสข้อมูลด้วยมือทุกชิ้น</label>
+  <label class="mcq-option"><input type="radio" name="q13" value="3"> การปิดการใช้งาน Encryption ชั่วคราว</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="3">
+  <div class="quiz-question"><span class="q-number">15</span><p>SUCI ใน 5G แก้ปัญหาใดจาก 4G?</p></div>
+  <label class="mcq-option"><input type="radio" name="q14" value="0"> ความเร็วอินเทอร์เน็ตต่ำ</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="1"> Latency สูง</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="2"> พื้นที่ครอบคลุมสัญญาณจำกัด</label>
+  <label class="mcq-option"><input type="radio" name="q14" value="3"> IMSI ส่งแบบ Plaintext — ถูกดักจับและติดตามผู้ใช้ได้</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">16</span><p>5G Network Slice ประเภทใดเหมาะกับ Remote Surgery?</p></div>
+  <label class="mcq-option"><input type="radio" name="q15" value="0"> eMBB</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="1"> URLLC</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="2"> mMTC</label>
+  <label class="mcq-option"><input type="radio" name="q15" value="3"> LTE-M</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="2">
+  <div class="quiz-question"><span class="q-number">17</span><p>ข้อกำหนดด้าน Isolation ของ 5G Network Slicing ครอบคลุมระดับใดบ้าง?</p></div>
+  <label class="mcq-option"><input type="radio" name="q16" value="0"> เฉพาะระดับ Application</label>
+  <label class="mcq-option"><input type="radio" name="q16" value="1"> เฉพาะระดับ Radio</label>
+  <label class="mcq-option"><input type="radio" name="q16" value="2"> Network, Compute, Storage</label>
+  <label class="mcq-option"><input type="radio" name="q16" value="3"> ไม่ต้องมี Isolation — ใช้ Policy เดียวกันทุก Slice</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="0">
+  <div class="quiz-question"><span class="q-number">18</span><p>แนวทางใดเสริมความมั่นคงปลอดภัยให้ MEC Edge Node?</p></div>
+  <label class="mcq-option"><input type="radio" name="q17" value="0"> TEE (Intel SGX, ARM TrustZone) + Attestation</label>
+  <label class="mcq-option"><input type="radio" name="q17" value="1"> เก็บข้อมูลทั้งหมดเป็น Plaintext</label>
+  <label class="mcq-option"><input type="radio" name="q17" value="2"> ปิดการอัปเดต Firmware ถาวร</label>
+  <label class="mcq-option"><input type="radio" name="q17" value="3"> เชื่อมต่อ Cloud โดยไม่ต้อง Authentication</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="3">
+  <div class="quiz-question"><span class="q-number">19</span><p>ข้อใดเป็น Open Source SOAR?</p></div>
+  <label class="mcq-option"><input type="radio" name="q18" value="0"> Splunk SOAR (Phantom)</label>
+  <label class="mcq-option"><input type="radio" name="q18" value="1"> Palo Alto XSOAR</label>
+  <label class="mcq-option"><input type="radio" name="q18" value="2"> ServiceNow Security Operations</label>
+  <label class="mcq-option"><input type="radio" name="q18" value="3"> Shuffle</label>
+</div>
+
+<div class="mcq-item quiz-card" data-correct="1">
+  <div class="quiz-question"><span class="q-number">20</span><p>ใบรับรองใดกำหนดให้ผู้สอบต้องมีประสบการณ์ทำงาน 5 ปี?</p></div>
+  <label class="mcq-option"><input type="radio" name="q19" value="0"> CompTIA Security+</label>
+  <label class="mcq-option"><input type="radio" name="q19" value="1"> CISSP</label>
+  <label class="mcq-option"><input type="radio" name="q19" value="2"> CompTIA Network+</label>
+  <label class="mcq-option"><input type="radio" name="q19" value="3"> CEH</label>
+</div>
+
+</div>
+
+<div class="mcq-score-panel">
+  <p>คะแนนของคุณ</p>
+  <div class="score-number" id="score-number">0/20</div>
+  <p style="font-size:.85rem;color:var(--text-secondary);margin-top:.25rem;">เลือกคำตอบแล้วกด "ตรวจคำตอบ"</p>
+</div>
+<div style="text-align:center;margin:1rem 0;">
+  <button id="check-mcq-btn" class="reveal-btn" style="font-size:1rem;padding:.6rem 1.5rem;"><i class="fas fa-check-circle" aria-hidden="true"></i> ตรวจคำตอบ</button>
+  <button id="reset-mcq-btn" class="reveal-btn" style="font-size:1rem;padding:.6rem 1.5rem;background:var(--text-muted);margin-left:.5rem;"><i class="fas fa-rotate-right" aria-hidden="true"></i> เริ่มใหม่</button>
+</div>
+<div id="mcq-result" class="quiz-card" style="display:none;"></div>
+</section>
+
+<hr>
+
+<!-- REFERENCES -->
+<section id="references" class="section-ref">
+<h2>เอกสารอ้างอิง (References)</h2>
+<ol>
+  <li>NIST Special Publication 800-207. (2020). <em>Zero Trust Architecture</em>. National Institute of Standards and Technology.</li>
+  <li>NIST. (2024). <em>Post-Quantum Cryptography Standardization — FIPS 203, 204, 205</em>. National Institute of Standards and Technology.</li>
+  <li>Ward, R., &amp; Beyer, B. (2014). "BeyondCorp: A New Approach to Enterprise Security." <em>USENIX ;login: Vol. 39, No. 6</em>.</li>
+  <li>3GPP TS 33.501. (2024). <em>Security Architecture and Procedures for 5G System</em>.</li>
+  <li>Gartner. (2019). <em>SOAR Market Guide</em>. Gartner Research.</li>
+  <li>Shor, P. (1994). "Algorithms for Quantum Computation: Discrete Logarithms and Factoring." <em>Proceedings of the 35th Annual Symposium on Foundations of Computer Science</em>.</li>
+  <li>MITRE Corporation. (2024). <em>ATT&amp;CK Framework</em>.</li>
+  <li>CompTIA. (2024). <em>CompTIA Security+ SY0-701 Exam Objectives</em>.</li>
+  <li>(ISC)². (2024). <em>CISSP Common Body of Knowledge (CBK)</em>.</li>
+  <li>Stallings, W. (2022). <em>Cryptography and Network Security: Principles and Practice</em> (8th ed.). Chapter 24: Emerging Technologies. Pearson.</li>
+</ol>
+</section>
+</main>
+</div>
+<footer class="site-footer">
+  <p><i class="fas fa-shield-halved" aria-hidden="true"></i> Network Security — บทที่ 15 | CH-15: แนวโน้มและเทคโนโลยีขั้นสูงด้าน Network Security</p>
+  <p style="margin-top:.25rem;font-size:.75rem;">เนื้อหาจัดทำเพื่อการศึกษา สำหรับใช้ในชั้นเรียนเท่านั้น</p>
+</footer>
+<button id="back-to-top" aria-label="กลับไปด้านบน" title="กลับไปด้านบน"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+<script>
+(function(){
+  'use strict';
+
+  // Loading screen
+  document.addEventListener('DOMContentLoaded', function(){
+    var loader = document.getElementById('loading-screen');
+    if(loader){
+      setTimeout(function(){
+        loader.classList.add('hidden');
+      }, 400);
+    }
+  });
+
+  // Dark mode toggle
+  var themeToggle = document.getElementById('dark-mode-toggle');
+  var html = document.documentElement;
+  var savedTheme = localStorage.getItem('ns-ch15-theme');
+  if(savedTheme === 'dark'){ html.setAttribute('data-theme','dark'); }
+  function updateThemeIcon(){
+    if(!themeToggle) return;
+    var icon = themeToggle.querySelector('i');
+    if(html.getAttribute('data-theme') === 'dark'){
+      icon.className = 'fas fa-sun';
+      themeToggle.setAttribute('title','สลับโหมดสว่าง');
+    } else {
+      icon.className = 'fas fa-moon';
+      themeToggle.setAttribute('title','สลับโหมดมืด');
+    }
+  }
+  updateThemeIcon();
+  if(themeToggle){
+    themeToggle.addEventListener('click', function(){
+      if(html.getAttribute('data-theme') === 'dark'){
+        html.removeAttribute('data-theme');
+        localStorage.setItem('ns-ch15-theme','light');
+      } else {
+        html.setAttribute('data-theme','dark');
+        localStorage.setItem('ns-ch15-theme','dark');
+      }
+      updateThemeIcon();
+    });
+  }
+
+  // Sidebar toggle (mobile)
+  var sidebarToggle = document.getElementById('sidebar-toggle');
+  var sidebar = document.getElementById('sidebar');
+  var sidebarOverlay = document.getElementById('sidebar-overlay');
+  function openSidebar(){
+    if(sidebar) sidebar.classList.add('open');
+    if(sidebarOverlay) sidebarOverlay.classList.add('active');
+    if(sidebarToggle) sidebarToggle.setAttribute('aria-expanded','true');
+  }
+  function closeSidebar(){
+    if(sidebar) sidebar.classList.remove('open');
+    if(sidebarOverlay) sidebarOverlay.classList.remove('active');
+    if(sidebarToggle) sidebarToggle.setAttribute('aria-expanded','false');
+  }
+  if(sidebarToggle){ sidebarToggle.addEventListener('click', function(){ if(sidebar.classList.contains('open')) closeSidebar(); else openSidebar(); }); }
+  if(sidebarOverlay){ sidebarOverlay.addEventListener('click', closeSidebar); }
+
+  // Search overlay
+  var searchToggle = document.getElementById('search-toggle-btn');
+  var searchOverlay = document.getElementById('search-overlay');
+  var searchClose = document.getElementById('search-close-btn');
+  var searchInput = document.getElementById('search-input');
+  var searchResults = document.getElementById('search-results');
+  var searchCount = document.getElementById('search-count');
+  var mainContent = document.getElementById('main-content');
+  var searchIndex = [];
+
+  function buildSearchIndex(){
+    searchIndex = [];
+    if(!mainContent) return;
+    var sections = mainContent.querySelectorAll('section, .learning-objectives');
+    sections.forEach(function(sec){
+      var heading = sec.querySelector('h1, h2, h3, h4');
+      var id = sec.id || (heading && heading.id) || '';
+      var text = sec.textContent || '';
+      text = text.replace(/\s+/g,' ').trim();
+      if(!id && heading){
+        id = heading.id;
+      }
+      if(id && text.length > 30){
+        searchIndex.push({id:id, heading: heading ? heading.textContent.trim() : 'เนื้อหา', text:text});
+      }
+    });
+  }
+
+  function highlightText(text, query){
+    var regex = new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+    return text.replace(regex,'<mark>$1</mark>');
+  }
+
+  function openSearch(){
+    if(searchOverlay) searchOverlay.classList.add('active');
+    if(searchInput){ searchInput.value = ''; searchInput.focus(); }
+    if(searchResults) searchResults.innerHTML = '';
+    if(searchCount) searchCount.textContent = '';
+    buildSearchIndex();
+  }
+  function closeSearch(){
+    if(searchOverlay) searchOverlay.classList.remove('active');
+  }
+  if(searchToggle){ searchToggle.addEventListener('click', openSearch); }
+  if(searchClose){ searchClose.addEventListener('click', closeSearch); }
+  if(searchOverlay){
+    searchOverlay.addEventListener('click', function(e){ if(e.target === searchOverlay) closeSearch(); });
+  }
+  document.addEventListener('keydown', function(e){
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+      e.preventDefault();
+      if(searchOverlay && searchOverlay.classList.contains('active')) closeSearch(); else openSearch();
+    }
+    if(e.key === 'Escape'){
+      closeSearch();
+      closeSidebar();
+    }
+  });
+
+  if(searchInput){
+    searchInput.addEventListener('input', function(){
+      var query = this.value.trim();
+      if(!query || query.length < 2){ searchResults.innerHTML = ''; searchCount.textContent = ''; return; }
+      var qLower = query.toLowerCase();
+      var matches = searchIndex.filter(function(item){ return item.text.toLowerCase().indexOf(qLower) !== -1; }).slice(0,12);
+      searchCount.textContent = matches.length + ' ผลลัพธ์';
+      if(matches.length === 0){ searchResults.innerHTML = '<div class="no-results">ไม่พบผลลัพธ์</div>'; return; }
+      var htmlOut = '';
+      matches.forEach(function(item){
+        var idx = item.text.toLowerCase().indexOf(qLower);
+        var snippet = item.text.substring(Math.max(0, idx - 60), Math.min(item.text.length, idx + 160));
+        htmlOut += '<div class="search-result-item" data-target="'+item.id+'">'+
+          '<div class="result-heading">'+highlightText(item.heading, query)+'</div>'+
+          '<div class="result-snippet">...'+highlightText(snippet, query)+'...</div>'+
+          '</div>';
+      });
+      searchResults.innerHTML = htmlOut;
+      searchResults.querySelectorAll('.search-result-item').forEach(function(item){
+        item.addEventListener('click', function(){
+          var target = this.getAttribute('data-target');
+          closeSearch();
+          var el = document.getElementById(target);
+          if(el){ el.scrollIntoView({behavior:'smooth'}); }
+        });
+      });
+    });
+  }
+
+  // Progress bar
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    if(!progressBar || !mainContent) return;
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+    progressBar.setAttribute('aria-valuenow', Math.round(pct));
+  }
+
+  // Back to top
+  var backToTop = document.getElementById('back-to-top');
+  function updateBackToTop(){
+    if(!backToTop) return;
+    if((window.scrollY || document.documentElement.scrollTop) > 300){ backToTop.classList.add('visible'); }
+    else { backToTop.classList.remove('visible'); }
+  }
+  if(backToTop){ backToTop.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); }); }
+
+  // TOC scroll spy
+  var tocLinks = document.querySelectorAll('.toc-link[data-target]');
+  var sectionRefs = document.querySelectorAll('.section-ref[id]');
+  function updateActiveToc(){
+    var scrollPos = (window.scrollY || document.documentElement.scrollTop) + 100;
+    var current = '';
+    sectionRefs.forEach(function(sec){
+      if(sec.offsetTop <= scrollPos){ current = sec.id; }
+    });
+    tocLinks.forEach(function(link){
+      link.classList.remove('active');
+      if(link.getAttribute('data-target') === current){ link.classList.add('active'); }
+    });
+  }
+
+  window.addEventListener('scroll', function(){
+    updateProgress();
+    updateBackToTop();
+    updateActiveToc();
+  });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+  updateActiveToc();
+
+  // Copy code buttons
+  window.copyCode = function(btn){
+    var pre = btn.closest('pre');
+    if(!pre) return;
+    var codeText = pre.textContent.replace(/^\s*คัดลอก\s*/,'').trim();
+    navigator.clipboard.writeText(codeText).then(function(){
+      var original = btn.innerHTML;
+      btn.classList.add('copied');
+      btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+      setTimeout(function(){ btn.classList.remove('copied'); btn.innerHTML = original; }, 2000);
+    }).catch(function(){
+      var textarea = document.createElement('textarea');
+      textarea.value = codeText;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      var original = btn.innerHTML;
+      btn.classList.add('copied');
+      btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> คัดลอกแล้ว';
+      setTimeout(function(){ btn.classList.remove('copied'); btn.innerHTML = original; }, 2000);
+    });
+  };
+
+  // Review questions toggle
+  window.toggleAnswer = function(btn){
+    var card = btn.closest('.quiz-card');
+    var answer = card.querySelector('.quiz-answer');
+    if(answer.classList.contains('hidden')){
+      answer.classList.remove('hidden');
+      card.classList.add('revealed');
+      btn.innerHTML = '<i class="fas fa-eye-slash" aria-hidden="true"></i> ซ่อนเฉลย';
+    } else {
+      answer.classList.add('hidden');
+      card.classList.remove('revealed');
+      btn.innerHTML = '<i class="fas fa-eye" aria-hidden="true"></i> แสดงเฉลย';
+    }
+  };
+
+  // MCQ Quiz
+  var checkBtn = document.getElementById('check-mcq-btn');
+  var resetBtn = document.getElementById('reset-mcq-btn');
+  var scoreNumber = document.getElementById('score-number');
+  var mcqResult = document.getElementById('mcq-result');
+  var mcqItems = document.querySelectorAll('.mcq-item');
+
+  function checkMcq(){
+    var score = 0;
+    var total = mcqItems.length;
+    mcqItems.forEach(function(item){
+      var correct = parseInt(item.getAttribute('data-correct'),10);
+      var selected = item.querySelector('input[type="radio"]:checked');
+      var options = item.querySelectorAll('.mcq-option');
+      options.forEach(function(opt, idx){
+        opt.classList.remove('correct-opt','wrong-opt');
+        if(idx === correct){ opt.classList.add('correct-opt'); }
+      });
+      item.classList.remove('correct','wrong');
+      if(!selected){ item.classList.add('wrong'); }
+      else if(parseInt(selected.value,10) === correct){
+        score++;
+        item.classList.add('correct');
+      } else {
+        item.classList.add('wrong');
+        selected.closest('.mcq-option').classList.add('wrong-opt');
+      }
+    });
+    if(scoreNumber){ scoreNumber.textContent = score + '/' + total; }
+    if(mcqResult){
+      var pct = Math.round((score/total)*100);
+      var msg = '';
+      if(pct >= 80) msg = 'ยอดเยี่ยม! คุณเข้าใจเนื้อหาบทนี้เป็นอย่างดี';
+      else if(pct >= 60) msg = 'ผ่านเกณฑ์ แต่ควรทบทวนจุดที่ตอบผิดอีกครั้ง';
+      else msg = 'ควรทบทวนเนื้อหาในบทนี้เพิ่มเติม';
+      mcqResult.className = 'quiz-card ' + (pct >= 60 ? 'success' : 'fail');
+      mcqResult.style.display = 'block';
+      mcqResult.innerHTML = '<strong>ผลลัพธ์:</strong> ' + score + '/' + total + ' (' + pct + '%) — ' + msg;
+    }
+    if(mcqResult){ mcqResult.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+  }
+
+  function resetMcq(){
+    mcqItems.forEach(function(item){
+      item.classList.remove('correct','wrong');
+      item.querySelectorAll('.mcq-option').forEach(function(opt){ opt.classList.remove('correct-opt','wrong-opt'); });
+      item.querySelectorAll('input[type="radio"]').forEach(function(r){ r.checked = false; });
+    });
+    if(scoreNumber){ scoreNumber.textContent = '0/20'; }
+    if(mcqResult){ mcqResult.style.display = 'none'; mcqResult.innerHTML = ''; }
+  }
+
+  if(checkBtn){ checkBtn.addEventListener('click', checkMcq); }
+  if(resetBtn){ resetBtn.addEventListener('click', resetMcq); }
+
+})();
+</script>
+</body>
+</html>
