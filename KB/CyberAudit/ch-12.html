@@ -1,0 +1,3030 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 12: การตรวจสอบการบริหารเหตุการณ์และภัยคุกคามไซเบอร์ (Incident Management and Cyber Threat Audit) - การตรวจสอบความมั่นคงปลอดภัยสารสนเทศ</title>
+  <meta name="description" content="บทที่ 12: การตรวจสอบการบริหารเหตุการณ์และภัยคุกคามไซเบอร์ กรอบการทำงาน NIST SP 800-61, ISO 27035, การตรวจประเมิน War Room และการปฏิบัติตาม พ.ร.บ.ไซเบอร์ฯ และ PDPA">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #e11d48;
+      --primary-hover: #be123c;
+      --primary-glow: rgba(225, 29, 72, 0.12);
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --border-color: #e2e8f0;
+      --border-subtle: #edf2f7;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --text-dim: #64748b;
+      --code-bg: #f1f5f9;
+      --code-border: #cbd5e1;
+      --font-body: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Inter', 'Prompt', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+      --emerald: #059669;
+      --emerald-bg: rgba(5, 150, 105, 0.1);
+      --amber: #d97706;
+      --amber-bg: rgba(217, 119, 6, 0.1);
+      --rose: #e11d48;
+      --rose-bg: rgba(225, 29, 72, 0.1);
+      --purple: #7c3aed;
+      --purple-bg: rgba(124, 58, 237, 0.1);
+      --blue: #0284c7;
+      --blue-bg: rgba(2, 132, 199, 0.1);
+      --base-font-size: 16px;
+    }
+
+    [data-theme="sepia"] {
+      --primary: #9f1239;
+      --primary-hover: #881337;
+      --primary-glow: rgba(159, 18, 57, 0.15);
+      --bg-page: #fbf0d9;
+      --bg-surface: #f4e3c1;
+      --bg-card: #f7e8cb;
+      --border-color: #e6d3aa;
+      --border-subtle: #ecdcb9;
+      --text-main: #433422;
+      --text-muted: #5c4731;
+      --text-dim: #7d654a;
+      --code-bg: #efe0c0;
+      --code-border: #dcc89f;
+      --emerald: #2e7d32;
+      --emerald-bg: rgba(46, 125, 50, 0.12);
+      --amber: #b45309;
+      --amber-bg: rgba(180, 83, 9, 0.12);
+      --rose: #9f1239;
+      --rose-bg: rgba(159, 18, 57, 0.12);
+      --purple: #6b21a8;
+      --purple-bg: rgba(107, 33, 168, 0.12);
+    }
+
+    [data-theme="dark"] {
+      --primary: #fb7185;
+      --primary-hover: #fda4af;
+      --primary-glow: rgba(251, 113, 133, 0.15);
+      --bg-page: #0b1120;
+      --bg-surface: #0f172a;
+      --bg-card: #1e293b;
+      --border-color: #334155;
+      --border-subtle: #1e293b;
+      --text-main: #f1f5f9;
+      --text-muted: #cbd5e1;
+      --text-dim: #94a3b8;
+      --code-bg: #090e17;
+      --code-border: #1e293b;
+      --emerald: #10b981;
+      --emerald-bg: rgba(16, 185, 129, 0.15);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245, 158, 11, 0.15);
+      --rose: #fb7185;
+      --rose-bg: rgba(251, 113, 133, 0.15);
+      --purple: #a855f7;
+      --purple-bg: rgba(168, 85, 247, 0.15);
+      --blue: #38bdf8;
+      --blue-bg: rgba(56, 189, 248, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      font-size: var(--base-font-size);
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.75;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Reading Progress Bar */
+    .reading-progress-track {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: transparent;
+      z-index: 1000;
+    }
+    .reading-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #e11d48, #fb7185);
+      transition: width 0.1s ease;
+    }
+
+    /* Site Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 900;
+      padding: 0.65rem 1.5rem;
+      backdrop-filter: blur(8px);
+    }
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .course-badge {
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 0.8rem;
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid var(--primary);
+      letter-spacing: 0.5px;
+    }
+    .chapter-indicator {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .control-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .control-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Layout */
+    .page-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 2.5rem;
+      padding: 2.5rem 1.5rem 6rem 1.5rem;
+    }
+
+    /* Sidebar TOC */
+    .sidebar-toc {
+      position: sticky;
+      top: 4.5rem;
+      height: calc(100vh - 6rem);
+      overflow-y: auto;
+      padding-right: 1rem;
+      scrollbar-width: thin;
+    }
+    .toc-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .toc-header {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+    .toc-list { list-style: none; }
+    .toc-item { margin-bottom: 0.35rem; }
+    .toc-link {
+      display: block;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.84rem;
+      line-height: 1.4;
+      padding: 0.25rem 0.4rem;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+    .toc-link:hover {
+      color: var(--primary);
+      background: var(--primary-glow);
+    }
+    .toc-item.toc-h1 .toc-link { font-weight: 700; color: var(--text-main); }
+    .toc-item.toc-h2 .toc-link { font-weight: 600; padding-left: 0.75rem; }
+    .toc-item.toc-h3 .toc-link { padding-left: 1.5rem; font-size: 0.78rem; color: var(--text-dim); }
+
+    /* Main Article */
+    .main-article { min-width: 0; }
+
+    /* Typography */
+    .chapter-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+    .chapter-badge {
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+    .chapter-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 2.25rem;
+      line-height: 1.25;
+      color: var(--text-main);
+    }
+    .section-heading {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin: 2.5rem 0 1rem 0;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .subsection-heading {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin: 2rem 0 0.8rem 0;
+      color: var(--text-main);
+    }
+    .sub-subsection-heading {
+      font-weight: 600;
+      font-size: 1.05rem;
+      margin: 1.25rem 0 0.5rem 0;
+      color: var(--text-main);
+    }
+    .sub-level5-heading {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin: 1rem 0 0.4rem 0;
+      color: var(--primary);
+    }
+    .content-paragraph {
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+    .content-list {
+      margin: 0.8rem 0 1.2rem 1.75rem;
+      color: var(--text-muted);
+    }
+    .content-list li { margin-bottom: 0.4rem; }
+    .content-blockquote {
+      background: var(--bg-card);
+      border-left: 4px solid var(--primary);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+      font-style: normal;
+      color: var(--text-main);
+    }
+    .section-divider {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2.5rem 0;
+    }
+    code {
+      font-family: var(--font-code);
+      font-size: 0.88em;
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      padding: 0.15em 0.35em;
+      border-radius: 4px;
+      color: var(--text-main);
+    }
+    pre.code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      padding: 1.1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.2rem 0;
+      font-family: var(--font-code);
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+
+    /* Standard Tables */
+    .table-responsive {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      background: var(--bg-surface);
+      text-align: left;
+    }
+    .content-table th {
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-weight: 700;
+      padding: 0.75rem 1rem;
+      border-bottom: 2px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .content-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    .content-table tr:hover td { background: var(--primary-glow); }
+
+    /* Figures & Cards */
+    .figure-box, .widget-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+    .figure-header, .widget-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.65rem;
+    }
+    .figure-tag, .widget-tag {
+      font-family: var(--font-code);
+      font-weight: 800;
+      font-size: 0.75rem;
+      background: var(--primary);
+      color: #fff;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+    .figure-title, .widget-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-main);
+    }
+    .figure-caption {
+      margin-top: 1rem;
+      font-size: 0.84rem;
+      color: var(--text-dim);
+      text-align: center;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 0.65rem;
+    }
+    .widget-intro {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Figure 12.1 Funnel */
+    .funnel-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .funnel-tier {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      background: var(--bg-card);
+    }
+    .funnel-tier.f-events { border-left: 5px solid #38bdf8; }
+    .funnel-tier.f-alerts { border-left: 5px solid #f59e0b; }
+    .funnel-tier.f-incidents { border-left: 5px solid #e11d48; background: var(--rose-bg); }
+    .funnel-badge {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      margin-bottom: 0.2rem;
+    }
+    .funnel-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      margin-bottom: 0.35rem;
+    }
+    .funnel-tier p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.45; }
+    .funnel-meta {
+      font-family: var(--font-code);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 0.4rem;
+      background: var(--bg-surface);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .funnel-arrow {
+      text-align: center;
+      font-family: var(--font-code);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      padding: 0.1rem 0;
+    }
+
+    /* Figure 12.2 NIST Lifecycle */
+    .nist-cycle-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .nist-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .nist-card.c1 { border-top: 4px solid #38bdf8; }
+    .nist-card.c2 { border-top: 4px solid #f59e0b; }
+    .nist-card.c3 { border-top: 4px solid #e11d48; }
+    .nist-card.c4 { border-top: 4px solid #10b981; }
+    .nist-num {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-dim);
+    }
+    .nist-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+    .nist-body ul {
+      margin-left: 1.1rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      flex-grow: 1;
+    }
+    .nist-body li { margin-bottom: 0.35rem; }
+    .nist-badge {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--bg-surface);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-dim);
+      text-align: center;
+      margin-top: 0.4rem;
+    }
+
+    /* Figure 12.3 6 Dimensions */
+    .sev-dimensions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.85rem;
+    }
+    .sev-dim-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.95rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .sev-dim-icon { font-size: 1.5rem; }
+    .sev-dim-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+    .sev-dim-card p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Figure 12.4 CSIRT Tree */
+    .csirt-hierarchy-tree {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .csirt-commander-node {
+      background: var(--bg-card);
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-align: center;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+    .csirt-role-badge {
+      font-family: var(--font-code);
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: 0.5px;
+    }
+    .csirt-role-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--text-main);
+      margin: 0.2rem 0;
+    }
+    .csirt-role-desc { font-size: 0.85rem; color: var(--text-muted); }
+    .csirt-sub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .csirt-sub-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .csirt-sub-card.tech { border-top: 4px solid #38bdf8; }
+    .csirt-sub-card.legal { border-top: 4px solid #e11d48; }
+    .csirt-sub-card.comms { border-top: 4px solid #f59e0b; }
+    .csirt-sub-card.external { border-top: 4px solid #10b981; }
+    .csirt-sub-header {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+    .csirt-sub-body { font-size: 0.82rem; color: var(--text-muted); }
+    .csirt-sub-body ul { margin-left: 1.1rem; margin-top: 0.3rem; }
+    .csirt-sub-body li { margin-bottom: 0.25rem; }
+
+    /* Figure 12.5 Document Artifacts */
+    .doc-artifacts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 0.85rem;
+    }
+    .doc-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem;
+    }
+    .doc-card-num {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .doc-card-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text-main);
+      margin: 0.2rem 0;
+    }
+    .doc-card-desc {
+      font-size: 0.81rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Figure 12.6 SOC Metrics */
+    .soc-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    .soc-metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .metric-tag {
+      font-family: var(--font-code);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-dim);
+    }
+    .metric-abbr {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: var(--primary);
+    }
+    .metric-name {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text-main);
+    }
+    .metric-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      flex-grow: 1;
+    }
+    .metric-target {
+      font-family: var(--font-code);
+      font-size: 0.74rem;
+      background: var(--bg-surface);
+      padding: 0.35rem 0.55rem;
+      border-radius: 4px;
+      margin-top: 0.4rem;
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* Figure 12.7 Fail Timeline */
+    .incident-timeline-fail-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .fail-timeline-step {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--rose);
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .fail-time-badge {
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 0.86rem;
+      color: var(--primary);
+      background: var(--primary-glow);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .fail-step-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      margin-bottom: 0.25rem;
+    }
+    .fail-step-desc {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .step-fault {
+      display: inline-block;
+      margin-top: 0.35rem;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--rose);
+      background: var(--rose-bg);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+    }
+
+    /* Figure 12.8 Working Paper Card */
+    .wp-paper-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      font-size: 0.88rem;
+    }
+    .wp-paper-header {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    .wp-org-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.98rem;
+      color: var(--text-main);
+    }
+    .wp-ref-code {
+      font-family: var(--font-code);
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .wp-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.5rem 1rem;
+      background: var(--bg-surface);
+      padding: 0.85rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1.25rem;
+      font-size: 0.84rem;
+    }
+    .wp-paper-section { margin-bottom: 1.2rem; }
+    .wp-sec-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text-main);
+      margin-bottom: 0.4rem;
+    }
+    .wp-proc-item {
+      background: var(--bg-surface);
+      padding: 0.65rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.83rem;
+      line-height: 1.5;
+    }
+    .finding-block {
+      padding: 0.85rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 0.65rem;
+      font-size: 0.84rem;
+    }
+    .finding-block.crit {
+      background: var(--rose-bg);
+      border-left: 4px solid var(--rose);
+    }
+    .finding-label {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 0.3rem;
+    }
+    .finding-label.crit { background: #e11d48; color: #fff; }
+    .wp-staff-grid {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 1rem;
+      margin-top: 1.25rem;
+      font-size: 0.82rem;
+    }
+
+    /* Figure 12.9 Pitfalls Quad */
+    .pitfalls-quad-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .pitfall-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .pitfall-num {
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .pitfall-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.96rem;
+      color: var(--text-main);
+    }
+    .pitfall-sub {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-dim);
+    }
+    .pitfall-card p {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      flex-grow: 1;
+    }
+    .pitfall-remedy {
+      font-size: 0.78rem;
+      background: var(--bg-surface);
+      padding: 0.4rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      margin-top: 0.35rem;
+    }
+
+    /* Figure 12.11 Dialogue */
+    .dialogue-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .dialogue-card {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .dialogue-avatar {
+      font-size: 1.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .dialogue-bubble {
+      flex: 1;
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+    .vp-card .dialogue-bubble {
+      background: var(--amber-bg);
+      border: 1px solid var(--amber);
+    }
+    .auditor-card .dialogue-bubble {
+      background: var(--primary-glow);
+      border: 1px solid var(--primary);
+    }
+    .ciso-card .dialogue-bubble {
+      background: var(--blue-bg);
+      border: 1px solid var(--blue);
+    }
+    .dialogue-role {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.82rem;
+      margin-bottom: 0.35rem;
+      color: var(--text-main);
+    }
+
+    /* Figure 12.12 Volatility Stack */
+    .volatility-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .vol-tier {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      border-left: 5px solid var(--text-dim);
+    }
+    .vol-tier.v1 { border-left-color: #ef4444; }
+    .vol-tier.v2 { border-left-color: #f43f5e; background: var(--rose-bg); }
+    .vol-tier.v3 { border-left-color: #f59e0b; }
+    .vol-tier.v4 { border-left-color: #38bdf8; }
+    .vol-tier.v5 { border-left-color: #10b981; }
+    .vol-rank {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-dim);
+    }
+    .vol-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      margin: 0.2rem 0;
+    }
+    .vol-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; }
+
+    /* Widgets Shared */
+    .form-group-compact { margin-bottom: 0.85rem; }
+    .form-group-compact label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 0.3rem;
+    }
+    .form-group-compact select, .form-group-compact input[type="range"], .form-group-compact input[type="text"] {
+      width: 100%;
+    }
+    .form-group-compact select, .form-group-compact input[type="text"] {
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.86rem;
+    }
+    .badge-status {
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .badge-status.pass { background: var(--emerald-bg); color: var(--emerald); }
+    .badge-status.warn { background: var(--amber-bg); color: var(--amber); }
+    .badge-status.fail { background: var(--rose-bg); color: var(--rose); }
+
+    /* Widget 12.1 Severity Calc */
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+    .calc-inputs-card, .calc-result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+
+    /* Widget 12.2 Containment Sim */
+    .containment-sim-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .strategy-selector-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .strat-choice-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .strat-choice-card:hover { border-color: var(--primary); }
+    .strat-choice-card.active {
+      border-color: var(--primary);
+      background: var(--primary-glow);
+    }
+    .strat-icon { font-size: 1.6rem; }
+    .strat-title { font-weight: 700; font-size: 0.92rem; color: var(--text-main); }
+    .strat-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+    .strat-result-display {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+
+    /* Widget 12.3 Metrics Calc */
+    .metrics-calc-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .metrics-inputs-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+    }
+    .metric-input-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      margin-bottom: 0.3rem;
+    }
+    .metrics-score-display {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+
+    /* Widget 12.4 War Room */
+    .war-room-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .war-room-stepper {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.35rem;
+    }
+    .war-step {
+      flex: 1;
+      min-width: 140px;
+      text-align: center;
+      padding: 0.5rem 0.6rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .war-step.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .war-scenario-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.35rem;
+    }
+    .war-score-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    /* Widget 12.5 Volatility Tool */
+    .volatility-interactive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+    .vol-left-card, .vol-right-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+    .vol-btn-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .vol-select-btn {
+      text-align: left;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 0.65rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .vol-select-btn:hover { border-color: var(--primary); }
+    .vol-select-btn.active {
+      background: var(--primary-glow);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Footer Nav */
+    .chapter-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 2px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+    .btn-nav-chapter {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .btn-nav-chapter:hover {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar-toc { display: none; }
+      .page-container { padding: 1.5rem 1rem 4rem 1rem; }
+      .fail-timeline-step { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="reading-progress-track">
+    <div class="reading-progress-bar" id="reading-progress-bar"></div>
+    <div id="progress-bar" style="display:none;"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-branding">
+        <span class="course-badge">NECS1312 // CH-12</span>
+        <span class="chapter-indicator">การตรวจสอบการบริหารเหตุการณ์และภัยคุกคามไซเบอร์</span>
+      </div>
+      <div class="header-controls">
+        <button class="control-btn" id="theme-toggle" onclick="cycleTheme()" title="สลับโหมดสี">🌓</button>
+        <button class="control-btn" id="btn-theme-light" onclick="setTheme('light')" title="Light Mode">☀️</button>
+        <button class="control-btn" id="btn-theme-sepia" onclick="setTheme('sepia')" title="Sepia Mode">📜</button>
+        <button class="control-btn" id="btn-theme-dark" onclick="setTheme('dark')" title="Dark Mode">🌙</button>
+        <div style="width:1px; height:18px; background:var(--border-color); margin:0 0.2rem;"></div>
+        <button class="control-btn" id="font-decrease" onclick="adjustFontSize(-1)" title="Smaller Font">A-</button>
+        <button class="control-btn" id="font-reset" onclick="adjustFontSize(0)" title="Default Font">A</button>
+        <button class="control-btn" id="font-increase" onclick="adjustFontSize(1)" title="Larger Font">A+</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-container">
+    <aside class="sidebar-toc">
+      
+<div class="toc-container">
+  <div class="toc-header">
+    <span class="toc-title">สารบัญประจำบทที่ 12</span>
+  </div>
+  <ul class="toc-list">
+
+    <li class="toc-item toc-h1">
+      <a href="#บทที่-12-การตรวจสอบการบริหารเหตุการณ์และภัยคุกคามไซเบอร์-incident-management-and-cyber-threat-audit" class="toc-link">บทที่ 12 การตรวจสอบการบริหารเหตุการณ์และภัยคุกคามไซเบอร์ (Incident Management and Cyber Threat Audit)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes" class="toc-link">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-1-ทฤษฎีและกรอบการบริหารจัดการเหตุการณ์ความมั่นคงปลอดภัย-incident-management-architecture" class="toc-link">ส่วนที่ 1: ทฤษฎีและกรอบการบริหารจัดการเหตุการณ์ความมั่นคงปลอดภัย (Incident Management Architecture)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-1-ความแตกต่างเชิงแนวคิดระหว่าง-event-alert-และ-incident" class="toc-link">1.1 ความแตกต่างเชิงแนวคิดระหว่าง Event, Alert และ Incident</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-2-วงจรชีวิตการตอบสนองต่อเหตุการณ์-incident-response-lifecycle" class="toc-link">1.2 วงจรชีวิตการตอบสนองต่อเหตุการณ์ (Incident Response Lifecycle)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-3-การจำแนกประเภทเหตุการณ์-incident-classification-taxonomy" class="toc-link">1.3 การจำแนกประเภทเหตุการณ์ (Incident Classification Taxonomy)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-4-การกำหนดระดับความรุนแรง-severity-assessment-matrix" class="toc-link">1.4 การกำหนดระดับความรุนแรง (Severity Assessment Matrix)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-5-โครงสร้างทีมตอบสนองต่อเหตุการณ์-csirt-ir-team-roles" class="toc-link">1.5 โครงสร้างทีมตอบสนองต่อเหตุการณ์ (CSIRT / IR Team Roles)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-2-แนวทางการตรวจสอบกระบวนการ-incident-response-สำหรับผู้ตรวจสอบ-auditing-incident-response" class="toc-link">ส่วนที่ 2: แนวทางการตรวจสอบกระบวนการ Incident Response สำหรับผู้ตรวจสอบ (Auditing Incident Response)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-1-รายการเอกสารและหลักฐานสำคัญที่ต้องสอบทาน-8-document-artifacts" class="toc-link">2.1 รายการเอกสารและหลักฐานสำคัญที่ต้องสอบทาน (8 Document Artifacts)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-2-การตรวจสอบกระบวนการแจ้งเตือนและการสื่อสารในภาวะวิกฤต-crisis-communication" class="toc-link">2.2 การตรวจสอบกระบวนการแจ้งเตือนและการสื่อสารในภาวะวิกฤต (Crisis Communication)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-3-การประเมินการทดสอบแผนความพร้อม-drills-exercises" class="toc-link">2.3 การประเมินการทดสอบแผนความพร้อม (Drills &amp; Exercises)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-4-ตัวชี้วัดประสิทธิผลของการตอบสนองต่อเหตุการณ์-key-incident-metrics" class="toc-link">2.4 ตัวชี้วัดประสิทธิผลของการตอบสนองต่อเหตุการณ์ (Key Incident Metrics)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-5-การตรวจสอบตามพระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์-พ-ศ-2562-และกฎหมายที่เกี่ยวข้อง" class="toc-link">2.5 การตรวจสอบตามพระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 และกฎหมายที่เกี่ยวข้อง</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-3-กรณีศึกษาเชิงลึก-มหาวิทยาลัยดิจิทัลสมมติ-วิกฤตการณ์-ransomware-ถล่มระบบทะเบียนและสารสนเทศกลาง" class="toc-link">ส่วนที่ 3: กรณีศึกษาเชิงลึก &quot;มหาวิทยาลัยดิจิทัลสมมติ&quot; — วิกฤตการณ์ Ransomware ถล่มระบบทะเบียนและสารสนเทศกลาง</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-1-ภูมิหลังและบริบทของเหตุการณ์-scenario-continuity" class="toc-link">3.1 ภูมิหลังและบริบทของเหตุการณ์ (Scenario Continuity)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-2-บันทึกเส้นเวลาของเหตุการณ์และการตอบสนองของมหาวิทยาลัย-actual-incident-timeline" class="toc-link">3.2 บันทึกเส้นเวลาของเหตุการณ์และการตอบสนองของมหาวิทยาลัย (Actual Incident Timeline)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-3-กระดาษทำการตรวจสอบฉบับสมบูรณ์-audit-working-paper-wp-12-01" class="toc-link">3.3 กระดาษทำการตรวจสอบฉบับสมบูรณ์ (Audit Working Paper WP-12-01)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-4-กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน-active-learning-simulation" class="toc-link">ส่วนที่ 4: กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน (Active Learning Simulation)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#กิจกรรม-ransomware-war-room-tabletop-audit-crisis-decision-simulation-ระยะเวลา-25-นาที" class="toc-link">กิจกรรม: &quot;Ransomware War Room: Tabletop Audit &amp; Crisis Decision Simulation&quot; (ระยะเวลา 25 นาที)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-5-มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls" class="toc-link">ส่วนที่ 5: มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives &amp; Common Pitfalls)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#5-1-บทสนทนาจำลองเชิงวิชาชีพ-auditor-vs-ciso-management-dialogue" class="toc-link">5.1 บทสนทนาจำลองเชิงวิชาชีพ (Auditor vs CISO &amp; Management Dialogue)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#5-2-4-กับดักหลุมพรางที่พบบ่อยในการบริหารและตรวจสอบเหตุการณ์-4-common-pitfalls" class="toc-link">5.2 4 กับดักหลุมพรางที่พบบ่อยในการบริหารและตรวจสอบเหตุการณ์ (4 Common Pitfalls)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-6-การบ้านและงานมอบหมายประจำสัปดาห์-weekly-homework-week-12" class="toc-link">ส่วนที่ 6: การบ้านและงานมอบหมายประจำสัปดาห์ (Weekly Homework Week 12)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers" class="toc-link">ส่วนที่ 7: คำถามทบทวนท้ายบท (Review Questions &amp; Detailed Answers)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#สรุปบทที่-12" class="toc-link">สรุปบทที่ 12</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#เอกสารอ้างอิงและมาตรฐานสากล" class="toc-link">เอกสารอ้างอิงและมาตรฐานสากล</a>
+    </li>
+  
+  </ul>
+</div>
+
+    </aside>
+
+    <main class="main-article">
+      
+          <header class="chapter-header" id="บทที่-12-การตรวจสอบการบริหารเหตุการณ์และภัยคุกคามไซเบอร์-incident-management-and-cyber-threat-audit">
+            <div class="chapter-badge">NECS1312 // CH-12</div>
+            <h1 class="chapter-title">บทที่ 12 การตรวจสอบการบริหารเหตุการณ์และภัยคุกคามไซเบอร์ (Incident Management and Cyber Threat Audit)</h1>
+          </header>
+        
+<p class="content-paragraph">ในโลกของความมั่นคงปลอดภัยไซเบอร์ยุคปัจจุบัน มีสัจธรรมข้อหนึ่งที่ผู้บริหารและผู้ตรวจสอบสารสนเทศทุกคนต้องตระหนักร่วมกัน:</p>
+<blockquote class="content-blockquote"><strong>"องค์กรไม่ได้ถูกแบ่งออกเป็น 'องค์กรที่เคยถูกแฮก' กับ 'องค์กรที่ไม่เคยถูกแฮก' อีกต่อไป หากแต่ถูกแบ่งเป็น 'องค์กรที่ถูกแฮกแล้วรู้ตัว' กับ 'องค์กรที่ถูกแฮกแล้วแต่ยังไม่รู้ตัวเลยต่างหาก'"</strong>  <br>และคำถามสำคัญเชิงยุทธศาสตร์จึงมิใช่การถามว่า <em>"เราจะถูกโจมตีหรือไม่?"</em>  <br>หากแต่เป็น: <strong>"เมื่อภัยคุกคามเกิดขึ้นจริง เราจะตรวจจับได้เร็วเพียงใด ระงับความเสียหายได้ทันท่วงทีหรือไม่ และสามารถฟื้นฟูระบบให้กลับมาดำเนินธุรกิจได้อย่างปลอดภัยและชอบด้วยกฎหมายอย่างไร?"</strong></blockquote>
+<p class="content-paragraph">การบริหารจัดการเหตุการณ์ความมั่นคงปลอดภัยไซเบอร์ (Incident Management) มิใช่เพียงเรื่องของมาตรการทางเทคนิคที่ปล่อยให้เป็นหน้าที่ของวิศวกรคอมพิวเตอร์หรือศูนย์ SOC เท่านั้น แต่เป็นกระบวนการบริหารจัดการระดับองค์กรที่ครอบคลุมมิติของการตัดสินใจเชิงยุทธศาสตร์ การควบคุมความเสียหาย การคุ้มครองพยานหลักฐานทางดิจิทัล การสื่อสารในภาวะวิกฤต และการปฏิบัติตามพันธกรณีทางกฎหมายภาคบังคับ </p>
+<p class="content-paragraph">ในบริบทของประเทศไทย <strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562</strong> และ <strong>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA)</strong> ได้กำหนดหน้าที่ความรับผิดชอบและบทลงโทษตามกฎหมายไว้อย่างเคร่งครัด หากองค์กรประสบเหตุภัยคุกคามไซเบอร์ระดับร้ายแรงหรือเกิดการรั่วไหลของข้อมูลส่วนบุคคล แต่องค์กรละเลยไม่แจ้งหน่วยงานกำกับดูแล (เช่น สำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ: สกมช. หรือ สำนักงานคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล: สคส.) ภายในกรอบเวลาที่กฎหมายกำหนด</p>
+<p class="content-paragraph">บทนี้ได้รับการออกแบบเพื่อให้นักศึกษาเข้าใจสถาปัตยกรรมและวงจรชีวิตของการจัดการเหตุการณ์ (Incident Response Lifecycle) มาตรฐานสากล NIST SP 800-61 และ ISO/IEC 27035 พร้อมทั้งฝึกทักษะในฐานะ <strong>IT & Cyber Auditor</strong> ในการตรวจสอบความพร้อม การประเมินประสิทธิผลของแผนเผชิญเหตุ (Playbooks) การตรวจสอบกระบวนการยกระดับเหตุการณ์ (Escalation Process) และการจัดทำกระดาษทำการตรวจสอบจากกรณีศึกษาวิกฤตการณ์มัลแวร์เรียกค่าไถ่ (Ransomware Attack) อย่างมืออาชีพ</p>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes">
+            <h2 class="section-heading">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</h2>
+          </section>
+        
+<p class="content-paragraph">เมื่อสิ้นสุดการเรียนรู้ในบทนี้ นักศึกษาสามารถ:</p>
+<ol class="content-list">
+<li><strong>อธิบายและจำแนกวงจรชีวิตการตอบสนองต่อเหตุการณ์ตามมาตรฐานสากลได้ (CLO1, CLO2):</strong> จำแนกความแตกต่างระหว่าง Event, Alert และ Incident และอธิบาย 6 ขั้นตอนของ Incident Response Lifecycle (Preparation, Detection, Analysis, Containment, Eradication, Recovery, Lessons Learned) ตามแนวทาง NIST SP 800-61 Rev. 2 และ ISO/IEC 27035 ได้อย่างแม่นยำ</li>
+<li><strong>ประเมินความพร้อมและประสิทธิผลของกระบวนการตอบสนองต่อเหตุการณ์ได้ (CLO2, CLO3):</strong> ตรวจสอบความสมบูรณ์ของนโยบาย แผนเผชิญเหตุ (Playbooks) โครงสร้างทีม CSIRT ทะเบียนผู้ติดต่อ (Contact List) เมทริกซ์การยกระดับเหตุการณ์ (Escalation Matrix) และตัวชี้วัดประสิทธิภาพ (MTTD, MTTR)</li>
+<li><strong>วิเคราะห์การจำแนกประเภทและประเมินระดับความรุนแรงของภัยคุกคามได้ (CLO3):</strong> จำแนกประเภทเหตุการณ์ 7 รูปแบบ และประเมินระดับความรุนแรง (Severity Matrix) ตามมิติขอบเขตระบบ ประเภทข้อมูล ผู้ได้รับผลกระทบ ระยะเวลาหยุดชะงัก บริการโครงสร้างพื้นฐานสำคัญ และผลกระทบทางกฎหมาย</li>
+<li><strong>ตรวจสอบความสอดคล้องกับ พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 และกฎหมายที่เกี่ยวข้องได้ (CLO1, CLO4):</strong> ตรวจสอบเกณฑ์การแบ่งระดับภัยคุกคาม (ไม่ร้ายแรง, ร้ายแรง, วิกฤติ) กรอบเวลาการรายงานต่อ สกมช. (NCSA) และ สคส. (PDPC) รวมถึงอำนาจหน้าที่ในการตัดสินใจของฝ่ายบริหาร</li>
+<li><strong>จัดทำกระดาษทำการตรวจสอบและประเมินช่องว่างของกระบวนการตอบสนองต่อเหตุการณ์ได้ (CLO3, CLO4):</strong> วิเคราะห์เหตุการณ์ Ransomware จำลอง สร้าง Incident Timeline ตรวจสอบจุดล้มเหลวของการควบคุม และจัดทำ Audit Working Paper พร้อมข้อเสนอแนะเชิงป้องกันได้อย่างถูกต้องตามมาตรฐานวิชาชีพ</li>
+</ol>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-1-ทฤษฎีและกรอบการบริหารจัดการเหตุการณ์ความมั่นคงปลอดภัย-incident-management-architecture">
+            <h2 class="section-heading">ส่วนที่ 1: ทฤษฎีและกรอบการบริหารจัดการเหตุการณ์ความมั่นคงปลอดภัย (Incident Management Architecture)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="1-1-ความแตกต่างเชิงแนวคิดระหว่าง-event-alert-และ-incident">1.1 ความแตกต่างเชิงแนวคิดระหว่าง Event, Alert และ Incident</h3>
+<p class="content-paragraph">หนึ่งในข้อผิดพลาดที่พบบ่อยที่สุดในองค์กรที่ไม่พร้อม คือการสับสนระหว่างคำว่า <strong>Event</strong>, <strong>Alert</strong> และ <strong>Incident</strong> ซึ่งส่งผลให้เกิดความล้มเหลวในการจัดสรรทรัพยากร หรือเกิดปัญหาตื่นตระหนกจนไม่สามารถรับมือกับภัยคุกคามที่แท้จริงได้:</p>
+
+<div class="figure-box" id="figure-12-1">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 12.1</div>
+    <div class="figure-title">ลำดับชั้นจาก Events สู่ Incidents (Events vs Incidents Threshold Funnel)</div>
+  </div>
+  <div class="funnel-container">
+    <div class="funnel-tier f-events">
+      <div class="funnel-badge">LEVEL 1 // HIGH VOLUME</div>
+      <div class="funnel-title">📊 EVENTS (เหตุการณ์ทั่วไปในระบบ)</div>
+      <p>สิ่งใดก็ตามที่สังเกตพบได้ในระบบไอทีและเครือข่าย เช่น การเชื่อมต่อ TCP, การส่งอีเมล, ผู้ใช้ล็อกอินเข้าระบบปกติ (วันละนับสิบล้านรายการ)</p>
+      <div class="funnel-meta">Volume: 10,000,000+ events/day | Handled by: Automated Ingestion & Indexing</div>
+    </div>
+    <div class="funnel-arrow">⬇ กรองผ่านกฎตรวจจับและค่าเกณฑ์ปกติ (Filter via Detection Rules & Baselines)</div>
+    <div class="funnel-tier f-alerts">
+      <div class="funnel-badge">LEVEL 2 // POTENTIAL THREAT</div>
+      <div class="funnel-title">⚠️ ALERTS / SECURITY EVENTS (สัญญาณเตือนความผิดปกติ)</div>
+      <p>เหตุการณ์ที่มีแนวโน้มว่าอาจเป็นภัยคุกคาม หรือเบี่ยงเบนไปจากพฤติกรรมปกติ เช่น ล็อกอินล้มเหลว 10 ครั้งติดต่อกัน, EDR พบไฟล์ต้องสงสัย</p>
+      <div class="funnel-meta">Volume: 50 - 200 alerts/day | Handled by: SOC Tier 1 Triage within 15 mins</div>
+    </div>
+    <div class="funnel-arrow">⬇ ยืนยันเป็นภัยคุกคามจริงที่มีผลกระทบ (Confirmed Impact on CIA Triad)</div>
+    <div class="funnel-tier f-incidents">
+      <div class="funnel-badge">LEVEL 3 // CRISIS & RESPONSE</div>
+      <div class="funnel-title">🚨 INCIDENTS (เหตุการณ์ละเมิดความมั่นคงปลอดภัยที่มีผลกระทบ)</div>
+      <p>เหตุการณ์ที่ส่งผลกระทบต่อ <strong>Confidentiality, Integrity, หรือ Availability (CIA triad)</strong> อย่างมีนัยสำคัญ ต้องระดมทีม CSIRT เข้าควบคุมฉุกเฉิน</p>
+      <div class="funnel-meta">Volume: 1 - 5 cases/month | Handled by: Incident Commander, CSIRT, Management, Regulators</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 12.1:</strong> พัฒนาการของข้อมูลตั้งแต่เหตุการณ์ปกติ (Events) สู่การแจ้งเตือน (Alerts) จนถึงเหตุการณ์ความมั่นคงปลอดภัยไซเบอร์ (Incidents)
+  </div>
+</div>
+
+<ol class="content-list">
+<li><strong>Event (เหตุการณ์ในระบบ):</strong></li>
+</ol>
+<ul class="content-list">
+<li>คือสิ่งใดก็ตามที่เกิดขึ้นและสามารถสังเกตหรือตรวจจับได้ในระบบคอมพิวเตอร์ เครือข่าย หรือแอปพลิเคชัน เช่น การที่ผู้ใช้ล็อกอินสำเร็จ การที่ไฟร์วอลล์อนุญาตให้แพ็กเก็ตผ่าน หรือการที่เครื่องพิมพ์เริ่มพิมพ์เอกสาร</li>
+<li>โดยตัวมันเอง Event ส่วนใหญ่เป็น <strong>"เหตุการณ์ปกติทางธุรกิจ"</strong> และไม่ได้สะท้อนถึงภัยคุกคามแต่อย่างใด</li>
+</ul>
+<ol class="content-list">
+<li><strong>Alert (สัญญาณแจ้งเตือน):</strong></li>
+</ol>
+<ul class="content-list">
+<li>คือ Event หรือกลุ่มของ Events ที่ตรงกับเงื่อนไข กฎเกณฑ์ (Rule Logic) หรือค่าผิดปกติ (Anomaly) ที่ระบบ SIEM/EDR กำหนดไว้ล่วงหน้า</li>
+<li>Alert เป็นเพียง <strong>"ตัวชี้วัดความน่าสงสัย"</strong> ที่ต้องการให้เจ้าหน้าที่ความมั่นคงปลอดภัย (SOC Analyst Tier 1) เข้าไปตรวจสอบคัดกรอง (Triage) ว่าเป็นภัยคุกคามจริง (True Positive) หรือสัญญาณลวง (False Positive)</li>
+</ul>
+<ol class="content-list">
+<li><strong>Incident (เหตุการณ์ละเมิดความมั่นคงปลอดภัย):</strong></li>
+</ol>
+<ul class="content-list">
+<li>ตามนิยามของ NIST SP 800-61 หมายถึง <strong>"เหตุการณ์ที่เกิดขึ้นจริงและส่งผลกระทบในทางลบ (Adverse Event) ต่อความลับ (Confidentiality) ความถูกต้องแท้จริง (Integrity) หรือความพร้อมใช้ (Availability) ของข้อมูลหรือระบบสารสนเทศขององค์กร"</strong></li>
+<li>หรือเป็นเหตุการณ์ที่มีการละเมิดนโยบายความมั่นคงปลอดภัย (Security Policy) นโยบายการใช้งานที่ยอมรับได้ (AUP) หรือระเบียบกฎหมายอย่างชัดเจน เช่น บัญชีผู้ดูแลระบบถูกแฮกจากต่างประเทศ, เครื่องเซิร์ฟเวอร์ฐานข้อมูลถูกติดตั้ง Ransomware, หรือข้อมูลส่วนบุคคลถูกขโมยออกสู่ภายนอก</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-2-วงจรชีวิตการตอบสนองต่อเหตุการณ์-incident-response-lifecycle">1.2 วงจรชีวิตการตอบสนองต่อเหตุการณ์ (Incident Response Lifecycle)</h3>
+
+<div class="widget-box" id="widget-12-2">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE LEARNING 12.2</div>
+    <div class="widget-title">NIST SP 800-61 Containment Strategy & Forensic Trade-off Simulator</div>
+  </div>
+  <p class="widget-intro">
+    ในจังหวะที่พบ Ransomware กำลังทำงานบนเซิร์ฟเวอร์ คำสั่งควบคุมใดเป็นคำสั่งที่ถูกต้องตามหลักนิติวิทยาศาสตร์? ทดลองเลือกกลยุทธ์การรับมือ 3 แบบเพื่อสังเกตผลกระทบต่อ <em>การแพร่กระจายของมัลแวร์</em> และ <em>ความอยู่รอดของพยานหลักฐานในหน่วยความจำ RAM</em>
+  </p>
+
+  <div class="containment-sim-wrapper">
+    <div class="strategy-selector-cards">
+      <div class="strat-choice-card" id="strat-card-power" onclick="selectContainmentStrat('power')">
+        <div class="strat-icon">🔌</div>
+        <div class="strat-title">กลยุทธ์ 1: Hard Power-Off (ดึงปลั๊กทันที)</div>
+        <div class="strat-desc">กดสวิตช์ปิดเครื่องเซิร์ฟเวอร์ทันทีตามคำสั่งของผู้อำนวยการในกรณีศึกษา</div>
+      </div>
+
+      <div class="strat-choice-card active" id="strat-card-isolate" onclick="selectContainmentStrat('isolate')">
+        <div class="strat-icon">✂️</div>
+        <div class="strat-title">กลยุทธ์ 2: Network Isolation (กักกันทางเครือข่าย)</div>
+        <div class="strat-desc">ตัดการเชื่อมต่อเครือข่าย (ถอดสาย LAN / กักกันผ่าน EDR) โดยเปิดเครื่องทิ้งไว้</div>
+      </div>
+
+      <div class="strat-choice-card" id="strat-card-dump" onclick="selectContainmentStrat('dump')">
+        <div class="strat-icon">💾</div>
+        <div class="strat-title">กลยุทธ์ 3: Isolate + RAM Acquisition (ดูดหน่วยความจำ)</div>
+        <div class="strat-desc">ตัดเครือข่ายทันที พร้อมรันเครื่องมือดูดข้อมูล RAM (เช่น DumpIt/WinPmem) ก่อนปิดระบบ</div>
+      </div>
+    </div>
+
+    <div class="strat-result-display" id="strat-result-box">
+      <!-- Live Result Output via JS -->
+    </div>
+  </div>
+</div>
+
+<p class="content-paragraph">ตามกรอบมาตรฐาน <strong>NIST SP 800-61 Rev. 2</strong> (Computer Security Incident Handling Guide) และ <strong>ISO/IEC 27035:2023</strong> วงจรชีวิตของการรับมือเหตุการณ์ความมั่นคงปลอดภัยแบ่งออกเป็น 4 ระยะหลัก (โดยขยายในเชิงปฏิบัติเป็น 6 ขั้นตอนสำคัญ):</p>
+
+<div class="figure-box" id="figure-12-2">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 12.2</div>
+    <div class="figure-title">วงจรการตอบสนองต่อเหตุการณ์ตามกรอบสากล NIST SP 800-61 & ISO/IEC 27035</div>
+  </div>
+  <div class="nist-cycle-grid">
+    <div class="nist-card c1">
+      <div class="nist-num">PHASE 1</div>
+      <div class="nist-title">1. การเตรียมการ (Preparation)</div>
+      <div class="nist-body">
+        <ul>
+          <li>จัดทำนโยบาย IRP และคู่มือ Playbooks เฉพาะภัยคุกคาม</li>
+          <li>ฝึกอบรมบุคลากรและซักซ้อมแผนเผชิญเหตุ (Tabletop Exercises)</li>
+          <li>จัดเตรียมเครื่องมือเก็บหลักฐาน (Forensics Toolkit)</li>
+          <li>ทำสัญญาว่าจ้างผู้เชี่ยวชาญภายนอก (IR Retainer)</li>
+        </ul>
+      </div>
+      <div class="nist-badge">ก่อนเกิดเหตุ (Proactive)</div>
+    </div>
+
+    <div class="nist-card c2">
+      <div class="nist-num">PHASE 2</div>
+      <div class="nist-title">2. ตรวจจับและวิเคราะห์ (Detection & Analysis)</div>
+      <div class="nist-body">
+        <ul>
+          <li>เฝ้าระวังและตรวจจับผ่าน SIEM, EDR, และ NIDS</li>
+          <li>คัดกรองเบื้องต้น (Triage) แยก True Positive vs False Positive</li>
+          <li>ระบุขอบเขตความเสียหาย (Scoping & Blast Radius)</li>
+          <li>จัดระดับความรุนแรง (Severity Classification)</li>
+        </ul>
+      </div>
+      <div class="nist-badge">ชี้ชัดภัยคุกคาม (Identification)</div>
+    </div>
+
+    <div class="nist-card c3">
+      <div class="nist-num">PHASE 3</div>
+      <div class="nist-title">3. ควบคุม กำจัด และกู้คืน (Containment & Recovery)</div>
+      <div class="nist-body">
+        <ul>
+          <li><strong>Containment:</strong> สกัดกั้นการลุกลามด้วย Network Isolation</li>
+          <li><strong>Forensic Capture:</strong> Dump RAM และสร้างดิสก์อิมเมจพยานหลักฐาน</li>
+          <li><strong>Eradication:</strong> ถอนรากมัลแวร์ ลบ Backdoors และปิดช่องโหว่</li>
+          <li><strong>Recovery:</strong> กู้คืนระบบจาก Clean & Immutable Backup</li>
+        </ul>
+      </div>
+      <div class="nist-badge">ระงับเหตุฉุกเฉิน (Active Mitigation)</div>
+    </div>
+
+    <div class="nist-card c4">
+      <div class="nist-num">PHASE 4</div>
+      <div class="nist-title">4. การถอดบทเรียน (Post-Incident Activity)</div>
+      <div class="nist-body">
+        <ul>
+          <li>จัดประชุม Lessons Learned ภายใน 1–2 สัปดาห์</li>
+          <li>วิเคราะห์สาเหตุที่แท้จริง (Root Cause Analysis: RCA)</li>
+          <li>จัดทำรายงาน Post-Incident Review (PIR)</li>
+          <li>ปรับปรุงกฎตรวจจับใน SIEM และอัปเดต Playbooks</li>
+        </ul>
+      </div>
+      <div class="nist-badge">พัฒนาต่อเนื่อง (Continuous Loop)</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 12.2:</strong> 4 ขั้นตอนหลักของวงจร Incident Response Lifecycle ตามแนวทาง NIST SP 800-61 Rev. 2
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="ขั้นตอนที่-1-การเตรียมความพร้อม-preparation">ขั้นตอนที่ 1: การเตรียมความพร้อม (Preparation)</h4>
+<ul class="content-list">
+<li><strong>ความสำคัญ:</strong> เป็นขั้นตอนที่ดำเนินการ <strong>"ก่อนเกิดเหตุการณ์"</strong> และเป็นตัวชี้ขาดว่าองค์กรจะรอดพ้นจากวิกฤตได้หรือไม่ หากไม่มีการเตรียมการที่ดี การตอบสนองในภาวะวิกฤตจะเป็นไปอย่างโกลาหล</li>
+<li><strong>องค์ประกอบสำคัญ:</strong></li>
+<li>การจัดทำนโยบายและแผนแม่บทการตอบสนองต่อเหตุการณ์ (Incident Response Policy & Plan: IRP)</li>
+<li>การสร้างแนวทางปฏิบัติเฉพาะทาง (Standard Operating Procedures / Playbooks) สำหรับภัยคุกคามแต่ละประเภท เช่น Ransomware Playbook, Phishing Playbook, DDoS Playbook</li>
+<li>การจัดตั้งและแต่งตั้งคณะทำงานตอบสนองต่อเหตุการณ์ (CSIRT) พร้อมบทบาทหน้าที่ชัดเจน</li>
+<li>การจัดเตรียมเครื่องมือทางนิติวิทยาศาสตร์ (Forensic Toolkit, Clean Jump Box, Out-of-band Communication Channel)</li>
+<li>การสำรองข้อมูล (Offline / Immutable Backup) และการซักซ้อมแผนเป็นประจำ</li>
+</ul>
+<h4 class="sub-subsection-heading" id="ขั้นตอนที่-2-การตรวจจับและวิเคราะห์เหตุการณ์-detection-analysis">ขั้นตอนที่ 2: การตรวจจับและวิเคราะห์เหตุการณ์ (Detection & Analysis)</h4>
+<ul class="content-list">
+<li><strong>การตรวจจับ (Detection):</strong> การรับสัญญาณแจ้งเตือนจากระบบตรวจจับต่าง ๆ (SIEM, EDR, NDR, User Report) และการยืนยันว่าเป็นเหตุการณ์จริง</li>
+<li><strong>การวิเคราะห์เบื้องต้น (Triage & Scoping):</strong></li>
+<li>การระบุประเภทการโจมตี (Attack Vector)</li>
+<li>การประเมินขอบเขตการแพร่กระจาย (Blast Radius) ว่ามีเครื่องคอมพิวเตอร์หรือบัญชีผู้ใช้ใดได้รับผลกระทบแล้วบ้าง</li>
+<li>การเก็บรักษาพยานหลักฐานทางดิจิทัลเบื้องต้น (เช่น RAM Dump, Network Packet Capture) ก่อนที่ข้อมูลสำคัญจะสูญหาย</li>
+<li>การประเมินระดับความรุนแรง (Severity Rating) เพื่อกำหนดขั้นตอนการยกระดับ (Escalation)</li>
+</ul>
+<h4 class="sub-subsection-heading" id="ขั้นตอนที่-3-การจำกัดและควบคุมขอบเขตความเสียหาย-containment">ขั้นตอนที่ 3: การจำกัดและควบคุมขอบเขตความเสียหาย (Containment)</h4>
+<ul class="content-list">
+<li><strong>เป้าหมาย:</strong> หยุดยั้งไม่ให้ผู้โจมตีหรือมัลแวร์แพร่กระจายลึกลงไปในระบบ หรือขโมยข้อมูลออกไปได้มากกว่าเดิม</li>
+<li><strong>กลยุทธ์การควบคุมแบ่งเป็น 2 ระยะ:</strong></li>
+<li><strong>Short-term Containment (การควบคุมเฉพาะหน้าทันที):</strong> เช่น การตัดการเชื่อมต่อเครือข่ายของเครื่องที่ติดเชื้อ (Network Isolation via EDR / ดึงสาย LAN), การปิดกั้นพอร์ตบนไฟร์วอลล์, การระงับการใช้งานบัญชีผู้ใช้ที่ถูกยึดครอง (Disable Compromised Accounts)</li>
+<li><strong>Long-term Containment (การควบคุมระยะยาวระหว่างรอแก้ไข):</strong> การตั้งค่าไฟร์วอลล์ชั่วคราว, การบังคับรีเซ็ตรหัสผ่านของระบบที่เกี่ยวข้อง, การย้ายระบบงานไปยัง Clean Segment ที่มีการควบคุมเข้มงวด</li>
+</ul>
+<h4 class="sub-subsection-heading" id="ขั้นตอนที่-4-การกำจัดต้นตอและร่องรอยภัยคุกคาม-eradication">ขั้นตอนที่ 4: การกำจัดต้นตอและร่องรอยภัยคุกคาม (Eradication)</h4>
+<ul class="content-list">
+<li><strong>เป้าหมาย:</strong> ถอนรากถอนโคนมัลแวร์ ประตูหลัง (Backdoors) บัญชีปลอมที่แฮกเกอร์สร้างทิ้งไว้ และอุดช่องโหว่ที่เป็นจุดเริ่มต้นของการโจมตี</li>
+<li><strong>การปฏิบัติงาน:</strong></li>
+<li>การลบมัลแวร์และ Persistence Mechanisms (Scheduled Tasks, Registry Run Keys, Web Shells)</li>
+<li>การปิดบัญชีที่ผู้โจมตีสร้างขึ้นมาใหม่</li>
+<li>การติดตั้งแพตช์อุดช่องโหว่ของระบบปฏิบัติการและแอปพลิเคชัน</li>
+<li>การตรวจสอบความเปลี่ยนแปลงของการกำหนดค่าความปลอดภัย (Configuration Drift)</li>
+</ul>
+<h4 class="sub-subsection-heading" id="ขั้นตอนที่-5-การกู้คืนระบบและความต่อเนื่องทางธุรกิจ-recovery">ขั้นตอนที่ 5: การกู้คืนระบบและความต่อเนื่องทางธุรกิจ (Recovery)</h4>
+<ul class="content-list">
+<li><strong>เป้าหมาย:</strong> นำระบบคอมพิวเตอร์และข้อมูลที่ได้รับผลกระทบกลับมาเปิดให้บริการตามปกติอย่างปลอดภัย</li>
+<li><strong>การปฏิบัติงาน:</strong></li>
+<li>การกู้คืนระบบจากชุดข้อมูลสำรองที่ได้รับการยืนยันว่า <strong>"สะอาดและปลอดมัลแวร์"</strong> (Clean & Verified Backup)</li>
+<li>การทดสอบการทำงานของระบบ (Functional & Security Testing) ในสภาพแวดล้อมทดสอบก่อนขึ้น Production</li>
+<li>การเพิ่มระดับการเฝ้าระวังอย่างใกล้ชิด (Enhanced Monitoring) ในช่วง 24–72 ชั่วโมงแรกหลังเปิดใช้งานระบบอีกครั้ง เพื่อป้องกันการถูกโจมตีซ้ำ</li>
+</ul>
+<h4 class="sub-subsection-heading" id="ขั้นตอนที่-6-การถอดบทเรียนและกิจกรรมหลังเกิดเหตุ-post-incident-activity-lessons-learned">ขั้นตอนที่ 6: การถอดบทเรียนและกิจกรรมหลังเกิดเหตุ (Post-Incident Activity / Lessons Learned)</h4>
+<ul class="content-list">
+<li><strong>เป้าหมาย:</strong> ทบทวนเหตุการณ์ที่เกิดขึ้นเพื่อพัฒนาและปรับปรุงระบบป้องกันในอนาคต โดยต้องจัดประชุมภายใน 1–2 สัปดาห์หลังเหตุการณ์สงบ</li>
+<li><strong>ผลลัพธ์สำคัญ:</strong></li>
+<li>การจัดทำ <strong>รายงานสรุปหลังเกิดเหตุ (Post-Incident Report / PIR)</strong></li>
+<li>การวิเคราะห์หาสาเหตุที่แท้จริง (Root Cause Analysis: RCA)</li>
+<li>การตอบคำถามสำคัญ: เกิดอะไรขึ้นเมื่อไหร่? ทีมตอบสนองได้เร็วเพียงใด? แผนที่เขียนไว้ใช้ได้จริงหรือไม่? มีข้อมูลใดขาดหายไประหว่างการวิเคราะห์?</li>
+<li>การปรับปรุงนโยบาย กฎเกณฑ์การตรวจจับของ SIEM และ Playbooks ให้มีประสิทธิภาพสูงขึ้น</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-3-การจำแนกประเภทเหตุการณ์-incident-classification-taxonomy">1.3 การจำแนกประเภทเหตุการณ์ (Incident Classification Taxonomy)</h3>
+<p class="content-paragraph">เพื่อความเป็นมาตรฐานในการบันทึกข้อมูล สถิติ และการเลือกใช้ Playbook ที่ตรงจุด องค์กรต้องกำหนดระบบการจำแนกประเภทเหตุการณ์เป็น 7 หมวดหมู่หลัก:</p>
+<div class="table-responsive"><table class="content-table"><thead><tr><th>รหัสประเภท</th><th>ประเภทเหตุการณ์ (Incident Type)</th><th>คำอธิบายและตัวชี้วัด (Characteristics & Indicators)</th><th>Playbook ที่ต้องเรียกใช้</th></tr></thead><tbody><tr><td><strong>INC-01</strong></td><td><strong>Malware & Ransomware</strong></td><td>เครื่องแม่ข่ายหรือลูกข่ายถูกติดตั้งโปรแกรมประสงค์ร้าย ไวรัส โทรจัน หรือการเข้ารหัสไฟล์เพื่อเรียกค่าไถ่</td><td>Ransomware / Malware Containment Playbook</td></tr><tr><td><strong>INC-02</strong></td><td><strong>Unauthorized Access & Compromise</strong></td><td>บัญชีผู้ใช้ถูกขโมย (Credential Theft), มีการพยายาม Brute-force สำเร็จ, หรือการยกระดับสิทธิ์โดยมิชอบ (Privilege Escalation)</td><td>Account Compromise & Lateral Movement Playbook</td></tr><tr><td><strong>INC-03</strong></td><td><strong>Data Breach & Exfiltration</strong></td><td>ข้อมูลความลับทางการค้า รหัสผ่าน หรือข้อมูลส่วนบุคคล (PII) ถูกดาวน์โหลด เข้าถึง หรือส่งออกนอกองค์กรโดยไม่ได้รับอนุญาต</td><td>Data Leakage & PDPA Breach Response Playbook</td></tr><tr><td><strong>INC-04</strong></td><td><strong>Denial of Service (DoS / DDoS)</strong></td><td>บริการเว็บหรือเครือข่ายถูกระดมยิงข้อมูลปริมาณมหาศาลจนทรัพยากรเต็ม ทำให้ผู้ใช้บริการปกติไม่สามารถเข้าถึงระบบได้</td><td>DDoS Mitigation & Traffic Scrubbing Playbook</td></tr><tr><td><strong>INC-05</strong></td><td><strong>Insider Threat & Sabotage</strong></td><td>พนักงานหรือผู้ดูแลระบบภายในที่มีสิทธิ์ นำข้อมูลไปใช้ในทางมิชอบ ลบทำลายฐานข้อมูล หรือแก้ไขเกรด/ยอดเงินโดยทุจริต</td><td>Insider Abuse & Digital Forensics Playbook</td></tr><tr><td><strong>INC-06</strong></td><td><strong>Cloud Compromise</strong></td><td>บัญชี Cloud Console (เช่น AWS, Azure, GCP) ถูกแฮก, มีการเปลี่ยนแปลง IAM Policy, หรือมี S3 Bucket เปิดสาธารณะ</td><td>Cloud Security Incident Response Playbook</td></tr><tr><td><strong>INC-07</strong></td><td><strong>Supply Chain & Third-Party Incident</strong></td><td>ผู้ให้บริการภายนอก (Vendor/Outsource) ที่เชื่อมต่อเครือข่ายเข้ามาถูกเจาะระบบ หรือซอฟต์แวร์ที่จัดซื้อถูกฝังโค้ดอันตราย</td><td>Vendor Security Incident Playbook</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-4-การกำหนดระดับความรุนแรง-severity-assessment-matrix">1.4 การกำหนดระดับความรุนแรง (Severity Assessment Matrix)</h3>
+<p class="content-paragraph">ระดับความรุนแรง (Severity Level) เป็นตัวกำหนด <strong>ความเร่งด่วนในการระดมทรัพยากร กรอบเวลาในการแก้ปัญหา (SLA) และระดับผู้บริหารที่ต้องเข้ามารับผิดชอบในการตัดสินใจ</strong> โดยองค์กรต้องประเมินผ่าน 6 มิติหลัก:</p>
+
+<div class="figure-box" id="figure-12-3">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 12.3</div>
+    <div class="figure-title">6 มิติในการประเมินระดับความรุนแรงของเหตุการณ์ (6 Severity Dimensions)</div>
+  </div>
+  <div class="sev-dimensions-grid">
+    <div class="sev-dim-card">
+      <div class="sev-dim-icon">🖥️</div>
+      <div class="sev-dim-title">1. ขอบเขตระบบ (System Scope)</div>
+      <p>กระทบต่อเซิร์ฟเวอร์หลัก (Core Mission-Critical / CII) หรือเครื่องลูกข่ายทั่วไป (Non-critical Workstation)</p>
+    </div>
+    <div class="sev-dim-card">
+      <div class="sev-dim-icon">🔒</div>
+      <div class="sev-dim-title">2. ประเภทข้อมูล (Data Classification)</div>
+      <p>ข้อมูลลับสุดยอด (Confidential / Trade Secret), ข้อมูลส่วนบุคคล (PII/Sensitive PII), หรือข้อมูลสาธารณะ</p>
+    </div>
+    <div class="sev-dim-card">
+      <div class="sev-dim-icon">👥</div>
+      <div class="sev-dim-title">3. จำนวนผู้ได้รับผลกระทบ (Impacted Users)</div>
+      <p>กระทบพนักงานเฉพาะกลุ่ม (หลักสิบคน) หรือกระทบผู้ใช้งาน/นักศึกษา/ลูกค้าทั้งองค์กร (หลักหมื่นคนขึ้นไป)</p>
+    </div>
+    <div class="sev-dim-card">
+      <div class="sev-dim-icon">⏱️</div>
+      <div class="sev-dim-title">4. ระยะเวลาหยุดชะงัก (Downtime & RTO)</div>
+      <p>ระบบหยุดให้บริการเกินกว่าเป้าหมายเวลาในการฟื้นสภาพของธุรกิจ (Recovery Time Objective: RTO) หรือไม่</p>
+    </div>
+    <div class="sev-dim-card">
+      <div class="sev-dim-icon">🏛️</div>
+      <div class="sev-dim-title">5. โครงสร้างพื้นฐานสำคัญ (CII Service Impact)</div>
+      <p>กระทบต่อบริการสาธารณะ ความมั่นคงของรัฐ ความปลอดภัยทางสังคม หรือสาธารณสุขของประเทศหรือไม่</p>
+    </div>
+    <div class="sev-dim-card">
+      <div class="sev-dim-icon">⚖️</div>
+      <div class="sev-dim-title">6. ผลกระทบทางกฎหมาย (Legal & Regulatory Impact)</div>
+      <p>เข้าข่ายต้องรายงานตาม พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 หรือ พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล (PDPA)</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 12.3:</strong> 6 มิติหลักในการจำแนกระดับความรุนแรงเพื่อกำหนดลำดับความสำคัญและกรอบเวลาการยกระดับสั่งการ
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="ตารางเกณฑ์การประเมินระดับความรุนแรง-severity-level-matrix">ตารางเกณฑ์การประเมินระดับความรุนแรง (Severity Level Matrix)</h4>
+<div class="table-responsive"><table class="content-table"><thead><tr><th>ระดับความรุนแรง</th><th>นิยามและเกณฑ์การประเมิน</th><th>กรอบเวลาตอบสนอง (Response SLA)</th><th>ผู้มีอำนาจสั่งการและการรายงาน</th></tr></thead><tbody><tr><td><strong>Critical (P1)</strong></td><td>- ระบบหลักขององค์กร (Mission-Critical / CII) หยุดชะงักโดยสิ้นเชิง<br>- ฐานข้อมูลสำคัญถูกเข้ารหัสโดย Ransomware หรือข้อมูลส่วนบุคคลรั่วไหลจำนวนมาก<br>- มีความเสี่ยงต่อชีวิต ทรัพย์สิน หรือเข้าข่ายภัยคุกคามไซเบอร์ระดับวิกฤตตามกฎหมาย</td><td><strong>ตอบสนองภายใน 15 นาที</strong><br>(แก้ปัญหาตลอด 24 ชม. ไม่หยุดพัก)</td><td>- เรียกประชุม <strong>Crisis Management Committee</strong> ทันที<br>- รายงาน CISO, CEO, และคณะกรรมการบริหาร<br>- ประสานงานแจ้ง สกมช. และ สคส. ตามกฎหมาย</td></tr><tr><td><strong>High (P2)</strong></td><td>- ระบบสำคัญทางธุรกิจหยุดชะงักบางส่วน แต่ยังมีระบบสำรองทำงานได้<br>- บัญชีระดับ Domain Admin หรือ Privileged User ถูกยึดครอง<br>- มีความเสี่ยงสูงที่จะลุกลามเป็นระดับ Critical หากไม่ระงับโดยเร็ว</td><td><strong>ตอบสนองภายใน 1 ชั่วโมง</strong></td><td>- แจ้ง CISO, IT Director, และ Business Owner<br>- ทีม CSIRT เข้าประจำศูนย์ปฏิบัติการฉุกเฉิน</td></tr><tr><td><strong>Medium (P3)</strong></td><td>- ส่งผลกระทบต่อระบบงานสนับสนุนทั่วไป (Non-critical Systems)<br>- มัลแวร์ติดบนเครื่องลูกข่ายของพนักงานทั่วไป และไม่พบการแพร่กระจายไปยังเซิร์ฟเวอร์<br>- ข้อมูลที่ได้รับผลกระทบไม่มีชั้นความลับและมิใช่ข้อมูลส่วนบุคคลอ่อนไหว</td><td><strong>ตอบสนองภายใน 4 ชั่วโมง</strong></td><td>- ดำเนินการโดย SOC Tier 2 และ System Admin<br>- สรุปรายงานรายสัปดาห์เสนอ IT Security Manager</td></tr><tr><td><strong>Low (P4)</strong></td><td>- เหตุการณ์ผิดปกติเล็กน้อย เช่น พนักงานได้รับอีเมล Phishing แต่ยังไม่มีผู้หลงกลคลิก<br>- พอร์ตสแกนจากภายนอกที่ถูกไฟร์วอลล์บล็อกไว้ได้โดยสมบูรณ์</td><td><strong>ตอบสนองภายใน 24 ชั่วโมง</strong></td><td>- บันทึกในระบบ Incident Ticketing โดย SOC Tier 1</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-5-โครงสร้างทีมตอบสนองต่อเหตุการณ์-csirt-ir-team-roles">1.5 โครงสร้างทีมตอบสนองต่อเหตุการณ์ (CSIRT / IR Team Roles)</h3>
+<p class="content-paragraph">การตอบสนองต่อเหตุการณ์ในภาวะวิกฤตต้องการความร่วมมือข้ามสายงาน (Cross-Functional Collaboration) โดยมิได้จำกัดอยู่เฉพาะฝ่ายเทคนิคเท่านั้น:</p>
+
+<div class="figure-box" id="figure-12-4">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 12.4</div>
+    <div class="figure-title">ผังโครงสร้างทีมตอบสนองต่อเหตุการณ์ความมั่นคงปลอดภัย (CSIRT Structure)</div>
+  </div>
+  <div class="csirt-hierarchy-tree">
+    <div class="csirt-commander-node">
+      <div class="csirt-role-badge">INCIDENT COMMANDER (IC)</div>
+      <div class="csirt-role-title">ผู้อำนวยการสั่งการภาวะวิกฤต (CISO / CIO / รองอธิการบดีฝ่ายดิจิทัล)</div>
+      <div class="csirt-role-desc">มีอำนาจเต็มในการตัดสินใจทางธุรกิจและเทคนิค เช่น การสั่งตัดระบบ การเจรจา และการแถลงข่าว</div>
+    </div>
+
+    <div class="csirt-sub-grid">
+      <div class="csirt-sub-card tech">
+        <div class="csirt-sub-header">💻 Technical Lead & Operations</div>
+        <div class="csirt-sub-body">
+          <strong>ทีมเทคนิคและนิติวิทยาศาสตร์:</strong>
+          <ul>
+            <li>SOC / SIEM Analysts (ตรวจจับและชี้เป้า)</li>
+            <li>Digital Forensics Specialist (เก็บหลักฐาน RAM/Disk)</li>
+            <li>System & Network Admins (สกัดกั้นและกู้คืน)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="csirt-sub-card legal">
+        <div class="csirt-sub-header">⚖️ Legal & Privacy Officer</div>
+        <div class="csirt-sub-body">
+          <strong>ฝ่ายกฎหมายและคุ้มครองข้อมูล:</strong>
+          <ul>
+            <li>Legal Counsel (ประเมินความรับผิดชอบทางกฎหมาย)</li>
+            <li>Data Protection Officer (DPO - ประสานงาน สคส. ตาม PDPA)</li>
+            <li>Compliance Manager (ประเมินความสอดคล้องตามมาตรฐาน)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="csirt-sub-card comms">
+        <div class="csirt-sub-header">📢 Public Relations & Comms</div>
+        <div class="csirt-sub-body">
+          <strong>ฝ่ายสื่อสารองค์กรและประชาสัมพันธ์:</strong>
+          <ul>
+            <li>Corporate Communications Lead</li>
+            <li>Single Point of Contact (SPOC) สื่อมวลชน</li>
+            <li>ดูแลการแถลงข่าวและแจ้งเตือนผู้ได้รับผลกระทบ</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="csirt-sub-card external">
+        <div class="csirt-sub-header">🌐 External Liaisons & Authorities</div>
+        <div class="csirt-sub-body">
+          <strong>หน่วยงานภายนอกและกำกับดูแล:</strong>
+          <ul>
+            <li>สกมช. (NCSA) / ThaiCERT (ตาม พ.ร.บ.ไซเบอร์ฯ)</li>
+            <li>กองบัญชาการตำรวจสืบสวนสอบสวนอาชญากรรมทางเทคโนโลยี (บช.สอท.)</li>
+            <li>IR Retainer Vendor (ผู้เชี่ยวชาญตอบสนองเหตุการณ์ภายนอก)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 12.4:</strong> โครงสร้างและบทบาทหน้าที่ของคณะทำงานตอบสนองต่อเหตุการณ์ความมั่นคงปลอดภัย (CSIRT)
+  </div>
+</div>
+
+<ol class="content-list">
+<li><strong>Incident Commander (ผู้อำนวยการเหตุการณ์):</strong> ผู้มีอำนาจเด็ดขาดในการสั่งการ ตัดสินใจเชิงกลยุทธ์ (เช่น การสั่งตัดการเชื่อมต่อระบบอินเทอร์เน็ตขององค์กร) และเป็นผู้ประสานงานหลักกับผู้บริหารระดับสูง (C-Suite)</li>
+<li><strong>Technical Lead & Analysts (ทีมเทคนิคและนิติวิทยาศาสตร์):</strong> รับผิดชอบการสืบสวนทางเทคนิค การกู้คืนหลักฐานดิจิทัล การวิเคราะห์มัลแวร์ และการกำจัดภัยคุกคาม</li>
+<li><strong>Legal Counsel (ที่ปรึกษากฎหมาย):</strong> ประเมินภาระผูกพันตามกฎหมาย ข้อสัญญากับคู่ค้า การประสานงานกับเจ้าหน้าที่ตำรวจ และการคุ้มครองเอกสิทธิ์ทางกฎหมายของพยานหลักฐาน (Attorney-Client Privilege)</li>
+<li><strong>Data Protection Officer (DPO):</strong> ประเมินผลกระทบต่อเจ้าของข้อมูลส่วนบุคคล (Data Subjects) และรับผิดชอบกระบวนการรายงานเหตุละเมิดต่อสำนักงานคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล (สคส.)</li>
+<li><strong>Communications / Public Relations (ฝ่ายสื่อสารองค์กร):</strong> ควบคุมการสื่อสารทั้งภายในและภายนอกองค์กร จัดทำแถลงการณ์สำหรับสื่อมวลชน และป้องกันไม่ให้ข้อมูลที่บิดเบือนรั่วไหลออกสู่สาธารณะ</li>
+<li><strong>Business Owner (เจ้าของระบบงานธุรกิจ):</strong> ประเมินผลกระทบต่อกระบวนการทางธุรกิจ ให้ความเห็นชอบแผนการฟื้นฟูระบบ และประสานงานกับผู้ใช้งานในสายธุรกิจ</li>
+</ol>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-2-แนวทางการตรวจสอบกระบวนการ-incident-response-สำหรับผู้ตรวจสอบ-auditing-incident-response">
+            <h2 class="section-heading">ส่วนที่ 2: แนวทางการตรวจสอบกระบวนการ Incident Response สำหรับผู้ตรวจสอบ (Auditing Incident Response)</h2>
+          </section>
+        
+<p class="content-paragraph">ในฐานะ IT & Cyber Auditor ภารกิจหลักมิใช่การเข้าไปดับไฟหรือแก้ปัญหาทางเทคนิคในขณะที่เกิดเหตุการณ์ แต่คือ <strong>"การประเมินว่าองค์กรมีกระบวนการ บุคลากร เครื่องมือ และการกำกับดูแลที่พร้อมรับมือกับเหตุการณ์อย่างมีประสิทธิผล ชอบด้วยกฎหมาย และควบคุมความเสียหายได้อย่างแท้จริงหรือไม่"</strong></p>
+<h3 class="subsection-heading" id="2-1-รายการเอกสารและหลักฐานสำคัญที่ต้องสอบทาน-8-document-artifacts">2.1 รายการเอกสารและหลักฐานสำคัญที่ต้องสอบทาน (8 Document Artifacts)</h3>
+<p class="content-paragraph">ผู้ตรวจสอบต้องร้องขอและตรวจสอบเอกสารหลักฐานสำคัญ 8 กลุ่มดังต่อไปนี้:</p>
+
+<div class="figure-box" id="figure-12-5">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 12.5</div>
+    <div class="figure-title">8 กลุ่มเอกสารหลักฐานสำคัญที่ต้องตรวจสอบในงาน Incident Audit (8 Key Document Artifacts)</div>
+  </div>
+  <div class="doc-artifacts-grid">
+    <div class="doc-card">
+      <div class="doc-card-num">DOC-01</div>
+      <div class="doc-card-title">1. Incident Response Policy</div>
+      <div class="doc-card-desc">นโยบายแม่บทที่ได้รับอนุมัติจากบอร์ดผู้บริหาร กำหนดอำนาจหน้าที่ หน้าที่ตามกฎหมาย และการคุ้มครองทีมงาน</div>
+    </div>
+
+    <div class="doc-card">
+      <div class="doc-card-num">DOC-02</div>
+      <div class="doc-card-title">2. Incident Response Plan (IRP)</div>
+      <div class="doc-card-desc">แผนปฏิบัติการแม่บทและลำดับขั้นตอนการตอบสนอง 4–6 เฟสตามมาตรฐาน NIST SP 800-61 / ISO 27035</div>
+    </div>
+
+    <div class="doc-card">
+      <div class="doc-card-num">DOC-03</div>
+      <div class="doc-card-title">3. Specific Threat Playbooks</div>
+      <div class="doc-card-desc">คู่มือปฏิบัติการเจาะลึกเฉพาะภัยคุกคาม เช่น Ransomware, Phishing, DoS, Insider Theft, Cloud Compromise</div>
+    </div>
+
+    <div class="doc-card">
+      <div class="doc-card-num">DOC-04</div>
+      <div class="doc-card-title">4. Incident Escalation Matrix</div>
+      <div class="doc-card-desc">ตารางเกณฑ์การยกระดับเหตุการณ์ เกณฑ์ SLA การติดต่อผู้บริหาร และเงื่อนไขการเรียกประชุม War Room</div>
+    </div>
+
+    <div class="doc-card">
+      <div class="doc-card-num">DOC-05</div>
+      <div class="doc-card-title">5. Emergency Contact & Call Tree</div>
+      <div class="doc-card-desc">สมุดรายชื่อผู้ติดต่อฉุกเฉิน เบอร์โทรศัพท์ส่วนตัว และช่องทางสื่อสารสำรอง (Out-of-band Communications)</div>
+    </div>
+
+    <div class="doc-card">
+      <div class="doc-card-num">DOC-06</div>
+      <div class="doc-card-title">6. Incident Tickets & Forensics Logs</div>
+      <div class="doc-card-desc">ประวัติการบันทึกเคสในระบบ ITSM/SIEM ไทม์ไลน์บันทึกการกระทำ และเอกสารรับรองห่วงโซ่พยานหลักฐาน (Chain of Custody)</div>
+    </div>
+
+    <div class="doc-card">
+      <div class="doc-card-num">DOC-07</div>
+      <div class="doc-card-title">7. Crisis Communication Records</div>
+      <div class="doc-card-desc">บันทึกการแจ้งเตือนพนักงาน หนังสือแจ้งหน่วยงานกำกับดูแล (สกมช./สคส.) และหนังสือแถลงข่าวต่อสาธารณะ</div>
+    </div>
+
+    <div class="doc-card">
+      <div class="doc-card-num">DOC-08</div>
+      <div class="doc-card-title">8. Post-Incident Review (PIR) Reports</div>
+      <div class="doc-card-desc">รายงานถอดบทเรียนหลังเหตุการณ์ บันทึก Root Cause Analysis และหลักฐานการนำข้อเสนอแนะไปปรับปรุงระบบ</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 12.5:</strong> รายการหลักฐานเอกสาร 8 ชนิดที่ผู้ตรวจสอบต้องขอเพื่อพิสูจน์ความมีอยู่จริงและความพร้อมของกระบวนการตอบสนอง
+  </div>
+</div>
+
+<ol class="content-list">
+<li><strong>Incident Response Policy:</strong> นโยบายระดับองค์กรที่ได้รับอนุมัติจากคณะกรรมการบริหาร ระบุนิยาม ขอบเขต อำนาจของทีม CSIRT และหน้าที่ของพนักงานทุกคนในการรายงานเหตุ</li>
+<li><strong>Incident Response Plan (IRP):</strong> แผนปฏิบัติการที่ลงรายละเอียดขั้นตอนทั้ง 6 ระยะตามมาตรฐานสากล</li>
+<li><strong>Specific Playbooks:</strong> คู่มือตอบสนองต่อภัยคุกคามเฉพาะทาง ต้องมีขั้นตอนชัดเจน (Actionable Checklist) มิใช่เพียงคำบรรยายเชิงหลักการทั่วไป</li>
+<li><strong>Escalation Matrix:</strong> ตารางระบุชัดเจนว่าเหตุการณ์ระดับใด ต้องแจ้งใคร ภายในเวลากี่นาที และใครมีอำนาจสั่งการ</li>
+<li><strong>Emergency Contact List:</strong> รายชื่อ เบอร์โทรศัพท์ อีเมลสำรอง (Out-of-band) ของทีมงาน ผู้บริหาร เวนเดอร์ ทนายความ และหน่วยงานกำกับดูแล พร้อมบันทึกการทบทวนปรับปรุงให้เป็นปัจจุบันทุกไตรมาส</li>
+<li><strong>Incident Tickets & Audit Trails:</strong> ข้อมูลบันทึกการทำงานจริงในระบบ Service Desk / SIEM ตรวจสอบว่ามีการบันทึกเวลาที่ได้รับแจ้ง เวลาที่เริ่มดำเนินการ และรายละเอียดการแก้ไขอย่างต่อเนื่องหรือไม่</li>
+<li><strong>Communication Records:</strong> บันทึกการประสานงานระหว่างเกิดเหตุ การแจ้งเตือนผู้บริหาร การแถลงข่าว และการแจ้งหน่วยงานรัฐ</li>
+<li><strong>Post-Incident Review (PIR) Reports:</strong> รายงานสรุปหลังเหตุการณ์สงบ พร้อมแผนการแก้ไขข้อบกพร่อง (Remediation Action Plan) และการติดตามผล</li>
+</ol>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-2-การตรวจสอบกระบวนการแจ้งเตือนและการสื่อสารในภาวะวิกฤต-crisis-communication">2.2 การตรวจสอบกระบวนการแจ้งเตือนและการสื่อสารในภาวะวิกฤต (Crisis Communication)</h3>
+<p class="content-paragraph">จุดล้มเหลวที่ร้ายแรงที่สุดประการหนึ่งในระหว่างการเกิดเหตุการณ์ คือ <strong>"การสื่อสารขัดข้อง หรือการรั่วไหลของข้อมูลการสื่อสาร"</strong>:</p>
+<ul class="content-list">
+<li><strong>Out-of-band Communication Channel (ช่องทางการสื่อสารสำรองภายนอก):</strong></li>
+<li><em>ข้อเท็จจริงทางเทคนิค:</em> เมื่อระบบเครือข่ายขององค์กรหรือระบบอีเมลภายใน (เช่น Microsoft Exchange / Google Workspace) ถูกผู้โจมตีเจาะระบบ แฮกเกอร์จะสามารถดักฟังอีเมลและแชตภายในทีม IT ได้ทั้งหมด</li>
+<li><em>จุดที่ผู้ตรวจสอบต้องตรวจ:</em> องค์กรมีช่องทางการสื่อสารสำรองที่แยกต่างหากจากโครงสร้างพื้นฐานเดิมหรือไม่ (เช่น ระบบ Signal, บัญชีอีเมลสำรองภายนอกที่มีการเข้ารหัส, หรือระบบโทรศัพท์ผ่านดาวเทียม/เครือข่ายมือถือแยกอิสระ)</li>
+<li><strong>การสื่อสารกับบุคคลภายนอกและสื่อมวลชน:</strong></li>
+<li>ต้องมีนโยบาย <strong>"Single Point of Contact"</strong> ห้ามมิให้พนักงานฝ่ายไอทีหรือผู้ปฏิบัติงานทั่วไปให้สัมภาษณ์หรือโพสต์ข้อความลงบนโซเชียลมีเดียโดยเด็ดขาด การแถลงข่าวต้องผ่านโฆษกองค์กรและได้รับการตรวจทานจากฝ่ายกฎหมายแล้วเท่านั้น</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-3-การประเมินการทดสอบแผนความพร้อม-drills-exercises">2.3 การประเมินการทดสอบแผนความพร้อม (Drills & Exercises)</h3>
+<p class="content-paragraph">แผนเผชิญเหตุที่ถูกเขียนไว้อย่างสวยงามบนกระดาษ แต่ไม่เคยผ่านการซักซ้อม มีค่าเท่ากับ <strong>"ไม่มีแผน"</strong> ผู้ตรวจสอบต้องประเมินหลักฐานการทดสอบแผนเผชิญเหตุ 4 ระดับ:</p>
+<div class="table-responsive"><table class="content-table"><thead><tr><th>รูปแบบการทดสอบ (Exercise Type)</th><th>ลักษณะกิจกรรมและขอบเขต</th><th>วัตถุประสงค์ในการตรวจสอบ</th><th>ความถี่ที่ควรปฏิบัติ</th></tr></thead><tbody><tr><td><strong>Tabletop Exercise (TTX)</strong></td><td>การประชุมจำลองสถานการณ์บนโต๊ะ โดยผู้มีส่วนเกี่ยวข้องทุกฝ่าย (Technical, Legal, PR, Management) มาร่วมกันอ่านโจทย์สถานการณ์วิกฤตและตอบคำถามว่าตนเองจะทำอะไร</td><td>ตรวจสอบความเข้าใจในบทบาท อำนาจการตัดสินใจ และความราบรื่นในการประสานงาน</td><td>อย่างน้อยปีละ 1 ครั้ง</td></tr><tr><td><strong>Technical Simulation (Red vs Blue)</strong></td><td>ทีมทดสอบเจาะระบบ (Red Team) จำลองการโจมตีจริงในสภาพแวดล้อมเสมือน เพื่อทดสอบว่าทีมตั้งรับ (Blue Team) สามารถตรวจจับและปิดกั้นได้ทันเวลาหรือไม่</td><td>ตรวจสอบประสิทธิภาพของเครื่องมือ EDR, SIEM Rules และทักษะเชิงเทคนิค</td><td>อย่างน้อยปีละ 1 ครั้ง</td></tr><tr><td><strong>Crisis Communication Drill</strong></td><td>การทดสอบระบบแจ้งเตือนฉุกเฉิน การส่งข้อความ SMS/Call Tree ไปยังผู้บริหารและทีมงานนอกเวลาทำการ</td><td>ตรวจสอบความถูกต้องของเบอร์ติดต่อ และความเร็วในการรวมพลของทีม CSIRT</td><td>ทุก 6 เดือน</td></tr><tr><td><strong>Backup Restoration Drill</strong></td><td>การทดสอบนำข้อมูลสำรอง (Backup) มาทำการ Restore ขึ้นเครื่องแม่ข่ายใหม่ในสภาวะจำลองว่าเครื่องหลักถูกทำลาย</td><td>ยืนยันว่าข้อมูลสำรองสามารถนำมาใช้งานได้จริง และใช้เวลาตรงตามเป้าหมาย RTO</td><td>ทุกไตรมาส</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-4-ตัวชี้วัดประสิทธิผลของการตอบสนองต่อเหตุการณ์-key-incident-metrics">2.4 ตัวชี้วัดประสิทธิผลของการตอบสนองต่อเหตุการณ์ (Key Incident Metrics)</h3>
+
+<div class="widget-box" id="widget-12-3">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE LEARNING 12.3</div>
+    <div class="widget-title">SOC Efficiency & Incident Metrics Calculator (MTTD, MTTA, MTTC, MTTR)</div>
+  </div>
+  <p class="widget-intro">
+    ทดลองปรับแต่งเส้นเวลาของเหตุการณ์จำลองเพื่อคำนวณตัวชี้วัดประสิทธิภาพ 4 ด้าน และเปรียบเทียบกับค่ามาตรฐาน (Benchmark) ของศูนย์ SOC ชั้นนำระดับสากล
+  </p>
+
+  <div class="metrics-calc-wrapper">
+    <div class="metrics-inputs-bar">
+      <div class="metric-input-group">
+        <label>1. จุดเริ่มถูกโจมตี (Initial Breach):</label>
+        <input type="text" id="m-in-start" value="00:15 น." readonly>
+      </div>
+      <div class="metric-input-group">
+        <label>2. SIEM ตรวจพบ (Alert Triggered):</label>
+        <select id="m-sel-detect" onchange="runMetricsCalc()">
+          <option value="15">00:30 น. (+15 นาที - ดีเยี่ยม)</option>
+          <option value="120" selected>02:15 น. (+2 ชม. - มหาวิทยาลัยจริง)</option>
+          <option value="1440">วันถัดไป (+24 ชม. - ล่าช้า)</option>
+        </select>
+      </div>
+      <div class="metric-input-group">
+        <label>3. เวร SOC รับเรื่อง (Acknowledge):</label>
+        <select id="m-sel-ack" onchange="runMetricsCalc()">
+          <option value="5">+5 นาที (Top SOC)</option>
+          <option value="15" selected>02:30 น. (+15 นาที - คิดว่า Backup)</option>
+          <option value="255">06:45 น. (+4 ชม. 15 นาที - รอคนโทรแจ้ง)</option>
+        </select>
+      </div>
+      <div class="metric-input-group">
+        <label>4. สกัดกั้นสำเร็จ (Contained):</label>
+        <select id="m-sel-contain" onchange="runMetricsCalc()">
+          <option value="30">+30 นาที (Network Isolate)</option>
+          <option value="420" selected>09:15 น. (+7 ชม. - ดึงปลั๊กไฟ)</option>
+          <option value="1440">+24 ชม. (ลุกลามทั้งองค์กร)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="metrics-score-display" id="metrics-output-card">
+      <!-- Live Calculation via JS -->
+    </div>
+  </div>
+</div>
+
+<p class="content-paragraph">ผู้ตรวจสอบต้องขอรายงานสถิติย้อนหลัง 12 เดือน เพื่อประเมินขีดความสามารถที่แท้จริงขององค์กรผ่านตัวชี้วัดสากล 4 ด้าน:</p>
+
+<div class="figure-box" id="figure-12-6">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 12.6</div>
+    <div class="figure-title">4 ตัวชี้วัดประสิทธิภาพของศูนย์เฝ้าระวังและตอบสนองเหตุการณ์ (SOC Efficiency Metrics)</div>
+  </div>
+  <div class="soc-metrics-grid">
+    <div class="soc-metric-card m-mttd">
+      <div class="metric-tag">VISIBILITY // เฝ้าระวัง</div>
+      <div class="metric-abbr">MTTD</div>
+      <div class="metric-name">Mean Time to Detect</div>
+      <div class="metric-desc">เวลาเฉลี่ยตั้งแต่เริ่มถูกโจมตี (Infection) จนกระทั่งระบบตรวจพบ</div>
+      <div class="metric-target">Top SOC: &lt; 15 นาที | มหาวิทยาลัยจริง: <strong>4 ชั่วโมง 30 นาที</strong></div>
+    </div>
+
+    <div class="soc-metric-card m-mtta">
+      <div class="metric-tag">TRIAGE // รับเรื่อง</div>
+      <div class="metric-abbr">MTTA</div>
+      <div class="metric-name">Mean Time to Acknowledge</div>
+      <div class="metric-desc">เวลาเฉลี่ยตั้งแต่ระบบแจ้งเตือนจนเจ้าหน้าที่เปิดดูและรับเคส</div>
+      <div class="metric-target">Top SOC: &lt; 10 นาที | มหาวิทยาลัยจริง: <strong>15 นาที (ประเมินพลาด)</strong></div>
+    </div>
+
+    <div class="soc-metric-card m-mttc">
+      <div class="metric-tag">CONTAINMENT // สกัดกั้น</div>
+      <div class="metric-abbr">MTTC</div>
+      <div class="metric-name">Mean Time to Contain</div>
+      <div class="metric-desc">เวลาเฉลี่ยตั้งแต่ตรวจพบจนกระทั่งสกัดกั้นการแพร่ระบาดได้สำเร็จ</div>
+      <div class="metric-target">Top SOC: &lt; 1 ชั่วโมง | มหาวิทยาลัยจริง: <strong>7 ชั่วโมง (ลุกลามหมด)</strong></div>
+    </div>
+
+    <div class="soc-metric-card m-mttr">
+      <div class="metric-tag">RESILIENCE // กู้คืน</div>
+      <div class="metric-abbr">MTTR</div>
+      <div class="metric-name">Mean Time to Recover</div>
+      <div class="metric-desc">เวลาเฉลี่ยตั้งแต่ระบบล่มจนกระทั่งกู้คืนข้อมูลและเปิดบริการตามปกติ</div>
+      <div class="metric-target">Top SOC: &lt; 4–8 ชั่วโมง | มหาวิทยาลัยจริง: <strong>เกิน 14 วัน (ข้อมูลสูญหาย)</strong></div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 12.6:</strong> ตัวชี้วัดสำคัญ 4 ด้าน (MTTD, MTTA, MTTC, MTTR) ในการตรวจประเมินขีดความสามารถการตอบสนองภัยคุกคาม
+  </div>
+</div>
+
+<ul class="content-list">
+<li><strong>MTTD (Mean Time to Detect / Dwell Time):</strong> เวลาเฉลี่ยที่ผู้โจมตีแฝงตัวอยู่ในระบบก่อนที่องค์กรจะรู้ตัว (องค์กรชั้นนำควรมีค่าน้อยกว่า 24 ชั่วโมง ขณะที่ค่าเฉลี่ยสถิติโลกอยู่ที่ประมาณ 10–16 วัน)</li>
+<li><strong>MTTR (Mean Time to Respond / Contain):</strong> เวลาเฉลี่ยที่ใช้ในการควบคุมไม่ให้การโจมตีแพร่กระจาย (เป้าหมายระดับ P1 ต้องต่ำกว่า 1 ชั่วโมง)</li>
+<li><strong>SLA Breach Rate:</strong> ร้อยละของเหตุการณ์ที่ไม่สามารถควบคุมหรือกู้คืนได้ตามกรอบเวลาที่นโยบายกำหนดไว้</li>
+<li><strong>Recurring Incident Rate:</strong> ร้อยละของเหตุการณ์ที่เกิดขึ้นซ้ำด้วยช่องโหว่เดิมหรือ Root Cause เดิม ซึ่งสะท้อนความล้มเหลวของขั้นตอน Lessons Learned</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-5-การตรวจสอบตามพระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์-พ-ศ-2562-และกฎหมายที่เกี่ยวข้อง">2.5 การตรวจสอบตามพระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 และกฎหมายที่เกี่ยวข้อง</h3>
+
+<div class="widget-box" id="widget-12-1">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE LEARNING 12.1</div>
+    <div class="widget-title">Incident Severity Classifier & Legal Reporting Timeline Calculator</div>
+  </div>
+  <p class="widget-intro">
+    เครื่องมือนี้จำลองการประเมินระดับความรุนแรงของเหตุการณ์ (Severity P1–P4) และคำนวณกรอบเวลาการรายงานต่อหน่วยงานกำกับดูแลตาม <strong>พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562</strong> และ <strong>พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล (PDPA)</strong>
+  </p>
+
+  <div class="calc-grid">
+    <div class="calc-inputs-card">
+      <div class="form-group-compact">
+        <label for="w1-sys-scope">ขอบเขตระบบที่ได้รับผลกระทบ (System Scope):</label>
+        <select id="w1-sys-scope" onchange="runSeverityCalc()">
+          <option value="cii_core" selected>ระบบหลักบริการสาธารณะ / ฐานข้อมูลกลาง (Core Registry DB)</option>
+          <option value="support_srv">เซิร์ฟเวอร์งานสนับสนุนทั่วไป (Internal Intranet / File Server)</option>
+          <option value="client_pc">เครื่องคอมพิวเตอร์ลูกข่ายของเจ้าหน้าที่ (Client Workstation)</option>
+        </select>
+      </div>
+
+      <div class="form-group-compact">
+        <label for="w1-data-type">ชั้นความลับของข้อมูลที่เกี่ยวข้อง (Data Classification):</label>
+        <select id="w1-data-type" onchange="runSeverityCalc()">
+          <option value="pii_mass" selected>ข้อมูลส่วนบุคคลนักศึกษา/ประชาชนปริมาณมาก (&gt;10,000 รายการ)</option>
+          <option value="pii_limited">ข้อมูลส่วนบุคคลปริมาณจำกัด (&lt;100 รายการ) ไม่กระทบความปลอดภัย</option>
+          <option value="public_data">ข้อมูลสาธารณะทั่วไป (Public Course Catalog)</option>
+        </select>
+      </div>
+
+      <div class="form-group-compact">
+        <label for="w1-threat-type">รูปแบบภัยคุกคาม (Attack Vector):</label>
+        <select id="w1-threat-type" onchange="runSeverityCalc()">
+          <option value="ransomware" selected>Ransomware เข้ารหัสไฟล์ข้อมูลและขโมยข้อมูลออกนอก (Double Extortion)</option>
+          <option value="data_leak">ข้อมูลรั่วไหลออกสู่สาธารณะ (Data Exfiltration)</option>
+          <option value="ddos">บริการเว็บขัดข้องชั่วคราวจาก DDoS Attack</option>
+          <option value="phish_attempt">อีเมลหลอกลวง (Phishing Attempt) ถูกบล็อกไว้ได้</option>
+        </select>
+      </div>
+
+      <div class="form-group-compact">
+        <label>ระยะเวลาตั้งแต่ทราบเหตุจนถึงปัจจุบัน (Elapsed Time):</label>
+        <input type="range" id="w1-elapsed-hours" min="1" max="120" value="8" oninput="updateElapsedHours(this.value)">
+        <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-dim); margin-top:0.2rem;">
+          <span>1 ชม.</span>
+          <span>24 ชม. (เกณฑ์ สกมช.)</span>
+          <span>72 ชม. (เกณฑ์ PDPA)</span>
+          <span>120 ชม.</span>
+        </div>
+        <div style="font-weight:700; color:var(--primary); font-size:0.85rem; margin-top:0.3rem;">
+          เวลาที่ผ่านไป: <span id="w1-elapsed-val">8 ชั่วโมง</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-result-card" id="w1-severity-result">
+      <!-- Live Output via JS -->
+    </div>
+  </div>
+</div>
+
+
+<div class="figure-box" id="figure-12-10">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 12.10</div>
+    <div class="figure-title">ตารางเปรียบเทียบกรอบเวลาการรายงานเหตุการณ์ตามกฎหมายไทย (Regulatory Incident Notification Matrix)</div>
+  </div>
+  <div class="table-responsive">
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>กฎหมาย / มาตรฐานกำกับดูแล</th>
+          <th>หน่วยงานที่ต้องรายงาน</th>
+          <th>เกณฑ์และเงื่อนไขของเหตุการณ์</th>
+          <th>กรอบเวลาบังคับตามกฎหมาย (Mandatory Deadline)</th>
+          <th>บทกำหนดโทษเมื่อฝ่าฝืน</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562</strong> (มาตรา 53, 54, 73)</td>
+          <td>สำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช. / NCSA)</td>
+          <td>ภัยคุกคามทางไซเบอร์ในระดับร้ายแรง (Critical/High) ที่กระทบหน่วยงานรัฐหรือโครงสร้างพื้นฐานสำคัญ (CII)</td>
+          <td><strong>รายงานทันที หรือภายใน 24 ชั่วโมง</strong> นับแต่ทราบเหตุการณ์</td>
+          <td>โทษปรับทางปกครอง และผู้บริหารอาจมีความรับผิดทางกฎหมาย</td>
+        </tr>
+        <tr>
+          <td><strong>พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA)</strong> (มาตรา 37(4))</td>
+          <td>สำนักงานคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล (สคส. / PDPC)</td>
+          <td>เหตุละเมิดข้อมูลส่วนบุคคลที่มีความเสี่ยงต่อสิทธิและเสรีภาพของเจ้าของข้อมูล (Data Breach)</td>
+          <td><strong>ไม่เกิน 72 ชั่วโมง</strong> นับแต่ทราบเหตุละเมิด</td>
+          <td>ปรับทางปกครองสูงสุดไม่เกิน <strong>3,000,000 บาท</strong> และค่าเสียหายทางแพ่ง</td>
+        </tr>
+        <tr>
+          <td><strong>ประกาศธนาคารแห่งประเทศไทย (ธปท.)</strong> (สำหรับสถาบันการเงินและ FinTech)</td>
+          <td>ธนาคารแห่งประเทศไทย (BOT)</td>
+          <td>ระบบให้บริการทางการเงิน ระบบ Mobile Banking หรือระบบชำระเงินขัดข้อง</td>
+          <td>รายงานเบื้องต้น<strong>ภายใน 1 ชั่วโมง</strong> รายงานทางการ<strong>ภายใน 24 ชั่วโมง</strong></td>
+          <td>มาตรการกำกับดูแล สั่งพักใบอนุญาต และเปรียบเทียบปรับ</td>
+        </tr>
+        <tr>
+          <td><strong>ประกาศสำนักงาน ก.ล.ต.</strong> (สำหรับ บล. / บลจ. / ตลาดสินทรัพย์ดิจิทัล)</td>
+          <td>สำนักงานคณะกรรมการกำกับหลักทรัพย์และตลาดหลักทรัพย์ (ก.ล.ต.)</td>
+          <td>ระบบการซื้อขายหลักทรัพย์หรือสินทรัพย์ดิจิทัลหยุดชะงัก หรือถูกโจมตีไซเบอร์</td>
+          <td>รายงานทันทีผ่าน Hotline และส่งรายงานวิเคราะห์<strong>ภายใน 24 ชั่วโมง</strong></td>
+          <td>เปรียบเทียบปรับตาม พ.ร.บ.หลักทรัพย์ฯ และบทลงโทษทางวิชาชีพ</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 12.10:</strong> สรุปข้อกำหนดและกรอบเวลาการรายงานเหตุการณ์ความมั่นคงปลอดภัยไซเบอร์ตามกฎหมายไทย
+  </div>
+</div>
+
+<p class="content-paragraph">ในฐานะผู้ตรวจสอบในประเทศไทย การตรวจสอบ Incident Management จะสมบูรณ์ไม่ได้หากปราศจากการตรวจทาน <strong>ความสอดคล้องทางกฎหมาย (Legal & Regulatory Compliance)</strong>:</p>
+<h4 class="sub-subsection-heading" id="1-การจำแนกภัยคุกคามทางไซเบอร์ตาม-พ-ร-บ-การรักษาความมั่นคงปลอดภัยไซเบอร์-พ-ศ-2562">1. การจำแนกภัยคุกคามทางไซเบอร์ตาม พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562</h4>
+<p class="content-paragraph">กฎหมายไทยแบ่งระดับภัยคุกคามทางไซเบอร์ออกเป็น 3 ระดับ (มาตรา 59):</p>
+<ul class="content-list">
+<li><strong>ภัยคุกคามทางไซเบอร์ในระดับไม่ร้ายแรง:</strong> ภัยคุกคามที่มีความเสี่ยงที่จะทำให้ระบบคอมพิวเตอร์ของหน่วยงานของรัฐหรือหน่วยงานโครงสร้างพื้นฐานสำคัญทางสารสนเทศ (CII) เสื่อมประสิทธิภาพลง</li>
+<li><strong>ภัยคุกคามทางไซเบอร์ในระดับร้ายแรง:</strong> ภัยคุกคามที่มีการโจมตีระบบคอมพิวเตอร์ ส่งผลให้ระบบหยุดการทำงาน จนไม่สามารถให้บริการที่สำคัญได้ หรือทำให้ความมั่นคงของรัฐ ความสงบเรียบร้อย หรือการบริการสาธารณะเสียหายอย่างรุนแรง</li>
+<li><strong>ภัยคุกคามทางไซเบอร์ในระดับวิกฤติ:</strong> ภัยคุกคามที่มีผลกระทบต่อความมั่นคงของรัฐในระดับสูงยิ่ง หรือการโจมตีระบบโครงสร้างพื้นฐานสำคัญทางสารสนเทศขนานใหญ่จนระบบล่มสลายทั้งประเทศ</li>
+</ul>
+<h4 class="sub-subsection-heading" id="2-หน้าที่และกรอบเวลาในการรายงานต่อสำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ-สกมช-ncsa">2. หน้าที่และกรอบเวลาในการรายงานต่อสำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช. / NCSA)</h4>
+<p class="content-paragraph">ตามประกาศคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานฯ:</p>
+<ul class="content-list">
+<li>หน่วยงานโครงสร้างพื้นฐานสำคัญทางสารสนเทศ (CII) มีหน้าที่ต้อง <strong>รายงานเหตุการณ์ภัยคุกคามไซเบอร์ระดับร้ายแรงและวิกฤติต่อศูนย์ประสานการรักษาความมั่นคงปลอดภัยระบบคอมพิวเตอร์แห่งชาติ (ThaiCERT / สกมช.) โดยพลันและไม่ชักช้า (ภายในระยะเวลาที่ประกาศกำหนด เช่น ภายใน 24 ชั่วโมง หรือทันทีในกรณีระดับวิกฤติ)</strong></li>
+<li>เอกสารที่ต้องจัดเตรียม: รายละเอียดของเหตุการณ์ ขอบเขตความเสียหาย ผลกระทบต่อประชาชน และมาตรการแก้ไขเฉพาะหน้าที่ได้ดำเนินการไปแล้ว</li>
+</ul>
+<h4 class="sub-subsection-heading" id="3-ความเชื่อมโยงกับ-พ-ร-บ-คุ้มครองข้อมูลส่วนบุคคล-พ-ศ-2562-pdpa">3. ความเชื่อมโยงกับ พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA)</h4>
+<ul class="content-list">
+<li><strong>มาตรา 37(4):</strong> กำหนดให้ผู้ควบคุมข้อมูลส่วนบุคคล (Data Controller) ต้องแจ้งเหตุการละเมิดข้อมูลส่วนบุคคลแก่สำนักงานคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล (สคส.) <strong>"โดยไม่ชักช้าภายใน 72 ชั่วโมง นับแต่ทราบเหตุเท่าที่จะกระทำได้"</strong> เว้นแต่การละเมิดนั้นไม่มีความเสี่ยงที่จะมีผลกระทบต่อสิทธิและเสรีภาพของบุคคล</li>
+<li>หากการละเมิดมีความเสี่ยงสูงที่จะมีผลกระทบต่อสิทธิและเสรีภาพของบุคคล ต้องแจ้งเหตุการละเมิดพร้อมแนวทางการเยียวยาให้แก่เจ้าของข้อมูลส่วนบุคคล (Data Subject) ทราบโดยไม่ชักช้าด้วย</li>
+</ul>
+<blockquote class="content-blockquote">[!WARNING]<br><strong>ข้อพึงระวังของผู้ตรวจสอบ:</strong> ผู้ตรวจสอบต้องไม่สรุปว่าองค์กรปฏิบัติตามกฎหมายไซเบอร์เพียงเพราะมีเอกสารนโยบาย แต่ต้องสุ่มตรวจเหตุการณ์ในอดีต (Audit Sample of Past Incidents) ว่ามีการจัดทำรายงานและส่งหนังสือแจ้งหน่วยงานกำกับดูแล (สกมช. และ สคส.) ครบถ้วนและทันตามกำหนดเวลาจริงหรือไม่</blockquote>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-3-กรณีศึกษาเชิงลึก-มหาวิทยาลัยดิจิทัลสมมติ-วิกฤตการณ์-ransomware-ถล่มระบบทะเบียนและสารสนเทศกลาง">
+            <h2 class="section-heading">ส่วนที่ 3: กรณีศึกษาเชิงลึก "มหาวิทยาลัยดิจิทัลสมมติ" — วิกฤตการณ์ Ransomware ถล่มระบบทะเบียนและสารสนเทศกลาง</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="3-1-ภูมิหลังและบริบทของเหตุการณ์-scenario-continuity">3.1 ภูมิหลังและบริบทของเหตุการณ์ (Scenario Continuity)</h3>
+<p class="content-paragraph">สืบเนื่องจากผลการตรวจสอบในบทที่ 9, 10 และ 11 ในระบบงานของ <strong>"มหาวิทยาลัยดิจิทัลสมมติ"</strong>:</p>
+<ul class="content-list">
+<li>หลังจากที่ผู้โจมตีสามารถขโมยรหัสผ่าน VPN ของผู้ดูแลระบบ และลักลอบเจาะผ่านเครื่อง <code>REG-APP-01</code> เข้าสู่เครื่องแม่ข่ายฐานข้อมูล <code>REG-DB-01</code> เพื่อแก้ไขเกรดนักศึกษาและดักขโมยข้อมูลออกไปได้แล้วนั้น</li>
+<li>ผู้โจมตีมิได้หยุดเพียงแค่นั้น แต่ได้ใช้ช่องโหว่ความเชื่อถือของ Active Directory (Domain Admin ที่ถูก Compromise จากการไม่ตั้งค่า MFA) ปล่อยมัลแวร์เรียกค่าไถ่ตระกูล <strong>BlackCat (ALPHV)</strong> กระจายไปยังเซิร์ฟเวอร์สำคัญทั่วทั้ง Data Center ในคืนวันศุกร์เวลา 02:00 น.</li>
+<li>ผลปรากฏว่า:</li>
+</ul>
+<ol class="content-list">
+<li>เครื่องแม่ข่ายฐานข้อมูล <code>REG-DB-01</code> และ <code>REG-APP-01</code> ถูกเข้ารหัสไฟล์ทั้งหมด กลายเป็นนามสกุล <code>.encrypted</code></li>
+<li>ไฟล์แชร์ส่วนกลางของมหาวิทยาลัย (Central File Server) ที่เก็บข้อมูลสำเนาบัตรประชาชน เอกสารการเงิน และผลงานวิจัยของอาจารย์ถูกล็อกไฟล์ทั้งหมด พร้อมทิ้งข้อความเรียกค่าไถ่จำนวน 500,000 USD (ประมาณ 18 ล้านบาท)</li>
+<li>เมื่อระบบสำรองข้อมูล (Backup) ถูกตรวจสอบ พบว่าไดรฟ์สำรองข้อมูลที่เชื่อมต่อแบบ Network Share (NAS) ผ่านโปรโตคอล SMB ถูกลบทำลายและเข้ารหัสไปด้วย เนื่องจากไม่มีการทำระบบสำรองข้อมูลแบบ Immutable / Air-gapped</li>
+</ol>
+<h3 class="subsection-heading" id="3-2-บันทึกเส้นเวลาของเหตุการณ์และการตอบสนองของมหาวิทยาลัย-actual-incident-timeline">3.2 บันทึกเส้นเวลาของเหตุการณ์และการตอบสนองของมหาวิทยาลัย (Actual Incident Timeline)</h3>
+
+<div class="figure-box" id="figure-12-7">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 12.7</div>
+    <div class="figure-title">บันทึกเส้นเวลาการแพร่ระบาดและการตอบสนองที่ล้มเหลว (Actual Ransomware Incident Timeline)</div>
+  </div>
+  <div class="incident-timeline-fail-card">
+    <div class="fail-timeline-step">
+      <div class="fail-time-badge">02:15 น.</div>
+      <div class="fail-step-content">
+        <div class="fail-step-title">⚠️ SIEM แจ้งเตือน High CPU & Bulk File Renaming บนเซิร์ฟเวอร์ฐานข้อมูล</div>
+        <div class="fail-step-desc">ระบบตรวจพบกิจกรรมผิดปกติ แต่เวร SOC Tier 1 ละเลยและกดปิดแจ้งเตือน คิดว่าเป็นสคริปต์ Backup ประจำสัปดาห์</div>
+        <span class="step-fault">❌ ข้อบกพร่อง: Alert Misjudgment & ขาด Playbook คัดกรอง</span>
+      </div>
+    </div>
+
+    <div class="fail-timeline-step">
+      <div class="fail-time-badge">06:45 น.</div>
+      <div class="fail-step-content">
+        <div class="fail-step-title">📞 อาจารย์โทรแจ้งศูนย์คอมพิวเตอร์ว่าไม่สามารถเข้าระบบทะเบียนได้</div>
+        <div class="fail-step-desc">ระบบหยุดชะงักไปแล้วกว่า 4 ชั่วโมงก่อนที่จะมีผู้ใช้งานภายนอกโทรแจ้งเข้ามา</div>
+        <span class="step-fault">❌ ข้อบกพร่อง: ขาดการเฝ้าระวังเชิงรุก (Zero Proactive Response)</span>
+      </div>
+    </div>
+
+    <div class="fail-timeline-step">
+      <div class="fail-time-badge">08:30 น.</div>
+      <div class="fail-step-content">
+        <div class="fail-step-title">🚨 ทีม Infrastructure เข้าตรวจสอบเซิร์ฟเวอร์ พบข้อความเรียกค่าไถ่ (Ransom Note)</div>
+        <div class="fail-step-desc">ไฟล์ฐานข้อมูลและแอปพลิเคชันถูกเข้ารหัสนามสกุล <code>.locked</code> พร้อมไฟล์ <code>HOW_TO_DECRYPT.txt</code></div>
+        <span class="step-fault">❌ ข้อบกพร่อง: Ransomware แพร่ระบาดสำเร็จลุล่วงทั้งระบบ</span>
+      </div>
+    </div>
+
+    <div class="fail-timeline-step">
+      <div class="fail-time-badge">09:15 น.</div>
+      <div class="fail-step-content">
+        <div class="fail-step-title">🔌 ผู้อำนวยการสั่งปิดเครื่องเซิร์ฟเวอร์ทั้งหมดทันที (Hard Power-Off)</div>
+        <div class="fail-step-desc">คำสั่งถอดปลั๊กทำลายข้อมูลในหน่วยความจำ RAM ทั้งหมด ส่งผลให้กุญแจถอดรหัสและร่องรอยการโจมตีสูญหายอย่างถาวร</div>
+        <span class="step-fault">❌ ข้อบกพร่อง: ทำลายพยานหลักฐานทางดิจิทัล (Catastrophic Evidence Destruction)</span>
+      </div>
+    </div>
+
+    <div class="fail-timeline-step">
+      <div class="fail-time-badge">13:00 น.</div>
+      <div class="fail-step-content">
+        <div class="fail-step-title">🤐 รองอธิการบดีสั่งห้ามแจ้งข่าวออกภายนอกเพื่อปกป้องชื่อเสียง</div>
+        <div class="fail-step-desc">ไม่มีการทำหนังสือแจ้ง สกมช. และไม่แจ้ง สคส. ภายใน 72 ชั่วโมงตามกฎหมาย PDPA</div>
+        <span class="step-fault">❌ ข้อบกพร่อง: ละเมิดกฎหมาย พ.ร.บ.ไซเบอร์ฯ ม.73 และ PDPA ม.37(4)</span>
+      </div>
+    </div>
+
+    <div class="fail-timeline-step">
+      <div class="fail-time-badge">+3 วัน</div>
+      <div class="fail-step-content">
+        <div class="fail-step-title">💣 แฮกเกอร์ปล่อยข้อมูลส่วนบุคคลนักศึกษา 50,000 รายการบน Dark Web</div>
+        <div class="fail-step-desc">ข้อมูลประวัติและเกรดเฉลี่ยหลุดสู่สาธารณะ มหาวิทยาลัยถูกสังคมวิพากษ์วิจารณ์และเสี่ยงรับโทษปรับสูงสุด</div>
+        <span class="step-fault">❌ ผลลัพธ์: วิกฤตการณ์ความเชื่อมั่นและข้อบกพร่องระดับร้ายแรงมาก</span>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 12.7:</strong> ลำดับเหตุการณ์จริงในกรณีศึกษาวิกฤต Ransomware มหาวิทยาลัยดิจิทัลสมมติ ที่ลุกลามจากความล้มเหลวในการตอบสนอง
+  </div>
+</div>
+
+<div class="table-responsive"><table class="content-table"><thead><tr><th>วันเวลาที่เกิดเหตุ</th><th>เหตุการณ์ทางเทคนิคและการกระทำของบุคลากร</th><th>ผลลัพธ์และผลกระทบเชิงวิกฤต</th></tr></thead><tbody><tr><td><strong>วันเสาร์ 02:15 น.</strong></td><td>Ransomware เริ่มทำงานบน <code>REG-DB-01</code> และ <code>REG-APP-01</code> มีการสร้างไฟล์ Readme และเปลี่ยนนามสกุลไฟล์นับแสนไฟล์ในเวลา 15 นาที ระบบ EDR ส่งสัญญาณเตือนระดับ Critical</td><td>เวร SOC Tier 1 (Outsource) ไม่ได้โทรแจ้งเวร Call-out ของมหาวิทยาลัย เนื่องจากนโยบายกำหนดว่า "แจ้งนอกเวลาเฉพาะกรณีอินเทอร์เน็ตล่มทั้งมหาวิทยาลัยเท่านั้น"</td></tr><tr><td><strong>วันเสาร์ 06:45 น.</strong></td><td>เจ้าหน้าที่ทะเบียนโทรศัพท์แจ้ง Helpdesk ว่าไม่สามารถเปิดหน้าเว็บระบบทะเบียนได้ หน้าเว็บขึ้นข้อความ Error 500 Internal Server Error</td><td>เจ้าหน้าที่ Helpdesk รับเรื่องและเปิด Ticket ลำดับความสำคัญปกติ (P3) โดยแจ้งว่าจะส่งต่อให้ทีมพัฒนาระบบตรวจสอบในเช้าวันจันทร์</td></tr><tr><td><strong>วันเสาร์ 08:30 น.</strong></td><td>วิศวกรเครือข่ายเข้ามาตรวจสอบเซิร์ฟเวอร์ พบหน้าจอ Remote Desktop แสดงข้อความเรียกค่าไถ่ และพบว่าระบบจัดเก็บข้อมูล SAN/NAS ทั้งหมดถูกเข้ารหัส</td><td>เกิดภาวะโกลาหลในทีมไอที ไม่มีการเปิดใช้ Playbook หรือแต่งตั้ง Incident Commander</td></tr><tr><td><strong>วันเสาร์ 09:15 น.</strong></td><td><strong>ความผิดพลาดร้ายแรง:</strong> หัวหน้าฝ่ายโครงสร้างพื้นฐานสั่งการให้เจ้าหน้าที่ทำการ <strong>"กดปุ่ม Power ดับเครื่องเซิร์ฟเวอร์ทุกเครื่องทันที (Hard Power-Off)"</strong></td><td><strong>พยานหลักฐานในหน่วยความจำชั่วคราว (RAM Dump) ถูกทำลายโดยสิ้นเชิง</strong> ไม่สามารถกู้กุญแจถอดรหัสชั่วคราวหรือร่องรอยเส้นทางของผู้โจมตีได้</td></tr><tr><td><strong>วันเสาร์ 13:00 น.</strong></td><td>รองอธิการบดีฝ่ายดิจิทัลเรียกประชุมลับ และมีคำสั่งเด็ดขาด <strong>"ห้ามมิให้แจ้งเรื่องนี้แก่ใครภายนอกโดยเด็ดขาด ทั้งตำรวจ สกมช. และ สคส. เพราะเกรงว่าจะกระทบต่อชื่อเสียงและการรับสมัครนักศึกษาใหม่"</strong></td><td>ละเมิดบทบัญญัติ พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ฯ และไม่ปฏิบัติตามกรอบ 72 ชั่วโมงของ PDPA</td></tr><tr><td><strong>วันอังคาร (วันที่ 4)</strong></td><td>กลุ่มแฮกเกอร์ BlackCat โพสต์ภาพหน้าจอฐานข้อมูลเกรดและสำเนาบัตรประชาชนของนักศึกษาและอาจารย์จำนวน 50,000 รายการขึ้นบนเว็บตลาดมืด (Dark Web Data Leak Site) เพื่อบีบให้มหาวิทยาลัยจ่ายค่าไถ่</td><td>สำนักข่าวไอทีและเพจเฟซบุ๊กชื่อดังนำข่าวไปเผยแพร่ เกิดวิกฤตการณ์ศรัทธาและความน่าเชื่อถือของมหาวิทยาลัยต่อสังคม</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="3-3-กระดาษทำการตรวจสอบฉบับสมบูรณ์-audit-working-paper-wp-12-01">3.3 กระดาษทำการตรวจสอบฉบับสมบูรณ์ (Audit Working Paper WP-12-01)</h3>
+
+<div class="figure-box" id="figure-12-8">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 12.8</div>
+    <div class="figure-title">กระดาษทำการตรวจสอบกระบวนการตอบสนองต่อเหตุการณ์ (Working Paper: WP-12-01)</div>
+  </div>
+  <div class="wp-paper-card">
+    <div class="wp-paper-header">
+      <div class="wp-org-title">มหาวิทยาลัยดิจิทัลสมมติ - ฝ่ายตรวจสอบระบบสารสนเทศ (Internal Audit)</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-top:0.4rem;">
+        <div><strong>รหัสกระดาษทำการ:</strong> <span class="wp-ref-code">WP-12-01</span></div>
+        <div><strong>วันที่ตรวจสอบ:</strong> 15 พฤศจิกายน 2567</div>
+      </div>
+    </div>
+
+    <div class="wp-meta-grid">
+      <div><strong>หัวข้อการตรวจ:</strong> การประเมินกระบวนการตอบสนองต่อเหตุการณ์และภัยคุกคามไซเบอร์ (Incident Audit)</div>
+      <div><strong>ระบบเป้าหมาย:</strong> ระบบลงทะเบียนเรียน (REG) และระบบเครือข่ายกลาง</div>
+      <div><strong>ผู้ตรวจสอบ:</strong> นาย ธนากร ตรวจการดี (Lead Information System Auditor)</div>
+      <div><strong>ผู้สอบทาน:</strong> ดร. วิภาดา ยืนยันความถูกต้อง (Audit Director)</div>
+    </div>
+
+    <div class="wp-paper-section">
+      <div class="wp-sec-title">1. เกณฑ์การตรวจสอบ (Audit Criteria):</div>
+      <div class="wp-proc-item">
+        • มาตรฐาน ISO/IEC 27001:2022 (Annex A Controls A.5.24 - A.5.28)<br>
+        • มาตรฐาน NIST SP 800-61 Rev. 2 (Computer Security Incident Handling Guide)<br>
+        • พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 (มาตรา 53, 54, 73)<br>
+        • พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (มาตรา 37(4) แจ้งเหตุภายใน 72 ชม.)
+      </div>
+    </div>
+
+    <div class="wp-paper-section">
+      <div class="wp-sec-title">2. สรุปข้อค้นพบสำคัญ 4 ประการ (Key Audit Findings):</div>
+
+      <div class="finding-block crit">
+        <span class="finding-label crit">Finding 1 // Major NCR</span>
+        <strong>ขาดแผนเผชิญเหตุเฉพาะทาง (Ransomware Playbook) และขาดการซักซ้อม:</strong>
+        <p>องค์กรมีเพียงเอกสารนโยบายทั่วไป แต่ไม่มี Playbook เฉพาะ และไม่เคยจัดซ้อม Tabletop Exercise ส่งผลให้เจ้าหน้าที่สับสนและตัดสินใจผิดพลาดในภาวะวิกฤต</p>
+      </div>
+
+      <div class="finding-block crit">
+        <span class="finding-label crit">Finding 2 // Critical NCR</span>
+        <strong>การทำลายพยานหลักฐานทางดิจิทัลจากคำสั่งปิดเครื่อง (Hard Power-Off):</strong>
+        <p>การสั่งตัดไฟเซิร์ฟเวอร์ทันทีทำลายข้อมูลใน RAM (ขัดต่อ RFC 3227 Order of Volatility) ส่งผลให้กุญแจถอดรหัสสูญหายและไม่สามารถยืนยันจุดเริ่มต้นการโจมตีได้</p>
+      </div>
+
+      <div class="finding-block crit">
+        <span class="finding-label crit">Finding 3 // Major Legal NCR</span>
+        <strong>ความล้มเหลวในการปฏิบัติตามกรอบเวลารายงานตามกฎหมาย (Regulatory Non-Compliance):</strong>
+        <p>ฝ่ายบริหารปกปิดเหตุการณ์ ไม่แจ้ง สกมช. และไม่แจ้ง สคส. ภายใน 72 ชั่วโมง ละเมิด พ.ร.บ.ไซเบอร์ฯ ม.73 และ PDPA ม.37(4) เสี่ยงรับโทษปรับทางปกครองสูงสุด 3 ล้านบาท</p>
+      </div>
+
+      <div class="finding-block crit">
+        <span class="finding-label crit">Finding 4 // Major NCR</span>
+        <strong>ระบบสำรองข้อมูลขาดการคุ้มครองแบบป้องกันการแก้ไข (Immutable / Air-Gapped Backup):</strong>
+        <p>ที่จัดเก็บ Backup เชื่อมต่อผ่านเครือข่ายและใช้รหัสผ่านเดียวกับ Active Directory ทำให้ชุดข้อมูลสำรองถูก Ransomware ลบทำลายไปด้วย ขัดต่อกฎ 3-2-1-1-0</p>
+      </div>
+    </div>
+
+    <div class="wp-staff-grid">
+      <div>Prepared by: <strong>นาย ธนากร ตรวจการดี</strong> (Lead Auditor)</div>
+      <div>Reviewed by: <strong>ดร. วิภาดา ยืนยันความถูกต้อง</strong> (Audit Director)</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 12.8:</strong> กระดาษทำการตรวจสอบฉบับสมบูรณ์ (Audit Working Paper WP-12-01) บันทึก 4 ข้อค้นพบระดับวิกฤต
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="1-วัตถุประสงค์การตรวจสอบ-audit-objectives">1. วัตถุประสงค์การตรวจสอบ (Audit Objectives)</h4>
+<ol class="content-list">
+<li>เพื่อประเมินความพร้อมและประสิทธิผลของนโยบาย แผนเผชิญเหตุ (IRP) และ Playbook ในการรับมือกับภัยคุกคามระดับวิกฤต (Ransomware Attack)</li>
+<li>เพื่อตรวจสอบกระบวนการตัดสินใจ การยกระดับเหตุการณ์ (Escalation) และการคุ้มครองพยานหลักฐานดิจิทัลตามหลักนิติวิทยาศาสตร์</li>
+<li>เพื่อตรวจสอบการปฏิบัติตามกฎหมายว่าด้วยการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 และกฎหมายคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562</li>
+</ol>
+<h4 class="sub-subsection-heading" id="2-เกณฑ์การตรวจสอบ-audit-criteria">2. เกณฑ์การตรวจสอบ (Audit Criteria)</h4>
+<ol class="content-list">
+<li>มาตรฐาน ISO/IEC 27001:2022 (Controls A.5.24 Information security incident management planning and preparation, A.5.25 Assessment and decision on information security events, A.5.26 Response to information security incidents)</li>
+<li>แนวปฏิบัติ NIST SP 800-61 Rev. 2 (Computer Security Incident Handling Guide)</li>
+<li>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 (มาตรา 59 และมาตรา 73)</li>
+<li>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (มาตรา 37(4))</li>
+</ol>
+<h4 class="sub-subsection-heading" id="3-ผลการตรวจสอบและข้อค้นพบเชิงประจักษ์-audit-findings-gap-analysis">3. ผลการตรวจสอบและข้อค้นพบเชิงประจักษ์ (Audit Findings & Gap Analysis)</h4>
+<h5 class="sub-level5-heading" id="ข้อค้นพบที่-1-ขาดแผนเผชิญเหตุเฉพาะทาง-ransomware-playbook-และขาดการซ้อมแผน">ข้อค้นพบที่ 1: ขาดแผนเผชิญเหตุเฉพาะทาง (Ransomware Playbook) และขาดการซ้อมแผน</h5>
+<ul class="content-list">
+<li><strong>สภาพความเป็นจริง (Condition):</strong> มหาวิทยาลัยมีเอกสาร "แผนบริหารความต่อเนื่องทางธุรกิจ (BCP)" ทั่วไป แต่ไม่มี Incident Response Playbook สำหรับภัยคุกคามประเภท Ransomware และไม่เคยมีการจัดประชุมซักซ้อมแผนแบบ Tabletop Exercise (TTX) ร่วมกับฝ่ายบริหาร ฝ่ายกฎหมาย หรือฝ่ายประชาสัมพันธ์เลยในรอบ 2 ปีที่ผ่านมา</li>
+<li><strong>เกณฑ์เปรียบเทียบ (Criteria):</strong> NIST SP 800-61 และ ISO 27001 Control A.5.24 กำหนดว่าองค์กรต้องมีขั้นตอนปฏิบัติการเฉพาะสำหรับภัยคุกคามสำคัญ และต้องทดสอบแผนความพร้อมอย่างสม่ำเสมอ</li>
+<li><strong>สาเหตุ (Cause):</strong> ฝ่ายไอทีมองว่าการจัดการมัลแวร์เป็นหน้าที่ประจำวันของช่างเทคนิค และไม่ได้จัดทำ Playbook เฉพาะสำหรับวิกฤตระดับองค์กร</li>
+<li><strong>ผลกระทบ (Effect):</strong> เมื่อเกิดเหตุการณ์จริง ทีมปฏิบัติการเกิดความสับสน ขาดผู้นำสั่งการ (Incident Commander) นำไปสู่การตัดสินใจที่ผิดพลาด</li>
+<li><strong>ข้อเสนอแนะ (Recommendation):</strong> จัดทำ Ransomware & Data Breach Playbook ที่ระบุขั้นตอนการทำงานทีละก้าวอย่างชัดเจน และจัดให้มีการซักซ้อม Tabletop Exercise อย่างน้อยปีละ 1 ครั้ง</li>
+</ul>
+<h5 class="sub-level5-heading" id="ข้อค้นพบที่-2-การทำลายพยานหลักฐานทางดิจิทัลจากคำสั่งปิดเครื่องอย่างไม่ถูกวิธี-hard-power-off">ข้อค้นพบที่ 2: การทำลายพยานหลักฐานทางดิจิทัลจากคำสั่งปิดเครื่องอย่างไม่ถูกวิธี (Hard Power-Off)</h5>
+
+<div class="widget-box" id="widget-12-5">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE LEARNING 12.5</div>
+    <div class="widget-title">RFC 3227 Volatile Evidence & RAM Capture Toolkit Guide</div>
+  </div>
+  <p class="widget-intro">
+    คู่มือและเครื่องมือตรวจสอบลำดับความสูญหายของพยานหลักฐาน (Order of Volatility) สำหรับ First Responder เพื่อป้องกันข้อผิดพลาดร้ายแรงจากการกดปิดเครื่องโดยไม่เก็บหลักฐานในหน่วยความจำ RAM
+  </p>
+
+  <div class="volatility-interactive-grid">
+    <div class="vol-left-card">
+      <div style="font-weight:700; margin-bottom:0.5rem; color:var(--text-main);">เลือกประเภทหลักฐานดิจิทัลที่ต้องการตรวจสอบ:</div>
+      <div class="vol-btn-list">
+        <button class="vol-select-btn active" onclick="inspectVolatility('ram')">🧠 1. RAM / Physical Memory (กุญแจถอดรหัส & มัลแวร์)</button>
+        <button class="vol-select-btn" onclick="inspectVolatility('network')">🌐 2. Network Sockets & Active Connections</button>
+        <button class="vol-select-btn" onclick="inspectVolatility('disk')">💾 3. Hard Disk / SSD (Bit-stream Image)</button>
+        <button class="vol-select-btn" onclick="inspectVolatility('backup')">🛡️ 4. Immutable Backup / WORM Storage</button>
+      </div>
+    </div>
+
+    <div class="vol-right-card" id="vol-detail-display">
+      <!-- Rendered via JS -->
+    </div>
+  </div>
+</div>
+
+
+<div class="figure-box" id="figure-12-12">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 12.12</div>
+    <div class="figure-title">ผังลำดับความสูญหายของพยานหลักฐานดิจิทัล (Digital Forensics Order of Volatility: RFC 3227)</div>
+  </div>
+  <div class="volatility-stack">
+    <div class="vol-tier v1">
+      <div class="vol-rank">01 // สลายตัวเร็วที่สุด (ภายในไมโครวินาที)</div>
+      <div class="vol-name">CPU Registers, CPU Caches & Hardware State</div>
+      <div class="vol-desc">รีจิสเตอร์และหน่วยความจำแคชของโปรเซสเซอร์ สูญหายทันทีเมื่อสัญญาณไฟเปลี่ยนสภาวะ</div>
+    </div>
+
+    <div class="vol-tier v2">
+      <div class="vol-rank">02 // สลายตัวทันทีเมื่อตัดไฟ (หลักนาทีถึงชั่วโมง)</div>
+      <div class="vol-name">Main Memory (RAM / Physical Memory) 🚨 สูญหายจาก Hard Power-Off!</div>
+      <div class="vol-desc">ที่อยู่ของ Process ที่กำลังทำงาน, Socket การเชื่อมต่อ Network, คำสั่งมัลแวร์ที่ฝังตัวในหน่วยความจำ, และกุญแจถอดรหัส Encryption Keys!</div>
+    </div>
+
+    <div class="vol-tier v3">
+      <div class="vol-rank">03 // สลายตัวเมื่อรีบูตหรือหมดเวลา (หลักชั่วโมงถึงวัน)</div>
+      <div class="vol-name">Network State, Routing Tables, ARP Cache & Process Tables</div>
+      <div class="vol-desc">สถานะการเชื่อมต่อเครือข่ายที่มีอยู่ขณะเกิดเหตุ แคชหมายเลขเครื่อง และรายชื่อโปรเซสที่รันอยู่</div>
+    </div>
+
+    <div class="vol-tier v4">
+      <div class="vol-rank">04 // จัดเก็บถาวรบนสื่อบันทึก (หลักเดือนถึงปี)</div>
+      <div class="vol-name">Disk Storage, SSD, File Systems & Swap/Pagefile</div>
+      <div class="vol-desc">ไฟล์ในฮาร์ดดิสก์ ไม่สูญหายเมื่อตัดไฟ สามารถทำ Forensic Bit-stream Image (E01/DD) ย้อนหลังได้</div>
+    </div>
+
+    <div class="vol-tier v5">
+      <div class="vol-rank">05 // อยู่ได้นานที่สุด</div>
+      <div class="vol-name">Remote Log Archives, Backup Tapes & Optical Media</div>
+      <div class="vol-desc">ล็อกที่ส่งออกไปยัง SIEM ส่วนกลาง และเทปสำรองข้อมูลออฟไลน์</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 12.12:</strong> ลำดับความสูญหายของหลักฐานทางนิติวิทยาศาสตร์ตาม RFC 3227 ชี้ชัดว่าเหตุใดการ Dump RAM ก่อนปิดเครื่องจึงมีความสำคัญสูงสุด
+  </div>
+</div>
+
+<ul class="content-list">
+<li><strong>สภาพความเป็นจริง (Condition):</strong> หัวหน้าฝ่ายโครงสร้างพื้นฐานสั่งการให้เจ้าหน้าที่กดสวิตช์ปิดเครื่องเซิร์ฟเวอร์ทันที ทำให้ข้อมูลในหน่วยความจำ RAM ทั้งหมดสูญหายไป</li>
+<li><strong>เกณฑ์เปรียบเทียบ (Criteria):</strong> แนวปฏิบัติด้านนิติวิทยาศาสตร์ดิจิทัล (Digital Forensics Order of Volatility: RFC 3227) กำหนดให้ต้องเก็บรักษาหลักฐานในหน่วยความจำชั่วคราว (RAM / Volatile Memory) ก่อนการตัดพลังงานระบบ</li>
+<li><strong>สาเหตุ (Cause):</strong> บุคลากรขาดการฝึกอบรมความรู้เบื้องต้นด้าน First Responder Forensics จึงเข้าใจผิดว่าการกดปิดเครื่องคือการป้องกันการแพร่กระจายที่ดีที่สุด</li>
+<li><strong>ผลกระทบ (Effect):</strong> ไม่สามารถวิเคราะห์หากระบวนการทำงานของ Ransomware กุญแจถอดรหัสในหน่วยความจำสูญหาย และไม่สามารถยืนยันขอบเขตการขโมยข้อมูลที่แท้จริงได้</li>
+<li><strong>ข้อเสนอแนะ (Recommendation):</strong> กำหนดขั้นตอนปฏิบัติการตัดการเชื่อมต่อทางเครือข่าย (Network Isolation via VLAN / Disconnect Cable) แทนการตัดพลังงาน และจัดอบรมหลักสูตร Digital Forensics First Responder ให้แก่ทีมไอที</li>
+</ul>
+<h5 class="sub-level5-heading" id="ข้อค้นพบที่-3-ความล้มเหลวในการปฏิบัติตามกรอบเวลาการรายงานตามกฎหมาย-regulatory-non-compliance">ข้อค้นพบที่ 3: ความล้มเหลวในการปฏิบัติตามกรอบเวลาการรายงานตามกฎหมาย (Regulatory Non-Compliance)</h5>
+<ul class="content-list">
+<li><strong>สภาพความเป็นจริง (Condition):</strong> ฝ่ายบริหารตัดสินใจปกปิดเหตุการณ์ ไม่มีการแจ้งศูนย์ ThaiCERT / สกมช. และไม่ทำหนังสือแจ้งสำนักงานคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล (สคส.) ภายใน 72 ชั่วโมง จนกระทั่งข้อมูลรั่วไหลออกสู่สาธารณะ</li>
+<li><strong>เกณฑ์เปรียบเทียบ (Criteria):</strong> พ.ร.บ.ไซเบอร์ พ.ศ. 2562 มาตรา 73 กำหนดหน้าที่ของหน่วยงานในการแจ้งเหตุภัยคุกคามร้ายแรง และ พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 มาตรา 37(4) กำหนดให้แจ้งเหตุละเมิดข้อมูลส่วนบุคคลต่อ สคส. ภายใน 72 ชั่วโมง</li>
+<li><strong>สาเหตุ (Cause):</strong> ฝ่ายบริหารกังวลเรื่องภาพลักษณ์และชื่อเสียง โดยขาดความตระหนักรู้ถึงบทลงโทษทางกฎหมายและหน้าที่ของหน่วยงาน</li>
+<li><strong>ผลกระทบ (Effect):</strong> มหาวิทยาลัยมีความเสี่ยงที่จะถูกปรับทางปกครองตามกฎหมาย PDPA สูงสุดไม่เกิน 3 ล้านบาท และผู้บริหารอาจมีความรับผิดตามกฎหมายไซเบอร์</li>
+<li><strong>ข้อเสนอแนะ (Recommendation):</strong> กำหนดให้มีฝ่ายกฎหมายและ DPO เป็นสมาชิกถาวรในคณะกรรมการบัญชาการเหตุการณ์ และจัดทำ Escalation Policy ที่ระบุเงื่อนไขการแจ้งหน่วยงานกำกับดูแลตามกรอบเวลากฎหมายโดยอัตโนมัติ</li>
+</ul>
+<h5 class="sub-level5-heading" id="ข้อค้นพบที่-4-ระบบสำรองข้อมูลขาดการคุ้มครองแบบป้องกันการแก้ไข-immutable-air-gapped-backup">ข้อค้นพบที่ 4: ระบบสำรองข้อมูลขาดการคุ้มครองแบบป้องกันการแก้ไข (Immutable / Air-Gapped Backup)</h5>
+<ul class="content-list">
+<li><strong>สภาพความเป็นจริง (Condition):</strong> ระบบสำรองข้อมูลถูกจัดเก็บไว้บนอุปกรณ์จัดเก็บข้อมูล NAS ที่เชื่อมต่อผ่านเครือข่ายตลอดเวลา (Online Network Share) และใช้บัญชีสิทธิ์เดียวกันกับ Active Directory ทำให้ข้อมูลสำรองถูก Ransomware ลบทำลายไปด้วย</li>
+<li><strong>เกณฑ์เปรียบเทียบ (Criteria):</strong> กฎการสำรองข้อมูล 3-2-1-1-0 และ ISO 27001 Control A.8.13 กำหนดให้ข้อมูลสำรองต้องมีชุดข้อมูลที่ไม่สามารถแก้ไขดัดแปลงได้ (Immutable) หรือตัดการเชื่อมต่อทางกายภาพ (Air-gapped)</li>
+<li><strong>สาเหตุ (Cause):</strong> การออกแบบระบบสำรองข้อมูลเน้นความสะดวกในการเข้าถึง แต่ไม่ได้คำนึงถึงความเสี่ยงจากมัลแวร์เรียกค่าไถ่ที่มุ่งทำลาย Backup เป็นเป้าหมายแรก</li>
+<li><strong>ผลกระทบ (Effect):</strong> มหาวิทยาลัยไม่สามารถกู้คืนระบบจากชุดข้อมูลสำรองได้ ต้องสูญเสียข้อมูลธุรกรรมของนักศึกษาและผลการเรียนทั้งหมด</li>
+<li><strong>ข้อเสนอแนะ (Recommendation):</strong> ปรับปรุงระบบสำรองข้อมูลให้มีคุณสมบัติ Write-Once-Read-Many (WORM) หรือสำรองข้อมูลขึ้น Cloud ที่มีการเปิดฟังก์ชัน Object Lock / Immutable Storage ที่ตัดสิทธิ์การลบเด็ดขาด</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-4-กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน-active-learning-simulation">
+            <h2 class="section-heading">ส่วนที่ 4: กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน (Active Learning Simulation)</h2>
+          </section>
+        
+
+<div class="widget-box" id="widget-12-4">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE LEARNING 12.4</div>
+    <div class="widget-title">Ransomware War Room: Tabletop Decision Simulator (Active Learning Simulation)</div>
+  </div>
+  <p class="widget-intro">
+    สวมบทบาทเป็น <strong>Incident Commander และ Lead Cyber Auditor</strong> ในห้องบัญชาการวิกฤตของมหาวิทยาลัยดิจิทัลสมมติ เผชิญหน้ากับสถานการณ์จำลอง 4 จังหวะวิกฤต เพื่อดูว่าคุณจะนำพามหาวิทยาลัยผ่านพ้นวิกฤตได้ถูกต้องตามหลักวิชาชีพและกฎหมายหรือไม่
+  </p>
+
+  <div class="war-room-wrapper">
+    <div class="war-room-stepper">
+      <div class="war-step active" id="war-step-1">จังหวะ 1: 02:15 น. (แจ้งเตือน)</div>
+      <div class="war-step" id="war-step-2">จังหวะ 2: 08:30 น. (พบค่าไถ่)</div>
+      <div class="war-step" id="war-step-3">จังหวะ 3: 09:15 น. (การควบคุม)</div>
+      <div class="war-step" id="war-step-4">จังหวะ 4: 13:00 น. (การรายงาน)</div>
+    </div>
+
+    <div class="war-scenario-card" id="war-scenario-display">
+      <!-- Rendered dynamically via JS -->
+    </div>
+
+    <div class="war-score-panel" id="war-score-panel">
+      <!-- Score summary -->
+    </div>
+  </div>
+</div>
+
+<h3 class="subsection-heading" id="กิจกรรม-ransomware-war-room-tabletop-audit-crisis-decision-simulation-ระยะเวลา-25-นาที">กิจกรรม: "Ransomware War Room: Tabletop Audit & Crisis Decision Simulation" (ระยะเวลา 25 นาที)</h3>
+<h4 class="sub-subsection-heading" id="1-วัตถุประสงค์ของกิจกรรม">1. วัตถุประสงค์ของกิจกรรม</h4>
+<p class="content-paragraph">เพื่อให้นักศึกษาได้สัมผัสแรงกดดันในการตัดสินใจในภาวะวิกฤต และฝึกทักษะการประเมินความสอดคล้องของกระบวนการตอบสนองต่อเหตุการณ์ในฐานะผู้ตรวจสอบ</p>
+<h4 class="sub-subsection-heading" id="2-การจัดกลุ่มและบทบาทสมมติ-role-play-structure">2. การจัดกลุ่มและบทบาทสมมติ (Role-Play Structure)</h4>
+<p class="content-paragraph">แบ่งนักศึกษาออกเป็นกลุ่มละ 4–5 คน โดยสมาชิกแต่ละคนต้องสวมบทบาทหน้าที่ดังนี้:</p>
+<ul class="content-list">
+<li><strong>บทบาทที่ 1: Lead Cyber Auditor (ผู้ตรวจสอบอิสระ):</strong> ทำหน้าที่สังเกตการณ์ จับเวลา และบันทึกข้อบกพร่องตามมาตรฐาน ISO 27035 / กฎหมาย</li>
+<li><strong>บทบาทที่ 2: Incident Commander / CISO (ผู้อำนวยการเหตุการณ์):</strong> ผู้นำตัดสินใจเชิงยุทธศาสตร์ว่าจะตัดเน็ต ปิดระบบ หรือกู้คืนระบบอย่างไร</li>
+<li><strong>บทบาทที่ 3: Technical Forensic Lead (หัวหน้าฝ่ายเทคนิค):</strong> รายงานข้อมูลเชิงเทคนิค วิเคราะห์การแพร่กระจาย และเสนอมาตรการสกัดกั้น</li>
+<li><strong>บทบาทที่ 4: Legal & Privacy Officer (ฝ่ายกฎหมายและ DPO):</strong> ให้คำแนะนำเรื่องกรอบเวลาการแจ้ง สกมช. / สคส. และผลกระทบต่อสิทธิของเจ้าของข้อมูล</li>
+</ul>
+<h4 class="sub-subsection-heading" id="3-โจทย์สถานการณ์จำลอง-inject-scenario">3. โจทย์สถานการณ์จำลอง (Inject Scenario)</h4>
+<ul class="content-list">
+<li><strong>นาทีที่ 0 (Inject 1):</strong> เวลา 08:30 น. วันจันทร์เปิดภาคเรียน เซิร์ฟเวอร์ระบบลงทะเบียนเรียนและระบบการเงินถูก Ransomware ล็อกไฟล์ไปแล้ว 80% แฮกเกอร์ส่งอีเมลขู่ว่าจะปล่อยข้อมูลบัตรประชาชนของนักศึกษาและบุคลากร 50,000 คนลงบนอินเทอร์เน็ตในอีก 24 ชั่วโมง หากไม่จ่ายเงิน 10 ล้านบาท</li>
+<li><strong>นาทีที่ 10 (Inject 2):</strong> ผู้บริหารระดับสูงโทรเข้ามาสั่งว่า <em>"ห้ามข่าวนี้หลุดไปถึงนักศึกษาเด็ดขาด ให้กู้ระบบกลับมาเปิดให้ทัน 12:00 น. วันนี้ ไม่อย่างนั้นจะปลดทีมไอทีทั้งหมด"</em> และเสนอว่าจะนำเงินกองทุนของมหาวิทยาลัยจ่ายค่าไถ่ให้แฮกเกอร์เพื่อให้เรื่องจบเงียบ ๆ</li>
+<li><strong>นาทีที่ 18 (Inject 3):</strong> นักข่าวจากสำนักข่าวออนไลน์โทรศัพท์เข้าหา Helpdesk เพื่อสอบถามว่า <em>"จริงหรือไม่ที่ระบบมหาวิทยาลัยล่มเพราะโดนแฮก และมีข้อมูลนักศึกษาหลุดไปขายใน Telegram?"</em></li>
+</ul>
+<h4 class="sub-subsection-heading" id="4-ภารกิจของนักศึกษา-deliverables-ในชั้นเรียน">4. ภารกิจของนักศึกษา (Deliverables ในชั้นเรียน)</h4>
+<p class="content-paragraph">ให้นักศึกษาร่วมกันระดมสมองและตอบคำถาม 3 ข้อลงในกระดาษสรุปกิจกรรม:</p>
+<ol class="content-list">
+<li><strong>Incident Classification & Severity:</strong> กำหนดประเภทและระดับความรุนแรงตาม Severity Matrix พร้อมระบุเหตุผลสนับสนุน</li>
+<li><strong>Crisis Decision:</strong> ในฐานะทีม CSIRT และฝ่ายกฎหมาย จะยอมรับข้อเสนอของผู้บริหารในการจ่ายค่าไถ่หรือไม่? และจะสื่อสารกับสื่อมวลชนอย่างไร?</li>
+<li><strong>Audit Finding:</strong> ในฐานะ Auditor ให้ระบุความเสี่ยงและข้อค้นพบที่ร้ายแรงที่สุด 2 ประการจากพฤติกรรมการตัดสินใจในห้อง War Room นี้</li>
+</ol>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-5-มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls">
+            <h2 class="section-heading">ส่วนที่ 5: มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives & Common Pitfalls)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="5-1-บทสนทนาจำลองเชิงวิชาชีพ-auditor-vs-ciso-management-dialogue">5.1 บทสนทนาจำลองเชิงวิชาชีพ (Auditor vs CISO & Management Dialogue)</h3>
+
+<div class="figure-box" id="figure-12-11">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 12.11</div>
+    <div class="figure-title">บทสนทนาจำลองเชิงวิชาชีพ: แรงกดดันทางภาพลักษณ์ vs หน้าที่ตามกฎหมาย (Auditor vs Executives)</div>
+  </div>
+  <div class="dialogue-container">
+    <div class="dialogue-card vp-card">
+      <div class="dialogue-avatar">👔</div>
+      <div class="dialogue-bubble">
+        <div class="dialogue-role">รองอธิการบดีฝ่ายดิจิทัล (Executive Management)</div>
+        <p>"คุณผู้ตรวจสอบครับ การที่เราสั่งปิดเซิร์ฟเวอร์ทันทีและยังไม่แจ้ง สคส. หรือ สกมช. ในตอนนั้น เพราะเรามองว่านี่เป็นเรื่องภายใน และต้องการรีบกู้ข้อมูลให้เสร็จก่อนเปิดเทอม การออกข่าวไปมีแต่จะทำให้มหาวิทยาลัยเสียชื่อเสียง และสร้างความตื่นตระหนกโดยใช่เหตุ ทำไมคุณถึงระบุว่าเรื่องนี้เป็น 'ข้อบกพร่องระดับร้ายแรงมาก (Critical Non-Compliance)' ในรายงานตรวจสอบล่ะครับ?"</p>
+      </div>
+    </div>
+
+    <div class="dialogue-card auditor-card">
+      <div class="dialogue-avatar">🔍</div>
+      <div class="dialogue-bubble">
+        <div class="dialogue-role">Lead Cyber Auditor (ผู้ตรวจสอบความมั่นคงปลอดภัยสารสนเทศ)</div>
+        <p>"ท่านครับ ในมุมมองของการบริหารความเสี่ยงและความชอบด้วยกฎหมาย การปกปิดเหตุการณ์ไม่ได้ช่วยปกป้องชื่อเสียงขององค์กรเลยครับ ดังที่เห็นว่าแฮกเกอร์เป็นฝ่ายนำข้อมูลออกไปปล่อยเอง ซึ่งทำให้ความน่าเชื่อถือเสียหายรุนแรงกว่าการยอมรับความจริงอย่างโปร่งใสหลายเท่า<br><br>
+        ยิ่งไปกว่านั้น กฎหมาย PDPA มาตรา 37(4) และ พ.ร.บ.ไซเบอร์ฯ กำหนดเป็นหน้าที่ภาคบังคับที่ไม่สามารถใช้ดุลยพินิจยกเว้นได้ การไม่แจ้งภายใน 72 ชั่วโมงทำให้มหาวิทยาลัยมีความผิดสำเร็จทางกฎหมายทันที<br><br>
+        และในทางเทคนิค การสั่ง Hard Power-Off โดยไม่มีการ Dump RAM ทำให้เราสูญเสียพยานหลักฐานชิ้นสำคัญที่สุดไปตลอดกาล ทำให้ไม่สามารถทราบได้เลยว่าแฮกเกอร์แฝงตัวเข้ามาทางช่องโหว่ใด และยังคงมี Backdoor หลงเหลืออยู่ในระบบอื่นอีกหรือไม่ครับ"</p>
+      </div>
+    </div>
+
+    <div class="dialogue-card ciso-card">
+      <div class="dialogue-avatar">🛡️</div>
+      <div class="dialogue-bubble">
+        <div class="dialogue-role">CISO (Chief Information Security Officer)</div>
+        <p>"ที่ท่านผู้ตรวจสอบชี้แจงมาถูกต้องทุกประการครับ ในฐานะ CISO เหตุการณ์นี้สะท้อนว่า เรามีนโยบายบนกระดาษ แต่เราขาด 'Playbook ที่ผ่านการซักซ้อมจริง' และขาดความเข้าใจร่วมกันในระดับผู้บริหาร ฝ่ายไอทีเราถูกบีบให้แก้ปัญหาเฉพาะหน้าโดยไม่มีกรอบคุ้มครองทางกฎหมายและนิติวิทยาศาสตร์ ข้อเสนอแนะของผู้ตรวจสอบจึงเป็นสิ่งจำเป็นอย่างยิ่งที่มหาวิทยาลัยต้องนำไปปรับปรุงโครงสร้างการตอบสนองต่อเหตุการณ์ทั้งระบบครับ"</p>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 12.11:</strong> การสะท้อนมุมมองระหว่างฝ่ายบริหาร ผู้ตรวจสอบ และ CISO ในการจัดการวิกฤตภัยคุกคามไซเบอร์
+  </div>
+</div>
+
+<p class="content-paragraph">บทสนทนานี้สะท้อนให้เห็นถึงความตึงเครียดและการปะทะกันระหว่าง "ความกดดันทางธุรกิจ/ภาพลักษณ์" กับ "หลักการควบคุมความมั่นคงปลอดภัยและหน้าที่ตามกฎหมาย":</p>
+<blockquote class="content-blockquote"><strong>รองอธิการบดีฝ่ายดิจิทัล:</strong> "คุณผู้ตรวจสอบครับ การที่เราสั่งปิดเซิร์ฟเวอร์ทันทีและยังไม่แจ้ง สคส. หรือ สกมช. ในตอนนั้น เพราะเรามองว่านี่เป็นเรื่องภายใน และเราต้องการรีบกู้ข้อมูลให้เสร็จก่อนเปิดเทอม การออกข่าวไปมีแต่จะทำให้มหาวิทยาลัยเสียชื่อเสียง และสร้างความตื่นตระหนกโดยใช่เหตุ ทำไมคุณถึงระบุว่าเรื่องนี้เป็น 'ข้อบกพร่องระดับร้ายแรงมาก (Critical Non-Compliance)' ในรายงานตรวจสอบล่ะครับ?"  <br> <br><strong>Lead Cyber Auditor:</strong> "ท่านครับ ในมุมมองของการบริหารความเสี่ยงและความชอบด้วยกฎหมาย การปกปิดเหตุการณ์ไม่ได้ช่วยปกป้องชื่อเสียงขององค์กรอย่างแท้จริงเลยครับ ดังที่เห็นในข้อเท็จจริงว่า แฮกเกอร์เป็นฝ่ายนำข้อมูลออกไปเผยแพร่เอง ซึ่งทำให้ความน่าเชื่อถือของมหาวิทยาลัยเสียหายรุนแรงกว่าการยอมรับความจริงอย่างโปร่งใสหลายเท่า  <br>ยิ่งไปกว่านั้น กฎหมาย PDPA มาตรา 37(4) และ พ.ร.บ.ไซเบอร์ฯ มาตรา 73 กำหนดเป็นหน้าที่ภาคบังคับที่ไม่สามารถใช้ดุลยพินิจยกเว้นได้ การไม่แจ้งภายใน 72 ชั่วโมงทำให้มหาวิทยาลัยมีความผิดสำเร็จทางกฎหมายทันที  <br>และในทางเทคนิค การสั่ง Hard Power-Off โดยไม่มีการ Dump RAM ทำให้เราสูญเสียพยานหลักฐานชิ้นสำคัญที่สุดไปตลอดกาล ทำให้ไม่สามารถทราบได้เลยว่าแฮกเกอร์แฝงตัวเข้ามาทางช่องโหว่ใด และยังคงมี Backdoor หลงเหลืออยู่ในระบบอื่นอีกหรือไม่ครับ"  <br> <br><strong>CISO:</strong> "ที่ท่านผู้ตรวจสอบชี้แจงมาถูกต้องทุกประการครับ ในฐานะ CISO เหตุการณ์นี้สะท้อนว่า เรามีนโยบายบนกระดาษ แต่เราขาด 'Playbook ที่ผ่านการซักซ้อมจริง' และขาดความเข้าใจร่วมกันในระดับผู้บริหาร ฝ่ายไอทีเราถูกบีบให้แก้ปัญหาเฉพาะหน้าโดยไม่มีกรอบคุ้มครองทางกฎหมายและนิติวิทยาศาสตร์ ข้อเสนอแนะของผู้ตรวจสอบจึงเป็นสิ่งจำเป็นอย่างยิ่งที่มหาวิทยาลัยต้องนำไปปรับปรุงโครงสร้างการตอบสนองต่อเหตุการณ์ทั้งระบบครับ"</blockquote>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="5-2-4-กับดักหลุมพรางที่พบบ่อยในการบริหารและตรวจสอบเหตุการณ์-4-common-pitfalls">5.2 4 กับดักหลุมพรางที่พบบ่อยในการบริหารและตรวจสอบเหตุการณ์ (4 Common Pitfalls)</h3>
+
+<div class="figure-box" id="figure-12-9">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 12.9</div>
+    <div class="figure-title">4 หลุมพรางอันตรายในงาน Incident Response (4 Dangerous Pitfalls)</div>
+  </div>
+  <div class="pitfalls-quad-grid">
+    <div class="pitfall-card">
+      <div class="pitfall-num">01</div>
+      <div class="pitfall-title">🔌 The Panic Power-Off</div>
+      <div class="pitfall-sub">ตื่นตระหนกจนรีบตัดไฟทำลายหลักฐาน</div>
+      <p>เมื่อพบมัลแวร์ รีบกดปิดเครื่องทันที ทำให้ข้อมูลหน่วยความจำ RAM สูญหาย กุญแจถอดรหัสใน RAM หาย และไม่สามารถสืบหา Patient Zero ได้</p>
+      <div class="pitfall-remedy">💡 <strong>ทางแก้ไข:</strong> ให้ใช้วิธี Network Isolation (ถอดสายแลน / สั่งกักกันผ่าน EDR) เพื่อคงสภาพหน่วยความจำ</div>
+    </div>
+
+    <div class="pitfall-card">
+      <div class="pitfall-num">02</div>
+      <div class="pitfall-title">💰 The Ransom Negotiation Trap</div>
+      <div class="pitfall-sub">กับดักการยอมจ่ายค่าไถ่โดยไร้หลักประกัน</div>
+      <p>หลงเชื่อคำสัญญาของแฮกเกอร์ ยอมจ่ายเงินค่าไถ่ แต่แฮกเกอร์ไม่ส่งกุญแจถอดรหัสให้จริง หรือนำข้อมูลไปขายซ้ำบนตลาดมืด</p>
+      <div class="pitfall-remedy">💡 <strong>ทางแก้ไข:</strong> มุ่งเน้นการสร้าง Immutable Backup และไม่สนับสนุนธุรกรรมอาชญากรรมไซเบอร์</div>
+    </div>
+
+    <div class="pitfall-card">
+      <div class="pitfall-num">03</div>
+      <div class="pitfall-title">🤬 Blaming the Whistleblower</div>
+      <div class="pitfall-sub">ลงโทษผู้แจ้งเหตุจนเกิดวัฒนธรรมปกปิด</div>
+      <p>เมื่อพนักงานเผลอคลิกลิงก์ฟิชชิง ฝ่ายบริหารตำหนิลงโทษอย่างรุนแรง ส่งผลให้พนักงานคนอื่นเมื่อเกิดเหตุการณ์จะกลัวและปกปิดความจริง</p>
+      <div class="pitfall-remedy">💡 <strong>ทางแก้ไข:</strong> สร้างวัฒนธรรม Just Culture สนับสนุนการรายงานเหตุการณ์อย่างรวดเร็วโดยไม่มุ่งเอาผิด</div>
+    </div>
+
+    <div class="pitfall-card">
+      <div class="pitfall-num">04</div>
+      <div class="pitfall-title">📄 Paper-Only Incident Plan</div>
+      <div class="pitfall-sub">แผนบนกระดาษที่ขึ้นหิ้ง ไม่เคยซ้อมจริง</div>
+      <p>มีคู่มือ IRP เล่มหนาแต่เขียนไว้เพื่อผ่านการตรวจรับรอง ISO ไม่เคยนำมาซ้อม เมื่อเกิดเหตุจริงไม่มีใครรู้ว่าต้องโทรหาใครหรือทำอะไร</p>
+      <div class="pitfall-remedy">💡 <strong>ทางแก้ไข:</strong> ซักซ้อม Tabletop Exercise อย่างน้อยปีละ 1 ครั้ง และอัปเดต Call Tree ทุกไตรมาส</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 12.9:</strong> 4 หลุมพรางคลาสสิกที่มักพบในกระบวนการตอบสนองต่อเหตุการณ์ขององค์กรที่ขาดความพร้อม
+  </div>
+</div>
+
+<ol class="content-list">
+<li><strong>The Panic Power-Off (การดับไฟหนีปัญหา):</strong> เจ้าหน้าที่ไอทีตื่นตระหนกและถอดปลั๊กหรือกดปิดเครื่องเซิร์ฟเวอร์ทันที ส่งผลให้หลักฐานใน Volatile Memory (RAM) สูญหาย และอาจทำให้โครงสร้างฐานข้อมูลเสียหายถาวร</li>
+<li><strong>The Ransom Negotiation Trap (กับดักการจ่ายค่าไถ่):</strong> การหลงเชื่อว่าการจ่ายเงินค่าไถ่จะทำให้ได้ระบบและข้อมูลคืน 100% สถิติโลกชี้ว่าองค์กรที่จ่ายค่าไถ่มีเพียงไม่ถึงครึ่งที่สามารถกู้ข้อมูลคืนได้ครบ และกว่า 80% ถูกแฮกเกอร์กลุ่มเดิมหรือกลุ่มอื่นกลับมาโจมตีซ้ำภายใน 12 เดือน ยิ่งไปกว่านั้น การจ่ายเงินอาจเข้าข่ายการสนับสนุนองค์กรก่อการร้ายทางไซเบอร์ที่ผิดกฎหมายสากล</li>
+<li><strong>Blaming the Whistleblower / Victim (วัฒนธรรมการลงโทษผู้รายงาน):</strong> การที่องค์กรมีบทลงโทษพนักงานที่คลิกโดนลิงก์ฟิชชิงอย่างรุนแรง ส่งผลให้พนักงานเกิดความกลัวและเลือกที่จะ <strong>"ปกปิดเงียบ"</strong> เมื่อเครื่องติดมัลแวร์ ทำให้มัลแวร์แฝงตัวและแพร่กระจายลึกขึ้น (วัฒนธรรมความปลอดภัยที่ดีต้องส่งเสริม No-Blame Culture เพื่อให้มีการแจ้งเหตุเร็วที่สุด)</li>
+<li><strong>Paper-Only Incident Plan (แผนเผชิญเหตุแบบขึ้นหิ้ง):</strong> เอกสารแผนหนาหลายร้อยหน้าแต่ไม่มีการจัดทำฉบับย่อ (Quick Reference Card / Action Checklist) เมื่อเกิดเหตุฉุกเฉินไม่มีใครเปิดอ่าน เบอร์โทรศัพท์ในเอกสารเป็นเบอร์ของพนักงานที่ลาออกไปแล้ว และไม่เคยทดสอบว่าทีมงานสามารถรวมพลนอกเวลาทำการได้จริงหรือไม่</li>
+</ol>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-6-การบ้านและงานมอบหมายประจำสัปดาห์-weekly-homework-week-12">
+            <h2 class="section-heading">ส่วนที่ 6: การบ้านและงานมอบหมายประจำสัปดาห์ (Weekly Homework Week 12)</h2>
+          </section>
+        
+<p class="content-paragraph">ให้นักศึกษาแต่ละคนนำสถานการณ์จำลองวิกฤตการณ์ Ransomware ของมหาวิทยาลัยดิจิทัลสมมติไปศึกษาเชิงลึก และจัดทำรายงานผลการวิเคราะห์ในฐานะ <strong>Senior Cyber Auditor</strong> โดยต้องมีชิ้นงานส่ง (Artifacts) ครบทั้ง 6 หัวข้อดังต่อไปนี้:</p>
+<ol class="content-list">
+<li><strong>Incident Chronology & Timeline Reconstruction:</strong></li>
+</ol>
+<ul class="content-list">
+<li>สรุปเส้นเวลาเหตุการณ์ตั้งแต่จุดเริ่มต้นที่แฮกเกอร์เริ่มแพร่กระจายมัลแวร์ การตรวจพบ การตอบสนองของทีมงาน ไปจนถึงการรั่วไหลของข้อมูล โดยระบุเวลา กิจกรรม และผู้เกี่ยวข้องให้ชัดเจน</li>
+</ul>
+<ol class="content-list">
+<li><strong>Incident Classification & Severity Assessment Matrix:</strong></li>
+</ol>
+<ul class="content-list">
+<li>วิเคราะห์จัดหมวดหมู่เหตุการณ์ตาม Taxonomy (INC-01 ถึง INC-07)</li>
+<li>ประเมินระดับความรุนแรงตามเกณฑ์ 6 มิติ (System Scope, Data Classification, Number of Impacted Users, Downtime, CII Services, Legal/Regulatory Impact) พร้อมให้เหตุผลว่าเหตุใดจึงต้องจัดเป็นระดับ <strong>Critical (P1)</strong></li>
+</ul>
+<ol class="content-list">
+<li><strong>Escalation & Communication Decision Audit:</strong></li>
+</ol>
+<ul class="content-list">
+<li>วิเคราะห์จุดล้มเหลวของการยกระดับเหตุการณ์ (Escalation Breakdown) ในสถานการณ์จำลอง</li>
+<li>จัดทำแผนผังขั้นตอนการแจ้งเตือนที่ถูกต้อง (Target Escalation Workflow) ทั้งภายในองค์กร ผู้บริหาร และบุคคลภายนอก</li>
+</ul>
+<ol class="content-list">
+<li><strong>Evidence Preservation & Digital Forensics Analysis:</strong></li>
+</ol>
+<ul class="content-list">
+<li>วิเคราะห์ผลกระทบของคำสั่ง Hard Power-Off ต่อกระบวนการนิติวิทยาศาสตร์ดิจิทัล (Digital Forensics)</li>
+<li>เสนอแนะขั้นตอนการเก็บรักษาพยานหลักฐานดิจิทัลที่ถูกต้องตามมาตรฐาน RFC 3227 (Order of Volatility)</li>
+</ul>
+<ol class="content-list">
+<li><strong>Containment, Eradication & Recovery Control Plan:</strong></li>
+</ol>
+<ul class="content-list">
+<li>เสนอแนะมาตรการควบคุมและกู้คืนระบบที่ปลอดภัย โดยระบุขั้นตอนการตรวจสอบ Clean Backup, การตัดการเชื่อมต่อเครือข่าย และการเสริมสร้างความแข็งแกร่ง (Hardening) ก่อนเปิดให้บริการระบบใหม่</li>
+</ul>
+<ol class="content-list">
+<li><strong>Incident Audit Working Paper (WP-12-02) & Remediation Plan:</strong></li>
+</ol>
+<ul class="content-list">
+<li>จัดทำกระดาษทำการตรวจสอบระบุข้อค้นพบ (Findings) อย่างน้อย 3 ข้อ พร้อมระบุ Condition, Criteria, Cause, Effect และ Actionable Recommendations</li>
+<li>กำหนดแผนการปรับปรุงระบบสำรองข้อมูลให้มีคุณสมบัติ Immutable Storage และกรอบเวลาการจัดทำ Tabletop Exercise</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers">
+            <h2 class="section-heading">ส่วนที่ 7: คำถามทบทวนท้ายบท (Review Questions & Detailed Answers)</h2>
+          </section>
+        
+<ol class="content-list">
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่างคำว่า "Event", "Alert" และ "Incident" พร้อมยกตัวอย่างเปรียบเทียบในระบบเครือข่าย</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> <strong>Event</strong> คือปรากฏการณ์ทางเทคนิคทั่วไปที่สังเกตได้ เช่น ผู้ใช้ล็อกอินผ่านไฟร์วอลล์สำเร็จ (เป็นเรื่องปกติ); <strong>Alert</strong> คือ Event ที่ตรงกับกฎการตรวจจับและส่งสัญญาณเตือน เช่น มีการล็อกอินล้มเหลวติดต่อกัน 10 ครั้งจาก IP ต่างประเทศ (มีความน่าสงสัย ต้องตรวจสอบ); <strong>Incident</strong> คือเหตุการณ์ที่เกิดขึ้นจริงและส่งผลกระทบทางลบต่อ Confidentiality, Integrity หรือ Availability เช่น ผู้โจมตีล็อกอินสำเร็จด้วยบัญชีผู้ดูแลระบบและเริ่มติดตั้งโปรแกรมเข้ารหัสข้อมูล (เป็นภัยคุกคามจริงที่ต้องระงับเหตุทันที)</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ตามมาตรฐาน NIST SP 800-61 วงจรการตอบสนองต่อเหตุการณ์ประกอบด้วยขั้นตอนใดบ้าง และขั้นตอนใดมีความสำคัญสูงสุดในการป้องกันไม่ให้เกิดเหตุซ้ำ?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ประกอบด้วย 4 ระยะหลัก (6 ขั้นตอน): 1. Preparation, 2. Detection & Analysis, 3. Containment, Eradication & Recovery, 4. Post-Incident Activity (Lessons Learned) โดยขั้นตอน <strong>Post-Incident Activity / Lessons Learned</strong> มีความสำคัญสูงสุดในการป้องกันไม่ให้เกิดเหตุซ้ำ เพราะเป็นการวิเคราะห์หาสาเหตุที่แท้จริง (Root Cause) และนำข้อบกพร่องที่พบมาอุดช่องโหว่และปรับปรุงมาตรการควบคุมในอนาคต</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ในการรับมือกับ Ransomware เหตุใดคำสั่ง "Hard Power-Off (กดปิดเครื่องทันที)" จึงถือเป็นข้อผิดพลาดร้ายแรงในเชิงนิติวิทยาศาสตร์ดิจิทัล?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพราะทำให้ข้อมูลในหน่วยความจำชั่วคราว (RAM / Volatile Memory) สูญหายไปทันที ซึ่งใน RAM มักมีพยานหลักฐานสำคัญอย่างยิ่ง เช่น คีย์ถอดรหัสของมัลแวร์ที่ยังค้างอยู่, บัญชีคำสั่งการเชื่อมต่อเครือข่าย (Active Network Connections), Process รหัสผ่านที่ถูกขโมย และร่องรอยการทำงานของแฮกเกอร์ การกระทำที่ถูกต้องคือการตัดการเชื่อมต่อเครือข่าย (Network Isolation) แต่ยังคงจ่ายไฟไว้เพื่อทำ Memory Dump</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> จงอธิบายความสำคัญของ "Immutable Backup" ในการบริหารจัดการภัยคุกคามประเภท Ransomware</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> Immutable Backup คือการสำรองข้อมูลในรูปแบบที่ไม่สามารถแก้ไข ดัดแปลง หรือสั่งลบได้ (Write-Once-Read-Many: WORM) ตลอดระยะเวลาที่กำหนด แม้กระทั่งผู้ที่มีสิทธิ์สูงสุดระดับ Domain Admin หรือ Backup Admin ก็ไม่สามารถลบได้ ทำให้มั่นใจได้ว่าเมื่อระบบหลักถูก Ransomware ทำลาย องค์กรจะมีชุดข้อมูลที่สะอาดและสมบูรณ์ 100% สำหรับการกู้คืนระบบโดยไม่ต้องยอมจ่ายเงินค่าไถ่</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) กำหนดกรอบเวลาและหน้าที่ในการแจ้งเหตุละเมิดข้อมูลส่วนบุคคลไว้อย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> กำหนดให้ผู้ควบคุมข้อมูลส่วนบุคคลต้องแจ้งเหตุการละเมิดแก่สำนักงานคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล (สคส.) โดยไม่ชักช้า <strong>ภายใน 72 ชั่วโมง</strong> นับแต่ทราบเหตุเท่าที่จะกระทำได้ เว้นแต่การละเมิดนั้นไม่มีความเสี่ยงต่อสิทธิและเสรีภาพของบุคคล และหากมีความเสี่ยงสูง ต้องแจ้งเจ้าของข้อมูลส่วนบุคคลพร้อมมาตรการเยียวยาโดยไม่ชักช้าด้วย</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ตาม พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 ภัยคุกคามทางไซเบอร์ระดับใดที่หน่วยงานโครงสร้างพื้นฐานสำคัญ (CII) มีหน้าที่ต้องรายงานต่อ สกมช. โดยพลัน?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ภัยคุกคามทางไซเบอร์ใน <strong>ระดับร้ายแรง (Critical/Severe Threat)</strong> และ <strong>ระดับวิกฤติ (Crisis Threat)</strong> ที่ส่งผลกระทบต่อความมั่นคงของรัฐ การทำงานของระบบคอมพิวเตอร์ภาครัฐ หรือบริการสาธารณะที่สำคัญ</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> เหตุใดการซักซ้อมแผนแบบ "Tabletop Exercise (TTX)" จึงมีความจำเป็น แม้ว่าองค์กรจะมีทีมวิศวกรความปลอดภัยที่มีทักษะทางเทคนิคสูงอยู่แล้ว?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพราะการจัดการวิกฤตไซเบอร์ไม่ได้มีเพียงแค่งานเทคนิค แต่เกี่ยวข้องกับการตัดสินใจของผู้บริหาร การสื่อสารกับสื่อมวลชน การปฏิบัติตามกฎหมาย และการจัดการผลกระทบทางธุรกิจ ซึ่งวิศวกรเทคนิคไม่มีอำนาจตัดสินใจ การซ้อม TTX ช่วยให้ผู้บริหาร ฝ่ายกฎหมาย ฝ่าย PR และฝ่ายเทคนิคเข้าใจบทบาทของตนเองและสามารถประสานงานร่วมกันได้อย่างราบรื่นโดยไม่เกิดภาวะสูญญากาศการสั่งการ</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> "Out-of-band Communication" ในระหว่างการตอบสนองต่อเหตุการณ์หมายถึงอะไร และเพราะเหตุใดจึงจำเป็นอย่างยิ่ง?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> หมายถึงการสื่อสารผ่านช่องทางที่แยกเป็นอิสระจากโครงสร้างพื้นฐานปกติขององค์กร (เช่น การใช้ Signal หรือโทรศัพท์มือถือส่วนตัว แทนที่จะใช้อีเมลหรือ Teams/Slack ภายในบริษัท) จำเป็นอย่างยิ่งเพราะเมื่อระบบภายในถูกเจาะ แฮกเกอร์อาจดักอ่านอีเมลและข้อความแชตของทีมไอที ทำให้ทราบแผนการตอบสนองและสามารถหลบหลีกการสกัดกั้นได้</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ตัวชี้วัด MTTD (Mean Time to Detect) และ MTTR (Mean Time to Respond) สะท้อนประสิทธิผลของกระบวนการใดตามลำดับ?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> MTTD สะท้อนประสิทธิผลของ <strong>กระบวนการตรวจจับและการเฝ้าระวัง (Visibility, SIEM, EDR & Monitoring Effectiveness)</strong> ส่วน MTTR สะท้อนประสิทธิผลของ <strong>กระบวนการควบคุมและระงับเหตุการณ์ (Containment, Playbook Execution & Incident Response Agility)</strong></li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ในฐานะผู้ตรวจสอบ หากพบว่าฝ่ายบริหารมีนโยบาย "ห้ามบันทึก Incident ลงระบบเพื่อไม่ให้เกิดประวัติเสีย" ผู้ตรวจสอบควรให้ความเห็นอย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ต้องระบุเป็นข้อบกพร่องด้านการควบคุมระดับวิกฤต (Critical Governance Finding) เนื่องจากเป็นการทำลายความโปร่งใส (Transparency) ขัดต่อหลักธรรมาภิบาล ขัดต่อมาตรฐานสากล (ISO 27001 / ITAF) ทำให้องค์กรไม่สามารถเรียนรู้จากข้อผิดพลาดในอดีตได้ และอาจเข้าข่ายการเจตนาปกปิดพยานหลักฐานซึ่งผิดกฎหมาย</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="สรุปบทที่-12">
+            <h2 class="section-heading">สรุปบทที่ 12</h2>
+          </section>
+        
+<p class="content-paragraph">การตรวจสอบการบริหารเหตุการณ์และภัยคุกคามไซเบอร์ (Incident Management Audit) เป็นการตรวจสอบความพร้อมและขีดความสามารถในการอยู่รอดขององค์กรในภาวะวิกฤต</p>
+<p class="content-paragraph">กระบวนการตอบสนองต่อเหตุการณ์ที่มีประสิทธิผลต้องยึดโยงกับวงจรชีวิตตามมาตรฐานสากล NIST SP 800-61 และ ISO/IEC 27035 ตั้งแต่การเตรียมความพร้อม (Preparation) การมี Playbook ที่ใช้งานได้จริง การตรวจจับและวิเคราะห์อย่างแม่นยำ การควบคุมความเสียหายโดยไม่ทำลายพยานหลักฐานทางดิจิทัล การกู้คืนระบบจากชุดข้อมูลสำรองที่มีคุณสมบัติ Immutable และการถอดบทเรียนเพื่อการพัฒนาอย่างต่อเนื่อง</p>
+<p class="content-paragraph">สำหรับผู้ตรวจสอบสารสนเทศ จุดเน้นสำคัญมิได้อยู่ที่การตรวจสอบความสวยงามของเอกสารนโยบาย แต่อยู่ที่การพิสูจน์ยืนยัน <strong>"ความพร้อมจริงเชิงปฏิบัติการ (Operational Readiness)"</strong> ผ่านการทดสอบแผนเผชิญเหตุ (Tabletop & Technical Drills) ความถูกต้องของกระบวนการยกระดับเหตุการณ์ (Escalation Matrix) การรักษาความลับในการสื่อสาร และการปฏิบัติตามกรอบเวลาการรายงานเหตุการณ์ต่อหน่วยงานกำกับดูแลตาม พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 และ พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 อย่างเคร่งครัดและตรวจสอบได้</p>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="เอกสารอ้างอิงและมาตรฐานสากล">
+            <h2 class="section-heading">เอกสารอ้างอิงและมาตรฐานสากล</h2>
+          </section>
+        
+<ol class="content-list">
+<li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+<li><strong>ประกาศคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2564.</strong></li>
+<li><strong>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562 (มาตรา 37(4): การแจ้งเหตุละเมิดข้อมูลส่วนบุคคล).</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2012). <em>NIST SP 800-61 Rev. 2: Computer Security Incident Handling Guide</em>. U.S. Department of Commerce.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2023). <em>ISO/IEC 27035:2023 Information technology — Information security incident management (Parts 1 to 3)</em>. Geneva: ISO.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2022). <em>ISO/IEC 27001:2022 Information security, cybersecurity and privacy protection — Information security management systems — Requirements</em> (Annex A Controls: A.5.24 - A.5.28 Incident Management). Geneva: ISO.</li>
+<li><strong>Internet Engineering Task Force (IETF).</strong> (2002). <em>RFC 3227: Guidelines for Evidence Collection and Archiving</em>.</li>
+<li><strong>European Union Agency for Cybersecurity (ENISA).</strong> (2021). <em>Good Practice Guide for Incident Management</em>.</li>
+<li><strong>Information Systems Audit and Control Association (ISACA).</strong> (2020). <em>ITAF: Information Technology Assurance Framework (4th Edition)</em>. Rolling Meadows, IL: ISACA.</li>
+<li><strong>Center for Internet Security (CIS).</strong> (2021). <em>CIS Critical Security Controls (Version 8)</em> (Control 17: Incident Response Management).</li>
+</ol>
+
+      <!-- Bottom Chapter Navigation -->
+      <footer class="chapter-nav-footer">
+        <a href="ch-11.html" class="btn-nav-chapter">
+          <span>◀</span> บทที่ 11: การจัดการและตรวจสอบล็อก
+        </a>
+        <a href="ch-13.html" class="btn-nav-chapter">
+          บทที่ 13: การตรวจสอบความสอดคล้อง ข้อมูลส่วนบุคคล คลาวด์ และผู้ให้บริการภายนอก <span>▶</span>
+        </a>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ==========================================
+    // THEME & FONT CONTROLS
+    // ==========================================
+    function cycleTheme() {
+      const themes = ['light', 'sepia', 'dark'];
+      const cur = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = themes[(themes.indexOf(cur) + 1) % themes.length];
+      setTheme(next);
+    }
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('audit_theme', theme);
+      const bL = document.getElementById('btn-theme-light');
+      const bS = document.getElementById('btn-theme-sepia');
+      const bD = document.getElementById('btn-theme-dark');
+      if (bL) bL.style.borderColor = theme === 'light' ? 'var(--primary)' : 'var(--border-color)';
+      if (bS) bS.style.borderColor = theme === 'sepia' ? 'var(--primary)' : 'var(--border-color)';
+      if (bD) bD.style.borderColor = theme === 'dark' ? 'var(--primary)' : 'var(--border-color)';
+    }
+
+    let curFontSize = 16;
+    function adjustFontSize(delta) {
+      if (delta === 0) curFontSize = 16;
+      else curFontSize = Math.min(22, Math.max(13, curFontSize + delta));
+      document.documentElement.style.setProperty('--base-font-size', curFontSize + 'px');
+      localStorage.setItem('audit_font_size', curFontSize);
+    }
+
+    const savedTheme = localStorage.getItem('audit_theme') || 'light';
+    setTheme(savedTheme);
+    const savedFont = parseInt(localStorage.getItem('audit_font_size'), 10);
+    if (savedFont) {
+      curFontSize = savedFont;
+      document.documentElement.style.setProperty('--base-font-size', curFontSize + 'px');
+    }
+
+    window.addEventListener('scroll', () => {
+      const bar = document.getElementById('reading-progress-bar');
+      if (!bar) return;
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      bar.style.width = scrolled + '%';
+    });
+
+    // ==========================================
+    // WIDGET 12.1: SEVERITY & LEGAL REPORTING CALC
+    // ==========================================
+    function updateElapsedHours(val) {
+      const label = document.getElementById('w1-elapsed-val');
+      if (label) label.textContent = val + ' ชั่วโมง';
+      runSeverityCalc();
+    }
+
+    function runSeverityCalc() {
+      const scopeEl = document.getElementById('w1-sys-scope');
+      const dataEl = document.getElementById('w1-data-type');
+      const threatEl = document.getElementById('w1-threat-type');
+      const hoursEl = document.getElementById('w1-elapsed-hours');
+      const resCard = document.getElementById('w1-severity-result');
+      if (!resCard) return;
+
+      const scope = scopeEl ? scopeEl.value : 'cii_core';
+      const dataType = dataEl ? dataEl.value : 'pii_mass';
+      const threat = threatEl ? threatEl.value : 'ransomware';
+      const hours = hoursEl ? parseInt(hoursEl.value, 10) : 8;
+
+      let sev = 'P4 (Low)';
+      let sevClass = 'pass';
+      let sevDesc = 'เหตุการณ์ระดับต่ำ รับมือภายใน 24 ชม.';
+      let ncsaReport = 'ไม่ต้องรายงาน สกมช.';
+      let pdpaReport = 'ไม่ต้องแจ้ง สคส.';
+      let legalStatus = '✓ อยู่ในเกณฑ์ปกติ';
+
+      if (scope === 'cii_core' && (threat === 'ransomware' || dataType === 'pii_mass')) {
+        sev = 'Critical (P1 / ร้ายแรงยิ่งยวด)';
+        sevClass = 'fail';
+        sevDesc = 'กระทบระบบหลักและข้อมูลลับปริมาณมหาศาล ต้องเปิด War Room ภายใน 15 นาที';
+        ncsaReport = '🚨 ต้องรายงาน สกมช. ภายใน 24 ชม. (มาตรา 73 พ.ร.บ.ไซเบอร์ฯ)';
+        pdpaReport = '🚨 ต้องแจ้ง สคส. ภายใน 72 ชม. (มาตรา 37(4) PDPA)';
+
+        if (hours > 72) {
+          legalStatus = '❌ ละเมิดกฎหมายขั้นร้ายแรง: เกินกำหนดเวลาแจ้ง สคส. 72 ชม. และ สกมช. 24 ชม. (มีโทษปรับสูงสุด 3 ล้านบาท)';
+        } else if (hours > 24) {
+          legalStatus = '⚠️ พ้นกำหนด 24 ชม. ของ สกมช. แล้ว! ยังเหลือเวลาแจ้ง สคส. อีก ' + (72 - hours) + ' ชม.';
+        } else {
+          legalStatus = '⏳ อยู่ในกรอบเวลาบังคับ: ต้องรีบทำหนังสือแจ้ง สกมช. ทันที (เหลือ ' + (24 - hours) + ' ชม.)';
+        }
+      } else if (threat === 'data_leak' || scope === 'cii_core' || dataType === 'pii_mass') {
+        sev = 'High (P2 / ร้ายแรง)';
+        sevClass = 'warn';
+        sevDesc = 'ระบบสำคัญหยุดชะงักบางส่วน หรือพบข้อมูลรั่วไหล ต้องตอบสนองภายใน 1 ชม.';
+        ncsaReport = '⚠️ รายงาน สกมช. ภายใน 24 ชม.';
+        pdpaReport = dataType === 'pii_mass' ? '🚨 ต้องแจ้ง สคส. ภายใน 72 ชม.' : 'ประเมินความเสี่ยงต่อเจ้าของข้อมูล';
+        legalStatus = hours > 72 ? '❌ ผิดกรอบเวลารายงาน PDPA' : '✓ อยู่ในการควบคุม';
+      } else if (scope === 'support_srv' || threat === 'ddos') {
+        sev = 'Medium (P3 / ปานกลาง)';
+        sevClass = 'warn';
+        sevDesc = 'กระทบระบบสนับสนุนทั่วไป ตอบสนองภายใน 4 ชม.';
+        ncsaReport = 'บันทึกสรุปเสนอคณะกรรมการภายใน';
+        pdpaReport = 'ไม่กระทบข้อมูลส่วนบุคคลอ่อนไหว';
+        legalStatus = '✓ จัดการภายในองค์กร';
+      }
+
+      resCard.innerHTML = `
+        <div style="font-weight:700; color:var(--text-main); margin-bottom:0.4rem;">ผลการประเมินระดับความรุนแรงและหน้าที่ตามกฎหมาย:</div>
+        <div style="margin-bottom:0.6rem;"><span class="badge-status ${sevClass}" style="font-size:0.88rem; padding:0.25rem 0.65rem;">ระดับ: ${sev}</span></div>
+        <div style="font-size:0.84rem; color:var(--text-muted); margin-bottom:0.75rem;">${sevDesc}</div>
+        <div style="background:var(--bg-surface); padding:0.75rem; border-radius:6px; font-size:0.82rem; margin-bottom:0.75rem; border:1px solid var(--border-color);">
+          <div>🏛️ <strong>สกมช. (NCSA / พ.ร.บ.ไซเบอร์ฯ):</strong> ${ncsaReport}</div>
+          <div style="margin-top:0.3rem;">⚖️ <strong>สคส. (PDPC / กฎหมาย PDPA):</strong> ${pdpaReport}</div>
+        </div>
+        <div style="font-size:0.84rem; font-weight:600; color:${hours > 72 ? 'var(--rose)' : (hours > 24 ? 'var(--amber)' : 'var(--emerald)')};">
+          ${legalStatus}
+        </div>
+      `;
+    }
+    runSeverityCalc();
+
+    // ==========================================
+    // WIDGET 12.2: CONTAINMENT STRATEGY SIMULATOR
+    // ==========================================
+    let curStrat = 'isolate';
+
+    function selectContainmentStrat(strat) {
+      curStrat = strat;
+      const bP = document.getElementById('strat-card-power');
+      const bI = document.getElementById('strat-card-isolate');
+      const bD = document.getElementById('strat-card-dump');
+      if (bP) bP.classList.toggle('active', strat === 'power');
+      if (bI) bI.classList.toggle('active', strat === 'isolate');
+      if (bD) bD.classList.toggle('active', strat === 'dump');
+      renderContainmentResult();
+    }
+
+    function renderContainmentResult() {
+      const box = document.getElementById('strat-result-box');
+      if (!box) return;
+
+      if (curStrat === 'power') {
+        box.innerHTML = `
+          <div style="color:var(--rose); font-weight:700; font-size:1rem; margin-bottom:0.4rem;">❌ ผิดพลาดร้ายแรง: การกดปิดเครื่องทันที (Hard Power-Off)</div>
+          <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5; margin-bottom:0.6rem;">
+            <strong>การประเมินทางนิติวิทยาศาสตร์:</strong> แม้จะหยุดการเข้ารหัสฮาร์ดดิสก์ได้ทันที แต่ทำให้ข้อมูลในหน่วยความจำ <strong>RAM สูญหาย 100%</strong> 
+            (ขัดต่อ RFC 3227 Order of Volatility) ส่งผลให้:
+          </p>
+          <ul style="font-size:0.83rem; color:var(--text-muted); margin-left:1.2rem; line-height:1.5;">
+            <li>กุญแจถอดรหัส (Encryption Keys) ที่ยังค้างอยู่ใน RAM ถูกทำลายถาวร</li>
+            <li>สูญเสียรายชื่อ Process, Network Sockets, และ IP เครื่องคนร้าย</li>
+            <li>ไม่สามารถพิสูจน์ได้ว่ามัลแวร์แฝงตัวเข้ามาทางช่องโหว่ใด</li>
+          </ul>
+          <div style="margin-top:0.75rem;"><span class="badge-status fail">ผลการตรวจ: จัดระดับเป็น Critical Non-Conformity (Finding 2)</span></div>
+        `;
+      } else if (curStrat === 'isolate') {
+        box.innerHTML = `
+          <div style="color:var(--amber); font-weight:700; font-size:1rem; margin-bottom:0.4rem;">⚠️ กลยุทธ์มาตรฐาน: Network Isolation (กักกันเครือข่าย)</div>
+          <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5; margin-bottom:0.6rem;">
+            <strong>การประเมินทางนิติวิทยาศาสตร์:</strong> ปลดสาย LAN หรือสั่ง Isolate ผ่าน EDR ทันที หยุดการแพร่กระจาย Lateral Movement ไปยังเครื่องอื่น 
+            และตัดการติดต่อ C2 Server ของคนร้าย แต่ยังเปิดเครื่องทิ้งไว้เพื่อคงสภาพหน่วยความจำ RAM สำหรับทีม Forensic
+          </p>
+          <div style="margin-top:0.75rem;"><span class="badge-status warn">ผลการตรวจ: สอดคล้องตามมาตรฐานพื้นฐาน (Acceptable Containment)</span></div>
+        `;
+      } else {
+        box.innerHTML = `
+          <div style="color:var(--emerald); font-weight:700; font-size:1rem; margin-bottom:0.4rem;">🌟 แนวปฏิบัติยอดเยี่ยม: Network Isolation + Memory Acquisition</div>
+          <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5; margin-bottom:0.6rem;">
+            <strong>การประเมินทางนิติวิทยาศาสตร์:</strong> ดำเนินการตัดการเชื่อมต่อเครือข่ายทันที จากนั้นรันเครื่องมือดูดหน่วยความจำ (RAM Dump) 
+            บันทึกเป็นไฟล์อิมเมจพยานหลักฐาน (.raw/.dmp) พร้อมคำนวณค่า SHA-256 Checksum ทำให้ทีมสืบสวนสามารถดึงกุญแจถอดรหัสและร่องรอยมัลแวร์ได้สมบูรณ์แบบ
+          </p>
+          <div style="margin-top:0.75rem;"><span class="badge-status pass">ผลการตรวจ: สอดคล้องตามมาตรฐานสากล ISO 27035 & NIST SP 800-61 ดีเยี่ยม</span></div>
+        `;
+      }
+    }
+    renderContainmentResult();
+
+    // ==========================================
+    // WIDGET 12.3: SOC METRICS CALCULATOR
+    // ==========================================
+    function runMetricsCalc() {
+      const detectEl = document.getElementById('m-sel-detect');
+      const ackEl = document.getElementById('m-sel-ack');
+      const containEl = document.getElementById('m-sel-contain');
+      const outCard = document.getElementById('metrics-output-card');
+      if (!outCard) return;
+
+      const mttd = detectEl ? parseInt(detectEl.value, 10) : 120;
+      const mtta = ackEl ? parseInt(ackEl.value, 10) : 15;
+      const mttc = containEl ? parseInt(containEl.value, 10) : 420;
+
+      const mttdHours = (mttd / 60).toFixed(1);
+      const mttcHours = (mttc / 60).toFixed(1);
+
+      outCard.innerHTML = `
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1rem;">
+          <div style="background:var(--bg-surface); padding:0.85rem; border-radius:6px; border:1px solid var(--border-color);">
+            <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase;">MTTD (ตรวจพบ):</div>
+            <div style="font-size:1.4rem; font-weight:800; color:${mttd <= 30 ? 'var(--emerald)' : 'var(--rose)'};">${mttdHours} ชม. (${mttd} นาที)</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">เกณฑ์ Top SOC: &lt; 15 นาที</div>
+          </div>
+          <div style="background:var(--bg-surface); padding:0.85rem; border-radius:6px; border:1px solid var(--border-color);">
+            <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase;">MTTA (รับเรื่อง):</div>
+            <div style="font-size:1.4rem; font-weight:800; color:${mtta <= 15 ? 'var(--emerald)' : 'var(--amber)'};">${mtta} นาที</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">เกณฑ์ Top SOC: &lt; 10 นาที</div>
+          </div>
+          <div style="background:var(--bg-surface); padding:0.85rem; border-radius:6px; border:1px solid var(--border-color);">
+            <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase;">MTTC (สกัดกั้น):</div>
+            <div style="font-size:1.4rem; font-weight:800; color:${mttc <= 60 ? 'var(--emerald)' : 'var(--rose)'};">${mttcHours} ชม.</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">เกณฑ์ Top SOC: &lt; 1 ชม.</div>
+          </div>
+        </div>
+        <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.45;">
+          💡 <strong>การประเมินของผู้ตรวจสอบ:</strong> ${mttd > 60 || mttc > 120 ? 'ศูนย์ SOC มีความล่าช้าในกระบวนการตรวจจับและการสกัดกั้น ทำให้ผู้โจมตีมี Dwell Time มากพอที่จะขโมยข้อมูลและเข้ารหัสระบบทั้งมหาวิทยาลัย' : 'กระบวนการเฝ้าระวังมีความคล่องตัวสูง สามารถระงับภัยคุกคามได้ก่อนความเสียหายจะลุกลาม'}
+        </div>
+      `;
+    }
+    runMetricsCalc();
+
+    // ==========================================
+    // WIDGET 12.4: WAR ROOM SIMULATOR
+    // ==========================================
+    const warScenarios = [
+      {
+        step: 1,
+        time: 'จังหวะที่ 1 // 02:15 น.',
+        title: 'SIEM ส่งเสียงเตือน High CPU และ Bulk File Renaming บนเซิร์ฟเวอร์ฐานข้อมูล',
+        question: 'ในฐานะเวร SOC Tier 1 คุณจะตัดสินใจอย่างไร?',
+        choices: [
+          { text: 'A. คิดว่าเป็นสคริปต์ Backup ประจำสัปดาห์ กดปิด Alert เพื่อทำงานอื่นต่อ', score: 0, feedback: '❌ ผิดพลาด: เป็นการละเลย Alert (Misjudgment) ส่งผลให้มัลแวร์แพร่กระจายตลอดคืน' },
+          { text: 'B. ตรวจสอบ IOC ดูกระบวนการที่รัน และยกระดับเคส (Escalate) ให้ Tier 2 ทันที', score: 25, feedback: '✅ ถูกต้อง: ยึดหลักวิเคราะห์ก่อนปิดเคส และส่งต่อทีมตาม Escalation Matrix' }
+        ]
+      },
+      {
+        step: 2,
+        time: 'จังหวะที่ 2 // 08:30 น.',
+        title: 'พบข้อความเรียกค่าไถ่ .locked และ HOW_TO_DECRYPT.txt บนหน้าจอเซิร์ฟเวอร์',
+        question: 'ในฐานะ Technical Lead คุณจะเลือกทำสิ่งใดเป็นอันดับแรก?',
+        choices: [
+          { text: 'A. ถอดสายไฟและกดปุ่ม Power ปิดเครื่องเซิร์ฟเวอร์ทั้งหมดทันที', score: 0, feedback: '❌ ผิดพลาด: ทำลายข้อมูลใน RAM (ขัดต่อ RFC 3227) กุญแจถอดรหัสสูญหายถาวร' },
+          { text: 'B. ตัดการเชื่อมต่อเครือข่าย (Isolate VLAN) และรันคำสั่ง Dump RAM เก็บหลักฐาน', score: 25, feedback: '✅ ถูกต้อง: สกัดกั้นการแพร่ระบาดโดยไม่ทำลายพยานหลักฐานทางดิจิทัล' }
+        ]
+      },
+      {
+        step: 3,
+        time: 'จังหวะที่ 3 // 09:30 น.',
+        title: 'ระบบสำรองข้อมูล NAS ที่ต่ออยู่บนเครือข่ายถูก Ransomware เข้ารหัสไปด้วย',
+        question: 'ในฐานะผู้ตรวจสอบและทีมกู้คืน คุณจะแนะนำทางออกใดแก่มหาวิทยาลัย?',
+        choices: [
+          { text: 'A. รีบติดต่อเจรจาจ่ายค่าไถ่เป็น Bitcoin ให้แฮกเกอร์เพื่อแลกเอากุญแจถอดรหัส', score: 0, feedback: '❌ ผิดพลาด: การจ่ายค่าไถ่ไม่มีหลักประกันว่าจะได้ข้อมูลคืน และสนับสนุนอาชญากรรม' },
+          { text: 'B. ดึงข้อมูลจากชุดสำรองออฟไลน์ (Immutable / Air-gapped Cold Storage) มารื้อสร้างระบบใหม่ใน Clean Segment', score: 25, feedback: '✅ ถูกต้อง: ยึดหลักกู้คืนจาก Clean & Immutable Backup และไม่เจรจาค่าไถ่' }
+        ]
+      },
+      {
+        step: 4,
+        time: 'จังหวะที่ 4 // 13:00 น.',
+        title: 'ผู้บริหารระดับสูงสั่งการให้ปิดข่าวภายในมหาวิทยาลัย ห้ามแจ้งภายนอก',
+        question: 'ในฐานะ Lead Auditor และที่ปรึกษาด้านกฎหมาย คุณจะชี้แจงอย่างไร?',
+        choices: [
+          { text: 'A. ปฏิบัติตามคำสั่งผู้บริหาร เงียบไว้ก่อนเพื่อรักษาชื่อเสียงมหาวิทยาลัย', score: 0, feedback: '❌ ผิดพลาด: ละเมิดกฎหมาย PDPA (ม.37(4)) และ พ.ร.บ.ไซเบอร์ฯ ม.73 มหาวิทยาลัยมีความผิดสำเร็จ' },
+          { text: 'B. ชี้แจงบทลงโทษตามกฎหมาย และผลักดันให้ทำหนังสือแจ้ง สกมช. (24 ชม.) และ สคส. (72 ชม.) อย่างโปร่งใส', score: 25, feedback: '✅ ถูกต้อง: คุ้มครองความชอบด้วยกฎหมายขององค์กร และลดความเสียหายต่อเจ้าของข้อมูล' }
+        ]
+      }
+    ];
+
+    let curWarStep = 1;
+    let warScores = { 1: null, 2: null, 3: null, 4: null };
+
+    function renderWarRoomScenario() {
+      const display = document.getElementById('war-scenario-display');
+      if (!display) return;
+
+      const sc = warScenarios.find(s => s.step === curWarStep) || warScenarios[0];
+
+      // Update stepper buttons
+      for (let s = 1; s <= 4; s++) {
+        const stepBtn = document.getElementById('war-step-' + s);
+        if (stepBtn) {
+          stepBtn.classList.toggle('active', s === curWarStep);
+          if (warScores[s] !== null) {
+            stepBtn.style.borderBottom = warScores[s] > 0 ? '3px solid var(--emerald)' : '3px solid var(--rose)';
+          }
+        }
+      }
+
+      const answeredIdx = warScores[curWarStep];
+
+      let choicesHtml = '';
+      sc.choices.forEach((c, idx) => {
+        const isSelected = answeredIdx === idx;
+        choicesHtml += `
+          <button class="vol-select-btn ${isSelected ? 'active' : ''}" style="margin-bottom:0.5rem; width:100%;" onclick="answerWarRoom(${curWarStep}, ${idx})">
+            ${c.text}
+          </button>
+        `;
+      });
+
+      let feedbackHtml = '';
+      if (answeredIdx !== null) {
+        const choice = sc.choices[answeredIdx];
+        feedbackHtml = `
+          <div style="background:var(--bg-surface); padding:0.85rem; border-radius:6px; border:1px solid var(--border-color); margin-top:0.75rem; font-size:0.85rem; line-height:1.45;">
+            ${choice.feedback}
+          </div>
+        `;
+      }
+
+      display.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap;">
+          <span style="font-family:var(--font-code); font-weight:700; color:var(--primary); font-size:0.8rem;">${sc.time}</span>
+          <span style="font-size:0.78rem; color:var(--text-dim);">ขั้นตอนที่ ${curWarStep} / 4</span>
+        </div>
+        <div style="font-family:var(--font-display); font-weight:700; font-size:1.05rem; color:var(--text-main); margin-bottom:0.4rem;">${sc.title}</div>
+        <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:1rem;"><strong>โจทย์การตัดสินใจ:</strong> ${sc.question}</p>
+        <div style="margin-bottom:0.5rem;">${choicesHtml}</div>
+        ${feedbackHtml}
+        <div style="display:flex; justify-content:space-between; margin-top:1rem;">
+          <button class="control-btn" onclick="prevWarStep()" ${curWarStep === 1 ? 'disabled style="opacity:0.5;"' : ''}>◀ ย้อนกลับ</button>
+          <button class="control-btn" onclick="nextWarStep()" ${curWarStep === 4 ? 'disabled style="opacity:0.5;"' : ''}>ถัดไป ▶</button>
+        </div>
+      `;
+
+      renderWarScorePanel();
+    }
+
+    function answerWarRoom(step, choiceIdx) {
+      warScores[step] = choiceIdx;
+      renderWarRoomScenario();
+    }
+
+    function prevWarStep() {
+      if (curWarStep > 1) { curWarStep--; renderWarRoomScenario(); }
+    }
+
+    function nextWarStep() {
+      if (curWarStep < 4) { curWarStep++; renderWarRoomScenario(); }
+    }
+
+    function renderWarScorePanel() {
+      const panel = document.getElementById('war-score-panel');
+      if (!panel) return;
+
+      let totalScore = 0;
+      let answeredCount = 0;
+      for (let s = 1; s <= 4; s++) {
+        if (warScores[s] !== null) {
+          answeredCount++;
+          const sc = warScenarios.find(item => item.step === s);
+          totalScore += sc.choices[warScores[s]].score;
+        }
+      }
+
+      panel.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+          <div>
+            <span style="font-size:0.82rem; color:var(--text-dim); text-transform:uppercase;">คะแนนความพร้อมในการรับมือวิกฤต (Audit Readiness Score):</span>
+            <strong style="margin-left:0.5rem; font-size:1.2rem; color:${totalScore >= 75 ? 'var(--emerald)' : (totalScore >= 50 ? 'var(--amber)' : 'var(--rose)')};">${totalScore} / 100 คะแนน</strong>
+          </div>
+          <div style="font-size:0.82rem; color:var(--text-muted);">
+            ${answeredCount === 4 ? (totalScore === 100 ? '🎉 ยอดเยี่ยม! คุณตัดสินใจได้ถูกต้องตามหลักนิติวิทยาศาสตร์และกฎหมายครบ 100%' : 'ได้เรียนรู้ข้อผิดพลาดสำคัญในการตอบสนองต่อเหตุการณ์') : 'ตอบให้ครบทั้ง 4 จังหวะเพื่อสรุปผลการประเมิน'}
+          </div>
+        </div>
+      `;
+    }
+    renderWarRoomScenario();
+
+    // ==========================================
+    // WIDGET 12.5: VOLATILITY INSPECTOR
+    // ==========================================
+    const volData = {
+      ram: {
+        title: '🧠 1. RAM / Physical Memory (ความสูญหาย: วิกฤต)',
+        tools: 'DumpIt, WinPmem, LiME (Linux), FTK Imager CLI',
+        data: 'กุญแจถอดรหัส (AES Keys), รายการเชื่อมต่อ Network, รหัสผ่านในหน่วยความจำ, โค้ดมัลแวร์ที่ฝังตัวใน Process (Fileless)',
+        rule: 'ห้ามปิดเครื่องหรือดึงปลั๊กไฟ! ให้รันเครื่องมือ Dump RAM ลง Flash Drive ที่เตรียมไว้ทันที'
+      },
+      network: {
+        title: '🌐 2. Network State & Active Sockets (ความสูญหาย: สูง)',
+        tools: 'netstat -ano, ss -tulpn, arp -a, route print, TCPView',
+        data: 'IP และ Port ปลายทางของเครื่องควบคุม (C2 Server), Session ที่ยังเปิดค้างอยู่, MAC Address เครื่องต้นทาง',
+        rule: 'บันทึกคำสั่ง Snapshot ตารางเส้นทางและการเชื่อมต่อก่อนการสั่งตัดการเชื่อมต่อเครือข่าย'
+      },
+      disk: {
+        title: '💾 3. Hard Disk / SSD Storage (ความสูญหาย: ปานกลาง/ถาวร)',
+        tools: 'dd, dc3dd, FTK Imager, Guymager, Write Blocker Hardware',
+        data: 'ไฟล์ที่ถูกเข้ารหัส, Ransom Note, Event Logs, Registry Hives, MFT (Master File Table)',
+        rule: 'ต้องต่อผ่านฮาร์ดแวร์ป้องกันการเขียนทับ (Write Blocker) เสมอ และคำนวณค่าแฮช SHA-256 ยืนยันความถูกต้อง'
+      },
+      backup: {
+        title: '🛡️ 4. Immutable Backup / WORM Storage (ความคงทน: ถาวร)',
+        tools: 'Veeam Hardened Repository, AWS S3 Object Lock, Offline Tape',
+        data: 'ชุดข้อมูลสำรองที่ตัดสิทธิ์การลบเด็ดขาด (Compliance Mode) แยกเครือข่ายจากระบบ Active Directory',
+        rule: 'ยึดหลักกฎ 3-2-1-1-0 โดยต้องมี 1 ชุดข้อมูลที่ตัดการเชื่อมต่อเครือข่าย (Air-gapped) เสมอ'
+      }
+    };
+
+    function inspectVolatility(key) {
+      const display = document.getElementById('vol-detail-display');
+      const btns = document.querySelectorAll('.vol-select-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      const activeBtn = Array.from(btns).find(b => b.getAttribute('onclick')?.includes(key));
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (!display) return;
+      const d = volData[key] || volData.ram;
+
+      display.innerHTML = `
+        <div style="font-family:var(--font-display); font-weight:700; font-size:1.05rem; color:var(--text-main); margin-bottom:0.5rem;">${d.title}</div>
+        <div style="margin-bottom:0.6rem; font-size:0.84rem;"><strong>🛠️ เครื่องมือที่ใช้สกัดหลักฐาน:</strong> <code>${d.tools}</code></div>
+        <div style="margin-bottom:0.6rem; font-size:0.84rem;"><strong>📋 ข้อมูลสำคัญที่บันทึกได้:</strong> ${d.data}</div>
+        <div style="background:var(--bg-surface); padding:0.75rem; border-radius:6px; border-left:4px solid var(--primary); font-size:0.83rem; line-height:1.45;">
+          <strong>กฎเหล็กของผู้ตรวจสอบ:</strong> ${d.rule}
+        </div>
+      `;
+    }
+    inspectVolatility('ram');
+  </script>
+</body>
+</html>

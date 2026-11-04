@@ -1,0 +1,3505 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 3: ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ | NECS1312</title>
+  <meta name="description" content="บทที่ 3 การแปลงกฎหมายสู่มาตรการควบคุมขั้นต่ำ การจัดทำ Control Mapping & Compliance Matrix และการประเมินประสิทธิผลจริง (Design vs Operating Effectiveness)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       CSS VARIABLES & THEME SYSTEM (Readability Focused)
+       ========================================================================== */
+    :root {
+      --font-body: 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', Consolas, Monaco, monospace;
+      --font-size-base: 16px;
+      --line-height-base: 1.85;
+
+      /* Light Theme */
+      --bg-page: #F8FAFC;
+      --bg-surface: #FFFFFF;
+      --bg-sidebar: #F1F5F9;
+      --bg-subtle: #F8FAFC;
+      
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+      --text-light: #94A3B8;
+      
+      --border-color: #E2E8F0;
+      --border-subtle: #F1F5F9;
+
+      --primary: #2563EB;
+      --primary-hover: #1D4ED8;
+      --primary-light: #EFF6FF;
+      --primary-border: #BFDBFE;
+
+      --success: #059669;
+      --success-light: #ECFDF5;
+      --success-border: #A7F3D0;
+
+      --warning: #D97706;
+      --warning-light: #FFFBEB;
+      --warning-border: #FDE68A;
+
+      --danger: #DC2626;
+      --danger-light: #FEF2F2;
+      --danger-border: #FECACA;
+
+      --purple: #7C3AED;
+      --purple-light: #F5F3FF;
+      --purple-border: #DDD6FE;
+
+      --cyan: #0891B2;
+      --cyan-light: #ECFEFF;
+      --cyan-border: #A5F3FC;
+
+      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    /* Sepia Theme */
+    [data-theme="sepia"] {
+      --bg-page: #F4EFE6;
+      --bg-surface: #FCF9F2;
+      --bg-sidebar: #EBE4D5;
+      --bg-subtle: #F7F3EB;
+
+      --text-main: #2C2520;
+      --text-muted: #6E6359;
+      --text-light: #998C80;
+
+      --border-color: #DDD4C4;
+      --border-subtle: #E8E0D2;
+
+      --primary: #965B2B;
+      --primary-hover: #7E4B22;
+      --primary-light: #F6EDE3;
+      --primary-border: #E8D3BF;
+
+      --success: #2E7D32;
+      --success-light: #EDF7ED;
+      --success-border: #C8E6C9;
+
+      --warning: #B45309;
+      --warning-light: #FEF3C7;
+      --warning-border: #FDE68A;
+
+      --danger: #B91C1C;
+      --danger-light: #FEE2E2;
+      --danger-border: #FECACA;
+
+      --purple: #6B21A8;
+      --purple-light: #F3E8FF;
+      --purple-border: #E9D5FF;
+
+      --cyan: #0E7490;
+      --cyan-light: #E0F2FE;
+      --cyan-border: #BAE6FD;
+    }
+
+    /* Soft Dark Theme */
+    [data-theme="dark"] {
+      --bg-page: #0F172A;
+      --bg-surface: #1E293B;
+      --bg-sidebar: #131E34;
+      --bg-subtle: #1E293B;
+
+      --text-main: #F1F5F9;
+      --text-muted: #94A3B8;
+      --text-light: #64748B;
+
+      --border-color: #334155;
+      --border-subtle: #1E293B;
+
+      --primary: #38BDF8;
+      --primary-hover: #0EA5E9;
+      --primary-light: rgba(56, 189, 248, 0.12);
+      --primary-border: rgba(56, 189, 248, 0.3);
+
+      --success: #34D399;
+      --success-light: rgba(52, 211, 153, 0.12);
+      --success-border: rgba(52, 211, 153, 0.3);
+
+      --warning: #FBBF24;
+      --warning-light: rgba(251, 191, 36, 0.12);
+      --warning-border: rgba(251, 191, 36, 0.3);
+
+      --danger: #F87171;
+      --danger-light: rgba(248, 113, 113, 0.12);
+      --danger-border: rgba(248, 113, 113, 0.3);
+
+      --purple: #A78BFA;
+      --purple-light: rgba(167, 139, 250, 0.12);
+      --purple-border: rgba(167, 139, 250, 0.3);
+
+      --cyan: #22D3EE;
+      --cyan-light: rgba(34, 211, 238, 0.12);
+      --cyan-border: rgba(34, 211, 238, 0.3);
+    }
+
+    [data-font-size="large"] {
+      --font-size-base: 18px;
+      --line-height-base: 1.88;
+    }
+
+    [data-font-size="xlarge"] {
+      --font-size-base: 20px;
+      --line-height-base: 1.92;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: var(--font-size-base);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      line-height: var(--line-height-base);
+      color: var(--text-main);
+      background-color: var(--bg-page);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), #6366F1);
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s ease-out;
+    }
+
+    /* TOP NAVBAR */
+    header.site-header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-toggle-sidebar {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: var(--font-body);
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .btn-toggle-sidebar:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-toggle-sidebar.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .course-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--purple);
+      background: var(--purple-light);
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--purple-border);
+      font-family: var(--font-mono);
+    }
+
+    .header-title-text {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .reading-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-group {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: var(--bg-surface);
+    }
+
+    .ctrl-btn {
+      background: none;
+      border: none;
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .ctrl-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .ctrl-btn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* MAIN CONTAINER */
+    .app-layout {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      position: relative;
+    }
+
+    /* SIDEBAR TOC */
+    aside.sidebar-toc {
+      width: 320px;
+      flex-shrink: 0;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      height: calc(100vh - 57px);
+      position: sticky;
+      top: 57px;
+      overflow-y: auto;
+      padding: 20px 14px;
+      transition: transform 0.25s ease, margin-left 0.25s ease, width 0.25s ease;
+      z-index: 800;
+    }
+
+    body.sidebar-collapsed aside.sidebar-toc {
+      width: 0 !important;
+      min-width: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      overflow: hidden !important;
+      border-right: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    .toc-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 750;
+      backdrop-filter: blur(2px);
+    }
+
+    .toc-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .toc-headline {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-close-toc {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .btn-close-toc:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: var(--danger-light);
+    }
+
+    .toc-item {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 6px 10px;
+      margin-bottom: 2px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.83rem;
+      line-height: 1.45;
+      transition: all 0.15s ease;
+    }
+
+    .toc-item:hover {
+      background: var(--bg-surface);
+      color: var(--primary);
+    }
+
+    .toc-item.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+      border-left: 3px solid var(--primary);
+    }
+
+    .toc-item.toc-h3 {
+      padding-left: 22px;
+      font-size: 0.78rem;
+    }
+
+    .toc-bullet {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--text-light);
+      flex-shrink: 0;
+    }
+
+    .toc-item.active .toc-bullet {
+      background: var(--primary);
+    }
+
+    /* MAIN CONTENT AREA */
+    main.content-area {
+      flex: 1;
+      min-width: 0;
+      padding: 36px 48px 80px 48px;
+      background-color: var(--bg-page);
+      display: flex;
+      justify-content: center;
+    }
+
+    article.article-body {
+      width: 100%;
+      max-width: 860px;
+    }
+
+    /* TYPOGRAPHY */
+    h1.article-title, h2, h3, h4, .figure-container, .interactive-card {
+      scroll-margin-top: 75px;
+    }
+
+    h1.article-title {
+      font-size: 2.1rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--text-main);
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
+
+    h2 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      line-height: 1.4;
+      color: var(--text-main);
+      margin-top: 44px;
+      margin-bottom: 18px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: var(--text-main);
+      margin-top: 32px;
+      margin-bottom: 14px;
+    }
+
+    h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text-main);
+      margin-top: 24px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin-bottom: 18px;
+      color: var(--text-main);
+      text-align: justify;
+    }
+
+    strong {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--primary);
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.15s ease;
+    }
+
+    a:hover {
+      color: var(--primary-hover);
+    }
+
+    hr.section-divider {
+      border: none;
+      height: 1px;
+      background: var(--border-color);
+      margin: 40px 0;
+    }
+
+    /* LISTS */
+    ul.content-list, ol.content-list {
+      margin-bottom: 20px;
+      padding-left: 24px;
+    }
+
+    ul.content-list li, ol.content-list li {
+      margin-bottom: 8px;
+      line-height: var(--line-height-base);
+    }
+
+    /* CALLOUTS */
+    .callout {
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      margin: 26px 0;
+      border-left: 4px solid var(--primary);
+      background: var(--bg-surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .callout-title {
+      font-weight: 700;
+      font-size: 0.98rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .callout.law {
+      border-left-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .callout.law .callout-title { color: var(--primary); }
+
+    .callout.tip {
+      border-left-color: var(--success);
+      background: var(--success-light);
+    }
+    .callout.tip .callout-title { color: var(--success); }
+
+    .callout.warning {
+      border-left-color: var(--warning);
+      background: var(--warning-light);
+    }
+    .callout.warning .callout-title { color: var(--warning); }
+
+    .callout.danger {
+      border-left-color: var(--danger);
+      background: var(--danger-light);
+    }
+    .callout.danger .callout-title { color: var(--danger); }
+
+    .callout.note {
+      border-left-color: var(--purple);
+      background: var(--purple-light);
+    }
+    .callout.note .callout-title { color: var(--purple); }
+
+    blockquote {
+      border-left: 4px solid var(--border-color);
+      padding: 12px 18px;
+      margin: 20px 0;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    /* CODE BLOCK */
+    .code-block {
+      background: #1E293B;
+      color: #E2E8F0;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin: 24px 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .code-block pre {
+      margin: 0;
+    }
+
+    /* TABLES */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin: 26px 0;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: var(--bg-sidebar);
+      color: var(--text-main);
+      font-weight: 600;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: var(--bg-subtle);
+    }
+
+    .pillar-tag {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    /* FIGURES & VISUAL DIAGRAMS (No Cramped SVG!) */
+    .figure-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin: 36px 0;
+      box-shadow: var(--shadow-md);
+    }
+
+    .figure-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .figure-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .figure-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .figure-caption {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+
+    /* FIGURE 3.1: HIERARCHY TREE */
+    .hierarchy-tree-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .ht-level-card {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+    }
+
+    .ht-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .ht-badge.law { background: #DBEAFE; color: #1D4ED8; }
+    .ht-badge.baseline { background: #FEF3C7; color: #B45309; }
+    .ht-badge.intl { background: #EDE9FE; color: #6D28D9; }
+
+    .ht-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .ht-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .ht-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .ht-pill {
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .ht-pill.blue { background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary-border); }
+
+    .ht-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .ht-conn-line {
+      width: 2px;
+      height: 12px;
+      background: var(--border-color);
+    }
+    .ht-conn-badge {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .ht-pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .ht-pillar-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      text-align: center;
+    }
+    .ht-pillar-box .ht-p-num {
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--text-light);
+    }
+    .ht-pillar-box .ht-p-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin: 2px 0;
+    }
+    .ht-pillar-box .ht-p-en {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .ht-intl-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .ht-intl-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .ht-intl-header {
+      margin-bottom: 8px;
+    }
+    .intl-code {
+      display: block;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text-main);
+    }
+    .intl-role {
+      font-size: 0.75rem;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .ht-intl-box p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .ht-box-tag {
+      align-self: flex-start;
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: var(--purple-light);
+      color: var(--purple);
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--purple-border);
+    }
+
+    /* FIGURE 3.2: PILLARS & DOMAINS */
+    .pillars-domains-matrix {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .pd-card {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .pd-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .pd-num {
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--primary);
+    }
+    .pd-type {
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+    }
+
+    .pd-title {
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .pd-scope {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    .pd-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 10px;
+    }
+
+    .pd-badge {
+      font-size: 0.73rem;
+      font-weight: 600;
+      color: var(--success);
+    }
+
+    .pd-ref {
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      color: var(--text-light);
+    }
+
+    /* FIGURE 3.3: PDCA GRID */
+    .pdca-grid-flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      align-items: start;
+    }
+
+    .pdca-step-card {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      position: relative;
+    }
+
+    .pdca-step-card.plan { border-top: 4px solid var(--primary); }
+    .pdca-step-card.do { border-top: 4px solid var(--purple); }
+    .pdca-step-card.check { border-top: 4px solid var(--warning); }
+    .pdca-step-card.act { border-top: 4px solid var(--success); }
+
+    .pdca-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .pdca-step-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+
+    .pdca-activities {
+      font-size: 0.82rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .pdca-activities ul {
+      padding-left: 18px;
+      margin-top: 4px;
+    }
+    .pdca-activities li {
+      margin-bottom: 4px;
+    }
+
+    .pdca-artifacts {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 12px;
+      background: var(--bg-surface);
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+    }
+    .art-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .art-pill {
+      font-size: 0.74rem;
+      font-family: var(--font-mono);
+      color: var(--primary);
+    }
+
+    .pdca-auditor-focus {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      background: var(--primary-light);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      line-height: 1.45;
+    }
+
+    .pdca-connector {
+      grid-column: 1 / -1;
+      display: none; /* Hide in multi-column */
+    }
+
+    /* FIGURE 3.4: 4 SCENARIOS MATRIX */
+    .scenarios-matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .sc-matrix-card {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      background: var(--bg-page);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sc-tag-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .sc-quadrant-badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .sc-status-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .sc-status-pill.green { background: var(--success-light); color: var(--success); }
+    .sc-status-pill.amber { background: var(--warning-light); color: var(--warning); }
+    .sc-status-pill.red { background: var(--danger-light); color: var(--danger); }
+    .sc-status-pill.purple { background: var(--purple-light); color: var(--purple); }
+
+    .sc-title {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .sc-desc {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+
+    .sc-example {
+      font-size: 0.8rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .sc-outcome {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+    }
+    .sc-outcome.green { background: var(--success-light); color: var(--success); }
+    .sc-outcome.amber { background: var(--warning-light); color: var(--warning); }
+    .sc-outcome.red { background: var(--danger-light); color: var(--danger); }
+    .sc-outcome.purple { background: var(--purple-light); color: var(--purple); }
+
+    /* FIGURE 3.5: EVIDENCE PYRAMID */
+    .evidence-pyramid-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pyramid-tier {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-page);
+    }
+
+    .pyramid-tier.t-highest { border-left: 6px solid #059669; background: #F0FDF4; }
+    .pyramid-tier.t-vhigh   { border-left: 6px solid #10B981; }
+    .pyramid-tier.t-high    { border-left: 6px solid #0284C7; }
+    .pyramid-tier.t-modhigh { border-left: 6px solid #6366F1; }
+    .pyramid-tier.t-moderate{ border-left: 6px solid #F59E0B; }
+    .pyramid-tier.t-modlow  { border-left: 6px solid #EA580C; }
+    .pyramid-tier.t-lowest  { border-left: 6px solid #DC2626; background: #FEF2F2; }
+
+    [data-theme="dark"] .pyramid-tier.t-highest { background: rgba(5, 150, 105, 0.15); }
+    [data-theme="dark"] .pyramid-tier.t-lowest { background: rgba(220, 38, 38, 0.15); }
+
+    .pt-rank {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      min-width: 130px;
+      flex-shrink: 0;
+      color: var(--text-muted);
+    }
+
+    .pt-content {
+      flex: 1;
+    }
+    .pt-title {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+    .pt-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .pt-type-pill {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--text-light);
+      white-space: nowrap;
+    }
+
+    .triangulation-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-top: 14px;
+    }
+    .tb-icon {
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+    .tb-text {
+      font-size: 0.84rem;
+      color: var(--text-main);
+      line-height: 1.55;
+    }
+
+    /* INTERACTIVE WIDGET COMMON STYLES */
+    .widget-box {
+      background: var(--bg-surface);
+      border: 2px solid var(--primary-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin: 36px 0;
+      box-shadow: var(--shadow-md);
+    }
+
+    .widget-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .widget-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--primary);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .widget-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .widget-instruction {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* WIDGET 3.1: PILLS & DISPLAY */
+    .mapping-selector-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .pill-btn {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-family: var(--font-body);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pill-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .pill-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .mapping-detail-display {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+
+    /* WIDGET 3.2: STEPPER */
+    .stepper-horizontal {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 22px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .step-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      min-width: 80px;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+
+    .step-node:hover {
+      background: var(--bg-page);
+    }
+
+    .step-node.active {
+      background: var(--primary-light);
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--border-color);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .step-node.active .step-num {
+      background: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .step-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .step-node.active .step-label {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .step-detail-card {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+
+    /* WIDGET 3.3: EVIDENCE BUTTONS */
+    .evidence-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .ev-select-btn {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-family: var(--font-body);
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+    }
+
+    .ev-select-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .ev-select-btn.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .evidence-result-card {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+
+    /* WIDGET 3.4: SIMULATOR */
+    .sim-tab-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .sim-tab-btn {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-family: var(--font-body);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .sim-tab-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .sim-tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .sim-content-body {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 22px;
+    }
+
+    /* WIDGET 3.5: QUIZ */
+    .quiz-card {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .quiz-question {
+      font-size: 0.92rem;
+      margin-bottom: 14px;
+      line-height: 1.55;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quiz-opt-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      text-align: left;
+      font-size: 0.85rem;
+      font-family: var(--font-body);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      line-height: 1.5;
+    }
+
+    .quiz-opt-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+
+    .quiz-opt-btn.correct {
+      background: var(--success-light) !important;
+      border-color: var(--success) !important;
+      color: var(--success) !important;
+      font-weight: 600;
+    }
+
+    .quiz-opt-btn.incorrect {
+      background: var(--danger-light) !important;
+      border-color: var(--danger) !important;
+      color: var(--danger) !important;
+    }
+
+    .quiz-feedback {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .quiz-feedback.show.correct {
+      display: block;
+      background: var(--success-light);
+      color: var(--success);
+      border-left: 3px solid var(--success);
+    }
+
+    .quiz-feedback.show.incorrect {
+      display: block;
+      background: var(--danger-light);
+      color: var(--danger);
+      border-left: 3px solid var(--danger);
+    }
+
+    /* FOOTER */
+    footer.site-footer {
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      padding: 24px 20px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* Chapter Navigation Bar */
+    .chapter-nav-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border-color);
+    }
+    .chapter-nav-card {
+      display: flex;
+      flex-direction: column;
+      padding: 18px 20px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+    }
+    .chapter-nav-card:hover {
+      border-color: var(--purple);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      text-decoration: none;
+    }
+    .chapter-nav-card.prev .nav-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .chapter-nav-card.prev .nav-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--purple);
+    }
+    .chapter-nav-card.next {
+      text-align: right;
+    }
+    .chapter-nav-card.next .nav-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .chapter-nav-card.next .nav-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--purple);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 992px) {
+      aside.sidebar-toc {
+        position: fixed;
+        left: 0;
+        top: 57px;
+        bottom: 0;
+        width: 300px !important;
+        transform: translateX(-100%);
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 800;
+        box-shadow: var(--shadow-lg);
+      }
+      aside.sidebar-toc.open {
+        transform: translateX(0);
+      }
+      .toc-backdrop.open {
+        display: block;
+      }
+      main.content-area {
+        padding: 24px 20px 60px 20px;
+      }
+      .chapter-nav-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-card.next {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <div class="toc-backdrop" id="toc-backdrop"></div>
+
+  <!-- TOP NAVBAR -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-section">
+        <button class="btn-toggle-sidebar active" id="btn-toggle-toc" title="เปิด/ปิดสารบัญ (Ctrl+B)">
+          <span>📑</span>
+          <span>สารบัญ</span>
+        </button>
+        <span class="course-badge">NECS1312 // CH-3</span>
+        <div class="header-title-text">บทที่ 3: ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์</div>
+      </div>
+
+      <div class="reading-controls">
+        <!-- Font Size Adjuster -->
+        <div class="ctrl-group">
+          <button class="ctrl-btn" id="btn-font-dec" title="ลดขนาดตัวอักษร">A-</button>
+          <button class="ctrl-btn active" id="btn-font-normal" title="ขนาดปกติ">A</button>
+          <button class="ctrl-btn" id="btn-font-inc" title="เพิ่มขนาดตัวอักษร">A+</button>
+        </div>
+
+        <!-- Theme Selector -->
+        <div class="ctrl-group">
+          <button class="ctrl-btn active" id="btn-theme-light" title="ธีมสว่าง (Light)">☀️</button>
+          <button class="ctrl-btn" id="btn-theme-sepia" title="ธีมถนอมสายตา (Sepia)">📖</button>
+          <button class="ctrl-btn" id="btn-theme-dark" title="ธีมมืด (Dark)">🌙</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <!-- COLLAPSIBLE SIDEBAR TOC -->
+    <aside class="sidebar-toc" id="sidebar-toc">
+      <div class="toc-header-row">
+        <span class="toc-headline">📑 สารบัญบทที่ 3</span>
+        <button class="btn-close-toc" id="btn-close-toc" title="ซ่อนสารบัญ">✕ ซ่อน</button>
+      </div>
+      <nav class="toc-nav">
+<a href="#sec-learning-outcomes" class="toc-item toc-h2" data-target="sec-learning-outcomes">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</span>
+  </a>
+<a href="#sec-intro" class="toc-item toc-h2" data-target="sec-intro">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">บทนำประจำบท</span>
+  </a>
+<a href="#sec-intro-law-to-practice" class="toc-item toc-h3" data-target="sec-intro-law-to-practice">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">จาก "กรอบกฎหมายบังคับ" สู่ "คู่มือการปฏิบัติการจริง"</span>
+  </a>
+<a href="#sec-intro-intl-context" class="toc-item toc-h3" data-target="sec-intro-intl-context">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">บริบทความเชื่อมโยงกับมาตรฐานสากล</span>
+  </a>
+<a href="#sec-part-1" class="toc-item toc-h2" data-target="sec-part-1">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ส่วนที่ 1 โครงสร้างของประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านไซเบอร์</span>
+  </a>
+<a href="#sec-1-1" class="toc-item toc-h3" data-target="sec-1-1">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">1.1 วัตถุประสงค์ของประมวลแนวทางปฏิบัติและกรอบมาตรฐาน</span>
+  </a>
+<a href="#sec-1-2" class="toc-item toc-h3" data-target="sec-1-2">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">1.2 องค์ประกอบสำคัญของประมวลแนวทางปฏิบัติและกรอบมาตรฐาน</span>
+  </a>
+<a href="#sec-1-2-domains" class="toc-item toc-h3" data-target="sec-1-2-domains">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ความเชื่อมโยงกับ 6 ด้านการตรวจสอบตามประมวลแนวทางปฏิบัติฯ</span>
+  </a>
+<a href="#sec-1-3" class="toc-item toc-h3" data-target="sec-1-3">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">1.3 การเชื่อมโยงกรอบมาตรฐานกับวงจร PDCA (Deming Cycle)</span>
+  </a>
+<a href="#sec-1-4" class="toc-item toc-h3" data-target="sec-1-4">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">1.4 การเชื่อมโยงกับกรอบมาตรฐานระดับสากล</span>
+  </a>
+<a href="#sec-part-2" class="toc-item toc-h2" data-target="sec-part-2">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ส่วนที่ 2 การสร้างและการใช้งาน Control Mapping & Compliance Matrix</span>
+  </a>
+<a href="#sec-2-1" class="toc-item toc-h3" data-target="sec-2-1">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">2.1 องค์ประกอบของการทำ Control Mapping</span>
+  </a>
+<a href="#sec-2-2" class="toc-item toc-h3" data-target="sec-2-2">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">2.2 ความสอดคล้องเชิงรูปแบบ (Conformity) เทียบกับ ประสิทธิผลจริง (Effectiveness)</span>
+  </a>
+<a href="#sec-2-3" class="toc-item toc-h3" data-target="sec-2-3">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">2.3 การจำแนกประเภทของหลักฐานการตรวจ (Types of Audit Evidence)</span>
+  </a>
+<a href="#sec-2-4" class="toc-item toc-h3" data-target="sec-2-4">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">2.4 การประเมินช่องว่าง (Gap Assessment) และสถานะการปฏิบัติตามเกณฑ์</span>
+  </a>
+<a href="#sec-2-4-maturity" class="toc-item toc-h3" data-target="sec-2-4-maturity">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">การวัดระดับวุฒิภาวะด้านความมั่นคงปลอดภัย (Cybersecurity Maturity Level)</span>
+  </a>
+<a href="#sec-part-3" class="toc-item toc-h2" data-target="sec-part-3">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ส่วนที่ 3 กรณีศึกษาแกนกลางประจำบท: มหาวิทยาลัยดิจิทัลสมมติ</span>
+  </a>
+<a href="#sec-3-context" class="toc-item toc-h3" data-target="sec-3-context">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">บริบทของมหาวิทยาลัยดิจิทัลสมมติ:</span>
+  </a>
+<a href="#sec-3-cases" class="toc-item toc-h3" data-target="sec-3-cases">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">สถานการณ์จำลองสำหรับการวิเคราะห์ในชั้นเรียน (Case Analysis)</span>
+  </a>
+<a href="#sec-part-4" class="toc-item toc-h2" data-target="sec-part-4">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ส่วนที่ 4 มุมมองวิชาชีพประจำบท (Professional Perspectives)</span>
+  </a>
+<a href="#sec-4-1" class="toc-item toc-h3" data-target="sec-4-1">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">4.1 มุมมอง Lead Implementer: การออกแบบระบบและสร้าง Compliance Matrix ให้ใช้งานได้จริง</span>
+  </a>
+<a href="#sec-4-2" class="toc-item toc-h3" data-target="sec-4-2">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">4.2 มุมมอง Lead Auditor: ศิลปะในการตั้งคำถามและการพิสูจน์ความมีประสิทธิผล</span>
+  </a>
+<a href="#sec-4-3" class="toc-item toc-h3" data-target="sec-4-3">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">4.3 ประเด็นอภิปรายเชิงวิชาชีพ: "Check-box Compliance vs. Real Security Posture"</span>
+  </a>
+<a href="#sec-summary" class="toc-item toc-h2" data-target="sec-summary">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">สรุปบทที่ 3 (Chapter Summary)</span>
+  </a>
+<a href="#sec-assignment" class="toc-item toc-h2" data-target="sec-assignment">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">แบบฝึกหัดและการบ้านประจำบทที่ 3 (Assignment)</span>
+  </a>
+<a href="#sec-assignment-title" class="toc-item toc-h3" data-target="sec-assignment-title">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ชื่องาน: การจัดทำ Cybersecurity Compliance Matrix สำหรับมหาวิทยาลัยดิจิทัลสมมติ</span>
+  </a>
+<a href="#sec-references" class="toc-item toc-h2" data-target="sec-references">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">เอกสารอ้างอิง (References)</span>
+  </a>
+<a href="#sec-ref-thai" class="toc-item toc-h3" data-target="sec-ref-thai">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">1. กฎหมายและประกาศทางการของประเทศไทย (ราชกิจจานุเบกษา)</span>
+  </a>
+<a href="#sec-ref-intl" class="toc-item toc-h3" data-target="sec-ref-intl">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">2. มาตรฐานและกรอบแนวทางระดับสากล (International Standards & Frameworks)</span>
+  </a>
+      </nav>
+    </aside>
+
+    <!-- ARTICLE BODY -->
+    <main class="content-area">
+      <article class="article-body">
+<h1 class="article-title" id="sec-1">บทที่ 3 ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์</h1>
+<p>บทนี้ทำหน้าที่เป็นสะพานเชื่อมระหว่าง "ข้อกำหนดทางกฎหมาย" ที่ได้ศึกษาในบทที่ 2 กับ "การออกแบบและตรวจประเมินมาตรการควบคุมเชิงเทคนิค" ที่จะปฏิบัติการจริงในบทถัด ๆ ไป เมื่อพระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 มาตรา 13(4) บัญญัติให้อำนาจคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ (กกม.) กำหนดประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ เพื่อเป็นเกณฑ์ขั้นต่ำสำหรับหน่วยงานของรัฐและหน่วยงานโครงสร้างพื้นฐานสำคัญทางสารสนเทศ (CII) ผู้ประกอบวิชาชีพด้านความมั่นคงปลอดภัยไซเบอร์ ทั้งในบทบาท <strong>ผู้จัดทำระบบ (Lead Implementer)</strong> และ <strong>ผู้ตรวจสอบ (Lead Auditor)</strong> จึงจำเป็นต้องเข้าใจโครงสร้างของกรอบมาตรฐานดังกล่าว รู้วิธีการเชื่อมโยงข้อกำหนดเข้ากับความเสี่ยง มาตรการควบคุม และหลักฐานเชิงประจักษ์ ตลอดจนสามารถจัดทำผังความสอดคล้อง (Compliance Matrix / Control Mapping) และแยกแยะความแตกต่างระหว่างความสอดคล้องเชิงรูปแบบบนหน้ากระดาษ (Paper Compliance) กับประสิทธิผลในการควบคุมความเสี่ยงอย่างแท้จริง (Operating Effectiveness)</p>
+<hr class="section-divider">
+<h2 id="sec-learning-outcomes">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</h2>
+<p>เมื่อสิ้นสุดการเรียนรู้ในบทนี้ นักศึกษาสามารถ:</p>
+<ol class="content-list ordered">
+  <li><strong>อธิบายโครงสร้างของประมวลแนวทางปฏิบัติและกรอบมาตรฐานได้ (CLO2):</strong> ระบุวัตถุประสงค์และโครงสร้างองค์ประกอบสำคัญของประมวลแนวทางปฏิบัติฯ (ประกาศ กกม. ฉบับที่ 1/2564) ทั้ง 6 ด้านหลัก ความสัมพันธ์กับ 6 ด้านการตรวจสอบตามกฎหมาย และการผสานรวมเข้ากับวงจรการบริหารคุณภาพอย่างต่อเนื่อง (PDCA Cycle)</li>
+  <li><strong>เชื่อมโยงกรอบมาตรฐานระดับประเทศเข้ากับกรอบมาตรฐานสากลได้ (CLO2):</strong> เปรียบเทียบความสอดคล้องและการถ่ายทอดเจตนารมณ์ระหว่างประมวลแนวทางปฏิบัติฯ ของไทย กับมาตรฐาน ISO/IEC 27001:2022, ISO/IEC 27002:2022, NIST Cybersecurity Framework (NIST CSF 2.0), ISO 19011 และกรอบการควบคุมภายใน (COSO / COBIT)</li>
+  <li><strong>จัดทำและวิเคราะห์ผังความสอดคล้องของมาตรการควบคุมได้ (CLO3):</strong> ออกแบบและกรอกข้อมูลใน Cybersecurity Compliance Matrix / Control Mapping โดยสามารถระบุ Requirement, Control Objective, Control Activity, Control Owner, Evidence, Test Procedure, Result, Gap และ Recommendation ได้อย่างถูกต้องตามหลักวิชาชีพ</li>
+  <li><strong>แยกความแตกต่างระหว่างความสอดคล้องกับประสิทธิผลจริงได้ (CLO6):</strong> อธิบายความแตกต่างระหว่างความสอดคล้องเชิงรูปแบบ (Conformity / Compliance) กับประสิทธิผลในการปฏิบัติงานจริง (Effectiveness) วิเคราะห์สถานการณ์ความล้มเหลวของการควบคุม 4 รูปแบบหลัก และประเมินประสิทธิผลด้านการออกแบบ (Design Effectiveness) ควบคู่กับประสิทธิผลด้านการดำเนินงาน (Operating Effectiveness)</li>
+  <li><strong>จำแนกประเภทและประเมินน้ำหนักความน่าเชื่อถือของหลักฐานการตรวจได้ (CLO5):</strong> จัดกลุ่มประเภทของหลักฐานการตรวจทั้ง 8 ชนิด (นโยบาย, ขั้นตอนปฏิบัติ, บันทึกงาน, ค่ากำหนดระบบ, ล็อก, รายงาน, ตั๋วงาน, บันทึกการสัมภาษณ์) และวิเคราะห์น้ำหนักความน่าเชื่อถือตามหลักเกณฑ์การตรวจสอบสากล</li>
+</ol>
+<hr class="section-divider">
+<h2 id="sec-intro">บทนำประจำบท</h2>
+<h3 id="sec-intro-law-to-practice">จาก "กรอบกฎหมายบังคับ" สู่ "คู่มือการปฏิบัติการจริง"</h3>
+<p>ในบทที่ 2 เราได้ศึกษาโครงสร้างภาพรวมของพระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 ซึ่งเป็นกฎหมายระดับพระราชบัญญัติ (Primary Legislation) ที่บัญญัติหลักการ อำนาจหน้าที่ และกลไกเชิงสถาบัน อย่างไรก็ตาม กฎหมายแม่บทมักบัญญัติข้อกำหนดไว้ในระดับหลักการกว้าง เช่น ในมาตรา 44 และ 45 ที่กำหนดให้หน่วยงานของรัฐและหน่วยงาน CII ต้องจัดให้มี "ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์" เพื่อป้องกัน รับมือ และลดความเสี่ยง หรือมาตรา 54 ที่กำหนดให้หน่วยงาน CII ต้องจัดให้มีการตรวจสอบด้านความมั่นคงปลอดภัยไซเบอร์อย่างน้อยปีละหนึ่งครั้ง</p>
+<p>คำถามเชิงปฏิบัติการที่เกิดขึ้นในมุมมองของวิศวกรความมั่นคงปลอดภัย (Security Engineer) และผู้ตรวจสอบ (Auditor) คือ:</p>
+<ul class="content-list">
+  <li><em>"คำว่า 'มาตรการรักษาความมั่นคงปลอดภัยไซเบอร์' ในทางเทคนิคครอบคลุมเรื่องใดบ้าง?"</em></li>
+  <li><em>"องค์กรต้องตั้งค่า Firewall อย่างไร ต้องกำหนดสิทธิ์ผู้ใช้อย่างไร ต้องเก็บ Log อะไรบ้าง จึงจะถือว่าสอดคล้องกับกฎหมาย?"</em></li>
+  <li><em>"ผู้ตรวจสอบจะใช้ไม้บรรทัดใดมาวัดว่าระบบคอมพิวเตอร์ขององค์กรปลอดภัยในระดับที่ยอมรับได้?"</em></li>
+</ul>
+<p>คำตอบของคำถามเหล่านี้อยู่ในสิ่งที่เรียกว่า <strong>ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์</strong> ซึ่งออกตามความในมาตรา 13(4) แห่ง พ.ร.บ.ไซเบอร์ 2562 โดยคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ (กกม.) ผ่าน <strong>ประกาศคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2564 (ฉบับที่ 1/2564)</strong> เอกสารฉบับนี้ทำหน้าที่เป็น "ชั้นการแปลผลเชิงเทคนิค" (Technical Translation Layer) ที่เปลี่ยนตัวบทกฎหมายให้กลายเป็นแนวปฏิบัติ มาตรการควบคุม และเกณฑ์การตรวจที่สามารถวัดผลและตรวจสอบได้ในโลกแห่งความเป็นจริง</p>
+<h3 id="sec-intro-intl-context">บริบทความเชื่อมโยงกับมาตรฐานสากล</h3>
+<p>ประมวลแนวทางปฏิบัติฯ ของประเทศไทยไม่ได้ถูกสร้างขึ้นมาอย่างโดดเดี่ยวโดยตัดขาดจากสากล ในทางตรงกันข้าม กกม. และสำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช.) ได้ออกแบบกรอบมาตรฐานนี้โดยอ้างอิงและประสานสอดคล้อง (Harmonize) กับกรอบมาตรฐานความมั่นคงปลอดภัยสารสนเทศที่เป็นที่ยอมรับทั่วโลก ได้แก่:</p>
+<ol class="content-list ordered">
+  <li><strong>ISO/IEC 27001 และ ISO/IEC 27002:</strong> กรอบระบบบริหารจัดการความมั่นคงปลอดภัยสารสนเทศ (Information Security Management System: ISMS) และแคตตาล็อกมาตรการควบคุมความมั่นคงปลอดภัย</li>
+  <li><strong>NIST Cybersecurity Framework (NIST CSF):</strong> กรอบการบริหารความเสี่ยงทางไซเบอร์ที่พัฒนาโดยสถาบันมาตรฐานและเทคโนโลยีแห่งชาติ สหรัฐอเมริกา (NIST) ซึ่งเน้นวงจรชีวิตของการรับมือภัยคุกคาม</li>
+  <li><strong>ISO 19011:</strong> มาตรฐานแนวทางการตรวจสอบระบบบริหารจัดการ ซึ่งวางรากฐานระเบียบวิธีและจริยธรรมของการตรวจประเมิน</li>
+  <li><strong>COSO Internal Control / COBIT:</strong> กรอบการควบคุมภายในและการกำกับดูแลเทคโนโลยีสารสนเทศระดับองค์กร</li>
+</ol>
+<p>ตารางต่อไปนี้แสดงสรุปกรอบอ้างอิงหลักในบทนี้ บทบาททางกฎหมาย และสถานะในการใช้เป็นเกณฑ์การตรวจ (Audit Criteria):</p>
+<div class="table-container"><table>
+  <thead><tr><th>กรอบ / มาตรฐานอ้างอิง</th><th>หน่วยงานผู้ออก / เจ้าของมาตรฐาน</th><th>สถานะทางกฎหมายในประเทศไทย</th><th>บทบาทในฐานะเกณฑ์การตรวจ (Audit Criteria)</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ประกาศ กกม. เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานฯ พ.ศ. 2564 (ฉบับที่ 1/2564)</strong></td><td>คณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ (กกม.) / สกมช.</td><td>มีผลบังคับใช้ตามกฎหมาย (กฎหมายลำดับรองตาม พ.ร.บ.ไซเบอร์ 2562 มาตรา 13(4))</td><td><strong>เกณฑ์บังคับขั้นต่ำ (Mandatory Baseline)</strong> สำหรับหน่วยงานรัฐและหน่วยงาน CII ในประเทศไทย</td></tr>
+    <tr><td><strong>ISO/IEC 27001:2022</strong></td><td>International Organization for Standardization (ISO) / IEC</td><td>มาตรฐานสากลแบบสมัครใจ (เว้นแต่องค์กรกำกับดูแลรายสาขาจะประกาศบังคับ)</td><td>เกณฑ์การตรวจรับรองระบบบริหารจัดการ (ISMS Certification) และใช้เป็นโครงสร้างระบบคุณภาพ</td></tr>
+    <tr><td><strong>ISO/IEC 27002:2022</strong></td><td>ISO / IEC</td><td>แนวทางปฏิบัติสากล (Code of Practice)</td><td>เกณฑ์การตรวจระดับรายการควบคุมเชิงเทคนิค (Control Checklist) 93 มาตรการ</td></tr>
+    <tr><td><strong>NIST CSF 2.0 (และฉบับ 1.1)</strong></td><td>National Institute of Standards and Technology (NIST), สหรัฐอเมริกา</td><td>กรอบแนวทางสากลที่ได้รับความนิยมสูง</td><td>เกณฑ์การประเมินความพร้อมและวุฒิภาวะ (Maturity Assessment) ในการจัดการความเสี่ยง</td></tr>
+    <tr><td><strong>ISO 19011 (ฉบับ 2018 / 2026)</strong></td><td>ISO</td><td>มาตรฐานแนวทางการตรวจสอบสากล</td><td>เกณฑ์กำกับกระบวนการตรวจ จริยธรรมผู้ตรวจ และการบริหารโปรแกรมตรวจ</td></tr>
+    <tr><td><strong>COSO Internal Control / COBIT 2019</strong></td><td>COSO / ISACA</td><td>กรอบธรรมาภิบาลและการควบคุมระดับสากล</td><td>เกณฑ์การประเมินการกำกับดูแลระดับบริหารและความสอดคล้องกับเป้าหมายทางธุรกิจ</td></tr>
+  </tbody>
+</table></div>
+<hr class="section-divider">
+<h2 id="sec-part-1">ส่วนที่ 1 โครงสร้างของประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านไซเบอร์</h2>
+<p>ส่วนที่ 1 นำเสนอโครงสร้างเชิงทฤษฎีและข้อกำหนดของกรอบมาตรฐานด้านไซเบอร์ เพื่อให้นักศึกษาเข้าใจว่าเหตุใดประเทศจึงต้องมีประมวลแนวทางปฏิบัติ องค์ประกอบสำคัญ 6 ด้านประกอบด้วยอะไรบ้าง ความสอดคล้องกับวงจรบริหารจัดการแบบ PDCA และการเชื่อมโยงข้ามกรอบมาตรฐานสากล (Cross-Framework Alignment)</p>
+
+<div class="figure-container" id="fig-3-1">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 3.1</div>
+    <div class="figure-title">สถาปัตยกรรมลำดับชั้นกรอบมาตรฐานและการแปลงผลทางกฎหมายสู่การปฏิบัติ (Standards Hierarchy &amp; Legal Harmonization)</div>
+  </div>
+  <div class="figure-caption">
+    แสดงการแปลงเจตนารมณ์จากกฎหมายแม่บท (พ.ร.บ.ไซเบอร์ 2562) สู่กฎหมายลำดับรอง (ประกาศ กกม. ฉบับที่ 1/2564) เพื่อเป็นเกณฑ์ขั้นต่ำระดับชาติ (National Baseline) และการประสานสอดคล้องกับมาตรฐานสากล (ISO 27001/27002, NIST CSF 2.0, ISO 19011)
+  </div>
+
+  <div class="hierarchy-tree-card">
+    <!-- Level 1: Primary Law -->
+    <div class="ht-level-card primary-law-card">
+      <div class="ht-badge law">ระดับที่ 1: กฎหมายแม่บท (PRIMARY LEGISLATION)</div>
+      <div class="ht-title">พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562</div>
+      <div class="ht-subtitle">ให้อำนาจ กกม. กำหนดมาตรฐานขั้นต่ำ (ม.13(4)), กำหนดหน้าที่หน่วยงานรัฐและ CII (ม.44–45), และกำหนดการตรวจประเมินประจำปี (ม.54)</div>
+      <div class="ht-pills">
+        <span class="ht-pill blue">มาตรา 13(4) อำนาจ กกม.</span>
+        <span class="ht-pill blue">มาตรา 44-45 หน้าที่ CII &amp; รัฐ</span>
+        <span class="ht-pill blue">มาตรา 54 การตรวจประเมินประจำปี</span>
+      </div>
+    </div>
+
+    <!-- Connector down -->
+    <div class="ht-connector">
+      <div class="ht-conn-line"></div>
+      <div class="ht-conn-badge">⬇️ ตรากฎหมายลำดับรองและแนวปฏิบัติเชิงเทคนิค (Technical Translation Layer)</div>
+    </div>
+
+    <!-- Level 2: National Baseline -->
+    <div class="ht-level-card national-baseline-card">
+      <div class="ht-badge baseline">ระดับที่ 2: เกณฑ์บังคับขั้นต่ำระดับชาติ (NATIONAL MANDATORY BASELINE)</div>
+      <div class="ht-title">ประกาศ กกม. เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2564</div>
+      <div class="ht-subtitle">เกณฑ์ขั้นต่ำภาคบังคับ (Minimum Security Baseline) สำหรับหน่วยงานรัฐและหน่วยงาน CII ครอบคลุม 6 เสาหลักความมั่นคงปลอดภัย</div>
+      
+      <!-- 6 Pillars mini grid -->
+      <div class="ht-pillars-grid">
+        <div class="ht-pillar-box p1">
+          <div class="ht-p-num">เสาหลัก 1</div>
+          <div class="ht-p-name">การกำกับดูแล</div>
+          <div class="ht-p-en">Governance</div>
+        </div>
+        <div class="ht-pillar-box p2">
+          <div class="ht-p-num">เสาหลัก 2</div>
+          <div class="ht-p-name">การประเมินความเสี่ยง</div>
+          <div class="ht-p-en">Risk Assessment</div>
+        </div>
+        <div class="ht-pillar-box p3">
+          <div class="ht-p-num">เสาหลัก 3</div>
+          <div class="ht-p-name">การป้องกันระบบ/ข้อมูล</div>
+          <div class="ht-p-en">System Protection</div>
+        </div>
+        <div class="ht-pillar-box p4">
+          <div class="ht-p-num">เสาหลัก 4</div>
+          <div class="ht-p-name">การเฝ้าระวัง/ตรวจจับ</div>
+          <div class="ht-p-en">Monitoring &amp; Detect</div>
+        </div>
+        <div class="ht-pillar-box p5">
+          <div class="ht-p-num">เสาหลัก 5</div>
+          <div class="ht-p-name">การรับมือภัยคุกคาม</div>
+          <div class="ht-p-en">Incident Response</div>
+        </div>
+        <div class="ht-pillar-box p6">
+          <div class="ht-p-num">เสาหลัก 6</div>
+          <div class="ht-p-name">การกู้คืน/ความต่อเนื่อง</div>
+          <div class="ht-p-en">Business Recovery</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connector down -->
+    <div class="ht-connector">
+      <div class="ht-conn-line"></div>
+      <div class="ht-conn-badge">🔄 ประสานสอดคล้องข้ามกรอบมาตรฐานสากล (International Harmonization)</div>
+    </div>
+
+    <!-- Level 3: International Standards Triad -->
+    <div class="ht-level-card intl-card">
+      <div class="ht-badge intl">ระดับที่ 3: มาตรฐานและกรอบแนวทางระดับสากล (INTERNATIONAL STANDARDS &amp; FRAMEWORKS)</div>
+      <div class="ht-intl-grid">
+        <div class="ht-intl-box">
+          <div class="ht-intl-header">
+            <span class="intl-code">ISO/IEC 27001 &amp; 27002:2022</span>
+            <span class="intl-role">ISMS &amp; Controls Catalog</span>
+          </div>
+          <p>ระบบบริหารจัดการความมั่นคงปลอดภัยสารสนเทศ และแคตตาล็อกมาตรการควบคุม 93 ข้อใน 4 ธีม (Organizational, People, Physical, Technological)</p>
+          <div class="ht-box-tag">เกณฑ์ตรวจรับรองสากล</div>
+        </div>
+        <div class="ht-intl-box">
+          <div class="ht-intl-header">
+            <span class="intl-code">NIST CSF 2.0 (2024)</span>
+            <span class="intl-role">Risk Lifecycle Framework</span>
+          </div>
+          <p>กรอบบริหารความเสี่ยง 6 ฟังก์ชัน: Govern (GV), Identify (ID), Protect (PR), Detect (DE), Respond (RS), Recover (RC)</p>
+          <div class="ht-box-tag">เกณฑ์วัดวุฒิภาวะองค์กร</div>
+        </div>
+        <div class="ht-intl-box">
+          <div class="ht-intl-header">
+            <span class="intl-code">ISO 19011 (2018 / 2026)</span>
+            <span class="intl-role">Auditing Methodology</span>
+          </div>
+          <p>แนวทางการตรวจสอบระบบบริหารจัดการ วางรากฐานหลักการตรวจ 7 ประการ การสุ่มตัวอย่าง และจริยธรรมผู้ตรวจสอบ (Auditor Competence)</p>
+          <div class="ht-box-tag">ระเบียบวิธีการตรวจสอบ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3 id="sec-1-1">1.1 วัตถุประสงค์ของประมวลแนวทางปฏิบัติและกรอบมาตรฐาน</h3>
+<p>ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ถูกจัดทำขึ้นโดยมีวัตถุประสงค์หลัก 3 ประการ:</p>
+<h4 id="sec-1-1-1">1.1.1 การกำหนดแนวทางขั้นต่ำสำหรับหน่วยงาน (Minimum Security Baseline)</h4>
+<p>ก่อนที่ พ.ร.บ.ไซเบอร์ 2562 และประกาศ กกม. จะมีผลบังคับใช้ แต่ละหน่วยงานในประเทศไทยมีระดับการรักษาความมั่นคงปลอดภัยที่แตกต่างกันอย่างมาก องค์กรขนาดใหญ่ในภาคการเงินอาจมีระบบป้องกันระดับสูงตามมาตรฐานสากล ในขณะที่หน่วยงานของรัฐหรือโรงพยาบาลในภูมิภาคอาจไม่มีแม้กระทั่งการตั้งค่าไฟร์วอลล์หรือการสำรองข้อมูลอย่างปลอดภัย</p>
+<p>ในระบบเครือข่ายที่เชื่อมโยงถึงกัน ความมั่นคงปลอดภัยของระบบโดยรวมจะถูกกำหนดโดย <strong>"จุดเชื่อมโยงที่อ่อนแอที่สุด" (The Weakest Link Principle)</strong> หากผู้โจมตีสามารถเจาะเข้าระบบของหน่วยงานขนาดเล็กที่มีมาตรการหละหลวม ผู้โจมตีย่อมสามารถใช้ระบบดังกล่าวเป็นฐานในการแทรกซึมเข้าสู่โครงสร้างพื้นฐานระดับชาติได้ ประมวลแนวทางปฏิบัติฯ จึงมีหน้าที่กำหนด "เส้นฐานขั้นต่ำสุดที่ทุกคนต้องปฏิบัติ" (Non-negotiable Baseline) เพื่อยกเพดานความมั่นคงปลอดภัยของทั้งประเทศให้อยู่ในระดับที่ปลอดภัยพร้อมรับมือภัยคุกคาม</p>
+<h4 id="sec-1-1-2">1.1.2 การสร้างความสอดคล้องในการบริหารความเสี่ยง (Risk Harmonization & Common Taxonomy)</h4>
+<p>การบริหารความเสี่ยงที่มีประสิทธิภาพจำเป็นต้องใช้ "ภาษาเดียวกัน" (Common Language) หากหน่วยงานสาธารณสุขนิยาม "ความเสี่ยงระดับสูง" จากผลกระทบต่อชีวิตผู้ป่วย แต่หน่วยงานโทรคมนาคมนิยามจากระยะเวลาของระบบที่ล่มลง การประสานงานในภาวะวิกฤตระดับชาติจะเกิดความสับสน ประมวลแนวทางปฏิบัติฯ ช่วยกำหนดนิยาม คำศัพท์เฉพาะ กระบวนการประเมินความเสี่ยง และเกณฑ์การประเมินผลกระทบที่สอดคล้องกันทั่วทั้งระบบนิเวศไซเบอร์ของประเทศ ทำให้ สกมช. หน่วยงานกำกับดูแล (Regulator) และหน่วยงาน CII สามารถแลกเปลี่ยนข้อมูลภัยคุกคาม (Threat Intelligence) และประเมินความรุนแรงของสถานการณ์ได้อย่างเป็นเอกภาพ</p>
+<h4 id="sec-1-1-3">1.1.3 การสนับสนุนการตรวจสอบและกำกับดูแล (Assurance, Auditability & Supervisory Support)</h4>
+<p>กฎหมายจะไม่สามารถบังคับใช้ได้อย่างแท้จริงหากไม่มีกลไกการวัดผลที่โปร่งใส ประมวลแนวทางปฏิบัติฯ ทำหน้าที่เป็น "หลักฐานอ้างอิงที่เป็นรูปธรรม" แก่ผู้มีบทบาท 3 กลุ่ม:</p>
+<ol class="content-list ordered">
+  <li><strong>Regulator (ตามมาตรา 53):</strong> ใช้ตรวจสอบว่าหน่วยงาน CII ในสาขาที่ตนกำกับดูแลมีมาตรการผ่านเกณฑ์ขั้นต่ำหรือไม่ หากพบว่าตกเกณฑ์ จะสามารถออกคำสั่งแจ้งเตือนให้ปรับปรุงแก้ไขได้อย่างชัดเจนโดยไม่ใช้ดุลยพินิจตามอำเภอใจ</li>
+  <li><strong>Lead Auditor (ตามมาตรา 54):</strong> ใช้เป็นเกณฑ์การตรวจ (Audit Criteria) ในการออกแบบ Checklist, Working Paper และเขียนรายงานผลสรุปส่ง สกมช.</li>
+  <li><strong>Lead Implementer:</strong> ใช้เป็นแบบพิมพ์เขียว (Blueprint) ในการออกแบบ สรรหา และติดตั้งระบบให้ถูกต้องครบถ้วนตั้งแต่ต้น</li>
+</ol>
+<hr class="section-divider">
+<h3 id="sec-1-2">1.2 องค์ประกอบสำคัญของประมวลแนวทางปฏิบัติและกรอบมาตรฐาน</h3>
+<p>ตามประกาศ กกม. เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานฯ พ.ศ. 2564 (ฉบับที่ 1/2564) ข้อกำหนดขั้นต่ำถูกจัดกลุ่มครอบคลุมมิติต่าง ๆ ของการรักษาความมั่นคงปลอดภัย ซึ่งเมื่อวิเคราะห์เชิงโครงสร้างร่วมกับกรอบสากล สามารถแบ่งออกเป็น <strong>6 องค์ประกอบหลัก (Six Core Pillars)</strong> ดังนี้:</p>
+<h4 id="sec-1-2-1">1.2.1 การกำกับดูแล (Cybersecurity Governance)</h4>
+<p>ความมั่นคงปลอดภัยไซเบอร์ไม่ใช่เพียงเรื่องทางเทคนิคของฝ่ายไอที แต่เป็นประเด็นการกำกับดูแลระดับองค์กร (Corporate Governance) องค์ประกอบนี้กำหนดให้องค์กรต้องมี:</p>
+<ul class="content-list">
+  <li><strong>นโยบายความมั่นคงปลอดภัยไซเบอร์ที่เป็นลายลักษณ์อักษร:</strong> มีการอนุมัติโดยผู้บริหารระดับสูงสุด มีการสื่อสารให้บุคลากรทุกคนรับทราบ และมีการทบทวนอย่างน้อยปีละหนึ่งครั้ง</li>
+  <li><strong>โครงสร้างการบริหารและความรับผิดชอบ:</strong> จัดตั้งคณะกรรมการหรือผู้รับผิดชอบระดับบริหาร (เช่น CISO หรือ คณะกรรมการความมั่นคงปลอดภัยไซเบอร์) และกำหนดบทบาทหน้าที่ของบุคลากรทุกระดับอย่างชัดเจนผ่านผัง RACI (Responsible, Accountable, Consulted, Informed)</li>
+  <li><strong>การจัดสรรทรัพยากรและการอบรม:</strong> จัดสรรงบประมาณ บุคลากรที่มีทักษะ และจัดให้มีการฝึกอบรมสร้างความตระหนักรู้ด้านความมั่นคงปลอดภัย (Security Awareness Training) แก่พนักงานทุกคนอย่างสม่ำเสมอ</li>
+</ul>
+<h4 id="sec-1-2-2">1.2.2 การประเมินและบริหารความเสี่ยง (Risk Assessment and Management)</h4>
+<p>การรักษาความมั่นคงปลอดภัยโดยไม่ประเมินความเสี่ยงเปรียบเสมือนการสร้างกำแพงโดยไม่รู้ว่าศัตรูจะมาทางใด องค์ประกอบนี้บังคับให้องค์กรต้อง:</p>
+<ul class="content-list">
+  <li><strong>จัดทำทะเบียนสินทรัพย์ (Asset Inventory):</strong> สำรวจและระบุสินทรัพย์สารสนเทศ ฮาร์ดแวร์ ซอฟต์แวร์ ข้อมูล บริการคลาวด์ และระบุระดับความสำคัญต่อภารกิจหลัก (Criticality)</li>
+  <li><strong>ประเมินความเสี่ยงเป็นประจำ:</strong> ชี้บ่งภัยคุกคาม (Threats) ช่องโหว่ (Vulnerabilities) โอกาสเกิด (Likelihood) และผลกระทบ (Impact) ต่อความลับ (Confidentiality) ความถูกต้องครบถ้วน (Integrity) และความพร้อมใช้งาน (Availability)</li>
+  <li><strong>จัดทำแผนจัดการความเสี่ยง (Risk Treatment Plan):</strong> กำหนดมาตรการควบคุมเพื่อลดความเสี่ยงให้อยู่ในระดับที่องค์กรยอมรับได้ (Risk Appetite)</li>
+</ul>
+<h4 id="sec-1-2-3">1.2.3 การป้องกันระบบและข้อมูล (Protection of Systems and Data)</h4>
+<p>การวางมาตรการป้องกันทั้งในระดับนโยบาย ทางกายภาพ และทางเทคนิค เพื่อปกป้องสินทรัพย์สารสนเทศจากการถูกบุกรุก ครอบคลุม:</p>
+<ul class="content-list">
+  <li><strong>การควบคุมการเข้าถึง (Identity and Access Management: IAM):</strong> การบังคับใช้หลักการให้สิทธิ์เท่าที่จำเป็น (Least Privilege), การแยกหน้าที่ความรับผิดชอบ (Segregation of Duties), การยืนยันตัวตนแบบหลายปัจจัย (Multi-Factor Authentication: MFA) สำหรับการเข้าถึงระบบสำคัญและการเข้าถึงจากระยะไกล</li>
+  <li><strong>การเสริมสร้างความปลอดภัยให้แก่ระบบ (System Hardening):</strong> การปิดบริการและพอร์ตที่ไม่จำเป็น การเปลี่ยนรหัสผ่านเริ่มต้น (Default Passwords) และการปฏิบัติตามมาตรฐาน Security Baseline</li>
+  <li><strong>การบริหารจัดการช่องโหว่และแพตช์ (Vulnerability & Patch Management):</strong> การสแกนหาช่องโหว่อย่างสม่ำเสมอ และการทดสอบและติดตั้งแพตช์ความปลอดภัยตามกรอบเวลาที่สอดคล้องกับระดับความวิกฤตของช่องโหว่</li>
+  <li><strong>การรักษาความปลอดภัยของเครือข่ายและการเข้ารหัสข้อมูล:</strong> การแบ่งแยกส่วนของเครือข่าย (Network Segmentation), การติดตั้ง Firewall และการเข้ารหัสข้อมูลทั้งในระหว่างการจัดเก็บ (Data at Rest) และระหว่างการส่งผ่านเครือข่าย (Data in Transit)</li>
+</ul>
+<h4 id="sec-1-2-4">1.2.4 การเฝ้าระวังและตรวจจับ (Monitoring and Detection)</h4>
+<p>ไม่มีระบบป้องกันใดที่สามารถป้องกันการโจมตีได้ 100% องค์กรจึงต้องมี "ดวงตา" ในการเฝ้าระวังพฤติกรรมผิดปกติ:</p>
+<ul class="content-list">
+  <li><strong>การบันทึกเหตุการณ์ (Event Logging):</strong> การเปิดบันทึก Log ของระบบปฏิบัติการ อุปกรณ์เครือข่าย ฐานข้อมูล และแอปพลิเคชัน โดย Log ต้องมีข้อมูลสำคัญครบถ้วน (วันเวลา ผู้ใช้ กิจกรรม ผลลัพธ์) มีการเทียบเวลามาตรฐาน (NTP) และจัดเก็บไว้อย่างมั่นคงปลอดภัยไม่น้อยกว่าระยะเวลาที่กฎหมายกำหนด</li>
+  <li><strong>การเฝ้าระวังอย่างต่อเนื่อง (Continuous Monitoring):</strong> การรวบรวม Log สู่ศูนย์กลาง (Centralized Log Management หรือ SIEM) เพื่อวิเคราะห์ความสัมพันธ์ของเหตุการณ์ (Correlation) และแจ้งเตือนภัยคุกคามแบบเรียลไทม์</li>
+  <li><strong>การเฝ้าระวังภัยคุกคามเชิงรุก:</strong> การติดตามข่าวสารภัยคุกคาม (Threat Intelligence) และการตรวจจับความผิดปกติบนเครื่องปลายทาง (EDR)</li>
+</ul>
+<h4 id="sec-1-2-5">1.2.5 การรับมือภัยคุกคาม (Incident Response and Handling)</h4>
+<p>เมื่อเกิดเหตุการณ์บุกรุก องค์กรต้องสามารถตอบสนองได้อย่างรวดเร็วเพื่อจำกัดความเสียหาย:</p>
+<ul class="content-list">
+  <li><strong>แผนเผชิญเหตุ (Incident Response Plan) และคู่มือปฏิบัติการ (Playbooks):</strong> กำหนดขั้นตอนการคัดกรองเหตุการณ์ (Triage), การสกัดกั้นไม่ให้ภัยลุกลาม (Containment), การกำจัดต้นตอ (Eradication), และการฟื้นฟูระบบ (Recovery)</li>
+  <li><strong>ทีมตอบสนองภัยคุกคาม (Incident Response Team: IRT / CSIRT):</strong> กำหนดบุคลากรที่รับผิดชอบทั้งฝ่ายเทคนิค ฝ่ายบริหาร ฝ่ายกฎหมาย และฝ่ายสื่อสารประชาสัมพันธ์</li>
+  <li><strong>การแจ้งเหตุตามกฎหมาย:</strong> มีกระบวนการแจ้งเตือน สกมช. และ Regulator รายสาขาภายในกรอบเวลาที่กฎหมายกำหนด (ตาม พ.ร.บ.ไซเบอร์ 2562 มาตรา 57 และ 58)</li>
+</ul>
+<h4 id="sec-1-2-6">1.2.6 การกู้คืนและสร้างความต่อเนื่อง (Recovery and Business Continuity)</h4>
+<p>การเตรียมความพร้อมเพื่อให้องค์กรสามารถฟื้นคืนการให้บริการได้หลังเกิดภัยพิบัติหรือการโจมตีทางไซเบอร์:</p>
+<ul class="content-list">
+  <li><strong>การสำรองข้อมูล (Data Backup):</strong> ดำเนินการสำรองข้อมูลสำคัญตามหลักการ 3-2-1 และจัดให้มีการสำรองข้อมูลแบบที่ไม่สามารถแก้ไขหรือลบทำลายได้ (Immutable Backup หรือ Offline/Air-gapped Backup) เพื่อป้องกัน Ransomware</li>
+  <li><strong>แผนความต่อเนื่องทางธุรกิจและการกู้คืนระบบจากภัยพิบัติ (BCP / DRP):</strong> กำหนดเป้าหมายเวลาในการกู้คืน (Recovery Time Objective: RTO) และเป้าหมายจุดเวลาของข้อมูลที่จะกู้คืน (Recovery Point Objective: RPO)</li>
+  <li><strong>การทดสอบการกู้คืน (Restore Testing):</strong> ดำเนินการซักซ้อมแผนกู้คืนระบบและทดสอบนำไฟล์สำรองมาใช้งานจริงอย่างสม่ำเสมออย่างน้อยปีละหนึ่งครั้ง</li>
+</ul>
+<hr class="section-divider">
+<h3 id="sec-1-2-domains">ความเชื่อมโยงกับ 6 ด้านการตรวจสอบตามประมวลแนวทางปฏิบัติฯ</h3>
+
+<div class="figure-container" id="fig-3-2">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 3.2</div>
+    <div class="figure-title">ผังบูรณาการ 6 เสาหลักความมั่นคงปลอดภัย สู่ 6 ด้านการตรวจสอบตามประกาศ กกม. (ตอนที่ 17 และ 21)</div>
+  </div>
+  <div class="figure-caption">
+    แสดงความเชื่อมโยงโดยตรงระหว่าง 6 องค์ประกอบของกรอบมาตรฐาน กับขอบเขตงานที่ Lead Auditor ต้องตรวจสอบและออกความเห็นในการประเมินประจำปี
+  </div>
+
+  <div class="pillars-domains-matrix">
+    <!-- Domain 1 -->
+    <div class="pd-card p-blue">
+      <div class="pd-card-header">
+        <span class="pd-num">ด้านที่ 1</span>
+        <span class="pd-type">GOVERNANCE</span>
+      </div>
+      <div class="pd-title">การบริหารจัดการความมั่นคงปลอดภัย (Security Management)</div>
+      <div class="pd-scope">
+        <strong>ขอบเขตการตรวจ:</strong> โครงสร้างกำกับดูแล, นโยบายลายลักษณ์อักษร, ผัง RACI, การจัดสรรงบประมาณ, การฝึกอบรม Security Awareness, และบันทึกการทบทวนของฝ่ายบริหาร (Management Review)
+      </div>
+      <div class="pd-footer">
+        <span class="pd-badge">รองรับเสาหลัก 1: การกำกับดูแล</span>
+        <span class="pd-ref">ISO 27001 Cl.5 / NIST GV</span>
+      </div>
+    </div>
+
+    <!-- Domain 2 -->
+    <div class="pd-card p-cyan">
+      <div class="pd-card-header">
+        <span class="pd-num">ด้านที่ 2</span>
+        <span class="pd-type">RISK MANAGEMENT</span>
+      </div>
+      <div class="pd-title">การบริหารความเสี่ยง (Risk Management)</div>
+      <div class="pd-scope">
+        <strong>ขอบเขตการตรวจ:</strong> ความครบถ้วนของทะเบียนสินทรัพย์ (Asset Inventory), เกณฑ์การประเมินความเสี่ยง, รายงาน Risk Assessment, และความคืบหน้าของ Risk Treatment Plan
+      </div>
+      <div class="pd-footer">
+        <span class="pd-badge">รองรับเสาหลัก 2: การประเมินความเสี่ยง</span>
+        <span class="pd-ref">ISO 27001 Cl.6 / NIST ID.RA</span>
+      </div>
+    </div>
+
+    <!-- Domain 3 -->
+    <div class="pd-card p-indigo">
+      <div class="pd-card-header">
+        <span class="pd-num">ด้านที่ 3</span>
+        <span class="pd-type">ACCESS CONTROL</span>
+      </div>
+      <div class="pd-title">การควบคุมการเข้าถึง (Access Control &amp; IAM)</div>
+      <div class="pd-scope">
+        <strong>ขอบเขตการตรวจ:</strong> วงจรชีวิตบัญชี (JML), Least Privilege, สิทธิ์ระดับ Admin/Privileged Access, การบังคับใช้ MFA สำหรับรีโมท/ระบบสำคัญ, และบันทึกการทบทวนสิทธิ์ (Access Review)
+      </div>
+      <div class="pd-footer">
+        <span class="pd-badge">รองรับเสาหลัก 3: การป้องกันระบบและข้อมูล</span>
+        <span class="pd-ref">ISO 27002 A.5.15 / NIST PR.AA</span>
+      </div>
+    </div>
+
+    <!-- Domain 4 -->
+    <div class="pd-card p-amber">
+      <div class="pd-card-header">
+        <span class="pd-num">ด้านที่ 4</span>
+        <span class="pd-type">VULNERABILITY &amp; PT</span>
+      </div>
+      <div class="pd-title">การประเมินช่องโหว่และการทดสอบเจาะระบบ (VA / PT &amp; Hardening)</div>
+      <div class="pd-scope">
+        <strong>ขอบเขตการตรวจ:</strong> ผลสแกนช่องโหว่ (VA), รายงานทดสอบเจาะระบบ (PT), บันทึกการปิดพอร์ต/บริการที่ไม่จำเป็น (Hardening), และรอบเวลาการแพตช์ความปลอดภัยตาม SLA
+      </div>
+      <div class="pd-footer">
+        <span class="pd-badge">รองรับเสาหลัก 3: การป้องกันระบบและข้อมูล</span>
+        <span class="pd-ref">ISO 27002 A.8.8 / NIST PR.PS</span>
+      </div>
+    </div>
+
+    <!-- Domain 5 -->
+    <div class="pd-card p-rose">
+      <div class="pd-card-header">
+        <span class="pd-num">ด้านที่ 5</span>
+        <span class="pd-type">MONITORING &amp; IR</span>
+      </div>
+      <div class="pd-title">การเฝ้าระวังและการตอบสนองต่อเหตุการณ์ (Monitoring &amp; Incident Response)</div>
+      <div class="pd-scope">
+        <strong>ขอบเขตการตรวจ:</strong> การตั้งค่า Centralized Log ไม่น้อยกว่า 90 วัน, NTP Clock Sync, การตั้ง Alert บน SIEM/SOC, แผนเผชิญเหตุ (IRP), Playbooks, และขั้นตอนแจ้งเตือน สกมช. ตาม ม.57
+      </div>
+      <div class="pd-footer">
+        <span class="pd-badge">รองรับเสาหลัก 4 &amp; 5: เฝ้าระวัง &amp; รับมือ</span>
+        <span class="pd-ref">ISO 27002 A.8.15 / NIST DE &amp; RS</span>
+      </div>
+    </div>
+
+    <!-- Domain 6 -->
+    <div class="pd-card p-emerald">
+      <div class="pd-card-header">
+        <span class="pd-num">ด้านที่ 6</span>
+        <span class="pd-type">RECOVERY &amp; COMPLIANCE</span>
+      </div>
+      <div class="pd-title">การกู้คืนระบบและการปฏิบัติตามข้อกำหนด (Recovery &amp; Compliance)</div>
+      <div class="pd-scope">
+        <strong>ขอบเขตการตรวจ:</strong> แผนความต่อเนื่อง BCP/DRP, การสำรองข้อมูลแบบ Immutable / Air-gapped, รายงานผลการทดสอบ Restore ประจำปี, และการปฏิบัติตามกฎหมายที่เกี่ยวข้อง (PDPA, Cyber)
+      </div>
+      <div class="pd-footer">
+        <span class="pd-badge">รองรับเสาหลัก 6: การกู้คืนและความต่อเนื่อง</span>
+        <span class="pd-ref">ISO 27002 A.8.13 / NIST RC</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p>ในมุมมองของผู้ตรวจสอบ ประมวลแนวทางปฏิบัติฯ (ประกาศ กกม. ฉบับที่ 1/2564 ตอนที่ 17 และ 21) ได้จัดวางขอบเขตของการตรวจสอบด้านความมั่นคงปลอดภัยไซเบอร์ประจำปีสำหรับหน่วยงาน CII และหน่วยงานของรัฐ ออกเป็น <strong>6 ด้านการตรวจสอบ (Six Audit Domains)</strong> ซึ่งสอดรับโดยตรงกับ 6 องค์ประกอบของกรอบมาตรฐาน ดังแสดงในตาราง:</p>
+<div class="table-container"><table>
+  <thead><tr><th>ด้านการตรวจสอบตามประกาศ กกม.</th><th>ขอบเขตและสิ่งที่ผู้ตรวจสอบต้องมุ่งเน้น</th><th>องค์ประกอบของกรอบมาตรฐานที่รองรับ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ด้านที่ 1: การบริหารจัดการความมั่นคงปลอดภัย (Security Management)</strong></td><td>ตรวจสอบโครงสร้างการกำกับดูแล นโยบาย การกำหนดบทบาทหน้าที่ การจัดสรรงบประมาณ การฝึกอบรมบุคลากร และบันทึกการทบทวนของฝ่ายบริหาร (Management Review)</td><td>1. การกำกับดูแล (Governance)</td></tr>
+    <tr><td><strong>ด้านที่ 2: การบริหารความเสี่ยง (Risk Management)</strong></td><td>ตรวจสอบความครบถ้วนของทะเบียนสินทรัพย์ ระเบียบวิธีประเมินความเสี่ยง รายงานการประเมินความเสี่ยง และความคืบหน้าของแผนจัดการความเสี่ยง (Risk Treatment Plan)</td><td>2. การประเมินและบริหารความเสี่ยง (Risk Assessment)</td></tr>
+    <tr><td><strong>ด้านที่ 3: การควบคุมการเข้าถึง (Access Control)</strong></td><td>ตรวจสอบวงจรชีวิตของบัญชีผู้ใช้ (Joiner-Mover-Leaver), สิทธิ์ระดับผู้ดูแลระบบ (Privileged Access), การใช้งาน MFA, และบันทึกการทบทวนสิทธิ์ประจำงวด (User Access Review)</td><td>3. การป้องกันระบบและข้อมูล (Protection)</td></tr>
+    <tr><td><strong>ด้านที่ 4: การประเมินช่องโหว่และการทดสอบเจาะระบบ (VA/PT)</strong></td><td>ตรวจสอบผลการสแกนช่องโหว่ (Vulnerability Assessment), รายงานการทดสอบเจาะระบบ (Penetration Testing), การตั้งค่า Configuration Baseline และกระบวนการติดตั้ง Patch</td><td>3. การป้องกันระบบและข้อมูล (Protection)</td></tr>
+    <tr><td><strong>ด้านที่ 5: การเฝ้าระวังและตอบสนองเหตุการณ์ (Monitoring & Incident Response)</strong></td><td>ตรวจสอบความครอบคลุมของ Log แหล่งจัดเก็บ นโยบาย Retention การทำงานของระบบตรวจจับ (SIEM/SOC), แผนเผชิญเหตุ (IR Plan), บันทึกการซ้อมแผน และหลักฐานการแจ้งเหตุตามกฎหมาย</td><td>4. การเฝ้าระวัง (Monitoring) & 5. การรับมือภัยคุกคาม (Incident Response)</td></tr>
+    <tr><td><strong>ด้านที่ 6: การปฏิบัติตามข้อกำหนด (Compliance)</strong></td><td>ตรวจสอบความสอดคล้องกับ พ.ร.บ.ไซเบอร์ 2562, ประกาศ กกม. ทุกฉบับ, ข้อกำหนดเฉพาะของ Regulator รายสาขา, นโยบายภายในองค์กร และสัญญาการให้บริการภายนอก (Third-party/SLA)</td><td>บูรณาการทุกองค์ประกอบ และมิติทางกฎหมาย</td></tr>
+  </tbody>
+</table></div>
+<hr class="section-divider">
+<h3 id="sec-1-3">1.3 การเชื่อมโยงกรอบมาตรฐานกับวงจร PDCA (Deming Cycle)</h3>
+<p>การบริหารจัดการความมั่นคงปลอดภัยไซเบอร์ตามมาตรฐานสากลและประมวลแนวทางปฏิบัติฯ ไม่ใช่ "โครงการที่มีวันเริ่มต้นและสิ้นสุด" (One-time Project) แต่เป็น <strong>"ระบบบริหารจัดการที่มีวงจรชีวิตต่อเนื่อง" (Continuous Management System)</strong> ซึ่งขับเคลื่อนด้วยวงจรคุณภาพ <strong>PDCA (Plan-Do-Check-Act)</strong>:</p>
+
+<div class="figure-container" id="fig-3-3">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 3.3</div>
+    <div class="figure-title">วงจรการบริหารจัดการความมั่นคงปลอดภัยอย่างต่อเนื่อง (PDCA Deming Cycle for Cyber Assurance)</div>
+  </div>
+  <div class="figure-caption">
+    การบริหารความมั่นคงปลอดภัยไซเบอร์มิใช่โครงการที่มีวันสิ้นสุด (One-off Project) แต่เป็นวงจรบริหารจัดการที่ต้องหมุนเวียนต่อเนื่อง พร้อมจุดตรวจประเมินสำคัญของผู้ตรวจสอบ (Auditor Checkpoints)
+  </div>
+
+  <div class="pdca-grid-flow">
+    <!-- Plan -->
+    <div class="pdca-step-card plan">
+      <div class="pdca-badge">1. PLAN // วางแผน</div>
+      <div class="pdca-step-title">การกำหนดบริบท นโยบาย และประเมินความเสี่ยง</div>
+      <div class="pdca-activities">
+        <strong>กิจกรรมหลัก:</strong>
+        <ul>
+          <li>กำหนดขอบเขตระบบงานสำคัญ (Scope Boundary)</li>
+          <li>จัดทำนโยบายความมั่นคงปลอดภัยและแผนแม่บท</li>
+          <li>ประเมินความเสี่ยงและคัดเลือกมาตรการควบคุม</li>
+        </ul>
+      </div>
+      <div class="pdca-artifacts">
+        <span class="art-label">ผลผลิตสำคัญ (Artifacts):</span>
+        <span class="art-pill">ISMS Scope Document</span>
+        <span class="art-pill">Cybersecurity Policy</span>
+        <span class="art-pill">Risk Assessment Report</span>
+        <span class="art-pill">Statement of Applicability (SoA)</span>
+      </div>
+      <div class="pdca-auditor-focus">
+        <strong>🎯 จุดตรวจ Auditor:</strong> นโยบายได้รับการอนุมัติจริงหรือไม่? ประเมินความเสี่ยงครอบคลุมสินทรัพย์สำคัญทั้งหมดหรือไม่?
+      </div>
+    </div>
+
+    <!-- Arrow 1 -> 2 -->
+    <div class="pdca-connector">➡️ นำแผนไปปฏิบัติจริง</div>
+
+    <!-- Do -->
+    <div class="pdca-step-card do">
+      <div class="pdca-badge">2. DO // ปฏิบัติ</div>
+      <div class="pdca-step-title">การนำมาตรการควบคุมไปดำเนินงานจริงหน้างาน</div>
+      <div class="pdca-activities">
+        <strong>กิจกรรมหลัก:</strong>
+        <ul>
+          <li>ติดตั้งอุปกรณ์และตั้งค่าความปลอดภัย (Hardening, Firewall, MFA)</li>
+          <li>จัดทำและสื่อสารขั้นตอนปฏิบัติงานมาตรฐาน (SOPs)</li>
+          <li>ฝึกอบรมพนักงานและจำกัดสิทธิ์ Least Privilege</li>
+        </ul>
+      </div>
+      <div class="pdca-artifacts">
+        <span class="art-label">ผลผลิตสำคัญ (Artifacts):</span>
+        <span class="art-pill">SOPs &amp; Work Instructions</span>
+        <span class="art-pill">System Hardening Checklists</span>
+        <span class="art-pill">Security Training Records</span>
+        <span class="art-pill">Access Request Approval Forms</span>
+      </div>
+      <div class="pdca-auditor-focus">
+        <strong>🎯 จุดตรวจ Auditor:</strong> ค่าคอนฟิกจริงตรงกับ SOP หรือไม่? มีบันทึกการอนุมัติสิทธิ์ครบทุกบัญชีหรือไม่?
+      </div>
+    </div>
+
+    <!-- Arrow 2 -> 3 -->
+    <div class="pdca-connector">➡️ วัดผลและตรวจประเมิน</div>
+
+    <!-- Check -->
+    <div class="pdca-step-card check">
+      <div class="pdca-badge">3. CHECK // ตรวจสอบ</div>
+      <div class="pdca-step-title">การติดตาม ตรวจสอบ และวัดประสิทธิผล</div>
+      <div class="pdca-activities">
+        <strong>กิจกรรมหลัก:</strong>
+        <ul>
+          <li>เฝ้าระวัง Log และวิเคราะห์เหตุการณ์ผิดปกติประจำวัน</li>
+          <li>สแกนช่องโหว่และทดสอบเจาะระบบตามรอบเวลา</li>
+          <li>การตรวจสอบภายใน (Internal Audit) และการตรวจตาม ม.54</li>
+        </ul>
+      </div>
+      <div class="pdca-artifacts">
+        <span class="art-label">ผลผลิตสำคัญ (Artifacts):</span>
+        <span class="art-pill">Audit Working Papers</span>
+        <span class="art-pill">Vulnerability Scan Reports</span>
+        <span class="art-pill">Internal/External Audit Reports</span>
+        <span class="art-pill">KPI / KRI Dashboard Metrics</span>
+      </div>
+      <div class="pdca-auditor-focus">
+        <strong>🎯 จุดตรวจ Auditor:</strong> มีการตรวจประเมินที่เป็นอิสระหรือไม่? การวัดผลสะท้อนความเสี่ยงจริงหรือเป็นเพียงตัวเลขตกแต่ง?
+      </div>
+    </div>
+
+    <!-- Arrow 3 -> 4 -->
+    <div class="pdca-connector">➡️ นำผลตรวจไปปรับปรุง</div>
+
+    <!-- Act -->
+    <div class="pdca-step-card act">
+      <div class="pdca-badge">4. ACT // ปรับปรุง</div>
+      <div class="pdca-step-title">การแก้ไข ปรับปรุง และพัฒนาอย่างต่อเนื่อง</div>
+      <div class="pdca-activities">
+        <strong>กิจกรรมหลัก:</strong>
+        <ul>
+          <li>จัดทำแผนแก้ไขและป้องกันข้อบกพร่อง (CAPA Plan)</li>
+          <li>การประชุมทบทวนของฝ่ายบริหาร (Management Review Meeting)</li>
+          <li>ปรับปรุงนโยบายและสถาปัตยกรรมให้ทันต่อภัยคุกคามใหม่</li>
+        </ul>
+      </div>
+      <div class="pdca-artifacts">
+        <span class="art-label">ผลผลิตสำคัญ (Artifacts):</span>
+        <span class="art-pill">Corrective Action Plan (CAPA)</span>
+        <span class="art-pill">Management Review Minutes</span>
+        <span class="art-pill">Updated Policies &amp; Architecture</span>
+        <span class="art-pill">Remediation Tracking Log</span>
+      </div>
+      <div class="pdca-auditor-focus">
+        <strong>🎯 จุดตรวจ Auditor:</strong> ข้อค้นพบจากการตรวจรอบก่อนได้รับการแก้ไขจริงหรือไม่? ผู้บริหารระดับสูงรับทราบผลการตรวจหรือไม่?
+      </div>
+    </div>
+  </div>
+</div>
+
+<h4 id="sec-1-3-1">1.3.1 Plan (วางแผน): การกำหนดบริบท ขอบเขต นโยบาย และความเสี่ยง</h4>
+<ul class="content-list">
+  <li><strong>กิจกรรม:</strong> กำหนดขอบเขตระบบงานสำคัญ (System Boundary), วิเคราะห์ผู้มีส่วนได้ส่วนเสีย, จัดทำนโยบายความมั่นคงปลอดภัย, ประเมินความเสี่ยง และคัดเลือกมาตรการควบคุมที่เหมาะสม</li>
+  <li><strong>ผลผลิต (Artifacts):</strong> Scope Document, Information Security Policy, Risk Assessment Report, Statement of Applicability (SoA)</li>
+</ul>
+<h4 id="sec-1-3-2">1.3.2 Do (ปฏิบัติ): การนำมาตรการควบคุมไปดำเนินงานจริง</h4>
+<ul class="content-list">
+  <li><strong>กิจกรรม:</strong> ปรับใช้มาตรการทางเทคนิค (ติดตั้ง Firewall, เปิด MFA, Hardening OS), จัดทำขั้นตอนปฏิบัติงานมาตรฐาน (SOP), จัดฝึกอบรมพนักงาน และบังคับใช้การควบคุมการเข้าถึง</li>
+  <li><strong>ผลผลิต (Artifacts):</strong> SOPs, Hardening Checklist, Training Records, System Configuration Files, Access Request Forms</li>
+</ul>
+<h4 id="sec-1-3-3">1.3.3 Check (ตรวจสอบ): การติดตาม ตรวจสอบ และวัดประสิทธิผล</h4>
+<ul class="content-list">
+  <li><strong>กิจกรรม:</strong> การตรวจติดตาม Log ประจำวัน, การประเมินช่องโหว่, การวัดผลตัวชี้วัดประสิทธิภาพ (KPIs/KRIs), การตรวจสอบภายใน (Internal Audit) ตามรอบเวลา, และการตรวจสอบภายนอกตามมาตรา 54</li>
+  <li><strong>ผลผลิต (Artifacts):</strong> Audit Working Papers, Vulnerability Scan Reports, Internal Audit Report, Monitoring Dashboards</li>
+</ul>
+<h4 id="sec-1-3-4">1.3.4 Act (ปรับปรุง): การแก้ไข ปรับปรุง และพัฒนาอย่างต่อเนื่อง</h4>
+<ul class="content-list">
+  <li><strong>กิจกรรม:</strong> การนำข้อค้นพบ (Audit Findings) มาจัดทำแผนแก้ไขและป้องกันข้อบกพร่อง (Corrective and Preventive Action: CAPA), การประชุมทบทวนของฝ่ายบริหาร (Management Review Meeting), และการปรับปรุงนโยบายให้ทันต่อภัยคุกคามใหม่</li>
+  <li><strong>ผลผลิต (Artifacts):</strong> Corrective Action Plan, Management Review Minutes, Updated Security Policies</li>
+</ul>
+<div class="callout tip"><div class="callout-title">🔍 มุมมองผู้ตรวจสอบ (Auditor Insight: PDCA Verification)</div><p><strong>มุมมองผู้ตรวจสอบ:</strong> ในการตรวจประเมินระบบ ผู้ตรวจสอบต้องมองหาหลักฐานว่าวงจร PDCA มีการหมุนครบรอบจริงหรือไม่ หากองค์กรมีเพียงเอกสารแผนงาน (Plan) และการติดตั้งอุปกรณ์ (Do) แต่ไม่มีหลักฐานการตรวจวัดผล (Check) หรือเมื่อตรวจพบข้อบกพร่องแล้วไม่มีการแก้ไขและรายงานฝ่ายบริหาร (Act) ถือว่าระบบบริหารจัดการความมั่นคงปลอดภัยล้มเหลวในเชิงโครงสร้าง</p></div>
+<hr class="section-divider">
+<h3 id="sec-1-4">1.4 การเชื่อมโยงกับกรอบมาตรฐานระดับสากล</h3>
+<p>เพื่อให้นักศึกษาสามารถนำความรู้ไปประยุกต์ใช้ได้ทั้งในบริบทขององค์กรไทยและองค์กรข้ามชาติ การเข้าใจความเชื่อมโยงระหว่างประมวลแนวทางปฏิบัติฯ กับมาตรฐานสากลหลักเป็นสิ่งสำคัญอย่างยิ่ง:</p>
+<h4 id="sec-1-4-1">1.4.1 ISO/IEC 27001:2022 และ ISO/IEC 27002:2022</h4>
+<p>ISO/IEC 27001 เป็นมาตรฐานข้อกำหนดของระบบ ISMS โดยแบ่งโครงสร้างออกเป็น 2 ส่วนหลัก:</p>
+<ol class="content-list ordered">
+  <li><strong>Management Clauses (ข้อ 4 ถึง 10):</strong> โครงสร้างระบบบริหารจัดการตามวงจร PDCA (Context, Leadership, Planning, Support, Operation, Performance Evaluation, Improvement)</li>
+  <li><strong>Annex A Controls (ฉบับปี 2022):</strong> แคตตาล็อกมาตรการควบคุมความปลอดภัย 93 มาตรการ ซึ่งจัดกลุ่มใหม่เป็น <strong>4 ธีม (Themes)</strong>:</li>
+</ol>
+<ul class="content-list">
+  <li><strong>Organizational Controls (37 มาตรการ):</strong> นโยบาย, บทบาทหน้าที่, ทะเบียนสินทรัพย์, การจัดการผู้ให้บริการภายนอก</li>
+  <li><strong>People Controls (8 มาตรการ):</strong> การตรวจสอบประวัติก่อนจ้างงาน, ข้อตกลงการรักษาความลับ, การอบรมความตระหนักรู้</li>
+  <li><strong>Physical Controls (14 มาตรการ):</strong> การควบคุมพื้นที่ปลอดภัย, การป้องกันอุปกรณ์, ระบบรักษาความปลอดภัยทางกายภาพ</li>
+  <li><strong>Technological Controls (34 มาตรการ):</strong> การควบคุมการเข้าถึง, การเข้ารหัส, การจัดการช่องโหว่, การสำรองข้อมูล, การตั้งค่าความปลอดภัย</li>
+</ul>
+<h4 id="sec-1-4-2">1.4.2 NIST Cybersecurity Framework (NIST CSF 2.0)</h4>
+<p>NIST CSF ได้รับการยอมรับอย่างกว้างขวางในฐานะกรอบการบริหารความเสี่ยง ในฉบับปรับปรุงล่าสุด (CSF 2.0 ปี 2024) ได้เพิ่มฟังก์ชัน <strong>Govern (GV)</strong> เข้ามาเคียงข้าง 5 ฟังก์ชันเดิม ทำให้โครงสร้างประกอบด้วย <strong>6 ฟังก์ชันหลัก (Core Functions)</strong>:</p>
+<ol class="content-list ordered">
+  <li><strong>Govern (GV):</strong> การกำกับดูแล นโยบาย บทบาท และกลยุทธ์การบริหารความเสี่ยงระดับองค์กร</li>
+  <li><strong>Identify (ID):</strong> การชี้บ่งสินทรัพย์ บริบท ความเสี่ยง และห่วงโซ่อุปทาน</li>
+  <li><strong>Protect (PR):</strong> การควบคุมการเข้าถึง การอบรม ความปลอดภัยของข้อมูล และการปกป้องแพลตฟอร์ม</li>
+  <li><strong>Detect (DE):</strong> การเฝ้าระวังพฤติกรรมผิดปกติและการตรวจจับเหตุการณ์คุกคาม</li>
+  <li><strong>Respond (RS):</strong> การวางแผนตอบสนอง การสื่อสาร การวิเคราะห์ และการบรรเทาความเสียหาย</li>
+  <li><strong>Recover (RC):</strong> การวางแผนฟื้นฟูระบบ การกู้คืนบริการ และการสื่อสารหลังเกิดเหตุ</li>
+</ol>
+<h4 id="sec-1-4-3">1.4.3 ISO 19011 (Guidelines for Auditing Management Systems)</h4>
+<p>ISO 19011 ทำหน้าที่เป็น "แม่บทของการตรวจสอบ" (Auditing Methodology) ที่ไม่จำกัดเฉพาะมาตรฐานใดมาตรฐานหนึ่ง ไม่ว่าผู้ตรวจสอบจะทำการตรวจประเมินตามประมวลแนวทางปฏิบัติฯ ของไทย, ISO/IEC 27001 หรือ NIST CSF ผู้ตรวจสอบต้องยึดระเบียบวิธี การบริหารโปรแกรมตรวจ การสุ่มตัวอย่าง และหลักการตรวจสอบ 7 ประการของ ISO 19011 เสมอ</p>
+<h4 id="sec-1-4-4">1.4.4 ตาราง Cross-Framework Mapping</h4>
+
+<div class="widget-box" id="widget-framework-mapping">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE TOOL 3.1</div>
+    <div class="widget-title">เครื่องมือสืบค้นและเปรียบเทียบมาตรฐาน (Cross-Framework Mapping Inspector)</div>
+  </div>
+  <div class="widget-instruction">
+    คลิกเลือก <strong>1 ใน 6 องค์ประกอบของประกาศ กกม.</strong> ด้านล่าง เพื่อตรวจสอบความสัมพันธ์กับข้อกำหนดใน <strong>ISO/IEC 27001 / 27002:2022 (Annex A)</strong> และ <strong>NIST CSF 2.0</strong> พร้อมคำแนะนำสำหรับผู้ตรวจสอบ
+  </div>
+
+  <div class="mapping-selector-pills" id="mapping-pills">
+    <button class="pill-btn active" data-map="gov">1. การกำกับดูแล (Governance)</button>
+    <button class="pill-btn" data-map="risk">2. การประเมินความเสี่ยง (Risk Assessment)</button>
+    <button class="pill-btn" data-map="protect">3. การป้องกันระบบและข้อมูล (Protection)</button>
+    <button class="pill-btn" data-map="detect">4. การเฝ้าระวังและตรวจจับ (Monitoring)</button>
+    <button class="pill-btn" data-map="respond">5. การรับมือภัยคุกคาม (Incident Response)</button>
+    <button class="pill-btn" data-map="recover">6. การกู้คืนและความต่อเนื่อง (Recovery)</button>
+  </div>
+
+  <div class="mapping-detail-display" id="mapping-display-area">
+    <!-- Populated by JavaScript -->
+  </div>
+</div>
+
+<p>ตารางต่อไปนี้แสดงการเปรียบเทียบระหว่าง 6 องค์ประกอบของประมวลแนวทางปฏิบัติฯ กับ ISO/IEC 27002:2022 และ NIST CSF 2.0:</p>
+<div class="table-container cross-map-table"><table>
+  <thead><tr><th>องค์ประกอบตามประมวลแนวทางปฏิบัติฯ (ประกาศ กกม.)</th><th>ISO/IEC 27001 / 27002:2022 (Annex A)</th><th>NIST Cybersecurity Framework 2.0</th></tr></thead>
+  <tbody>
+    <tr><td><span class="pillar-tag"><strong>1. การกำกับดูแล (Governance)</strong></span></td><td>Clause 5 (Leadership), Annex A 5.1–5.8 (Policies, Roles, Authorities)</td><td><strong>GOVERN (GV):</strong> Organizational Context (GV.OC), Risk Management Strategy (GV.RM), Roles, Responsibilities, and Authorities (GV.RR), Policy (GV.PO)</td></tr>
+    <tr><td><span class="pillar-tag"><strong>2. การประเมินและบริหารความเสี่ยง (Risk Assessment)</strong></span></td><td>Clause 6 (Planning), Clause 8.2–8.3, Annex A 5.9–5.14 (Asset Management)</td><td><strong>IDENTIFY (ID):</strong> Asset Management (ID.AM), Risk Assessment (ID.RA), Improvement (ID.IM)</td></tr>
+    <tr><td><span class="pillar-tag"><strong>3. การป้องกันระบบและข้อมูล (Protection)</strong></span></td><td>Annex A 5.15–5.18, Annex A 8.1–8.34 (Technological Controls, IAM, Patching, Encryption, Hardening)</td><td><strong>PROTECT (PR):</strong> Identity Management, Authentication, and Access Control (PR.AA), Awareness and Training (PR.AT), Data Security (PR.DS), Platform Security (PR.PS)</td></tr>
+    <tr><td><span class="pillar-tag"><strong>4. การเฝ้าระวังและตรวจจับ (Monitoring & Detection)</strong></span></td><td>Annex A 8.15 (Logging), 8.16 (Monitoring activities), 8.17 (Clock synchronization)</td><td><strong>DETECT (DE):</strong> Continuous Monitoring (DE.CM), Adverse Event Analysis (DE.AE)</td></tr>
+    <tr><td><span class="pillar-tag"><strong>5. การรับมือภัยคุกคาม (Incident Response)</strong></span></td><td>Annex A 5.24–5.28 (Information security incident management planning and reporting)</td><td><strong>RESPOND (RS):</strong> Incident Management (RS.MA), Incident Analysis (RS.AN), Incident Response Reporting and Communication (RS.CO), Incident Mitigation (RS.MI)</td></tr>
+    <tr><td><span class="pillar-tag"><strong>6. การกู้คืนและสร้างความต่อเนื่อง (Recovery & Continuity)</strong></span></td><td>Annex A 5.29–5.30 (ICT readiness for business continuity), Annex A 8.13 (Information backup)</td><td><strong>RECOVER (RC):</strong> Incident Recovery Plan Execution (RC.RP), Incident Recovery Communication (RC.CO)</td></tr>
+  </tbody>
+</table></div>
+<hr class="section-divider">
+<h2 id="sec-part-2">ส่วนที่ 2 การสร้างและการใช้งาน Control Mapping & Compliance Matrix</h2>
+<p>ส่วนที่ 2 มุ่งเน้นทักษะเชิงปฏิบัติการที่เป็นหัวใจของวิชาชีพ ทั้งในมุมของ Lead Implementer ที่ต้องวางแผนมาตรการ และ Lead Auditor ที่ต้องตรวจสอบความสอดคล้อง โดยเนื้อหาจะลงลึกถึงการออกแบบ Control Mapping, การตีความหลุมพรางระหว่าง Conformity กับ Effectiveness, การจำแนกประเภทและน้ำหนักของหลักฐาน และการประเมิน Gap</p>
+<h3 id="sec-2-1">2.1 องค์ประกอบของการทำ Control Mapping</h3>
+
+<div class="widget-box" id="widget-control-mapping-builder">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE TOOL 3.2</div>
+    <div class="widget-title">เครื่องมือถอดรหัส 7 องค์ประกอบของการทำ Control Mapping</div>
+  </div>
+  <div class="widget-instruction">
+    คลิกเลือกขั้นตอนทั้ง 7 ของการจัดทำ Compliance Matrix เพื่อทำความเข้าใจบทบาท ความสำคัญเชิงวิชาชีพ และตัวอย่างจริงในกรณีศึกษาระบบ VPN และฐานข้อมูล
+  </div>
+
+  <div class="stepper-horizontal" id="element-stepper">
+    <div class="step-node active" data-step="1"><span class="step-num">1</span><span class="step-label">Requirement</span></div>
+    <div class="step-node" data-step="2"><span class="step-num">2</span><span class="step-label">Control Objective</span></div>
+    <div class="step-node" data-step="3"><span class="step-num">3</span><span class="step-label">Control Activity</span></div>
+    <div class="step-node" data-step="4"><span class="step-num">4</span><span class="step-label">Control Owner</span></div>
+    <div class="step-node" data-step="5"><span class="step-num">5</span><span class="step-label">Expected Evidence</span></div>
+    <div class="step-node" data-step="6"><span class="step-num">6</span><span class="step-label">Test Procedure</span></div>
+    <div class="step-node" data-step="7"><span class="step-num">7</span><span class="step-label">Assessment Result</span></div>
+  </div>
+
+  <div class="step-detail-card" id="step-detail-container">
+    <!-- Populated by JavaScript -->
+  </div>
+</div>
+
+<p><strong>Control Mapping</strong> (หรือการจัดทำ Compliance Matrix) คือเครื่องมือเชิงโครงสร้างที่ใช้แปลง "ข้อกำหนดอ้างอิง" (Requirement) ที่เขียนด้วยภาษากฎหมายหรือมาตรฐาน ให้กลายเป็น "กิจกรรมการควบคุมเชิงปฏิบัติ" (Actionable Controls) และ "วิธีการตรวจสอบที่วัดผลได้" (Verifiable Audit Tests)</p>
+<p>ผัง Control Mapping ที่สมบูรณ์ตามหลักวิชาชีพสากลต้องประกอบด้วย <strong>7 องค์ประกอบหลัก</strong> ดังต่อไปนี้:</p>
+
+<h4 id="sec-31">รายละเอียดของทั้ง 7 องค์ประกอบ:</h4>
+<ol class="content-list ordered">
+  <li><strong>Requirement (ข้อกำหนดอ้างอิง):</strong> ข้อความหรือหัวข้ออ้างอิงจากกฎหมาย ประกาศ หรือมาตรฐาน เช่น <em>“ประกาศ กกม. ฉบับที่ 1/2564 ข้อ 12(3) — กำหนดให้มีการยืนยันตัวตนแบบหลายปัจจัย (MFA) สำหรับการเข้าถึงระบบจากระยะไกล”</em></li>
+  <li><strong>Control Objective (วัตถุประสงค์การควบคุม):</strong> คำแถลงเป้าหมายว่าต้องการควบคุมความเสี่ยงใด เพื่อป้องกันไม่ให้เกิดผลกระทบอะไร เช่น <em>“เพื่อป้องกันการเข้าถึงเครือข่ายและระบบสารสนเทศภายในมหาวิทยาลัยโดยมิชอบ กรณีรหัสผ่านของผู้ใช้รั่วไหลหรือถูกโจมตีแบบ Phishing”</em></li>
+  <li><strong>Control Activity (กิจกรรมการควบคุม):</strong> รายละเอียดเชิงปฏิบัติหรือทางเทคนิคที่องค์กรดำเนินการจริง เช่น <em>“กำหนดค่าบน VPN Gateway และ Identity Provider (Azure AD / FreeIPA) ให้ผู้ใช้ทุกคนที่เชื่อมต่อ VPN ต้องผ่านการยืนยันตัวตนด้วย MFA ผ่านแอปพลิเคชัน Authenticator บนสมาร์ตโฟน”</em></li>
+  <li><strong>Control Owner (เจ้าของมาตรการ):</strong> ตำแหน่งหรือหน่วยงานที่รับผิดชอบการดำเนินงานมาตรการนั้นโดยตรง (ห้ามระบุเป็นชื่อบุคคลเดี่ยว เพื่อความต่อเนื่องเมื่อมีการโยกย้ายบุคลากร) เช่น <em>“หัวหน้างานวิศวกรรมเครือข่าย (Network Engineering Lead)”</em></li>
+  <li><strong>Expected Evidence (หลักฐานที่คาดหวัง):</strong> สิ่งที่ต้องจัดเตรียมไว้เพื่อพิสูจน์ว่ากิจกรรมการควบคุมเกิดขึ้นจริง เช่น <em>“เอกสารขั้นตอนปฏิบัติงาน (SOP) การขอใช้ VPN, ภาพหน้าจอหรือ Exported Config ของ Firewall/VPN ที่แสดงการเปิดฟังก์ชัน MFA บังคับใช้กับทุกโปรไฟล์, ล็อกการล็อกอินผ่าน VPN ที่แสดงผลการยืนยันตัวตน MFA สำเร็จ”</em></li>
+  <li><strong>Test Procedure (ขั้นตอนการทดสอบของผู้ตรวจ):</strong> วิธีการที่ผู้ตรวจสอบจะดำเนินการเพื่อตรวจสอบความถูกต้อง เช่น <em>“(1) ตรวจทานเอกสาร SOP, (2) สุ่มตรวจค่ากำหนด (Configuration Review) บนอุปกรณ์ VPN Gateway, (3) ทดสอบล็อกอินด้วยบัญชีทดสอบเพื่อยืนยันว่าระบบเรียกขอ OTP จริง (Re-performance), (4) สุ่มตรวจ Authentication Log 25 ตัวอย่างเพื่อตรวจหาข้อยกเว้น”</em></li>
+  <li><strong>Assessment Result (ผลการประเมิน):</strong> สรุปผลการตรวจสอบ เช่น สถานะความสอดคล้อง (Fully/Partially/Not Implemented), ข้อบกพร่องที่พบ (Gaps/Findings), และข้อเสนอแนะในการปรับปรุง (Recommendations)</li>
+</ol>
+<hr class="section-divider">
+<h3 id="sec-2-2">2.2 ความสอดคล้องเชิงรูปแบบ (Conformity) เทียบกับ ประสิทธิผลจริง (Effectiveness)</h3>
+<p>หนึ่งในข้อผิดพลาดที่ร้ายแรงที่สุดขององค์กรและผู้ตรวจสอบมือใหม่ คือการมองว่า <strong>"ความสอดคล้องเชิงรูปแบบ (Conformity / Compliance)"</strong> มีค่าเท่ากับ <strong>"ความมั่นคงปลอดภัยที่มีประสิทธิผล (Security Effectiveness)"</strong></p>
+<p>ในความเป็นจริง องค์กรสามารถมีเอกสารนโยบายที่หนาเตอะ ได้รับการรับรองตามมาตรฐานครบถ้วน แต่ระบบกลับถูกโจมตีด้วย Ransomware จนเป็นอัมพาตได้ หากมาตรการที่ระบุไว้ในเอกสารไม่ได้ถูกนำไปปฏิบัติจริง หรือนำไปปฏิบัติอย่างไม่มีประสิทธิผล</p>
+<p>เพื่อความเข้าใจอย่างถ่องแท้ เราสามารถจำแนกสถานะของการควบคุมออกเป็น <strong>4 สถานการณ์หลัก</strong>:</p>
+
+<div class="figure-container" id="fig-3-4">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 3.4</div>
+    <div class="figure-title">เมทริกซ์ 4 สถานการณ์ความล้มเหลวของการควบคุม: ความสอดคล้องเชิงเอกสาร เทียบกับ การปฏิบัติจริง</div>
+  </div>
+  <div class="figure-caption">
+    แสดง 4 สภาวะของการควบคุมความมั่นคงปลอดภัย ช่วยให้ผู้เรียนและ Lead Auditor แยกแยะระหว่าง "ภาพลวงตาทางเอกสาร" กับ "ประสิทธิผลที่แท้จริง"
+  </div>
+
+  <div class="scenarios-matrix-grid">
+    <!-- Top-Left: Scenario D -->
+    <div class="sc-matrix-card sc-ideal">
+      <div class="sc-tag-row">
+        <span class="sc-quadrant-badge">QUADRANT D</span>
+        <span class="sc-status-pill green">IDEAL STATE: มีเอกสารครบ + ปฏิบัติจริง</span>
+      </div>
+      <div class="sc-title">ความสมบูรณ์แบบ (Design &amp; Operating Effectiveness)</div>
+      <p class="sc-desc">
+        มาตรการถูกออกแบบอย่างรัดกุมตรงตามความเสี่ยง (Design Effective) บุคลากรปฏิบัติตามอย่างถูกต้องสม่ำเสมอ และมีหลักฐาน Logs/Config ยืนยันย้อนหลังได้ 100%
+      </p>
+      <div class="sc-example">
+        <strong>ตัวอย่าง:</strong> นโยบายระบุให้ใช้ MFA กับ VPN เจ้าหน้าที่เปิดค่า GPO บังคับ MFA และเมื่อ Auditor สุ่มตรวจ Log 50 รายการ พบว่าทุก Session มีการยืนยันตัวตน MFA ผ่านสำเร็จครบถ้วน
+      </div>
+      <div class="sc-outcome green">
+        <strong>ผลการตรวจ:</strong> ✅ ผ่านเกณฑ์สมบูรณ์ (Fully Implemented) มีความเชื่อมั่นสูง
+      </div>
+    </div>
+
+    <!-- Top-Right: Scenario B -->
+    <div class="sc-matrix-card sc-unsub">
+      <div class="sc-tag-row">
+        <span class="sc-quadrant-badge">QUADRANT B</span>
+        <span class="sc-status-pill amber">UNSUBSTANTIATED: ปฏิบัติจริง แต่ไม่มีเอกสารยืนยัน</span>
+      </div>
+      <div class="sc-title">ทำแต่ไม่มีหลักฐาน (Unsubstantiated / Undocumented Practice)</div>
+      <p class="sc-desc">
+        ทีมงานไอทีทำความปลอดภัยจริงหน้างาน แต่ไม่มีการบันทึกเอกสาร SOP ไม่มีแบบฟอร์มขออนุมัติ หรือไม่มี Log จัดเก็บ กฎเหล็กคือ <em>"If it was not documented, it did not happen"</em>
+      </p>
+      <div class="sc-example">
+        <strong>ตัวอย่าง:</strong> ผู้ดูแลระบบยืนยันว่าลบบัญชีพนักงานลาออกทุกสิ้นเดือน แต่ไม่มีตั๋วงาน HR ไม่มีใบอนุมัติ และไม่มี Log ยืนยัน หากผู้ดูแลระบบลาออก แนวปฏิบัตินี้จะสูญหายทันที
+      </div>
+      <div class="sc-outcome amber">
+        <strong>ผลการตรวจ:</strong> ⚠️ มีข้อค้นพบ (Gap/Finding) ขาด Assurance สำหรับผู้บริหารและ Regulator
+      </div>
+    </div>
+
+    <!-- Bottom-Left: Scenario A -->
+    <div class="sc-matrix-card sc-paper">
+      <div class="sc-tag-row">
+        <span class="sc-quadrant-badge">QUADRANT A</span>
+        <span class="sc-status-pill red">PAPER COMPLIANCE: เอกสารสวยงาม แต่มิได้ทำจริง</span>
+      </div>
+      <div class="sc-title">นโยบายกระดาษ (Policy without Operating Implementation)</div>
+      <p class="sc-desc">
+        มีเอกสารนโยบายและ SOPs เขียนไว้อย่างสมบูรณ์แบบ ผ่านการอนุมัติเรียบร้อย แต่ระบบจริงไม่ได้ตั้งค่าตามนโยบาย หรือผู้ปฏิบัติงานไม่เคยทราบว่ามีนโยบายนี้
+      </p>
+      <div class="sc-example">
+        <strong>ตัวอย่าง:</strong> นโยบายสั่งให้เปลี่ยนรหัสผ่าน Root ทุก 60 วัน แต่ในไฟล์ <code>/etc/shadow</code> และ AD ตั้งเป็น <code>Password Never Expires</code> และไม่ได้เปลี่ยนมา 400 วันแล้ว
+      </div>
+      <div class="sc-outcome red">
+        <strong>ผลการตรวจ:</strong> ❌ ข้อบกพร่องร้ายแรง (Operating Ineffectiveness) เอกสารเป็นเพียงภาพลวงตา
+      </div>
+    </div>
+
+    <!-- Bottom-Right: Scenario C -->
+    <div class="sc-matrix-card sc-ineffective">
+      <div class="sc-tag-row">
+        <span class="sc-quadrant-badge">QUADRANT C</span>
+        <span class="sc-status-pill purple">FORM OVER SUBSTANCE: มีหลักฐานครบ แต่คุมเสี่ยงไม่ได้จริง</span>
+      </div>
+      <div class="sc-title">หลุมพรางเชิงรูปแบบ (Ineffective Control / Design Failure)</div>
+      <p class="sc-desc">
+        มีเอกสาร มีการทำตามกระบวนการ และมีหลักฐานครบตาม Checklist แต่การออกแบบมาตรการ (Design) ผิดพลาด ทำให้ไม่สามารถป้องกันความเสี่ยงเป้าหมายได้เลย
+      </p>
+      <div class="sc-example">
+        <strong>ตัวอย่าง:</strong> สำรองข้อมูลทุกคืนบน NAS แต่แชร์ผ่าน SMB ไดรฟ์เดียวกับ Server และไม่เคยทดสอบ Restore หรือเก็บ Log 5 ล้านบรรทัดต่อวันแต่ไม่มี Alert Rule และไม่มีคนดู
+      </div>
+      <div class="sc-outcome purple">
+        <strong>ผลการตรวจ:</strong> ❌ ล้มเหลวในระดับ Design Effectiveness สอบผ่าน Checklist แต่ระบบล่มจริงเมื่อถูกโจมตี
+      </div>
+    </div>
+  </div>
+</div>
+
+<h4 id="sec-2-2-1">2.2.1 สถานการณ์ A: มีเอกสารแต่มิได้นำไปปฏิบัติ (Paper Compliance / Policy without Implementation)</h4>
+<ul class="content-list">
+  <li><strong>ลักษณะ:</strong> องค์กรมีเอกสารนโยบายและ SOPs เขียนไว้อย่างสวยงาม ครบถ้วนทุกข้อกำหนดของกฎหมาย แต่เมื่อผู้ตรวจสอบลงพื้นที่ตรวจสอบเชิงเทคนิค พบว่าผู้ปฏิบัติงานไม่เคยทราบว่ามีนโยบายนี้ หรืออุปกรณ์ไม่ได้ถูกตั้งค่าตามที่ระบุในเอกสาร</li>
+  <li><strong>ตัวอย่าง:</strong> นโยบายความมั่นคงปลอดภัยระบุว่า <em>"เครื่องแม่ข่ายทั้งหมดต้องเปลี่ยนรหัสผ่านระดับ Root/Administrator ทุก 90 วัน และมีความยาวไม่น้อยกว่า 16 ตัวอักษร"</em> แต่เมื่อตรวจสอบค่า Password Policy บน Active Directory และ Linux Server พบว่าถูกตั้งค่าเป็น <code>Password Never Expires</code> และไม่มีการบังคับความซับซ้อน</li>
+  <li><strong>ผลลัพธ์การตรวจ:</strong> <strong>Nonconformity (ไม่สอดคล้อง)</strong> — การควบคุมล้มเหลวในระดับ <strong>Operating Effectiveness</strong> อย่างสิ้นเชิง เอกสารที่มีอยู่เป็นเพียง "ภาพลวงตาของการกำกับดูแล"</li>
+</ul>
+<h4 id="sec-2-2-2">2.2.2 สถานการณ์ B: มีการปฏิบัติแต่ไม่มีหลักฐานยืนยัน (Unsubstantiated / Undocumented Practice)</h4>
+<ul class="content-list">
+  <li><strong>ลักษณะ:</strong> ทีมปฏิบัติการด้านไอทีทำงานอย่างแข็งขัน มีการรักษาความปลอดภัยจริงในระบบ แต่ไม่มีการบันทึกเอกสารขั้นตอนปฏิบัติงาน ไม่มีบันทึกการอนุมัติ หรือไม่มีการจัดเก็บ Log ไว้ยืนยัน</li>
+  <li><strong>ตัวอย่าง:</strong> ผู้ดูแลระบบอธิบายว่า <em>"พวกเราทำการตรวจสอบสิทธิ์ผู้ใช้และลบบัญชีของพนักงานที่ลาออกทุกสิ้นเดือน"</em> แต่เมื่อผู้ตรวจสอบขอดูบันทึกการอนุมัติ (Sign-off Sheet) ตั๋วงานแจ้งลาออกจากฝ่ายบุคคล หรือรายงานสรุปการททบทวนสิทธิ์ ผู้ดูแลระบบไม่สามารถแสดงหลักฐานใด ๆ ได้ โดยบอกว่า <em>"จำได้ว่าทำ แต่มิได้จดบันทึกไว้"</em></li>
+  <li><strong>ผลลัพธ์การตรวจ:</strong> <strong>Finding / Gap</strong> — กฎเหล็กของวิชาชีพตรวจสอบคือ <strong>"If it was not documented, it did not happen" (หากไม่มีเอกสารบันทึกไว้ ให้ถือว่าเหตุการณ์นั้นมิได้เกิดขึ้น)</strong> แม้ในทางปฏิบัติทีมงานจะทำจริง แต่การขาดหลักฐานทำให้ไม่สามารถสร้างความเชื่อมั่น (Assurance) แก่ผู้บริหาร ผู้สอบบัญชี หรือหน่วยงานกำกับดูแลได้ และหากผู้ดูแลระบบคนดังกล่าวลาออก ความรู้และแนวปฏิบัตินั้นจะสูญหายไปทันที</li>
+</ul>
+<h4 id="sec-2-2-3">2.2.3 สถานการณ์ C: มีหลักฐานครบแต่ควบคุมความเสี่ยงไม่ได้จริง (Ineffective Control / Form over Substance)</h4>
+<ul class="content-list">
+  <li><strong>ลักษณะ:</strong> องค์กรมีเอกสาร มีการทำตามกระบวนการ และมีหลักฐานครบถ้วนทุกประการ แต่ "การออกแบบมาตรการ (Design)" ผิดพลาดหรือไม่เพียงพอ ทำให้ไม่สามารถยับยั้งความเสี่ยงตามเป้าหมายได้</li>
+  <li><strong>ตัวอย่าง:</strong> องค์กรติดตั้งระบบ Firewall และมีเอกสาร Change Request ขอเปิดพอร์ตทุกรายการอย่างถูกต้อง มีหัวหน้างานลงนามอนุมัติครบถ้วน แต่เมื่อตรวจสอบ Rule Base ของ Firewall พบว่ามีการตั้งค่ากฎ <code>Allow Any Source to Any Destination Port ANY</code> เพื่อความสะดวกในการทำงาน หรือมีการซื้อระบบ SIEM ราคาแพงมาติดตั้ง มี Log ส่งเข้าครบถ้วน แต่ไม่มีการตั้งค่า Alert Rules หรือไม่มีเจ้าหน้าที่คอยดูหน้าจอ Alert เลย</li>
+  <li><strong>ผลลัพธ์การตรวจ:</strong> <strong>Deficiency in Design Effectiveness</strong> — มาตรการผ่านเกณฑ์การตรวจเชิงรูปแบบ (Compliance Check-box) แต่ล้มเหลวในเชิงการควบคุมความเสี่ยง (Security Failure)</li>
+</ul>
+<h4 id="sec-2-2-4">2.2.4 สถานการณ์ D: มีการควบคุมที่เหมาะสมและดำเนินการอย่างต่อเนื่อง (Ideal State)</h4>
+<ul class="content-list">
+  <li><strong>ลักษณะ:</strong> มาตรการถูกออกแบบอย่างรัดกุมตรงตามความเสี่ยง (Design Effectiveness) และบุคลากรนำไปปฏิบัติอย่างถูกต้อง สม่ำเสมอ พร้อมมีหลักฐานเชิงประจักษ์ที่ตรวจสอบย้อนกลับได้ตลอดเวลา (Operating Effectiveness)</li>
+  <li><strong>ตัวอย่าง:</strong> มีนโยบายและ SOP เรื่องการควบคุมการเข้าถึงระบบ สิทธิ์ถูกกำหนดตาม Least Privilege อุปกรณ์เปิดใช้ MFA ทุกบัญชี และเมื่อสุ่มตรวจ Authentication Log ย้อนหลัง 6 เดือน พบว่ามีการยืนยันตัวตนด้วย MFA ครบ 100% โดยไม่มีข้อยกเว้นที่ไม่ได้รับอนุมัติ</li>
+</ul>
+<h4 id="sec-37">สรุปความแตกต่างระหว่าง Design Effectiveness กับ Operating Effectiveness:</h4>
+<div class="table-container"><table>
+  <thead><tr><th>มิติการประเมิน</th><th>คำถามหลักที่ใช้ในการตรวจ</th><th>วิธีการทดสอบของผู้ตรวจ</th><th>สิ่งที่บ่งชี้ว่าล้มเหลว</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Design Effectiveness<br>(ประสิทธิผลของการออกแบบ)</strong></td><td><em>“หากมาตรการนี้ถูกนำไปปฏิบัติอย่างสมบูรณ์ตามที่เขียนไว้ มันจะสามารถป้องกันหรือลดความเสี่ยงเป้าหมายได้จริงหรือไม่?”</em></td><td>- ทบทวนนโยบายและสถาปัตยกรรม (Architecture Review)<br>- วิเคราะห์ความเพียงพอของขั้นตอนปฏิบัติ (Gap Analysis)<br>- เปรียบเทียบกับ Best Practices และ Threat Landscape</td><td>- กฎระเบียบเปิดช่องโหว่โดยธรรมชาติ<br>- ไม่มีกลไกตรวจจับความผิดปกติ<br>- เทคโนโลยีที่เลือกไม่รองรับการแก้ปัญหาความเสี่ยง</td></tr>
+    <tr><td><strong>Operating Effectiveness<br>(ประสิทธิผลของการดำเนินงาน)</strong></td><td><em>“ในความเป็นจริงตลอดช่วงเวลาที่ตรวจสอบ มาตรการนี้ถูกปฏิบัติอย่างสม่ำเสมอ ถูกต้อง และมีหลักฐานยืนยันหรือไม่?”</em></td><td>- สุ่มตรวจตัวอย่างหลักฐาน (Sample Testing)<br>- ตรวจสอบ Log และค่าคอนฟิกระบบจริง (Inspection)<br>- สัมภาษณ์และสังเกตการทำงานหน้างาน (Observation)<br>- ทดสอบซ้ำ (Re-performance)</td><td>- ละเลยไม่ปฏิบัติตามขั้นตอนที่กำหนดไว้<br>- ลืมทำในบางช่วงเวลา หรือทำเฉพาะช่วงใกล้ถูกตรวจ<br>- ไม่สามารถแสดงหลักฐานย้อนหลังได้</td></tr>
+  </tbody>
+</table></div>
+<hr class="section-divider">
+<h3 id="sec-2-3">2.3 การจำแนกประเภทของหลักฐานการตรวจ (Types of Audit Evidence)</h3>
+
+<div class="widget-box" id="widget-evidence-evaluator">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE TOOL 3.3</div>
+    <div class="widget-title">เครื่องมือประเมินน้ำหนักและความน่าเชื่อถือของหลักฐานการตรวจ (Evidence Evaluator)</div>
+  </div>
+  <div class="widget-instruction">
+    เลือกประเภทหลักฐานที่ผู้ถูกตรวจนำมายื่นให้ เพื่อวิเคราะห์ระดับความน่าเชื่อถือ จุดแข็ง ข้อจำกัด และคำแนะนำการทดสอบเพิ่มเติมสำหรับ Auditor
+  </div>
+
+  <div class="evidence-btn-grid" id="evidence-type-buttons">
+    <button class="ev-select-btn active" data-ev="logs">1. Logs (บันทึกเหตุการณ์ระบบ)</button>
+    <button class="ev-select-btn" data-ev="config">2. Technical Configuration</button>
+    <button class="ev-select-btn" data-ev="tickets">3. Tickets &amp; Records (ITSM)</button>
+    <button class="ev-select-btn" data-ev="reports">4. Reports (VA / Pen-test / Audit)</button>
+    <button class="ev-select-btn" data-ev="sops">5. Procedures / SOPs</button>
+    <button class="ev-select-btn" data-ev="policies">6. Policies (นโยบายองค์กร)</button>
+    <button class="ev-select-btn" data-ev="interview">7. Interview Records (คำบอกเล่า)</button>
+  </div>
+
+  <div class="evidence-result-card" id="evidence-eval-result">
+    <!-- Populated by JavaScript -->
+  </div>
+</div>
+
+<p>การรวบรวมหลักฐานเชิงวัตถุวิสัย (Objective Evidence) คือกระดูกสันหลังของงานตรวจสอบ ผู้ตรวจสอบไม่สามารถตัดสินผลการตรวจจาก "คำบอกเล่า" เพียงอย่างเดียวได้ ในการตรวจสอบด้านความมั่นคงปลอดภัยไซเบอร์ หลักฐานจะถูกจำแนกออกเป็น <strong>8 ประเภทหลัก</strong> ตามลำดับชั้นของสายธารหลักฐาน (Evidence Stream):</p>
+
+<div class="figure-container" id="fig-3-5">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 3.5</div>
+    <div class="figure-title">พีระมิดลำดับชั้นความน่าเชื่อถือของหลักฐานการตรวจ 8 ประเภท (Audit Evidence Reliability Hierarchy)</div>
+  </div>
+  <div class="figure-caption">
+    หลักฐานที่สร้างโดยระบบอัตโนมัติ (System-generated) มีความน่าเชื่อถือสูงสุด ขณะที่คำบอกเล่าจากการสัมภาษณ์มีความน่าเชื่อถือต่ำสุดและต้องมีหลักฐานอื่นสนับสนุนเสมอ (Triangulation Principle)
+  </div>
+
+  <div class="evidence-pyramid-container">
+    <!-- Level 1: Logs -->
+    <div class="pyramid-tier t-highest">
+      <div class="pt-rank">ระดับสูงสุด (HIGHEST)</div>
+      <div class="pt-content">
+        <div class="pt-title">1. Logs (บันทึกเหตุการณ์ของระบบ)</div>
+        <div class="pt-desc">Syslog, Event ID 4624/4625, Firewall Logs, Auth Logs — สร้างอัตโนมัติโดยระบบ ปลอมแปลงยาก มี Timestamp ละเอียด พิสูจน์ Operating Effectiveness ได้ดีที่สุด</div>
+      </div>
+      <div class="pt-type-pill">SYSTEM GENERATED</div>
+    </div>
+
+    <!-- Level 2: Technical Configuration -->
+    <div class="pyramid-tier t-vhigh">
+      <div class="pt-rank">ระดับสูงมาก (VERY HIGH)</div>
+      <div class="pt-content">
+        <div class="pt-title">2. Configuration (ค่ากำหนดเชิงเทคนิคจริง)</div>
+        <div class="pt-desc">GPO, Firewall Rule Base, <code>sshd_config</code>, Cloud IAM Policies — สะท้อนสถานะจริงของระบบหน้างาน ไม่ขึ้นกับความทรงจำมนุษย์</div>
+      </div>
+      <div class="pt-type-pill">TECHNICAL STATE</div>
+    </div>
+
+    <!-- Level 3: Tickets & Records -->
+    <div class="pyramid-tier t-high">
+      <div class="pt-rank">ระดับสูง (HIGH)</div>
+      <div class="pt-content">
+        <div class="pt-title">3. Tickets &amp; Records (ตั๋วงานและบันทึกปฏิบัติการ)</div>
+        <div class="pt-desc">ITSM Change Requests, Incident Tickets, ใบขออนุมัติสิทธิ์ — มี Audit Trail ระบุตัวบุคคล เวลาอนุมัติ และผลการดำเนินงาน</div>
+      </div>
+      <div class="pt-type-pill">SYSTEM + PROCESS</div>
+    </div>
+
+    <!-- Level 4: Reports -->
+    <div class="pyramid-tier t-modhigh">
+      <div class="pt-rank">ระดับปานกลาง–สูง (MODERATE-HIGH)</div>
+      <div class="pt-content">
+        <div class="pt-title">4. Reports (รายงานผลสรุปและการวิเคราะห์)</div>
+        <div class="pt-desc">Vulnerability Scan Reports (Nessus), Pen-Test Reports, SOC Monthly Summary — วิเคราะห์ประมวลผลแล้ว ขึ้นกับคุณภาพของเครื่องมือและขอบเขต</div>
+      </div>
+      <div class="pt-type-pill">ANALYTICAL</div>
+    </div>
+
+    <!-- Level 5: Procedures / SOPs -->
+    <div class="pyramid-tier t-moderate">
+      <div class="pt-rank">ระดับปานกลาง (MODERATE)</div>
+      <div class="pt-content">
+        <div class="pt-title">5. Procedures / SOPs (ขั้นตอนปฏิบัติงานมาตรฐาน)</div>
+        <div class="pt-desc">คู่มือ Work Instructions, Hardening Guide — พิสูจน์การมีอยู่ของแนวปฏิบัติ (Design) แต่ไม่สามารถยืนยันได้ว่าพนักงานทำตามจริงหรือไม่</div>
+      </div>
+      <div class="pt-type-pill">OPERATIONAL DESIGN</div>
+    </div>
+
+    <!-- Level 6: Policies -->
+    <div class="pyramid-tier t-modlow">
+      <div class="pt-rank">ระดับปานกลาง (MODERATE)</div>
+      <div class="pt-content">
+        <div class="pt-title">6. Policies (เอกสารนโยบายองค์กร)</div>
+        <div class="pt-desc">Information Security Policy ได้รับการลงนามโดยผู้บริหาร — พิสูจน์เจตนารมณ์ (Mandate) แต่นามธรรมสูง เสี่ยงต่อภาวะ Paper Compliance</div>
+      </div>
+      <div class="pt-type-pill">GOVERNANCE MANDATE</div>
+    </div>
+
+    <!-- Level 7: Interview Records -->
+    <div class="pyramid-tier t-lowest">
+      <div class="pt-rank">ระดับต่ำสุด (LOWEST)</div>
+      <div class="pt-content">
+        <div class="pt-title">7. Interview Records (บันทึกการสัมภาษณ์และสังเกตการณ์)</div>
+        <div class="pt-desc">คำบอกเล่าของผู้ถูกตรวจ — มีอคติสูง ลืมง่าย <strong>⚠️ กฎเหล็ก: ห้ามใช้เป็นหลักฐานยืนยันเดี่ยวโดยไม่มีหลักฐานอื่นสนับสนุน</strong></div>
+      </div>
+      <div class="pt-type-pill">TESTIMONIAL INQUIRY</div>
+    </div>
+  </div>
+
+  <div class="triangulation-banner">
+    <div class="tb-icon">🔺</div>
+    <div class="tb-text">
+      <strong>หลักการสามเหลี่ยมหลักฐาน (Triangulation of Evidence):</strong> ผู้ตรวจสอบมืออาชีพต้องประสานข้อมูลจาก 3 แหล่งเสมอ: 
+      (1) คำบอกเล่าจากการสัมภาษณ์ (Interview) ➔ (2) เอกสารนโยบายและ SOPs (Documentation) ➔ (3) ค่าคอนฟิกหรือ Log ระบบจริง (Technical Evidence) 
+      เมื่อทั้ง 3 ด้านสอดคล้องกัน จึงสรุปผลด้วยความเชื่อมั่นสูงสุด
+    </div>
+  </div>
+</div>
+
+<h4 id="sec-39">รายละเอียดของหลักฐานทั้ง 8 ประเภท:</h4>
+<ol class="content-list ordered">
+  <li><strong>Policy (เอกสารนโยบาย):</strong> เอกสารระดับสูงที่ระบุเจตนารมณ์ กฎเกณฑ์ ทิศทาง และขอบเขตขององค์กร ซึ่งได้รับการอนุมัติจากผู้บริหารระดับสูง เช่น <em>นโยบายความมั่นคงปลอดภัยสารสนเทศของมหาวิทยาลัย, นโยบายการใช้ทรัพย์สินสารสนเทศ</em></li>
+  <li><strong>Procedure / SOP (ขั้นตอนปฏิบัติงานมาตรฐาน):</strong> เอกสารระดับปฏิบัติการที่อธิบายวิธีการทำงานแบบทีละขั้นตอน (Step-by-Step Instructions) เพื่อให้การปฏิบัติงานเป็นไปตามนโยบาย เช่น <em>คู่มือขั้นตอนการสร้างและลบบัญชีผู้ใช้, ขั้นตอนการ Hardening ระบบปฏิบัติการ Linux, ขั้นตอนการสำรองและกู้คืนฐานข้อมูล</em></li>
+  <li><strong>Record (บันทึกการปฏิบัติงาน):</strong> ร่องรอยหรือเอกสารที่เกิดขึ้นจากการดำเนินงานตามขั้นตอนปฏิบัติ เช่น <em>แบบฟอร์มคำขอเข้าพื้นที่ Data Center ที่มีลายมือชื่ออนุมัติ, ใบบันทึกผลการตรวจรับมอบอุปกรณ์, ทะเบียนประวัติการฝึกอบรม</em></li>
+  <li><strong>Configuration (ค่ากำหนดเชิงเทคนิคของระบบ):</strong> การตั้งค่าจริงบนระบบปฏิบัติการ ซอฟต์แวร์ อุปกรณ์เครือข่าย หรือบริการคลาวด์ เช่น <em>ไฟล์ <code>/etc/ssh/sshd_config</code> บน Linux, Group Policy Objects (GPO) บน Active Directory, Firewall Access Control Lists (ACLs)</em></li>
+  <li><strong>Log (บันทึกเหตุการณ์ของระบบ):</strong> ข้อมูลที่ระบบคอมพิวเตอร์สร้างขึ้นโดยอัตโนมัติเมื่อเกิดกิจกรรมต่าง ๆ ซึ่งไม่สามารถแก้ไขเปลี่ยนแปลงได้ง่าย เช่น <em>Syslog, Windows Security Event Log (Event ID 4624, 4625), Firewall Traffic Log, Web Server Access Log</em></li>
+  <li><strong>Report (รายงานผลสรุปและการวิเคราะห์):</strong> เอกสารสรุปผลที่ได้จากการประมวลผลข้อมูลหรือเครื่องมืออัตโนมัติ เช่น <em>รายงานผลการประเมินช่องโหว่ (Vulnerability Assessment Report จาก Nessus/OpenVAS), รายงานการทดสอบเจาะระบบ (Penetration Testing Report), รายงานสรุปเหตุการณ์ของ SOC ประจำเดือน</em></li>
+  <li><strong>Ticket (ตั๋วงานและบันทึกการเปลี่ยนแปลง):</strong> ข้อมูลในระบบบริหารจัดการบริการไอที (ITSM / Service Desk) เช่น Jira, ServiceNow, Zendesk ที่บันทึกคำขอ การอนุมัติ ขั้นตอนดำเนินการ และการปิดงาน เช่น <em>Change Request Ticket ขอดัดแปลง Rule บน Firewall, Incident Ticket แจ้งเครื่องติดมัลแวร์</em></li>
+  <li><strong>Interview Record (บันทึกการสัมภาษณ์และการสังเกตการณ์):</strong> ข้อมูลที่ผู้ตรวจสอบรวบรวมผ่านการพูดคุย ซักถาม และการเฝ้าดูการทำงานจริงของเจ้าหน้าที่หน้างาน (Observation)</li>
+</ol>
+<h4 id="sec-40">ตารางเปรียบเทียบระดับความน่าเชื่อถือ น้ำหนัก และข้อจำกัดของหลักฐาน:</h4>
+<div class="table-container"><table>
+  <thead><tr><th>ประเภทหลักฐาน</th><th>แหล่งกำเนิด</th><th>ระดับความน่าเชื่อถือ (Reliability)</th><th>บทบาทหลักในการตรวจสอบ</th><th>จุดแข็งและข้อจำกัด</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Logs</strong></td><td>สร้างอัตโนมัติโดยระบบ (System-generated)</td><td><strong>สูงสุด (Highest)</strong></td><td>พิสูจน์ Operating Effectiveness</td><td><strong>จุดแข็ง:</strong> ปลอมแปลงยาก มี Timestamp ละเอียด<br><strong>ข้อจำกัด:</strong> ข้อมูลมีปริมาณมหาศาล อาจสูญหายหากไม่มี Centralized Log</td></tr>
+    <tr><td><strong>Configuration</strong></td><td>สถานะระบบเทคนิคจริง (Live Technical State)</td><td><strong>สูงมาก (Very High)</strong></td><td>พิสูจน์ Design & Technical Implementation</td><td><strong>จุดแข็ง:</strong> สะท้อนความจริงหน้างาน ไม่ขึ้นกับความทรงจำมนุษย์<br><strong>ข้อจำกัด:</strong> อาจเป็นเพียงสถานะชั่วคราว หากไม่มี Change Management</td></tr>
+    <tr><td><strong>Tickets / Records</strong></td><td>ระบบงานและมนุษย์ร่วมกัน (System + Human Process)</td><td><strong>สูง (High)</strong></td><td>พิสูจน์การปฏิบัติตามกระบวนการ (Process Compliance)</td><td><strong>จุดแข็ง:</strong> มี Audit Trail ระบุตัวบุคคลและเวลาอนุมัติชัดเจน<br><strong>ข้อจำกัด:</strong> อาจมีการกรอกข้อมูลย้อนหลังหากระบบไม่มีการล็อกเวลา</td></tr>
+    <tr><td><strong>Reports</strong></td><td>เครื่องมือวิเคราะห์หรือผู้เชี่ยวชาญภายนอก</td><td><strong>ปานกลาง–สูง (Moderate to High)</strong></td><td>ให้ภาพรวมสถานะความเสี่ยงและการประเมิน</td><td><strong>จุดแข็ง:</strong> มีการวิเคราะห์จัดลำดับความสำคัญมาแล้ว<br><strong>ข้อจำกัด:</strong> ขึ้นอยู่กับคุณภาพของเครื่องมือและขอบเขตของการทดสอบ</td></tr>
+    <tr><td><strong>Procedures / SOPs</strong></td><td>จัดทำโดยฝ่ายบริหารและทีมเทคนิค</td><td><strong>ปานกลาง (Moderate)</strong></td><td>พิสูจน์การมีอยู่ของแนวปฏิบัติ (Design)</td><td><strong>จุดแข็ง:</strong> วางเกณฑ์มาตรฐานการทำงานที่ชัดเจน<br><strong>ข้อจำกัด:</strong> ไม่สามารถยืนยันได้ว่าพนักงานทำตามขั้นตอนจริงหรือไม่</td></tr>
+    <tr><td><strong>Policies</strong></td><td>อนุมัติโดยผู้บริหารระดับสูง</td><td><strong>ปานกลาง (Moderate)</strong></td><td>พิสูจน์เจตนารมณ์และอาณัติขององค์กร (Mandate)</td><td><strong>จุดแข็ง:</strong> เป็นเกณฑ์การตรวจระดับนโยบายที่บังคับใช้ทั้งองค์กร<br><strong>ข้อจำกัด:</strong> มีความเป็นนามธรรมสูง เสี่ยงต่อภาวะ Paper Compliance</td></tr>
+    <tr><td><strong>Interview Records</strong></td><td>มนุษย์ (คำบอกเล่าของผู้ถูกตรวจ)</td><td><strong>ต่ำสุด (Lowest)</strong></td><td>รวบรวมบริบทเบื้องต้นและเบาะแส (Inquiry)</td><td><strong>จุดแข็ง:</strong> ช่วยให้เข้าใจที่มา ปัญหา และข้อจำกัดหน้างานได้อย่างรวดเร็ว<br><strong>ข้อจำกัด:</strong> มีอคติสูง ลืมง่าย <strong>ห้ามใช้เป็นหลักฐานยืนยันเดี่ยวโดยไม่มีเอกสารอื่นสนับสนุน</strong></td></tr>
+  </tbody>
+</table></div>
+<hr class="section-divider">
+<h3 id="sec-2-4">2.4 การประเมินช่องว่าง (Gap Assessment) และสถานะการปฏิบัติตามเกณฑ์</h3>
+<p>เมื่อผู้ตรวจสอบนำหลักฐานเชิงประจักษ์มาเปรียบเทียบกับข้อกำหนดใน Compliance Matrix ขั้นตอนต่อไปคือการตัดสินและให้ <strong>สถานะความสอดคล้อง (Compliance Status)</strong> ซึ่งมาตรฐานสากลและแนวปฏิบัติการตรวจสอบได้กำหนดระดับสถานะออกเป็น <strong>5 ระดับมาตรฐาน</strong>:</p>
+
+<h4 id="sec-42">รายละเอียดของสถานะทั้ง 5 ระดับ:</h4>
+<ol class="content-list ordered">
+  <li><strong>Fully Implemented (ปฏิบัติตามอย่างสมบูรณ์):</strong></li>
+</ol>
+<ul class="content-list">
+  <li><strong>คำอธิบาย:</strong> องค์กรมีมาตรการควบคุมที่ผ่านการออกแบบอย่างถูกต้อง (Design Effective) มีเอกสารนโยบาย/SOP รองรับ และมีการปฏิบัติงานจริงอย่างสม่ำเสมอครอบคลุมทุกระบบในขอบเขต (Operating Effective) พร้อมมีหลักฐานยืนยันครบถ้วน</li>
+  <li><strong>ผลกระทบ:</strong> สอดคล้องตามเกณฑ์ (Conformity) ไม่พบประเด็นความเสี่ยง</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>Partially Implemented (ปฏิบัติตามบางส่วน):</strong></li>
+</ol>
+<ul class="content-list">
+  <li><strong>คำอธิบาย:</strong> องค์กรได้เริ่มดำเนินการตามมาตรการแล้ว แต่ยังไม่ครบถ้วนสมบูรณ์ เช่น มีนโยบายและเริ่มใช้งาน MFA บนเครื่องแม่ข่ายในศูนย์ข้อมูลแล้ว แต่ยังไม่ได้บังคับใช้กับระบบคลาวด์ หรือมีกระบวนการ Patching แต่ดำเนินการเฉพาะระบบปฏิบัติการ Windows โดยละเลยระบบปฏิบัติการ Linux</li>
+  <li><strong>ผลกระทบ:</strong> ข้อค้นพบระดับปานกลาง (Minor Nonconformity หรือ Observation) ต้องมีแผนปฏิบัติการแก้ไข (Remediation Plan) เพื่อขยายผลให้ครอบคลุม</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>Not Implemented (มิได้ปฏิบัติตาม):</strong></li>
+</ol>
+<ul class="content-list">
+  <li><strong>คำอธิบาย:</strong> องค์กรไม่มีการดำเนินการใด ๆ ตามข้อกำหนด ทั้งในระดับเอกสารนโยบายและในระดับเทคนิค หรืออาจมีการรับรู้แต่เพิกเฉย ไม่มีการจัดสรรทรัพยากรหรือตั้งค่าระบบใด ๆ เลย</li>
+  <li><strong>ผลกระทบ:</strong> ข้อค้นพบระดับร้ายแรง (Major Nonconformity) มีความเสี่ยงสูงที่ระบบจะถูกโจมตี และถือเป็นการไม่ปฏิบัติตามกฎหมาย พ.ร.บ.ไซเบอร์ 2562</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>Not Applicable: N/A (ไม่เกี่ยวข้องกับบริบทองค์กร):</strong></li>
+</ol>
+<ul class="content-list">
+  <li><strong>คำอธิบาย:</strong> ข้อกำหนดนั้นไม่เกี่ยวข้องกับการดำเนินงานหรือโครงสร้างเทคโนโลยีขององค์กร เช่น ข้อกำหนดว่าด้วยความปลอดภัยของการพัฒนาซอฟต์แวร์ภายใน (In-house Software Development) ในองค์กรที่จัดซื้อซอฟต์แวร์สำเร็จรูปมาใช้งานทั้งหมด 100%</li>
+  <li><strong>เงื่อนไขสำคัญ:</strong> <strong>การระบุ N/A ต้องมีเอกสารชี้แจงเหตุผล (Justification) เสมอ</strong> หากไม่มีเหตุผลรองรับที่ยอมรับได้ ผู้ตรวจสอบจะไม่สามารถให้สถานะ N/A ได้</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>Not Assessed (ยังมิได้ประเมิน):</strong></li>
+</ol>
+<ul class="content-list">
+  <li><strong>คำอธิบาย:</strong> ข้อกำหนดที่ยังไม่สามารถประเมินได้ในรอบการตรวจปัจจุบัน เนื่องจากข้อจำกัดด้านเวลา การจำกัดขอบเขต (Scope Limitation) หรือระบบเป้าหมายอยู่ระหว่างการปิดปรับปรุงระบบ</li>
+  <li><strong>เงื่อนไขสำคัญ:</strong> ต้องระบุเหตุผลและวางแผนการตรวจติดตามในรอบถัดไปอย่างชัดเจนในรายงานผลการตรวจ</li>
+</ul>
+<hr class="section-divider">
+<h3 id="sec-2-4-maturity">การวัดระดับวุฒิภาวะด้านความมั่นคงปลอดภัย (Cybersecurity Maturity Level)</h3>
+<p>นอกเหนือจากการประเมินแบบ ผ่าน/ไม่ผ่าน (Pass/Fail) กรอบมาตรฐานสมัยใหม่นิยมบูรณาการแบบจำลอง <strong>CMMI (Capability Maturity Model Integration)</strong> เพื่อประเมินว่าการปฏิบัติตามมาตรการนั้นมีความยั่งยืนและพัฒนาการในระดับใด:</p>
+<div class="table-container"><table>
+  <thead><tr><th>ระดับวุฒิภาวะ (Maturity Level)</th><th>ชื่อระดับ</th><th>ลักษณะพฤติกรรมขององค์กรและมาตรการควบคุม</th><th>มุมมองของผู้ตรวจสอบ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Level 0</strong></td><td>Non-existent</td><td>ไม่มีกระบวนการหรือมาตรการควบคุมใด ๆ ไม่มีการรับรู้ถึงความเสี่ยง</td><td>ความเสี่ยงสูงสุด (Critical Risk)</td></tr>
+    <tr><td><strong>Level 1</strong></td><td>Initial / Ad-hoc</td><td>มีการปฏิบัติแบบเฉพาะกิจ ขึ้นอยู่กับความสามารถเฉพาะตัวของบุคคล ไม่มีเอกสารหรือขั้นตอนมาตรฐาน</td><td>ขาดเสถียรภาพ หากบุคคลสำคัญลาออก ระบบจะล้มเหลวทันที</td></tr>
+    <tr><td><strong>Level 2</strong></td><td>Repeatable</td><td>มีขั้นตอนปฏิบัติที่ทำซ้ำได้ในระดับหน่วยงานย่อย มีเอกสารบางส่วน แต่ยังขาดการบูรณาการทั่วทั้งองค์กร</td><td>เริ่มมีประสิทธิผล แต่ยังมีความเสี่ยงจากความไม่สม่ำเสมอ</td></tr>
+    <tr><td><strong>Level 3</strong></td><td>Defined</td><td>มีนโยบาย ขั้นตอนปฏิบัติ และมาตรฐานที่กำหนดเป็นลายลักษณ์อักษรและประกาศใช้ทั่วทั้งองค์กร (Baseline State)</td><td>สอดคล้องตามเกณฑ์ประมวลแนวทางปฏิบัติฯ ขั้นต่ำ</td></tr>
+    <tr><td><strong>Level 4</strong></td><td>Managed & Measurable</td><td>มีการวัดผลตัวชี้วัดเชิงปริมาณ (KPIs/KRIs) มีการติดตามประสิทธิผลของมาตรการ และวิเคราะห์แนวโน้ม</td><td>มีประสิทธิผลสูง มีการควบคุมอย่างเป็นระบบ</td></tr>
+    <tr><td><strong>Level 5</strong></td><td>Optimizing</td><td>มีการปรับปรุงและพัฒนากระบวนการอย่างต่อเนื่องโดยอัตโนมัติ นำเทคโนโลยีปัญญาประดิษฐ์และ Threat Intelligence มาปรับตัวล่วงหน้า</td><td>องค์กรชั้นนำ มีความยืดหยุ่นทางไซเบอร์สูงสุด (Cyber Resilient)</td></tr>
+  </tbody>
+</table></div>
+<hr class="section-divider">
+<h2 id="sec-part-3">ส่วนที่ 3 กรณีศึกษาแกนกลางประจำบท: มหาวิทยาลัยดิจิทัลสมมติ</h2>
+<p>เพื่อให้นักศึกษาเข้าใจการประยุกต์ใช้ทฤษฎีในสถานการณ์จริง เราจะนำกรณีศึกษาแกนกลางตลอดภาคการศึกษา คือ <strong>“มหาวิทยาลัยดิจิทัลสมมติ” (Fictitious Digital University)</strong> มาวิเคราะห์การจัดทำ Control Mapping และประเมินข้อค้นพบ</p>
+<h3 id="sec-3-context">บริบทของมหาวิทยาลัยดิจิทัลสมมติ:</h3>
+<ul class="content-list">
+  <li>มีนักศึกษา 25,000 คน และบุคลากร 2,000 คน</li>
+  <li>ระบบสำคัญประกอบด้วย:</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>ระบบทะเบียนและบริการการศึกษา (SIS Portal):</strong> เว็บแอปพลิเคชันเชื่อมโยงฐานข้อมูล Oracle และ Payment Gateway ของธนาคาร</li>
+  <li><strong>ระบบบริหารทรัพยากรบุคคลและการเงิน (ERP):</strong> ระบบ On-premise จัดเก็บข้อมูลส่วนบุคคลและข้อมูลเงินเดือน</li>
+  <li><strong>โครงสร้างพื้นฐานเครือข่าย:</strong> Active Directory กลาง, เครือข่ายไร้สาย (Campus Wi-Fi), Next-Generation Firewall, และ VPN สำหรับการทำงานจากภายนอก</li>
+  <li><strong>ศูนย์ข้อมูลและระบบคลาวด์:</strong> Data Center ของมหาวิทยาลัย ร่วมกับการใช้งาน Microsoft 365 และ AWS</li>
+  <li><strong>ระบบความมั่นคงปลอดภัย:</strong> มีการส่ง Log บางส่วนเข้าสู่ Centralized Syslog Server</li>
+</ol>
+<hr class="section-divider">
+<h3 id="sec-3-cases">สถานการณ์จำลองสำหรับการวิเคราะห์ในชั้นเรียน (Case Analysis)</h3>
+
+<div class="widget-box" id="widget-university-simulator">
+  <div class="widget-header">
+    <div class="widget-tag">CASE STUDY SIMULATOR 3.4</div>
+    <div class="widget-title">ห้องทดลองวิเคราะห์กรณีศึกษา: มหาวิทยาลัยดิจิทัลสมมติ (Digital University Audit Lab)</div>
+  </div>
+  <div class="widget-instruction">
+    สวมบทบาทเป็น <strong>Lead Auditor</strong> ในการตรวจสอบ 3 สถานการณ์จริงของมหาวิทยาลัยดิจิทัล วิเคราะห์ข้อบกพร่อง ตัดสินสถานะความสอดคล้อง และรับข้อเสนอแนะเชิงวิชาชีพ
+  </div>
+
+  <div class="sim-tab-header">
+    <button class="sim-tab-btn active" data-sim="case1">สถานการณ์ที่ 1: รหัสผ่าน DBA Oracle</button>
+    <button class="sim-tab-btn" data-sim="case2">สถานการณ์ที่ 2: สำรองข้อมูล &amp; Ransomware</button>
+    <button class="sim-tab-btn" data-sim="case3">สถานการณ์ที่ 3: Log &amp; SIEM เฝ้าระวัง</button>
+  </div>
+
+  <div class="sim-content-body" id="sim-body-area">
+    <!-- Populated by JavaScript -->
+  </div>
+</div>
+
+<p>อาจารย์ผู้สอนนำเสนอผลการตรวจประเมินเบื้องต้นใน 3 สถานการณ์ และให้นักศึกษาร่วมกันอภิปราย:</p>
+<h4 id="sec-3-case-1">สถานการณ์ที่ 1: ระบบทะเบียนนักศึกษาและนโยบายรหัสผ่าน</h4>
+<ul class="content-list">
+  <li><strong>ข้อเท็จจริงที่พบ:</strong></li>
+  <li>มหาวิทยาลัยมีเอกสาร <em>“นโยบายความมั่นคงปลอดภัยระบบทะเบียน พ.ศ. 2565”</em> ระบุในข้อ 4.2 ว่า <em>"ผู้ใช้งานระดับผู้ดูแลระบบฐานข้อมูล (DBA) ต้องเปลี่ยนรหัสผ่านทุก 60 วัน และต้องใช้รหัสผ่านความยาวไม่น้อยกว่า 14 ตัวอักษร"</em></li>
+  <li>เมื่อผู้ตรวจสอบขอให้ผู้ดูแลระบบเปิดหน้าจอการตั้งค่า Oracle Database User Profile และ Linux Server <code>/etc/shadow</code> เพื่อตรวจสอบ พบว่าบัญชี <code>SYSTEM</code>, <code>SYS</code>, และบัญชีของ DBA ส่วนตัว มีค่า <code>PASSWORD_LIFE_TIME</code> ถูกตั้งเป็น <code>UNLIMITED</code> และมีประวัติการเปลี่ยนรหัสผ่านครั้งล่าสุดเมื่อ 450 วันที่แล้ว</li>
+  <li>ผู้ดูแลระบบชี้แจงว่า <em>"เนื่องจากระบบทะเบียนมีงานประมวลผล Batch Job ทุกคืน หากรหัสผ่านหมดอายุจะทำให้ Script ขัดข้องและระบบทะเบียนจะหยุดทำงาน จึงจำเป็นต้องยกเว้นไว้"</em></li>
+  <li><strong>คำถามอภิปราย:</strong></li>
+</ul>
+<ol class="content-list ordered">
+  <li>สถานการณ์นี้เป็นความล้มเหลวในระดับใด (Design Effectiveness หรือ Operating Effectiveness)?</li>
+  <li>ผู้ตรวจสอบควรให้สถานะการปฏิบัติตามเกณฑ์ (Compliance Status) เป็นอย่างไร?</li>
+  <li>ในมุมมองของ Lead Implementer จะสามารถออกแบบมาตรการควบคุมชดเชย (Compensating Control) เพื่อแก้ไขปัญหานี้ได้อย่างไร โดยไม่ทำให้ระบบหยุดชะงัก?</li>
+</ol>
+<ul class="content-list">
+  <li><strong>แนวทางเฉลยและบทสรุป:</strong></li>
+  <li>เป็นความล้มเหลวระดับ <strong>Operating Effectiveness</strong> (มีนโยบายที่ดี มีการอนุมัติ แต่ระบบจริงไม่ได้ตั้งค่าตามนโยบาย) และมีความบกพร่องใน <strong>Design Effectiveness</strong> ร่วมด้วยเนื่องจากไม่ได้แยกประเภทระหว่าง User Account กับ Service/Batch Account</li>
+  <li>สถานะ: <strong>Partially Implemented</strong> หรือ <strong>Not Implemented</strong> สำหรับการควบคุมบัญชีผู้ดูแลระบบ</li>
+  <li>แนวทางแก้ไข: ต้องแยกบัญชี Service Account ที่ใช้รัน Script ออกจากบัญชีส่วนบุคคลของ DBA โดยบัญชี Service Account ต้องถูกจำกัดสิทธิ์ (Least Privilege), ฝังรหัสผ่านใน Secret Vault ที่มีการหมุนเวียนคีย์ (Key Rotation), ส่วนบัญชีบุคคลของ DBA ต้องบังคับใช้รหัสผ่านตามนโยบายและเปิดใช้ MFA</li>
+</ul>
+<h4 id="sec-3-case-2">สถานการณ์ที่ 2: การสำรองข้อมูลและการรับมือ Ransomware</h4>
+<ul class="content-list">
+  <li><strong>ข้อเท็จจริงที่พบ:</strong></li>
+  <li>มหาวิทยาลัยมีระบบสำรองข้อมูลอัตโนมัติ (Automated Backup) ซึ่งสำรองฐานข้อมูลระบบการเงินและทะเบียนทุกเที่ยงคืน โดยเก็บสำเนาไว้บน Network Attached Storage (NAS) ที่ต่ออยู่ในเครือข่ายวงเดียวกับ Server</li>
+  <li>ผู้ดูแลระบบแสดง Dashboard สีเขียว แสดงว่า Backup Job สำเร็จ 100% ตลอด 30 วันที่ผ่านมา</li>
+  <li>เมื่อผู้ตรวจสอบขอดู <strong>"รายงานการทดสอบการกู้คืนข้อมูล (Restore Test Report)"</strong> และขอดู <strong>"การป้องกันข้อมูลสำรองแบบไม่สามารถแก้ไขได้ (Immutable Backup)"</strong> ผู้ดูแลระบบตอบว่า <em>"ไม่เคยทดสอบกู้คืนข้อมูลจริงเลย เพราะกลัวข้อมูลทับซ้อนและไม่มี Server ว่างสำหรับการทดสอบ อีกทั้ง NAS ก็แชร์ไดรฟ์ผ่าน SMB ให้ Server เข้าถึงได้ตลอดเวลาอยู่แล้ว จึงมั่นใจว่ากู้ได้"</em></li>
+  <li><strong>คำถามอภิปราย:</strong></li>
+  <li>หากมหาวิทยาลัยถูกโจมตีด้วย Ransomware มาตรการสำรองข้อมูลปัจจุบันมีประสิทธิผลในการควบคุมความเสี่ยงหรือไม่?</li>
+  <li>วิเคราะห์หลุมพรางระหว่าง Conformity กับ Effectiveness ในกรณีนี้</li>
+  <li><strong>แนวทางเฉลยและบทสรุป:</strong></li>
+  <li><strong>ไม่มีประสิทธิผลอย่างยิ่ง (Ineffective Control / Form over Substance):</strong> แม้ในเชิงเอกสารจะบอกว่ามี Backup (Conformity ผ่านแบบผิวเผิน) แต่ในทางปฏิบัติ หาก Server ติด Ransomware มัลแวร์จะสามารถแพร่กระจายผ่านโปรโตคอล SMB ไปเข้ารหัสทำลายไฟล์สำรองบน NAS ได้ทันทีเนื่องจากไม่มีการแยกส่วน (No Air-gap / No Immutability)</li>
+  <li>นอกจากนี้ การไม่เคยทดสอบ Restore หมายความว่าองค์กรไม่มีหลักฐานยืนยันว่าไฟล์สำรองมีความสมบูรณ์พร้อมใช้งานจริง (Untested Reliability)</li>
+  <li>สถานะ: <strong>Partially Implemented</strong> ในเชิงเทคนิคเบื้องต้น แต่ล้มเหลวในวัตถุประสงค์การกู้คืนความต่อเนื่องทางธุรกิจ (DRP Failure)</li>
+</ul>
+<h4 id="sec-3-case-3">สถานการณ์ที่ 3: ระบบบันทึกเหตุการณ์และการเฝ้าระวัง (Log & SIEM)</h4>
+<ul class="content-list">
+  <li><strong>ข้อเท็จจริงที่พบ:</strong></li>
+  <li>มหาวิทยาลัยติดตั้งระบบ Open-source SIEM และดึง Log จาก Firewall, Core Switch และ Active Directory เข้าสู่ระบบรวมแล้วมากกว่า 5 ล้านเหตุการณ์ต่อวัน สอดคล้องตามข้อกำหนดเรื่องการเก็บ Log ไม่น้อยกว่า 90 วัน</li>
+  <li>อย่างไรก็ตาม เมื่อผู้ตรวจสอบสัมภาษณ์ทีมงานรักษาความปลอดภัย พบว่ามีเจ้าหน้าที่ไอทีเพียงคนเดียวที่ดูแลระบบนี้ร่วมกับงานซ่อมคอมพิวเตอร์ทั่วไป โดยไม่มีการตั้งค่า Use Case Alerts หรือ Threshold Alerts ใด ๆ และไม่มีการเปิดดู Dashboard เกินกว่าเดือนละหนึ่งครั้ง</li>
+  <li>ผู้ตรวจสอบทดสอบสุ่มตรวจสอบเหตุการณ์ย้อนหลัง พบว่ามี Brute-force Attack เจาะเข้าบัญชีพนักงานผ่าน VPN สำเร็จเมื่อ 3 สัปดาห์ก่อน แต่ไม่มีใครในมหาวิทยาลัยรับทราบเหตุการณ์ดังกล่าว</li>
+  <li><strong>คำถามอภิปราย:</strong></li>
+  <li>สถานการณ์นี้สะท้อนภาวะใดใน 4 สถานการณ์ของการควบคุม?</li>
+  <li>หากท่านเป็น Lead Auditor ท่านจะเขียนข้อค้นพบ (Audit Finding) อย่างไร?</li>
+  <li><strong>แนวทางเฉลยและบทสรุป:</strong></li>
+  <li>สะท้อนภาวะ <strong>สถานการณ์ C: มีหลักฐานครบแต่ควบคุมความเสี่ยงไม่ได้จริง (Form over Substance)</strong> — มี Log ครบตามกฎหมายกำหนด (Compliance Checklist ผ่าน) แต่กระบวนการเฝ้าระวังและตรวจจับ (Monitoring & Detection) ล้มเหลวโดยสิ้นเชิง</li>
+  <li>ข้อค้นพบ: ขาดกระบวนการวิเคราะห์และตอบสนองต่อเหตุการณ์ผิดปกติ (Lack of Active Security Monitoring and Alerting Mechanism) ส่งผลให้ไม่สามารถตรวจพบการบุกรุกได้อย่างทันท่วงที</li>
+</ul>
+<hr class="section-divider">
+<h2 id="sec-part-4">ส่วนที่ 4 มุมมองวิชาชีพประจำบท (Professional Perspectives)</h2>
+<h3 id="sec-4-1">4.1 มุมมอง Lead Implementer: การออกแบบระบบและสร้าง Compliance Matrix ให้ใช้งานได้จริง</h3>
+<p>สำหรับผู้จัดทำระบบ (Lead Implementer) การมองประมวลแนวทางปฏิบัติฯ เป็นเพียง "ภาระงานเอกสาร" คือความล้มเหลวทางความคิด การสร้าง Compliance Matrix ที่ทรงคุณค่าต้องยึดหลักการดังนี้:</p>
+<ol class="content-list ordered">
+  <li><strong>บูรณาการเข้าสู่วิถีการทำงานปกติ (Built-in, Not Bolt-on):</strong> อย่าสร้างกระบวนการเอกสารที่แยกขาดจากการทำงานจริงของฝ่ายไอที หากต้องมีการขออนุมัติสิทธิ์ ให้ผูกระบบเข้ากับ ITSM Ticket หรือ Workflow อัตโนมัติ เพื่อให้เกิดหลักฐาน (Audit Trail) โดยไม่ต้องเพิ่มภาระการกรอกกระดาษ</li>
+  <li><strong>การทำ Cross-Mapping เพื่อลดความซ้ำซ้อน:</strong> ในองค์กรหนึ่ง ๆ มักต้องปฏิบัติตามเกณฑ์หลายฉบับพร้อมกัน ทั้ง พ.ร.บ.ไซเบอร์ 2562, พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA), และ ISO/IEC 27001 ผู้จัดทำต้องสร้าง Master Compliance Matrix ที่สามารถแมปหนึ่งมาตรการควบคุมเชิงเทคนิคเข้ากับข้อกำหนดของกฎหมายหลายฉบับได้พร้อมกัน (One Control to Satisfy Many Requirements)</li>
+  <li><strong>เตรียมพร้อมรับการตรวจตลอดเวลา (Continuous Audit Readiness):</strong> ออกแบบระบบให้ผลิตหลักฐานออกมาอย่างสม่ำเสมอ เช่น การตั้งเวลาส่งรายงาน Patching และ Vulnerability Scan เข้า Folder กลางทุกสิ้นเดือน เมื่อถึงรอบการตรวจสอบประจำปี ทีมงานจะไม่ต้องตื่นตระหนกและเสียเวลาหลายสัปดาห์ในการรวบรวมหลักฐานย้อนหลัง</li>
+</ol>
+<hr class="section-divider">
+<h3 id="sec-4-2">4.2 มุมมอง Lead Auditor: ศิลปะในการตั้งคำถามและการพิสูจน์ความมีประสิทธิผล</h3>
+<p>สำหรับผู้ตรวจสอบ (Lead Auditor) การทำหน้าที่ไม่ได้จำกัดอยู่เพียงการเดินถือ Checklist แล้วติ๊กเครื่องหมายถูก แต่ต้องใช้ทักษะการตรวจสอบเชิงสืบสวนและประเมินประสิทธิผล:</p>
+<ol class="content-list ordered">
+  <li><strong>หลีกเลี่ยงคำถามนำแบบชี้นำ (Avoid Leading Questions):</strong> แทนที่จะถามว่า <em>"ระบบของคุณมีการเปลี่ยนรหัสผ่านทุก 90 วันใช่ไหมครับ?"</em> ซึ่งผู้ถูกตรวจจะตอบว่า <em>"ใช่"</em> โดยอัตโนมัติ ให้เปลี่ยนเป็นคำถามปลายเปิด เช่น <em>"ช่วยอธิบายกระบวนการบริหารจัดการวงจรชีวิตรหัสผ่านของระบบ และแสดงหน้าจอการตั้งค่าปัจจุบันให้ดูหน่อยครับ"</em></li>
+  <li><strong>ยึดหลักสามเหลี่ยมหลักฐาน (Triangulation of Evidence):</strong> ตรวจสอบความสอดคล้องจาก 3 แหล่งเสมอ:</li>
+</ol>
+<ul class="content-list">
+  <li><strong>คำบอกเล่าจากการสัมภาษณ์ (Interview)</strong></li>
+  <li><strong>เอกสารนโยบายและระเบียบปฏิบัติ (Documentation)</strong></li>
+  <li><strong>การสังเกตการณ์หรือผลลัพธ์จากระบบจริง (Technical Configuration / Logs)</strong></li>
+  <li>หากทั้ง 3 ด้านชี้ไปในทิศทางเดียวกัน จึงสรุปผลด้วยความเชื่อมั่นสูง</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>มุ่งเน้นความเสี่ยง ไม่ใช่มุ่งจับผิด (Risk-focused, Not Fault-finding):</strong> การเขียนข้อค้นพบต้องชี้ให้เห็นถึงความเสี่ยงต่อธุรกิจ (Business Impact) และสาเหตุที่แท้จริง (Root Cause) เพื่อให้ผู้บริหารเข้าใจความสำคัญและสนับสนุนงบประมาณในการปรับปรุงแก้ไข</li>
+</ol>
+<hr class="section-divider">
+<h3 id="sec-4-3">4.3 ประเด็นอภิปรายเชิงวิชาชีพ: "Check-box Compliance vs. Real Security Posture"</h3>
+<p>ในแวดวงความมั่นคงปลอดภัยไซเบอร์ระดับโลก มีคำกล่าวเตือนใจว่า <strong>"Compliance does not equal Security" (ความสอดคล้องตามกฎระเบียบไม่ได้แปลว่าปลอดภัยจริง)</strong></p>
+<p>องค์กรจำนวนมากทุ่มเทงบประมาณเพื่อ "สอบให้ผ่านเกณฑ์" เพื่อหลีกเลี่ยงค่าปรับทางกฎหมายหรือเพื่อให้ได้ใบรับรองไปโฆษณา แต่กลับเพิกเฉยต่อการสร้างความมั่นคงปลอดภัยในระดับปฏิบัติการจริง ผลลัพธ์คือการตกเป็นเหยื่อของการโจมตีทางไซเบอร์ที่สร้างความเสียหายมหาศาล</p>
+<p>บทบาทของนักศึกษาสาขาความมั่นคงปลอดภัยไซเบอร์ในอนาคต ไม่ว่าจะก้าวไปเป็น Implementer หรือ Auditor คือการเป็นผู้นำทางความคิดที่เปลี่ยนวัฒนธรรมองค์กรจากการทำตามหน้าที่แบบ Check-box Compliance ให้กลายเป็นการสร้าง <strong>ความยืดหยุ่นและพร้อมรับมือทางไซเบอร์ (Cyber Resilience)</strong> ซึ่งมองว่ากรอบมาตรฐานและประมวลแนวทางปฏิบัติฯ เป็นเพียง "รากฐานขั้นต่ำสุด" (Floor) มิใช่ "เพดานสูงสุด" (Ceiling) ของความปลอดภัย</p>
+<hr class="section-divider">
+<h2 id="sec-summary">สรุปบทที่ 3 (Chapter Summary)</h2>
+
+<div class="widget-box" id="widget-chapter3-quiz">
+  <div class="widget-header">
+    <div class="widget-tag">SELF-ASSESSMENT QUIZ</div>
+    <div class="widget-title">แบบทดสอบประเมินตนเองประจำบทที่ 3 (Formative Knowledge Check)</div>
+  </div>
+  <div class="widget-instruction">
+    ทดสอบความเข้าใจในหลักการจัดทำ Control Mapping, การประเมินหลักฐาน และการแยกแยะ Conformity กับ Effectiveness (คลิกเพื่อเลือกคำตอบและดูเฉลยทันที)
+  </div>
+
+  <!-- Quiz Question 1 -->
+  <div class="quiz-card" data-q="1">
+    <div class="quiz-question">
+      <strong>ข้อ 1:</strong> องค์กรมีเอกสารนโยบายและ SOP เรื่องการเปลี่ยนรหัสผ่านทุก 60 วันอย่างถูกต้อง แต่เมื่อผู้ตรวจสอบสุ่มตรวจค่า Profile บนฐานข้อมูลจริง พบว่าถูกตั้งเป็น <code>PASSWORD_LIFE_TIME = UNLIMITED</code> สถานการณ์นี้สะท้อนความล้มเหลวในระดับใด และตรงกับสถานการณ์ใดในเมทริกซ์การควบคุม?
+    </div>
+    <div class="quiz-options">
+      <button class="quiz-opt-btn" data-correct="false" data-opt="a">ก. ล้มเหลวในระดับ Design Effectiveness / ตรงกับสถานการณ์ B (ทำแต่ไม่มีเอกสาร)</button>
+      <button class="quiz-opt-btn" data-correct="true" data-opt="b">ข. ล้มเหลวในระดับ Operating Effectiveness / ตรงกับสถานการณ์ A (Paper Compliance)</button>
+      <button class="quiz-opt-btn" data-correct="false" data-opt="c">ค. มีประสิทธิผลสมบูรณ์แล้ว เนื่องจากเอกสารนโยบายผ่านการอนุมัติถูกต้องตามกฎหมาย</button>
+      <button class="quiz-opt-btn" data-correct="false" data-opt="d">ง. ล้มเหลวในระดับ Governance / ตรงกับสถานการณ์ C (Form over Substance)</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <!-- Quiz Question 2 -->
+  <div class="quiz-card" data-q="2">
+    <div class="quiz-question">
+      <strong>ข้อ 2:</strong> หลักฐานการตรวจประเภทใดต่อไปนี้มี <strong>"ระดับความน่าเชื่อถือสูงสุด (Highest Reliability)"</strong> ในการพิสูจน์ Operating Effectiveness ตามหลักเกณฑ์การตรวจสอบสากล?
+    </div>
+    <div class="quiz-options">
+      <button class="quiz-opt-btn" data-correct="false" data-opt="a">ก. เอกสารนโยบายความมั่นคงปลอดภัยที่ผ่านการลงนามโดยอธิการบดี</button>
+      <button class="quiz-opt-btn" data-correct="false" data-opt="b">ข. บันทึกคำบอกเล่าจากการสัมภาษณ์ผู้ดูแลระบบเครือข่าย</button>
+      <button class="quiz-opt-btn" data-correct="true" data-opt="c">ค. System Event Logs และ Authentication Logs ที่สร้างโดยระบบอัตโนมัติและมี Timestamp ละเอียด</button>
+      <button class="quiz-opt-btn" data-correct="false" data-opt="d">ง. ขั้นตอนปฏิบัติงานมาตรฐาน (SOP) ในการขอสิทธิ์เข้าถึงระบบ</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <!-- Quiz Question 3 -->
+  <div class="quiz-card" data-q="3">
+    <div class="quiz-question">
+      <strong>ข้อ 3:</strong> ในการจัดทำ Control Mapping / Compliance Matrix ข้อใดระบุชื่อ <strong>Control Owner (เจ้าของมาตรการ)</strong> ได้อย่างถูกต้องตามหลักวิชาชีพเพื่อความต่อเนื่องในการปฏิบัติงาน?
+    </div>
+    <div class="quiz-options">
+      <button class="quiz-opt-btn" data-correct="false" data-opt="a">ก. นายสมชาย ใจดี (วิศวกรความปลอดภัยอาวุโส)</button>
+      <button class="quiz-opt-btn" data-correct="true" data-opt="b">ข. หัวหน้างานวิศวกรรมเครือข่ายและความมั่นคงปลอดภัย (Network Security Lead)</button>
+      <button class="quiz-opt-btn" data-correct="false" data-opt="c">ค. บุคลากรทุกคนในมหาวิทยาลัย</button>
+      <button class="quiz-opt-btn" data-correct="false" data-opt="d">ง. ผู้ตรวจสอบอิสระภายนอก (External Auditor)</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <!-- Quiz Question 4 -->
+  <div class="quiz-card" data-q="4">
+    <div class="quiz-question">
+      <strong>ข้อ 4:</strong> มหาวิทยาลัยมีระบบสำรองข้อมูลฐานข้อมูลทุกคืน มี Dashboard สีเขียว 100% แต่ไม่เคยดำเนินการทดสอบการกู้คืนข้อมูล (Restore Testing) เลยตลอดปี และไฟล์สำรองไม่ได้จัดเก็บแบบ Immutable หรือ Air-gapped ผู้ตรวจสอบควรตัดสินสถานะและข้อค้นพบอย่างไร?
+    </div>
+    <div class="quiz-options">
+      <button class="quiz-opt-btn" data-correct="false" data-opt="a">ก. Fully Implemented เพราะมี Backup Job ทำงานสำเร็จทุกคืนตามกำหนด</button>
+      <button class="quiz-opt-btn" data-correct="true" data-opt="b">ข. Partially Implemented หรือ Ineffective Control เนื่องจากขาดการพิสูจน์ความสมบูรณ์ของข้อมูล และเสี่ยงต่อ Ransomware แพร่กระจายทำลายไฟล์สำรอง</button>
+      <button class="quiz-opt-btn" data-correct="false" data-opt="c">ค. Not Applicable (N/A) เพราะระบบยังไม่เคยเกิดภัยพิบัติหรือถูก Ransomware โจมตีจริง</button>
+      <button class="quiz-opt-btn" data-correct="false" data-opt="d">ง. ยกเว้นการตรวจ เพราะถือเป็นเรื่องภายในของฝ่ายเทคนิคที่ไม่เกี่ยวกับความมั่นคงปลอดภัย</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+</div>
+
+<ol class="content-list ordered">
+  <li><strong>ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ (ประกาศ กกม. ฉบับที่ 1/2564)</strong> ทำหน้าที่เป็นกฎหมายลำดับรองที่แปลความ พ.ร.บ.ไซเบอร์ 2562 สู่มาตรการควบคุมขั้นต่ำ (Minimum Baseline) ที่วัดผลได้สำหรับหน่วยงานรัฐและหน่วยงาน CII</li>
+  <li>โครงสร้างของกรอบมาตรฐานครอบคลุม <strong>6 องค์ประกอบหลัก</strong>: การกำกับดูแล, การประเมินความเสี่ยง, การป้องกันระบบและข้อมูล, การเฝ้าระวังและตรวจจับ, การรับมือภัยคุกคาม, และการกู้คืนระบบ ซึ่งสอดรับโดยตรงกับ <strong>6 ด้านการตรวจสอบ</strong> ตามประกาศ กกม. ตอนที่ 17 และ 21</li>
+  <li>กรอบมาตรฐานขับเคลื่อนด้วยวงจร <strong>PDCA (Plan-Do-Check-Act)</strong> ซึ่งมองความมั่นคงปลอดภัยเป็นระบบบริหารจัดการที่หมุนเวียนต่อเนื่อง และสอดคล้องกับมาตรฐานสากลอย่าง <strong>ISO/IEC 27001/27002:2022</strong> และ <strong>NIST CSF 2.0</strong></li>
+  <li><strong>Control Mapping / Compliance Matrix</strong> เป็นเครื่องมือหลักในการแปลงข้อกำหนดสู่การปฏิบัติ ประกอบด้วย 7 องค์ประกอบ: Requirement, Control Objective, Control Activity, Control Owner, Expected Evidence, Test Procedure, และ Assessment Result</li>
+  <li>ผู้ตรวจสอบต้องแยกแยะระหว่าง <strong>Conformity (ความสอดคล้องเชิงรูปแบบ)</strong> กับ <strong>Effectiveness (ประสิทธิผลจริง)</strong> โดยต้องประเมินทั้งความสมบูรณ์ของการออกแบบ (Design Effectiveness) และความสม่ำเสมอของการปฏิบัติจริง (Operating Effectiveness) เพื่อป้องกันหลุมพราง "นโยบายกระดาษ" (Paper Compliance)</li>
+  <li>หลักฐานการตรวจแบ่งออกเป็น <strong>8 ประเภท</strong> โดย Logs และ Technical Configurations มีระดับความน่าเชื่อถือสูงสุด ขณะที่การสัมภาษณ์ (Interview) มีความน่าเชื่อถือต่ำสุดและต้องมีหลักฐานอื่นสนับสนุนเสมอ</li>
+  <li>การประเมินสถานะแบ่งเป็น <strong>5 ระดับ</strong>: Fully Implemented, Partially Implemented, Not Implemented, Not Applicable (ต้องมี Justification), และ Not Assessed</li>
+</ol>
+<hr class="section-divider">
+<h2 id="sec-assignment">แบบฝึกหัดและการบ้านประจำบทที่ 3 (Assignment)</h2>
+<h3 id="sec-assignment-title">ชื่องาน: การจัดทำ Cybersecurity Compliance Matrix สำหรับมหาวิทยาลัยดิจิทัลสมมติ</h3>
+<h4 id="sec-assign-obj">1. วัตถุประสงค์ของการบ้าน</h4>
+<p>เพื่อให้นักศึกษาสามารถนำความรู้เรื่องประมวลแนวทางปฏิบัติฯ กรอบมาตรฐานสากล และเทคนิคการทำ Control Mapping ไปประยุกต์ใช้ในการวางแผนและประเมินระบบงานสำคัญของ "มหาวิทยาลัยดิจิทัลสมมติ" ได้อย่างถูกต้องตามแบบแผนวิชาชีพ</p>
+<h4 id="sec-assign-req">2. คำชี้แจงและข้อกำหนดของงาน</h4>
+<ol class="content-list ordered">
+  <li>ให้นักศึกษาจัดทำตาราง <strong>Cybersecurity Compliance Matrix</strong> จำนวน <strong>ไม่น้อยกว่า 15 รายการควบคุม (Controls)</strong></li>
+  <li>รายการควบคุมทั้ง 15 รายการ ต้องกระจายครอบคลุม <strong>ครบทั้ง 6 ด้านการตรวจสอบ</strong> ตามประมวลแนวทางปฏิบัติฯ ของ กกม. โดยมีสัดส่วนขั้นต่ำดังนี้:</li>
+</ol>
+<ul class="content-list">
+  <li>ด้านที่ 1 การบริหารจัดการความมั่นคงปลอดภัย (Security Management) อย่างน้อย 2 ข้อ</li>
+  <li>ด้านที่ 2 การบริหารความเสี่ยง (Risk Management) อย่างน้อย 2 ข้อ</li>
+  <li>ด้านที่ 3 การควบคุมการเข้าถึง (Access Control) อย่างน้อย 3 ข้อ</li>
+  <li>ด้านที่ 4 การประเมินช่องโหว่และการทดสอบเจาะระบบ (VA/PT & Config) อย่างน้อย 3 ข้อ</li>
+  <li>ด้านที่ 5 การเฝ้าระวังและตอบสนองเหตุการณ์ (Monitoring & Incident Response) อย่างน้อย 3 ข้อ</li>
+  <li>ด้านที่ 6 การกู้คืนระบบและการปฏิบัติตามข้อกำหนด (Recovery & Compliance) อย่างน้อย 2 ข้อ</li>
+</ul>
+<ol class="content-list ordered">
+  <li>ตาราง Compliance Matrix ต้องประกอบด้วย <strong>9 คอลัมน์มาตรฐาน</strong> ตามโครงสร้างในหัวข้อถัดไป</li>
+  <li>ในส่วนของ Assessment Result ให้นักศึกษาสมมติสถานะและข้อค้นพบตามบริบทของ "มหาวิทยาลัยดิจิทัลสมมติ" โดยต้องมีสถานะคละกันทั้ง Fully Implemented, Partially Implemented, และ Not Implemented เพื่อฝึกทักษะการเขียนระบุช่องว่าง (Gap) และข้อเสนอแนะ (Recommendation)</li>
+</ol>
+<h4 id="sec-assign-template">3. โครงสร้างตารางและตัวอย่างการกรอกข้อมูล (Compliance Matrix Template):</h4>
+<div class="table-container compliance-matrix-sample-table"><table>
+  <thead><tr><th>ลำดับ</th><th>1. ข้อกำหนดอ้างอิง (Requirement)</th><th>2. วัตถุประสงค์การควบคุม (Control Objective)</th><th>3. กิจกรรมการควบคุมปัจจุบัน (Current Control Activity)</th><th>4. เจ้าของมาตรการ (Control Owner)</th><th>5. หลักฐานที่คาดหวัง (Expected Evidence)</th><th>6. วิธีการทดสอบของผู้ตรวจ (Test Procedure)</th><th>7. สถานะการปฏิบัติ (Compliance Status)</th><th>8. ช่องว่างที่พบ (Identified Gap)</th><th>9. ข้อเสนอแนะเบื้องต้น (Preliminary Recommendation)</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ตัวอย่างที่ 1</strong></td><td>ประกาศ กกม. ฉบับ 1/2564 ข้อ 12(3) / ISO 27002 ข้อ 8.5 / NIST CSF PR.AA-01</td><td>เพื่อป้องกันการเข้าถึงเครือข่ายและระบบสารสนเทศภายในโดยมิชอบผ่านช่องทางระยะไกล กรณีรหัสผ่านรั่วไหล</td><td>บังคับใช้ MFA ผ่าน Microsoft Authenticator สำหรับผู้ใช้ทุกคนที่เชื่อมต่อผ่าน VPN Gateway ของมหาวิทยาลัย</td><td>หัวหน้างานวิศวกรรมเครือข่าย</td><td>- ภาพหน้าจอการตั้งค่า VPN Gateway บังคับ MFA<br>- Authentication Log ย้อนหลัง 30 วัน<br>- SOP การเชื่อมต่อ VPN</td><td><strong>Fully Implemented</strong></td><td>สุ่มตรวจบัญชี VPN จำนวน 25 บัญชี และทดสอบเข้าใช้งานจริง พบว่าระบบเรียกขอการยืนยันตัวตน MFA ทุกครั้ง</td><td>ไม่พบช่องว่างที่มีนัยสำคัญ</td><td>ควรดำเนินการทบทวนสิทธิ์การเข้าถึง VPN เป็นประจำทุก 6 เดือนอย่างต่อเนื่อง</td></tr>
+    <tr><td><strong>ตัวอย่างที่ 2</strong></td><td>ประกาศ กกม. ฉบับ 1/2564 ข้อ 15(2) / ISO 27002 ข้อ 8.13 / NIST CSF PR.DS-11</td><td>เพื่อให้มั่นใจว่าข้อมูลสำคัญของระบบทะเบียนสามารถฟื้นคืนสภาพได้เมื่อเกิดเหตุขัดข้องหรือถูก Ransomware ทำลาย</td><td>มีการรัน Script สำรองข้อมูลฐานข้อมูล Oracle ทุกคืนเวลา 00:00 น. ไปยังเครื่อง NAS ภายใน Data Center</td><td>ผู้ดูแลระบบฐานข้อมูล (DBA Lead)</td><td>- Script สำรองข้อมูล<br>- Backup Job Log บนเครื่อง NAS<br>- รายงานผลการทดสอบ Restore ประจำปี</td><td><strong>Partially Implemented</strong></td><td>ตรวจสอบ Script และ Log บน NAS พบว่ามีการสำรองข้อมูลจริง แต่เมื่อขอดูรายงานการทดสอบ Restore พบว่าไม่เคยมีการทดสอบกู้คืนข้อมูลเลยตลอด 1 ปีที่ผ่านมา</td><td>ขาดการทดสอบความสมบูรณ์ในการกู้คืนข้อมูลจริง และไฟล์สำรองไม่ได้ถูกเก็บแบบ Immutable เสี่ยงต่อ Ransomware</td><td>1. จัดทำแผนและดำเนินการทดสอบ Restore ข้อมูลอย่างน้อยปีละ 1 ครั้ง พร้อมบันทึกผล<br>2. แยกเก็บไฟล์สำรองแบบ Offline หรือเปิดใช้ WORM (Write Once, Read Many) บน NAS</td></tr>
+  </tbody>
+</table></div>
+<h4 id="sec-assign-rubric">4. เกณฑ์การประเมินผลการบ้าน (Grading Rubric):</h4>
+<div class="table-container"><table>
+  <thead><tr><th>มิติการประเมิน</th><th>น้ำหนัก</th><th>ดีเยี่ยม (80–100%)</th><th>ดี (70–79%)</th><th>พอใช้ (50–69%)</th><th>ต้องปรับปรุง (< 50%)</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ความครบถ้วนของข้อกำหนด (Coverage)</strong></td><td>25%</td><td>ครบ 15 ข้อ กระจายครบทั้ง 6 ด้านการตรวจสอบตามสัดส่วนที่กำหนดอย่างถูกต้อง</td><td>ครบ 15 ข้อ แต่กระจายไม่ครบ 6 ด้าน หรือสัดส่วนไม่เป็นไปตามเกณฑ์เล็กน้อย</td><td>มี 10–14 ข้อ หรือกระจายเพียง 3–4 ด้าน</td><td>น้อยกว่า 10 ข้อ หรือมุ่งเน้นเพียงด้านใดด้านหนึ่ง</td></tr>
+    <tr><td><strong>ความถูกต้องของ Control Mapping</strong></td><td>35%</td><td>เชื่อมโยง Requirement, Objective, Activity, Evidence และ Test Procedure ได้อย่างสมเหตุสมผล ชัดเจน และตรงประเด็นเชิงเทคนิค</td><td>เชื่อมโยงได้ดี มีจุดบกพร่องเล็กน้อยในส่วน Evidence หรือ Test Procedure ที่ยังไม่เฉพาะเจาะจง</td><td>ความเชื่อมโยงคลุมเครือ Evidence ไม่สามารถพิสูจน์ Control ได้จริง</td><td>ข้อมูลในแต่ละคอลัมน์ไม่สอดคล้องกัน ขาดความเข้าใจในเนื้อหา</td></tr>
+    <tr><td><strong>การวิเคราะห์ Gap และ Recommendation</strong></td><td>30%</td><td>ระบุช่องว่างได้ตรงจุด ชี้ให้เห็นถึงความเสี่ยงจริง (Business/Security Risk) และเสนอแนะทางแก้ไขที่ปฏิบัติได้จริงและสอดคล้องกับมาตรฐาน</td><td>ระบุช่องว่างได้ แต่ข้อเสนอแนะยังเป็นนามธรรมทั่วไป ขาดรายละเอียดเชิงปฏิบัติ</td><td>ระบุช่องว่างไม่ชัดเจน สับสนระหว่างอาการกับสาเหตุที่แท้จริง</td><td>ไม่ระบุช่องว่าง หรือข้อเสนอแนะไม่สอดคล้องกับปัญหาที่พบ</td></tr>
+    <tr><td><strong>รูปแบบและการใช้ภาษาเชิงวิชาชีพ</strong></td><td>10%</td><td>ใช้ภาษาทางการ ถูกต้องตามหลักวิชาการ จัดรูปแบบตารางเป็นระเบียบ สวยงาม อ่านง่าย</td><td>ใช้ภาษาทางการ รูปแบบตารางเรียบร้อย มีข้อผิดพลาดเล็กน้อย</td><td>ภาษาค่อนข้างเป็นภาษาพูด รูปแบบตารางไม่เรียบร้อย</td><td>รูปแบบไม่เป็นไปตามกำหนด มีข้อผิดพลาดจำนวนมาก</td></tr>
+  </tbody>
+</table></div>
+<hr class="section-divider">
+<h2 id="sec-references">เอกสารอ้างอิง (References)</h2>
+<h3 id="sec-ref-thai">1. กฎหมายและประกาศทางการของประเทศไทย (ราชกิจจานุเบกษา)</h3>
+<ol class="content-list ordered">
+  <li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก. 27 พฤษภาคม 2562.</li>
+</ol>
+<p>ต้นฉบับ: <a href="https://www.ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0020.PDF" target="_blank" rel="noopener">ราชกิจจานุเบกษา พ.ร.บ.ไซเบอร์ 2562</a></p>
+<p>สำเนาตรวจทานทางการ: <a href="https://www.dga.or.th/wp-content/uploads/2024/04/25620527_พรบcyber62.pdf" target="_blank" rel="noopener">สำนักงานพัฒนารัฐบาลดิจิทัล (สพร. / DGA)</a></p>
+<ol class="content-list ordered">
+  <li><strong>ประกาศคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2564 (ฉบับที่ 1/2564).</strong> ราชกิจจานุเบกษา เล่ม 138 ตอนพิเศษ 282 ง. 17 พฤศจิกายน 2564.</li>
+</ol>
+<p>ต้นฉบับ: <a href="https://ratchakitcha.soc.go.th/documents/17176753.pdf" target="_blank" rel="noopener">ราชกิจจานุเบกษา ประมวลแนวทางปฏิบัติฯ กกม.</a></p>
+<p><em>(อ้างอิงเป็นเกณฑ์หลักสำหรับ: ข้อกำหนดขั้นต่ำด้านการรักษาความมั่นคงปลอดภัยสำหรับหน่วยงานของรัฐและหน่วยงาน CII, 6 องค์ประกอบของกรอบมาตรฐาน, และ 6 ด้านการตรวจสอบตามตอนที่ 17 และ 21)</em></p>
+<ol class="content-list ordered">
+  <li><strong>สำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช.).</strong> ศูนย์รวมกฎหมาย ประกาศ และมาตรฐานด้านไซเบอร์: <a href="https://www.ncsa.or.th/standards/laws" target="_blank" rel="noopener">NCSA Laws and Standards Portal</a></li>
+  <li><strong>ศูนย์ประสานการรักษาความมั่นคงปลอดภัยระบบคอมพิวเตอร์แห่งชาติ (สกมช. / ThaiCERT).</strong> ฐานข้อมูลหน่วยงานกำกับดูแลและโครงสร้างพื้นฐานสำคัญทางสารสนเทศ: <a href="https://cert.ncsa.or.th/regulator-sectoral-cert-cii/" target="_blank" rel="noopener">NCSA Regulator and Sectoral CERT Information</a></li>
+</ol>
+<h3 id="sec-ref-intl">2. มาตรฐานและกรอบแนวทางระดับสากล (International Standards & Frameworks)</h3>
+<ol class="content-list ordered">
+  <li><strong>ISO/IEC 27001:2022.</strong> <em>Information security, cybersecurity and privacy protection — Information security management systems — Requirements.</em> International Organization for Standardization (ISO) & International Electrotechnical Commission (IEC), Geneva, Switzerland.</li>
+  <li><strong>ISO/IEC 27002:2022.</strong> <em>Information security, cybersecurity and privacy protection — Information security controls.</em> ISO/IEC, Geneva, Switzerland. <em>(ใช้อ้างอิงการจัดกลุ่มมาตรการควบคุม 4 ธีม: Organizational, People, Physical, Technological)</em></li>
+  <li><strong>ISO 19011:2018.</strong> <em>Guidelines for auditing management systems.</em> International Organization for Standardization, Geneva, Switzerland.</li>
+</ol>
+<p><em>(หมายเหตุ: ปัจจุบัน ISO ได้เผยแพร่ฉบับ ISO 19011:2026 แล้ว ผู้สอนและผู้ปฏิบัติงานควรตรวจสอบเทียบเคียงข้อกำหนดและเลขข้อกับฉบับปัจจุบันที่สถาบันมีสิทธิ์ใช้งาน)</em></p>
+<ol class="content-list ordered">
+  <li><strong>National Institute of Standards and Technology (NIST).</strong> <em>The NIST Cybersecurity Framework (CSF) 2.0.</em> NIST Special Publication (SP) 1300, February 2024. <a href="https://doi.org/10.6028/NIST.SP.1300" target="_blank" rel="noopener">NIST CSF Portal</a></li>
+</ol>
+<p><em>(ใช้อ้างอิง 6 ฟังก์ชันหลัก: Govern, Identify, Protect, Detect, Respond, Recover)</em></p>
+<ol class="content-list ordered">
+  <li><strong>NIST SP 800-53 Rev. 5.</strong> <em>Security and Privacy Controls for Information Systems and Organizations.</em> National Institute of Standards and Technology, September 2020 (includes updates as of Nov 2023). <a href="https://doi.org/10.6028/NIST.SP.800-53r5" target="_blank" rel="noopener">NIST SP 800-53</a></li>
+  <li><strong>NIST SP 800-115.</strong> <em>Technical Guide to Information Security Testing and Assessment.</em> National Institute of Standards and Technology, October 2008.</li>
+  <li><strong>Center for Internet Security (CIS).</strong> <em>CIS Critical Security Controls for Effective Cyber Defense, Version 8.</em> CIS, 2021.</li>
+  <li><strong>Committee of Sponsoring Organizations of the Treadway Commission (COSO).</strong> <em>Internal Control — Integrated Framework.</em> COSO, 2013.</li>
+  <li><strong>ISACA.</strong> <em>COBIT 2019 Framework: Introduction and Methodology.</em> Information Systems Audit and Control Association, 2018.</li>
+</ol>
+<hr class="section-divider">
+<div class="callout note"><div class="callout-title">📌 หมายเหตุสำหรับผู้สอนและผู้เรียนเกี่ยวกับการตรวจสอบฉบับล่าสุด (Living Document Note)</div><p><strong>หมายเหตุสำหรับผู้สอนและผู้เรียนเกี่ยวกับการตรวจสอบฉบับล่าสุด (Living Document Note):</strong><br>1. ประกาศคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ (กกม.) อาจมีการออกประกาศฉบับเพิ่มเติมหรือปรับปรุงประมวลแนวทางปฏิบัติฯ ให้ทันต่อภัยคุกคามอุบัติใหม่ ผู้เรียนและผู้ตรวจสอบควรตรวจสอบประกาศที่มีผลบังคับใช้ล่าสุดจากเว็บไซต์ของ สกมช. (<a href="https://www.ncsa.or.th" target="_blank" rel="noopener">ncsa.or.th</a>) เป็นระยะ<br>2. คุณสมบัติของผู้ตรวจสอบด้านความมั่นคงปลอดภัยสารสนเทศที่มีสิทธิ์ทำการตรวจสอบตามมาตรา 54 ให้เป็นไปตามประกาศเฉพาะของ กกม. ว่าด้วยหลักเกณฑ์การรับรองผู้ตรวจสอบ<br>3. สำหรับการอ้างอิงมาตรฐานสากล เช่น ISO 19011:2026 หรือ NIST CSF 2.0 ให้ผู้เรียนยึดถือฉบับปัจจุบันที่มีการบังคับใช้จริงในองค์กรที่ทำการตรวจประเมินเป็นหลัก</p></div>
+        <!-- Chapter Navigation Bar -->
+        <div class="chapter-nav-grid">
+          <a href="ch-2.html" class="chapter-nav-card prev" title="กลับไปศึกษาบทที่ 2">
+            <span class="nav-sub">← บทก่อนหน้า</span>
+            <span class="nav-title">บทที่ 2: พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562</span>
+          </a>
+          <a href="ch-4.html" class="chapter-nav-card next" title="ศึกษาบทถัดไป: บทที่ 4">
+            <span class="nav-sub">บทถัดไป →</span>
+            <span class="nav-title">บทที่ 4: การทำความเข้าใจบริบทองค์กร ขอบเขตการตรวจ และธรรมาภิบาล</span>
+          </a>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <p>NECS1312 การตรวจสอบความมั่นคงปลอดภัยของระบบและเครือข่าย — เนื้อหาเพื่อการศึกษาอิง พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 และประกาศลำดับรอง</p>
+    <p style="margin-top:6px; font-size:0.8rem; color:var(--text-light);">อ้างอิง: พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 • ประกาศ กกม. (ฉบับที่ 1/2564) • ISO/IEC 27001:2022 • NIST CSF 2.0</p>
+  </footer>
+
+  <!-- INTERACTIVE WIDGET SCRIPTS -->
+  <script>
+    // ========================================================================
+    // 1. READING PROGRESS & NAVIGATION
+    // ========================================================================
+    const progressBar = document.getElementById("progress-bar");
+    window.addEventListener("scroll", () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      if (progressBar) progressBar.style.width = scrolled + "%";
+    });
+
+    // Sidebar Controls
+    const tocBtn = document.getElementById("btn-toggle-toc");
+    const closeTocBtn = document.getElementById("btn-close-toc");
+    const sidebar = document.getElementById("sidebar-toc");
+    const backdrop = document.getElementById("toc-backdrop");
+
+    function isMobile() { return window.innerWidth <= 992; }
+
+    function toggleSidebar() {
+      if (isMobile()) {
+        const isOpen = sidebar.classList.toggle("open");
+        if (backdrop) backdrop.classList.toggle("open", isOpen);
+        if (tocBtn) tocBtn.classList.toggle("active", isOpen);
+      } else {
+        const isCollapsed = document.body.classList.toggle("sidebar-collapsed");
+        localStorage.setItem("audit_ch3_sidebar_collapsed", isCollapsed ? "true" : "false");
+        if (tocBtn) tocBtn.classList.toggle("active", !isCollapsed);
+      }
+    }
+
+    function closeSidebar() {
+      if (isMobile()) {
+        sidebar.classList.remove("open");
+        if (backdrop) backdrop.classList.remove("open");
+        if (tocBtn) tocBtn.classList.remove("active");
+      } else {
+        document.body.classList.add("sidebar-collapsed");
+        localStorage.setItem("audit_ch3_sidebar_collapsed", "true");
+        if (tocBtn) tocBtn.classList.remove("active");
+      }
+    }
+
+    if (tocBtn) tocBtn.addEventListener("click", toggleSidebar);
+    if (closeTocBtn) closeTocBtn.addEventListener("click", closeSidebar);
+    if (backdrop) backdrop.addEventListener("click", closeSidebar);
+
+    // Keyboard shortcut (Ctrl+B)
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        toggleSidebar();
+      }
+    });
+
+    // Auto-close on mobile when link clicked
+    document.querySelectorAll(".toc-item").forEach(link => {
+      link.addEventListener("click", () => {
+        if (isMobile()) closeSidebar();
+      });
+    });
+
+    // Initial sidebar state
+    if (!isMobile() && localStorage.getItem("audit_ch3_sidebar_collapsed") === "true") {
+      document.body.classList.add("sidebar-collapsed");
+      if (tocBtn) tocBtn.classList.remove("active");
+    } else if (tocBtn) {
+      tocBtn.classList.add("active");
+    }
+
+    // Theme Switcher
+    const btnLight = document.getElementById("btn-theme-light");
+    const btnSepia = document.getElementById("btn-theme-sepia");
+    const btnDark = document.getElementById("btn-theme-dark");
+
+    function setTheme(theme) {
+      if (theme === "light") {
+        document.documentElement.removeAttribute("data-theme");
+      } else {
+        document.documentElement.setAttribute("data-theme", theme);
+      }
+      [btnLight, btnSepia, btnDark].forEach(b => b.classList.remove("active"));
+      if (theme === "light") btnLight.classList.add("active");
+      if (theme === "sepia") btnSepia.classList.add("active");
+      if (theme === "dark") btnDark.classList.add("active");
+      localStorage.setItem("audit_ch3_theme", theme);
+    }
+
+    btnLight.addEventListener("click", () => setTheme("light"));
+    btnSepia.addEventListener("click", () => setTheme("sepia"));
+    btnDark.addEventListener("click", () => setTheme("dark"));
+
+    const savedTheme = localStorage.getItem("audit_ch3_theme");
+    if (savedTheme) setTheme(savedTheme);
+
+    // Font Sizing
+    const btnFontDec = document.getElementById("btn-font-dec");
+    const btnFontNorm = document.getElementById("btn-font-normal");
+    const btnFontInc = document.getElementById("btn-font-inc");
+
+    function setFontSize(size) {
+      if (size === "normal") {
+        document.documentElement.removeAttribute("data-font-size");
+      } else {
+        document.documentElement.setAttribute("data-font-size", size);
+      }
+      [btnFontDec, btnFontNorm, btnFontInc].forEach(b => b.classList.remove("active"));
+      if (size === "normal") btnFontNorm.classList.add("active");
+      if (size === "large") btnFontInc.classList.add("active");
+      localStorage.setItem("audit_ch3_fontsize", size);
+    }
+
+    btnFontDec.addEventListener("click", () => setFontSize("normal"));
+    btnFontNorm.addEventListener("click", () => setFontSize("normal"));
+    btnFontInc.addEventListener("click", () => setFontSize("large"));
+
+    const savedFontSize = localStorage.getItem("audit_ch3_fontsize");
+    if (savedFontSize) setFontSize(savedFontSize);
+
+    // TOC ScrollSpy
+    const tocLinks = document.querySelectorAll(".toc-item");
+    const sections = Array.from(tocLinks).map(link => {
+      const id = link.getAttribute("data-target");
+      return document.getElementById(id);
+    }).filter(Boolean);
+
+    window.addEventListener("scroll", () => {
+      let currentSectionId = "";
+      const scrollPos = window.scrollY + 120;
+      sections.forEach(sec => {
+        if (sec.offsetTop <= scrollPos) {
+          currentSectionId = sec.id;
+        }
+      });
+
+      tocLinks.forEach(link => {
+        if (link.getAttribute("data-target") === currentSectionId) {
+          link.classList.add("active");
+        } else {
+          link.classList.remove("active");
+        }
+      });
+    });
+
+    // ========================================================================
+    // 2. WIDGET 3.1 DATA & CONTROLLER: CROSS-FRAMEWORK MAPPING
+    // ========================================================================
+    const FRAMEWORK_MAP_DATA = {
+      gov: {
+        title: "1. การกำกับดูแล (Cybersecurity Governance)",
+        ncsa: "ประกาศ กกม. ฉบับที่ 1/2564: กำหนดนโยบายความมั่นคงปลอดภัยเป็นลายลักษณ์อักษร, จัดตั้งคณะกรรมการหรือผู้รับผิดชอบระดับบริหาร, กำหนดบทบาทหน้าที่ RACI, จัดสรรงบประมาณ และจัดอบรม Awareness ประจำปี",
+        iso: "ISO/IEC 27001:2022 Clause 5 (Leadership), Annex A 5.1 (Policies for information security), 5.2 (Information security roles and responsibilities), 5.3 (Segregation of duties), 5.4 (Management responsibilities)",
+        nist: "NIST CSF 2.0 GOVERN (GV): Organizational Context (GV.OC), Risk Management Strategy (GV.RM), Roles, Responsibilities, and Authorities (GV.RR), Policy (GV.PO), Oversight (GV.OV)",
+        auditGuidance: "ตรวจสอบว่านโยบายได้รับการลงนามอนุมัติโดยผู้บริหารสูงสุด (Board/CEO) จริง มีบันทึกการประชุมทบทวนนโยบายประจำปี และมีสถิติการเข้าอบรม Security Awareness ไม่น้อยกว่า 80% ของพนักงานทั้งหมด"
+      },
+      risk: {
+        title: "2. การประเมินและบริหารความเสี่ยง (Risk Assessment & Management)",
+        ncsa: "ประกาศ กกม. ฉบับที่ 1/2564: จัดทำทะเบียนสินทรัพย์ (Asset Inventory) ครอบคลุมระบบสำคัญ, ประเมินความเสี่ยงต่อ CIA อย่างน้อยปีละ 1 ครั้ง, และจัดทำแผนจัดการความเสี่ยง (Risk Treatment Plan)",
+        iso: "ISO/IEC 27001:2022 Clause 6.1 (Actions to address risks and opportunities), Annex A 5.9 (Inventory of information and other associated assets), 5.10 (Acceptable use of assets), 5.12 (Classification of information)",
+        nist: "NIST CSF 2.0 IDENTIFY (ID): Asset Management (ID.AM), Risk Assessment (ID.RA), Improvement (ID.IM)",
+        auditGuidance: "ตรวจสอบความสอดคล้องระหว่าง Asset Inventory กับระบบที่มีอยู่จริงในเครือข่าย ตรวจสอบว่าเกณฑ์ Risk Scoring มีการวัดผลกระทบต่อภารกิจหลัก (Business Impact) และมีผู้รับผิดชอบ Risk Treatment ชัดเจน"
+      },
+      protect: {
+        title: "3. การป้องกันระบบและข้อมูล (Protection of Systems and Data)",
+        ncsa: "ประกาศ กกม. ฉบับที่ 1/2564: บังคับใช้ Least Privilege, การแยกหน้าที่ (SoD), การเปิดใช้ MFA สำหรับการเข้าถึงระยะไกล/ผู้ดูแลระบบ, การ Hardening ระบบ, การสแกนช่องโหว่และติดตั้งแพตช์, การแบ่งแยกเครือข่าย และการเข้ารหัสข้อมูล",
+        iso: "ISO/IEC 27002:2022 Annex A 5.15–5.18 (Access control & Identity), Annex A 8.1–8.9 (User endpoint devices, privileged access, configuration management, data masking, data leakage prevention)",
+        nist: "NIST CSF 2.0 PROTECT (PR): Identity Management, Authentication, and Access Control (PR.AA), Awareness and Training (PR.AT), Data Security (PR.DS), Platform Security (PR.PS), Technology Infrastructure Resilience (PR.IR)",
+        auditGuidance: "สุ่มตรวจค่า Configuration จริงบน Active Directory, Firewall Rule Base, SSH Config และ Cloud Console เพื่อพิสูจน์ Operating Effectiveness ว่าตรงกับเอกสาร SOP หรือไม่"
+      },
+      detect: {
+        title: "4. การเฝ้าระวังและตรวจจับ (Monitoring and Detection)",
+        ncsa: "ประกาศ กกม. ฉบับที่ 1/2564: บันทึก Event Log ที่สำคัญ เทียบเวลามาตรฐาน NTP จัดเก็บไว้อย่างปลอดภัยไม่น้อยกว่า 90 วัน รวบรวม Log สู่ศูนย์กลาง (Centralized Log/SIEM) และมีการเฝ้าระวังความผิดปกติ",
+        iso: "ISO/IEC 27002:2022 Annex A 8.15 (Logging), 8.16 (Monitoring activities), 8.17 (Clock synchronization)",
+        nist: "NIST CSF 2.0 DETECT (DE): Continuous Monitoring (DE.CM), Adverse Event Analysis (DE.AE)",
+        auditGuidance: "ตรวจสอบว่ามี Centralized Log รวมศูนย์จริงหรือไม่ มีการตั้งค่า Use Case Alerts แจ้งเตือนพฤติกรรมเสี่ยง (เช่น Brute-force, Privilege Escalation) หรือไม่ และมีเจ้าหน้าที่ตรวจสอบ Dashboard สม่ำเสมอเพียงใด"
+      },
+      respond: {
+        title: "5. การรับมือภัยคุกคาม (Incident Response and Handling)",
+        ncsa: "ประกาศ กกม. ฉบับที่ 1/2564: จัดทำแผนเผชิญเหตุ (IRP) และ Playbooks, แต่งตั้งทีม IRT/CSIRT, มีขั้นตอนคัดกรอง สกัดกั้น กำจัด ฟื้นฟู และมีกระบวนการแจ้งเตือน สกมช./Regulator ภายในเวลาที่กฎหมายกำหนด (ม.57-58)",
+        iso: "ISO/IEC 27002:2022 Annex A 5.24 (Information security incident management planning and preparation), 5.25 (Assessment and decision on information security events), 5.26 (Response to information security incidents), 5.28 (Collection of evidence)",
+        nist: "NIST CSF 2.0 RESPOND (RS): Incident Management (RS.MA), Incident Analysis (RS.AN), Incident Response Reporting and Communication (RS.CO), Incident Mitigation (RS.MI)",
+        auditGuidance: "ตรวจสอบบันทึกการซักซ้อมแผนเผชิญเหตุ (Tabletop Exercise) ประจำปี ตรวจสอบ Ticket ประวัติการจัดการภัยคุกคามในอดีตว่ามีการสอบสวนหาสาเหตุที่แท้จริง (Root Cause Analysis) และแจ้งหน่วยงานกำกับตามกฎหมายครบถ้วนหรือไม่"
+      },
+      recover: {
+        title: "6. การกู้คืนและสร้างความต่อเนื่อง (Recovery and Business Continuity)",
+        ncsa: "ประกาศ กกม. ฉบับที่ 1/2564: สำรองข้อมูลสำคัญตามหลัก 3-2-1 มีการสำรองข้อมูลแบบ Immutable / Air-gapped ป้องกัน Ransomware จัดทำแผน BCP/DRP กำหนด RTO/RPO และทดสอบกู้คืนข้อมูลจริงอย่างน้อยปีละ 1 ครั้ง",
+        iso: "ISO/IEC 27002:2022 Annex A 5.29 (Information security during disruption), 5.30 (ICT readiness for business continuity), Annex A 8.13 (Information backup)",
+        nist: "NIST CSF 2.0 RECOVER (RC): Incident Recovery Plan Execution (RC.RP), Incident Recovery Communication (RC.CO)",
+        auditGuidance: "ตรวจสอบรายงานผลการทดสอบ Restore ประจำปี (ห้ามดูแค่ Backup Dashboard) และตรวจสอบว่าไฟล์สำรองถูกแยกขาดจากเครือข่ายหลักจริงหรือไม่ หาก Server ถูก Ransomware ยึด ไฟล์สำรองจะรอดพ้นหรือไม่"
+      }
+    };
+
+    function initFrameworkMapping() {
+      const pills = document.querySelectorAll("#mapping-pills .pill-btn");
+      const displayArea = document.getElementById("mapping-display-area");
+
+      function render(key) {
+        const d = FRAMEWORK_MAP_DATA[key];
+        if (!d || !displayArea) return;
+        displayArea.innerHTML = `
+          <h4 style="color:var(--text-main); font-size:1.15rem; margin-bottom:14px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">${d.title}</h4>
+          <div style="margin-bottom:12px;">
+            <span style="font-size:0.75rem; font-weight:700; color:var(--primary); font-family:var(--font-mono); background:var(--primary-light); padding:2px 6px; border-radius:4px;">ประกาศ กกม. (ฉบับ 1/2564)</span>
+            <p style="font-size:0.88rem; margin:6px 0 12px 0; line-height:1.6;">${d.ncsa}</p>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-bottom:14px;">
+            <div style="background:var(--bg-surface); padding:12px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+              <span style="font-size:0.75rem; font-weight:700; color:var(--purple); font-family:var(--font-mono);">ISO/IEC 27001 / 27002:2022</span>
+              <p style="font-size:0.83rem; margin:6px 0 0 0; line-height:1.5;">${d.iso}</p>
+            </div>
+            <div style="background:var(--bg-surface); padding:12px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+              <span style="font-size:0.75rem; font-weight:700; color:var(--cyan); font-family:var(--font-mono);">NIST CSF 2.0 (2024)</span>
+              <p style="font-size:0.83rem; margin:6px 0 0 0; line-height:1.5;">${d.nist}</p>
+            </div>
+          </div>
+          <div style="background:var(--success-light); border-left:3px solid var(--success); padding:10px 14px; border-radius:var(--radius-sm);">
+            <strong style="color:var(--success); font-size:0.82rem;">🎯 คำแนะนำสำหรับ Lead Auditor (Audit Verification Strategy):</strong>
+            <p style="font-size:0.83rem; color:var(--text-main); margin:4px 0 0 0; line-height:1.5;">${d.auditGuidance}</p>
+          </div>
+        `;
+      }
+
+      pills.forEach(btn => {
+        btn.addEventListener("click", () => {
+          pills.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          render(btn.getAttribute("data-map"));
+        });
+      });
+
+      render("gov");
+    }
+
+    // ========================================================================
+    // 3. WIDGET 3.2 DATA & CONTROLLER: 7 ELEMENTS CONTROL MAPPING
+    // ========================================================================
+    const ELEMENTS_DATA = {
+      1: {
+        name: "1. Requirement (ข้อกำหนดอ้างอิง)",
+        en: "Source of Authority & Criteria",
+        desc: "ข้อความหรือหัวข้ออ้างอิงจากกฎหมาย ประกาศ กกม. หรือมาตรฐานสากล ทำหน้าที่เป็น 'เกณฑ์การตรวจ' (Audit Criteria) ที่มีผลผูกพันทางกฎหมายหรือพันธะสัญญาขององค์กร",
+        example: "ประกาศ กกม. ฉบับที่ 1/2564 ข้อ 12(3) / ISO 27002:2022 ข้อ 8.5 / NIST CSF PR.AA-01 — กำหนดให้มีการยืนยันตัวตนแบบหลายปัจจัย (MFA) สำหรับการเข้าถึงระบบจากระยะไกล",
+        tip: "ต้องระบุเลขข้อและชื่อเอกสารอ้างอิงให้ชัดเจนเสมอ หลีกเลี่ยงการเขียนลอย ๆ ว่า 'ตามกฎหมายไซเบอร์'"
+      },
+      2: {
+        name: "2. Control Objective (วัตถุประสงค์การควบคุม)",
+        en: "Risk Mitigation Goal",
+        desc: "คำแถลงเป้าหมายว่าต้องการควบคุมหรือจำกัดความเสี่ยงใด เพื่อป้องกันมิให้เกิดผลกระทบต่อความลับ (C), ความถูกต้องครบถ้วน (I), หรือความพร้อมใช้งาน (A)",
+        example: "เพื่อป้องกันการเข้าถึงเครือข่ายและระบบสารสนเทศภายในมหาวิทยาลัยโดยมิชอบ กรณีรหัสผ่านของผู้ใช้รั่วไหล ถูกดักจับ หรือถูกโจมตีแบบ Credential Stuffing / Phishing",
+        tip: "ต้องตอบคำถามว่า 'ทำไมต้องมีมาตรการนี้?' และ 'หากไม่มี จะเกิดความเสียหายอะไรแก่องค์กร?'"
+      },
+      3: {
+        name: "3. Control Activity (กิจกรรมการควบคุม)",
+        en: "Actionable Operational Practice",
+        desc: "รายละเอียดเชิงปฏิบัติหรือการตั้งค่าทางเทคนิคที่องค์กรนำไปดำเนินงานจริงหน้างาน เพื่อให้บรรลุวัตถุประสงค์การควบคุม",
+        example: "กำหนดค่านโยบายบน FortiGate VPN Gateway ให้เชื่อมต่อไปยัง Azure AD และบังคับใช้นโยบาย Conditional Access กำหนดให้ผู้ใช้ทุกคนต้องผ่านการยืนยันตัวตนด้วย MFA ผ่านแอป Authenticator",
+        tip: "ต้องระบุเทคโนโลยี อุปกรณ์ หรือขั้นตอนที่ชัดเจน เป็นรูปธรรม ไม่ใช่ข้อความเชิงนามธรรม"
+      },
+      4: {
+        name: "4. Control Owner (เจ้าของมาตรการ)",
+        en: "Accountable Operational Role",
+        desc: "ตำแหน่งหรือหน่วยงานที่รับผิดชอบการดำเนินงานมาตรการนั้นโดยตรง มีอำนาจในการตัดสินใจและแก้ไขปัญหา",
+        example: "หัวหน้างานวิศวกรรมเครือข่ายและความมั่นคงปลอดภัย (Network Security Lead)",
+        tip: "⚠️ ห้ามระบุเป็นชื่อบุคคลเดี่ยว (เช่น นายสมชาย) แต่ต้องระบุเป็น 'ตำแหน่ง (Role)' เพื่อให้เกิดความต่อเนื่องเมื่อมีการโยกย้ายบุคลากร"
+      },
+      5: {
+        name: "5. Expected Evidence (หลักฐานที่คาดหวัง)",
+        en: "Objective Verifiable Artifacts",
+        desc: "ร่องรอยเชิงประจักษ์ที่องค์กรต้องจัดเตรียมไว้เพื่อพิสูจน์ต่อผู้ตรวจสอบว่ากิจกรรมการควบคุมเกิดขึ้นจริงอย่างสม่ำเสมอ",
+        example: "(1) เอกสาร SOP การเชื่อมต่อ VPN, (2) ภาพหน้าจอ Exported Config บน VPN Gateway บังคับ MFA, (3) Authentication Log ย้อนหลัง 30 วัน",
+        tip: "ต้องระบุหลักฐานหลายระดับ โดยเฉพาะ Technical Config และ System Log ซึ่งมีน้ำหนักความน่าเชื่อถือสูงสุด"
+      },
+      6: {
+        name: "6. Test Procedure (ขั้นตอนการทดสอบของผู้ตรวจ)",
+        en: "Auditor Verification Steps",
+        desc: "ระเบียบวิธีที่ Lead Auditor ใช้ในการทดสอบเพื่อพิสูจน์ทั้งความสมบูรณ์ของการออกแบบ (Design) และความสม่ำเสมอของการปฏิบัติจริง (Operating)",
+        example: "(1) ตรวจทานเอกสาร SOP, (2) ตรวจสอบการตั้งค่าคอนฟิกจริงบน VPN Gateway, (3) ทดสอบล็อกอินจริงด้วยบัญชีทดสอบเพื่อดูการเรียกขอ OTP (Re-performance), (4) สุ่มตรวจ Log 25 บัญชี",
+        tip: "ต้องระบุขนาดตัวอย่าง (Sample Size) และวิธีการทดสอบตามมาตรฐาน ISO 19011"
+      },
+      7: {
+        name: "7. Assessment Result (ผลการประเมิน)",
+        en: "Audit Finding, Status & Recommendations",
+        desc: "บทสรุปของผู้ตรวจสอบ ประกอบด้วย สถานะความสอดคล้อง (Fully/Partially/Not Implemented), ช่องว่างที่พบ (Gaps), และข้อเสนอแนะในการปรับปรุง (Recommendations)",
+        example: "สถานะ: Fully Implemented — สุ่มตรวจ 25 บัญชี พบระบบเรียกขอ MFA ครบ 100% ไม่พบข้อบกพร่อง แนะนำให้จัดทำรายงานทบทวนสิทธิ์การเข้าถึง VPN ทุก 6 เดือนต่อเนื่อง",
+        tip: "การเขียนข้อเสนอแนะต้องชี้ให้เห็นสาเหตุที่แท้จริง (Root Cause) และปฏิบัติได้จริงในบริบทขององค์กร"
+      }
+    };
+
+    function initElementStepper() {
+      const stepNodes = document.querySelectorAll("#element-stepper .step-node");
+      const detailContainer = document.getElementById("step-detail-container");
+
+      function render(step) {
+        const d = ELEMENTS_DATA[step];
+        if (!d || !detailContainer) return;
+        detailContainer.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">
+            <h4 style="font-size:1.15rem; color:var(--text-main); margin:0;">${d.name}</h4>
+            <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--primary); font-weight:600;">${d.en}</span>
+          </div>
+          <p style="font-size:0.88rem; line-height:1.6; margin-bottom:12px;">${d.desc}</p>
+          <div style="background:var(--bg-surface); padding:12px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-color); margin-bottom:12px;">
+            <strong style="font-size:0.8rem; color:var(--primary); display:block; margin-bottom:4px;">📌 ตัวอย่างจริงใน Compliance Matrix:</strong>
+            <p style="font-size:0.84rem; margin:0; line-height:1.55; color:var(--text-main);">${d.example}</p>
+          </div>
+          <div style="background:var(--warning-light); border-left:3px solid var(--warning); padding:8px 12px; border-radius:var(--radius-sm);">
+            <span style="font-size:0.78rem; color:var(--warning); font-weight:600;">💡 ข้อควรระวังสำหรับผู้ปฏิบัติงานและ Auditor:</span>
+            <span style="font-size:0.8rem; color:var(--text-main); display:block; margin-top:2px;">${d.tip}</span>
+          </div>
+        `;
+      }
+
+      stepNodes.forEach(node => {
+        node.addEventListener("click", () => {
+          stepNodes.forEach(n => n.classList.remove("active"));
+          node.classList.add("active");
+          render(node.getAttribute("data-step"));
+        });
+      });
+
+      render(1);
+    }
+
+    // ========================================================================
+    // 4. WIDGET 3.3 DATA & CONTROLLER: EVIDENCE EVALUATOR
+    // ========================================================================
+    const EVIDENCE_DATA = {
+      logs: {
+        name: "1. Event Logs (บันทึกเหตุการณ์ของระบบ)",
+        rel: "สูงสุด (Highest Reliability)",
+        relClass: "green",
+        source: "System-generated (สร้างอัตโนมัติโดยระบบ)",
+        role: "พิสูจน์ Operating Effectiveness ได้ดีที่สุด",
+        strengths: "ปลอมแปลงได้ยาก มี Timestamp ละเอียด บันทึกกิจกรรมจริงที่เกิดขึ้น ณ วินาทีนั้น มีความน่าเชื่อถือทางนิติวิทยาศาสตร์ (Digital Forensics)",
+        limitations: "มีปริมาณมหาศาล (Big Data) อาจถูกเขียนทับหรือลบทำลายได้หากไม่มี Centralized Log Server ที่มีสิทธิ์ Write-Once",
+        auditTest: "ตรวจสอบ NTP Synchronization, ตรวจสอบ Log Retention ย้อนหลังไม่น้อยกว่า 90 วัน และสุ่มตรวจ Event IDs สำคัญ (เช่น 4624/4625 บน Windows หรือ Auth.log บน Linux)"
+      },
+      config: {
+        name: "2. Technical Configuration (ค่ากำหนดของระบบ)",
+        rel: "สูงมาก (Very High Reliability)",
+        relClass: "green",
+        source: "Live Technical State (สถานะเทคนิคจริงหน้างาน)",
+        role: "พิสูจน์ Design & Technical Implementation",
+        strengths: "สะท้อนความจริงหน้างาน ไม่ขึ้นกับความทรงจำมนุษย์ บ่งบอกขีดความสามารถการป้องกันของระบบ ณ ปัจจุบัน",
+        limitations: "อาจเป็นเพียงสถานะชั่วคราว หากไม่มีกระบวนการควบคุมการเปลี่ยนแปลง (Change Management) คอนฟิกอาจถูกแก้ไขได้ตลอดเวลา",
+        auditTest: "ขอให้ผู้ดูแลระบบเปิดหน้าจอ Live Console หรือ Export Config File ต่อหน้าผู้ตรวจ (Observation) เช่น GPO Settings, Firewall ACLs, หรือ sshd_config"
+      },
+      tickets: {
+        name: "3. Tickets & Records (ตั๋วงานและบันทึกปฏิบัติการ)",
+        rel: "สูง (High Reliability)",
+        relClass: "blue",
+        source: "System + Human Workflow (Jira, ServiceNow, Remedy)",
+        role: "พิสูจน์ Process Compliance & Authorization",
+        strengths: "มี Audit Trail ระบุตัวตนผู้ขอ ผู้อนุมัติ วันเวลา และรายละเอียดการเปลี่ยนแปลงอย่างเป็นทางการ",
+        limitations: "หากระบบ ITSM ไม่ได้ล็อกเวลาอัตโนมัติ อาจมีการกรอกข้อมูลย้อนหลัง (Back-dated records)",
+        auditTest: "สุ่มตรวจตัวอย่างตั๋วงาน Change Request และเปรียบเทียบ Timestamp ของการอนุมัติในตั๋วกับ Timestamp ของการแก้ไขคอนฟิกบนอุปกรณ์จริงว่าตรงกันหรือไม่"
+      },
+      reports: {
+        name: "4. Reports (รายงานผลสรุปและการวิเคราะห์)",
+        rel: "ปานกลาง–สูง (Moderate to High Reliability)",
+        relClass: "purple",
+        source: "Automated Tool Output / External Experts",
+        role: "ให้ภาพรวมสถานะความเสี่ยงและการประเมิน",
+        strengths: "มีการวิเคราะห์ ประมวลผล และจัดลำดับความรุนแรงของช่องโหว่มาแล้ว ช่วยให้เห็นภาพรวมได้รวดเร็ว",
+        limitations: "คุณภาพขึ้นอยู่กับ Version ของเครื่องมือ และขอบเขต (Scope) ที่สแกน หากยกเว้น IP สำคัญ รายงานอาจไม่สะท้อนความจริง",
+        auditTest: "ตรวจสอบ Scan Policy, ขอบเขต IP Range, และตรวจสอบว่า Credentials ที่ใช้สแกนเป็น Authenticated Scan หรือไม่"
+      },
+      sops: {
+        name: "5. Procedures / SOPs (ขั้นตอนปฏิบัติงานมาตรฐาน)",
+        rel: "ปานกลาง (Moderate Reliability)",
+        relClass: "amber",
+        source: "Documentation by Technical Team",
+        role: "พิสูจน์การมีอยู่ของแนวทางการปฏิบัติ (Design)",
+        strengths: "วางมาตรฐานการทำงานที่ชัดเจน เป็นแนวทางอ้างอิงให้ผู้ปฏิบัติงานทุกคนทำตามแบบแผนเดียวกัน",
+        limitations: "ไม่สามารถยืนยันได้ว่าพนักงานปฏิบัติตามจริงหรือไม่ เสี่ยงต่อภาวะ 'เขียนไว้อย่าง ทำจริงอีกอย่าง'",
+        auditTest: "นำ SOP ไปสอบทานหน้างานร่วมกับการสังเกตการณ์ (Observation) และตรวจ Log ย้อนหลังเพื่อดูว่ามีการทำตามขั้นตอนครบถ้วนหรือไม่"
+      },
+      policies: {
+        name: "6. Policies (เอกสารนโยบายองค์กร)",
+        rel: "ปานกลาง (Moderate Reliability)",
+        relClass: "amber",
+        source: "Executive Management Approval",
+        role: "พิสูจน์เจตนารมณ์และอาณัติระดับบริหาร (Mandate)",
+        strengths: "มีผลผูกพันทางกฎหมายและระเบียบภายในองค์กร บังคับใช้กับบุคลากรทุกคน",
+        limitations: "มีความเป็นนามธรรมสูงมาก เสี่ยงต่อภาวะ Paper Compliance อย่างยิ่งหากไม่มีกลไกตรวจติดตาม",
+        auditTest: "ตรวจสอบลายมือชื่อผู้บริหาร วันที่อนุมัติ และบันทึกการสื่อสารนโยบายให้พนักงานทุกคนรับทราบ"
+      },
+      interview: {
+        name: "7. Interview Records (บันทึกการสัมภาษณ์)",
+        rel: "ต่ำสุด (Lowest Reliability)",
+        relClass: "red",
+        source: "Human Testimonial (คำบอกเล่าของผู้ถูกตรวจ)",
+        role: "รวบรวมบริบทเบื้องต้นและเบาะแส (Inquiry)",
+        strengths: "ช่วยให้เข้าใจประวัติ ที่มา ปัญหา อุปสรรค และวัฒนธรรมองค์กรได้อย่างรวดเร็ว",
+        limitations: "มีอคติสูง ลืมง่าย อาจตอบเพื่อเอาตัวรอด ⚠️ ห้ามใช้เป็นหลักฐานยืนยันเดี่ยวโดยเด็ดขาด",
+        auditTest: "ใช้หลักการ Triangulation เสมอ: ฟังคำตอบจากการสัมภาษณ์ แล้วขอเปิดดู SOP และขอตรวจค่า Config/Log จริงเพื่อพิสูจน์"
+      }
+    };
+
+    function initEvidenceEvaluator() {
+      const btns = document.querySelectorAll("#evidence-type-buttons .ev-select-btn");
+      const resultArea = document.getElementById("evidence-eval-result");
+
+      function render(key) {
+        const d = EVIDENCE_DATA[key];
+        if (!d || !resultArea) return;
+        resultArea.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">
+            <h4 style="font-size:1.15rem; color:var(--text-main); margin:0;">${d.name}</h4>
+            <span class="sc-status-pill ${d.relClass}">ความน่าเชื่อถือ: ${d.rel}</span>
+          </div>
+          <div style="font-size:0.83rem; color:var(--text-muted); margin-bottom:12px;">
+            <strong>แหล่งกำเนิด:</strong> ${d.source} | <strong>บทบาท:</strong> ${d.role}
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div style="background:var(--bg-surface); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+              <span style="font-size:0.75rem; font-weight:700; color:var(--success);">✅ จุดแข็ง (Strengths):</span>
+              <p style="font-size:0.8rem; margin:4px 0 0 0; line-height:1.5;">${d.strengths}</p>
+            </div>
+            <div style="background:var(--bg-surface); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+              <span style="font-size:0.75rem; font-weight:700; color:var(--danger);">⚠️ ข้อจำกัด (Limitations):</span>
+              <p style="font-size:0.8rem; margin:4px 0 0 0; line-height:1.5;">${d.limitations}</p>
+            </div>
+          </div>
+          <div style="background:var(--primary-light); border-left:3px solid var(--primary); padding:10px 14px; border-radius:var(--radius-sm);">
+            <strong style="color:var(--primary); font-size:0.8rem;">🎯 คำแนะนำการทดสอบสำหรับ Lead Auditor (Audit Verification):</strong>
+            <p style="font-size:0.82rem; margin:4px 0 0 0; line-height:1.5; color:var(--text-main);">${d.auditTest}</p>
+          </div>
+        `;
+      }
+
+      btns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          btns.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          render(btn.getAttribute("data-ev"));
+        });
+      });
+
+      render("logs");
+    }
+
+    // ========================================================================
+    // 5. WIDGET 3.4 DATA & CONTROLLER: CASE STUDY SIMULATOR
+    // ========================================================================
+    const SIMULATOR_DATA = {
+      case1: {
+        title: "สถานการณ์ที่ 1: ระบบทะเบียนนักศึกษา (SIS) และนโยบายรหัสผ่าน DBA",
+        facts: "นโยบายความมั่นคงปลอดภัยระบุว่า ผู้ดูแลระบบฐานข้อมูล (DBA) ต้องเปลี่ยนรหัสผ่านทุก 60 วัน ความยาวไม่น้อยกว่า 14 ตัวอักษร แต่เมื่อตรวจสอบ Oracle Database จริง พบว่าบัญชี SYSTEM และ DBA ถูกตั้ง PASSWORD_LIFE_TIME = UNLIMITED และไม่เปลี่ยนรหัสผ่านมากว่า 450 วันแล้ว เนื่องจากเกรงว่า Batch Job ยามค่ำคืนจะขัดข้อง",
+        question: "ในฐานะ Lead Auditor ท่านจะวิเคราะห์ระดับความล้มเหลวของการควบคุม และเสนอแนะแนวทางแก้ไขเชิงสถาปัตยกรรมอย่างไร?",
+        status: "Partially Implemented (หรือ Not Implemented สำหรับสิทธิ์ Privileged DBA)",
+        failureType: "ความล้มเหลวด้าน Operating Effectiveness ร่วมกับความบกพร่องด้าน Design Effectiveness (ไม่ได้แยก User ออกจาก Service Account)",
+        recommendation: "1. แยกบัญชี Service Account ที่ใช้รัน Batch Job ออกจากบัญชีส่วนบุคคลของ DBA โดยเด็ดขาด<br>2. บัญชี Service Account ต้องจำกัดสิทธิ์ Least Privilege และเก็บรหัสผ่านใน Secret Vault ที่มีระบบหมุนเวียนคีย์ (Rotation)<br>3. บัญชีส่วนบุคคลของ DBA ต้องบังคับใช้นโยบายรหัสผ่าน 60 วัน และเปิดใช้ MFA ผ่าน PAM (Privileged Access Management)"
+      },
+      case2: {
+        title: "สถานการณ์ที่ 2: การสำรองข้อมูลและการรับมือ Ransomware",
+        facts: "มหาวิทยาลัยมีระบบ Automated Backup ฐานข้อมูลทะเบียนและการเงินทุกคืนลงบนเครื่อง NAS ในเครือข่ายวงเดียวกัน Dashboard แสดงผลสีเขียว 100% แต่ไม่เคยทดสอบกู้คืนข้อมูลจริงเลยตลอด 1 ปี และ NAS เปิดแชร์ไดรฟ์ผ่าน SMB ให้ Server เข้าถึงได้ตลอดเวลาโดยไม่มีการป้องกันแบบ Immutable หรือ Air-gap",
+        question: "หากเกิด Ransomware โจมตี มาตรการปัจจุบันมีประสิทธิผลหรือไม่ และจัดเป็นสถานการณ์ใดในเมทริกซ์การควบคุม?",
+        status: "Partially Implemented ในเชิงเทคนิคเบื้องต้น แต่ล้มเหลวในวัตถุประสงค์ DRP",
+        failureType: "สถานการณ์ C: Form over Substance / Ineffective Control (มีเอกสาร มี Backup ทำงาน แต่ควบคุมความเสี่ยง Ransomware ไม่ได้จริง)",
+        recommendation: "1. แยกเก็บไฟล์สำรองแบบ Offline หรือเปิดใช้ฟังก์ชัน WORM (Write Once, Read Many) / Object Lock บน Storage ป้องกันการเข้ารหัสซ้ำ<br>2. ตัดการแชร์ SMB ค้างไว้ ให้เชื่อมต่อเฉพาะช่วงเวลาที่รัน Backup Job เท่านั้น<br>3. จัดทำแผนและดำเนินการทดสอบกู้คืนข้อมูล (Restore Testing) บนสภาพแวดล้อมจำลอง อย่างน้อยปีละ 1 ครั้ง พร้อมบันทึกหลักฐานผลการกู้คืน"
+      },
+      case3: {
+        title: "สถานการณ์ที่ 3: ระบบบันทึกเหตุการณ์และการเฝ้าระวัง (Log & SIEM)",
+        facts: "ติดตั้ง Open-source SIEM ดึง Log จาก Firewall, Switch, AD เข้ามากว่า 5 ล้านรายการต่อวัน ครบตามเกณฑ์ 90 วัน แต่มีเจ้าหน้าที่ไอทีคนเดียวดูแลร่วมกับงานซ่อมคอมพิวเตอร์ทั่วไป ไม่มีการตั้งค่า Alert Rules หรือ Thresholds ใด ๆ และไม่มีการดู Dashboard เกินกว่าเดือนละ 1 ครั้ง ส่งผลให้ตรวจไม่พบ Brute-force VPN ที่เจาะสำเร็จเมื่อ 3 สัปดาห์ก่อน",
+        question: "กรณีนี้สะท้อนปัญหาอย่างไรในการประเมินความสอดคล้องตามเกณฑ์ประมวลแนวทางปฏิบัติฯ?",
+        status: "Partially Implemented (ผ่านเกณฑ์การเก็บ Log แต่ตกเกณฑ์การเฝ้าระวังและตรวจจับ Monitoring & Detection)",
+        failureType: "Check-box Compliance vs. Real Security (มีของครบตาม Checklist แต่ขาดกำลังคนและกระบวนการคัดกรองภัย ทำให้การตรวจจับล้มเหลวโดยสิ้นเชิง)",
+        recommendation: "1. กำหนด Use Cases และตั้งค่า Alert Rule อัตโนมัติสำหรับพฤติกรรมเสี่ยงสูง (เช่น ล็อกอินล้มเหลวเกิน 5 ครั้งติดกัน, การยกระดับสิทธิ์ผิดปกติ)<br>2. หากขาดแคลนบุคลากรประจำ พิจารณาใช้บริการ Managed SOC หรือ Co-managed Monitoring จากผู้ให้บริการภายนอก<br>3. จัดทำขั้นตอนปฏิบัติงาน (SOP) ในการตรวจสอบ Dashboard และการตอบสนองต่อ Alert เป็นประจำทุกวัน"
+      }
+    };
+
+    function initSimulator() {
+      const tabs = document.querySelectorAll(".sim-tab-header .sim-tab-btn");
+      const bodyArea = document.getElementById("sim-body-area");
+
+      function render(key) {
+        const d = SIMULATOR_DATA[key];
+        if (!d || !bodyArea) return;
+        bodyArea.innerHTML = `
+          <h4 style="font-size:1.1rem; color:var(--text-main); margin-bottom:12px;">${d.title}</h4>
+          <div style="background:var(--bg-surface); padding:12px 16px; border-radius:var(--radius-sm); border:1px solid var(--border-color); margin-bottom:14px; font-size:0.85rem; line-height:1.6;">
+            <strong style="color:var(--text-main); display:block; margin-bottom:4px;">🔍 ข้อเท็จจริงที่ตรวจพบหน้างาน:</strong>
+            ${d.facts}
+          </div>
+          <div style="font-size:0.85rem; font-weight:600; color:var(--primary); margin-bottom:14px;">
+            ❓ ประเด็นวิเคราะห์: ${d.question}
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-bottom:14px;">
+            <div style="background:var(--warning-light); border-left:3px solid var(--warning); padding:10px 12px; border-radius:var(--radius-sm);">
+              <span style="font-size:0.75rem; font-weight:700; color:var(--warning);">สถานะความสอดคล้อง (Compliance Status):</span>
+              <p style="font-size:0.82rem; margin:4px 0 0 0; font-weight:600; color:var(--text-main);">${d.status}</p>
+            </div>
+            <div style="background:var(--danger-light); border-left:3px solid var(--danger); padding:10px 12px; border-radius:var(--radius-sm);">
+              <span style="font-size:0.75rem; font-weight:700; color:var(--danger);">ระดับความล้มเหลวของการควบคุม:</span>
+              <p style="font-size:0.82rem; margin:4px 0 0 0; line-height:1.45; color:var(--text-main);">${d.failureType}</p>
+            </div>
+          </div>
+          <div style="background:var(--success-light); border-left:3px solid var(--success); padding:12px 14px; border-radius:var(--radius-sm);">
+            <strong style="font-size:0.82rem; color:var(--success); display:block; margin-bottom:4px;">💡 ข้อเสนอแนะเชิงวิชาชีพ (Auditor Recommendations):</strong>
+            <div style="font-size:0.82rem; line-height:1.6; color:var(--text-main);">${d.recommendation}</div>
+          </div>
+        `;
+      }
+
+      tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          tabs.forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          render(tab.getAttribute("data-sim"));
+        });
+      });
+
+      render("case1");
+    }
+
+    // ========================================================================
+    // 6. WIDGET 3.5: QUIZ CONTROLLER
+    // ========================================================================
+    function initQuizWidget() {
+      const quizCards = document.querySelectorAll("#widget-chapter3-quiz .quiz-card");
+      quizCards.forEach(card => {
+        const btns = card.querySelectorAll(".quiz-opt-btn");
+        const fb = card.querySelector(".quiz-feedback");
+
+        btns.forEach(btn => {
+          btn.addEventListener("click", () => {
+            const isCorrect = btn.getAttribute("data-correct") === "true";
+            btns.forEach(b => b.classList.remove("correct", "incorrect"));
+
+            if (isCorrect) {
+              btn.classList.add("correct");
+              fb.className = "quiz-feedback show correct";
+              fb.innerHTML = "🎉 <strong>ถูกต้อง!</strong> ท่านวิเคราะห์ข้อกำหนด หลักฐาน และประสิทธิผลของการควบคุมได้อย่างถูกต้องตามหลักวิชาชีพ";
+            } else {
+              btn.classList.add("incorrect");
+              fb.className = "quiz-feedback show incorrect";
+              fb.innerHTML = "⚠️ <strong>ยังไม่ถูกต้อง:</strong> กรุณาทบทวนความแตกต่างระหว่างนโยบายบนกระดาษ (Conformity) กับการตั้งค่าจริง (Operating Effectiveness) แล้วลองเลือกคำตอบใหม่อีกครั้ง";
+            }
+          });
+        });
+      });
+    }
+
+    // Initialize all widgets on DOMContentLoaded
+    document.addEventListener("DOMContentLoaded", () => {
+      initFrameworkMapping();
+      initElementStepper();
+      initEvidenceEvaluator();
+      initSimulator();
+      initQuizWidget();
+    });
+  </script>
+</body>
+</html>

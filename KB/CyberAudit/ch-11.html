@@ -1,0 +1,3550 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 11: การจัดการและตรวจสอบล็อก (Log Management and Log Audit) - การตรวจสอบความมั่นคงปลอดภัยสารสนเทศ</title>
+  <meta name="description" content="บทที่ 11: การจัดการและตรวจสอบล็อก การวิเคราะห์สถาปัตยกรรม SIEM, การร้อยเรียงไทม์ไลน์นิติวิทยาศาสตร์, และการปฏิบัติตาม พ.ร.บ.คอมพิวเตอร์ฯ ม.26 และ ISO 27001">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-glow: rgba(2, 132, 199, 0.12);
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --border-color: #e2e8f0;
+      --border-subtle: #edf2f7;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --text-dim: #64748b;
+      --code-bg: #f1f5f9;
+      --code-border: #cbd5e1;
+      --font-body: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Inter', 'Prompt', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+      --emerald: #059669;
+      --emerald-bg: rgba(5, 150, 105, 0.1);
+      --amber: #d97706;
+      --amber-bg: rgba(217, 119, 6, 0.1);
+      --rose: #e11d48;
+      --rose-bg: rgba(225, 29, 72, 0.1);
+      --purple: #7c3aed;
+      --purple-bg: rgba(124, 58, 237, 0.1);
+      --base-font-size: 16px;
+    }
+
+    [data-theme="sepia"] {
+      --primary: #b45309;
+      --primary-hover: #92400e;
+      --primary-glow: rgba(180, 83, 9, 0.15);
+      --bg-page: #fbf0d9;
+      --bg-surface: #f4e3c1;
+      --bg-card: #f7e8cb;
+      --border-color: #e6d3aa;
+      --border-subtle: #ecdcb9;
+      --text-main: #433422;
+      --text-muted: #5c4731;
+      --text-dim: #7d654a;
+      --code-bg: #efe0c0;
+      --code-border: #dcc89f;
+      --emerald: #2e7d32;
+      --emerald-bg: rgba(46, 125, 50, 0.12);
+      --amber: #b45309;
+      --amber-bg: rgba(180, 83, 9, 0.12);
+      --rose: #c2410c;
+      --rose-bg: rgba(194, 65, 12, 0.12);
+      --purple: #6b21a8;
+      --purple-bg: rgba(107, 33, 168, 0.12);
+    }
+
+    [data-theme="dark"] {
+      --primary: #38bdf8;
+      --primary-hover: #7dd3fc;
+      --primary-glow: rgba(56, 189, 248, 0.15);
+      --bg-page: #0b1120;
+      --bg-surface: #0f172a;
+      --bg-card: #1e293b;
+      --border-color: #334155;
+      --border-subtle: #1e293b;
+      --text-main: #f1f5f9;
+      --text-muted: #cbd5e1;
+      --text-dim: #94a3b8;
+      --code-bg: #090e17;
+      --code-border: #1e293b;
+      --emerald: #10b981;
+      --emerald-bg: rgba(16, 185, 129, 0.15);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245, 158, 11, 0.15);
+      --rose: #fb7185;
+      --rose-bg: rgba(251, 113, 133, 0.15);
+      --purple: #a855f7;
+      --purple-bg: rgba(168, 85, 247, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      font-size: var(--base-font-size);
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.75;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Reading Progress Bar */
+    .reading-progress-track {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: transparent;
+      z-index: 1000;
+    }
+    .reading-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), #38bdf8);
+      transition: width 0.1s ease;
+    }
+
+    /* Header Bar */
+    .site-header {
+      position: sticky;
+      top: 0;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 900;
+      padding: 0.65rem 1.5rem;
+      backdrop-filter: blur(8px);
+    }
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .course-badge {
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 0.8rem;
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid var(--primary);
+      letter-spacing: 0.5px;
+    }
+    .chapter-indicator {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .control-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .control-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Layout */
+    .page-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 2.5rem;
+      padding: 2.5rem 1.5rem 6rem 1.5rem;
+    }
+
+    /* Sidebar TOC */
+    .sidebar-toc {
+      position: sticky;
+      top: 4.5rem;
+      height: calc(100vh - 6rem);
+      overflow-y: auto;
+      padding-right: 1rem;
+      scrollbar-width: thin;
+    }
+    .toc-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .toc-header {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+    .toc-list { list-style: none; }
+    .toc-item { margin-bottom: 0.35rem; }
+    .toc-link {
+      display: block;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.84rem;
+      line-height: 1.4;
+      padding: 0.25rem 0.4rem;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+    .toc-link:hover {
+      color: var(--primary);
+      background: var(--primary-glow);
+    }
+    .toc-item.toc-h1 .toc-link { font-weight: 700; color: var(--text-main); }
+    .toc-item.toc-h2 .toc-link { font-weight: 600; padding-left: 0.75rem; }
+    .toc-item.toc-h3 .toc-link { padding-left: 1.5rem; font-size: 0.78rem; color: var(--text-dim); }
+
+    /* Main Article */
+    .main-article {
+      min-width: 0;
+    }
+
+    /* Typography & Core Content */
+    .chapter-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+    .chapter-badge {
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+    .chapter-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 2.25rem;
+      line-height: 1.25;
+      color: var(--text-main);
+    }
+    .section-heading {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin: 2.5rem 0 1rem 0;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .subsection-heading {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin: 2rem 0 0.8rem 0;
+      color: var(--text-main);
+    }
+    .sub-subsection-heading {
+      font-weight: 600;
+      font-size: 1.05rem;
+      margin: 1.25rem 0 0.5rem 0;
+      color: var(--text-main);
+    }
+    .content-paragraph {
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+    .content-list {
+      margin: 0.8rem 0 1.2rem 1.75rem;
+      color: var(--text-muted);
+    }
+    .content-list li { margin-bottom: 0.4rem; }
+    .content-blockquote {
+      background: var(--bg-card);
+      border-left: 4px solid var(--primary);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+      font-style: normal;
+      color: var(--text-main);
+    }
+    .section-divider {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2.5rem 0;
+    }
+    code {
+      font-family: var(--font-code);
+      font-size: 0.88em;
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      padding: 0.15em 0.35em;
+      border-radius: 4px;
+      color: var(--text-main);
+    }
+    pre.code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      padding: 1.1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.2rem 0;
+      font-family: var(--font-code);
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+
+    /* Standard Tables */
+    .table-responsive {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      background: var(--bg-surface);
+      text-align: left;
+    }
+    .content-table th {
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-weight: 700;
+      padding: 0.75rem 1rem;
+      border-bottom: 2px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .content-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    .content-table tr:hover td {
+      background: var(--primary-glow);
+    }
+
+    /* Figures & Cards Styling */
+    .figure-box, .widget-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+    .figure-header, .widget-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.65rem;
+    }
+    .figure-tag, .widget-tag {
+      font-family: var(--font-code);
+      font-weight: 800;
+      font-size: 0.75rem;
+      background: var(--primary);
+      color: #fff;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+    .figure-title, .widget-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-main);
+    }
+    .figure-caption {
+      margin-top: 1rem;
+      font-size: 0.84rem;
+      color: var(--text-dim);
+      text-align: center;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 0.65rem;
+    }
+    .widget-intro {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Figure 11.1 5 Pillars */
+    .obj-pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .obj-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .obj-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+    .obj-card-badge {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .obj-card-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: var(--text-main);
+    }
+    .obj-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      flex-grow: 1;
+    }
+    .obj-card-meta {
+      font-family: var(--font-code);
+      font-size: 0.74rem;
+      color: var(--text-dim);
+      background: var(--bg-surface);
+      padding: 0.35rem 0.55rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* Figure 11.2 Ecosystem 5 Layers */
+    .ecosystem-layers-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .eco-layer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      border-left: 4px solid var(--primary);
+    }
+    .eco-layer-card.l1 { border-left-color: #3b82f6; }
+    .eco-layer-card.l2 { border-left-color: #ef4444; }
+    .eco-layer-card.l3 { border-left-color: #10b981; }
+    .eco-layer-card.l4 { border-left-color: #f59e0b; }
+    .eco-layer-card.l5 { border-left-color: #8b5cf6; }
+    .eco-layer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .eco-layer-num {
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 0.75rem;
+      background: var(--bg-surface);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+    .eco-layer-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+    .eco-items-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.6rem;
+    }
+    .eco-item {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      padding: 0.45rem 0.65rem;
+      border-radius: 4px;
+    }
+
+    /* Figure 11.3 9 Fields */
+    .log-fields-anatomy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.85rem;
+    }
+    .log-field-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem;
+      position: relative;
+    }
+    .log-field-num {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.65rem;
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-dim);
+    }
+    .log-field-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      margin-bottom: 0.35rem;
+    }
+    .log-field-spec {
+      font-size: 0.81rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Figure 11.4 Stepper */
+    .pipeline-stepper-visual {
+      display: flex;
+      align-items: stretch;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding: 0.5rem 0;
+    }
+    .pipeline-step-node {
+      flex: 1;
+      min-width: 170px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .pipeline-step-node.highlight-stage {
+      border-color: var(--rose);
+      background: var(--rose-bg);
+    }
+    .pipe-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-code);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .pipe-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.86rem;
+      color: var(--text-main);
+    }
+    .pipe-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      flex-grow: 1;
+    }
+    .pipe-tech {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      background: var(--bg-surface);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+    }
+    .pipe-arrow {
+      display: flex;
+      align-items: center;
+      color: var(--text-dim);
+      font-size: 1rem;
+    }
+
+    /* Figure 11.5 SOC Alert Cycle */
+    .soc-alert-cycle-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .soc-phase-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+    }
+    .soc-phase-card.p1 { border-top: 4px solid var(--primary); }
+    .soc-phase-card.p2 { border-top: 4px solid var(--amber); }
+    .soc-phase-card.p3 { border-top: 4px solid var(--rose); }
+    .soc-phase-card.p4 { border-top: 4px solid var(--emerald); }
+    .soc-phase-badge {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      margin-bottom: 0.35rem;
+    }
+    .soc-phase-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+    .soc-phase-body ul {
+      margin-left: 1.1rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .soc-phase-body li { margin-bottom: 0.35rem; }
+
+    /* Figure 11.6 5 Dimensions */
+    .audit-dim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .audit-dim-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+    }
+    .dim-num {
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .dim-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.96rem;
+      color: var(--text-main);
+      margin: 0.2rem 0;
+    }
+    .dim-sub {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+    }
+    .audit-dim-card p {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 0.6rem;
+    }
+    .dim-audit-check {
+      font-size: 0.76rem;
+      background: var(--bg-surface);
+      padding: 0.35rem 0.55rem;
+      border-radius: 4px;
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* Figure 11.7 Forensic Terminal */
+    .forensic-console {
+      background: #090e17;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      overflow: hidden;
+      font-family: var(--font-code);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    .console-titlebar {
+      background: #0f172a;
+      padding: 0.5rem 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid #1e293b;
+    }
+    .console-dots { display: flex; gap: 0.35rem; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot.red { background: #ef4444; }
+    .dot.yellow { background: #f59e0b; }
+    .dot.green { background: #10b981; }
+    .console-label { font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
+    .console-body {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+    .log-entry {
+      margin-bottom: 1.1rem;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.85rem;
+    }
+    .log-src-tag {
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 0.25rem;
+    }
+    .log-src-tag.vpn { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+    .log-src-tag.fw { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .log-src-tag.win { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .log-src-tag.ora { background: rgba(225, 29, 72, 0.2); color: #f87171; }
+    .log-time { color: #38bdf8; }
+    .log-host { color: #a78bfa; font-weight: 600; }
+    .log-event { color: #e2e8f0; font-weight: 700; }
+    .log-val-user { color: #fde047; }
+    .log-val-ip { color: #67e8f9; }
+    .log-val-crit { color: #f43f5e; font-weight: 700; }
+    .log-val-warn { color: #fbbf24; }
+    .log-val-rule { color: #c084fc; }
+
+    /* Figure 11.8 Styled Timeline */
+    .timeline-table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .styled-timeline-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    .styled-timeline-table th {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      padding: 0.8rem 1rem;
+      border-bottom: 2px solid var(--border-color);
+      font-weight: 700;
+    }
+    .styled-timeline-table td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+      color: var(--text-muted);
+    }
+    .styled-timeline-table tr:hover td { background: var(--primary-glow); }
+    .src-pill {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 0.2rem;
+    }
+    .src-pill.vpn { background: var(--primary-glow); color: var(--primary); }
+    .src-pill.fw { background: var(--amber-bg); color: var(--amber); }
+    .src-pill.win { background: var(--emerald-bg); color: var(--emerald); }
+    .src-pill.ora { background: var(--rose-bg); color: var(--rose); }
+    .fact-tag {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--emerald-bg);
+      color: var(--emerald);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      margin-right: 0.3rem;
+    }
+    .hypo-tag {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--amber-bg);
+      color: var(--amber);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      margin-right: 0.3rem;
+    }
+
+    /* Figure 11.9 Working Paper Sheet */
+    .working-paper-sheet {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      font-size: 0.88rem;
+    }
+    .wp-top-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .wp-org-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      letter-spacing: 0.5px;
+    }
+    .wp-official-badge {
+      font-family: var(--font-code);
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: var(--emerald-bg);
+      color: var(--emerald);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid var(--emerald);
+    }
+    .wp-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.5rem 1rem;
+      background: var(--bg-surface);
+      padding: 0.85rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1.25rem;
+      font-size: 0.84rem;
+    }
+    .wp-code {
+      font-family: var(--font-code);
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .wp-section-block { margin-bottom: 1.2rem; }
+    .wp-sec-header {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--text-main);
+      font-size: 0.92rem;
+      margin-bottom: 0.4rem;
+    }
+    .wp-list { margin-left: 1.3rem; color: var(--text-muted); font-size: 0.84rem; }
+    .wp-list li { margin-bottom: 0.25rem; }
+    .wp-procedure-card {
+      background: var(--bg-surface);
+      padding: 0.65rem 0.85rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      font-size: 0.83rem;
+      line-height: 1.5;
+    }
+    .wp-res-fail {
+      display: block;
+      color: var(--rose);
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+    .wp-finding-box {
+      padding: 0.85rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 0.65rem;
+      font-size: 0.84rem;
+    }
+    .wp-finding-box.legal-ncr {
+      background: var(--rose-bg);
+      border-left: 4px solid var(--rose);
+    }
+    .wp-finding-box.major-ncr {
+      background: var(--amber-bg);
+      border-left: 4px solid var(--amber);
+    }
+    .wp-finding-badge {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 0.35rem;
+    }
+    .wp-finding-badge.crit { background: #e11d48; color: #fff; }
+    .wp-finding-badge.major { background: #d97706; color: #fff; }
+    .wp-sign-footer {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 1rem;
+      margin-top: 1.25rem;
+      font-size: 0.82rem;
+    }
+    .sig-line { font-weight: 700; color: var(--primary); margin-bottom: 0.2rem; }
+    .sig-date { color: var(--text-dim); font-size: 0.78rem; }
+
+    /* Figure 11.10 Dialogue */
+    .dialogue-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .dialogue-card {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .dialogue-avatar {
+      font-size: 1.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .dialogue-bubble {
+      flex: 1;
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+    .auditor-card .dialogue-bubble {
+      background: var(--primary-glow);
+      border: 1px solid var(--primary);
+    }
+    .admin-card .dialogue-bubble {
+      background: var(--amber-bg);
+      border: 1px solid var(--amber);
+    }
+    .dialogue-role {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.82rem;
+      margin-bottom: 0.35rem;
+      color: var(--text-main);
+    }
+
+    /* Figure 11.11 Interactive Matrix */
+    .matrix-filter-bar {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .matrix-filter-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .matrix-filter-btn:hover { border-color: var(--primary); }
+    .matrix-filter-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .matrix-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.85rem;
+    }
+    .matrix-item-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .matrix-item-card.crit { border-left: 4px solid var(--rose); }
+    .matrix-item-card.warn { border-left: 4px solid var(--amber); }
+    .matrix-item-card.pass { border-left: 4px solid var(--emerald); }
+    .matrix-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .matrix-src-code {
+      font-family: var(--font-code);
+      font-weight: 800;
+      font-size: 0.82rem;
+      color: var(--text-main);
+    }
+    .matrix-risk-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+    }
+    .matrix-risk-badge.crit { background: var(--rose-bg); color: var(--rose); }
+    .matrix-risk-badge.warn { background: var(--amber-bg); color: var(--amber); }
+    .matrix-risk-badge.pass { background: var(--emerald-bg); color: var(--emerald); }
+    .matrix-card-name { font-weight: 700; font-size: 0.88rem; color: var(--text-main); }
+    .matrix-card-type { font-size: 0.78rem; color: var(--text-muted); }
+    .matrix-card-meta {
+      font-family: var(--font-code);
+      font-size: 0.74rem;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+      background: var(--bg-surface);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      margin-top: 0.2rem;
+    }
+
+    /* Figure 11.12 Retention Visual */
+    .retention-visual-table {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .ret-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      display: grid;
+      grid-template-columns: 240px 1fr 130px 140px;
+      align-items: center;
+      gap: 1rem;
+    }
+    .ret-cat { font-weight: 600; font-size: 0.86rem; color: var(--text-main); }
+    .ret-bars {
+      display: flex;
+      height: 24px;
+      border-radius: 6px;
+      overflow: hidden;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      line-height: 24px;
+    }
+    .bar-hot { background: #0284c7; }
+    .bar-cold { background: #475569; }
+    .bar-fail { background: #e11d48; }
+    .ret-total { font-family: var(--font-code); font-size: 0.82rem; color: var(--text-muted); }
+    .badge-status {
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+    .badge-status.pass { background: var(--emerald-bg); color: var(--emerald); }
+    .badge-status.warn { background: var(--amber-bg); color: var(--amber); }
+    .badge-status.fail { background: var(--rose-bg); color: var(--rose); }
+
+    /* Widgets Shared */
+    .form-group-compact { margin-bottom: 0.85rem; }
+    .form-group-compact label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 0.3rem;
+    }
+    .form-group-compact select, .form-group-compact input[type="range"] {
+      width: 100%;
+    }
+    .form-group-compact select {
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.86rem;
+    }
+    .radio-group-vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .radio-label, .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    /* Widget 11.1 Calculator */
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+    .calc-inputs-card, .calc-result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+
+    /* Widget 11.2 Pipeline Sim */
+    .pipeline-selector-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .pipeline-selector-bar select {
+      flex: 1;
+      min-width: 260px;
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.86rem;
+    }
+    .pipe-ctrl-btn {
+      background: var(--primary);
+      color: #fff;
+      border: 1px solid var(--primary);
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pipe-ctrl-btn:hover { background: var(--primary-hover); }
+    .pipe-ctrl-btn.secondary {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border-color: var(--border-color);
+    }
+    .pipe-ctrl-btn.secondary:hover { border-color: var(--primary); color: var(--primary); }
+    .pipe-progress-nodes {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+      overflow-x: auto;
+      padding-bottom: 0.35rem;
+    }
+    .pipe-node-step {
+      flex: 1;
+      min-width: 110px;
+      text-align: center;
+      padding: 0.45rem 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text-dim);
+      transition: all 0.2s ease;
+    }
+    .pipe-node-step.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .pipe-node-step.done {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .pipe-stage-inspector {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+
+    /* Widget 11.3 Timeline Builder */
+    .timeline-ctrl-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .pivot-filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .pivot-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.3rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pivot-btn:hover { border-color: var(--primary); }
+    .pivot-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .timeline-events-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .event-reorder-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      display: grid;
+      grid-template-columns: 36px 140px 1fr 180px 70px;
+      align-items: center;
+      gap: 0.85rem;
+      transition: all 0.2s ease;
+    }
+    .order-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+    .event-timestamp {
+      font-family: var(--font-code);
+      font-size: 0.8rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .event-info {
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+    .event-toggle-box {
+      font-size: 0.78rem;
+    }
+    .btn-toggle-fact {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      width: 100%;
+      text-align: center;
+    }
+    .btn-toggle-fact.is-fact { background: var(--emerald-bg); color: var(--emerald); border-color: var(--emerald); }
+    .btn-toggle-fact.is-assump { background: var(--amber-bg); color: var(--amber); border-color: var(--amber); }
+    .order-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .btn-arrow-move {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .btn-arrow-move:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* Widget 11.4 SOC Evaluator */
+    .soc-evaluator-wrapper {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+    .soc-rules-config-card, .soc-eval-output-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+    .rules-checkbox-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .rule-chk-item {
+      display: flex;
+      gap: 0.65rem;
+      align-items: flex-start;
+      background: var(--bg-surface);
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+    }
+    .rule-chk-item input { margin-top: 0.25rem; }
+    .rule-chk-info { flex: 1; }
+    .rule-chk-title { font-weight: 700; font-size: 0.86rem; color: var(--text-main); }
+    .rule-chk-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin: 0.2rem 0; }
+    .mitre-tag {
+      font-family: var(--font-code);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      background: var(--code-bg);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* Widget 11.5 NTP Normalizer */
+    .ntp-sim-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .ntp-dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.85rem;
+    }
+    .ntp-device-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .ntp-device-card.ok { border-top: 3px solid var(--emerald); }
+    .ntp-device-card.warn { border-top: 3px solid var(--amber); }
+    .ntp-device-card.fail { border-top: 3px solid var(--rose); }
+    .ntp-dev-name { font-weight: 700; font-size: 0.88rem; color: var(--text-main); }
+    .ntp-dev-stratum { font-size: 0.76rem; color: var(--text-dim); }
+    .ntp-dev-drift { font-size: 0.82rem; color: var(--text-muted); }
+    .ntp-controls-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      flex-wrap: wrap;
+    }
+    .ntp-paradox-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+
+    /* Footer Nav */
+    .chapter-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 2px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+    .btn-nav-chapter {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .btn-nav-chapter:hover {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar-toc { display: none; }
+      .page-container { padding: 1.5rem 1rem 4rem 1rem; }
+      .ret-row { grid-template-columns: 1fr; gap: 0.5rem; }
+      .event-reorder-card { grid-template-columns: 1fr; gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="reading-progress-track">
+    <div class="reading-progress-bar" id="reading-progress-bar"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-branding">
+        <span class="course-badge">NECS1312 // CH-11</span>
+        <span class="chapter-indicator">การจัดการและตรวจสอบล็อก</span>
+      </div>
+      <div class="header-controls">
+        <button class="control-btn" id="btn-theme-light" onclick="setTheme('light')" title="Light Mode">☀️</button>
+        <button class="control-btn" id="btn-theme-sepia" onclick="setTheme('sepia')" title="Sepia Mode">📜</button>
+        <button class="control-btn" id="btn-theme-dark" onclick="setTheme('dark')" title="Dark Mode">🌙</button>
+        <div style="width:1px; height:18px; background:var(--border-color); margin:0 0.2rem;"></div>
+        <button class="control-btn" onclick="adjustFontSize(-1)" title="Smaller Font">A-</button>
+        <button class="control-btn" onclick="adjustFontSize(0)" title="Default Font">A</button>
+        <button class="control-btn" onclick="adjustFontSize(1)" title="Larger Font">A+</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-container">
+    <aside class="sidebar-toc">
+      
+<div class="toc-container">
+  <div class="toc-header">
+    <span class="toc-title">สารบัญประจำบทที่ 11</span>
+  </div>
+  <ul class="toc-list">
+
+    <li class="toc-item toc-h1">
+      <a href="#บทที่-11-การจัดการและตรวจสอบล็อก-log-management-and-log-audit" class="toc-link">บทที่ 11 การจัดการและตรวจสอบล็อก (Log Management and Log Audit)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes" class="toc-link">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-1-การจัดการล็อก-log-management-architecture" class="toc-link">ส่วนที่ 1: การจัดการล็อก (Log Management Architecture)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-1-วัตถุประสงค์-5-ประการของการจัดเก็บบันทึกล็อก" class="toc-link">1.1 วัตถุประสงค์ 5 ประการของการจัดเก็บบันทึกล็อก</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-2-แหล่งล็อกสำคัญ-13-แหล่งในระบบไอทีระดับองค์กร-13-critical-log-sources" class="toc-link">1.2 แหล่งล็อกสำคัญ 13 แหล่งในระบบไอทีระดับองค์กร (13 Critical Log Sources)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-3-ข้อมูลสำคัญในระเบียนล็อก-mandatory-log-fields" class="toc-link">1.3 ข้อมูลสำคัญในระเบียนล็อก (Mandatory Log Fields)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-4-การบริหารเวลาและความเที่ยงตรง-time-management-clock-synchronization" class="toc-link">1.4 การบริหารเวลาและความเที่ยงตรง (Time Management &amp; Clock Synchronization)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-5-วงจรการเก็บรักษาและทำลายล็อก-log-retention-lifecycle" class="toc-link">1.5 วงจรการเก็บรักษาและทำลายล็อก (Log Retention &amp; Lifecycle)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-6-ความถูกต้องครบถ้วนและบูรณภาพของล็อก-log-integrity-reliability" class="toc-link">1.6 ความถูกต้องครบถ้วนและบูรณภาพของล็อก (Log Integrity &amp; Reliability)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-2-ระบบ-siem-การตรวจจับ-และการสร้างเส้นเวลา-siem-detection-timeline-analysis" class="toc-link">ส่วนที่ 2: ระบบ SIEM, การตรวจจับ และการสร้างเส้นเวลา (SIEM, Detection &amp; Timeline Analysis)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-1-ท่อส่งข้อมูลล็อก-6-ขั้นตอน-log-collection-pipeline" class="toc-link">2.1 ท่อส่งข้อมูลล็อก 6 ขั้นตอน (Log Collection Pipeline)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-2-กฎการตรวจจับสำคัญ-6-รูปแบบ-6-critical-monitoring-use-cases" class="toc-link">2.2 กฎการตรวจจับสำคัญ 6 รูปแบบ (6 Critical Monitoring Use Cases)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-3-การบริหารจัดการการแจ้งเตือนในศูนย์-soc-alert-management-triage" class="toc-link">2.3 การบริหารจัดการการแจ้งเตือนในศูนย์ SOC (Alert Management &amp; Triage)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-4-ศาสตร์แห่งการสร้างเส้นเวลาของเหตุการณ์-incident-timeline-reconstruction" class="toc-link">2.4 ศาสตร์แห่งการสร้างเส้นเวลาของเหตุการณ์ (Incident Timeline Reconstruction)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-5-กรอบการประเมิน-5-มิติของผู้ตรวจสอบ-the-auditor-s-perspective-on-monitoring" class="toc-link">2.5 กรอบการประเมิน 5 มิติของผู้ตรวจสอบ (The Auditor's Perspective on Monitoring)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-3-กรณีศึกษาประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-continuous-scenario" class="toc-link">ส่วนที่ 3: กรณีศึกษาประยุกต์ &quot;มหาวิทยาลัยดิจิทัลสมมติ&quot; (Core Case Study Continuous Scenario)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-1-ทะเบียนแหล่งล็อกของมหาวิทยาลัยดิจิทัลสมมติ-log-source-matrix-13-แหล่งหลัก" class="toc-link">3.1 ทะเบียนแหล่งล็อกของมหาวิทยาลัยดิจิทัลสมมติ (Log Source Matrix: 13 แหล่งหลัก)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-2-ตารางระยะเวลาการจัดเก็บบันทึกล็อก-log-retention-matrix" class="toc-link">3.2 ตารางระยะเวลาการจัดเก็บบันทึกล็อก (Log Retention Matrix)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-3-ชุดล็อกจำลองเหตุการณ์การโจมตีระบบทะเบียน-simulated-attack-incident-logs" class="toc-link">3.3 ชุดล็อกจำลองเหตุการณ์การโจมตีระบบทะเบียน (Simulated Attack Incident Logs)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-4-การสร้างเส้นเวลาของเหตุการณ์และการแยกแยะข้อเท็จจริง-timeline-analysis-table" class="toc-link">3.4 การสร้างเส้นเวลาของเหตุการณ์และการแยกแยะข้อเท็จจริง (Timeline Analysis Table)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-5-ข้อสรุป-3-ประเด็นด้านประสิทธิผลของกระบวนการ-monitoring-audit-evaluation" class="toc-link">3.5 ข้อสรุป 3 ประเด็นด้านประสิทธิผลของกระบวนการ Monitoring (Audit Evaluation)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-6-รายการหลักฐานเพิ่มเติมที่ต้องร้องขอ-additional-evidence-request-list" class="toc-link">3.6 รายการหลักฐานเพิ่มเติมที่ต้องร้องขอ (Additional Evidence Request List)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-7-กระดาษทำการตรวจสอบด้านการจัดการล็อก-audit-working-paper-wp-11-01" class="toc-link">3.7 กระดาษทำการตรวจสอบด้านการจัดการล็อก (Audit Working Paper: WP-11-01)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-4-กิจกรรมเชิงประยุกต์ในชั้นเรียน-active-learning-simulation" class="toc-link">ส่วนที่ 4: กิจกรรมเชิงประยุกต์ในชั้นเรียน (Active Learning Simulation)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#กิจกรรม-the-multi-source-log-forensics-timeline-reconstruction" class="toc-link">กิจกรรม: &quot;The Multi-Source Log Forensics &amp; Timeline Reconstruction&quot;</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-5-มุมมองวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls" class="toc-link">ส่วนที่ 5: มุมมองวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives &amp; Common Pitfalls)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#4-ข้อผิดพลาดร้ายแรงของการตรวจสอบล็อก" class="toc-link">4 ข้อผิดพลาดร้ายแรงของการตรวจสอบล็อก:</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-6-แบบฝึกหัดและการบ้านประจำบทที่-11" class="toc-link">ส่วนที่ 6: แบบฝึกหัดและการบ้านประจำบทที่ 11</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers" class="toc-link">ส่วนที่ 7: คำถามทบทวนท้ายบท (Review Questions &amp; Detailed Answers)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#สรุปบทที่-11" class="toc-link">สรุปบทที่ 11</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#เอกสารอ้างอิงและมาตรฐานสากล" class="toc-link">เอกสารอ้างอิงและมาตรฐานสากล</a>
+    </li>
+  
+  </ul>
+</div>
+
+    </aside>
+
+    <main class="main-article">
+      
+          <header class="chapter-header" id="บทที่-11-การจัดการและตรวจสอบล็อก-log-management-and-log-audit">
+            <div class="chapter-badge">NECS1312 // CH-11</div>
+            <h1 class="chapter-title">บทที่ 11 การจัดการและตรวจสอบล็อก (Log Management and Log Audit)</h1>
+          </header>
+        
+<p class="content-paragraph">ในวงการนิติวิทยาศาสตร์ดิจิทัล (Digital Forensics) และการตรวจสอบความมั่นคงปลอดภัยไซเบอร์ มีคำกล่าวเปรียบเทียบอันทรงพลังว่า:</p>
+<blockquote class="content-blockquote"><strong>"หากระบบคอมพิวเตอร์คือสถานที่เกิดเหตุ ล็อก (Log) ก็คือรอยนิ้วมือ คราบเลือด และภาพจากกล้องวงจรปิดที่บันทึกความจริงทุกฝีก้าว"</strong>  <br>แต่ในทางกลับกัน:  <br><strong>"หากปราศจากล็อกที่สมบูรณ์และเชื่อถือได้ การสืบสวนก็เป็นได้เพียงการคาดเดาอย่างไร้หลักฐาน"</strong></blockquote>
+<p class="content-paragraph">ในระบบสารสนเทศระดับองค์กร มีเหตุการณ์ทางเทคนิคเกิดขึ้นนับสิบล้านเหตุการณ์ในแต่ละวัน ตั้งแต่การล็อกอินของพนักงาน การคลิกเปิดไฟล์ การเรียกใช้คำสั่ง SQL การส่งข้อมูลผ่านไฟร์วอลล์ ไปจนถึงการสแกนหาช่องโหว่ของแฮกเกอร์จากทั่วโลก หากองค์กรไม่มีระบบบริหารจัดการล็อก (Log Management) ที่มีประสิทธิภาพ ข้อมูลจราจรเหล่านี้จะสูญหายไปภายในเวลาไม่กี่ชั่วโมง หรือกระจัดกระจายอยู่ตามเครื่องแม่ข่ายต่าง ๆ จนไม่สามารถนำมาใช้ประโยชน์ได้</p>
+<p class="content-paragraph">ยิ่งไปกว่านั้น ในบริบทของประเทศไทย <strong>การจัดเก็บบันทึกข้อมูลจราจรทางคอมพิวเตอร์ (Computer Traffic Data)</strong> มิใช่เพียงแค่ทางเลือกในการดำเนินธุรกิจ แต่เป็น <strong>"หน้าที่ตามกฎหมายภาคบังคับ"</strong> ภายใต้:</p>
+<ol class="content-list">
+<li><strong>พระราชบัญญัติว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2550 (และที่แก้ไขเพิ่มเติม พ.ศ. 2560) มาตรา 26:</strong> กำหนดให้ผู้ให้บริการต้องเก็บรักษาข้อมูลจราจรทางคอมพิวเตอร์ไว้ไม่น้อยกว่า <strong>90 วัน</strong> (และพนักงานเจ้าหน้าที่อาจสั่งให้ขยายระยะเวลาเป็นกรณีพิเศษได้ถึง <strong>2 ปี</strong>)</li>
+<li><strong>ประกาศกระทรวงดิจิทัลเพื่อเศรษฐกิจและสังคม เรื่อง หลักเกณฑ์การเก็บรักษาข้อมูลจราจรทางคอมพิวเตอร์ของผู้ให้บริการ พ.ศ. 2564:</strong> กำหนดมาตรฐานความมั่นคงปลอดภัย ความถูกต้องแท้จริง (Integrity) และการตั้งค่าเวลาอ้างอิงตรงกัน (Clock Synchronization)</li>
+<li><strong>มาตรฐาน ISO/IEC 27001:2022 (Controls A.8.15, A.8.16, A.8.17):</strong> กำหนดให้ต้องมีการบันทึกเหตุการณ์ (Logging), การเฝ้าระวังความเคลื่อนไหว (Monitoring), และการซิงก์เวลาระบบ (Clock synchronization)</li>
+</ol>
+<p class="content-paragraph">ในบทนี้ นักศึกษาจะได้สวมบทบาทเป็น <strong>Lead Auditor และ Technical Auditor</strong> ในการตรวจสอบระบบบริหารจัดการล็อกและศูนย์เฝ้าระวังความมั่นคงปลอดภัย (Security Operations Center: SOC / SIEM) โดยจะได้เรียนรู้ตั้งแต่วัตถุประสงค์ แหล่งล็อก การบริหารเวลา การวิเคราะห์ Use Case การบริหาร Alert ตลอดจนการฝึกสร้างเส้นเวลาเหตุการณ์ (Incident Timeline Reconstruction) จากล็อกจำลองหลายแหล่งข้อมูลอย่างเป็นระบบ</p>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes">
+            <h2 class="section-heading">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</h2>
+          </section>
+        
+<p class="content-paragraph">เมื่อสิ้นสุดการเรียนรู้ในบทนี้ นักศึกษาสามารถ:</p>
+<ol class="content-list">
+<li><strong>ระบุและประเมินความครอบคลุมของแหล่งล็อกตามระดับความเสี่ยงได้ (CLO1, CLO3):</strong> จำแนกแหล่งล็อกสำคัญ 13 แหล่ง (OS, Network, Database, Cloud, Application ฯลฯ) จัดทำ Log Source Matrix และระบุข้อมูลสำคัญที่ต้องมีในระเบียนล็อกได้อย่างครบถ้วน</li>
+<li><strong>ประเมินความถูกต้อง บูรณภาพ และการปฏิบัติตามกฎหมายการจัดเก็บล็อกได้ (CLO1, CLO3):</strong> ตรวจสอบการตั้งค่าเวลา (NTP & Stratum), การป้องกันการแก้ไขดัดแปลง (WORM & Hashing), นโยบายระยะเวลาการจัดเก็บ (Retention Period) ตาม พ.ร.บ.คอมพิวเตอร์ฯ มาตรา 26 และ ISO 27001 ได้</li>
+<li><strong>วิเคราะห์สถาปัตยกรรม SIEM และประเมินประสิทธิผลของกฎตรวจจับ (Monitoring Use Cases) ได้ (CLO3, CLO4):</strong> อธิบาย 6 ขั้นตอนของ Log Pipeline (Collection, Parsing, Normalization, Enrichment, Indexing, Correlation) และประเมินกระบวนการจัดการแจ้งเตือน (Alert Triage & Escalation) ได้</li>
+<li><strong>สร้างเส้นเวลาของเหตุการณ์ (Incident Timeline) จากหลักฐานล็อกหลายแหล่งได้ (CLO3, CLO4):</strong> นำล็อกที่กระจัดกระจายจาก VPN, Firewall, Web Server และ Database มาร้อยเรียงตามลำดับเวลา เชื่อมโยง 4 แกนข้อมูล (User, IP, Host, Session) และแยกแยะข้อเท็จจริงออกจากข้อสันนิษฐานได้อย่างแม่นยำ</li>
+<li><strong>จัดทำกระดาษทำการตรวจสอบด้านการจัดการล็อก (Log Audit Working Paper) ได้ (CLO3, CLO4):</strong> ประเมินประสิทธิผลของกระบวนการ Monitoring บันทึกข้อค้นพบ และระบุรายการหลักฐานเพิ่มเติมที่ต้องร้องขอตามมาตรฐานวิชาชีพ</li>
+</ol>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-1-การจัดการล็อก-log-management-architecture">
+            <h2 class="section-heading">ส่วนที่ 1: การจัดการล็อก (Log Management Architecture)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="1-1-วัตถุประสงค์-5-ประการของการจัดเก็บบันทึกล็อก">1.1 วัตถุประสงค์ 5 ประการของการจัดเก็บบันทึกล็อก</h3>
+<p class="content-paragraph">ในมุมมองของผู้ตรวจสอบและกรอบมาตรฐาน <strong>NIST SP 800-92 (Guide to Computer Security Log Management)</strong> ล็อกถูกจัดเก็บขึ้นเพื่อตอบสนองวัตถุประสงค์หลัก <strong>5 ประการ</strong>:</p>
+
+<div class="figure-box" id="figure-11-1">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 11.1</div>
+    <div class="figure-title">5 วัตถุประสงค์สำคัญของการจัดเก็บบันทึกล็อก (5 Core Objectives of Log Management)</div>
+  </div>
+  <div class="obj-pillars-grid">
+    <div class="obj-card">
+      <div class="obj-card-badge">01 // IDENTITY</div>
+      <div class="obj-card-title">1. Accountability (ภาระรับผิดชอบ)</div>
+      <div class="obj-card-desc">
+        <strong>ความรับผิดชอบเฉพาะบุคคล:</strong> สามารถพิสูจน์และผูกมัดได้ว่า <em>"ใคร (Who)"</em> เป็นผู้สั่งการ เข้าถึง หรือแก้ไขข้อมูล เพื่อสร้างหลักฐานการปฏิเสธความรับผิดชอบไม่ได้ (Non-repudiation)
+      </div>
+      <div class="obj-card-meta">Key Metric: Individual User ID, Kerberos UPN, MFA Auth Log</div>
+    </div>
+
+    <div class="obj-card">
+      <div class="obj-card-badge">02 // DETECTION</div>
+      <div class="obj-card-title">2. Detection (การตรวจจับ)</div>
+      <div class="obj-card-desc">
+        <strong>การตรวจจับภัยคุกคาม:</strong> เฝ้าระวังพฤติกรรมผิดปกติแบบ Real-time เช่น การพยายามเดารหัสผ่านซ้ำๆ (Brute Force), การล็อกอินจากต่างแดนฉับพลัน หรือการยกระดับสิทธิ์สู่ root/Administrator
+      </div>
+      <div class="obj-card-meta">Key Metric: SIEM Correlation Rules, Anomaly Scoring, MTTD</div>
+    </div>
+
+    <div class="obj-card">
+      <div class="obj-card-badge">03 // FORENSICS</div>
+      <div class="obj-card-title">3. Investigation (การสืบสวน)</div>
+      <div class="obj-card-desc">
+        <strong>การสืบสวนคดีทางไซเบอร์:</strong> ใช้สร้างเส้นเวลา (Incident Timeline) สืบหาจุดเริ่มต้น (Patient Zero), เส้นทางการขยายผลข้ามระบบ (Lateral Movement), และขอบเขตความเสียหายที่แท้จริง
+      </div>
+      <div class="obj-card-meta">Key Metric: Multi-Source Timeline, Pivot Analysis, Evidence Chain</div>
+    </div>
+
+    <div class="obj-card">
+      <div class="obj-card-badge">04 // LEGAL</div>
+      <div class="obj-card-title">4. Compliance (การปฏิบัติตามกฎหมาย)</div>
+      <div class="obj-card-desc">
+        <strong>การปฏิบัติตามกฎหมายและมาตรฐาน:</strong> สอดคล้องกับ พ.ร.บ.คอมพิวเตอร์ฯ มาตรา 26 (ขั้นต่ำ 90 วัน ขยายได้ถึง 2 ปี), ประกาศกระทรวงดีอี พ.ศ. 2564, และ ISO/IEC 27001 (Control A.8.15)
+      </div>
+      <div class="obj-card-meta">Key Metric: 90+ Days Retention, WORM Integrity, Hash Verification</div>
+    </div>
+
+    <div class="obj-card">
+      <div class="obj-card-badge">05 // HEALTH</div>
+      <div class="obj-card-title">5. Performance (ประสิทธิภาพ)</div>
+      <div class="obj-card-desc">
+        <strong>การเฝ้าระวังประสิทธิภาพ:</strong> วิเคราะห์แนวโน้มการใช้งานระบบ สภาพโหลดของแบนด์วิดท์ ตรวจพบคอขวด (Bottlenecks) และวางแผนจัดสรรทรัพยากรระบบไอทีในอนาคต (Capacity Planning)
+      </div>
+      <div class="obj-card-meta">Key Metric: System Latency, Error 5xx Rates, Bandwidth Saturation</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 11.1:</strong> 5 วัตถุประสงค์หลักของการบริหารจัดการล็อกตามกรอบ NIST SP 800-92 และการตรวจประเมินความมั่นคงปลอดภัย
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-2-แหล่งล็อกสำคัญ-13-แหล่งในระบบไอทีระดับองค์กร-13-critical-log-sources">1.2 แหล่งล็อกสำคัญ 13 แหล่งในระบบไอทีระดับองค์กร (13 Critical Log Sources)</h3>
+<p class="content-paragraph">เพื่อป้องกันการเกิดจุดบอดด้านการตรวจจับ (Blind Spots) องค์กรต้องเชื่อมโยงและจัดเก็บข้อมูลจราจรจาก <strong>13 แหล่งสำคัญ</strong>:</p>
+
+<div class="figure-box" id="figure-11-2">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 11.2</div>
+    <div class="figure-title">13 แหล่งล็อกสำคัญในระบบไอทีระดับองค์กร (Enterprise 5-Layer Log Ecosystem)</div>
+  </div>
+  <div class="ecosystem-layers-grid">
+    <div class="eco-layer-card l1">
+      <div class="eco-layer-header">
+        <span class="eco-layer-num">LAYER 1</span>
+        <span class="eco-layer-name">💻 Endpoints & Identities (1-3)</span>
+      </div>
+      <div class="eco-items-list">
+        <div class="eco-item">
+          <strong>1. OS Logs:</strong> Windows Event Log (Security/Sys/App), Linux syslog / auditd
+        </div>
+        <div class="eco-item">
+          <strong>2. Identity / AD:</strong> Active Directory Domain Controllers, Kerberos, Azure AD / Okta
+        </div>
+        <div class="eco-item">
+          <strong>3. EDR / AV:</strong> CrowdStrike Falcon, Defender for Endpoint, Antivirus alert telemetry
+        </div>
+      </div>
+    </div>
+
+    <div class="eco-layer-card l2">
+      <div class="eco-layer-header">
+        <span class="eco-layer-num">LAYER 2</span>
+        <span class="eco-layer-name">🛡️ Network Perimeter (4-6)</span>
+      </div>
+      <div class="eco-items-list">
+        <div class="eco-item">
+          <strong>4. Next-Gen Firewall:</strong> Allow/Deny traffic, NAT translation, threat engine logs
+        </div>
+        <div class="eco-item">
+          <strong>5. IDS / IPS:</strong> Snort / Suricata signature detection, protocol anomaly logs
+        </div>
+        <div class="eco-item">
+          <strong>6. VPN Gateway:</strong> SSL-VPN authentication, assigned client virtual IP, session time
+        </div>
+      </div>
+    </div>
+
+    <div class="eco-layer-card l3">
+      <div class="eco-layer-header">
+        <span class="eco-layer-num">LAYER 3</span>
+        <span class="eco-layer-name">🌐 Network Services (7-8)</span>
+      </div>
+      <div class="eco-items-list">
+        <div class="eco-item">
+          <strong>7. DNS Server:</strong> BIND / Windows DNS Query & Response (สืบหา C2 & Tunneling)
+        </div>
+        <div class="eco-item">
+          <strong>8. DHCP Server:</strong> IP Lease, MAC Address mapping, Hostname (จับคู่ IP ย้อนหลัง)
+        </div>
+      </div>
+    </div>
+
+    <div class="eco-layer-card l4">
+      <div class="eco-layer-header">
+        <span class="eco-layer-num">LAYER 4</span>
+        <span class="eco-layer-name">🗄️ Application & Database (9-11)</span>
+      </div>
+      <div class="eco-items-list">
+        <div class="eco-item">
+          <strong>9. Web Proxy / WAF:</strong> URL request filtering, TLS inspection, Cloudflare alerts
+        </div>
+        <div class="eco-item">
+          <strong>10. Web Server:</strong> Nginx, Apache, IIS Access & Error logs (HTTP Method, URI, Code)
+        </div>
+        <div class="eco-item">
+          <strong>11. Database Audit:</strong> Oracle Unified Audit, SQL Server Profiler, MySQL binlog
+        </div>
+      </div>
+    </div>
+
+    <div class="eco-layer-card l5">
+      <div class="eco-layer-header">
+        <span class="eco-layer-num">LAYER 5</span>
+        <span class="eco-layer-name">☁️ Cloud & Business Apps (12-13)</span>
+      </div>
+      <div class="eco-items-list">
+        <div class="eco-item">
+          <strong>12. Cloud Services:</strong> AWS CloudTrail, GCP Cloud Audit Logs, Microsoft 365 Audit
+        </div>
+        <div class="eco-item">
+          <strong>13. Business Apps:</strong> ERP transactions, Core Banking audit trail, E-Registration log
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 11.2:</strong> แผนผัง 13 แหล่งล็อกครอบคลุม 5 เลเยอร์สำคัญในโครงสร้างพื้นฐานไอทีระดับองค์กร
+  </div>
+</div>
+
+<ol class="content-list">
+<li><strong>Operating System Logs:</strong> Windows Security Event Log, Linux syslog / journald</li>
+<li><strong>Active Directory / IdP Logs:</strong> บันทึกการพิสูจน์ตัวตน Kerberos, NTLM, การสร้าง/ลบผู้ใช้, การเปลี่ยนกลุ่ม</li>
+<li><strong>Endpoint Detection and Response (EDR / AV):</strong> บันทึกการตรวจพบมัลแวร์, การรัน Process ต้องสงสัย, การแก้ Registry</li>
+<li><strong>Firewall Logs:</strong> บันทึกการเชื่อมต่อ Connection เข้า-ออก (Accept / Drop / Reject), NAT Translation</li>
+<li><strong>IDS / IPS Logs:</strong> บันทึกการแจ้งเตือนพฤติกรรมบุกรุกตาม Signature และ Anomaly</li>
+<li><strong>VPN Gateway Logs:</strong> บันทึกการเชื่อมต่อระยะไกล IP ต้นทางจริง, ชื่อบัญชี, เวลาเชื่อมต่อและตัดการเชื่อมต่อ</li>
+<li><strong>DNS Query Logs:</strong> บันทึกการสืบค้นโดเมน เป็นหัวใจสำคัญในการตรวจพบมัลแวร์ติดต่อ C2 (Command & Control)</li>
+<li><strong>DHCP Server Logs:</strong> บันทึกการแจกจ่าย IP ชั่วคราว เชื่อมโยง MAC Address ของอุปกรณ์เข้ากับหมายเลข IP ณ เวลาเกิดเหตุ</li>
+<li><strong>Forward / Reverse Web Proxy Logs:</strong> บันทึก URL, โดเมน, และ Category ที่ผู้ใช้ภายในเรียกใช้งานออกสู่ภายนอก</li>
+<li><strong>Web Server Access & Error Logs:</strong> บันทึก HTTP Request, User-Agent, Method (GET/POST), Status Code (200, 404, 500)</li>
+<li><strong>Database Audit Logs:</strong> บันทึกการประมวลผลคำสั่ง DDL/DML, การเข้าถึงตารางสำคัญ, การล็อกอินระดับ SYSDBA/sa</li>
+<li><strong>Cloud Service Logs:</strong> AWS CloudTrail, Microsoft 365 Unified Audit Log, Azure Activity Logs</li>
+<li><strong>Business Application Logs:</strong> บันทึกธุรกรรมเฉพาะของแอปพลิเคชัน เช่น การกดอนุมัติการเงิน, การบันทึกเกรด</li>
+</ol>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-3-ข้อมูลสำคัญในระเบียนล็อก-mandatory-log-fields">1.3 ข้อมูลสำคัญในระเบียนล็อก (Mandatory Log Fields)</h3>
+<p class="content-paragraph">ระเบียนล็อกที่ดีและมีคุณค่าเชิงนิติวิทยาศาสตร์ ต้องมีข้อมูลพื้นฐานครบถ้วน <strong>9 องค์ประกอบ</strong>:</p>
+
+<div class="figure-box" id="figure-11-3">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 11.3</div>
+    <div class="figure-title">9 ข้อมูลสำคัญในระเบียนล็อก (Anatomy of a Forensic-Grade Log Record)</div>
+  </div>
+  <div class="log-fields-anatomy-grid">
+    <div class="log-field-card f-time">
+      <div class="log-field-num">01</div>
+      <div class="log-field-title">📅 1. Timestamp</div>
+      <div class="log-field-spec">ISO 8601 / RFC 3339 พร้อม Timezone (เช่น <code>2024-08-15T00:18:55+07:00</code>) ซิงก์ผ่าน NTP</div>
+    </div>
+
+    <div class="log-field-card f-src">
+      <div class="log-field-num">02</div>
+      <div class="log-field-title">📍 2. Source IP / Port</div>
+      <div class="log-field-spec">หมายเลข IPv4/IPv6 และพอร์ตต้นทางของผู้กระทำ (เช่น <code>184.22.109.45:51240</code>)</div>
+    </div>
+
+    <div class="log-field-card f-dst">
+      <div class="log-field-num">03</div>
+      <div class="log-field-title">🎯 3. Destination IP / Port</div>
+      <div class="log-field-spec">หมายเลข IP และพอร์ตปลายทางของบริการเป้าหมาย (เช่น <code>192.168.10.15:3389</code>)</div>
+    </div>
+
+    <div class="log-field-card f-user">
+      <div class="log-field-num">04</div>
+      <div class="log-field-title">👤 4. Identity</div>
+      <div class="log-field-spec">ชื่อบัญชีผู้ใช้ Username, User ID, Service Account, หรือ SID/UID ประจำบุคคล</div>
+    </div>
+
+    <div class="log-field-card f-event">
+      <div class="log-field-num">05</div>
+      <div class="log-field-title">🏷️ 5. Event ID / Type</div>
+      <div class="log-field-spec">รหัสเหตุการณ์เฉพาะระบบ เช่น Windows Event ID <code>4624</code> (Logon), Syslog Severity Level</div>
+    </div>
+
+    <div class="log-field-card f-action">
+      <div class="log-field-num">06</div>
+      <div class="log-field-title">⚡ 6. Action Taken</div>
+      <div class="log-field-spec">การกระทำที่ระบบสั่งการหรือตอบสนอง (เช่น <code>Logon</code>, <code>SQL_UPDATE</code>, <code>DROP</code>, <code>PERMIT</code>)</div>
+    </div>
+
+    <div class="log-field-card f-status">
+      <div class="log-field-num">07</div>
+      <div class="log-field-title">📊 7. Result Status</div>
+      <div class="log-field-spec">ผลลัพธ์ของการกระทำ เช่น <code>SUCCESS</code>, <code>FAILURE</code>, Error Code <code>0x0</code>, HTTP <code>200</code></div>
+    </div>
+
+    <div class="log-field-card f-proc">
+      <div class="log-field-num">08</div>
+      <div class="log-field-title">⚙️ 8. Process Info</div>
+      <div class="log-field-spec">พาธโปรแกรมที่สั่งการ คำสั่ง CLI ที่รัน และ Parent PID (เช่น <code>powershell.exe -enc ...</code>)</div>
+    </div>
+
+    <div class="log-field-card f-sess">
+      <div class="log-field-num">09</div>
+      <div class="log-field-title">🔗 9. Session ID</div>
+      <div class="log-field-spec">หมายเลขประจำเซสชันเพื่อใช้ร้อยเรียงกิจกรรมต่อเนื่อง (เช่น VPN Session <code>VPN-9921</code>)</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 11.3:</strong> 9 องค์ประกอบเชิงโครงสร้างที่ต้องปรากฏในระเบียนล็อกเพื่อประโยชน์ในการพิสูจน์พยานหลักฐานดิจิทัล
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-4-การบริหารเวลาและความเที่ยงตรง-time-management-clock-synchronization">1.4 การบริหารเวลาและความเที่ยงตรง (Time Management & Clock Synchronization)</h3>
+
+<div class="widget-box" id="widget-11-5">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE LEARNING 11.5</div>
+    <div class="widget-title">NTP Clock Drift & Log Timestamp Normalizer (เครื่องมือคำนวณผลกระทบเวลาคลาดเคลื่อนต่อการสืบสวนคดี)</div>
+  </div>
+  <p class="widget-intro">
+    ในผลการตรวจสอบ คณะผู้ตรวจพบว่าอุปกรณ์ Wi-Fi Controller (WLC) มีเวลาคลาดเคลื่อน 14 นาที เครื่องมือนี้จะแสดงให้เห็นว่าหากเวลาของอุปกรณ์คลาดเคลื่อนเพียงเล็กน้อย จะทำลายลำดับเวลาของเหตุการณ์ (Timeline Distortion) และก่อให้เกิดข้อขัดแย้งทางตรรกะจนศาลไม่รับฟังพยานหลักฐานได้อย่างไร
+  </p>
+
+  <div class="ntp-sim-wrapper">
+    <div class="ntp-dashboard-grid">
+      <div class="ntp-device-card ok">
+        <div class="ntp-dev-name">DC01 (Active Directory)</div>
+        <div class="ntp-dev-stratum">NTP Stratum 2 (time.navy.mi.th)</div>
+        <div class="ntp-dev-drift">Clock Drift: <strong>0.00s</strong> (สมบูรณ์)</div>
+      </div>
+
+      <div class="ntp-device-card ok">
+        <div class="ntp-dev-name">FW-CORE01 (Next-Gen FW)</div>
+        <div class="ntp-dev-stratum">NTP Stratum 2 (time.nist.gov)</div>
+        <div class="ntp-dev-drift">Clock Drift: <strong>+0.02s</strong> (สมบูรณ์)</div>
+      </div>
+
+      <div class="ntp-device-card warn">
+        <div class="ntp-dev-name">REG-DB01 (Oracle Server)</div>
+        <div class="ntp-dev-stratum">Local CMOS Clock (No NTP Daemon)</div>
+        <div class="ntp-dev-drift">Clock Drift: <strong>-1.25s</strong> (ต้องปรับปรุง)</div>
+      </div>
+
+      <div class="ntp-device-card fail" id="wlc-ntp-card">
+        <div class="ntp-dev-name">WLC-CAMPUS (Wi-Fi Controller)</div>
+        <div class="ntp-dev-stratum">Manual Misconfigured Clock</div>
+        <div class="ntp-dev-drift" id="wlc-drift-display">Clock Drift: <strong>+14 นาที 00 วินาที</strong> (วิกฤต)</div>
+      </div>
+    </div>
+
+    <div class="ntp-controls-bar">
+      <div style="flex:1;">
+        <label for="ntp-drift-slider"><strong>ปรับค่า Clock Drift ของอุปกรณ์ Wi-Fi Controller:</strong> <span id="ntp-slider-label" style="color:var(--rose); font-weight:700;">+14 นาที</span></label>
+        <input type="range" id="ntp-drift-slider" min="-30" max="30" value="14" oninput="updateClockDriftSim(this.value)">
+      </div>
+      <div>
+        <button class="pipe-ctrl-btn" onclick="syncWithNationalNtp()">⏱️ ซิงก์เวลามาตรฐานแห่งชาติ (Stratum 1)</button>
+        <button class="pipe-ctrl-btn secondary" onclick="resetClockDriftSim()">↺ รีเซ็ตค่าเดิม</button>
+      </div>
+    </div>
+
+    <div class="ntp-paradox-box" id="ntp-analysis-box">
+      <!-- Live Paradox and Legal Assessment via JS -->
+    </div>
+  </div>
+</div>
+
+<p class="content-paragraph">ในการสืบสวนคดีไซเบอร์ <strong>"เวลาที่ไม่ตรงกันแม้เพียง 1 นาที สามารถทำลายน้ำหนักของพยานหลักฐานในศาลได้โดยสิ้นเชิง"</strong></p>
+<ul class="content-list">
+<li><strong>Network Time Protocol (NTP):</strong> ทุกอุปกรณ์และเซิร์ฟเวอร์ในองค์กรต้องถูกกำหนดค่าให้ซิงก์เวลากับเครื่องแม่ข่ายเวลามาตรฐานกลาง (NTP Server Stratum 1 หรือ 2) เดียวกันอย่างสม่ำเสมอ ตามข้อกำหนดของประกาศกระทรวงดีอี พ.ศ. 2564</li>
+<li><strong>Clock Drift (ความคลาดเคลื่อนของเวลา):</strong> การตรวจสอบต้องยืนยันว่าไม่มีอุปกรณ์ใดมีค่าเวลาคลาดเคลื่อนเกินกว่าเกณฑ์ที่กำหนด (เช่น ไม่เกิน <code class="math-tex">\pm 1</code> วินาที สำหรับระบบการเงิน และไม่เกิน <code class="math-tex">\pm 5</code> วินาที สำหรับระบบทั่วไป)</li>
+<li><strong>Time Zone & Timestamp Normalization:</strong> เนื่องจากระบบต่าง ๆ อาจบันทึกเวลาใน Timezone ที่แตกต่างกัน (เช่น เว็บเซิร์ฟเวอร์บันทึกเป็น UTC แต่ไฟร์วอลล์บันทึกเป็น Local Time UTC+7) ระบบรวมล็อก (SIEM) ต้องทำกระบวนการ <strong>Normalization</strong> โดยแปลงเวลาทั้งหมดให้อยู่ในมาตรฐานสากล <strong>ISO 8601 (เช่น <code>2024-11-15T14:30:25.120+07:00</code>)</strong> ก่อนนำไปวิเคราะห์</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-5-วงจรการเก็บรักษาและทำลายล็อก-log-retention-lifecycle">1.5 วงจรการเก็บรักษาและทำลายล็อก (Log Retention & Lifecycle)</h3>
+
+<div class="widget-box" id="widget-11-1">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE LEARNING 11.1</div>
+    <div class="widget-title">Legal Log Retention & Compliance Calculator (เครื่องมือคำนวณและประเมินความสอดคล้องตามกฎหมาย)</div>
+  </div>
+  <p class="widget-intro">
+    เครื่องมือนี้จำลองการประเมินความสอดคล้องของนโยบายการจัดเก็บบันทึกล็อกตาม <strong>พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560 มาตรา 26</strong> และประกาศกระทรวงดีอี พ.ศ. 2564 ให้นักศึกษาทดลองเลือกแหล่งข้อมูล จำนวนวันจัดเก็บ และสถาปัตยกรรมพื้นที่จัดเก็บเพื่อดูผลการประเมินทางวิชาชีพ
+  </p>
+
+  <div class="calc-grid">
+    <div class="calc-inputs-card">
+      <div class="form-group-compact">
+        <label for="w1-source-type">หมวดหมู่ของแหล่งล็อก (Log Category):</label>
+        <select id="w1-source-type" onchange="runRetentionCalc()">
+          <option value="net_traffic">ข้อมูลจราจรเครือข่าย (Firewall / VPN / Proxy)</option>
+          <option value="auth_idp">ข้อมูลการยืนยันตัวตน (Active Directory / IdP)</option>
+          <option value="dns_dhcp" selected>ข้อมูลจราจรระบบ DNS และ DHCP</option>
+          <option value="db_audit">ข้อมูลการเข้าถึงฐานข้อมูล (Database Audit Trail)</option>
+          <option value="web_access">บันทึกเว็บเซิร์ฟเวอร์ (Web Server Access Logs)</option>
+        </select>
+      </div>
+
+      <div class="form-group-compact">
+        <label for="w1-days-slider">ระยะเวลาจัดเก็บจริง (Retention Days): <span id="w1-days-val" style="color:var(--primary); font-weight:700;">7 วัน</span></label>
+        <input type="range" id="w1-days-slider" min="1" max="730" value="7" oninput="updateRetentionSlider(this.value)">
+        <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-dim); margin-top:0.2rem;">
+          <span>1 วัน</span>
+          <span>90 วัน (เกณฑ์ ม.26)</span>
+          <span>365 วัน (1 ปี)</span>
+          <span>730 วัน (2 ปี)</span>
+        </div>
+      </div>
+
+      <div class="form-group-compact">
+        <label>สถาปัตยกรรมการจัดเก็บ (Storage Architecture):</label>
+        <div class="radio-group-vertical">
+          <label class="radio-label">
+            <input type="radio" name="w1-arch" value="local" checked onchange="runRetentionCalc()">
+            <span>จัดเก็บบนเครื่องเซิร์ฟเวอร์เฉพาะที่ (Local Disk Only)</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="w1-arch" value="siem_hot" onchange="runRetentionCalc()">
+            <span>ส่งเข้าสู่ระบบ SIEM ส่วนกลาง (Centralized SIEM Hot Storage)</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="w1-arch" value="siem_worm" onchange="runRetentionCalc()">
+            <span>SIEM ส่วนกลาง + คลังข้อมูลเย็นแบบอ่านอย่างเดียว (WORM / Immutable Archive)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group-compact">
+        <label>มาตรการคุ้มครองความถูกต้องแท้จริง (Integrity Controls):</label>
+        <div style="display:flex; flex-direction:column; gap:0.35rem;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="w1-chk-ntp" onchange="runRetentionCalc()">
+            <span>ซิงก์เวลากับ NTP Server กลาง (Stratum 1 หรือ 2)</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="w1-chk-hash" onchange="runRetentionCalc()">
+            <span>มีการคำนวณ Cryptographic Hash (SHA-256) ป้องกันการแก้ไข</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="w1-chk-sod" onchange="runRetentionCalc()">
+            <span>Separation of Duties (ห้ามผู้ดูแลเซิร์ฟเวอร์ลบ/แก้ไขล็อกของตนเอง)</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-result-card" id="w1-result-display">
+      <!-- Live Output via JS -->
+    </div>
+  </div>
+</div>
+
+<ul class="content-list">
+<li><strong>ข้อกำหนดตามกฎหมายและมาตรฐานสากล:</strong></li>
+<li><strong>พ.ร.บ.คอมพิวเตอร์ฯ มาตรา 26:</strong> ต้องเก็บรักษาข้อมูลจราจรไม่น้อยกว่า <strong>90 วัน</strong> นับแต่วันที่ข้อมูลนั้นเข้าสู่ระบบคอมพิวเตอร์ และในกรณีจำเป็นเฉพาะราย พนักงานเจ้าหน้าที่มีอำนาจสั่งให้เก็บรักษาไว้เกิน 90 วันแต่ไม่เกิน <strong>2 ปี</strong> ได้</li>
+<li><strong>ISO/IEC 27001 (Control A.8.15):</strong> ต้องเก็บรักษาตามข้อกำหนดของธุรกิจและกฎหมายที่เกี่ยวข้อง</li>
+<li><strong>PCI-DSS:</strong> กำหนดให้เก็บล็อกที่มีผลต่อบัตรเครดิตไว้อย่างน้อย <strong>1 ปี</strong> โดยต้องสามารถนำกลับมาวิเคราะห์ได้ทันที (Online/Hot) อย่างน้อย 3 เดือน</li>
+<li><strong>สถาปัตยกรรมการจัดเก็บแบ่งตามลำดับชั้น (Tiered Storage Architecture):</strong></li>
+<li><strong>Hot Storage (0–30 วัน):</strong> จัดเก็บบน SSD/NVMe ประสิทธิภาพสูงเพื่อการค้นหาและ Correlation ทันทีบน SIEM</li>
+<li><strong>Warm Storage (31–90 วัน):</strong> จัดเก็บบน HDD ประสิทธิภาพปานกลาง ค้นหาได้รวดเร็วพอสมควร</li>
+<li><strong>Cold / Archive Storage (91–365+ วัน):</strong> บีบอัดและเข้ารหัส จัดเก็บบน Cloud Object Storage (เช่น S3 Glacier หรือ Azure Archive) เพื่อตอบสนองข้อกำหนดกฎหมาย</li>
+<li><strong>Access Control & Secure Disposal:</strong> ผู้ดูแลระบบปฏิบัติการ (SysAdmin) หรือผู้ดูแลฐานข้อมูล (DBA) <strong>ต้องไม่มีสิทธิ์ในการลบ แก้ไข หรือทำลายล็อกที่ตนเองเป็นผู้กระทำ (Separation of Duties)</strong> และเมื่อครบกำหนดระยะเวลาจัดเก็บ ต้องมีกระบวนการทำลายข้อมูลอย่างปลอดภัย (Cryptographic Erasure / Secure Wipe)</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-6-ความถูกต้องครบถ้วนและบูรณภาพของล็อก-log-integrity-reliability">1.6 ความถูกต้องครบถ้วนและบูรณภาพของล็อก (Log Integrity & Reliability)</h3>
+<p class="content-paragraph">ผู้ตรวจสอบต้องประเมินว่าล็อกที่เก็บรักษานั้นได้รับการคุ้มครองมิให้ถูกดัดแปลงแก้ไข (Tamper-Resistant):</p>
+<ul class="content-list">
+<li><strong>Cryptographic Hashing:</strong> ไฟล์ล็อกที่ถูก Archive หรือส่งออก ต้องมีการคำนวณค่าแฮชทางคณิตศาสตร์ (SHA-256) และบันทึกค่าไว้ในระบบที่ปลอดภัย</li>
+<li><strong>Write-Once-Read-Many (WORM):</strong> การจัดเก็บบันทึกบนพื้นที่จัดเก็บที่ตั้งค่าห้ามลบและห้ามแก้ไข (Immutable Storage เช่น S3 Object Lock ในโหมด Compliance)</li>
+<li><strong>Centralized Log Collection:</strong> ล็อกต้องถูกส่งออกจากเครื่องแม่ข่ายไปยังระบบจัดเก็บส่วนกลาง (Central SIEM / Syslog) แบบ Real-time ทันที เพื่อป้องกันกรณีที่ผู้โจมตีเจาะระบบสำเร็จแล้วสั่งลบไฟล์ล็อกในเครื่อง Local (<code>wevtutil cl</code> บน Windows หรือ <code>rm /var/log/*</code> บน Linux)</li>
+<li><strong>Log Forwarding Failure & Gap Detection:</strong> ระบบต้องมีกลไกตรวจจับการหยุดชะงักของการส่งล็อก (Heartbeat Monitoring) หากเซิร์ฟเวอร์ใดหยุดส่งล็อกเกิน 15 นาที ต้องแจ้งเตือนเจ้าหน้าที่ทันที</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-2-ระบบ-siem-การตรวจจับ-และการสร้างเส้นเวลา-siem-detection-timeline-analysis">
+            <h2 class="section-heading">ส่วนที่ 2: ระบบ SIEM, การตรวจจับ และการสร้างเส้นเวลา (SIEM, Detection & Timeline Analysis)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="2-1-ท่อส่งข้อมูลล็อก-6-ขั้นตอน-log-collection-pipeline">2.1 ท่อส่งข้อมูลล็อก 6 ขั้นตอน (Log Collection Pipeline)</h3>
+<p class="content-paragraph">ระบบ <strong>SIEM (Security Information and Event Management)</strong> ทำหน้าที่เป็นสมองกลในการรวบรวมและวิเคราะห์ข้อมูลผ่าน 6 ขั้นตอน:</p>
+
+<div class="figure-box" id="figure-11-4">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 11.4</div>
+    <div class="figure-title">6 ขั้นตอนของ Log Processing Pipeline ในระบบ SIEM</div>
+  </div>
+  <div class="pipeline-stepper-visual">
+    <div class="pipeline-step-node">
+      <div class="pipe-num">1</div>
+      <div class="pipe-title">Collection (รวบรวม)</div>
+      <div class="pipe-desc">รับข้อมูลดิบจาก Winlogbeat, Syslog (UDP 514 / TLS 6514), REST API, Cloud Connectors</div>
+      <div class="pipe-tech">Agents & Forwarders</div>
+    </div>
+    <div class="pipe-arrow">➜</div>
+
+    <div class="pipeline-step-node">
+      <div class="pipe-num">2</div>
+      <div class="pipe-title">Parsing (สกัดโครงสร้าง)</div>
+      <div class="pipe-desc">ใช้ Grok Patterns, Regex, หรือ JSON parser ตัดข้อความ Unstructured ออกเป็น Key-Value</div>
+      <div class="pipe-tech">Logstash / Ingest Node</div>
+    </div>
+    <div class="pipe-arrow">➜</div>
+
+    <div class="pipeline-step-node">
+      <div class="pipe-num">3</div>
+      <div class="pipe-title">Normalization (ปรับมาตรฐาน)</div>
+      <div class="pipe-desc">แปลงชื่อฟิลด์จากอุปกรณ์ต่างยี่ห้อให้เป็นมาตรฐานกลางเดียวกัน (ECS / CEF / OpenTelemetry)</div>
+      <div class="pipe-tech">Schema Mapping</div>
+    </div>
+    <div class="pipe-arrow">➜</div>
+
+    <div class="pipeline-step-node">
+      <div class="pipe-num">4</div>
+      <div class="pipe-title">Enrichment (เพิ่มบริบท)</div>
+      <div class="pipe-desc">เติมข้อมูลพิกัดทางภูมิศาสตร์ (Geo-IP), ชื่อ ISP, บัญชีผู้ใช้, ข้อมูล Threat Intel IOC, และ Asset Tier</div>
+      <div class="pipe-tech">Contextual Metadata</div>
+    </div>
+    <div class="pipe-arrow">➜</div>
+
+    <div class="pipeline-step-node">
+      <div class="pipe-num">5</div>
+      <div class="pipe-title">Indexing (ทำดัชนี)</div>
+      <div class="pipe-desc">สร้าง Inverted Index จัดเก็บลงฐานข้อมูลคลัสเตอร์เพื่อรองรับการสืบค้นความเร็วสูงในเสี้ยววินาที</div>
+      <div class="pipe-tech">Elasticsearch / Lucene</div>
+    </div>
+    <div class="pipe-arrow">➜</div>
+
+    <div class="pipeline-step-node highlight-stage">
+      <div class="pipe-num">6</div>
+      <div class="pipe-title">Correlation (เชื่อมโยงเหตุการณ์)</div>
+      <div class="pipe-desc">ประมวลผลตรรกะกฎตรวจจับข้ามระบบ เพื่อแจ้งเตือนภัยคุกคามแบบ Real-time และสร้าง Incident Case</div>
+      <div class="pipe-tech">SIEM Detection Engine</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 11.4:</strong> วงจรการไหลของข้อมูลล็อกตั้งแต่จุดกำเนิดจนถึงการประมวลผลกฎตรวจจับภัยคุกคามในระบบ SIEM
+  </div>
+</div>
+
+
+<div class="widget-box" id="widget-11-2">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE LEARNING 11.2</div>
+    <div class="widget-title">SIEM Log Processing Pipeline Simulator (เครื่องมือจำลองการไหลและแปรรูปข้อมูลล็อก 6 ขั้นตอน)</div>
+  </div>
+  <p class="widget-intro">
+    ทดลองส่งระเบียนล็อกดิบ (Raw Log) เข้าสู่ท่อประมวลผลของระบบ SIEM เพื่อสังเกตการแปลงสภาพข้อมูลตั้งแต่การ Ingest, Parse, Normalize, Enrich, Index จนถึงการ Correlation กฎตรวจจับ
+  </p>
+
+  <div class="pipeline-sim-wrapper">
+    <div class="pipeline-selector-bar">
+      <label for="w2-sample-select"><strong>เลือกระเบียนล็อกตัวอย่าง:</strong></label>
+      <select id="w2-sample-select" onchange="loadPipelineSample()">
+        <option value="vpn">Log 1: VPN Gateway Authentication (184.22.109.45 / vendor_consultant)</option>
+        <option value="db">Log 2: Oracle Database Grade Modification (UPDATE STUDENT_GRADE by SYS)</option>
+        <option value="fw_exfil">Log 3: Core Firewall High-Volume Outbound (803 MB Exfiltration to 103.20.120.88)</option>
+      </select>
+      <button class="pipe-ctrl-btn" onclick="stepPipelineNext()">▶ ขั้นตอนถัดไป (Step Forward)</button>
+      <button class="pipe-ctrl-btn secondary" onclick="resetPipelineSim()">↺ รีเซ็ต (Reset)</button>
+    </div>
+
+    <div class="pipe-progress-nodes">
+      <div class="pipe-node-step active" id="pnode-1" onclick="jumpPipelineStage(1)">1. Ingestion</div>
+      <div class="pipe-node-step" id="pnode-2" onclick="jumpPipelineStage(2)">2. Parsing</div>
+      <div class="pipe-node-step" id="pnode-3" onclick="jumpPipelineStage(3)">3. Normalization</div>
+      <div class="pipe-node-step" id="pnode-4" onclick="jumpPipelineStage(4)">4. Enrichment</div>
+      <div class="pipe-node-step" id="pnode-5" onclick="jumpPipelineStage(5)">5. Indexing</div>
+      <div class="pipe-node-step" id="pnode-6" onclick="jumpPipelineStage(6)">6. Correlation</div>
+    </div>
+
+    <div class="pipe-stage-inspector" id="pipe-inspector-card">
+      <!-- Rendered via JS -->
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-2-กฎการตรวจจับสำคัญ-6-รูปแบบ-6-critical-monitoring-use-cases">2.2 กฎการตรวจจับสำคัญ 6 รูปแบบ (6 Critical Monitoring Use Cases)</h3>
+
+<div class="widget-box" id="widget-11-4">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE LEARNING 11.4</div>
+    <div class="widget-title">SOC Alert Correlation & Detection Rule Evaluator (เครื่องมือทดสอบตรรกะกฎตรวจจับในศูนย์ SOC)</div>
+  </div>
+  <p class="widget-intro">
+    ทำไมในกรณีศึกษาจริงแฮกเกอร์ถึงแก้เกรดและขโมยข้อมูล 803 MB ได้โดยศูนย์ SOC ไม่รู้ตัวเลย? เครื่องมือนี้ให้นักศึกษาทดสอบตรรกะของกฎตรวจจับ 5 รูปแบบกับชุดเหตุการณ์โจมตี เพื่อเปรียบเทียบระหว่าง <em>สถานะจริงของมหาวิทยาลัย (Zero Alert Triggered)</em> กับ <em>ระบบ SOC ที่มีประสิทธิผล</em>
+  </p>
+
+  <div class="soc-evaluator-wrapper">
+    <div class="soc-rules-config-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+        <strong>กฎตรวจจับ Correlation Rules ที่เปิดใช้งาน:</strong>
+        <div style="display:flex; gap:0.4rem;">
+          <button class="matrix-filter-btn" onclick="loadBaselineUniRules()">โหลดคอนฟิกเดิมมหาวิทยาลัย (กฎปิดหมด)</button>
+          <button class="matrix-filter-btn active" onclick="loadHardenedRules()">เปิดกฎตามมาตรฐานสากล (Hardened)</button>
+        </div>
+      </div>
+
+      <div class="rules-checkbox-list">
+        <label class="rule-chk-item">
+          <input type="checkbox" id="rule-vpn-geo" onchange="runSocRuleEval()">
+          <div class="rule-chk-info">
+            <div class="rule-chk-title">Rule 01: Off-Hours VPN Login from Foreign / Untrusted IP</div>
+            <div class="rule-chk-desc">ตรวจจับเมื่อมีการล็อกอิน VPN นอกเวลาทำการ (หลัง 22:00 น.) จาก IP ต่างแดนหรือไม่มีประวัติการใช้งาน</div>
+            <span class="mitre-tag">MITRE T1078 (Valid Accounts)</span>
+          </div>
+        </label>
+
+        <label class="rule-chk-item">
+          <input type="checkbox" id="rule-rdp-hop" onchange="runSocRuleEval()">
+          <div class="rule-chk-info">
+            <div class="rule-chk-title">Rule 02: VPN Pool Direct RDP to Internal Production Server</div>
+            <div class="rule-chk-desc">ตรวจจับเมื่อ Client ในวง VPN วิ่งเปิดเซสชัน Remote Desktop (Port 3389) ตรงเข้าหาเซิร์ฟเวอร์ผลิตโดยไม่ผ่าน Bastion Host</div>
+            <span class="mitre-tag">MITRE T1021.001 (Remote Desktop Protocol)</span>
+          </div>
+        </label>
+
+        <label class="rule-chk-item">
+          <input type="checkbox" id="rule-db-sysdba" onchange="runSocRuleEval()">
+          <div class="rule-chk-info">
+            <div class="rule-chk-title">Rule 03: Direct Database Connection with SYSDBA / High Privilege</div>
+            <div class="rule-chk-desc">ตรวจจับเมื่อมีการเข้าถึงฐานข้อมูล Oracle เป็นสิทธิ์ระดับสูงสุด (SYSDBA) โดยตรงจากภายนอก Database Tier</div>
+            <span class="mitre-tag">MITRE T1068 (Privilege Escalation)</span>
+          </div>
+        </label>
+
+        <label class="rule-chk-item">
+          <input type="checkbox" id="rule-grade-update" onchange="runSocRuleEval()">
+          <div class="rule-chk-info">
+            <div class="rule-chk-title">Rule 04: Direct DML Modification on Critical Table (STUDENT_GRADE)</div>
+            <div class="rule-chk-desc">ตรวจจับเมื่อมีคำสั่ง UPDATE/DELETE ตารางเกรดหรือการเงินผ่าน SQL Client ตรงโดยไม่ได้ผ่าน Web Application API</div>
+            <span class="mitre-tag">MITRE T1565.001 (Stored Data Manipulation)</span>
+          </div>
+        </label>
+
+        <label class="rule-chk-item">
+          <input type="checkbox" id="rule-exfil-spike" onchange="runSocRuleEval()">
+          <div class="rule-chk-info">
+            <div class="rule-chk-title">Rule 05: Anomaly Outbound Data Exfiltration (>500 MB Outbound)</div>
+            <div class="rule-chk-desc">ตรวจจับเมื่อโฮสต์ภายในเครือข่ายส่งข้อมูลออกสู่ภายนอกปริมาณมหาศาลผิดปกติในเซสชันเดียว</div>
+            <span class="mitre-tag">MITRE T1048 (Exfiltration Over Alternative Protocol)</span>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="soc-eval-output-card" id="soc-eval-results">
+      <!-- Live Evaluation Output via JS -->
+    </div>
+  </div>
+</div>
+
+<p class="content-paragraph">ผู้ตรวจสอบต้องสอบทานว่าระบบ SIEM มีการกำหนดกฎการตรวจจับ (Detection Rules) ครอบคลุมพฤติกรรมเสี่ยงสำคัญหรือไม่:</p>
+<ol class="content-list">
+<li><strong>Failed Login Anomaly:</strong> ตรวจจับเมื่อมีล็อกอินล้มเหลวติดต่อกันเกิน 10 ครั้งใน 5 นาทีจาก IP เดียวกัน ตามด้วยล็อกอินสำเร็จ 1 ครั้ง (Brute Force / Credential Stuffing)</li>
+<li><strong>Privilege Escalation:</strong> ตรวจจับเมื่อผู้ใช้ทั่วไปถูกเพิ่มเข้ากลุ่ม Domain Admins หรือมีการรันคำสั่ง <code>sudo su</code> นอกเวลาทำการ</li>
+<li><strong>New Administrator Account Created:</strong> ตรวจจับเมื่อมีการสร้างบัญชีผู้ใช้ใหม่ที่มีสิทธิ์ระดับ Admin โดยไม่มีการเปิด Ticket การเปลี่ยนแปลงรองรับ</li>
+<li><strong>Security Tool Tampering / Disabled:</strong> ตรวจจับเมื่อเซอร์วิสของ EDR, Antivirus หรือ Windows Defender Firewall ถูกปิดกั้นหรือหยุดทำงาน (Event ID 7036 / 1116)</li>
+<li><strong>Impossible Travel / Suspicious Remote Access:</strong> ตรวจจับเมื่อบัญชีเดียวกันล็อกอินผ่าน VPN จากกรุงเทพฯ และอีก 30 นาทีต่อมาล็อกอินจากรัสเซีย</li>
+<li><strong>Unusual Outbound Data Transfer:</strong> ตรวจจับเมื่อเซิร์ฟเวอร์ฐานข้อมูลภายในส่งข้อมูลออกสู่ IP ภายนอกปริมาณมหาศาล (เช่น เกิน 500 MB) ผ่านพอร์ตแปลกปลอม (Data Exfiltration)</li>
+</ol>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-3-การบริหารจัดการการแจ้งเตือนในศูนย์-soc-alert-management-triage">2.3 การบริหารจัดการการแจ้งเตือนในศูนย์ SOC (Alert Management & Triage)</h3>
+
+<div class="figure-box" id="figure-11-5">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 11.5</div>
+    <div class="figure-title">วงจรบริหารจัดการการแจ้งเตือนในศูนย์เฝ้าระวัง SOC (SOC Alert Management Lifecycle)</div>
+  </div>
+  <div class="soc-alert-cycle-grid">
+    <div class="soc-phase-card p1">
+      <div class="soc-phase-badge">STAGE 1 // 15 MIN SLA</div>
+      <div class="soc-phase-title">1. Triage (การคัดกรองเบื้องต้น)</div>
+      <div class="soc-phase-body">
+        <ul>
+          <li><strong>Tier 1 SOC Analyst:</strong> วิเคราะห์คัดกรองเบื้องต้นภายในกรอบ SLA 15 นาที</li>
+          <li><strong>แยกแยะผลลัพธ์:</strong> ตรวจสอบว่าเป็น <em>True Positive</em> (ภัยคุกคามจริง) หรือ <em>False Positive</em> (สัญญาณลวง)</li>
+          <li><strong>รวบรวมหลักฐานแวดล้อม:</strong> ตรวจสอบ IP Reputation, พฤติกรรมผู้ใช้ย้อนหลัง 24 ชม.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="soc-phase-card p2">
+      <div class="soc-phase-badge">STAGE 2 // SEVERITY MATRIX</div>
+      <div class="soc-phase-title">2. Severity Level (จำแนกระดับความรุนแรง)</div>
+      <div class="soc-phase-body">
+        <ul>
+          <li><strong>Critical:</strong> ภัยคุกคามกระทบต่อระบบสำคัญยิ่งยวด เช่น โดนเจาะ DB หรือ Ransomware ลุกลาม</li>
+          <li><strong>High:</strong> มีการเข้าถึงสิทธิ์ระดับสูงผิดปกติ หรือพบการส่งข้อมูลออกนอกปริมาณมาก</li>
+          <li><strong>Medium:</strong> มีการยิง Exploit โจมตีแต่ไฟร์วอลล์หรือ WAF ยังบล็อกได้</li>
+          <li><strong>Low / Informational:</strong> ล็อกอินผิดพลาดทั่วไปหรือพอร์ตสแกนจากภายนอก</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="soc-phase-card p3">
+      <div class="soc-phase-badge">STAGE 3 // HANDOFF</div>
+      <div class="soc-phase-title">3. Escalation (การส่งต่อและยกระดับ)</div>
+      <div class="soc-phase-body">
+        <ul>
+          <li><strong>Tier 2 & Threat Hunter:</strong> รับเคสที่ยืนยันว่าเป็นภัยคุกคามจริงเพื่อวิเคราะห์เชิงลึก (Deep Dive)</li>
+          <li><strong>Incident Commander:</strong> เข้าควบคุมสถานการณ์เมื่อเข้าข่ายวิกฤตความมั่นคงปลอดภัย</li>
+          <li><strong>Escalation Matrix:</strong> กำหนดผู้รับผิดชอบและช่องทางแจ้งเตือนฉุกเฉินตามลำดับสายงาน</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="soc-phase-card p4">
+      <div class="soc-phase-badge">STAGE 4 // AUDIT PROOF</div>
+      <div class="soc-phase-title">4. Closure Record (การปิดเคสและบันทึกประวัติ)</div>
+      <div class="soc-phase-body">
+        <ul>
+          <li><strong>ห้ามปิดเคสลอยๆ:</strong> เจ้าหน้าที่ต้องบันทึก Root Cause และการกระทำแก้ไขประกอบทุกครั้ง</li>
+          <li><strong>แนบหลักฐานใน Ticket:</strong> แนบ Raw Log, ภาพจับหน้าจอ, และผลการวิเคราะห์ในระบบ ITSM</li>
+          <li><strong>Post-Incident Review:</strong> ปรับจูนกฎลด False Positive หรือเพิ่ม Use Case ใหม่</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 11.5:</strong> 4 ขั้นตอนมาตรฐานในการบริหารจัดการ Alert ภายในศูนย์ SOC ตั้งแต่การคัดกรองจนถึงการบันทึกปิดเคส
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-4-ศาสตร์แห่งการสร้างเส้นเวลาของเหตุการณ์-incident-timeline-reconstruction">2.4 ศาสตร์แห่งการสร้างเส้นเวลาของเหตุการณ์ (Incident Timeline Reconstruction)</h3>
+<p class="content-paragraph">เมื่อเกิดเหตุการณ์ความมั่นคงปลอดภัย ผู้ตรวจสอบและผู้เชี่ยวชาญต้องนำล็อกที่กระจัดกระจายมาร้อยเรียงเข้าด้วยกันเพื่อสร้าง <strong>เส้นเวลาของเหตุการณ์ (Timeline)</strong>:</p>
+<h4 class="sub-subsection-heading" id="4-เสาหลักในการเชื่อมโยงข้อมูล-the-4-correlation-pivots">4 เสาหลักในการเชื่อมโยงข้อมูล (The 4 Correlation Pivots):</h4>
+<ol class="content-list">
+<li><strong>User Identity Pivot:</strong> ติดตามพฤติกรรมของบัญชีผู้ใช้คนเดียวกันข้ามระบบต่าง ๆ (เช่น จาก VPN สู่ Web สู่ Database)</li>
+<li><strong>IP Address Pivot:</strong> ติดตามความเคลื่อนไหวของ IP เดียวกันที่วิ่งผ่านไฟร์วอลล์ สวิตช์ และเซิร์ฟเวอร์</li>
+<li><strong>Host / Machine Pivot:</strong> ตรวจสอบเหตุการณ์ทั้งหมดที่เกิดขึ้นบนเครื่องแม่ข่ายเป้าหมายเครื่องใดเครื่องหนึ่ง</li>
+<li><strong>Session ID Pivot:</strong> ติดตามกิจกรรมทั้งหมดที่เกิดขึ้นภายใต้รหัสการเชื่อมต่อเดียวกัน</li>
+</ol>
+<h4 class="sub-subsection-heading" id="กฎเหล็กในการสร้าง-timeline">กฎเหล็กในการสร้าง Timeline:</h4>
+<ul class="content-list">
+<li><strong>Chronological Order:</strong> เรียงลำดับเหตุการณ์ตามวันเวลาอย่างแม่นยำ (แปลงทุกแหล่งให้เป็น Timezone เดียวกันก่อนเสมอ)</li>
+<li><strong>Highlighting Evidence Gaps:</strong> ระบุช่วงเวลาที่ข้อมูลขาดหายไปอย่างชัดเจน เช่น "ไม่มีข้อมูลล็อกไฟร์วอลล์ระหว่างเวลา 02:15 ถึง 02:45 น. เนื่องจากลิงก์สื่อสารขาดหาย"</li>
+<li><strong>Fact vs. Assumption Separation:</strong> ต้องแยกแยะให้ชัดเจนว่าสิ่งใดคือ <strong>"ข้อเท็จจริง (Fact)"</strong> ที่มีล็อกยืนยัน และสิ่งใดคือ <strong>"ข้อสันนิษฐาน (Assumption)"</strong> ของผู้ตรวจ</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-5-กรอบการประเมิน-5-มิติของผู้ตรวจสอบ-the-auditor-s-perspective-on-monitoring">2.5 กรอบการประเมิน 5 มิติของผู้ตรวจสอบ (The Auditor's Perspective on Monitoring)</h3>
+<p class="content-paragraph">ในการเข้าตรวจประเมินศูนย์ SOC และระบบ Monitoring ผู้ตรวจสอบต้องตั้งคำถามเชิงวิชาชีพ <strong>5 มิติหลัก</strong>:</p>
+
+<div class="figure-box" id="figure-11-6">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 11.6</div>
+    <div class="figure-title">5 มิติการตรวจประเมินระบบ Monitoring ของผู้ตรวจสอบ (Auditor's 5 Dimensions)</div>
+  </div>
+  <div class="audit-dim-grid">
+    <div class="audit-dim-card">
+      <div class="dim-num">D1</div>
+      <div class="dim-title">Log Source Definition</div>
+      <div class="dim-sub">ความชัดเจนของขอบเขตแหล่งล็อก</div>
+      <p>มีเอกสารกำหนดแหล่งล็อกที่เป็นลายลักษณ์อักษรหรือไม่? มีการทบทวนรายชื่ออุปกรณ์และระบบที่ต้องส่งล็อกเข้าสู่ระบบกลางอย่างน้อยปีละหนึ่งครั้งหรือไม่?</p>
+      <div class="dim-audit-check">📌 ตรวจสอบ: เอกสาร Log Management Policy & Architecture Matrix</div>
+    </div>
+
+    <div class="audit-dim-card">
+      <div class="dim-num">D2</div>
+      <div class="dim-title">Coverage Gap Analysis</div>
+      <div class="dim-sub">ความครอบคลุมและจุดบอดของระบบ</div>
+      <p>ระบบรวบรวมล็อกครอบคลุมสินทรัพย์วิกฤต (Critical Assets) ครบถ้วนหรือไม่? ยังมีเซิร์ฟเวอร์ฐานข้อมูลหรืออุปกรณ์เน็ตเวิร์กใดที่มีสถานะ Silent หรือหลุดจากการเฝ้าระวัง?</p>
+      <div class="dim-audit-check">📌 ตรวจสอบ: สุ่มเปรียบเทียบ CMDB กับ Active Agents ใน SIEM</div>
+    </div>
+
+    <div class="audit-dim-card">
+      <div class="dim-num">D3</div>
+      <div class="dim-title">Alert Review & Fatigue Check</div>
+      <div class="dim-sub">การเฝ้าระวังจริงและภาวะอ่อนล้า</div>
+      <p>มีเจ้าหน้าที่ทบทวนการแจ้งเตือนตลอด 24x7 ตามข้อตกลงบริการหรือไม่? มีปัญหา Alert สะสมตกค้างจนเจ้าหน้าที่กดปิดทิ้งโดยไม่ตรวจสอบ (Alert Fatigue) หรือไม่?</p>
+      <div class="dim-audit-check">📌 ตรวจสอบ: Ticket Queue, Alert Count vs Closed Ratio, SLA Time</div>
+    </div>
+
+    <div class="audit-dim-card">
+      <div class="dim-num">D4</div>
+      <div class="dim-title">Response Proof & Tickets</div>
+      <div class="dim-sub">หลักฐานเชิงประจักษ์ของการตอบสนอง</div>
+      <p>เมื่อเกิดการแจ้งเตือนภัยคุกคาม มีการเปิด Ticket ในระบบบริหารจัดการเหตุการณ์หรือไม่? มีการตอบสนองและดำเนินการตามขั้นตอนมาตรฐาน (SOP / Playbooks) หรือไม่?</p>
+      <div class="dim-audit-check">📌 ตรวจสอบ: สุ่มตรวจบันทึก Incident Case ในระบบ ITSM เทียบกับ SIEM Alert</div>
+    </div>
+
+    <div class="audit-dim-card">
+      <div class="dim-num">D5</div>
+      <div class="dim-title">Detection Metric & ATT&CK Map</div>
+      <div class="dim-sub">ตัวชี้วัดและการเทียบเคียงมาตรฐาน</div>
+      <p>มีการวัดผลประสิทธิภาพการตรวจจับตามกรอบสากล เช่น MITRE ATT&CK Framework หรือไม่? มีการทดสอบความพร้อมของระบบด้วยการจำลองการโจมตี (Purple Teaming) หรือไม่?</p>
+      <div class="dim-audit-check">📌 ตรวจสอบ: MITRE Heatmap Coverage Report & Rule Validation Log</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 11.6:</strong> 5 มิติหลักที่ผู้ตรวจสอบต้องใช้ตั้งคำถามและหาหลักฐานเชิงประจักษ์เมื่อตรวจประเมินระบบเฝ้าระวังความมั่นคงปลอดภัย
+  </div>
+</div>
+
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-3-กรณีศึกษาประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-continuous-scenario">
+            <h2 class="section-heading">ส่วนที่ 3: กรณีศึกษาประยุกต์ "มหาวิทยาลัยดิจิทัลสมมติ" (Core Case Study Continuous Scenario)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="3-1-ทะเบียนแหล่งล็อกของมหาวิทยาลัยดิจิทัลสมมติ-log-source-matrix-13-แหล่งหลัก">3.1 ทะเบียนแหล่งล็อกของมหาวิทยาลัยดิจิทัลสมมติ (Log Source Matrix: 13 แหล่งหลัก)</h3>
+
+<div class="figure-box" id="figure-11-11">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 11.11</div>
+    <div class="figure-title">ทะเบียนแหล่งล็อก Log Source Matrix ของมหาวิทยาลัยดิจิทัลสมมติ (SRC-01 ถึง SRC-13)</div>
+  </div>
+  <div class="matrix-interactive-wrapper">
+    <div class="matrix-filter-bar">
+      <button class="matrix-filter-btn active" onclick="filterLogMatrix('all')">ทั้งหมด (13 แหล่ง)</button>
+      <button class="matrix-filter-btn" onclick="filterLogMatrix('active')">ปกติใน SIEM (Active)</button>
+      <button class="matrix-filter-btn" onclick="filterLogMatrix('critical')">ความเสี่ยงสูง / มีข้อบกพร่อง</button>
+      <button class="matrix-filter-btn" onclick="filterLogMatrix('uncollected')">ไม่ได้ส่งเข้า SIEM</button>
+    </div>
+    <div class="matrix-cards-grid" id="log-matrix-grid">
+      <!-- Generated via JS -->
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 11.11:</strong> ทะเบียนตรวจสอบแหล่งล็อก 13 แหล่งหลัก พร้อมอัตราการส่งข้อมูล (EPS) และระดับความเสี่ยงของมหาวิทยาลัยดิจิทัลสมมติ
+  </div>
+</div>
+
+<p class="content-paragraph">คณะผู้ตรวจสอบได้เข้าตรวจสอบระบบบริหารจัดการล็อกของมหาวิทยาลัย และจัดทำตารางตรวจสอบความครอบคลุมของแหล่งล็อก (Log Source Matrix):</p>
+<div class="table-responsive"><table class="content-table"><thead><tr><th>รหัสแหล่ง</th><th>ชื่อระบบ / สินทรัพย์</th><th>ประเภทของล็อก</th><th>วิธีการส่งมอบ (Method)</th><th>อัตราการส่งข้อมูล (EPS)</th><th>สถานะความพร้อม (Status)</th><th>ประเมินความเสี่ยง</th></tr></thead><tbody><tr><td><strong>SRC-01</strong></td><td>Core Active Directory (DC01, DC02)</td><td>Windows Security Event Logs</td><td>Winlogbeat Agent</td><td>450 EPS</td><td>ปกติ (Active)</td><td>ความเสี่ยงต่ำ</td></tr><tr><td><strong>SRC-02</strong></td><td>ระบบลงทะเบียนเรียน (REG Web Server)</td><td>Nginx Access & Error Logs</td><td>Syslog over TLS</td><td>250 EPS</td><td>ปกติ (Active)</td><td>ความเสี่ยงต่ำ</td></tr><tr><td><strong>SRC-03</strong></td><td>ฐานข้อมูลลงทะเบียน (Oracle REG-DB01)</td><td>Database Audit Trail (DDL/DML)</td><td>Filebeat (Local Agent)</td><td>120 EPS</td><td>มีข้อบกพร่อง (ค้าง 7 วัน)</td><td>ความเสี่ยงสูง</td></tr><tr><td><strong>SRC-04</strong></td><td>Core Next-Gen Firewall (FW-Core)</td><td>Traffic & Threat Logs</td><td>Syslog UDP (Port 514)</td><td>1,200 EPS</td><td>ปกติ (Active)</td><td>ความเสี่ยงต่ำ</td></tr><tr><td><strong>SRC-05</strong></td><td>ระบบเครือข่ายส่วนตัวเสมือน (SSL-VPN)</td><td>Authentication & Session Logs</td><td>Syslog over TLS</td><td>80 EPS</td><td>ปกติ (Active)</td><td>ความเสี่ยงต่ำ</td></tr><tr><td><strong>SRC-06</strong></td><td>เซิร์ฟเวอร์ DNS กลาง (DNS-01, 02)</td><td>BIND Query & Response Logs</td><td>Local File Only</td><td>800 EPS</td><td><strong>ไม่ได้ส่งเข้า SIEM</strong></td><td><strong>ความเสี่ยงสูงมาก</strong></td></tr><tr><td><strong>SRC-07</strong></td><td>เซิร์ฟเวอร์ DHCP กลาง (DHCP-01)</td><td>DHCP Lease & MAC Mapping Logs</td><td>Local File Only</td><td>150 EPS</td><td><strong>ไม่ได้ส่งเข้า SIEM</strong></td><td><strong>ความเสี่ยงสูง</strong></td></tr><tr><td><strong>SRC-08</strong></td><td>ระบบป้องกันไวรัสและ EDR (CrowdStrike)</td><td>Detection & Telemetry Alerts</td><td>Cloud API Integration</td><td>60 EPS</td><td>ปกติ (Active)</td><td>ความเสี่ยงต่ำ</td></tr><tr><td><strong>SRC-09</strong></td><td>ระบบคลาวด์อีเมล (Microsoft 365)</td><td>Unified Audit Log (Sign-in)</td><td>Graph API Connector</td><td>90 EPS</td><td>ปกติ (Active)</td><td>ความเสี่ยงต่ำ</td></tr><tr><td><strong>SRC-10</strong></td><td>ระบบการเงินและบัญชี (ERP Database)</td><td>ERP Audit Trail</td><td>Database Native Log</td><td>40 EPS</td><td>ปกติ (Active)</td><td>ความเสี่ยงต่ำ</td></tr><tr><td><strong>SRC-11</strong></td><td>อุปกรณ์สวิตช์หลัก (Core Switches)</td><td>Syslog Level 4 (Warning)</td><td>Syslog UDP</td><td>50 EPS</td><td>ปกติ (Active)</td><td>ความเสี่ยงต่ำ</td></tr><tr><td><strong>SRC-12</strong></td><td>เครือข่ายไร้สายหอพักและสำนักงาน (Wi-Fi)</td><td>WLC Authentication Logs</td><td>Syslog UDP</td><td>300 EPS</td><td>มีปัญหาเวลาคลาดเคลื่อน</td><td>ความเสี่ยงปานกลาง</td></tr><tr><td><strong>SRC-13</strong></td><td>ระบบกล้องวงจรปิด CCTV</td><td>Access & Motion Logs</td><td>Local NVR Storage</td><td>10 EPS</td><td>ไม่ได้ต่อเข้าระบบกลาง</td><td>ความเสี่ยงต่ำ</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="3-2-ตารางระยะเวลาการจัดเก็บบันทึกล็อก-log-retention-matrix">3.2 ตารางระยะเวลาการจัดเก็บบันทึกล็อก (Log Retention Matrix)</h3>
+
+<div class="figure-box" id="figure-11-12">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 11.12</div>
+    <div class="figure-title">ตารางเปรียบเทียบระยะเวลาจัดเก็บบันทึกล็อก (Log Retention Compliance Matrix)</div>
+  </div>
+  <div class="retention-visual-table">
+    <div class="ret-row pass">
+      <div class="ret-cat">🌐 ข้อมูลจราจรเครือข่าย (FW, VPN, Proxy)</div>
+      <div class="ret-bars">
+        <span class="bar-hot" style="flex:3;">Hot: 30 วัน</span>
+        <span class="bar-cold" style="flex:6;">Cold: 60 วัน</span>
+      </div>
+      <div class="ret-total">รวม 90 วัน</div>
+      <div class="ret-status"><span class="badge-status pass">✅ ผ่านเกณฑ์ ม.26</span></div>
+    </div>
+
+    <div class="ret-row pass">
+      <div class="ret-cat">👤 ข้อมูลการยืนยันตัวตน (AD, IdP, M365)</div>
+      <div class="ret-bars">
+        <span class="bar-hot" style="flex:2;">Hot: 60 วัน</span>
+        <span class="bar-cold" style="flex:10;">Cold: 305 วัน</span>
+      </div>
+      <div class="ret-total">รวม 365 วัน (1 ปี)</div>
+      <div class="ret-status"><span class="badge-status pass">✅ ดีเยี่ยม ISO 27001</span></div>
+    </div>
+
+    <div class="ret-row warn">
+      <div class="ret-cat">🗄️ ข้อมูลเข้าถึงฐานข้อมูล (DB Audit Trail)</div>
+      <div class="ret-bars">
+        <span class="bar-hot" style="flex:3;">Hot: 90 วัน</span>
+        <span class="bar-cold" style="flex:9;">Cold: 275 วัน</span>
+      </div>
+      <div class="ret-total">รวม 365 วัน (1 ปี)</div>
+      <div class="ret-status"><span class="badge-status warn">⚠️ ล็อกค้าง Local</span></div>
+    </div>
+
+    <div class="ret-row fail">
+      <div class="ret-cat">📡 ข้อมูลจราจร DNS และ DHCP</div>
+      <div class="ret-bars">
+        <span class="bar-fail" style="flex:1;">Local เท่านั้น: 7 วัน</span>
+      </div>
+      <div class="ret-total" style="color:var(--rose); font-weight:700;">7 วัน เท่านั้น</div>
+      <div class="ret-status"><span class="badge-status fail">❌ ผิดกฎหมาย ม.26</span></div>
+    </div>
+
+    <div class="ret-row pass">
+      <div class="ret-cat">🖥️ บันทึกเซิร์ฟเวอร์เว็บแอปพลิเคชัน</div>
+      <div class="ret-bars">
+        <span class="bar-hot" style="flex:3;">Hot: 30 วัน</span>
+        <span class="bar-cold" style="flex:6;">Cold: 60 วัน</span>
+      </div>
+      <div class="ret-total">รวม 90 วัน</div>
+      <div class="ret-status"><span class="badge-status pass">✅ ผ่านเกณฑ์ ม.26</span></div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 11.12:</strong> การเปรียบเทียบระยะเวลาจัดเก็บจริงเทียบกับเกณฑ์ พ.ร.บ.คอมพิวเตอร์ฯ ม.26 และมาตรฐาน ISO 27001
+  </div>
+</div>
+
+<div class="table-responsive"><table class="content-table"><thead><tr><th>หมวดหมู่ข้อมูลล็อก</th><th>ระยะเวลาเก็บ Hot (SIEM Search)</th><th>ระยะเวลาเก็บ Cold / Archive</th><th>ระยะเวลารวมที่จัดเก็บ</th><th>เกณฑ์อ้างอิงทางกฎหมาย / มาตรฐาน</th><th>สถานะการปฏิบัติตามเกณฑ์</th></tr></thead><tbody><tr><td><strong>ข้อมูลจราจรเครือข่าย (Firewall / VPN / Proxy)</strong></td><td>30 วัน</td><td>60 วัน</td><td><strong>90 วัน</strong></td><td>พ.ร.บ.คอมพิวเตอร์ฯ ม.26 (ขั้นต่ำ 90 วัน)</td><td>✅ สอดคล้องตามกฎหมาย</td></tr><tr><td><strong>ข้อมูลการยืนยันตัวตน (Active Directory / IdP)</strong></td><td>60 วัน</td><td>305 วัน</td><td><strong>365 วัน (1 ปี)</strong></td><td>ISO 27001 Control A.8.15 & ประกาศ กกม.</td><td>✅ สอดคล้องตามเกณฑ์ดีเยี่ยม</td></tr><tr><td><strong>ข้อมูลการเข้าถึงฐานข้อมูล (Database Audit)</strong></td><td>90 วัน</td><td>275 วัน</td><td><strong>365 วัน (1 ปี)</strong></td><td>นโยบายความมั่นคงปลอดภัยมหาวิทยาลัย ข้อ 7.2</td><td>⚠️ ล็อกค้างใน Local เครื่อง</td></tr><tr><td><strong>ข้อมูลจราจรระบบ DNS และ DHCP</strong></td><td>0 วัน (Local 7 วัน)</td><td>0 วัน</td><td><strong>7 วัน</strong></td><td>ประกาศกระทรวงดีอี พ.ศ. 2564 ข้อ 8</td><td>❌ <strong>ไม่สอดคล้องตามกฎหมาย</strong></td></tr><tr><td><strong>บันทึกเซิร์ฟเวอร์เว็บแอปพลิเคชัน (Web Access)</strong></td><td>30 วัน</td><td>60 วัน</td><td><strong>90 วัน</strong></td><td>พ.ร.บ.คอมพิวเตอร์ฯ ม.26</td><td>✅ สอดคล้องตามกฎหมาย</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="3-3-ชุดล็อกจำลองเหตุการณ์การโจมตีระบบทะเบียน-simulated-attack-incident-logs">3.3 ชุดล็อกจำลองเหตุการณ์การโจมตีระบบทะเบียน (Simulated Attack Incident Logs)</h3>
+<p class="content-paragraph">คณะผู้ตรวจสอบได้สกัดล็อกดิบจาก 4 แหล่งข้อมูลในช่วงเวลาเกิดเหตุต้องสงสัย ระหว่างวันที่ 14 ถึง 15 สิงหาคม 2567:</p>
+
+<div class="figure-box" id="figure-11-7">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 11.7</div>
+    <div class="figure-title">ชุดล็อกดิบจำลองเหตุการณ์การโจมตีระบบทะเบียน (Raw Multi-Source Attack Logs)</div>
+  </div>
+  <div class="forensic-console">
+    <div class="console-titlebar">
+      <div class="console-dots">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+      </div>
+      <span class="console-label">FORENSIC AUDIT EVIDENCE TERMINAL // RAW_INCIDENT_DUMP_AUG14_15.LOG</span>
+    </div>
+    <div class="console-body">
+      <div class="log-entry">
+        <span class="log-src-tag vpn">[LOG-SRC-05: VPN Gateway Log]</span><br>
+        <span class="log-time">2024-08-14T23:45:12+07:00</span> <span class="log-host">vpn-gw01</span> <span class="log-event">[AUTH_SUCCESS]</span> 
+        user=<span class="log-val-user">"vendor_consultant"</span> 
+        src_ip=<span class="log-val-ip">"184.22.109.45"</span> 
+        assigned_ip=<span class="log-val-ip">"10.200.1.15"</span> 
+        method=<span class="log-val-warn">"Password-Only"</span> 
+        auth_status="OK"
+      </div>
+
+      <div class="log-entry">
+        <span class="log-src-tag fw">[LOG-SRC-04: Core Firewall Log]</span><br>
+        <span class="log-time">2024-08-14T23:48:30+07:00</span> <span class="log-host">fw-core01</span> <span class="log-event">[TRAFFIC_PERMIT]</span> 
+        src=<span class="log-val-ip">"10.200.1.15"</span> 
+        dst=<span class="log-val-ip">"192.168.10.15"</span> 
+        proto="TCP" 
+        dst_port=<span class="log-val-crit">"3389"</span> 
+        action="allow" 
+        rule=<span class="log-val-rule">"FW-02"</span> 
+        bytes_sent="14200"
+      </div>
+
+      <div class="log-entry">
+        <span class="log-src-tag win">[LOG-SRC-01: Windows Security Event - Host REG-APP-01]</span><br>
+        <span class="log-time">2024-08-14T23:50:02+07:00</span> <span class="log-host">reg-app01</span> Microsoft-Windows-Security-Auditing: 
+        <span class="log-event">[EVENT_ID_4624]</span> 
+        Logon Type: <span class="log-val-crit">10 (RemoteInteractive)</span> 
+        Account Name: <span class="log-val-user">"Administrator"</span> 
+        Source IP: <span class="log-val-ip">"10.200.1.15"</span> 
+        Workstation: "DESKTOP-EXT" 
+        Status: 0x0
+      </div>
+
+      <div class="log-entry">
+        <span class="log-src-tag ora">[LOG-SRC-03: Oracle Database Audit Trail - Host REG-DB-01]</span><br>
+        <span class="log-time">2024-08-15T00:14:22+07:00</span> <span class="log-host">reg-db01</span> OracleAudit: 
+        <span class="log-event">[SESSION_START]</span> 
+        DB_USER=<span class="log-val-crit">"SYS"</span> 
+        OS_USER="root" 
+        CLIENT_IP=<span class="log-val-ip">"192.168.10.15"</span> 
+        AUTH_TYPE=<span class="log-val-crit">"SYSDBA"</span><br>
+        <span class="log-time">2024-08-15T00:18:55+07:00</span> <span class="log-host">reg-db01</span> OracleAudit: 
+        <span class="log-event">[STATEMENT_EXEC]</span> 
+        DB_USER="SYS" 
+        SQL_TEXT=<span class="log-val-crit">"UPDATE STUDENT_GRADE SET GRADE='A', REMARK='Approved by Dean' WHERE STUDENT_ID='64010522' AND COURSE_CODE='CS301';"</span> 
+        ROWS_AFFECTED=1<br>
+        <span class="log-time">2024-08-15T00:20:10+07:00</span> <span class="log-host">reg-db01</span> OracleAudit: 
+        <span class="log-event">[STATEMENT_EXEC]</span> 
+        DB_USER="SYS" 
+        SQL_TEXT="COMMIT;"
+      </div>
+
+      <div class="log-entry">
+        <span class="log-src-tag fw">[LOG-SRC-04: Core Firewall Log - Exfiltration Event]</span><br>
+        <span class="log-time">2024-08-15T00:28:40+07:00</span> <span class="log-host">fw-core01</span> <span class="log-event">[TRAFFIC_PERMIT]</span> 
+        src=<span class="log-val-ip">"192.168.10.15"</span> 
+        dst=<span class="log-val-ip">"103.20.120.88"</span> 
+        proto="TCP" 
+        dst_port="443" 
+        action="allow" 
+        rule="Outbound_Any" 
+        bytes_sent=<span class="log-val-crit">"842150000" (803 MB)</span>
+      </div>
+
+      <div class="log-entry">
+        <span class="log-src-tag vpn">[LOG-SRC-05: VPN Gateway Log]</span><br>
+        <span class="log-time">2024-08-15T00:35:10+07:00</span> <span class="log-host">vpn-gw01</span> <span class="log-event">[SESSION_TERMINATED]</span> 
+        user=<span class="log-val-user">"vendor_consultant"</span> 
+        session_id="VPN-9921" 
+        duration="49m 58s" 
+        bytes_total="856240000"
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 11.7:</strong> ชุดบันทึกล็อกดิบ 4 แหล่งที่คณะผู้ตรวจสอบสกัดได้จากช่วงเวลาเกิดเหตุการโจมตีระบบทะเบียนมหาวิทยาลัย
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="subsection-heading" id="3-4-การสร้างเส้นเวลาของเหตุการณ์และการแยกแยะข้อเท็จจริง-timeline-analysis-table">3.4 การสร้างเส้นเวลาของเหตุการณ์และการแยกแยะข้อเท็จจริง (Timeline Analysis Table)</h3>
+<p class="content-paragraph">จากการนำล็อก 4 แหล่งข้อมูลมาร้อยเรียง คณะผู้ตรวจสอบได้สร้างตาราง Incident Timeline เพื่อแยกแยะ <strong>ข้อเท็จจริง (Facts)</strong> ออกจาก <strong>ข้อสันนิษฐาน (Assumptions)</strong>:</p>
+
+<div class="figure-box" id="figure-11-8">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 11.8</div>
+    <div class="figure-title">ตารางสร้างเส้นเวลาเหตุการณ์และการแยกแยะข้อเท็จจริง (Incident Timeline Reconstruction Table)</div>
+  </div>
+  <div class="timeline-table-card">
+    <div class="table-responsive">
+      <table class="styled-timeline-table">
+        <thead>
+          <tr>
+            <th style="width:16%;">วันที่และเวลา<br><span style="font-size:0.75rem; font-weight:normal;">(Asia/Bangkok)</span></th>
+            <th style="width:16%;">แหล่งที่มา & อุปกรณ์<br><span style="font-size:0.75rem; font-weight:normal;">(Source & Host)</span></th>
+            <th style="width:22%;">รายละเอียดกิจกรรมที่ตรวจพบ<br><span style="font-size:0.75rem; font-weight:normal;">(Observed Event)</span></th>
+            <th style="width:26%;">ข้อเท็จจริงเชิงประจักษ์ (Fact)<br><span style="font-size:0.75rem; font-weight:normal;">หลักฐานล็อกรองรับ 100%</span></th>
+            <th style="width:20%;">ข้อสันนิษฐาน (Assumption)<br><span style="font-size:0.75rem; font-weight:normal;">ต้องหาหลักฐานพิสูจน์เพิ่ม</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>14 ส.ค. 67<br>23:45:12</strong></td>
+            <td><span class="src-pill vpn">SRC-05</span><br>VPN Gateway (vpn-gw01)</td>
+            <td>บัญชี <code>vendor_consultant</code> ล็อกอินสำเร็จจาก IP <code>184.22.109.45</code> ได้รับ IP <code>10.200.1.15</code></td>
+            <td><span class="fact-tag">FACT</span> บัญชี Vendor เข้าสู่ระบบจาก IP บ้านภายนอกด้วยรหัสผ่าน (ไม่มี MFA)</td>
+            <td><span class="hypo-tag">ASSUMPTION</span> บัญชีอาจโดนขโมย หรือ Vendor ตัวจริงเป็นผู้เข้าใช้งาน</td>
+          </tr>
+          <tr>
+            <td><strong>14 ส.ค. 67<br>23:48:30</strong></td>
+            <td><span class="src-pill fw">SRC-04</span><br>Core Firewall (fw-core01)</td>
+            <td>ส่งทราฟฟิกไปยังพอร์ต RDP (3389) ของเครื่อง <code>REG-APP-01</code> (192.168.10.15)</td>
+            <td><span class="fact-tag">FACT</span> IP VPN วิ่งเข้าเซิร์ฟเวอร์ REG-APP ผ่านกฎไฟร์วอลล์ FW-02 โดยตรง</td>
+            <td><span class="hypo-tag">ASSUMPTION</span> คนร้ายตั้งใจมุ่งเป้าเซิร์ฟเวอร์แอปพลิเคชันทะเบียนเป็นการเฉพาะ</td>
+          </tr>
+          <tr>
+            <td><strong>14 ส.ค. 67<br>23:50:02</strong></td>
+            <td><span class="src-pill win">SRC-01</span><br>Windows Security (REG-APP-01)</td>
+            <td>ล็อกอิน RDP สำเร็จ (Event ID 4624 Logon Type 10) ชื่อบัญชี <code>Administrator</code></td>
+            <td><span class="fact-tag">FACT</span> บัญชี Administrator ถูกล็อกอินจาก IP <code>10.200.1.15</code> ผ่านรีโมตเดสก์ท็อป</td>
+            <td><span class="hypo-tag">ASSUMPTION</span> คนร้ายทราบรหัสแอดมินล่วงหน้า หรือทำ Pass-the-Hash / Brute Force สำเร็จ</td>
+          </tr>
+          <tr>
+            <td><strong>15 ส.ค. 67<br>00:14:22</strong></td>
+            <td><span class="src-pill ora">SRC-03</span><br>Oracle Audit (REG-DB-01)</td>
+            <td>เชื่อมต่อเข้า Oracle Database เป็นสิทธิ์ <code>SYSDBA</code> (DB_USER=SYS) จาก 192.168.10.15</td>
+            <td><span class="fact-tag">FACT</span> มีการล็อกอินเข้าฐานข้อมูลโดยตรงจากเครื่อง REG-APP-01 ด้วยสิทธิ์สูงสุด</td>
+            <td><span class="hypo-tag">ASSUMPTION</span> มีการดึงรหัสผ่าน DBA จากไฟล์ config หรือยกระดับสิทธิ์ในเครื่อง</td>
+          </tr>
+          <tr>
+            <td><strong>15 ส.ค. 67<br>00:18:55</strong></td>
+            <td><span class="src-pill ora">SRC-03</span><br>Oracle Audit (REG-DB-01)</td>
+            <td>รันคำสั่ง SQL แก้ไขเกรดนักศึกษา 64010522 วิชา CS301 เป็น 'A' และรัน COMMIT</td>
+            <td><span class="fact-tag">FACT</span> คำสั่ง UPDATE แก้ไขเกรดในตาราง STUDENT_GRADE สำเร็จและถูกบันทึกถาวร</td>
+            <td><span class="hypo-tag">ASSUMPTION</span> มีเจตนาทุจริตเปลี่ยนผลการเรียนโดยมีผู้ว่าจ้างหรือผู้สมรู้ร่วมคิด</td>
+          </tr>
+          <tr>
+            <td><strong>15 ส.ค. 67<br>00:28:40</strong></td>
+            <td><span class="src-pill fw">SRC-04</span><br>Core Firewall (fw-core01)</td>
+            <td>เครื่อง REG-APP-01 ส่งข้อมูลออกนอกไปยัง IP <code>103.20.120.88</code> พอร์ต 443 ปริมาณ 803 MB</td>
+            <td><span class="fact-tag">FACT</span> มีการส่งข้อมูลขนาด 803 MB ออกไปยัง IP ปลายทางต่างประเทศผ่านกฎ Outbound_Any</td>
+            <td><span class="hypo-tag">ASSUMPTION</span> คนร้ายลักลอบดูดไฟล์สำรองฐานข้อมูลทั้งหมด (Data Exfiltration)</td>
+          </tr>
+          <tr>
+            <td><strong>15 ส.ค. 67<br>00:35:10</strong></td>
+            <td><span class="src-pill vpn">SRC-05</span><br>VPN Gateway (vpn-gw01)</td>
+            <td>ตัดการเชื่อมต่อเซสชัน VPN หมายเลข VPN-9921 รวมเวลาเชื่อมต่อ 49 นาที 58 วินาที</td>
+            <td><span class="fact-tag">FACT</span> เซสชัน VPN สิ้นสุดลง ข้อมูลรับส่งรวมในเซสชันเท่ากับ 856,240,000 ไบต์</td>
+            <td><span class="hypo-tag">ASSUMPTION</span> สิ้นสุดปฏิบัติการโจมตี คนร้ายตัดการเชื่อมต่อเพื่อหลบหนี</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 11.8:</strong> การสังเคราะห์เส้นเวลาของเหตุการณ์ (Incident Timeline) จากหลักฐานล็อก 4 แหล่ง พร้อมการแยกแยะข้อเท็จจริงออกจากข้อสันนิษฐาน
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="subsection-heading" id="3-5-ข้อสรุป-3-ประเด็นด้านประสิทธิผลของกระบวนการ-monitoring-audit-evaluation">3.5 ข้อสรุป 3 ประเด็นด้านประสิทธิผลของกระบวนการ Monitoring (Audit Evaluation)</h3>
+<p class="content-paragraph">จากการวิเคราะห์พยานหลักฐานข้างต้น ผู้ตรวจสอบได้สรุปประสิทธิผลของกระบวนการ Monitoring ของมหาวิทยาลัยออกเป็น <strong>3 ประเด็นสำคัญ</strong>:</p>
+<ol class="content-list">
+<li><strong>ความล้มเหลวในการตรวจจับแบบ Real-time (Detection Failure):</strong> แม้ระบบจะมีการบันทึกเหตุการณ์ไว้ในแต่ละอุปกรณ์ แต่ศูนย์ SOC และระบบ SIEM ไม่มีการสร้าง Correlation Rule สำหรับตรวจจับ <em>"พฤติกรรมการล็อกอิน VPN นอกเวลาทำการ ตามด้วยการเชื่อมต่อ RDP และการเข้าถึงฐานข้อมูลด้วยสิทธิ์ SYSDBA"</em> ทำให้เหตุการณ์การทุจริตแก้ไขเกรดและการส่งข้อมูลออกนอก (Exfiltration) ขนาด 803 MB สำเร็จลุล่วงโดยไม่มีการแจ้งเตือน (Alert) เกิดขึ้นเลย</li>
+<li><strong>จุดบอดด้านการจัดเก็บข้อมูลจราจรตามกฎหมาย (Compliance Gap on DNS & DHCP Logs):</strong> มหาวิทยาลัยไม่นำเข้าล็อก DNS และ DHCP เข้าสู่ระบบ SIEM ส่วนกลาง และเก็บบันทึกไว้ในเครื่อง Local เพียง 7 วัน ซึ่งขัดต่อ <strong>พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ฯ มาตรา 26</strong> ที่กำหนดให้ต้องเก็บรักษาไว้ไม่น้อยกว่า 90 วัน</li>
+<li><strong>ขาดกลไกเฝ้าระวังความครบถ้วนของข้อมูล (Log Forwarding & Integrity Failure):</strong> ล็อกการแก้ไขฐานข้อมูล (<code>LOG-SRC-03</code>) มีปัญหาค้างอยู่ในเครื่องเซิร์ฟเวอร์ ไม่ถูกส่งเข้าสู่ระบบ SIEM กลางแบบ Real-time หากผู้โจมตีมีความชำนาญในการพิมพ์คำสั่งล้างประวัติไฟล์ในระบบปฏิบัติการ Linux ร่องรอยหลักฐานทั้งหมดจะสูญหายทันที</li>
+</ol>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="3-6-รายการหลักฐานเพิ่มเติมที่ต้องร้องขอ-additional-evidence-request-list">3.6 รายการหลักฐานเพิ่มเติมที่ต้องร้องขอ (Additional Evidence Request List)</h3>
+<p class="content-paragraph">เพื่อให้การตรวจสอบข้อเท็จจริงมีความสมบูรณ์ยิ่งขึ้น Lead Auditor ต้องร้องขอหลักฐานเพิ่มเติม 4 รายการ:</p>
+<ol class="content-list">
+<li><strong>EV-11-01:</strong> รายงานผลการสืบสวน IP Address ปลายทาง <code>103.20.120.88</code> (Whois, Threat Intelligence, และ Geolocation Report)</li>
+<li><strong>EV-11-02:</strong> บันทึกการปฏิบัติงานและสัญญาจ้างของพนักงานบริษัทคู่ค้าที่เป็นเจ้าของบัญชี <code>vendor_consultant</code></li>
+<li><strong>EV-11-03:</strong> บันทึกใบคำร้องขอสิทธิ์ (Change Ticket) ในระบบ ITSM ว่าในคืนวันที่ 14 ส.ค. 67 มีการอนุมัติให้มีการแก้ไขเกรดหรือบำรุงรักษาระบบฐานข้อมูลหรือไม่</li>
+<li><strong>EV-11-04:</strong> ผลการคำนวณค่า SHA-256 Checksum ของไฟล์ฐานข้อมูล <code>STUDENT_GRADE</code> และไฟล์ Log สำรองประจำวัน</li>
+</ol>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="3-7-กระดาษทำการตรวจสอบด้านการจัดการล็อก-audit-working-paper-wp-11-01">3.7 กระดาษทำการตรวจสอบด้านการจัดการล็อก (Audit Working Paper: WP-11-01)</h3>
+
+<div class="figure-box" id="figure-11-9">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 11.9</div>
+    <div class="figure-title">กระดาษทำการตรวจสอบด้านการจัดการล็อก (Audit Working Paper: WP-2024-REG-LOG01)</div>
+  </div>
+  <div class="working-paper-sheet">
+    <div class="wp-top-banner">
+      <div class="wp-org-title">UNIVERSITY AUDIT & ASSURANCE COMMITTEE // WORKING PAPER</div>
+      <div class="wp-official-badge">OFFICIAL AUDIT EVIDENCE</div>
+    </div>
+
+    <div class="wp-meta-grid">
+      <div class="wp-meta-item"><strong>WP Reference:</strong> <span class="wp-code">WP-2024-REG-LOG01</span></div>
+      <div class="wp-meta-item"><strong>Engagement Ref:</strong> AUD-PLAN-REG01</div>
+      <div class="wp-meta-item"><strong>System / Area:</strong> ระบบจัดเก็บล็อกและ SIEM มหาวิทยาลัย</div>
+      <div class="wp-meta-item"><strong>Audit Period:</strong> ต.ค. 2566 – ก.ย. 2567</div>
+      <div class="wp-meta-item"><strong>Test Title:</strong> การประเมินประสิทธิผลระบบจัดเก็บบันทึกเหตุการณ์และการเฝ้าระวัง (Logging)</div>
+      <div class="wp-meta-item"><strong>Date:</strong> 16–17 พฤศจิกายน 2567</div>
+    </div>
+
+    <div class="wp-section-block">
+      <div class="wp-sec-header">1. วัตถุประสงค์การตรวจ (Audit Objective):</div>
+      <p>เพื่อทดสอบว่าการจัดเก็บบันทึกข้อมูลจราจรและการเฝ้าระวังความมั่นคงปลอดภัยไซเบอร์สอดคล้องตาม พ.ร.บ.คอมพิวเตอร์ฯ มาตรา 26, ISO/IEC 27001 Controls A.8.15–A.8.17 และมีประสิทธิผลในการตรวจจับภัยคุกคามจริง</p>
+    </div>
+
+    <div class="wp-section-block">
+      <div class="wp-sec-header">2. เกณฑ์การตรวจ (Audit Criteria):</div>
+      <ul class="wp-list">
+        <li>พระราชบัญญัติว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560 (มาตรา 26: จัดเก็บไม่น้อยกว่า 90 วัน)</li>
+        <li>ประกาศกระทรวงดิจิทัลเพื่อเศรษฐกิจและสังคม เรื่อง หลักเกณฑ์การเก็บรักษาข้อมูลจราจรทางคอมพิวเตอร์ฯ พ.ศ. 2564</li>
+        <li>มาตรฐาน ISO/IEC 27001:2022 (Annex A Controls: A.8.15 Logging, A.8.16 Monitoring, A.8.17 Clock synchronization)</li>
+      </ul>
+    </div>
+
+    <div class="wp-section-block">
+      <div class="wp-sec-header">3. ขอบเขตและหลักฐานที่ใช้ (Scope & Evidence Reference):</div>
+      <ul class="wp-list">
+        <li>ระบบ SIEM กลาง (Elastic Security) และเซิร์ฟเวอร์เป้าหมาย 13 ระบบ (SRC-01 ถึง SRC-13)</li>
+        <li>เอกสารหลักฐาน: Log Source Matrix, Log Retention Matrix, และ Raw Attack Logs ประจำวันที่ 14–15 ส.ค. 2567</li>
+      </ul>
+    </div>
+
+    <div class="wp-section-block">
+      <div class="wp-sec-header">4. ขั้นตอนการตรวจสอบและผลการทดสอบ (Procedures & Detailed Results):</div>
+      <div class="wp-procedure-card">
+        <strong>1. ตรวจสอบระยะเวลาการจัดเก็บบันทึกล็อกเปรียบเทียบกับข้อกำหนดกฎหมาย:</strong><br>
+        • <em>ผลการตรวจ:</em> ระบบ DNS และ DHCP เก็บข้อมูลเพียง 7 วัน และไม่ได้ส่งเข้า SIEM ส่วนกลาง 
+        <span class="wp-res-fail">❌ ขัดต่อ พ.ร.บ.คอมพิวเตอร์ฯ ม.26 ที่บังคับเก็บไม่น้อยกว่า 90 วันอย่างชัดเจน</span>
+      </div>
+      <div class="wp-procedure-card">
+        <strong>2. ตรวจสอบการตั้งค่าเวลาและการซิงก์ NTP บนอุปกรณ์:</strong><br>
+        • <em>ผลการตรวจ:</em> อุปกรณ์ Controller เครือข่ายไร้สาย (Wi-Fi WLC) มีเวลาคลาดเคลื่อน 14 นาที ส่งผลให้ไม่สามารถเทียบเคียงเวลาในการสืบสวนคดีได้
+      </div>
+      <div class="wp-procedure-card">
+        <strong>3. ทดสอบประสิทธิผลของกฎตรวจจับ (Correlation Rules) จากเหตุการณ์จำลอง 14-15 ส.ค. 67:</strong><br>
+        • <em>ผลการตรวจ:</em> ตรวจพบเหตุการณ์ร้ายแรง (แก้เกรดด้วย SYSDBA และส่งข้อมูลออกนอก 803 MB) แต่ระบบ SIEM ไม่มีการสร้างการแจ้งเตือนใดๆ 
+        <span class="wp-res-fail">❌ Zero Alert Triggered เจ้าหน้าที่ SOC ไม่รับรู้การโจมตี</span>
+      </div>
+    </div>
+
+    <div class="wp-section-block">
+      <div class="wp-sec-header">5. การวิเคราะห์และการจัดระดับข้อค้นพบ (Analysis & Finding Classification):</div>
+      <div class="wp-finding-box legal-ncr">
+        <span class="wp-finding-badge crit">Finding 1 // ข้อบกพร่องระดับสำคัญยิ่งยวด (Major Non-Conformity: Legal NCR)</span>
+        <strong>การไม่ปฏิบัติตามกฎหมายว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560 มาตรา 26:</strong>
+        <p>การจัดเก็บบันทึกข้อมูลจราจร DNS และ DHCP เพียง 7 วัน ถือเป็นการละเมิดกฎหมายภาคบังคับ องค์กรและผู้บริหารมีความเสี่ยงรับโทษปรับทางอาญา และขาดพยานหลักฐานในการสืบสวนผู้กระทำความผิด</p>
+      </div>
+
+      <div class="wp-finding-box major-ncr">
+        <span class="wp-finding-badge major">Finding 2 // ข้อบกพร่องระดับสำคัญ (Major Non-Conformity: Major NCR)</span>
+        <strong>ความไร้ประสิทธิผลของกระบวนการเฝ้าระวังความมั่นคงปลอดภัย (Monitoring Ineffectiveness):</strong>
+        <p>ระบบขาดกฎ Correlation Rules ที่จำเป็นในการตรวจจับพฤติกรรมเสี่ยงสูง (VPN นอกเวลา + RDP + SYSDBA + Large Exfil) ส่งผลให้การโจมตีสำเร็จลุล่วงโดยที่ศูนย์ SOC ไม่มีการตอบสนอง</p>
+      </div>
+    </div>
+
+    <div class="wp-sign-footer">
+      <div class="wp-sig-block">
+        <div class="sig-line"><em>นาย พิชญ์ เจาะระบบ</em></div>
+        <div>Prepared by: พิชญ์ เจาะระบบ (Technical Auditor)</div>
+        <div class="sig-date">วันที่ 16 พฤศจิกายน 2567</div>
+      </div>
+      <div class="wp-sig-block">
+        <div class="sig-line"><em>ดร. วรเมธ ตรวจละเอียด</em></div>
+        <div>Reviewed by: ดร. วรเมธ ตรวจละเอียด (Lead Auditor)</div>
+        <div class="sig-date">วันที่ 17 พฤศจิกายน 2567</div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 11.9:</strong> ตัวอย่างกระดาษทำการตรวจสอบ (Working Paper: WP-2024-REG-LOG01) บันทึกผลการตรวจระบบล็อกและข้อค้นพบระดับ Major NCR
+  </div>
+</div>
+
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-4-กิจกรรมเชิงประยุกต์ในชั้นเรียน-active-learning-simulation">
+            <h2 class="section-heading">ส่วนที่ 4: กิจกรรมเชิงประยุกต์ในชั้นเรียน (Active Learning Simulation)</h2>
+          </section>
+        
+
+<div class="widget-box" id="widget-11-3">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE LEARNING 11.3</div>
+    <div class="widget-title">Multi-Source Incident Timeline Reconstruction Tool (เครื่องมือฝึกสร้างเส้นเวลาและแยกแยะ Fact vs Assumption)</div>
+  </div>
+  <p class="widget-intro">
+    ในภารกิจนี้ นักศึกษาได้รับมอบหมายให้เรียงลำดับเหตุการณ์การโจมตี 7 ลำดับขั้นที่สกัดได้จาก 4 อุปกรณ์ พร้อมทั้งฝึกใช้วิจารณญาณทางวิชาชีพในการแยกแยะว่าข้อความใดเป็น <strong>ข้อเท็จจริง (Fact 100% มีล็อกรองรับ)</strong> หรือเป็น <strong>ข้อสันนิษฐาน (Assumption ที่ต้องหาหลักฐานเพิ่ม)</strong>
+  </p>
+
+  <div class="timeline-builder-wrapper">
+    <div class="timeline-ctrl-bar">
+      <div class="pivot-filter-group">
+        <span style="font-size:0.84rem; font-weight:700; color:var(--text-dim);">ฟิลเตอร์เชื่อมโยง (Correlation Pivots):</span>
+        <button class="pivot-btn active" onclick="filterTimelinePivot('all')">ทั้งหมด (All)</button>
+        <button class="pivot-btn" onclick="filterTimelinePivot('user')">👤 Pivot: Identity</button>
+        <button class="pivot-btn" onclick="filterTimelinePivot('ip')">📍 Pivot: IP Hops</button>
+        <button class="pivot-btn" onclick="filterTimelinePivot('crit')">🚨 Critical Actions</button>
+      </div>
+      <div>
+        <button class="pipe-ctrl-btn secondary" onclick="autoSortTimeline()">⚡ จัดเรียงตามเวลาอัตโนมัติ</button>
+      </div>
+    </div>
+
+    <div class="timeline-events-container" id="timeline-events-list">
+      <!-- Cards rendered via JS -->
+    </div>
+
+    <div class="timeline-eval-bar" id="timeline-score-panel">
+      <!-- Live Score via JS -->
+    </div>
+  </div>
+</div>
+
+<h3 class="subsection-heading" id="กิจกรรม-the-multi-source-log-forensics-timeline-reconstruction">กิจกรรม: "The Multi-Source Log Forensics & Timeline Reconstruction"</h3>
+<ul class="content-list">
+<li><strong>ระยะเวลา:</strong> 15–20 นาที</li>
+<li><strong>สถานการณ์จำลอง:</strong> </li>
+</ul>
+<p class="content-paragraph">  อาจารย์ผู้สอนมอบชุดล็อกดิบ 4 แหล่งข้อมูล (แบบสุ่มบรรทัด ไม่เรียงลำดับเวลา) ให้นักศึกษาแต่ละกลุ่ม (4–5 คน) โดยสมมติว่าเกิดเหตุข้อมูลเกรดนักศึกษาถูกแก้ไขอย่างผิดปกติ และฝ่ายบริหารต้องการทราบความจริงภายใน 20 นาทีว่า:</p>
+<ol class="content-list">
+<li><em>คนร้ายเจาะเข้ามาทางใด?</em></li>
+<li><em>ใช้บัญชีของผู้ใดในการเข้าถึงระบบ?</em></li>
+<li><em>เหตุการณ์เกิดขึ้นเวลาใดกันแน่?</em></li>
+<li><em>มีข้อมูลรั่วไหลออกนอกมหาวิทยาลัยหรือไม่ และเป็นปริมาณเท่าใด?</em></li>
+</ol>
+<ul class="content-list">
+<li><strong>ภารกิจและการลงมือปฏิบัติของนักศึกษา:</strong></li>
+<li><strong>ขั้นตอนที่ 1:</strong> ปรับค่าเวลาให้เป็นมาตรฐานเดียวกัน (Timestamp Normalization)</li>
+<li><strong>ขั้นตอนที่ 2:</strong> กรองและจับคู่ IP Address และชื่อบัญชีข้ามล็อก 4 แหล่ง</li>
+<li><strong>ขั้นตอนที่ 3:</strong> นำเหตุการณ์มาร้อยเรียงลงในตาราง Timeline ในกระดาษทำการ</li>
+<li><strong>ขั้นตอนที่ 4:</strong> สรุปว่าระบบรักษาความปลอดภัยจุดใดที่ล้มเหลว (Failed Controls)</li>
+<li><strong>บทเรียนที่ได้รับ:</strong> นักศึกษาจะได้สัมผัสประสบการณ์จริงของ Technical Auditor ในการเปลี่ยน "ข้อมูลล็อกดิบที่ไร้ระเบียบ" ให้กลายเป็น "เส้นเวลาหลักฐานที่ทรงพลังและมีผลผูกพันทางกฎหมาย"</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-5-มุมมองวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls">
+            <h2 class="section-heading">ส่วนที่ 5: มุมมองวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives & Common Pitfalls)</h2>
+          </section>
+        
+
+<div class="figure-box" id="figure-11-10">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 11.10</div>
+    <div class="figure-title">บทสนทนาสะท้อนมุมมองวิชาชีพ: ข้อจำกัดงบประมาณ vs ข้อบังคับทางกฎหมาย</div>
+  </div>
+  <div class="dialogue-container">
+    <div class="dialogue-card auditor-card">
+      <div class="dialogue-avatar">🔍</div>
+      <div class="dialogue-bubble">
+        <div class="dialogue-role">Lead Auditor (ผู้ตรวจสอบความมั่นคงปลอดภัย)</div>
+        <p>"เราพบว่าล็อก DNS และ DHCP ไม่ได้ส่งเข้า SIEM และเก็บไว้ในเครื่อง Local แค่ 7 วัน ซึ่งขัดต่อ พ.ร.บ.คอมพิวเตอร์ฯ มาตรา 26 ที่บังคับเก็บไม่น้อยกว่า 90 วันอย่างชัดเจนครับ"</p>
+      </div>
+    </div>
+
+    <div class="dialogue-card admin-card">
+      <div class="dialogue-avatar">💻</div>
+      <div class="dialogue-bubble">
+        <div class="dialogue-role">SOC Manager / SysAdmin (ผู้ดูแลระบบ)</div>
+        <p>"ล็อกสองตัวนี้ทราฟฟิกมหาศาลมากครับ วันหนึ่งเป็นสิบล้านระเบียน สตอเรจบน SIEM เรามีจำกัด งบประมาณไม่พอขยายไลเซนส์ เลยเปิดเก็บแค่เครื่อง Local ได้แค่ 7 วันเพื่อประหยัดพื้นที่ดิสก์ครับ"</p>
+      </div>
+    </div>
+
+    <div class="dialogue-card auditor-card">
+      <div class="dialogue-avatar">🔍</div>
+      <div class="dialogue-bubble">
+        <div class="dialogue-role">Lead Auditor (ผู้ตรวจสอบความมั่นคงปลอดภัย)</div>
+        <p>"ผมเข้าใจเรื่องข้อจำกัดงบประมาณครับ แต่ในมุมมองกฎหมาย หากมีตำรวจหรือพนักงานเจ้าหน้าที่ส่งหมายขอข้อมูล IP Address ของผู้กระทำความผิดย้อนหลัง 60 วัน แล้วเราตอบไม่ได้ว่าใครถือครอง IP นั้น องค์กรและผู้บริหารจะมีความผิดทางอาญาและถูกปรับทันทีครับ ไม่จำเป็นต้องส่งเข้า SIEM Hot Storage ก็ได้ แต่ต้องบีบอัดส่งเข้า Cold Storage / WORM ให้ครบ 90 วันครับ"</p>
+      </div>
+    </div>
+
+    <div class="dialogue-card admin-card">
+      <div class="dialogue-avatar">💻</div>
+      <div class="dialogue-bubble">
+        <div class="dialogue-role">SOC Manager / SysAdmin (ผู้ดูแลระบบ)</div>
+        <p>"จริงด้วยครับ! ถ้าโดนตรวจจับ IP หลุดไปข้างนอก แล้วเราตอบไม่ได้ว่าเครื่องไหนเป็นต้นทาง ผู้บริหารเราเดือดร้อนแน่ เดี๋ยวผมจะรีบจัดทำสถาปัตยกรรม Cold Storage แยกเก็บล็อก DNS/DHCP ให้ครบ 90 วันตามคำแนะนำทันทีครับ"</p>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 11.10:</strong> บทสนทนาสะท้อนมุมมองระหว่างผู้ตรวจสอบและผู้บริหารระบบในการประนีประนอมระหว่างงบประมาณไอทีกับข้อกำหนดกฎหมาย
+  </div>
+</div>
+
+<h3 class="subsection-heading" id="4-ข้อผิดพลาดร้ายแรงของการตรวจสอบล็อก">4 ข้อผิดพลาดร้ายแรงของการตรวจสอบล็อก:</h3>
+<ol class="content-list">
+<li><strong>Assuming Logs are Complete because SIEM is Running:</strong> หลงเชื่อว่าเมื่อมีหน้าจอ Dashboard สวยงามแสดงว่าล็อกครบ ทั้งที่ไม่ได้ตรวจสอบว่ามีเซิร์ฟเวอร์ใดหลุดออกจากการส่งล็อก (Silent Log Drop)</li>
+<li><strong>Ignoring Time Synchronization (NTP Failure):</strong> สรุปผลการสืบสวนโดยไม่ได้ตรวจสอบ Clock Drift ส่งผลให้ลำดับเหตุการณ์ใน Timeline ผิดเพี้ยนไปจากความจริง</li>
+<li><strong>Overlooking Local Log Tampering:</strong> ละเลยการตรวจสอบสิทธิ์การลบล็อกของผู้ดูแลระบบ เปิดโอกาสให้ผู้มีสิทธิ์สูงสามารถลบร่องรอยความผิดของตนเองได้</li>
+<li><strong>Alert Fatigue Ignorance:</strong> ปล่อยให้ระบบสร้าง Alert วันละนับหมื่นรายการโดยไม่มีการปรับจูน (Tuning) จนเจ้าหน้าที่ SOC ไม่สามารถคัดกรองภัยคุกคามที่แท้จริงได้</li>
+</ol>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-6-แบบฝึกหัดและการบ้านประจำบทที่-11">
+            <h2 class="section-heading">ส่วนที่ 6: แบบฝึกหัดและการบ้านประจำบทที่ 11</h2>
+          </section>
+        
+<p class="content-paragraph">เพื่อเป็นส่วนหนึ่งของการจัดทำแฟ้มสะสมงาน <strong>Cybersecurity Audit Portfolio (ชิ้นงานที่ 11)</strong> ให้นักศึกษาจัดทำชุดเอกสารการตรวจสอบและวิเคราะห์ล็อกสำหรับ <strong>“มหาวิทยาลัยดิจิทัลสมมติ”</strong> ประกอบด้วย 5 ภารกิจสำคัญ:</p>
+<ol class="content-list">
+<li><strong>Log Source Matrix อย่างน้อย 12 แหล่ง:</strong></li>
+</ol>
+<ul class="content-list">
+<li>จัดทำตารางแจกแจงแหล่งล็อก ประเภทข้อมูล โปรโตคอลการส่ง และการประเมินระดับความเสี่ยง</li>
+</ul>
+<ol class="content-list">
+<li><strong>Log Retention Matrix ตามกรอบกฎหมาย:</strong></li>
+</ol>
+<ul class="content-list">
+<li>กำหนดระยะเวลาจัดเก็บ Hot, Warm, Cold Storage ให้สอดคล้องกับ พ.ร.บ.คอมพิวเตอร์ฯ ม.26, ISO 27001 และนโยบายมหาวิทยาลัย</li>
+</ul>
+<ol class="content-list">
+<li><strong>การสร้างเส้นเวลาของเหตุการณ์ (Incident Timeline) จากชุดล็อกจำลอง:</strong></li>
+</ol>
+<ul class="content-list">
+<li>นำชุดล็อกจำลองในบทนี้มาร้อยเรียงลงตาราง Timeline ให้ครบถ้วน พร้อมระบุ Pivot Points</li>
+</ul>
+<ol class="content-list">
+<li><strong>ข้อสรุป 3 ประเด็นด้านประสิทธิผลของกระบวนการ Monitoring:</strong></li>
+</ol>
+<ul class="content-list">
+<li>เขียนวิเคราะห์จุดแข็ง-จุดอ่อนของระบบเฝ้าระวังและการตอบสนองต่อเหตุการณ์</li>
+</ul>
+<ol class="content-list">
+<li><strong>รายการขอหลักฐานเพิ่มเติม (Additional Evidence Request List):</strong></li>
+</ol>
+<ul class="content-list">
+<li>กำหนดรายการหลักฐานเชิงลึกอย่างน้อย 4 รายการที่จำเป็นต้องขอเพิ่มเพื่อพิสูจน์ข้อเท็จจริง</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers">
+            <h2 class="section-heading">ส่วนที่ 7: คำถามทบทวนท้ายบท (Review Questions & Detailed Answers)</h2>
+          </section>
+        
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ตาม พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2550 และที่แก้ไขเพิ่มเติม พ.ศ. 2560 มาตรา 26 กำหนดหน้าที่ของผู้ให้บริการในการจัดเก็บข้อมูลจราจรไว้อย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> กำหนดให้ผู้ให้บริการต้องเก็บรักษาข้อมูลจราจรทางคอมพิวเตอร์ไว้ <strong>ไม่น้อยกว่า 90 วัน</strong> นับแต่วันที่ข้อมูลนั้นเข้าสู่ระบบคอมพิวเตอร์ แต่ในกรณีจำเป็นเฉพาะราย พนักงานเจ้าหน้าที่มีอำนาจสั่งให้ผู้ให้บริการเก็บรักษาข้อมูลไว้เกิน 90 วันแต่ไม่เกิน <strong>2 ปี</strong> ได้</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> จงอธิบายความสำคัญของ Network Time Protocol (NTP) ต่อการตรวจสอบความมั่นคงปลอดภัยสารสนเทศ</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> NTP มีความสำคัญในการซิงก์เวลานาฬิกาของทุกอุปกรณ์ในระบบให้ตรงกันอย่างแม่นยำ หากเวลาไม่ตรงกัน ผู้ตรวจสอบจะไม่สามารถร้อยเรียงลำดับเหตุการณ์ (Timeline Reconstruction) จากล็อกหลายแหล่งข้อมูลได้อย่างถูกต้อง และหลักฐานทางดิจิทัลอาจสูญเสียน้ำหนักในการรับฟังในชั้นศาล</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> เพราะเหตุใดการจัดเก็บบันทึกล็อกไว้ในเครื่องแม่ข่ายเฉพาะที่ (Local Logging) เพียงอย่างเดียวจึงถือเป็นความเสี่ยงร้ายแรงในการตรวจสอบ?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพราะเมื่อผู้โจมตีสามารถเจาะยึดครองสิทธิ์ระดับผู้ดูแลระบบ (root/Administrator) ได้สำเร็จ ผู้โจมตีมักจะลบหรือแก้ไขไฟล์ล็อกในเครื่อง Local ทันทีเพื่อทำลายร่องรอยการกระทำความผิด การส่งล็อกไปยังศูนย์จัดเก็บกลาง (Centralized SIEM) แบบ Real-time จึงเป็นมาตรการบังคับเพื่อรักษาบูรณภาพของหลักฐาน</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> จงอธิบายความหมายและประโยชน์ของพื้นที่จัดเก็บข้อมูลแบบ "WORM (Write-Once-Read-Many)" ในงานตรวจสอบล็อก</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> WORM คือเทคโนโลยีพื้นที่จัดเก็บที่อนุญาตให้บันทึกข้อมูลได้เพียงครั้งเดียว แต่สามารถอ่านข้อมูลได้ไม่จำกัดจำนวนครั้ง โดยไม่สามารถแก้ไข ดัดแปลง หรือลบข้อมูลได้ก่อนครบกำหนดเวลา ช่วยคุ้มครองบูรณภาพ (Integrity) ของไฟล์ล็อก และป้องกันการทำลายหลักฐานจากทั้งแฮกเกอร์และผู้ดูแลระบบที่มีเจตนาทุจริต</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ในกระบวนการ Log Pipeline ขั้นตอน "Normalization" มีความสำคัญอย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เป็นขั้นตอนการแปลงรูปแบบและชื่อฟิลด์ของล็อกที่มาจากอุปกรณ์ต่างยี่ห้อต่างแพลตฟอร์ม (ซึ่งใช้ชื่อฟิลด์ไม่เหมือนกัน เช่น <code>src_ip</code>, <code>SourceAddress</code>, <code>c-ip</code>) ให้เข้ามาอยู่ในมาตรฐานเดียวกัน (เช่น ECS หรือ CEF) เพื่อให้ระบบ SIEM สามารถเขียนกฎตรวจจับและค้นหาข้อมูลข้ามระบบได้อย่างมีประสิทธิภาพ</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ปัญหา "Alert Fatigue" ในศูนย์เฝ้าระวังความมั่นคงปลอดภัย (SOC) เกิดจากสาเหตุใด และส่งผลเสียต่อการตรวจสอบอย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เกิดจากการที่ระบบ SIEM สร้างการแจ้งเตือนปริมาณมหาศาลเกินขีดความสามารถของเจ้าหน้าที่ในการวิเคราะห์ โดยส่วนใหญ่เป็นผลบวกปลอม (False Positives) ส่งผลให้เจ้าหน้าที่เกิดความเหนื่อยล้า ละเลยการตรวจสอบ และอาจพลาดการตรวจจับภัยคุกคามที่เกิดขึ้นจริง (True Positives)</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ในการสร้างเส้นเวลาของเหตุการณ์ (Incident Timeline) เหตุใดผู้ตรวจสอบจึงต้องแยกแยะ "ข้อเท็จจริง (Fact)" ออกจาก "ข้อสันนิษฐาน (Assumption)"?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพราะข้อเท็จจริงคือสิ่งที่มีหลักฐานล็อกเชิงประจักษ์ยืนยันอย่างชัดเจนและมีน้ำหนักทางกฎหมาย ส่วนข้อสันนิษฐานเป็นเพียงการคาดการณ์เชิงตรรกะ หากไม่แยกแยะให้ชัดเจน รายงานผลการตรวจสอบอาจถูกโต้แย้งในชั้นศาลหรือผู้บริหารระดับสูง และนำไปสู่ข้อสรุปที่ผิดพลาดได้</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> เหตุใดบันทึก DNS Query Logs จึงจัดเป็นหนึ่งในแหล่งล็อกที่มีความสำคัญสูงสุดในการตรวจจับมัลแวร์?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพราะมัลแวร์ส่วนใหญ่ (เช่น แรนซัมแวร์ หรือโทรจัน) จำเป็นต้องติดต่อกลับไปยังเครื่องควบคุม (Command & Control: C2 Server) ผ่านการสืบค้นชื่อโดเมน การวิเคราะห์ DNS Logs จึงช่วยให้ตรวจพบโดเมนต้องสงสัย เทคนิค DNS Tunneling และการแพร่ระบาดของมัลแวร์ในเครือข่ายได้อย่างรวดเร็ว</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> "Separation of Duties" ในการบริหารจัดการล็อกหมายถึงอะไร และมีแนวทางปฏิบัติอย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> หมายถึงการแบ่งแยกหน้าที่ระหว่าง "ผู้ปฏิบัติงานระบบ (SysAdmin/DBA)" และ "ผู้ดูแลระบบล็อก (Log/SOC Admin)" โดยห้ามมิให้ผู้ดูแลระบบที่ทำหน้าที่ดูแลเซิร์ฟเวอร์มีสิทธิ์ในการแก้ไข ลบ หรือกำหนดระยะเวลาจัดเก็บบันทึกเหตุการณ์ที่ตนเองสร้างขึ้น เพื่อป้องกันผลประโยชน์ทับซ้อนและการปกปิดความผิด</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> หากผู้ตรวจสอบตรวจพบว่าไม่มีข้อมูลล็อกไฟร์วอลล์ระหว่างเวลา 01:00 ถึง 03:00 น. ในวันเกิดเหตุ ผู้ตรวจสอบควรบันทึกข้อค้นพบนี้อย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ต้องบันทึกเป็น "ช่องว่างของพยานหลักฐาน (Evidence Gap)" ในกระดาษทำการ ระบุสาเหตุที่อาจเกิดขึ้น (เช่น ลิงก์สื่อสารขัดข้อง ระบบบันทึกขัดข้อง หรือถูกปิดกั้นโดยเจตนา) และระบุว่าเป็นข้อบกพร่องด้านการควบคุมความต่อเนื่องของการบันทึกเหตุการณ์ (Logging Availability Failure) พร้อมทั้งร้องขอหลักฐานอื่นมาสอบทานยัน</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="สรุปบทที่-11">
+            <h2 class="section-heading">สรุปบทที่ 11</h2>
+          </section>
+        
+<p class="content-paragraph">การจัดการและตรวจสอบล็อกถือเป็นหัวใจสำคัญสูงสุดในการสร้างความโปร่งใส ความรับผิดชอบเฉพาะบุคคล (Accountability) และการปฏิบัติตามกฎหมายในระบบสารสนเทศยุคดิจิทัล</p>
+<p class="content-paragraph">ล็อกที่มีประสิทธิภาพต้องมีความสมบูรณ์เชิงข้อมูล มีการระบุตัวตน วันเวลาอย่างแม่นยำ ได้รับการซิงก์เวลากับ NTP Server กลาง และได้รับการจัดเก็บอย่างปลอดภัยตามข้อกำหนดของ พ.ร.บ.คอมพิวเตอร์ฯ มาตรา 26 (อย่างน้อย 90 วัน) บนพื้นที่จัดเก็บที่มีการป้องกันการดัดแปลงแก้ไข (WORM & Hashing)</p>
+<p class="content-paragraph">ในระดับการเฝ้าระวัง ระบบ SIEM และศูนย์ SOC ต้องมี Log Pipeline ที่รัดกุม มีการตั้งกฎตรวจจับ (Monitoring Use Cases) ครอบคลุมพฤติกรรมเสี่ยง และมีกระบวนการคัดกรอง Alert ที่มีประสิทธิผล</p>
+<p class="content-paragraph">ในระดับการตรวจสอบ Technical Auditor ต้องมีความเชี่ยวชาญในการดึงข้อมูลจากแหล่งล็อกที่หลากหลายมาร้อยเรียงเป็น <strong>เส้นเวลาของเหตุการณ์ (Incident Timeline)</strong> โดยเชื่อมโยง 4 แกนข้อมูล (User, IP, Host, Session) และแยกแยะข้อเท็จจริงเชิงประจักษ์ออกจากข้อสันนิษฐาน เพื่อให้ข้อค้นพบการตรวจสอบมีความเที่ยงตรง เป็นธรรม และมีผลผูกพันทางกฎหมายอย่างสมบูรณ์</p>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="เอกสารอ้างอิงและมาตรฐานสากล">
+            <h2 class="section-heading">เอกสารอ้างอิงและมาตรฐานสากล</h2>
+          </section>
+        
+<ol class="content-list">
+<li><strong>พระราชบัญญัติว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2550 และที่แก้ไขเพิ่มเติม (ฉบับที่ 2) พ.ศ. 2560.</strong> ราชกิจจานุเบกษา เล่ม 134 ตอนที่ 10 ก วันที่ 24 มกราคม 2560 (มาตรา 26: การจัดเก็บข้อมูลจราจรทางคอมพิวเตอร์).</li>
+<li><strong>ประกาศกระทรวงดิจิทัลเพื่อเศรษฐกิจและสังคม เรื่อง หลักเกณฑ์การเก็บรักษาข้อมูลจราจรทางคอมพิวเตอร์ของผู้ให้บริการ พ.ศ. 2564.</strong> ราชกิจจานุเบกษา เล่ม 138 ตอนพิเศษ 188 ง วันที่ 13 สิงหาคม 2564.</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2006). <em>NIST SP 800-92: Guide to Computer Security Log Management</em>. U.S. Department of Commerce.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2022). <em>ISO/IEC 27001:2022 Information security, cybersecurity and privacy protection — Information security management systems — Requirements</em> (Annex A Controls: A.8.15 Logging, A.8.16 Monitoring activities, A.8.17 Clock synchronization). Geneva: ISO.</li>
+<li><strong>Information Systems Audit and Control Association (ISACA).</strong> (2020). <em>ITAF: Information Technology Assurance Framework (4th Edition)</em>. Rolling Meadows, IL: ISACA.</li>
+<li><strong>Center for Internet Security (CIS).</strong> (2021). <em>CIS Critical Security Controls (Version 8)</em> (Control 8: Audit Log Management). East Greenbush, NY: CIS.</li>
+<li><strong>Payment Card Industry Security Standards Council (PCI SSC).</strong> (2022). <em>Payment Card Industry Data Security Standard (PCI DSS) Version 4.0</em> (Requirement 10: Log and Monitor All Access).</li>
+<li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+</ol>
+
+      <!-- Bottom Chapter Navigation -->
+      <footer class="chapter-nav-footer">
+        <a href="ch-10.html" class="btn-nav-chapter">
+          <span>◀</span> บทที่ 10: การตรวจสอบระบบปฏิบัติการและโครงสร้างพื้นฐานเครือข่าย
+        </a>
+        <a href="ch-12.html" class="btn-nav-chapter">
+          บทที่ 12: การตรวจสอบการบริหารเหตุการณ์และภัยคุกคามไซเบอร์ <span>▶</span>
+        </a>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ==========================================
+    // THEME & FONT CONTROLS
+    // ==========================================
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('audit_theme', theme);
+      const bL = document.getElementById('btn-theme-light');
+      const bS = document.getElementById('btn-theme-sepia');
+      const bD = document.getElementById('btn-theme-dark');
+      if (bL) bL.style.borderColor = theme === 'light' ? 'var(--primary)' : 'var(--border-color)';
+      if (bS) bS.style.borderColor = theme === 'sepia' ? 'var(--primary)' : 'var(--border-color)';
+      if (bD) bD.style.borderColor = theme === 'dark' ? 'var(--primary)' : 'var(--border-color)';
+    }
+
+    let curFontSize = 16;
+    function adjustFontSize(delta) {
+      if (delta === 0) curFontSize = 16;
+      else curFontSize = Math.min(22, Math.max(13, curFontSize + delta));
+      document.documentElement.style.setProperty('--base-font-size', curFontSize + 'px');
+      localStorage.setItem('audit_font_size', curFontSize);
+    }
+
+    // Init theme
+    const savedTheme = localStorage.getItem('audit_theme') || 'light';
+    setTheme(savedTheme);
+    const savedFont = parseInt(localStorage.getItem('audit_font_size'), 10);
+    if (savedFont) {
+      curFontSize = savedFont;
+      document.documentElement.style.setProperty('--base-font-size', curFontSize + 'px');
+    }
+
+    // Reading progress
+    window.addEventListener('scroll', () => {
+      const bar = document.getElementById('reading-progress-bar');
+      if (!bar) return;
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      bar.style.width = scrolled + '%';
+    });
+
+    // ==========================================
+    // FIGURE 11.11: LOG SOURCE MATRIX RENDERER
+    // ==========================================
+    const matrixData = [
+      { id: 'SRC-01', name: 'Core Active Directory (DC01, DC02)', type: 'Windows Security Event Logs', method: 'Winlogbeat Agent', eps: '450 EPS', status: 'Active', risk: 'pass', tag: 'active' },
+      { id: 'SRC-02', name: 'ระบบลงทะเบียนเรียน (REG Web Server)', type: 'Nginx Access & Error Logs', method: 'Syslog over TLS', eps: '250 EPS', status: 'Active', risk: 'pass', tag: 'active' },
+      { id: 'SRC-03', name: 'ฐานข้อมูลลงทะเบียน (Oracle REG-DB01)', type: 'Database Audit Trail (DDL/DML)', method: 'Filebeat (Local Agent)', eps: '120 EPS', status: 'มีข้อบกพร่อง (ค้าง 7 วัน)', risk: 'crit', tag: 'critical' },
+      { id: 'SRC-04', name: 'Core Next-Gen Firewall (FW-Core)', type: 'Traffic & Threat Logs', method: 'Syslog UDP (Port 514)', eps: '1,200 EPS', status: 'Active', risk: 'pass', tag: 'active' },
+      { id: 'SRC-05', name: 'ระบบเครือข่ายส่วนตัวเสมือน (SSL-VPN)', type: 'Authentication & Session Logs', method: 'Syslog over TLS', eps: '80 EPS', status: 'Active', risk: 'pass', tag: 'active' },
+      { id: 'SRC-06', name: 'เซิร์ฟเวอร์ DNS กลาง (DNS-01, 02)', type: 'BIND Query & Response Logs', method: 'Local File Only', eps: '800 EPS', status: 'ไม่ได้ส่งเข้า SIEM', risk: 'crit', tag: 'uncollected' },
+      { id: 'SRC-07', name: 'เซิร์ฟเวอร์ DHCP กลาง (DHCP-01)', type: 'DHCP Lease & MAC Mapping Logs', method: 'Local File Only', eps: '150 EPS', status: 'ไม่ได้ส่งเข้า SIEM', risk: 'crit', tag: 'uncollected' },
+      { id: 'SRC-08', name: 'ระบบป้องกันไวรัสและ EDR (CrowdStrike)', type: 'Detection & Telemetry Alerts', method: 'Cloud API Integration', eps: '60 EPS', status: 'Active', risk: 'pass', tag: 'active' },
+      { id: 'SRC-09', name: 'ระบบคลาวด์อีเมล (Microsoft 365)', type: 'Unified Audit Log (Sign-in)', method: 'Graph API Connector', eps: '90 EPS', status: 'Active', risk: 'pass', tag: 'active' },
+      { id: 'SRC-10', name: 'ระบบการเงินและบัญชี (ERP Database)', type: 'ERP Audit Trail', method: 'Database Native Log', eps: '40 EPS', status: 'Active', risk: 'pass', tag: 'active' },
+      { id: 'SRC-11', name: 'อุปกรณ์สวิตช์หลัก (Core Switches)', type: 'Syslog Level 4 (Warning)', method: 'Syslog UDP', eps: '50 EPS', status: 'Active', risk: 'pass', tag: 'active' },
+      { id: 'SRC-12', name: 'เครือข่ายไร้สายหอพักและสำนักงาน (Wi-Fi)', type: 'WLC Authentication Logs', method: 'Syslog UDP', eps: '300 EPS', status: 'เวลาคลาดเคลื่อน 14 นาที', risk: 'warn', tag: 'critical' },
+      { id: 'SRC-13', name: 'ระบบกล้องวงจรปิด CCTV', type: 'Access & Motion Logs', method: 'Local NVR Storage', eps: '10 EPS', status: 'ไม่ได้ต่อเข้าระบบกลาง', risk: 'pass', tag: 'uncollected' }
+    ];
+
+    function filterLogMatrix(category) {
+      const container = document.getElementById('log-matrix-grid');
+      const btns = document.querySelectorAll('.matrix-filter-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      const activeBtn = Array.from(btns).find(b => b.getAttribute('onclick')?.includes(category));
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (!container) return;
+      container.innerHTML = '';
+
+      const filtered = category === 'all' ? matrixData : matrixData.filter(d => {
+        if (category === 'critical') return d.risk === 'crit' || d.risk === 'warn';
+        if (category === 'uncollected') return d.tag === 'uncollected';
+        if (category === 'active') return d.tag === 'active';
+        return true;
+      });
+
+      filtered.forEach(d => {
+        const card = document.createElement('div');
+        card.className = 'matrix-item-card ' + d.risk;
+        card.innerHTML = `
+          <div class="matrix-card-top">
+            <span class="matrix-src-code">${d.id}</span>
+            <span class="matrix-risk-badge ${d.risk}">${d.risk === 'crit' ? '🚨 ความเสี่ยงสูงมาก' : (d.risk === 'warn' ? '⚠️ มีข้อบกพร่อง' : '✓ ปกติ')}</span>
+          </div>
+          <div class="matrix-card-name">${d.name}</div>
+          <div class="matrix-card-type">${d.type}</div>
+          <div class="matrix-card-meta">
+            <span>ส่งข้อมูล: ${d.method}</span>
+            <span>${d.eps}</span>
+          </div>
+          <div style="font-size:0.75rem; color:var(--text-dim); margin-top:0.2rem;">สถานะ: <strong>${d.status}</strong></div>
+        `;
+        container.appendChild(card);
+      });
+    }
+    filterLogMatrix('all');
+
+    // ==========================================
+    // WIDGET 11.1: RETENTION CALCULATOR
+    // ==========================================
+    function updateRetentionSlider(val) {
+      const label = document.getElementById('w1-days-val');
+      if (label) label.textContent = val + ' วัน';
+      runRetentionCalc();
+    }
+
+    function runRetentionCalc() {
+      const srcEl = document.getElementById('w1-source-type');
+      const sliderEl = document.getElementById('w1-days-slider');
+      const archEl = document.querySelector('input[name="w1-arch"]:checked');
+      const chkNtp = document.getElementById('w1-chk-ntp');
+      const chkHash = document.getElementById('w1-chk-hash');
+      const chkSod = document.getElementById('w1-chk-sod');
+      const resDisplay = document.getElementById('w1-result-display');
+      if (!resDisplay) return;
+
+      const src = srcEl ? srcEl.value : 'dns_dhcp';
+      const days = sliderEl ? parseInt(sliderEl.value, 10) : 7;
+      const arch = archEl ? archEl.value : 'local';
+      const hasNtp = chkNtp ? chkNtp.checked : false;
+      const hasHash = chkHash ? chkHash.checked : false;
+      const hasSod = chkSod ? chkSod.checked : false;
+
+      let verdict = '';
+      let verdictClass = '';
+      let comments = [];
+
+      // Legal Check (Min 90 days)
+      if (days < 90) {
+        verdict = '🚨 ขัดต่อ พ.ร.บ.คอมพิวเตอร์ฯ ม.26 (Major Legal NCR)';
+        verdictClass = 'crit';
+        comments.push('❌ <strong>ไม่สอดคล้องตามกฎหมายภาคบังคับ:</strong> พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560 มาตรา 26 กำหนดให้ต้องเก็บข้อมูลจราจรไม่น้อยกว่า 90 วัน การจัดเก็บเพียง ' + days + ' วัน มีโทษปรับทางอาญาต่อองค์กรและผู้บริหาร');
+      } else if (days < 365 && src === 'auth_idp') {
+        verdict = '⚠️ ผ่านกฎหมายขั้นต่ำ แต่ไม่สอดคล้อง ISO 27001 (Minor NCR)';
+        verdictClass = 'warn';
+        comments.push('⚠️ <strong>ข้อมูลยืนยันตัวตน (Authentication):</strong> แม้ผ่านเกณฑ์ขั้นต่ำ 90 วันตามกฎหมายไทย แต่แนวปฏิบัติสากล ISO/IEC 27001 Control A.8.15 แนะนำให้เก็บบันทึกการยืนยันตัวตนไว้ 365 วัน (1 ปี) เพื่อใช้ตรวจสอบบัญชีต้องสงสัยย้อนหลัง');
+      } else {
+        verdict = '✅ สอดคล้องตามเกณฑ์กฎหมายและมาตรฐานสากล (Compliant)';
+        verdictClass = 'pass';
+        comments.push('✓ <strong>สอดคล้องตามกฎหมาย:</strong> ระยะเวลาจัดเก็บ ' + days + ' วัน ครอบคลุมเกณฑ์ขั้นต่ำ 90 วันตาม พ.ร.บ.คอมพิวเตอร์ฯ ม.26');
+      }
+
+      // Storage & Integrity Check
+      if (arch === 'local') {
+        comments.push('❌ <strong>ความเสี่ยงด้านบูรณภาพ (Integrity Risk):</strong> การเก็บบนเครื่อง Local เพียงแห่งเดียว ทำให้ผู้ดูแลระบบหรือผู้โจมตีที่ยึดเครื่องสำเร็จสามารถลบหรือดัดแปลงล็อกทิ้งได้ทันที ขัดต่อประกาศกระทรวงดีอี พ.ศ. 2564');
+      } else if (arch === 'siem_worm') {
+        comments.push('🌟 <strong>มาตรการระดับดีเยี่ยม:</strong> มีการส่งต่อเข้าสู่ระบบจัดเก็บแบบ WORM / Immutable Storage คุ้มครองการดัดแปลงแก้ไขและรักษาห่วงโซ่พยานหลักฐาน (Chain of Custody) ได้สมบูรณ์');
+      }
+
+      if (!hasNtp) {
+        comments.push('⚠️ <strong>ขาดการซิงก์เวลา (No NTP):</strong> หากนาฬิกาไม่ตรงกับมาตรฐานแห่งชาติ ล็อกอาจถูกศาลปฏิเสธการรับฟังพยานหลักฐานเนื่องจากไม่น่าเชื่อถือ');
+      }
+
+      if (!hasHash) {
+        comments.push('⚠️ <strong>ขาด Cryptographic Hashing:</strong> ควรคำนวณค่า SHA-256 Checksum กำกับไฟล์ล็อกที่ถูกจัดเก็บ เพื่อพิสูจน์ว่าไม่มีการแก้ไขเนื้อหา');
+      }
+
+      if (!hasSod) {
+        comments.push('⚠️ <strong>ขาด Separation of Duties:</strong> ผู้ดูแลเซิร์ฟเวอร์ยังสามารถเข้าถึงและแก้ไขล็อกได้ ควรแยกสิทธิ์ให้เฉพาะทีมตรวจสอบหรือ Security เท่านั้น');
+      }
+
+      resDisplay.innerHTML = `
+        <div style="font-weight:700; color:var(--text-main); margin-bottom:0.4rem;">ผลการประเมินทางวิชาชีพ (Audit Compliance Verdict):</div>
+        <div style="margin-bottom:0.75rem;"><span class="badge-status ${verdictClass}" style="font-size:0.86rem; padding:0.25rem 0.65rem;">${verdict}</span></div>
+        <div style="font-family:var(--font-code); font-size:0.82rem; background:var(--bg-surface); padding:0.5rem 0.75rem; border-radius:6px; margin-bottom:0.75rem; border:1px solid var(--border-color);">
+          <strong>ระยะเวลาจัดเก็บ:</strong> ${days} วัน | <strong>สถาปัตยกรรม:</strong> ${arch.toUpperCase()} | <strong>NTP:</strong> ${hasNtp ? 'YES' : 'NO'} | <strong>HASH:</strong> ${hasHash ? 'YES' : 'NO'}
+        </div>
+        <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.5;">
+          ${comments.join('<br><br>')}
+        </div>
+      `;
+    }
+    runRetentionCalc();
+
+    // ==========================================
+    // WIDGET 11.2: PIPELINE SIMULATOR
+    // ==========================================
+    const pipelineSamples = {
+      vpn: {
+        raw: '2024-08-14T23:45:12+07:00 vpn-gw01 [AUTH_SUCCESS] user="vendor_consultant" src_ip="184.22.109.45" assigned_ip="10.200.1.15" method="Password-Only"',
+        parsed: { timestamp: '2024-08-14T23:45:12+07:00', host: 'vpn-gw01', event: 'AUTH_SUCCESS', user: 'vendor_consultant', src_ip: '184.22.109.45', assigned_ip: '10.200.1.15', method: 'Password-Only' },
+        normalized: { '@timestamp': '2024-08-14T16:45:12.000Z', 'host.name': 'vpn-gw01', 'event.action': 'user-login', 'event.outcome': 'success', 'user.name': 'vendor_consultant', 'source.ip': '184.22.109.45', 'client.ip': '10.200.1.15' },
+        enriched: { 'source.geo.country_name': 'Thailand (Home Broadband)', 'source.as.organization_name': 'True Internet', 'threat.intel.risk_score': 65, 'user.risk_level': 'High (External Vendor Account with No MFA)' },
+        indexed: { _index: 'logs-vpn-prod-2024.08.14', _id: 'doc-vpn-9921', doc_type: 'network_traffic', storage_tier: 'Hot Index' },
+        correlated: { rule_triggered: 'RULE-VPN-OFFHOURS: Logins after 22:00 from external residential IP without MFA', alert_severity: 'MEDIUM (Warning)', action: 'Logged for Lateral Movement Watch' }
+      },
+      db: {
+        raw: '2024-08-15T00:18:55+07:00 reg-db01 OracleAudit: [STATEMENT_EXEC] DB_USER="SYS" SQL_TEXT="UPDATE STUDENT_GRADE SET GRADE=\'A\', REMARK=\'Approved by Dean\' WHERE STUDENT_ID=\'64010522\' AND COURSE_CODE=\'CS301\';" ROWS_AFFECTED=1',
+        parsed: { timestamp: '2024-08-15T00:18:55+07:00', host: 'reg-db01', db_user: 'SYS', event: 'STATEMENT_EXEC', sql: 'UPDATE STUDENT_GRADE SET GRADE=\'A\'...', rows: 1 },
+        normalized: { '@timestamp': '2024-08-15T17:18:55.000Z', 'host.name': 'reg-db01', 'database.user': 'SYS', 'event.action': 'sql-execute', 'database.statement': 'UPDATE STUDENT_GRADE...', 'database.rows_affected': 1 },
+        enriched: { 'asset.criticality': 'Tier-1 Core Database', 'database.table': 'STUDENT_GRADE', 'change_management.ticket_id': 'NONE (No Active ITSM Change Window)', 'threat.killchain': 'Impact (Tampering)' },
+        indexed: { _index: 'logs-database-audit-2024.08.15', _id: 'doc-ora-8812', doc_type: 'database_audit', storage_tier: 'Local Spool (Forwarding Delayed 7 Days)' },
+        correlated: { rule_triggered: 'CRITICAL-CORR-04: Direct SYSDBA modification on student grade table outside change window', alert_severity: 'CRITICAL (Major Incident)', action: 'SIEM Rule was MISSING in university baseline (Zero Alert)' }
+      },
+      fw_exfil: {
+        raw: '2024-08-15T00:28:40+07:00 fw-core01 [TRAFFIC_PERMIT] src="192.168.10.15" dst="103.20.120.88" proto="TCP" dst_port="443" action="allow" rule="Outbound_Any" bytes_sent="842150000" (803 MB)',
+        parsed: { timestamp: '2024-08-15T00:28:40+07:00', host: 'fw-core01', event: 'TRAFFIC_PERMIT', src: '192.168.10.15', dst: '103.20.120.88', port: 443, bytes: 842150000 },
+        normalized: { '@timestamp': '2024-08-15T17:28:40.000Z', 'host.name': 'fw-core01', 'network.transport': 'tcp', 'destination.port': 443, 'source.ip': '192.168.10.15', 'destination.ip': '103.20.120.88', 'network.bytes': 842150000 },
+        enriched: { 'destination.geo.country_name': 'Singapore / Hosting VPS', 'destination.threat.reputation': 'Suspicious Bulletproof Hosting Provider', 'anomaly.data_volume_baseline': '3,500% Above 30-Day Mean' },
+        indexed: { _index: 'logs-firewall-traffic-2024.08.15', _id: 'doc-fw-7741', doc_type: 'firewall_traffic', storage_tier: 'Hot Index' },
+        correlated: { rule_triggered: 'ALERT-EXFIL-05: Server REG-APP exfiltrating >500 MB data to unclassified external IP', alert_severity: 'CRITICAL', action: 'SIEM Correlation Rule failed to fire due to rule omission' }
+      }
+    };
+
+    let curPipeStage = 1;
+
+    function loadPipelineSample() {
+      curPipeStage = 1;
+      renderPipelineInspector();
+    }
+
+    function stepPipelineNext() {
+      curPipeStage = (curPipeStage % 6) + 1;
+      renderPipelineInspector();
+    }
+
+    function resetPipelineSim() {
+      curPipeStage = 1;
+      renderPipelineInspector();
+    }
+
+    function jumpPipelineStage(stage) {
+      curPipeStage = stage;
+      renderPipelineInspector();
+    }
+
+    function renderPipelineInspector() {
+      const selectEl = document.getElementById('w2-sample-select');
+      const cardEl = document.getElementById('pipe-inspector-card');
+      if (!selectEl || !cardEl) return;
+
+      const key = selectEl.value;
+      const data = pipelineSamples[key] || pipelineSamples.vpn;
+
+      // Update node step visuals
+      for (let s = 1; s <= 6; s++) {
+        const node = document.getElementById('pnode-' + s);
+        if (node) {
+          node.classList.toggle('active', s === curPipeStage);
+          node.classList.toggle('done', s < curPipeStage);
+        }
+      }
+
+      let stageTitle = '';
+      let stageDesc = '';
+      let stageContentHtml = '';
+
+      if (curPipeStage === 1) {
+        stageTitle = '1. Ingestion (การรับข้อมูลดิบจากต้นทาง)';
+        stageDesc = 'ระบบ SIEM รับสตริงข้อความดิบ (Raw String) ผ่าน Agent หรือโปรโตคอล Syslog:';
+        stageContentHtml = `<pre style="background:var(--code-bg); padding:0.85rem; border-radius:6px; font-family:var(--font-code); font-size:0.84rem; overflow-x:auto;"><code>${escapeHtml(data.raw)}</code></pre>`;
+      } else if (curPipeStage === 2) {
+        stageTitle = '2. Parsing (การสกัดโครงสร้างข้อมูล)';
+        stageDesc = 'Grok Pattern หรือ Regex ทำการตัดสตริงดิบออกเป็นคีย์และค่า (Key-Value Attributes):';
+        stageContentHtml = `<pre style="background:var(--code-bg); padding:0.85rem; border-radius:6px; font-family:var(--font-code); font-size:0.84rem; overflow-x:auto;"><code>${escapeHtml(JSON.stringify(data.parsed, null, 2))}</code></pre>`;
+      } else if (curPipeStage === 3) {
+        stageTitle = '3. Normalization (การแปลงชื่อฟิลด์สู่มาตรฐานสากล ECS)';
+        stageDesc = 'แปลงชื่อฟิลด์จากอุปกรณ์ให้เข้ามาตรฐาน Elastic Common Schema (ECS) เช่น user -> user.name, src -> source.ip:';
+        stageContentHtml = `<pre style="background:var(--code-bg); padding:0.85rem; border-radius:6px; font-family:var(--font-code); font-size:0.84rem; overflow-x:auto;"><code>${escapeHtml(JSON.stringify(data.normalized, null, 2))}</code></pre>`;
+      } else if (curPipeStage === 4) {
+        stageTitle = '4. Enrichment (การเพิ่มบริบททางภูมิศาสตร์และความมั่นคงปลอดภัย)';
+        stageDesc = 'ระบบทำการ Query ฐานข้อมูล Geo-IP, Asset Matrix, และ Threat Intelligence เพื่อเติม Metadata:';
+        stageContentHtml = `<pre style="background:var(--code-bg); padding:0.85rem; border-radius:6px; font-family:var(--font-code); font-size:0.84rem; overflow-x:auto;"><code>${escapeHtml(JSON.stringify(data.enriched, null, 2))}</code></pre>`;
+      } else if (curPipeStage === 5) {
+        stageTitle = '5. Indexing (การสร้าง Inverted Index จัดเก็บลงดิสก์)';
+        stageDesc = 'ระเบียนข้อมูลพร้อมฟิลด์ที่ทำดัชนีถูกบันทึกลงใน Lucene Shards ในคลัสเตอร์ Elasticsearch เพื่อการสืบค้นฉับพลัน:';
+        stageContentHtml = `<pre style="background:var(--code-bg); padding:0.85rem; border-radius:6px; font-family:var(--font-code); font-size:0.84rem; overflow-x:auto;"><code>${escapeHtml(JSON.stringify(data.indexed, null, 2))}</code></pre>`;
+      } else if (curPipeStage === 6) {
+        stageTitle = '6. Correlation (การประมวลผลกฎตรวจจับข้ามระบบ)';
+        stageDesc = 'เครื่องยนต์ตรวจจับ (Detection Engine) รันตรรกะตรวจจับแบบ Real-time:';
+        stageContentHtml = `
+          <div style="background:var(--bg-surface); padding:1rem; border-radius:6px; border:1px solid var(--border-color);">
+            <div style="font-weight:700; color:var(--rose); margin-bottom:0.4rem;">🎯 Detection Rule Output:</div>
+            <div style="font-size:0.86rem; margin-bottom:0.3rem;"><strong>Rule ID:</strong> ${data.correlated.rule_triggered}</div>
+            <div style="font-size:0.86rem; margin-bottom:0.3rem;"><strong>Alert Severity:</strong> <span class="badge-status warn">${data.correlated.alert_severity}</span></div>
+            <div style="font-size:0.84rem; color:var(--text-muted);"><strong>Action Taken:</strong> ${data.correlated.action}</div>
+          </div>
+        `;
+      }
+
+      cardEl.innerHTML = `
+        <div style="font-family:var(--font-display); font-weight:700; font-size:1.05rem; color:var(--text-main); margin-bottom:0.4rem;">${stageTitle}</div>
+        <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.85rem;">${stageDesc}</div>
+        ${stageContentHtml}
+      `;
+    }
+    loadPipelineSample();
+
+    // ==========================================
+    // WIDGET 11.3: TIMELINE RECONSTRUCTION TOOL
+    // ==========================================
+    const initialEvents = [
+      { id: 'E3', time: '14 ส.ค. 23:50:02', host: 'REG-APP-01', text: 'ล็อกอิน RDP สำเร็จด้วยบัญชี Administrator (Event ID 4624 Logon Type 10)', trueFact: true, isFactChoice: false, pivot: 'user' },
+      { id: 'E1', time: '14 ส.ค. 23:45:12', host: 'vpn-gw01', text: 'บัญชี vendor_consultant ล็อกอิน VPN สำเร็จจาก IP บ้าน 184.22.109.45', trueFact: true, isFactChoice: true, pivot: 'user' },
+      { id: 'E6', time: '15 ส.ค. 00:28:40', host: 'fw-core01', text: 'เครื่อง REG-APP-01 ส่งข้อมูลออกนอกไปยัง 103.20.120.88 ปริมาณ 803 MB', trueFact: true, isFactChoice: false, pivot: 'ip' },
+      { id: 'E2', time: '14 ส.ค. 23:48:30', host: 'fw-core01', text: 'ทราฟฟิกพอร์ต 3389 (RDP) วิ่งจาก 10.200.1.15 เข้าสู่เครื่อง REG-APP-01', trueFact: true, isFactChoice: false, pivot: 'ip' },
+      { id: 'E5', time: '15 ส.ค. 00:18:55', host: 'reg-db01', text: 'คำสั่ง SQL UPDATE แก้ไขเกรดนักศึกษา 64010522 วิชา CS301 เป็น A และ COMMIT', trueFact: true, isFactChoice: false, pivot: 'crit' },
+      { id: 'E7', time: '15 ส.ค. 00:35:10', host: 'vpn-gw01', text: 'เซสชัน VPN หมายเลข VPN-9921 ยุติลง รวมเวลาเชื่อมต่อ 49 นาที 58 วินาที', trueFact: true, isFactChoice: true, pivot: 'user' },
+      { id: 'E4', time: '15 ส.ค. 00:14:22', host: 'reg-db01', text: 'เชื่อมต่อ Oracle Database เป็นสิทธิ์ SYSDBA จากเครื่อง 192.168.10.15', trueFact: true, isFactChoice: false, pivot: 'crit' }
+    ];
+
+    let myTimeline = [...initialEvents];
+    let curPivot = 'all';
+
+    function renderTimelineList() {
+      const container = document.getElementById('timeline-events-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      myTimeline.forEach((item, idx) => {
+        const isHidden = curPivot !== 'all' && item.pivot !== curPivot;
+        const card = document.createElement('div');
+        card.className = 'event-reorder-card';
+        if (isHidden) card.style.opacity = '0.35';
+
+        card.innerHTML = `
+          <div class="order-num">${idx + 1}</div>
+          <div class="event-timestamp">${item.time}</div>
+          <div class="event-info">
+            <span class="src-pill ${item.host.includes('vpn') ? 'vpn' : (item.host.includes('fw') ? 'fw' : (item.host.includes('app') ? 'win' : 'ora'))}">${item.host}</span>
+            <span style="margin-left:0.3rem;">${item.text}</span>
+          </div>
+          <div class="event-toggle-box">
+            <button class="btn-toggle-fact ${item.isFactChoice ? 'is-fact' : 'is-assump'}" onclick="toggleEventFactChoice(${idx})">
+              ${item.isFactChoice ? '✓ ข้อเท็จจริง (Fact)' : '❓ ข้อสันนิษฐาน (Assumption)'}
+            </button>
+          </div>
+          <div class="order-btns">
+            <button class="btn-arrow-move" onclick="moveTimelineItem(${idx}, -1)" title="เลื่อนขึ้น">▲</button>
+            <button class="btn-arrow-move" onclick="moveTimelineItem(${idx}, 1)" title="เลื่อนลง">▼</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      evalTimelineCorrectness();
+    }
+
+    function moveTimelineItem(idx, dir) {
+      const target = idx + dir;
+      if (target < 0 || target >= myTimeline.length) return;
+      const tmp = myTimeline[idx];
+      myTimeline[idx] = myTimeline[target];
+      myTimeline[target] = tmp;
+      renderTimelineList();
+    }
+
+    function toggleEventFactChoice(idx) {
+      myTimeline[idx].isFactChoice = !myTimeline[idx].isFactChoice;
+      renderTimelineList();
+    }
+
+    function autoSortTimeline() {
+      const correctOrder = ['E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7'];
+      myTimeline.sort((a, b) => correctOrder.indexOf(a.id) - correctOrder.indexOf(b.id));
+      renderTimelineList();
+    }
+
+    function filterTimelinePivot(p) {
+      curPivot = p;
+      const btns = document.querySelectorAll('.pivot-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      const activeBtn = Array.from(btns).find(b => b.getAttribute('onclick')?.includes(p));
+      if (activeBtn) activeBtn.classList.add('active');
+      renderTimelineList();
+    }
+
+    function evalTimelineCorrectness() {
+      const panel = document.getElementById('timeline-score-panel');
+      if (!panel) return;
+
+      const correctOrder = ['E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7'];
+      let orderMatches = 0;
+      myTimeline.forEach((item, idx) => {
+        if (item.id === correctOrder[idx]) orderMatches++;
+      });
+
+      const isOrderPerfect = orderMatches === 7;
+
+      panel.innerHTML = `
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:1rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+          <div>
+            <span style="font-size:0.82rem; color:var(--text-dim); text-transform:uppercase;">ความถูกต้องของการจัดลำดับเวลา:</span>
+            <strong style="margin-left:0.5rem; font-size:1.15rem; color:${isOrderPerfect ? 'var(--emerald)' : 'var(--rose)'};">${orderMatches} / 7 ลำดับ</strong>
+          </div>
+          <div style="font-size:0.84rem; color:var(--text-muted);">
+            ${isOrderPerfect ? '🎉 ยอดเยี่ยม! ลำดับเหตุการณ์สอดคล้องตามหลักนิติวิทยาศาสตร์ (Kill Chain: VPN -> RDP -> DB -> Exfiltration)' : 'ยังเรียงลำดับเวลาไม่ถูกต้อง ลองตรวจสอบ Timestamp หรือใช้ปุ่มเรียงลำดับอัตโนมัติ'}
+          </div>
+        </div>
+      `;
+    }
+    renderTimelineList();
+
+    // ==========================================
+    // WIDGET 11.4: SOC ALERT EVALUATOR
+    // ==========================================
+    function loadBaselineUniRules() {
+      document.getElementById('rule-vpn-geo').checked = false;
+      document.getElementById('rule-rdp-hop').checked = false;
+      document.getElementById('rule-db-sysdba').checked = false;
+      document.getElementById('rule-grade-update').checked = false;
+      document.getElementById('rule-exfil-spike').checked = false;
+      runSocRuleEval();
+    }
+
+    function loadHardenedRules() {
+      document.getElementById('rule-vpn-geo').checked = true;
+      document.getElementById('rule-rdp-hop').checked = true;
+      document.getElementById('rule-db-sysdba').checked = true;
+      document.getElementById('rule-grade-update').checked = true;
+      document.getElementById('rule-exfil-spike').checked = true;
+      runSocRuleEval();
+    }
+
+    function runSocRuleEval() {
+      const r1 = document.getElementById('rule-vpn-geo').checked;
+      const r2 = document.getElementById('rule-rdp-hop').checked;
+      const r3 = document.getElementById('rule-db-sysdba').checked;
+      const r4 = document.getElementById('rule-grade-update').checked;
+      const r5 = document.getElementById('rule-exfil-spike').checked;
+      const outBox = document.getElementById('soc-eval-results');
+      if (!outBox) return;
+
+      const triggeredAlerts = [];
+      if (r1) triggeredAlerts.push({ name: 'Alert 1: Off-Hours VPN Login', sev: 'MED', time: '23:45:12' });
+      if (r2) triggeredAlerts.push({ name: 'Alert 2: Suspicious Internal RDP Hop', sev: 'HIGH', time: '23:48:30' });
+      if (r3) triggeredAlerts.push({ name: 'Alert 3: Unauthorized SYSDBA Privilege Escalation', sev: 'HIGH', time: '00:14:22' });
+      if (r4) triggeredAlerts.push({ name: 'Alert 4: Student Grade Table Direct Tampering', sev: 'CRIT', time: '00:18:55' });
+      if (r5) triggeredAlerts.push({ name: 'Alert 5: High-Volume Exfiltration Spike (803 MB)', sev: 'CRIT', time: '00:28:40' });
+
+      let verdict = '';
+      let verdictClass = '';
+      let explanation = '';
+
+      if (triggeredAlerts.length === 0) {
+        verdict = '🚨 จำลองสถานะเดิมของมหาวิทยาลัย: Zero Alert Triggered (บอดสนิท)';
+        verdictClass = 'crit';
+        explanation = '❌ <strong>ความล้มเหลวของการเฝ้าระวัง (Monitoring Failure):</strong> แม้ระบบจะเก็บบันทึกเหตุการณ์ดิบไว้ในเซิร์ฟเวอร์ แต่ระบบ SIEM และศูนย์ SOC ไม่มีการสร้างกฎ Correlation ใดๆ เจ้าหน้าที่ไม่รับรู้การโจมตี แฮกเกอร์สามารถแก้ไขเกรดและส่งข้อมูลออกนอกได้สำเร็จโดยไร้การขัดขวาง!';
+      } else if (triggeredAlerts.length === 5) {
+        verdict = '🛡️ ระบบ SOC ที่สมบูรณ์: Full Kill Chain Detection & Auto Containment';
+        verdictClass = 'pass';
+        explanation = '✓ <strong>การตรวจจับหลายชั้น (Defense-in-Depth):</strong> ระบบแจ้งเตือนครบทุกขั้นตอนตั้งแต่วินาทีแรกที่ล็อกอินนอกเวลา จนถึงการตัดการเชื่อมต่อ RDP อัตโนมัติก่อนที่จะสามารถแก้ไขเกรดได้';
+      } else {
+        verdict = '⚠️ การตรวจจับบางส่วน (Partial Coverage): พบการแจ้งเตือน ' + triggeredAlerts.length + ' รายการ';
+        verdictClass = 'warn';
+        explanation = '⚠️ <strong>ตรวจพบภัยคุกคามแต่ยังไม่ครอบคลุมทั้งวงจร:</strong> มีการแจ้งเตือนเกิดขึ้น แต่ควรเปิดใช้งานกฎตรวจจับให้ครบทั้ง 5 มิติเพื่อลดระยะเวลาตรวจพบ (MTTD) และหยุดยั้งการรั่วไหลของข้อมูล';
+      }
+
+      let alertsHtml = '';
+      if (triggeredAlerts.length > 0) {
+        alertsHtml = '<div style="margin-top:0.75rem; display:flex; flex-direction:column; gap:0.4rem;">';
+        triggeredAlerts.forEach(a => {
+          alertsHtml += `
+            <div style="background:var(--bg-surface); padding:0.45rem 0.65rem; border-radius:4px; font-size:0.8rem; display:flex; justify-content:space-between; align-items:center;">
+              <span>🚨 <strong>${a.name}</strong> (${a.time})</span>
+              <span class="badge-status ${a.sev === 'CRIT' ? 'fail' : 'warn'}">${a.sev}</span>
+            </div>
+          `;
+        });
+        alertsHtml += '</div>';
+      }
+
+      outBox.innerHTML = `
+        <div style="font-weight:700; color:var(--text-main); margin-bottom:0.4rem;">ผลการประเมินประสิทธิภาพของศูนย์ SOC:</div>
+        <div style="margin-bottom:0.75rem;"><span class="badge-status ${verdictClass}" style="font-size:0.86rem; padding:0.25rem 0.65rem;">${verdict}</span></div>
+        <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.5;">${explanation}</div>
+        ${alertsHtml}
+      `;
+    }
+    loadHardenedRules();
+
+    // ==========================================
+    // WIDGET 11.5: NTP CLOCK DRIFT SIMULATOR
+    // ==========================================
+    function updateClockDriftSim(val) {
+      const v = parseInt(val, 10);
+      const label = document.getElementById('ntp-slider-label');
+      const wlcDisplay = document.getElementById('wlc-drift-display');
+      const wlcCard = document.getElementById('wlc-ntp-card');
+      const analysisBox = document.getElementById('ntp-analysis-box');
+      if (!label || !wlcDisplay || !analysisBox) return;
+
+      label.textContent = (v > 0 ? '+' : '') + v + ' นาที';
+      wlcDisplay.innerHTML = 'Clock Drift: <strong>' + (v > 0 ? '+' : '') + v + ' นาที 00 วินาที</strong> ' + (Math.abs(v) <= 1 ? '(ปกติ)' : '(วิกฤต)');
+
+      if (wlcCard) {
+        wlcCard.className = 'ntp-device-card ' + (Math.abs(v) <= 1 ? 'ok' : 'fail');
+      }
+
+      let paradoxDesc = '';
+      if (v >= 10) {
+        paradoxDesc = `
+          <div style="color:var(--rose); font-weight:700; margin-bottom:0.4rem;">🚨 ก่อให้เกิดข้อขัดแย้งเชิงตรรกะในเส้นเวลา (Causality Paradox):</div>
+          <p style="font-size:0.84rem; line-height:1.5; color:var(--text-muted);">
+            เมื่อนาฬิกาของ Wi-Fi Controller เดินเร็วกว่าเวลาจริง <strong>+${v} นาที</strong> บันทึกการเชื่อมต่อ Wi-Fi ของเครื่องโน้ตบุ๊กคนร้ายจะปรากฏที่เวลา <code>00:24:00</code> 
+            ทั้งที่ในความเป็นจริง คำสั่ง SQL แก้ไขเกรดบนฐานข้อมูลสำเร็จไปแล้วตั้งแต่เวลา <code>00:18:55</code>!
+            ส่งผลให้ในรายงานการสอบสวนดูเสมือนว่า <em>"นักศึกษาแก้ไขเกรดเสร็จสิ้นก่อนที่จะเชื่อมต่อสัญญาณ Wi-Fi ของมหาวิทยาลัย"</em> 
+            ซึ่งเป็นไปไม่ได้ในทางกายภาพ และเปิดโอกาสให้ทนายฝ่ายจำเลยโต้แย้งในชั้นศาลว่าหลักฐานล็อกทั้งหมดถูกกุขึ้นหรือมีความบกพร่องจนไม่อาจรับฟังได้!
+          </p>
+        `;
+      } else if (v === 0) {
+        paradoxDesc = `
+          <div style="color:var(--emerald); font-weight:700; margin-bottom:0.4rem;">✓ เวลาทุกระบบตรงกันสมบูรณ์ (Synchronized):</div>
+          <p style="font-size:0.84rem; line-height:1.5; color:var(--text-muted);">
+            ทุกอุปกรณ์ในเครือข่ายมีเวลานาฬิกาตรงกับมาตรฐานเวลาแห่งชาติ (NIMT Stratum 1) สามารถร้อยเรียงเส้นเวลาการเชื่อมต่อ Wi-Fi สู่ VPN สู่เซิร์ฟเวอร์ฐานข้อมูลได้อย่างแม่นยำทุกเสี้ยววินาที สอดคล้องตามประกาศกระทรวงดีอี พ.ศ. 2564 ข้อ 6
+          </p>
+        `;
+      } else {
+        paradoxDesc = `
+          <div style="color:var(--amber); font-weight:700; margin-bottom:0.4rem;">⚠️ พบความคลาดเคลื่อนของเวลา (${v} นาที):</div>
+          <p style="font-size:0.84rem; line-height:1.5; color:var(--text-muted);">
+            ความคลาดเคลื่อนเกินกว่า 5 วินาที ขัดต่อเกณฑ์มาตรฐานความมั่นคงปลอดภัยสารสนเทศ ผู้ตรวจสอบต้องบันทึกเป็นข้อบกพร่องด้านการควบคุมเวลา (Clock Synchronization Failure)
+          </p>
+        `;
+      }
+
+      analysisBox.innerHTML = paradoxDesc;
+    }
+
+    function syncWithNationalNtp() {
+      const slider = document.getElementById('ntp-drift-slider');
+      if (slider) {
+        slider.value = 0;
+        updateClockDriftSim(0);
+      }
+    }
+
+    function resetClockDriftSim() {
+      const slider = document.getElementById('ntp-drift-slider');
+      if (slider) {
+        slider.value = 14;
+        updateClockDriftSim(14);
+      }
+    }
+    resetClockDriftSim();
+  </script>
+</body>
+</html>

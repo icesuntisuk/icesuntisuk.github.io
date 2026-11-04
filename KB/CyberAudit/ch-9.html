@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 9: เทคนิคการตรวจออนไลน์ การสุ่มตัวอย่าง และหลักฐานการตรวจ (Online Audit Techniques, Sampling, and Audit Evidence) | NECS1312</title>
+  <meta name="description" content="บทที่ 9: เทคนิคการตรวจออนไลน์ การสุ่มตัวอย่าง และหลักฐานการตรวจ — คุณสมบัติ 8 ประการของหลักฐาน, 9 แหล่งหลักฐานไอที, ลำดับชั้นความน่าเชื่อถือ, การสุ่มตัวอย่างแบบแบ่งชั้นภูมิ 200 บัญชี, ตารางขนาดตัวอย่าง ISACA/AICPA, Audit Working Papers (WP-01, WP-02), Evidence Register, และ Chain of Custody Form พร้อมค่าแฮช SHA-256">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-body: 'Sarabun', sans-serif;
+      --font-display: 'Chakra Petch', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #f1f5f9;
+      --bg-input: #ffffff;
+      --border-color: #e2e8f0;
+      --border-accent: #cbd5e1;
+
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-glow: rgba(2, 132, 199, 0.15);
+
+      --cyan: #0891b2;
+      --cyan-light: #ecfeff;
+      --emerald: #059669;
+      --emerald-light: #ecfdf5;
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --rose: #e11d48;
+      --rose-light: #fff1f2;
+      --purple: #7c3aed;
+      --purple-light: #f5f3ff;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+
+      --font-scale: 1;
+      --line-height: 1.75;
+      --toc-width: 320px;
+      --content-max-w: 920px;
+    }
+
+    [data-theme="sepia"] {
+      --bg-base: #fbf7ee;
+      --bg-surface: #f4ede0;
+      --bg-card: #eae0d0;
+      --bg-input: #fdfaf4;
+      --border-color: #ded1be;
+      --border-accent: #ccbba5;
+      --text-main: #382d21;
+      --text-muted: #6e5e4e;
+      --text-dim: #9b8a78;
+      --primary: #965318;
+      --primary-hover: #7b4211;
+      --primary-glow: rgba(150, 83, 24, 0.15);
+      --cyan: #0d7685;
+      --cyan-light: #e6f7f9;
+      --emerald: #1e7e4e;
+      --emerald-light: #e4f5ec;
+      --amber: #b45309;
+      --amber-light: #fef3c7;
+      --rose: #b91c1c;
+      --rose-light: #fee2e2;
+      --purple: #6d28d9;
+      --purple-light: #ede9fe;
+    }
+
+    [data-theme="dark"] {
+      --bg-base: #0b0f19;
+      --bg-surface: #111827;
+      --bg-card: #1f2937;
+      --bg-input: #1e293b;
+      --border-color: #374151;
+      --border-accent: #4b5563;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --primary: #38bdf8;
+      --primary-hover: #7dd3fc;
+      --primary-glow: rgba(56, 189, 248, 0.2);
+      --cyan: #22d3ee;
+      --cyan-light: rgba(34, 211, 238, 0.1);
+      --emerald: #34d399;
+      --emerald-light: rgba(52, 211, 153, 0.1);
+      --amber: #fbbf24;
+      --amber-light: rgba(251, 191, 36, 0.1);
+      --rose: #fb7185;
+      --rose-light: rgba(251, 113, 133, 0.1);
+      --purple: #a78bfa;
+      --purple-light: rgba(167, 139, 250, 0.1);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: calc(16px * var(--font-scale)); }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: var(--line-height);
+      transition: background-color 0.2s ease, color 0.2s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--cyan));
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s ease-out;
+    }
+
+    .top-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      padding: 0.6rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .navbar-left { display: flex; align-items: center; gap: 0.8rem; }
+    .badge-course {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.25rem 0.65rem;
+      border-radius: 4px;
+      border: 1px solid var(--primary);
+    }
+    .nav-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 480px;
+    }
+
+    .navbar-right { display: flex; align-items: center; gap: 0.6rem; }
+    .control-group {
+      display: flex;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .btn-ctrl {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.35rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-family: var(--font-display);
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .btn-ctrl:hover { background: var(--bg-surface); color: var(--text-main); }
+    .btn-ctrl.active { background: var(--primary); color: #ffffff; }
+
+    .btn-icon {
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.15s;
+    }
+    .btn-icon:hover { color: var(--primary); border-color: var(--primary); }
+
+    .layout-container {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .sidebar-toc {
+      width: var(--toc-width);
+      flex-shrink: 0;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-color);
+      height: calc(100vh - 54px);
+      position: sticky;
+      top: 54px;
+      overflow-y: auto;
+      padding: 1.2rem 0.8rem;
+      transition: transform 0.25s ease;
+    }
+    .sidebar-toc::-webkit-scrollbar { width: 4px; }
+    .sidebar-toc::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 2px; }
+
+    .toc-header {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      padding: 0 0.6rem 0.8rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .toc-nav { display: flex; flex-direction: column; gap: 0.15rem; }
+    .toc-link {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+      transition: all 0.15s ease;
+    }
+    .toc-link:hover { background: var(--bg-card); color: var(--primary); }
+    .toc-link.active { background: var(--primary-glow); color: var(--primary); font-weight: 600; }
+    .toc-bullet { color: var(--text-dim); font-family: var(--font-code); font-size: 0.85rem; flex-shrink: 0; }
+    .toc-link.active .toc-bullet { color: var(--primary); font-weight: 700; }
+
+    .toc-level-1 { padding-left: 0.5rem; font-weight: 600; }
+    .toc-level-2 { padding-left: 0.8rem; }
+    .toc-level-3 { padding-left: 1.4rem; font-size: 0.78rem; }
+
+    .content-main {
+      flex: 1;
+      min-width: 0;
+      padding: 2.5rem 3rem 5rem;
+      max-width: var(--content-max-w);
+      margin: 0 auto;
+    }
+
+    .content-heading {
+      font-family: var(--font-display);
+      color: var(--text-main);
+      scroll-margin-top: 75px;
+      margin-top: 2.2rem;
+      margin-bottom: 0.9rem;
+      line-height: 1.35;
+    }
+    h1.content-heading {
+      font-size: 1.85rem;
+      font-weight: 700;
+      margin-top: 0;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.8rem;
+      color: var(--primary);
+    }
+    h2.content-heading {
+      font-size: 1.4rem;
+      font-weight: 700;
+      border-left: 4px solid var(--primary);
+      padding-left: 0.75rem;
+      margin-top: 2.8rem;
+    }
+    h3.content-heading {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1.8rem;
+      color: var(--cyan);
+    }
+    h4.content-heading {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    .content-p { margin-bottom: 1.15rem; color: var(--text-main); font-size: 0.98rem; }
+    .content-list { margin-bottom: 1.2rem; padding-left: 1.5rem; }
+    .content-list li { margin-bottom: 0.45rem; font-size: 0.96rem; }
+    .section-divider { border: 0; height: 1px; background: var(--border-color); margin: 2.5rem 0; }
+    .content-blockquote {
+      background: var(--bg-card);
+      border-left: 4px solid var(--primary);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.4rem 0;
+      font-style: normal;
+      color: var(--text-muted);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .code-block {
+      background: #0f172a;
+      color: #f8fafc;
+      font-family: var(--font-code);
+      padding: 1.1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      margin: 1.4rem 0;
+      border: 1px solid #1e293b;
+    }
+
+    code {
+      font-family: var(--font-code);
+      background: var(--bg-card);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      border: 1px solid var(--border-color);
+      color: var(--primary);
+    }
+
+    .math-tex {
+      font-family: var(--font-code);
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+      background: var(--bg-surface);
+    }
+    .content-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; text-align: left; }
+    .content-table th {
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-family: var(--font-display);
+      font-weight: 700;
+      padding: 0.75rem 0.9rem;
+      border-bottom: 2px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .content-table td {
+      padding: 0.7rem 0.9rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+      vertical-align: top;
+    }
+    .content-table tr:hover td { background: var(--primary-glow); }
+
+    /* FIGURE BOX STYLES */
+    .figure-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.4rem;
+      margin: 2rem 0;
+      box-shadow: var(--shadow-md);
+    }
+    .figure-header {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.6rem;
+    }
+    .figure-tag {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.75rem;
+      background: var(--primary);
+      color: #fff;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+    .figure-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-main);
+    }
+    .figure-caption {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
+      padding-top: 0.6rem;
+      text-align: center;
+    }
+
+    /* Fig 9.1 Criteria 8 */
+    .criteria-8-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.8rem;
+    }
+    .crit-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem;
+      border-top: 3px solid var(--primary);
+    }
+    .crit-num { font-family: var(--font-code); font-weight: 700; color: var(--primary); font-size: 1.1rem; margin-bottom: 0.2rem; }
+    .crit-name { font-family: var(--font-display); font-weight: 700; font-size: 0.88rem; margin-bottom: 0.3rem; }
+    .crit-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Fig 9.2 Sources 9 */
+    .sources-9-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.8rem;
+    }
+    .src-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem;
+    }
+    .src-icon { font-size: 1.3rem; margin-bottom: 0.2rem; }
+    .src-title { font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; }
+    .src-card p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Fig 9.3 Hierarchy Pyramid */
+    .hierarchy-pyramid { display: flex; flex-direction: column; gap: 0.5rem; }
+    .h-layer { border-radius: 8px; padding: 1rem 1.2rem; border-left: 6px solid var(--primary); }
+    .h-layer.layer-1 { background: var(--emerald-light); border-left-color: var(--emerald); }
+    .h-layer.layer-2 { background: var(--cyan-light); border-left-color: var(--cyan); }
+    .h-layer.layer-3 { background: var(--amber-light); border-left-color: var(--amber); }
+    .h-layer.layer-4 { background: var(--rose-light); border-left-color: var(--rose); }
+    .h-rank { font-family: var(--font-display); font-weight: 800; font-size: 0.75rem; letter-spacing: 0.05em; margin-bottom: 0.15rem; }
+    .layer-1 .h-rank { color: var(--emerald); }
+    .layer-2 .h-rank { color: var(--cyan); }
+    .layer-3 .h-rank { color: var(--amber); }
+    .layer-4 .h-rank { color: var(--rose); }
+    .h-name { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .h-layer p { font-size: 0.8rem; color: var(--text-muted); margin: 0; line-height: 1.4; }
+
+    /* Fig 9.4 Sampling 5 */
+    .sampling-methods-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.8rem;
+    }
+    .sm-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; }
+    .sm-badge { font-family: var(--font-code); font-weight: 700; font-size: 0.7rem; color: var(--primary); margin-bottom: 0.3rem; }
+    .sm-badge.highlight { color: var(--purple); }
+    .sm-badge.danger { color: var(--rose); }
+    .sm-card h4 { font-family: var(--font-display); font-size: 0.88rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .sm-card p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Fig 9.5 WP 10 */
+    .wp-10-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.5rem; }
+    .wp10-item { display: flex; align-items: center; gap: 0.6rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.55rem 0.75rem; }
+    .wp10-idx { font-family: var(--font-code); font-weight: 700; font-size: 0.82rem; color: var(--primary); background: var(--primary-glow); padding: 0.2rem 0.4rem; border-radius: 4px; }
+    .wp10-info { font-size: 0.76rem; color: var(--text-muted); }
+    .wp10-info strong { display: block; font-size: 0.82rem; color: var(--text-main); }
+
+    /* Fig 9.6 CoC 7 */
+    .coc-7-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.6rem; }
+    .coc-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.7rem; font-size: 0.78rem; color: var(--text-muted); }
+    .coc-card.highlight { border-color: var(--primary); background: var(--primary-glow); }
+    .coc-step { display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: #fff; text-align: center; line-height: 20px; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; margin-right: 0.4rem; }
+    .coc-card strong { display: block; color: var(--text-main); margin-bottom: 0.2rem; }
+
+    /* Working Paper Mock Card */
+    .working-paper-card { background: var(--bg-surface); border: 1px solid var(--border-accent); border-radius: 8px; padding: 1.2rem; }
+    .wp-card-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 0.4rem; }
+    .wp-ref-badge { font-family: var(--font-code); font-weight: 700; background: var(--primary); color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.78rem; }
+    .wp-eng-badge { font-family: var(--font-code); font-size: 0.75rem; color: var(--text-muted); margin-left: 0.4rem; }
+    .wp-meta-date { font-family: var(--font-code); font-size: 0.74rem; color: var(--text-dim); }
+    .wp-section-row { font-size: 0.82rem; margin-bottom: 0.6rem; line-height: 1.45; }
+    .wp-section-row.highlight-box { background: var(--bg-card); padding: 0.7rem; border-radius: 6px; border-left: 3px solid var(--primary); }
+    .wp-section-row.highlight-box ul { padding-left: 1.2rem; margin-top: 0.3rem; }
+    .wp-section-row.highlight-box li { margin-bottom: 0.3rem; font-size: 0.8rem; }
+    .wp-section-row.status-box { padding: 0.6rem 0.8rem; border-radius: 6px; font-weight: 600; }
+    .wp-section-row.status-box.danger { background: var(--rose-light); color: var(--rose); border: 1px solid var(--rose); }
+    .wp-section-row.status-box.warning { background: var(--amber-light); color: var(--amber); border: 1px solid var(--amber); }
+
+    /* CoC Mock Card */
+    .coc-mock-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.1rem; }
+    .coc-mock-top { display: flex; justify-content: space-between; font-family: var(--font-code); font-size: 0.8rem; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem; }
+    .coc-mock-file { background: var(--bg-card); padding: 0.6rem 0.8rem; border-radius: 6px; margin-bottom: 0.8rem; font-size: 0.8rem; }
+    .coc-hash-line code { display: block; word-break: break-all; margin-top: 0.2rem; background: var(--bg-surface); color: var(--rose); font-weight: 600; }
+    .coc-timeline { display: flex; flex-direction: column; gap: 0.6rem; }
+    .coc-t-item { display: flex; gap: 0.8rem; font-size: 0.8rem; background: var(--bg-card); padding: 0.6rem 0.8rem; border-radius: 6px; border-left: 3px solid var(--emerald); }
+    .coc-t-time { font-family: var(--font-code); font-size: 0.75rem; color: var(--text-dim); flex-shrink: 0; }
+    .coc-t-info strong { display: block; color: var(--text-main); margin-bottom: 0.2rem; }
+
+    /* Badges */
+    .badge-tier { font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; padding: 0.15rem 0.4rem; border-radius: 4px; }
+    .badge-tier.tier1 { background: var(--rose-light); color: var(--rose); }
+    .badge-tier.tier2 { background: var(--amber-light); color: var(--amber); }
+    .badge-tier.tier3 { background: var(--emerald-light); color: var(--emerald); }
+    .wp-tag { padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
+    .wp-tag.pass { background: var(--emerald-light); color: var(--emerald); }
+    .wp-tag.cond { background: var(--amber-light); color: var(--amber); }
+    .wp-tag.fail { background: var(--rose-light); color: var(--rose); }
+
+    /* WIDGET STYLES */
+    .widget-box {
+      background: var(--bg-surface);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2.5rem 0;
+      box-shadow: var(--shadow-lg);
+    }
+    .widget-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.6rem;
+    }
+    .widget-badge {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.75rem;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      color: #fff;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+    .widget-title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--text-main); }
+    .widget-intro { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.2rem; }
+
+    /* Widget 9.1 */
+    .triangulation-builder-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.8rem; margin-bottom: 1.2rem; }
+    .tri-slot-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.8rem; }
+    .tri-slot-card label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--text-main); }
+    .tri-slot-card select { width: 100%; padding: 0.45rem; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input); font-size: 0.8rem; color: var(--text-main); }
+    .tri-result-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.1rem; }
+
+    /* Widget 9.2 */
+    .calc-row-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.8rem; margin-bottom: 1.2rem; }
+    .calc-input-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.8rem; }
+    .calc-input-item label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .calc-input-item select { width: 100%; padding: 0.45rem; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input); font-size: 0.8rem; color: var(--text-main); }
+    .sample-size-output { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.1rem; }
+
+    /* Widget 9.3 */
+    .sim-actions-bar { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .btn-preset { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.4rem 0.8rem; font-size: 0.82rem; cursor: pointer; color: var(--text-main); font-weight: 600; transition: all 0.15s; }
+    .btn-preset:hover { background: var(--primary-glow); border-color: var(--primary); color: var(--primary); }
+    .btn-preset.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .account-sim-summary { margin-bottom: 1rem; }
+    .account-sample-table-wrap { max-height: 380px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; }
+
+    /* Widget 9.4 */
+    .wp-toggle-bar { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .wp-inspector-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; }
+
+    /* Widget 9.5 */
+    .hash-demo-box { margin-bottom: 1.2rem; }
+    .hash-display-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.9rem 1.1rem; margin-top: 0.8rem; }
+    .hdc-label { font-size: 0.78rem; color: var(--text-dim); text-transform: uppercase; font-family: var(--font-display); }
+    .hdc-val { font-family: var(--font-code); font-size: 0.95rem; font-weight: 700; color: var(--primary); word-break: break-all; margin: 0.3rem 0; }
+    .hdc-status { font-size: 0.8rem; font-weight: 700; color: var(--emerald); }
+    .coc-verify-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.6rem; margin-top: 0.6rem; }
+    .cv-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.7rem; font-size: 0.8rem; display: flex; gap: 0.6rem; }
+    .cv-step { width: 22px; height: 22px; border-radius: 50%; background: var(--primary); color: #fff; text-align: center; line-height: 22px; font-weight: 700; font-size: 0.75rem; flex-shrink: 0; }
+    .cv-status.ok { font-weight: 700; color: var(--emerald); margin-top: 0.2rem; font-size: 0.75rem; }
+
+    /* Bottom Navigation */
+    .chapter-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+    .btn-nav-chapter {
+      text-decoration: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.9rem;
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+    .btn-nav-chapter:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+    }
+
+    .toc-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 850; }
+
+    @media (max-width: 992px) {
+      .sidebar-toc {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 950;
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-lg);
+      }
+      .sidebar-toc.open { transform: translateX(0); }
+      .toc-backdrop.open { display: block; }
+      .content-main { padding: 1.5rem 1rem; }
+      .nav-title { max-width: 200px; }
+      .persp-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Reading Progress Bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-navbar">
+    <div class="navbar-left">
+      <button class="btn-icon" id="btn-toggle-toc" title="เปิด/ปิด สารบัญ (Table of Contents)">
+        <span>☰</span> สารบัญ
+      </button>
+      <span class="badge-course">NECS1312 // CH-9</span>
+      <span class="nav-title">บทที่ 9: เทคนิคการตรวจออนไลน์ การสุ่มตัวอย่าง และหลักฐานการตรวจ</span>
+    </div>
+
+    <div class="navbar-right">
+      <!-- Font Scale -->
+      <div class="control-group">
+        <button class="btn-ctrl" id="btn-font-dec" title="ลดขนาดตัวอักษร">A-</button>
+        <button class="btn-ctrl" id="btn-font-reset" title="ขนาดปกติ">A</button>
+        <button class="btn-ctrl" id="btn-font-inc" title="เพิ่มขนาดตัวอักษร">A+</button>
+      </div>
+
+      <!-- Theme Switcher -->
+      <div class="control-group">
+        <button class="btn-ctrl active" id="btn-theme-light" title="ธีมสว่าง">Light</button>
+        <button class="btn-ctrl" id="btn-theme-sepia" title="ธีมถนอมสายตา">Sepia</button>
+        <button class="btn-ctrl" id="btn-theme-dark" title="ธีมมืด">Dark</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="toc-backdrop" id="toc-backdrop"></div>
+
+  <div class="layout-container">
+    <!-- Sidebar TOC -->
+    <aside class="sidebar-toc" id="sidebar-toc">
+      <div class="toc-header">
+        <span>สารบัญเนื้อหา (TOC)</span>
+        <button class="btn-ctrl" id="btn-close-toc" style="padding:2px 6px;">✕</button>
+      </div>
+      <nav class="toc-nav" id="toc-nav"><a href="#sec-บทที่-9-เทคนิคการตรวจออนไลน์-การสุ่มตัวอย่าง-และหลักฐานการตรวจ-online-audit-techniques-sampling-and-audit-evidence-1" class="toc-link toc-level-1" data-target="sec-บทที่-9-เทคนิคการตรวจออนไลน์-การสุ่มตัวอย่าง-และหลักฐานการตรวจ-online-audit-techniques-sampling-and-audit-evidence-1"><span class="toc-bullet">›</span> <span class="toc-text">บทที่ 9 เทคนิคการตรวจออนไลน์ การสุ่มตัวอย่าง และหลักฐานการตรวจ (Online Audit Techniques, Sampling, and Audit Evidence)</span></a><a href="#sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-16" class="toc-link toc-level-2" data-target="sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-16"><span class="toc-bullet">›</span> <span class="toc-text">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</span></a><a href="#sec-ส่วนที่-1-หลักฐานการตรวจ-audit-evidence-ตาม-iso-19011-และ-isaca-itaf-28" class="toc-link toc-level-2" data-target="sec-ส่วนที่-1-หลักฐานการตรวจ-audit-evidence-ตาม-iso-19011-และ-isaca-itaf-28"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 1: หลักฐานการตรวจ (Audit Evidence ตาม ISO 19011 และ ISACA ITAF)</span></a><a href="#sec-1-1-คุณสมบัติ-8-ประการของหลักฐานการตรวจที่ยอมรับได้-30" class="toc-link toc-level-3" data-target="sec-1-1-คุณสมบัติ-8-ประการของหลักฐานการตรวจที่ยอมรับได้-30"><span class="toc-bullet">›</span> <span class="toc-text">1.1 คุณสมบัติ 8 ประการของหลักฐานการตรวจที่ยอมรับได้</span></a><a href="#sec-1-2-แหล่งที่มาของหลักฐาน-9-ประเภทในระบบเทคโนโลยีสารสนเทศ-70" class="toc-link toc-level-3" data-target="sec-1-2-แหล่งที่มาของหลักฐาน-9-ประเภทในระบบเทคโนโลยีสารสนเทศ-70"><span class="toc-bullet">›</span> <span class="toc-text">1.2 แหล่งที่มาของหลักฐาน 9 ประเภทในระบบเทคโนโลยีสารสนเทศ</span></a><a href="#sec-1-3-วิธีการรวบรวมหลักฐาน-7-วิธี-7-audit-procedures-109" class="toc-link toc-level-3" data-target="sec-1-3-วิธีการรวบรวมหลักฐาน-7-วิธี-7-audit-procedures-109"><span class="toc-bullet">›</span> <span class="toc-text">1.3 วิธีการรวบรวมหลักฐาน 7 วิธี (7 Audit Procedures)</span></a><a href="#sec-1-4-ลำดับชั้นความน่าเชื่อถือของหลักฐาน-hierarchy-of-evidence-reliability-123" class="toc-link toc-level-3" data-target="sec-1-4-ลำดับชั้นความน่าเชื่อถือของหลักฐาน-hierarchy-of-evidence-reliability-123"><span class="toc-bullet">›</span> <span class="toc-text">1.4 ลำดับชั้นความน่าเชื่อถือของหลักฐาน (Hierarchy of Evidence Reliability)</span></a><a href="#sec-ส่วนที่-2-การสุ่มตัวอย่าง-กระดาษทำการ-และการตรวจออนไลน์-156" class="toc-link toc-level-2" data-target="sec-ส่วนที่-2-การสุ่มตัวอย่าง-กระดาษทำการ-และการตรวจออนไลน์-156"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 2: การสุ่มตัวอย่าง, กระดาษทำการ และการตรวจออนไลน์</span></a><a href="#sec-2-1-ประชากร-population-และกลุ่มตัวอย่าง-sample-158" class="toc-link toc-level-3" data-target="sec-2-1-ประชากร-population-และกลุ่มตัวอย่าง-sample-158"><span class="toc-bullet">›</span> <span class="toc-text">2.1 ประชากร (Population) และกลุ่มตัวอย่าง (Sample)</span></a><a href="#sec-2-2-5-วิธีการสุ่มตัวอย่าง-sampling-methods-165" class="toc-link toc-level-3" data-target="sec-2-2-5-วิธีการสุ่มตัวอย่าง-sampling-methods-165"><span class="toc-bullet">›</span> <span class="toc-text">2.2 5 วิธีการสุ่มตัวอย่าง (Sampling Methods)</span></a><a href="#sec-2-3-ปัจจัยกำหนดขนาดตัวอย่างและเกณฑ์มาตรฐานสากล-197" class="toc-link toc-level-3" data-target="sec-2-3-ปัจจัยกำหนดขนาดตัวอย่างและเกณฑ์มาตรฐานสากล-197"><span class="toc-bullet">›</span> <span class="toc-text">2.3 ปัจจัยกำหนดขนาดตัวอย่างและเกณฑ์มาตรฐานสากล</span></a><a href="#sec-2-4-กายวิภาค-10-องค์ประกอบของกระดาษทำการตรวจสอบ-audit-working-paper-anatomy-220" class="toc-link toc-level-3" data-target="sec-2-4-กายวิภาค-10-องค์ประกอบของกระดาษทำการตรวจสอบ-audit-working-paper-anatomy-220"><span class="toc-bullet">›</span> <span class="toc-text">2.4 กายวิภาค 10 องค์ประกอบของกระดาษทำการตรวจสอบ (Audit Working Paper Anatomy)</span></a><a href="#sec-2-5-เทคนิคและมาตรการความปลอดภัยสำหรับการตรวจออนไลน์-online-remote-auditing-252" class="toc-link toc-level-3" data-target="sec-2-5-เทคนิคและมาตรการความปลอดภัยสำหรับการตรวจออนไลน์-online-remote-auditing-252"><span class="toc-bullet">›</span> <span class="toc-text">2.5 เทคนิคและมาตรการความปลอดภัยสำหรับการตรวจออนไลน์ (Online / Remote Auditing)</span></a><a href="#sec-2-6-ห่วงโซ่การครอบครองพยานหลักฐานดิจิทัล-chain-of-custody-coc-265" class="toc-link toc-level-3" data-target="sec-2-6-ห่วงโซ่การครอบครองพยานหลักฐานดิจิทัล-chain-of-custody-coc-265"><span class="toc-bullet">›</span> <span class="toc-text">2.6 ห่วงโซ่การครอบครองพยานหลักฐานดิจิทัล (Chain of Custody - CoC)</span></a><a href="#sec-ส่วนที่-3-กรณีศึกษาประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-continuous-scenario-291" class="toc-link toc-level-2" data-target="sec-ส่วนที่-3-กรณีศึกษาประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-continuous-scenario-291"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 3: กรณีศึกษาประยุกต์ &quot;มหาวิทยาลัยดิจิทัลสมมติ&quot; (Core Case Study Continuous Scenario)</span></a><a href="#sec-3-1-แผนการสุ่มตัวอย่างสำหรับบัญชีผู้ใช้ระบบ-reg-จำนวน-200-บัญชี-stratified-sampling-plan-293" class="toc-link toc-level-3" data-target="sec-3-1-แผนการสุ่มตัวอย่างสำหรับบัญชีผู้ใช้ระบบ-reg-จำนวน-200-บัญชี-stratified-sampling-plan-293"><span class="toc-bullet">›</span> <span class="toc-text">3.1 แผนการสุ่มตัวอย่างสำหรับบัญชีผู้ใช้ระบบ REG จำนวน 200 บัญชี (Stratified Sampling Plan)</span></a><a href="#sec-3-2-กระดาษทำการตรวจสอบฉบับที่-1-audit-working-paper-wp-01-327" class="toc-link toc-level-3" data-target="sec-3-2-กระดาษทำการตรวจสอบฉบับที่-1-audit-working-paper-wp-01-327"><span class="toc-bullet">›</span> <span class="toc-text">3.2 กระดาษทำการตรวจสอบฉบับที่ 1 (Audit Working Paper: WP-01)</span></a><a href="#sec-3-3-กระดาษทำการตรวจสอบฉบับที่-2-audit-working-paper-wp-02-386" class="toc-link toc-level-3" data-target="sec-3-3-กระดาษทำการตรวจสอบฉบับที่-2-audit-working-paper-wp-02-386"><span class="toc-bullet">›</span> <span class="toc-text">3.3 กระดาษทำการตรวจสอบฉบับที่ 2 (Audit Working Paper: WP-02)</span></a><a href="#sec-3-4-ทะเบียนคุมพยานหลักฐานการตรวจ-evidence-register-10-รายการสำคัญ-443" class="toc-link toc-level-3" data-target="sec-3-4-ทะเบียนคุมพยานหลักฐานการตรวจ-evidence-register-10-รายการสำคัญ-443"><span class="toc-bullet">›</span> <span class="toc-text">3.4 ทะเบียนคุมพยานหลักฐานการตรวจ (Evidence Register: 10 รายการสำคัญ)</span></a><a href="#sec-3-5-แบบฟอร์มบันทึกห่วงโซ่การครอบครองพยานหลักฐานดิจิทัล-chain-of-custody-form-478" class="toc-link toc-level-3" data-target="sec-3-5-แบบฟอร์มบันทึกห่วงโซ่การครอบครองพยานหลักฐานดิจิทัล-chain-of-custody-form-478"><span class="toc-bullet">›</span> <span class="toc-text">3.5 แบบฟอร์มบันทึกห่วงโซ่การครอบครองพยานหลักฐานดิจิทัล (Chain of Custody Form)</span></a><a href="#sec-ส่วนที่-4-กิจกรรมเชิงประยุกต์ในชั้นเรียน-active-learning-simulation-524" class="toc-link toc-level-2" data-target="sec-ส่วนที่-4-กิจกรรมเชิงประยุกต์ในชั้นเรียน-active-learning-simulation-524"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 4: กิจกรรมเชิงประยุกต์ในชั้นเรียน (Active Learning Simulation)</span></a><a href="#sec-กิจกรรม-the-online-evidence-interrogation-integrity-challenge-526" class="toc-link toc-level-3" data-target="sec-กิจกรรม-the-online-evidence-interrogation-integrity-challenge-526"><span class="toc-bullet">›</span> <span class="toc-text">กิจกรรม: &quot;The Online Evidence Interrogation &amp; Integrity Challenge&quot;</span></a><a href="#sec-ส่วนที่-5-มุมมองวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls-541" class="toc-link toc-level-2" data-target="sec-ส่วนที่-5-มุมมองวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls-541"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 5: มุมมองวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives &amp; Common Pitfalls)</span></a><a href="#sec-4-ข้อผิดพลาดร้ายแรงของผู้ตรวจสอบมือใหม่-common-pitfalls-to-avoid-560" class="toc-link toc-level-3" data-target="sec-4-ข้อผิดพลาดร้ายแรงของผู้ตรวจสอบมือใหม่-common-pitfalls-to-avoid-560"><span class="toc-bullet">›</span> <span class="toc-text">4 ข้อผิดพลาดร้ายแรงของผู้ตรวจสอบมือใหม่ (Common Pitfalls to Avoid):</span></a><a href="#sec-ส่วนที่-6-แบบฝึกหัดและการบ้านประจำบทที่-9-568" class="toc-link toc-level-2" data-target="sec-ส่วนที่-6-แบบฝึกหัดและการบ้านประจำบทที่-9-568"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 6: แบบฝึกหัดและการบ้านประจำบทที่ 9</span></a><a href="#sec-ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers-585" class="toc-link toc-level-2" data-target="sec-ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers-585"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 7: คำถามทบทวนท้ายบท (Review Questions &amp; Detailed Answers)</span></a><a href="#sec-สรุปบทที่-9-610" class="toc-link toc-level-2" data-target="sec-สรุปบทที่-9-610"><span class="toc-bullet">›</span> <span class="toc-text">สรุปบทที่ 9</span></a><a href="#sec-เอกสารอ้างอิงและมาตรฐานสากล-622" class="toc-link toc-level-2" data-target="sec-เอกสารอ้างอิงและมาตรฐานสากล-622"><span class="toc-bullet">›</span> <span class="toc-text">เอกสารอ้างอิงและมาตรฐานสากล</span></a></nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content-main" id="content-main">
+      <h1 class="content-heading" id="sec-บทที่-9-เทคนิคการตรวจออนไลน์-การสุ่มตัวอย่าง-และหลักฐานการตรวจ-online-audit-techniques-sampling-and-audit-evidence-1">บทที่ 9 เทคนิคการตรวจออนไลน์ การสุ่มตัวอย่าง และหลักฐานการตรวจ (Online Audit Techniques, Sampling, and Audit Evidence)</h1>
+<p class="content-p">ในโลกแห่งการตรวจสอบความมั่นคงปลอดภัยสารสนเทศ มีกฎเหล็กสำคัญที่สุดของวิชาชีพที่ผู้ตรวจสอบทุกคนต้องยึดมั่นคือ:</p>
+<blockquote class="content-blockquote"><strong>"ไม่มีหลักฐาน เท่ากับ ไม่ผ่าน (No Evidence, No Pass)"</strong>  <br>และ <strong>"หลักฐานต้องพูดความจริงโดยไม่ต้องพึ่งพาคำกล่าวอ้าง (Evidence must speak for itself)"</strong></blockquote>
+<p class="content-p">การสัมภาษณ์ที่ราบรื่นและคำชี้แจงที่น่าเชื่อถือของผู้รับการตรวจ ไม่อาจนำมาใช้ทดแทนพยานหลักฐานเชิงประจักษ์ (Empirical Evidence) ได้ ในขณะเดียวกัน การลงพื้นที่ตรวจสอบระบบสารสนเทศระดับองค์กรที่มีผู้ใช้งานนับหมื่นคน มีบันทึกเหตุการณ์ (Logs) หลายล้านบรรทัดต่อวัน และมีเครื่องแม่ข่ายหลายร้อยเครื่อง ผู้ตรวจสอบย่อมไม่สามารถเปิดดูข้อมูลทุกบรรทัดได้ 100% ความสำเร็จและความน่าเชื่อถือของงานตรวจสอบจึงขึ้นอยู่กับ <strong>3 ศาสตร์สำคัญ</strong>:</p>
+<ol class="content-list ordered">
+<li><strong>การประเมินและการรวบรวมหลักฐานการตรวจ (Audit Evidence):</strong> การแยกแยะหลักฐานที่มีคุณค่าทางวิชาชีพ การเลือกวิธีการรวบรวมที่เหมาะสม และการจัดลำดับชั้นความน่าเชื่อถือ</li>
+<li><strong>การสุ่มตัวอย่างตามหลักวิชาการ (Audit Sampling):</strong> การกำหนดขนาดตัวอย่างและวิธีการสุ่มที่มีเหตุผลรองรับ ทั้งแบบทางสถิติและตามฐานความเสี่ยง เพื่อให้เป็นตัวแทนของประชากรได้อย่างแท้จริง</li>
+<li><strong>การจัดทำกระดาษทำการและการตรวจออนไลน์ (Working Papers, Online Auditing & Chain of Custody):</strong> การบันทึกหลักฐานอย่างเป็นระบบ การรักษาความลับและบูรณภาพของหลักฐานดิจิทัลตามหลักห่วงโซ่การครอบครองพยานหลักฐาน (Chain of Custody)</li>
+</ol>
+<p class="content-p">ในบทนี้ นักศึกษาจะได้สวมบทบาทเป็น <strong>Lead Auditor และ Technical Auditor</strong> ในการลงมือปฏิบัติการตรวจจริง โดยเรียนรู้วิธีการคัดกรองหลักฐาน การสุ่มตัวอย่างประชากรผู้ใช้ 200 บัญชี การจัดทำ Audit Working Paper ฉบับสมบูรณ์ และการบริหารจัดการหลักฐานดิจิทัลให้มีผลผูกพันทางกฎหมายและมาตรฐานสากล</p>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-16">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</h2>
+<p class="content-p">เมื่อสิ้นสุดการเรียนรู้ในบทนี้ นักศึกษาสามารถ:</p>
+<ol class="content-list ordered">
+<li><strong>ประเมินและคัดกรองคุณสมบัติของหลักฐานการตรวจได้อย่างถูกต้อง (CLO1, CLO3):</strong> จำแนกคุณสมบัติ 8 ประการของหลักฐานการตรวจ (Sufficiency, Appropriateness, Relevance, Reliability, Accuracy, Completeness, Timeliness, Traceability) และจัดลำดับชั้นความน่าเชื่อถือของหลักฐานตามมาตรฐาน ISO 19011 และ ISACA ITAF ได้</li>
+<li><strong>เลือกใช้วิธีการรวบรวมหลักฐานและเทคนิค CAATs ได้อย่างเหมาะสม (CLO3, CLO4):</strong> อธิบายและเลือกใช้ 7 วิธีการรวบรวมหลักฐาน (Inquiry, Inspection, Observation, Confirmation, Recalculation, Re-performance, CAATs) ให้สอดคล้องกับวัตถุประสงค์ของการทดสอบการควบคุม (Test of Controls)</li>
+<li><strong>ออกแบบแผนการสุ่มตัวอย่างตามหลักวิชาการได้ (CLO3):</strong> กำหนดขอบเขตประชากร (Population) เลือกใช้วิธีการสุ่มตัวอย่าง (Random, Systematic, Stratified, Judgmental, High-risk) และคำนวณขนาดตัวอย่างขั้นต่ำตามตารางมาตรฐานสากลได้อย่างถูกต้อง</li>
+<li><strong>จัดทำกระดาษทำการตรวจสอบ (Audit Working Paper) ฉบับสมบูรณ์ได้ (CLO3, CLO4):</strong> บันทึกการทดสอบการควบคุมครอบคลุม 10 องค์ประกอบมาตรฐาน อ้างอิงเอกสารหลักฐาน และเขียนข้อสรุปผลการตรวจได้อย่างเป็นกลางและรัดกุม</li>
+<li><strong>ประยุกต์ใช้เทคนิคการตรวจออนไลน์และรักษากฎห่วงโซ่การครอบครองหลักฐานได้ (CLO1, CLO3):</strong> กำหนดมาตรการความปลอดภัยในการตรวจระยะไกล (Screen Sharing, Read-only Access, Data Minimization) และจัดทำแบบฟอร์ม Chain of Custody พร้อมคำนวณค่าแฮช (Cryptographic Hash) เพื่อคุ้มครองบูรณภาพของพยานหลักฐานดิจิทัล</li>
+</ol>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-1-หลักฐานการตรวจ-audit-evidence-ตาม-iso-19011-และ-isaca-itaf-28">ส่วนที่ 1: หลักฐานการตรวจ (Audit Evidence ตาม ISO 19011 และ ISACA ITAF)</h2>
+<h3 class="content-heading" id="sec-1-1-คุณสมบัติ-8-ประการของหลักฐานการตรวจที่ยอมรับได้-30">1.1 คุณสมบัติ 8 ประการของหลักฐานการตรวจที่ยอมรับได้</h3>
+<p class="content-p">ตามมาตรฐานสากล <strong>ISO 19011:2018 (ข้อ 6.4.7)</strong> และ <strong>ISACA ITAF (Standard 2205: Evidence)</strong> ข้อมูลที่ผู้ตรวจสอบรวบรวมมาจะถือเป็น "หลักฐานการตรวจ (Audit Evidence)" ก็ต่อเมื่อผ่านการตรวจสอบยืนยัน (Verifiable) และมีคุณสมบัติครบถ้วนตามเกณฑ์ <strong>8 ประการ</strong>:</p>
+
+<div class="figure-box" id="figure-9-1">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 9.1</div>
+    <div class="figure-title">8 คุณสมบัติมาตรฐานของหลักฐานการตรวจตาม ISO 19011 และ ISACA ITAF</div>
+  </div>
+  <div class="criteria-8-grid">
+    <div class="crit-card">
+      <div class="crit-num">01</div>
+      <div class="crit-name">Sufficiency (ความเพียงพอ)</div>
+      <div class="crit-desc">ปริมาณข้อมูลมากพอในเชิงสถิติที่จะทำให้ผู้ตรวจคนอื่นได้ข้อสรุปแบบเดียวกัน (Quantity of Evidence)</div>
+    </div>
+    <div class="crit-card">
+      <div class="crit-num">02</div>
+      <div class="crit-name">Appropriateness (ความเหมาะสม)</div>
+      <div class="crit-desc">คุณภาพและความตรงจุดของหลักฐานในการสนับสนุนข้อค้นพบอย่างมีน้ำหนัก (Quality of Evidence)</div>
+    </div>
+    <div class="crit-card">
+      <div class="crit-num">03</div>
+      <div class="crit-name">Relevance (ความตรงประเด็น)</div>
+      <div class="crit-desc">มีความเกี่ยวข้องโดยตรงกับเกณฑ์และวัตถุประสงค์ของการตรวจสอบในหัวข้อนั้น</div>
+    </div>
+    <div class="crit-card">
+      <div class="crit-num">04</div>
+      <div class="crit-name">Reliability (ความน่าเชื่อถือ)</div>
+      <div class="crit-desc">แหล่งที่มามีความซื่อตรง เป็นกลาง และปราศจากการดัดแปลงแก้ไข (Integrity & Origin)</div>
+    </div>
+    <div class="crit-card">
+      <div class="crit-num">05</div>
+      <div class="crit-name">Accuracy (ความถูกต้องแม่นยำ)</div>
+      <div class="crit-desc">ข้อมูลไม่มีข้อผิดพลาด คอนฟิกและค่าตัวเลขสะท้อนสถานะที่เป็นจริงของระบบ</div>
+    </div>
+    <div class="crit-card">
+      <div class="crit-num">06</div>
+      <div class="crit-name">Completeness (ความครบถ้วน)</div>
+      <div class="crit-desc">ไม่มีข้อมูลสำคัญส่วนใดขาดหายไป เช่น Log มี Header, Timestamp, และ Event ID ครบ</div>
+    </div>
+    <div class="crit-card">
+      <div class="crit-num">07</div>
+      <div class="crit-name">Timeliness (ความเป็นปัจจุบัน)</div>
+      <div class="crit-desc">ข้อมูลเกิดขึ้นภายในกรอบเวลาที่กำหนดไว้ในขอบเขตการตรวจ (เช่น ในรอบ 1 ปีงบประมาณ)</div>
+    </div>
+    <div class="crit-card">
+      <div class="crit-num">08</div>
+      <div class="crit-name">Traceability (การย้อนรอยได้)</div>
+      <div class="crit-desc">สามารถสืบหาต้นตอ ผู้จัดทำ และเส้นทางการอนุมัติได้อย่างชัดเจน (Audit Trail)</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 9.1:</strong> เกณฑ์ 8 ประการในการประเมินและคัดกรองพยานหลักฐานทางการตรวจประเมินความมั่นคงปลอดภัย
+  </div>
+</div>
+
+<blockquote class="content-blockquote">[!IMPORTANT]<br><strong>ความสัมพันธ์ระหว่าง Sufficiency กับ Appropriateness:</strong><br>* <strong>Sufficiency (ปริมาณ)</strong> และ <strong>Appropriateness (คุณภาพ)</strong> ทำหน้าที่ถ่วงดุลกัน หากหลักฐานมีคุณภาพสูงมาก (เช่น ล็อกที่เซ็นดิจิทัลจากอุปกรณ์อิสระ) ผู้ตรวจอาจต้องการปริมาณตัวอย่างน้อยลง แต่ถ้าหลักฐานมีคุณภาพต่ำ (เช่น บันทึกจดมือ) ต่อให้เก็บมาเป็นจำนวนมากก็ไม่อาจทดแทนคุณภาพที่ขาดหายไปได้</blockquote>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-1-2-แหล่งที่มาของหลักฐาน-9-ประเภทในระบบเทคโนโลยีสารสนเทศ-70">1.2 แหล่งที่มาของหลักฐาน 9 ประเภทในระบบเทคโนโลยีสารสนเทศ</h3>
+<p class="content-p">ในการตรวจประเมินระบบไอที ผู้ตรวจสอบต้องรวบรวมหลักฐานจาก <strong>9 แหล่งสำคัญ</strong>:</p>
+
+<div class="figure-box" id="figure-9-2">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 9.2</div>
+    <div class="figure-title">9 แหล่งที่มาของหลักฐานในระบบเทคโนโลยีสารสนเทศ (9 IT Evidence Sources)</div>
+  </div>
+  <div class="sources-9-grid">
+    <div class="src-card">
+      <div class="src-icon">📜</div>
+      <div class="src-title">System & Audit Logs</div>
+      <p>Security Event Log (Windows Event ID 4624/4625), Firewall Deny Log, SIEM Alert Records</p>
+    </div>
+    <div class="src-card">
+      <div class="src-icon">⚙️</div>
+      <div class="src-title">Configuration Files</div>
+      <p>ไฟล์ตั้งค่าจริงของระบบ: <code>nginx.conf</code>, <code>sshd_config</code>, GPO Export, Firewall Rulebase</p>
+    </div>
+    <div class="src-card">
+      <div class="src-icon">💻</div>
+      <div class="src-title">Source Code & Scripts</div>
+      <p>ซอร์สโค้ดแอปพลิเคชัน, Infrastructure as Code (Terraform), CI/CD Pipeline Script</p>
+    </div>
+    <div class="src-card">
+      <div class="src-icon">🗄️</div>
+      <div class="src-title">Database Records</div>
+      <p>ผลลัพธ์คำสั่ง SQL Query: รายชื่อผู้ใช้ใน <code>ALL_USERS</code>, ตาราง Audit Trail การแก้เกรด</p>
+    </div>
+    <div class="src-card">
+      <div class="src-icon">🏢</div>
+      <div class="src-title">Physical Access Logs</div>
+      <p>บันทึกแตะคีย์การ์ดเข้า Data Center, รายงาน CCTV, สมุดลงนามผู้มาเยือน (Visitor Logbook)</p>
+    </div>
+    <div class="src-card">
+      <div class="src-icon">🌐</div>
+      <div class="src-title">Network Traffic / PCAP</div>
+      <p>บันทึกการดักจับแพ็กเก็ต (PCAP Export), NetFlow Records, SSL/TLS Cipher Scan Output</p>
+    </div>
+    <div class="src-card">
+      <div class="src-icon">📋</div>
+      <div class="src-title">Policies & Procedures</div>
+      <p>เอกสารนโยบาย ISMS ที่ผู้บริหารลงนาม, คู่มือการปฏิบัติงาน (SOP), ผังระบบงาน (Network Diagram)</p>
+    </div>
+    <div class="src-card">
+      <div class="src-icon">🎫</div>
+      <div class="src-title">Ticketing & Workflows</div>
+      <p>ใบขอเปิดสิทธิ์ (Access Request Ticket), บันทึกการอนุมัติการเปลี่ยนแปลง (Change RFC บน Jira/ServiceNow)</p>
+    </div>
+    <div class="src-card">
+      <div class="src-icon">👥</div>
+      <div class="src-title">User Accounts & IAM</div>
+      <p>Active Directory User Dump, กลุ่ม Group Membership, ทะเบียนผู้ถือสิทธิ์พิเศษ (Privileged List)</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 9.2:</strong> แหล่งหลักฐาน 9 ประเภทที่ครอบคลุมทั้งมิติเทคนิค กายภาพ และเอกสารบริหารจัดการ
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-การวิเคราะห์จุดอ่อนของหลักฐานประเภท-ภาพหน้าจอ-screenshots-100">การวิเคราะห์จุดอ่อนของหลักฐานประเภท "ภาพหน้าจอ (Screenshots)":</h4>
+<ul class="content-list ">
+<li>แม้ภาพหน้าจอจะเป็นหลักฐานที่นิยมใช้มากที่สุดเพราะเข้าใจง่าย แต่ภาพหน้าจอ <strong>เป็นหลักฐานที่มีความน่าเชื่อถือต่ำที่สุดในกลุ่มเอกสารอิเล็กทรอนิกส์</strong> เนื่องจากสามารถใช้โปรแกรมแต่งภาพดัดแปลงค่าตัวเลข วันเวลา หรือสถานะได้อย่างง่ายดาย</li>
+<li><strong>แนวปฏิบัติสากล:</strong> หากจำเป็นต้องใช้ภาพหน้าจอ ต้องมีองค์ประกอบครบถ้วน:</li>
+</ul>
+<ol class="content-list ordered">
+<li>แสดงแถบ Taskbar ด้านล่างที่ระบุวันเวลาของเครื่องชัดเจน</li>
+<li>แสดง URL Bar หรือ Hostname ของเซิร์ฟเวอร์</li>
+<li>ผู้ตรวจควรเป็นผู้สังเกตการณ์สดขณะจับภาพหน้าจอ (Witnessed Screenshot) หรือขอให้บันทึกเป็นคลิปวิดีโอสั้นพร้อมคำนวณค่า SHA-256</li>
+</ol>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-1-3-วิธีการรวบรวมหลักฐาน-7-วิธี-7-audit-procedures-109">1.3 วิธีการรวบรวมหลักฐาน 7 วิธี (7 Audit Procedures)</h3>
+<p class="content-p">ตามมาตรฐาน ISACA ITAF และมาตรฐานการสอบบัญชีสากล (AICPA / IIA) ผู้ตรวจสอบใช้กระบวนการ 7 ประการในการรวบรวมหลักฐาน:</p>
+<ol class="content-list ordered">
+<li><strong>Inquiry (การสอบถามและสัมภาษณ์):</strong> การตั้งคำถามเชิงลึกกับผู้ปฏิบัติงานและผู้บริหาร ถือเป็นจุดเริ่มต้นของการทำความเข้าใจ แต่ <em>ไม่สามารถใช้เป็นหลักฐานเดี่ยวเพื่อสรุปผลได้</em></li>
+<li><strong>Inspection (การตรวจดูเอกสารและระเบียน):</strong> การตรวจสอบนโยบาย แผนผัง บันทึกการอนุมัติ และไฟล์คอนฟิกอย่างละเอียดเพื่อดูความถูกต้องตามเกณฑ์</li>
+<li><strong>Observation (การสังเกตการณ์):</strong> การเฝ้าดูการปฏิบัติงานจริงในสถานการณ์จริง เช่น ยืนดูพนักงานสแกนนิ้วเข้า Data Center หรือดูเจ้าหน้าที่ทำลายเอกสารลับ</li>
+<li><strong>Confirmation (การขอคำยืนยันจากบุคคลภายนอก):</strong> การส่งหนังสือหรืออีเมลสอบถามไปยังบุคคลที่สาม เช่น ขอหนังสือยืนยันจากผู้ให้บริการ Cloud เรื่อง SLA หรือขอคำยืนยันจากธนาคารเรื่องยอดเงิน</li>
+<li><strong>Recalculation (การคำนวณซ้ำ):</strong> การตรวจสอบความถูกต้องทางคณิตศาสตร์ เช่น การคำนวณสูตรคะแนนความเสี่ยง หรือการคำนวณรอบเวลาการสำรองข้อมูล</li>
+<li><strong>Re-performance (การปฏิบัติการซ้ำโดยผู้ตรวจ):</strong> การที่ผู้ตรวจสอบเป็นผู้ลงมือรันขั้นตอนนั้นซ้ำด้วยตนเอง หรือสั่งการให้ระบบประมวลผลต่อหน้า เพื่อพิสูจน์ว่าผลลัพธ์เป็นไปตามที่ระบุไว้จริง (เช่น ทดสอบกดปุ่มขอกู้คืนไฟล์เพื่อดูว่าระบบสั่งงานจริงหรือไม่)</li>
+<li><strong>Computer-assisted Audit Techniques (CAATs):</strong> การใช้ซอฟต์แวร์ สคริปต์อัตโนมัติ หรือคำสั่ง SQL/Python ในการดึงและวิเคราะห์ข้อมูลปริมาณมหาศาล เช่น รันสคริปต์ตรวจสอบบัญชีที่ไม่มีการล็อกอินเกิน 90 วันจากประชากรผู้ใช้ 20,000 คน</li>
+</ol>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-1-4-ลำดับชั้นความน่าเชื่อถือของหลักฐาน-hierarchy-of-evidence-reliability-123">1.4 ลำดับชั้นความน่าเชื่อถือของหลักฐาน (Hierarchy of Evidence Reliability)</h3>
+
+<div class="widget-box" id="widget-9-1">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 9.1</div>
+    <div class="widget-title">เครื่องมือประเมินระดับความน่าเชื่อถือและการสอบทานยัน 3 ฝ่าย (Evidence Reliability & Triangulation Evaluator)</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-intro">
+      ตามมาตรฐาน ISO 19011 และ ISACA ITAF ผู้ตรวจสอบต้องไม่สรุปผลจากหลักฐานเพียงชิ้นเดียว ทดสอบเลือกหลักฐาน 3 รายการเพื่อคำนวณ <strong>ความน่าเชื่อถือรวม (Reliability Score)</strong> และตรวจสอบว่าผ่าน <strong>กฎการสอบทานยัน 3 ฝ่าย (Triangulation Rule)</strong> หรือไม่:
+    </p>
+
+    <div class="triangulation-builder-grid">
+      <div class="tri-slot-card">
+        <label>หลักฐานชิ้นที่ 1 (Evidence #1):</label>
+        <select id="sel-ev-1" onchange="updateTriangulation()">
+          <option value="direct_obs">การสังเกตการณ์สดหน้าจอคอนฟิก (Direct Live Observation) [Tier 1]</option>
+          <option value="siem_log">SIEM WORM Immutable Log [Tier 2]</option>
+          <option value="policy_doc">เอกสารนโยบายลงนามอนุมัติ (Approved Policy PDF) [Tier 3]</option>
+          <option value="screenshot">ภาพถ่ายหน้าจอที่ส่งผ่านแชต (Cropped Screenshot) [Tier 4]</option>
+          <option value="interview">คำสัมภาษณ์แอดมินปากเปล่า (Oral Representation) [Tier 4]</option>
+        </select>
+      </div>
+
+      <div class="tri-slot-card">
+        <label>หลักฐานชิ้นที่ 2 (Evidence #2):</label>
+        <select id="sel-ev-2" onchange="updateTriangulation()">
+          <option value="siem_log" selected>SIEM WORM Immutable Log [Tier 2]</option>
+          <option value="direct_obs">การสังเกตการณ์สดหน้าจอคอนฟิก (Direct Live Observation) [Tier 1]</option>
+          <option value="re_perf">การทดสอบซ้ำคำสั่ง Query โดยผู้ตรวจ (Re-performance) [Tier 1]</option>
+          <option value="ticket">ใบงานขออนุมัติบน Jira (Approved Change RFC) [Tier 2]</option>
+          <option value="screenshot">ภาพถ่ายหน้าจอที่ส่งผ่านแชต (Cropped Screenshot) [Tier 4]</option>
+        </select>
+      </div>
+
+      <div class="tri-slot-card">
+        <label>หลักฐานชิ้นที่ 3 (Evidence #3):</label>
+        <select id="sel-ev-3" onchange="updateTriangulation()">
+          <option value="ticket" selected>ใบงานขออนุมัติบน Jira (Approved Change RFC) [Tier 2]</option>
+          <option value="policy_doc">เอกสารนโยบายลงนามอนุมัติ (Approved Policy PDF) [Tier 3]</option>
+          <option value="siem_log">SIEM WORM Immutable Log [Tier 2]</option>
+          <option value="interview">คำสัมภาษณ์แอดมินปากเปล่า (Oral Representation) [Tier 4]</option>
+          <option value="re_perf">การทดสอบซ้ำคำสั่ง Query โดยผู้ตรวจ (Re-performance) [Tier 1]</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="tri-result-box" id="tri-result-box">
+      <!-- Populated via JS -->
+    </div>
+  </div>
+</div>
+
+<p class="content-p">ผู้ตรวจสอบต้องชั่งน้ำหนักพยานหลักฐานตามหลักนิติวิทยาศาสตร์และมาตรฐานสากล โดยแบ่งลำดับชั้นความน่าเชื่อถือออกเป็น <strong>4 ระดับ</strong>:</p>
+
+<div class="figure-box" id="figure-9-3">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 9.3</div>
+    <div class="figure-title">ลำดับชั้นความน่าเชื่อถือของหลักฐาน (Hierarchy of Evidence Reliability)</div>
+  </div>
+  <div class="hierarchy-pyramid">
+    <div class="h-layer layer-1">
+      <div class="h-rank">TIER 1 (สูงสุด / HIGH)</div>
+      <div class="h-name">หลักฐานที่ผู้ตรวจสอบรวบรวมด้วยตนเองโดยตรง / แหล่งอิสระภายนอก</div>
+      <p>การสังเกตการณ์สด (Direct Observation), การทดสอบซ้ำ (Re-performance), หนังสือยืนยันจากภายนอก (Bank / Cloud Confirmation), ผลสแกนที่ผู้ตรวจรันสด</p>
+    </div>
+    <div class="h-layer layer-2">
+      <div class="h-rank">TIER 2 (ปานกลางค่อนข้างสูง / MODERATE-HIGH)</div>
+      <div class="h-name">หลักฐานที่สร้างขึ้นจากระบบอัตโนมัติที่มีการควบคุมภายในรัดกุม</div>
+      <p>System Logs ที่ส่งเข้า SIEM แบบ WORM ทันที, เอกสารภายนอกที่มีลายมือชื่ออนุมัติจริง, Log ที่เซ็น Cryptographic Signature</p>
+    </div>
+    <div class="h-layer layer-3">
+      <div class="h-rank">TIER 3 (ปานกลางค่อนข้างต่ำ / MODERATE-LOW)</div>
+      <div class="h-name">หลักฐานภายในที่จัดทำขึ้นโดยผู้รับการตรวจ (Internal Documentation)</div>
+      <p>เอกสารนโยบาย ISMS, คู่มือ SOP, บันทึกการประชุมภายใน, Log ในเครื่อง Local ที่แอดมินแก้ไขได้</p>
+    </div>
+    <div class="h-layer layer-4">
+      <div class="h-rank">TIER 4 (ต่ำสุด / LOW)</div>
+      <div class="h-name">คำกล่าวอ้างด้วยวาจา และภาพถ่ายหน้าจอที่ไม่มีการยืนยันสด</div>
+      <p>คำชี้แจงจากการสัมภาษณ์ปากเปล่า (Oral Representation), ภาพถ่ายหน้าจอ (Screenshots) ที่ตัดต่อได้ง่าย</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 9.3:</strong> พีระมิดลำดับชั้นความน่าเชื่อถือของพยานหลักฐานตามมาตรฐาน ISO 19011 และ ISACA ITAF
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-กฎการสอบทานยัน-3-ฝ่าย-evidence-triangulation-149">กฎการสอบทานยัน 3 ฝ่าย (Evidence Triangulation):</h4>
+<p class="content-p">เมื่อใดก็ตามที่ผู้ตรวจสอบได้รับหลักฐานในระดับ 3 หรือระดับ 4 ผู้ตรวจสอบ <strong>ห้ามสรุปผลทันที</strong> แต่ต้องใช้เทคนิค <strong>Triangulation</strong> โดยการหาหลักฐานจาก 3 แหล่งที่แตกต่างกันมาเปรียบเทียบยันกัน:</p>
+<p class="content-p">$<code class="math-tex">\text{คำสัมภาษณ์ (Interview)} \iff \text{เอกสารนโยบาย (Policy)} \iff \text{บันทึกระบบจริง (System Log)}</code>$</p>
+<p class="content-p">หากทั้ง 3 แหล่งให้ข้อมูลสอดคล้องกันอย่างสมบูรณ์ จึงจะยอมรับเป็นข้อเท็จจริงทางวิชาชีพได้</p>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-2-การสุ่มตัวอย่าง-กระดาษทำการ-และการตรวจออนไลน์-156">ส่วนที่ 2: การสุ่มตัวอย่าง, กระดาษทำการ และการตรวจออนไลน์</h2>
+<h3 class="content-heading" id="sec-2-1-ประชากร-population-และกลุ่มตัวอย่าง-sample-158">2.1 ประชากร (Population) และกลุ่มตัวอย่าง (Sample)</h3>
+<ul class="content-list ">
+<li><strong>ประชากร (Population):</strong> <em>ชุดข้อมูลทั้งหมด</em> ของรายการ ธุรกรรม เหตุการณ์ หรือบัญชีที่อยู่ภายใต้ขอบเขตของการตรวจสอบ เช่น "บัญชีผู้ใช้ทั้งหมดที่มีสิทธิ์เข้าถึงระบบ REG ในรอบปี รวม 200 บัญชี" หรือ "บันทึก Firewall Deny Logs ทั้งหมดในรอบ 30 วัน รวม 1,500,000 แถว"</li>
+<li><strong>กลุ่มตัวอย่าง (Sample):</strong> <em>ส่วนย่อยของประชากร</em> ที่ผู้ตรวจสอบคัดเลือกขึ้นมาเพื่อทำการทดสอบ โดยคาดหวังว่าผลการทดสอบของกลุ่มตัวอย่างจะเป็นตัวแทนที่สะท้อนคุณลักษณะของประชากรทั้งหมด</li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-2-5-วิธีการสุ่มตัวอย่าง-sampling-methods-165">2.2 5 วิธีการสุ่มตัวอย่าง (Sampling Methods)</h3>
+<p class="content-p">ตามมาตรฐาน ISACA ITAF Standard 2206 ผู้ตรวจสอบสามารถเลือกใช้วิธีการสุ่มตัวอย่างได้ทั้งเชิงสถิติ (Statistical) และไม่ใช่เชิงสถิติ (Non-statistical):</p>
+
+<div class="figure-box" id="figure-9-4">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 9.4</div>
+    <div class="figure-title">5 วิธีการสุ่มตัวอย่างทางการตรวจประเมินระบบไอที (5 Audit Sampling Methods)</div>
+  </div>
+  <div class="sampling-methods-grid">
+    <div class="sm-card">
+      <div class="sm-badge">1. RANDOM</div>
+      <h4>Random Sampling (การสุ่มแบบธรรมดา)</h4>
+      <p>ทุกรายการในประชากรมีโอกาสถูกเลือกเท่ากัน ใช้โปรแกรมสร้างตัวเลขสุ่ม (RNG) เหมาะกับประชากรที่มีความเสี่ยงสม่ำเสมอกัน</p>
+    </div>
+    <div class="sm-card">
+      <div class="sm-badge">2. SYSTEMATIC</div>
+      <h4>Systematic Sampling (การสุ่มแบบมีระบบ)</h4>
+      <p>เลือกทุกรายการที่ $k$ จากประชากร (เช่น เลือกทุกๆ รายการที่ 10 จากรายชื่อ 200 คน) เหมาะกับรายการที่มีการเรียงลำดับเวลาหรือรหัสไว้แล้ว</p>
+    </div>
+    <div class="sm-card">
+      <div class="sm-badge highlight">3. STRATIFIED</div>
+      <h4>Stratified Sampling (การสุ่มแบบแบ่งชั้นภูมิ)</h4>
+      <p>แบ่งประชากรออกเป็นกลุ่มย่อยตามความเสี่ยง (เช่น แอดมิน, เจ้าหน้าที่, ผู้ใช้ทั่วไป) แล้วสุ่มแต่ละกลุ่มด้วยสัดส่วนที่ต่างกัน มุ่งเน้นความเสี่ยงสูง</p>
+    </div>
+    <div class="sm-card">
+      <div class="sm-badge">4. JUDGMENTAL</div>
+      <h4>Judgmental Sampling (การสุ่มตามดุลยพินิจ)</h4>
+      <p>ใช้ประสบการณ์และความรู้ของผู้ตรวจในการเจาะจงเลือก เช่น สุ่มรายการที่มีมูลค่าสูงผิดปกติ หรือธุรกรรมช่วงดึก</p>
+    </div>
+    <div class="sm-card">
+      <div class="sm-badge danger">5. HIGH-RISK</div>
+      <h4>High-risk Directed (การสุ่มมุ่งเป้าความเสี่ยงสูง)</h4>
+      <p>คัดเลือกตรวจสอบเฉพาะรายการที่มีความเสี่ยงสูงสุด (100% Focused) เช่น ตรวจบัญชี Domain Admin และสิทธิ์ DBA ทั้งหมดโดยไม่สุ่ม</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 9.4:</strong> การเลือกวิธีการสุ่มตัวอย่างให้สอดคล้องกับพฤติกรรมความเสี่ยงและขนาดของประชากร
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-3-ปัจจัยกำหนดขนาดตัวอย่างและเกณฑ์มาตรฐานสากล-197">2.3 ปัจจัยกำหนดขนาดตัวอย่างและเกณฑ์มาตรฐานสากล</h3>
+
+<div class="widget-box" id="widget-9-2">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 9.2</div>
+    <div class="widget-title">เครื่องมือคำนวณขนาดตัวอย่างการสุ่มตรวจตามเกณฑ์มาตรฐานสากล (ISACA / AICPA Sample Size Calculator)</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-intro">
+      คำนวณขนาดตัวอย่างขั้นต่ำ ($n$) สำหรับการทดสอบการควบคุม (Test of Controls) โดยอิงตามตารางเกณฑ์มาตรฐานสากลของ ISACA และ AICPA:
+    </p>
+
+    <div class="calc-row-inputs">
+      <div class="calc-input-item">
+        <label>ความถี่ของมาตรการควบคุม (Control Frequency):</label>
+        <select id="calc-freq" onchange="updateSampleSizeCalc()">
+          <option value="daily">ประจำวัน / หลายครั้งต่อวัน (Daily / Multiple per day)</option>
+          <option value="weekly">ประจำสัปดาห์ (Weekly)</option>
+          <option value="monthly">ประจำเดือน (Monthly)</option>
+          <option value="quarterly">ประจำไตรมาส (Quarterly)</option>
+          <option value="annual">ประจำปี (Annual)</option>
+          <option value="automated">มาตรการควบคุมอัตโนมัติ (Automated IT Control)</option>
+        </select>
+      </div>
+
+      <div class="calc-input-item">
+        <label>ระดับความเชื่อมั่นที่ต้องการ (Confidence Level):</label>
+        <select id="calc-conf" onchange="updateSampleSizeCalc()">
+          <option value="high">สูง 95% (High Assurance / Key Control)</option>
+          <option value="moderate">ปานกลาง 90% (Moderate Assurance / Supporting Control)</option>
+        </select>
+      </div>
+
+      <div class="calc-input-item">
+        <label>อัตราความคลาดเคลื่อนที่ยอมรับได้ (Tolerable Deviation Rate):</label>
+        <select id="calc-dev" onchange="updateSampleSizeCalc()">
+          <option value="strict">เข้มงวด 5% (Zero/Near-Zero Tolerance)</option>
+          <option value="standard">มาตรฐาน 10% (General Systems)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sample-size-output" id="sample-size-output">
+      <!-- Populated via JS -->
+    </div>
+  </div>
+</div>
+
+<p class="content-p">ขนาดตัวอย่าง (Sample Size) ไม่ได้ขึ้นอยู่กับความพึงพอใจของผู้ตรวจ แต่ถูกกำหนดโดย <strong>5 ปัจจัยเชิงตรรกะ</strong>:</p>
+<ol class="content-list ordered">
+<li><strong>ความถี่ของการทำงานของมาตรการควบคุม (Control Frequency):</strong> การควบคุมที่ทำทุกวันย่อมต้องการตัวอย่างมากกว่าการควบคุมที่ทำปีละครั้ง</li>
+<li><strong>ความสำคัญและระดับความเสี่ยงของการควบคุม (Control Risk):</strong> หากเป็นการควบคุมความเสี่ยงวิกฤต (Key Control) ต้องใช้ตัวอย่างมากขึ้น</li>
+<li><strong>ความสม่ำเสมอของกระบวนการ (Automation Level):</strong> หากเป็นการควบคุมด้วยระบบอัตโนมัติ (Automated Control) ที่ผ่านการทดสอบ Change Management แล้ว ขนาดตัวอย่างสามารถลดลงเหลือเพียง 1 รายการได้</li>
+<li><strong>อัตราข้อผิดพลาดที่ยอมรับได้ (Tolerable Error Rate):</strong> หากองค์กรยอมรับข้อผิดพลาดได้น้อยมาก (Zero Tolerance) ต้องเพิ่มขนาดตัวอย่าง</li>
+<li><strong>ขนาดของประชากร (Population Size):</strong> สำหรับการควบคุมที่ทำด้วยมือ (Manual Control) ประชากรขนาดใหญ่จะต้องมีขนาดตัวอย่างตามเกณฑ์สถิติ</li>
+</ol>
+<h4 class="content-heading" id="sec-ตารางเกณฑ์ขนาดตัวอย่างมาตรฐานสากลสำหรับการทดสอบการควบคุม-isaca-aicpa-sample-size-matrix-206">ตารางเกณฑ์ขนาดตัวอย่างมาตรฐานสากลสำหรับการทดสอบการควบคุม (ISACA / AICPA Sample Size Matrix):</h4>
+<div class="table-container"><table class="content-table"><thead><tr><th>ความถี่ของการควบคุม (Control Frequency)</th><th>ขนาดประชากรโดยประมาณ (Population)</th><th>ขนาดตัวอย่างขั้นต่ำสำหรับความเสี่ยงปกติ</th><th>ขนาดตัวอย่างขั้นต่ำสำหรับความเสี่ยงสูง</th><th>เหตุผลประกอบทางวิชาชีพ</th></tr></thead><tbody><tr><td><strong>รายปี (Annual)</strong></td><td>1 ครั้งต่อปี</td><td><strong>1</strong></td><td><strong>1</strong></td><td>ตรวจสอบการทบทวนนโยบายประจำปี หรือรายงาน BCP ประจำปี</td></tr><tr><td><strong>รายไตรมาส (Quarterly)</strong></td><td>4 ครั้งต่อปี</td><td><strong>2</strong></td><td><strong>2–4</strong></td><td>ตรวจสอบรายงานผลการสแกนช่องโหว่ หรือรายงานทบทวนสิทธิ์</td></tr><tr><td><strong>รายเดือน (Monthly)</strong></td><td>12 ครั้งต่อปี</td><td><strong>2–3</strong></td><td><strong>4–6</strong></td><td>ตรวจสอบรายงานสำรองข้อมูลประจำเดือน หรือรายงานปะแพตช์</td></tr><tr><td><strong>รายสัปดาห์ (Weekly)</strong></td><td>52 ครั้งต่อปี</td><td><strong>5</strong></td><td><strong>10</strong></td><td>ตรวจสอบรายงานการตรวจสอบ Log ประจำสัปดาห์</td></tr><tr><td><strong>รายวัน (Daily)</strong></td><td>250–365 ครั้งต่อปี</td><td><strong>25</strong></td><td><strong>40</strong></td><td>ตรวจสอบรายงาน Checklist ศูนย์ข้อมูลประจำวัน หรือการอนุมัติสิทธิ์</td></tr><tr><td><strong>หลายครั้งต่อวัน / ต่อเนื่อง (Multiple / Daily)</strong></td><td>มากกว่า 250 ครั้งขึ้นไป</td><td><strong>25–45</strong></td><td><strong>45–60</strong></td><td>ตรวจสอบคำขอเปิดสิทธิ์ผู้ใช้งาน (Access Request Tickets)</td></tr><tr><td><strong>ระบบอัตโนมัติ (Automated Control)</strong></td><td>ไม่จำกัด (ระบบจัดการอัตโนมัติ)</td><td><strong>1</strong></td><td><strong>1 (+ Test of Change)</strong></td><td>ตรวจสอบการตั้งค่ารหัสผ่าน หรือการบล็อกพอร์ตโดยไฟร์วอลล์</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-4-กายวิภาค-10-องค์ประกอบของกระดาษทำการตรวจสอบ-audit-working-paper-anatomy-220">2.4 กายวิภาค 10 องค์ประกอบของกระดาษทำการตรวจสอบ (Audit Working Paper Anatomy)</h3>
+<p class="content-p"><strong>Audit Working Paper (กระดาษทำการ)</strong> คือเอกสารบันทึกทางการที่สะท้อนการทำงานทั้งหมดของผู้ตรวจสอบ เป็นหลักฐานคุ้มครองวิชาชีพ และเป็นรากฐานในการเขียนรายงานผลการตรวจ กระดาษทำการที่สมบูรณ์ต้องประกอบด้วย <strong>10 องค์ประกอบมาตรฐาน</strong>:</p>
+
+<div class="figure-box" id="figure-9-5">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 9.5</div>
+    <div class="figure-title">10 องค์ประกอบมาตรฐานของ Audit Working Paper (WP Architecture)</div>
+  </div>
+  <div class="wp-10-grid">
+    <div class="wp10-item"><span class="wp10-idx">01</span><div class="wp10-info"><strong>Header & Reference</strong>รหัสอ้างอิง WP, ชื่อระบบ, วันที่ และรายชื่อผู้ตรวจ</div></div>
+    <div class="wp10-item"><span class="wp10-idx">02</span><div class="wp10-info"><strong>Audit Objective</strong>วัตถุประสงค์การตรวจ (ตรวจ ToD หรือ ToE ในประเด็นใด)</div></div>
+    <div class="wp10-item"><span class="wp10-idx">03</span><div class="wp10-info"><strong>Audit Criteria</strong>เกณฑ์มาตรฐานอ้างอิง (ISO 27001, กฎหมาย, นโยบาย)</div></div>
+    <div class="wp10-item"><span class="wp10-idx">04</span><div class="wp10-info"><strong>Population & Sample</strong>ขอบเขตประชากรและวิธีการสุ่มตัวอย่างที่ใช้</div></div>
+    <div class="wp10-item"><span class="wp10-idx">05</span><div class="wp10-info"><strong>Audit Procedures</strong>ขั้นตอนการตรวจเชิงเทคนิคที่ระบุไว้ชัดเจนแบบ Step-by-Step</div></div>
+    <div class="wp10-item"><span class="wp10-idx">06</span><div class="wp10-info"><strong>Evidence Reference</strong>รหัสอ้างอิงพยานหลักฐาน (Cross-referenced EV Codes)</div></div>
+    <div class="wp10-item"><span class="wp10-idx">07</span><div class="wp10-info"><strong>Test Results</strong>ผลการทดสอบเชิงประจักษ์ (สถิติผ่าน/ไม่ผ่าน และรายละเอียดเคส)</div></div>
+    <div class="wp10-item"><span class="wp10-idx">08</span><div class="wp10-info"><strong>Exceptions Analysis</strong>การวิเคราะห์สาเหตุของข้อบกพร่อง (Root Cause Analysis)</div></div>
+    <div class="wp10-item"><span class="wp10-idx">09</span><div class="wp10-info"><strong>Conclusion & Finding</strong>ข้อสรุปของผู้ตรวจ (ผ่าน / ไม่ผ่าน พร้อมระบุระดับ NCR)</div></div>
+    <div class="wp10-item"><span class="wp10-idx">10</span><div class="wp10-info"><strong>Sign-off & Review</strong>ลายเซ็นผู้จัดทำ และลายเซ็น Lead Auditor ผู้สอบทาน</div></div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 9.5:</strong> โครงสร้างมาตรฐาน 10 ประการของกระดาษทำการเพื่อให้สามารถสอบทานย้อนรอยได้สมบูรณ์
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-5-เทคนิคและมาตรการความปลอดภัยสำหรับการตรวจออนไลน์-online-remote-auditing-252">2.5 เทคนิคและมาตรการความปลอดภัยสำหรับการตรวจออนไลน์ (Online / Remote Auditing)</h3>
+<p class="content-p">ในการตรวจประเมินทางไกลผ่านระบบเครือข่าย ผู้ตรวจสอบและผู้รับการตรวจต้องปฏิบัติตามมาตรการควบคุมความปลอดภัยอย่างเคร่งครัด:</p>
+<ol class="content-list ordered">
+<li><strong>Live Screen Sharing with Controlled Observation:</strong> การให้ผู้รับการตรวจแชร์หน้าจอสดเพื่อให้ผู้ตรวจสังเกตการณ์การรันคำสั่ง (เช่น <code>show running-config</code> หรือ <code>select * from v$pwfile_users</code>) แทนการส่งไฟล์ที่อาจถูกตัดต่อ</li>
+<li><strong>Read-only Access Provisioning:</strong> หากจำเป็นต้องให้ผู้ตรวจล็อกอินเข้าระบบ ต้องให้สิทธิ์แบบ Read-only เท่านั้น และต้องผูกกับ MFA</li>
+<li><strong>Secure File Transfer Platform:</strong> ห้ามรับส่งหลักฐานผ่าน Email ปกติหรือ Social Chat ส่วนตัว ต้องใช้ระบบ Enterprise SFTP หรือ Cloud Storage ที่มีการเข้ารหัสข้อมูลทั้ง At-Rest (AES-256) และ In-Transit (TLS 1.3)</li>
+<li><strong>Recording Restrictions & Privacy Consent:</strong> การบันทึกวิดีโอหรือเสียงขณะสัมภาษณ์ ต้องได้รับความยินยอมเป็นลายลักษณ์อักษรจากผู้ถูกสัมภาษณ์ล่วงหน้าตามหลัก PDPA</li>
+<li><strong>Data Minimization & Redaction (Masking):</strong> ผู้รับการตรวจมีหน้าที่ต้องเซ็นเซอร์หรือทำ Masking ข้อมูลส่วนบุคคลที่ไม่เกี่ยวข้องกับการตรวจ (เช่น เลขบัตรประชาชน 13 หลัก, ข้อมูลเงินเดือน, เลขบัญชีธนาคาร) ก่อนส่งมอบให้ผู้ตรวจ</li>
+<li><strong>Session Logging:</strong> ต้องมีการบันทึก Log ของเซสชันการประชุมออนไลน์ (Join time, Leave time, IP Address) เพื่อเป็นหลักฐานว่าการตรวจเกิดขึ้นจริง</li>
+</ol>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-6-ห่วงโซ่การครอบครองพยานหลักฐานดิจิทัล-chain-of-custody-coc-265">2.6 ห่วงโซ่การครอบครองพยานหลักฐานดิจิทัล (Chain of Custody - CoC)</h3>
+<p class="content-p">ในคดีความทางไซเบอร์หรือการตรวจสอบที่อาจนำไปสู่การดำเนินคดี หลักฐานดิจิทัลจะสูญเสียความน่าเชื่อถือทันทีหากไม่สามารถพิสูจน์ <strong>"ห่วงโซ่การครอบครอง (Chain of Custody)"</strong> ได้ ตามมาตรฐาน NIST SP 800-86 และ ISO/IEC 27037 แบบฟอร์ม Chain of Custody ต้องบันทึก <strong>7 องค์ประกอบหลัก</strong>:</p>
+
+<div class="figure-box" id="figure-9-6">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 9.6</div>
+    <div class="figure-title">7 องค์ประกอบของแบบฟอร์ม Chain of Custody สำหรับหลักฐานดิจิทัล</div>
+  </div>
+  <div class="coc-7-grid">
+    <div class="coc-card"><span class="coc-step">1</span><strong>Evidence ID & Description</strong>รหัสพยานหลักฐาน, ชื่อไฟล์, ขนาดไฟล์, และคำอธิบายแหล่งที่มา</div>
+    <div class="coc-card"><span class="coc-step">2</span><strong>Date & Time of Collection</strong>วันและเวลาที่สกัดหรือตรวจยึดหลักฐาน (Timestamp ละดับวินาที)</div>
+    <div class="coc-card"><span class="coc-step">3</span><strong>Collection Method</strong>วิธีการได้มา เช่น การดึงผ่าน SFTP, การรันคำสั่ง Query, การ Export</div>
+    <div class="coc-card highlight"><span class="coc-step">4</span><strong>Cryptographic Hash (SHA-256)</strong>ค่าแฮชทางคณิตศาสตร์ 64 ตัวอักษร คำนวณทันที ณ จุดเก็บกู้</div>
+    <div class="coc-card"><span class="coc-step">5</span><strong>Transfer & Custody Log</strong>บันทึกการส่งมอบ: ใครส่งให้ใคร วันเวลาใด และวัตถุประสงค์ใด</div>
+    <div class="coc-card"><span class="coc-step">6</span><strong>Storage & Protection Details</strong>สถานที่เก็บรักษา เช่น ตู้นิรภัย, สื่อบันทึกเข้ารหัส BitLocker</div>
+    <div class="coc-card"><span class="coc-step">7</span><strong>Signatures & Verification</strong>ลายมือชื่อทั้งผู้ส่งมอบและผู้รับมอบ พร้อมยืนยันผลตรวจ Hash ซ้ำ</div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 9.6:</strong> องค์ประกอบสำคัญของห่วงโซ่การครอบครองพยานหลักฐานดิจิทัลตามมาตรฐาน ISO/IEC 27037
+  </div>
+</div>
+
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-3-กรณีศึกษาประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-continuous-scenario-291">ส่วนที่ 3: กรณีศึกษาประยุกต์ "มหาวิทยาลัยดิจิทัลสมมติ" (Core Case Study Continuous Scenario)</h2>
+<h3 class="content-heading" id="sec-3-1-แผนการสุ่มตัวอย่างสำหรับบัญชีผู้ใช้ระบบ-reg-จำนวน-200-บัญชี-stratified-sampling-plan-293">3.1 แผนการสุ่มตัวอย่างสำหรับบัญชีผู้ใช้ระบบ REG จำนวน 200 บัญชี (Stratified Sampling Plan)</h3>
+
+<div class="widget-box" id="widget-9-3">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 9.3</div>
+    <div class="widget-title">เครื่องมือจำลองการสุ่มและตรวจทาน 200 บัญชีผู้ใช้ระบบ REG (Stratified Sampling & Audit Simulator)</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-intro">
+      จำลองการสุ่มตรวจบัญชีผู้ใช้ระบบบริการการศึกษา (REG DB) จำนวน 200 บัญชี แบ่งตาม 4 ชั้นภูมิความเสี่ยง คลิกปุ่ม <strong>"ดำเนินการสุ่มตรวจตามแผน (Run Sampling)"</strong> เพื่อวิเคราะห์ผลการตรวจและคำนวณอัตราข้อบกพร่อง (Exception Rate):
+    </p>
+
+    <div class="sim-actions-bar">
+      <button class="btn-preset active" id="btn-run-sample" onclick="runAccountSimulation()">🎲 สุ่มตรวจตามแผน (Run Stratified Sample: 45 บัญชี)</button>
+      <button class="btn-preset" onclick="resetAccountSimulation()">🔄 ล้างข้อมูลจำลอง (Reset)</button>
+    </div>
+
+    <div class="account-sim-summary" id="account-sim-summary">
+      <!-- Populated via JS -->
+    </div>
+
+    <div class="account-sample-table-wrap">
+      <table class="content-table" id="table-sim-accounts">
+        <thead>
+          <tr>
+            <th>รหัสบัญชี</th>
+            <th>ชื่อ-นามสกุล</th>
+            <th>กลุ่มชั้นภูมิ</th>
+            <th>สิทธิ์ในระบบ</th>
+            <th>สถานะการจ้างงาน</th>
+            <th>สถานะบัญชีจริง</th>
+            <th>ผลการตรวจสอบ</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-sim-accounts">
+          <tr><td colspan="7" style="text-align:center; padding:1.5rem; color:var(--text-muted);">คลิกปุ่มด้านบนเพื่อเริ่มต้นการสุ่มตรวจกลุ่มตัวอย่าง 45 บัญชี</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<p class="content-p">ประชากรบัญชีผู้ใช้งานระบบทะเบียนและประมวลผล (REG System) มีจำนวนทั้งสิ้น <strong>200 บัญชี</strong> Lead Auditor และ Technical Auditor จึงได้ร่วมกันออกแบบแผนการสุ่มตัวอย่างแบบ <strong>Stratified Sampling</strong> ผสมผสานกับ <strong>High-Risk Sampling</strong> เพื่อให้ครอบคลุมจุดเสี่ยงสำคัญอย่างมีประสิทธิภาพ:</p>
+
+<div class="figure-box" id="figure-9-7">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 9.7</div>
+    <div class="figure-title">แผนการสุ่มตัวอย่างแบบแบ่งชั้นภูมิ (Stratified Sampling Plan: 200 บัญชีผู้ใช้ระบบ REG)</div>
+  </div>
+  <div class="table-container">
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>กลุ่มชั้นภูมิ (Stratum)</th>
+          <th>กลุ่มผู้ใช้งาน / บทบาท</th>
+          <th>ขนาดประชากร (N)</th>
+          <th>สัดส่วนการสุ่ม</th>
+          <th>ขนาดตัวอย่าง (n)</th>
+          <th>เหตุผลทางวิชาชีพและความเสี่ยง</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge-tier tier1">S-1</span></td>
+          <td><strong>ผู้ดูแลระบบฐานข้อมูลและเซิร์ฟเวอร์ (DBA / SysAdmin)</strong></td>
+          <td>5 บัญชี</td>
+          <td><strong>100%</strong></td>
+          <td><strong>5 บัญชี</strong></td>
+          <td>สิทธิ์สูงสุด มีโอกาสแก้ไขคะแนน/เกรดโดยตรง (High-risk Directed)</td>
+        </tr>
+        <tr>
+          <td><span class="badge-tier tier1">S-2</span></td>
+          <td><strong>ผู้บริหารและหัวหน้างานสำนักทะเบียน</strong></td>
+          <td>5 บัญชี</td>
+          <td><strong>100%</strong></td>
+          <td><strong>5 บัญชี</strong></td>
+          <td>มีสิทธิ์อนุมัติเปิดระบบ อนุมัติแก้เกรดย้อนหลัง และดูข้อมูลความลับ</td>
+        </tr>
+        <tr>
+          <td><span class="badge-tier tier2">S-3</span></td>
+          <td><strong>เจ้าหน้าที่ทะเบียนและประมวลผลการศึกษา</strong></td>
+          <td>40 บัญชี</td>
+          <td><strong>37.5%</strong></td>
+          <td><strong>15 บัญชี</strong></td>
+          <td>ปฏิบัติงานรายวันในการกรอกข้อมูล สุ่มตรวจตามเกณฑ์ AICPA Daily</td>
+        </tr>
+        <tr>
+          <td><span class="badge-tier tier3">S-4</span></td>
+          <td><strong>อาจารย์ผู้สอนและอาจารย์ที่ปรึกษา</strong></td>
+          <td>150 บัญชี</td>
+          <td><strong>13.3%</strong></td>
+          <td><strong>20 บัญชี</strong></td>
+          <td>ประชากรขนาดใหญ่ ใช้สูตรสถิติระดับความเชื่อมั่น 90% (Random Sample)</td>
+        </tr>
+        <tr style="background:var(--bg-card); font-weight:700;">
+          <td colspan="2">รวมประชากรทั้งสิ้น (Total)</td>
+          <td>200 บัญชี</td>
+          <td>—</td>
+          <td><strong>45 บัญชี (22.5%)</strong></td>
+          <td>ครอบคลุมจุดเสี่ยงสูงสุดครบ 100% และกระจายตัวแทนตามสถิติ</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 9.7:</strong> ตารางแผนการสุ่มตัวอย่าง 200 บัญชีจำแนกตามชั้นภูมิความเสี่ยงของมหาวิทยาลัยดิจิทัลสมมติ
+  </div>
+</div>
+
+<ul class="content-list ">
+<li><strong>เหตุผลทางวิชาชีพในการกำหนดขนาดตัวอย่าง:</strong></li>
+<li>กลุ่ม S-1 และ S-2 มีสิทธิ์สูงสุดในการควบคุมระบบและเข้าถึงฐานข้อมูลโดยตรง หากเกิดการทุจริตหรือบัญชีรั่วไหลจะสร้างความเสียหายรุนแรงระดับวิกฤต จึงต้องตรวจสอบ <strong>100% ของประชากร</strong></li>
+<li>กลุ่ม S-3 มีความเสี่ยงในการแก้ไขข้อมูลสำคัญทางการศึกษา สุ่มตรวจ 15 บัญชีตามเกณฑ์ AICPA สำหรับการควบคุมที่มีการปฏิบัติงานรายวัน</li>
+<li>กลุ่ม S-4 มีประชากรขนาดใหญ่ 150 บัญชี ใช้สูตรการสุ่มทางสถิติที่ระดับความเชื่อมั่น 90% อัตราความผิดพลาดที่ยอมรับได้ 5% ได้ขนาดตัวอย่าง 20 บัญชี</li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-3-2-กระดาษทำการตรวจสอบฉบับที่-1-audit-working-paper-wp-01-327">3.2 กระดาษทำการตรวจสอบฉบับที่ 1 (Audit Working Paper: WP-01)</h3>
+
+<div class="figure-box" id="figure-9-8">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 9.8</div>
+    <div class="figure-title">กระดาษทำการตรวจสอบฉบับที่ 1 (Audit Working Paper: WP-01) — JML De-provisioning</div>
+  </div>
+  <div class="working-paper-card">
+    <div class="wp-card-head">
+      <div>
+        <span class="wp-ref-badge">WP-2024-REG-IAM01</span>
+        <span class="wp-eng-badge">AUD-PLAN-REG01</span>
+      </div>
+      <div class="wp-meta-date">Date: 15/11/2567 | Reviewed: 16/11/2567</div>
+    </div>
+    <div class="wp-card-body">
+      <div class="wp-section-row">
+        <strong>ระบบ / หัวข้อ:</strong> ระบบทะเบียนนักศึกษา (REG) — การตัดสิทธิ์พนักงานลาออก (JML Leaver Process)
+      </div>
+      <div class="wp-section-row">
+        <strong>วัตถุประสงค์ & เกณฑ์:</strong> ทดสอบ Operating Effectiveness ในการตัดสิทธิ์พนักงานลาออกภายใน 24 ชม. ตาม ISO 27001 A.5.18, ประกาศ กมช. 2564 หมวด 3 ข้อ 14
+      </div>
+      <div class="wp-section-row">
+        <strong>ประชากร & ตัวอย่าง:</strong> ประชากรพนักงานและอาจารย์ที่ลาออกในรอบปี 2567 ทั้งหมด 12 คน (อ้างอิง EV-04) | ตรวจสอบ 100% (12 คน)
+      </div>
+      <div class="wp-section-row highlight-box">
+        <strong>ผลการตรวจสอบเชิงประจักษ์:</strong>
+        <ul>
+          <li>ตัดสิทธิ์ถูกต้องตามกรอบเวลา (ภายใน 24 ชม.): <strong>10 บัญชี (83.3%)</strong></li>
+          <li>พบข้อบกพร่องร้ายแรง (Exceptions): <strong>2 บัญชี (16.7%)</strong>
+            <ul>
+              <li><code>aj_somchai</code> (ลาออก 30 เม.ย. 67) บัญชีบน AD ยังคง Active ค้างนานกว่า 6 เดือน และยังพบล็อกอินเข้าอ่านระบบเมื่อ ก.ค. 67</li>
+              <li><code>staff_malee</code> (ลาออก 31 ก.ค. 67) บัญชีถูก Disable วันที่ 15 ส.ค. 67 ล่าช้ากว่ากำหนด 15 วันทำการ</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="wp-section-row status-box danger">
+        <strong>ข้อสรุปและการประเมินผล:</strong> ไม่สอดคล้องกับข้อกำหนด (Control Failure) — การควบคุมไม่มีประสิทธิผลในการปฏิบัติจริง เสี่ยงต่อการนำบัญชีเก่าไปเข้าถึงข้อมูลเกรดนักศึกษา จัดระดับข้อค้นพบเป็น <strong>Major Non-Conformity (Major NCR)</strong>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 9.8:</strong> ตัวอย่างกระดาษทำการ WP-01 แสดงการตรวจสอบเชิงประจักษ์และการออกใบ Major NCR
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-3-3-กระดาษทำการตรวจสอบฉบับที่-2-audit-working-paper-wp-02-386">3.3 กระดาษทำการตรวจสอบฉบับที่ 2 (Audit Working Paper: WP-02)</h3>
+
+<div class="widget-box" id="widget-9-4">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 9.4</div>
+    <div class="widget-title">เครื่องมือตรวจสอบโครงสร้างกระดาษทำการ 10 องค์ประกอบ (Audit Working Paper Inspector)</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-intro">
+      สลับดูโครงสร้างและเทคนิคการร่างกระดาษทำการของ **WP-01 (การตัดสิทธิ์พนักงานลาออก)** และ **WP-02 (ร่องรอยการแก้ไขเกรดนักศึกษา)** พร้อมคำแนะนำของ Lead Auditor:
+    </p>
+
+    <div class="wp-toggle-bar">
+      <button class="btn-preset active" id="btn-wp-01" onclick="showWpInspector('wp01')">📄 ตรวจทาน WP-01 (JML Leaver Process: Major NCR)</button>
+      <button class="btn-preset" id="btn-wp-02" onclick="showWpInspector('wp02')">📄 ตรวจทาน WP-02 (Grade Audit Trail: Minor NCR)</button>
+    </div>
+
+    <div class="wp-inspector-card" id="wp-inspector-card">
+      <!-- Populated via JS -->
+    </div>
+  </div>
+</div>
+
+
+<div class="figure-box" id="figure-9-9">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 9.9</div>
+    <div class="figure-title">กระดาษทำการตรวจสอบฉบับที่ 2 (Audit Working Paper: WP-02) — Grade Audit Trail & PAM</div>
+  </div>
+  <div class="working-paper-card">
+    <div class="wp-card-head">
+      <div>
+        <span class="wp-ref-badge">WP-2024-REG-DB02</span>
+        <span class="wp-eng-badge">AUD-PLAN-REG01</span>
+      </div>
+      <div class="wp-meta-date">Date: 15/11/2567 | Reviewed: 16/11/2567</div>
+    </div>
+    <div class="wp-card-body">
+      <div class="wp-section-row">
+        <strong>ระบบ / หัวข้อ:</strong> ฐานข้อมูลระบบทะเบียน (Oracle) — การตรวจสอบร่องรอยการแก้ไขเกรดนักศึกษา (Grade Audit Trail & PAM)
+      </div>
+      <div class="wp-section-row">
+        <strong>วัตถุประสงค์ & เกณฑ์:</strong> ทดสอบว่าการแก้ไขเกรดย้อนหลังมี Audit Trail ครบถ้วน ไม่สามารถลบทำลายได้ และคุมสิทธิ์ DBA ตาม ISO 27001 A.8.15, A.8.2
+      </div>
+      <div class="wp-section-row highlight-box">
+        <strong>ผลการตรวจสอบเชิงประจักษ์:</strong>
+        <ul>
+          <li>สุ่มตรวจรายการแก้เกรดย้อนหลัง 25 รายการ พบเอกสารคำร้องอนุมัติครบ 25 รายการ (100%)</li>
+          <li><strong>แต่พบข้อบกพร่องด้านการควบคุมทางเทคนิค:</strong> ตาราง <code>GRADE_AUDIT_LOG</code> เก็บอยู่บนฐานข้อมูล Production เดียวกัน โดยบัญชี <code>SYSTEM</code> และ <code>DBA_ADMIN</code> มีสิทธิ์ <code>DELETE/DROP</code> ได้โดยตรง ขาดการส่งไปยัง Centralized Syslog/WORM</li>
+          <li>พบบัญชีผู้ดูแลระบบ 1 บัญชี ล็อกอินตรงผ่าน SQL*Plus โดยไม่ผ่านระบบ PAM เพื่อความสะดวกรวดเร็ว</li>
+        </ul>
+      </div>
+      <div class="wp-section-row status-box warning">
+        <strong>ข้อสรุปและการประเมินผล:</strong> การบันทึก Audit Trail ทำงานได้ในระดับแอปพลิเคชัน แต่การควบคุมด้านการป้องกันการแก้ไขทำลายล็อกระดับฐานข้อมูลบกพร่อง จัดระดับข้อค้นพบเป็น <strong>Minor Non-Conformity (Minor NCR)</strong>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 9.9:</strong> ตัวอย่างกระดาษทำการ WP-02 แสดงการตรวจสอบ Database Audit Trail และการออกใบ Minor NCR
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-3-4-ทะเบียนคุมพยานหลักฐานการตรวจ-evidence-register-10-รายการสำคัญ-443">3.4 ทะเบียนคุมพยานหลักฐานการตรวจ (Evidence Register: 10 รายการสำคัญ)</h3>
+<p class="content-p">ทะเบียนคุมหลักฐาน (Evidence Register) เป็นเครื่องมือของ Lead Auditor ในการติดตามเอกสารและไฟล์หลักฐานดิจิทัลทั้งหมดที่ได้รับระหว่างการลงพื้นที่ตรวจ:</p>
+
+<div class="figure-box" id="figure-9-10">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 9.10</div>
+    <div class="figure-title">EVIDENCE REGISTER: AUD-PLAN-2024-REG01 (ทะเบียนคุมพยานหลักฐานการตรวจ 10 รายการสำคัญ)</div>
+  </div>
+  <div class="table-container">
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>รหัส (Ref)</th>
+          <th>ชื่อและรายละเอียดหลักฐาน</th>
+          <th>แหล่งที่มา (Source)</th>
+          <th>วันที่ได้รับ</th>
+          <th>รูปแบบ (Format)</th>
+          <th>สถานะความสมบูรณ์</th>
+          <th>ค่าแฮชย่อ (SHA-256)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>EV-01</code></td>
+          <td>นโยบายความมั่นคงปลอดภัย ISMS ฉบับอนุมัติล่าสุด</td>
+          <td>สำนักไอที</td>
+          <td>1 พ.ย. 67</td>
+          <td>PDF (Signed)</td>
+          <td><span class="wp-tag pass">สมบูรณ์</span></td>
+          <td><code>8a3f91...c014</code></td>
+        </tr>
+        <tr>
+          <td><code>EV-02</code></td>
+          <td>ผังโครงสร้างเครือข่าย REG Architecture Diagram</td>
+          <td>ทีมเน็ตเวิร์ก</td>
+          <td>1 พ.ย. 67</td>
+          <td>PDF/Visio</td>
+          <td><span class="wp-tag pass">สมบูรณ์</span></td>
+          <td><code>4c1e27...881b</code></td>
+        </tr>
+        <tr>
+          <td><code>EV-03</code></td>
+          <td>ทะเบียนสินทรัพย์สารสนเทศ (Asset Register)</td>
+          <td>สำนักไอที</td>
+          <td>1 พ.ย. 67</td>
+          <td>Excel (XLSX)</td>
+          <td><span class="wp-tag pass">สมบูรณ์</span></td>
+          <td><code>e9b244...5f21</code></td>
+        </tr>
+        <tr>
+          <td><code>EV-04</code></td>
+          <td>รายชื่อพนักงานและอาจารย์ลาออก 12 คน</td>
+          <td>กองบุคคล</td>
+          <td>1 พ.ย. 67</td>
+          <td>PDF (Signed)</td>
+          <td><span class="wp-tag pass">สมบูรณ์</span></td>
+          <td><code>d17a02...4b9c</code></td>
+        </tr>
+        <tr>
+          <td><code>EV-08</code></td>
+          <td>รายงานสแกนช่องโหว่ความปลอดภัย Nessus</td>
+          <td>ทีม SecOps</td>
+          <td>2 พ.ย. 67</td>
+          <td>PDF Report</td>
+          <td><span class="wp-tag pass">สมบูรณ์</span></td>
+          <td><code>3f4a12...99e3</code></td>
+        </tr>
+        <tr>
+          <td><code>EV-10</code></td>
+          <td>กฎไฟร์วอลล์หลัก (Firewall Rule Base Export)</td>
+          <td>ทีมเน็ตเวิร์ก</td>
+          <td>15 พ.ย. 67</td>
+          <td>Text File</td>
+          <td><span class="wp-tag cond">ส่งมอบล่าช้า</span></td>
+          <td><code>a19d80...03f7</code></td>
+        </tr>
+        <tr>
+          <td><code>EV-13</code></td>
+          <td>รายงานผลซ้อมกู้คืนฐานข้อมูลประจำปี</td>
+          <td>Lead DBA</td>
+          <td>15 พ.ย. 67</td>
+          <td>PDF Report</td>
+          <td><span class="wp-tag cond">ส่งมอบล่าช้า</span></td>
+          <td><code>f62b55...aa18</code></td>
+        </tr>
+        <tr>
+          <td><code>EV-16</code></td>
+          <td>รายชื่อผู้ใช้ Active Directory (User Dump)</td>
+          <td>Windows AD</td>
+          <td>15 พ.ย. 67</td>
+          <td>CSV (Export)</td>
+          <td><span class="wp-tag pass">สมบูรณ์</span></td>
+          <td><code>b40c67...112e</code></td>
+        </tr>
+        <tr>
+          <td><code>EV-17</code></td>
+          <td>สถานะบัญชี Oracle DB Users (<code>reg_db_users.log</code>)</td>
+          <td>REG DB</td>
+          <td>15 พ.ย. 67</td>
+          <td>Log File</td>
+          <td><span class="wp-tag pass">สมบูรณ์</span></td>
+          <td><code>c55e99...87d2</code></td>
+        </tr>
+        <tr>
+          <td><code>EV-19</code></td>
+          <td>บันทึก Log การแก้ไขเกรดนักศึกษา (<code>grade_audit_trail.csv</code>)</td>
+          <td>Oracle Log</td>
+          <td>15 พ.ย. 67</td>
+          <td>CSV / Text</td>
+          <td><span class="wp-tag fail">มีข้อสงสัย</span></td>
+          <td><code>718a8d...c401</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 9.10:</strong> ทะเบียนคุมพยานหลักฐานทางการตรวจ รหัส EV-01 ถึง EV-19 พร้อมสถานะและค่าแฮชตรวจสอบ
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-3-5-แบบฟอร์มบันทึกห่วงโซ่การครอบครองพยานหลักฐานดิจิทัล-chain-of-custody-form-478">3.5 แบบฟอร์มบันทึกห่วงโซ่การครอบครองพยานหลักฐานดิจิทัล (Chain of Custody Form)</h3>
+
+<div class="widget-box" id="widget-9-5">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 9.5</div>
+    <div class="widget-title">เครื่องมือจำลองการคำนวณค่าแฮชและห่วงโซ่การครอบครองพยานหลักฐาน (Digital Hash & Chain of Custody Simulator)</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-intro">
+      ทดลองพิมพ์หรือแก้ไขเนื้อหาข้อความในไฟล์ Log ด้านล่าง เพื่อสังเกตการเปลี่ยนแปลงของ <strong>ค่าแฮช SHA-256 (Avalanche Effect)</strong> แบบ Real-time และตรวจสอบความสมบูรณ์ของห่วงโซ่การครอบครองพยานหลักฐาน (Chain of Custody):
+    </p>
+
+    <div class="hash-demo-box">
+      <label><strong>จำลองเนื้อหาไฟล์ Log (Log Content):</strong></label>
+      <textarea id="txt-log-input" rows="4" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-input); font-family:var(--font-code); font-size:0.8rem; color:var(--text-main);" oninput="calcLiveHash()">2024-11-15T14:10:02Z,USER=aj_somchai,ACTION=LOGIN_ATTEMPT,STATUS=SUCCESS,IP=192.168.10.45
+2024-11-15T14:12:30Z,USER=db_admin,ACTION=GRADE_UPDATE,STUDENT=65010204,OLD=D+,NEW=A,STATUS=COMMITTED</textarea>
+
+      <div class="hash-display-card">
+        <div class="hdc-label">ค่าแฮช SHA-256 (Cryptographic Hash):</div>
+        <div class="hdc-val" id="hdc-sha256-val">กำลังคำนวณ...</div>
+        <div class="hdc-status" id="hdc-status-tag">🛡️ บูรณภาพสมบูรณ์ (Intact & Verified)</div>
+      </div>
+    </div>
+
+    <div class="coc-verification-section">
+      <div style="font-weight:700; font-family:var(--font-display); margin-bottom:0.4rem;">สถานะการส่งมอบตามห่วงโซ่การครอบครอง (Chain of Custody Verification):</div>
+      <div class="coc-verify-grid">
+        <div class="cv-item">
+          <span class="cv-step">1</span>
+          <div>
+            <strong>จุดเก็บกู้ (Collection):</strong> นายเกรียงไกร (DBA) ยืนยันค่า Hash ณ จุดสกัดข้อมูล
+            <div class="cv-status ok">✓ ค่าแฮชถูกต้อง</div>
+          </div>
+        </div>
+        <div class="cv-item">
+          <span class="cv-step">2</span>
+          <div>
+            <strong>จุดส่งมอบ (Transfer):</strong> ส่งผ่าน SFTP สู่เครื่อง Technical Auditor
+            <div class="cv-status ok">✓ ช่องทางปลอดภัย</div>
+          </div>
+        </div>
+        <div class="cv-item">
+          <span class="cv-step">3</span>
+          <div>
+            <strong>จุดจัดเก็บ (Preservation):</strong> บันทึกลง Encrypted USB ในตู้นิรภัย
+            <div class="cv-status ok" id="coc-storage-status">✓ บูรณภาพตรงกัน 100%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="content-p">ตัวอย่างแบบฟอร์ม Chain of Custody ทางการสำหรับการตรวจยึดไฟล์ Log ฐานข้อมูลการแก้ไขเกรด (<code>grade_audit_trail_fy24.csv</code>):</p>
+
+<div class="figure-box" id="figure-9-11">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 9.11</div>
+    <div class="figure-title">DIGITAL EVIDENCE CHAIN OF CUSTODY FORM (EVD-2024-REG-LOG01)</div>
+  </div>
+  <div class="coc-mock-card">
+    <div class="coc-mock-top">
+      <div><strong>EVIDENCE ID:</strong> <code>EVD-2024-REG-LOG01</code></div>
+      <div><strong>ENGAGEMENT:</strong> AUD-PLAN-2024-REG01</div>
+    </div>
+    <div class="coc-mock-file">
+      <div><strong>File Name:</strong> <code>grade_audit_trail_fy24.csv</code> (Size: 14.14 MB / 14,829,120 bytes)</div>
+      <div class="coc-hash-line"><strong>SHA-256 Checksum:</strong> <code>718a8d5e1f9b3c2049e632d4a1b092f689e47265c192d83b4e721a99f182c401</code></div>
+    </div>
+    <div class="coc-timeline">
+      <div class="coc-t-item">
+        <div class="coc-t-time">15 พ.ย. 67 (14:15 น.)</div>
+        <div class="coc-t-info">
+          <strong>Initial Collection (การสกัดและส่งมอบครั้งแรก):</strong>
+          ส่งมอบจาก นายเกรียงไกร (Lead DBA) สู่ นายพิชญ์ (Technical Auditor) ผ่าน SFTP พอร์ต 2222 พร้อมตรวจค่า Hash ตรงกัน
+        </div>
+      </div>
+      <div class="coc-t-item">
+        <div class="coc-t-time">15 พ.ย. 67 (16:45 น.)</div>
+        <div class="coc-t-info">
+          <strong>Storage & Preservation (การนำเข้าจัดเก็บในตู้นิรภัย):</strong>
+          คัดลอกลง Encrypted USB Drive (BitLocker 256-bit) นำส่ง ดร.วรเมธ (Lead Auditor) เก็บในตู้นิรภัยล็อกรหัส ตรวจ Hash ซ้ำได้ค่าเดิม 100%
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 9.11:</strong> ตัวอย่างแบบฟอร์มการควบคุมห่วงโซ่การครอบครองพยานหลักฐานดิจิทัลตามมาตรฐาน ISO/IEC 27037
+  </div>
+</div>
+
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-4-กิจกรรมเชิงประยุกต์ในชั้นเรียน-active-learning-simulation-524">ส่วนที่ 4: กิจกรรมเชิงประยุกต์ในชั้นเรียน (Active Learning Simulation)</h2>
+<h3 class="content-heading" id="sec-กิจกรรม-the-online-evidence-interrogation-integrity-challenge-526">กิจกรรม: "The Online Evidence Interrogation & Integrity Challenge"</h3>
+<ul class="content-list ">
+<li><strong>ระยะเวลา:</strong> 15–20 นาที</li>
+<li><strong>สถานการณ์จำลอง:</strong> </li>
+</ul>
+<p class="content-p">  ในระหว่างการตรวจแบบออนไลน์ผ่านระบบ MS Teams คณะผู้ตรวจสอบได้ขอหลักฐานเพื่อยืนยันว่า <em>"แอดมินมีการเปิดใช้งาน MFA บนระบบ Cloud Portal ของมหาวิทยาลัยครบทุกคนจริงหรือไม่"</em> ผู้รับการตรวจ (System Admin) ได้ส่งภาพหน้าจอ (Screenshot) ไฟล์ภาพ <code>.png</code> มาให้ 1 รูป ซึ่งแสดงภาพหน้าจอคอนฟิกที่มีการติ๊กถูกช่อง "Enable MFA" แต่เมื่อผู้ตรวจสังเกตดูอย่างละเอียด พบข้อพิรุธ 3 ประการ:</p>
+<ol class="content-list ordered">
+<li>ภาพหน้าจอถูก Crop เฉพาะส่วนกลาง ไม่แสดงวันที่และเวลาของเครื่องที่มุมขวาล่าง</li>
+<li>ไม่ปรากฏชื่อ Tenant Domain หรือ URL ของมหาวิทยาลัย</li>
+<li>ไม่มีการจัดทำค่าแฮชหรือส่งผ่านช่องทาง SFTP แต่เป็นการส่งภาพแนบมาในกล่องแชต Teams ปกติ</li>
+</ol>
+<ul class="content-list ">
+<li><strong>การแบ่งบทบาทและการปฏิบัติในชั้นเรียน:</strong></li>
+<li><strong>กลุ่มผู้ตรวจสอบ (Auditors):</strong> ต้องใช้ทักษะการตั้งคำถามและไหวพริบทางวิชาชีพในการปฏิเสธการยอมรับภาพหน้าจอนี้อย่างสุภาพตามหลัก <em>"Hierarchy of Reliability"</em> พร้อมทั้งร้องขอทำ <strong>Re-performance / Live Screen Sharing</strong> โดยให้แอดมินแชร์หน้าจอสดและเปิดหน้ารายชื่อผู้ใช้จริงให้ดูทีละบัญชี</li>
+<li><strong>กลุ่มผู้รับการตรวจ (Auditees):</strong> พยายามชี้แจงว่ารูปนี้ถ่ายเมื่อเช้า และอ้างว่าไม่สะดวกแชร์หน้าจอสดเพราะหน้าจอมีข้อมูลส่วนบุคคลของผู้อื่น</li>
+<li><strong>กลุ่มกรรมการและผู้ประเมิน:</strong> ร่วมกันวิเคราะห์ว่าผู้ตรวจใช้จิตวิทยาในการเจรจาอย่างไรเพื่อไม่ให้เกิดความขัดแย้ง และเขียนกระดาษทำการบันทึกเหตุการณ์นี้อย่างไร</li>
+<li><strong>บทเรียนที่ได้รับ:</strong> นักศึกษาจะได้สัมผัสกับความจริงในวิชาชีพว่า <strong>"ภาพหน้าจอไม่ใช่ข้อพิสูจน์ความจริงที่สมบูรณ์"</strong> และได้ฝึกฝนทักษะการร้องขอหลักฐานทางเลือกแบบ Real-time โดยไม่ทำลายความสัมพันธ์กับผู้รับการตรวจ</li>
+</ul>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-5-มุมมองวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls-541">ส่วนที่ 5: มุมมองวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives & Common Pitfalls)</h2>
+
+<div class="figure-box" id="figure-9-12">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 9.12</div>
+    <div class="figure-title">บทสนทนาสะท้อนมุมมองวิชาชีพ (Lead Auditor vs System Admin / Auditee)</div>
+  </div>
+  <div class="perspective-box">
+    <div class="persp-title">💬 บทสนทนาสะท้อนมุมมองวิชาชีพ (Professional Perspectives)</div>
+    <div class="persp-grid">
+      <div class="persp-side aud">
+        <div class="persp-badge">Lead Auditor (หัวหน้าทีมผู้ตรวจสอบ)</div>
+        <p>"เราเข้าใจครับว่าคุณทำงานหนักและมีเจตนาดี แต่ในเชิงวิชาชีพการตรวจ เราเชื่อคำพูดเฉยๆ ไม่ได้ครับ (No Evidence, No Pass)"</p>
+        <p>"หากเราเชื่อโดยไม่มี Log ยืนยัน แล้ววันพรุ่งนี้ระบบถูกแฮกขึ้นมา รายงานของเราจะไม่สามารถปกป้องคุณและมหาวิทยาลัยได้เลยครับ"</p>
+        <p>"หลักฐานที่รัดกุมคือโล่กำบังที่ดีที่สุดสำหรับผู้ดูแลระบบ ว่าคุณได้ทำหน้าที่อย่างถูกต้องและรอบคอบแล้ว"</p>
+      </div>
+      <div class="persp-side imp">
+        <div class="persp-badge">Auditee / System Admin (ผู้รับการตรวจ)</div>
+        <p>"ผมเป็นคนลงมือเซ็ตอัปเองกับมือครับ ทำไมต้องขอดู Log ซ้ำซ้อนอีก แค่ผมยืนยันให้ปากเปล่ายังไม่พอหรือครับ?"</p>
+        <p>"อ๋อ เข้าใจแล้วครับ ถ้าเกิดถูกแฮกเกอร์เจาะขึ้นมาจริงๆ รายงานตรวจที่ไม่มีพยานหลักฐานรองรับ ย่อมไม่สามารถพิสูจน์ความบริสุทธิ์ใจของผมได้เลย"</p>
+        <p>"เดี๋ยวผมจะประสานงานดึง Log จากฐานข้อมูลพร้อมคำนวณค่าแฮชส่งมอบให้ตามแบบฟอร์ม Chain of Custody ทันทีครับ"</p>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 9.12:</strong> การปรับทัศนคติจากการจับผิดสู่การสร้างเกราะคุ้มครองความรับผิดชอบร่วมกันทางวิชาชีพ
+  </div>
+</div>
+
+<h3 class="content-heading" id="sec-4-ข้อผิดพลาดร้ายแรงของผู้ตรวจสอบมือใหม่-common-pitfalls-to-avoid-560">4 ข้อผิดพลาดร้ายแรงของผู้ตรวจสอบมือใหม่ (Common Pitfalls to Avoid):</h3>
+<ol class="content-list ordered">
+<li><strong>Confirmation Bias (ความลำเอียงเพื่อยืนยันสมมติฐาน):</strong> มุ่งหาแต่หลักฐานที่สนับสนุนความเชื่อของตนเอง แต่เพิกเฉยต่อหลักฐานที่ขัดแย้ง</li>
+<li><strong>Accepting Oral Representation without Verification:</strong> หลงเชื่อคำตอบของผู้บริหารหรือวิศวกรผู้เชี่ยวชาญโดยไม่ได้ขอดูหน้าจอคอนฟิกจริง</li>
+<li><strong>Improper Evidence Storage:</strong> เก็บหลักฐานไฟล์ Log ไว้ในเครื่องแล็ปท็อปส่วนตัวโดยไม่เข้ารหัส ซึ่งเสี่ยงต่อการถูกขโมยข้อมูลและผิดกฎหมาย PDPA</li>
+<li><strong>Failure to Calculate Hash Immediately:</strong> ได้รับไฟล์หลักฐานมาแล้วไม่คำนวณค่า SHA-256 ทันที ทำให้เมื่อถูกฟ้องร้องในภายหลัง ไม่สามารถพิสูจน์ได้ว่าไฟล์ไม่ได้ถูกดัดแปลงแก้ไขระหว่างการจัดเก็บ</li>
+</ol>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-6-แบบฝึกหัดและการบ้านประจำบทที่-9-568">ส่วนที่ 6: แบบฝึกหัดและการบ้านประจำบทที่ 9</h2>
+<p class="content-p">เพื่อเป็นส่วนหนึ่งของการจัดทำแฟ้มสะสมงาน <strong>Cybersecurity Audit Portfolio</strong> ให้นักศึกษาจัดทำชุดเอกสารหลักฐานและการสุ่มตัวอย่างสำหรับ <strong>“มหาวิทยาลัยดิจิทัลสมมติ”</strong> ประกอบด้วย 4 ชิ้นงานสำคัญ:</p>
+<ol class="content-list ordered">
+<li><strong>Stratified Sampling Plan สำหรับบัญชีผู้ใช้ 200 บัญชี:</strong></li>
+</ol>
+<ul class="content-list ">
+<li>จัดทำตารางแผนการสุ่มตัวอย่างแบบแบ่งชั้นภูมิ จำแนกกลุ่มผู้ใช้ กำหนดขนาดตัวอย่าง และระบุเหตุผลทางสถิติ/ความเสี่ยงรองรับ</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>Audit Working Paper ฉบับสมบูรณ์ จำนวน 2 ฉบับ:</strong></li>
+</ol>
+<ul class="content-list ">
+<li><strong>ฉบับที่ 1:</strong> กระดาษทำการทดสอบกระบวนการตัดสิทธิ์พนักงานลาออก (JML Leaver Process: WP-01)</li>
+<li><strong>ฉบับที่ 2:</strong> กระดาษทำการทดสอบร่องรอยการแก้ไขข้อมูลเกรดหรือสิทธิ์ DBA (Database Audit Trail: WP-02)</li>
+<li><em>ทั้ง 2 ฉบับต้องมีองค์ประกอบครบ 10 ส่วน พร้อมระบุผลการตรวจและการให้คะแนนข้อค้นพบ (Major NCR / Minor NCR)</em></li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>Evidence Register (ทะเบียนคุมหลักฐาน) อย่างน้อย 10 รายการ:</strong></li>
+</ol>
+<ul class="content-list ">
+<li>จัดทำตารางคุมหลักฐาน ระบุรหัส EV, ชื่อหลักฐาน, แหล่งที่มา, วันที่ได้รับ, รูปแบบไฟล์, สถานะความสมบูรณ์ และค่า Hash ย่อ</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>Digital Evidence Chain of Custody Form จำนวน 1 ชุด:</strong></li>
+</ol>
+<ul class="content-list ">
+<li>จัดทำแบบฟอร์มบันทึกห่วงโซ่การครอบครองพยานหลักฐานสำหรับไฟล์ Log ที่ตรวจยึด ระบุผู้ส่งมอบ ผู้รับมอบ วันเวลา และค่า SHA-256 อย่างถูกต้อง</li>
+</ul>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers-585">ส่วนที่ 7: คำถามทบทวนท้ายบท (Review Questions & Detailed Answers)</h2>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง "Sufficiency" และ "Appropriateness" ของหลักฐานการตรวจ</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> <strong>Sufficiency</strong> หมายถึง <em>ปริมาณ</em> ของหลักฐานว่ามีมากเพียงพอในเชิงสถิติที่จะทำให้ผู้ตรวจสอบคนอื่นได้ข้อสรุปแบบเดียวกัน ส่วน <strong>Appropriateness</strong> หมายถึง <em>คุณภาพ</em> ความตรงประเด็น (Relevance) และความน่าเชื่อถือ (Reliability) ของหลักฐานในการสนับสนุนข้อค้นพบ</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> เพราะเหตุใด "หลักฐานที่ผู้ตรวจสอบรวบรวมด้วยตนเองโดยตรง" จึงมีความน่าเชื่อถือสูงกว่า "หลักฐานที่ผู้รับการตรวจจัดเตรียมให้"?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> เพราะหลักฐานที่ผู้ตรวจเก็บเองโดยตรง (เช่น รันคำสั่งดูคอนฟิกสดด้วยตนเอง) ไม่ผ่านกระบวนการคัดกรอง ดัดแปลง หรือตกแต่งจากผู้รับการตรวจ จึงมีความเป็นกลางและสะท้อนสถานะแท้จริงของระบบมากกว่า</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> ใน 7 วิธีการรวบรวมหลักฐาน เหตุใดการสัมภาษณ์ (Inquiry) เพียงอย่างเดียวจึงไม่สามารถใช้เป็นหลักฐานสรุปผลการตรวจได้?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> เพราะคำสัมภาษณ์เป็นเพียงคำกล่าวอ้างด้วยวาจา (Oral Representation) ซึ่งอาจเกิดจากความจำที่คลาดเคลื่อน ความเข้าใจผิด หรือเจตนาปกปิดความจริง จึงต้องมีการตรวจสอบยันด้วยเอกสารหรือบันทึกระบบ (Corroboration) เสมอ</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> การสุ่มตัวอย่างแบบ Stratified Sampling มีประโยชน์อย่างไรเมื่อเทียบกับ Random Sampling ในการตรวจสอบระบบไอที?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> ช่วยให้ผู้ตรวจสามารถจำแนกประชากรตามระดับความเสี่ยงได้ ทำให้สามารถทุ่มเททรัพยากรไปตรวจสอบกลุ่มความเสี่ยงสูง (เช่น บัญชีแอดมินหรือ DBA) ได้ถึง 100% ในขณะที่กลุ่มความเสี่ยงต่ำสามารถสุ่มตรวจเพียงบางส่วน ป้องกันไม่ให้ตัวอย่างตกไปอยู่แต่ในกลุ่มผู้ใช้ทั่วไป</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> หากมาตรการควบคุมเป็นการควบคุมด้วยระบบอัตโนมัติ (Automated Control) เหตุใดมาตรฐานสากลจึงอนุญาตให้ใช้ขนาดตัวอย่างเพียง 1 รายการได้?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> เพราะระบบอัตโนมัติจะประมวลผลตามตรรกะของโปรแกรมอย่างสม่ำเสมอเหมือนเดิมทุกครั้ง หากพิสูจน์ได้ว่าการควบคุมการเปลี่ยนแปลงโปรแกรม (Change Management) มีความมั่นคงปลอดภัย การทดสอบการทำงานของระบบเพียง 1 ครั้งย่อมสะท้อนผลลัพธ์ของธุรกรรมทั้งหมดได้</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> จงระบุองค์ประกอบสำคัญ 5 องค์ประกอบที่ต้องมีใน Audit Working Paper</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> (1) Audit Reference (รหัสอ้างอิง) (2) Audit Objective & Criteria (วัตถุประสงค์และเกณฑ์) (3) Scope & Sample (ประชากรและกลุ่มตัวอย่าง) (4) Test Procedure & Evidence Ref (ขั้นตอนการตรวจและรหัสหลักฐาน) (5) Test Result, Conclusion & Sign-off (ผลการตรวจ ข้อสรุป และลายเซ็นผู้ตรวจ)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> เพราะเหตุใดภาพหน้าจอ (Screenshot) จึงจัดเป็นหลักฐานที่มีความน่าเชื่อถือต่ำ และมีแนวทางแก้ไขอย่างไร?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> เพราะภาพหน้าจอสามารถตัดต่อ ตกแต่งตัวเลข หรือดัดแปลงวันเวลาได้ง่ายด้วยโปรแกรมตกแต่งภาพ แนวทางแก้ไขคือการขอสังเกตการณ์สดขณะจับภาพ (Witnessed Screenshot) หรือให้แชร์หน้าจอสดแบบ Real-time และคำนวณค่าแฮชของไฟล์ทันที</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> "Chain of Custody" มีความสำคัญอย่างไรต่อการตรวจสอบความมั่นคงปลอดภัยไซเบอร์?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> มีความสำคัญในการยืนยันความถูกต้องแท้จริงและบูรณภาพ (Integrity) ของพยานหลักฐานดิจิทัลตั้งแต่จุดที่เก็บกู้จนถึงการนำเสนอรายงาน เพื่อพิสูจน์ว่าหลักฐานไม่ได้ถูกสับเปลี่ยนหรือแก้ไข ทำให้หลักฐานมีน้ำหนักรับฟังได้ตามกฎหมาย</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> ในการตรวจออนไลน์ (Remote Audit) เหตุใดจึงต้องมีหลักการ Data Minimization และ Redaction?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> เพื่อป้องกันไม่ให้ข้อมูลส่วนบุคคลที่ไม่เกี่ยวข้อง (เช่น เลขบัตรประชาชน ข้อมูลเงินเดือน) รั่วไหลไปยังผู้ตรวจสอบโดยไม่จำเป็น ซึ่งเป็นการปฏิบัติตามกฎหมายคุ้มครองข้อมูลส่วนบุคคล (PDPA)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> หากพบว่าผลการคำนวณค่า SHA-256 ของไฟล์ Log ไม่ตรงกับค่าที่บันทึกไว้ใน Chain of Custody Form ผู้ตรวจสอบต้องดำเนินการอย่างไร?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> ผู้ตรวจสอบต้องหยุดการใช้ไฟล์นั้นเป็นหลักฐานทันที บันทึกข้อผิดปกติลงในกระดาษทำการ และรายงาน Lead Auditor เนื่องจากไฟล์ดังกล่าวถือว่าสูญเสียบูรณภาพ (Integrity Loss) อาจเกิดความเสียหายของข้อมูลหรือถูกดัดแปลงแก้ไข</li>
+</ul>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-สรุปบทที่-9-610">สรุปบทที่ 9</h2>
+<p class="content-p">การรวบรวมหลักฐานการตรวจและการสุ่มตัวอย่างถือเป็นหัวใจเชิงเทคนิคของวิชาชีพการตรวจสอบความมั่นคงปลอดภัยสารสนเทศ</p>
+<p class="content-p">หลักฐานที่มีประสิทธิผลต้องมีคุณสมบัติครบถ้วนทั้งความเพียงพอ (Sufficiency) และความเหมาะสม (Appropriateness) ผู้ตรวจสอบต้องตระหนักถึงลำดับชั้นความน่าเชื่อถือ โดยให้ความสำคัญสูงสุดกับหลักฐานจากแหล่งอิสระและบันทึกอัตโนมัติ และใช้หลักการสอบทานยัน 3 ฝ่าย (Triangulation) เสมอ</p>
+<p class="content-p">ในการสุ่มตัวอย่าง การประยุกต์ใช้การสุ่มแบบแบ่งชั้นภูมิ (Stratified Sampling) ร่วมกับเกณฑ์ขนาดตัวอย่างสากลของ ISACA และ AICPA ช่วยให้การตรวจครอบคลุมจุดเสี่ยงสำคัญ เช่น บัญชีที่มีสิทธิ์ระดับสูงได้อย่างแม่นยำ</p>
+<p class="content-p">สุดท้าย การจัดทำ <strong>Audit Working Paper</strong> ที่รัดกุม การรักษาความมั่นคงปลอดภัยในการตรวจออนไลน์ และการปฏิบัติตามขั้นตอน <strong>Chain of Custody</strong> ควบคู่กับการใช้ค่าแฮชทางคณิตศาสตร์ จะช่วยปกป้องความน่าเชื่อถือของผลการตรวจสอบ และทำให้ข้อค้นพบมีผลผูกพันอย่างเป็นธรรมและถูกต้องตามมาตรฐานวิชาชีพสากล</p>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-เอกสารอ้างอิงและมาตรฐานสากล-622">เอกสารอ้างอิงและมาตรฐานสากล</h2>
+<ol class="content-list ordered">
+<li><strong>International Organization for Standardization (ISO).</strong> (2018). <em>ISO 19011:2018 Guidelines for auditing management systems</em> (Clause 6.4: Collecting and verifying information). Geneva: ISO.</li>
+<li><strong>Information Systems Audit and Control Association (ISACA).</strong> (2020). <em>ITAF: Information Technology Assurance Framework (4th Edition)</em>. Standard 2205 (Evidence) & Standard 2206 (Sampling). Rolling Meadows, IL: ISACA.</li>
+<li><strong>The Institute of Internal Auditors (IIA).</strong> (2024). <em>Global Internal Audit Standards</em>. Lake Mary, FL: IIA.</li>
+<li><strong>American Institute of Certified Public Accountants (AICPA).</strong> (2021). <em>Statement on Auditing Standards No. 142: Audit Evidence</em> (AU-C Section 500) and <em>Audit Sampling</em> (AU-C Section 530). New York: AICPA.</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2006). <em>NIST SP 800-86: Guide to Integrating Forensic Techniques into Incident Response</em> (Collection and Preservation of Digital Evidence). U.S. Department of Commerce.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2012). <em>ISO/IEC 27037:2012 Information technology — Security techniques — Guidelines for identification, collection, acquisition and preservation of digital evidence</em>. Geneva: ISO.</li>
+<li><strong>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562 (หลักการลดทอนการใช้ข้อมูล: Data Minimization).</li>
+<li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+</ol>
+
+      <!-- Bottom Chapter Navigation -->
+      <footer class="chapter-nav-footer">
+        <a href="ch-8.html" class="btn-nav-chapter">
+          <span>◀</span> บทที่ 8: การบริหารโปรแกรมตรวจและการวางแผนการตรวจ
+        </a>
+        <a href="ch-10.html" class="btn-nav-chapter">
+          บทที่ 10: การตรวจสอบระบบปฏิบัติการและโครงสร้างพื้นฐานเครือข่าย <span>▶</span>
+        </a>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // ==========================================
+    // UI CONTROLS & THEME SWITCHER
+    // ==========================================
+    const htmlEl = document.documentElement;
+    const btnLight = document.getElementById('btn-theme-light');
+    const btnSepia = document.getElementById('btn-theme-sepia');
+    const btnDark = document.getElementById('btn-theme-dark');
+
+    function setTheme(theme) {
+      htmlEl.setAttribute('data-theme', theme);
+      localStorage.setItem('necs_theme', theme);
+      [btnLight, btnSepia, btnDark].forEach(btn => {
+        if (btn) btn.classList.remove('active');
+      });
+      if (theme === 'light' && btnLight) btnLight.classList.add('active');
+      if (theme === 'sepia' && btnSepia) btnSepia.classList.add('active');
+      if (theme === 'dark' && btnDark) btnDark.classList.add('active');
+    }
+
+    if (btnLight) btnLight.onclick = () => setTheme('light');
+    if (btnSepia) btnSepia.onclick = () => setTheme('sepia');
+    if (btnDark) btnDark.onclick = () => setTheme('dark');
+
+    const savedTheme = localStorage.getItem('necs_theme');
+    if (savedTheme) setTheme(savedTheme);
+
+    // Font scaling
+    let curScale = 1;
+    function setFontScale(scale) {
+      curScale = scale;
+      htmlEl.style.setProperty('--font-scale', curScale);
+      localStorage.setItem('necs_font_scale', curScale);
+    }
+    const btnFontDec = document.getElementById('btn-font-dec');
+    const btnFontReset = document.getElementById('btn-font-reset');
+    const btnFontInc = document.getElementById('btn-font-inc');
+    if (btnFontDec) btnFontDec.onclick = () => setFontScale(Math.max(0.85, curScale - 0.05));
+    if (btnFontReset) btnFontReset.onclick = () => setFontScale(1);
+    if (btnFontInc) btnFontInc.onclick = () => setFontScale(Math.min(1.25, curScale + 0.05));
+
+    const savedScale = parseFloat(localStorage.getItem('necs_font_scale'));
+    if (!isNaN(savedScale)) setFontScale(savedScale);
+
+    // Sidebar & Backdrop
+    const sidebar = document.getElementById('sidebar-toc');
+    const backdrop = document.getElementById('toc-backdrop');
+    const btnToggleToc = document.getElementById('btn-toggle-toc');
+    const btnCloseToc = document.getElementById('btn-close-toc');
+
+    function toggleSidebar() {
+      if (sidebar) sidebar.classList.toggle('open');
+      if (backdrop) backdrop.classList.toggle('open');
+    }
+    if (btnToggleToc) btnToggleToc.onclick = toggleSidebar;
+    if (btnCloseToc) btnCloseToc.onclick = toggleSidebar;
+    if (backdrop) backdrop.onclick = toggleSidebar;
+
+    // Reading Progress & Active TOC Link
+    const progressBar = document.getElementById('progress-bar');
+    const tocLinks = document.querySelectorAll('.toc-link');
+
+    window.addEventListener('scroll', () => {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+      if (progressBar) progressBar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+
+      let currentActiveId = '';
+      const headings = document.querySelectorAll('.content-heading');
+      headings.forEach(h => {
+        const top = h.getBoundingClientRect().top;
+        if (top <= 120) {
+          currentActiveId = h.id;
+        }
+      });
+      if (currentActiveId) {
+        tocLinks.forEach(link => {
+          if (link.getAttribute('data-target') === currentActiveId) {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        });
+      }
+    });
+
+    // ==========================================
+    // WIDGET 9.1: TRIANGULATION EVALUATOR
+    // ==========================================
+    const evWeights = {
+      direct_obs: { score: 95, tier: 1, name: 'การสังเกตการณ์สดหน้าจอคอนฟิก', origin: 'auditor' },
+      re_perf: { score: 90, tier: 1, name: 'การทดสอบซ้ำคำสั่ง Query โดยผู้ตรวจ', origin: 'auditor' },
+      siem_log: { score: 85, tier: 2, name: 'SIEM WORM Immutable Log', origin: 'system' },
+      ticket: { score: 75, tier: 2, name: 'ใบงานขออนุมัติบน Jira (RFC)', origin: 'workflow' },
+      policy_doc: { score: 65, tier: 3, name: 'เอกสารนโยบายลงนามอนุมัติ (PDF)', origin: 'internal' },
+      screenshot: { score: 35, tier: 4, name: 'ภาพถ่ายหน้าจอที่ส่งผ่านแชต', origin: 'auditee' },
+      interview: { score: 25, tier: 4, name: 'คำสัมภาษณ์แอดมินปากเปล่า', origin: 'auditee' }
+    };
+
+    function updateTriangulation() {
+      const el1 = document.getElementById('sel-ev-1');
+      const el2 = document.getElementById('sel-ev-2');
+      const el3 = document.getElementById('sel-ev-3');
+
+      const v1 = (el1 && el1.value) || 'direct_obs';
+      const v2 = (el2 && el2.value) || 'siem_log';
+      const v3 = (el3 && el3.value) || 'ticket';
+
+      const e1 = evWeights[v1] || evWeights.direct_obs;
+      const e2 = evWeights[v2] || evWeights.siem_log;
+      const e3 = evWeights[v3] || evWeights.ticket;
+
+      const avgScore = Math.round((e1.score + e2.score + e3.score) / 3);
+      const uniqueOrigins = new Set([e1.origin, e2.origin, e3.origin]).size;
+      const hasTier1or2 = (e1.tier <= 2 || e2.tier <= 2 || e3.tier <= 2);
+
+      const box = document.getElementById('tri-result-box');
+      let statusHtml = '';
+
+      if (uniqueOrigins >= 2 && avgScore >= 70 && hasTier1or2) {
+        statusHtml = `
+          <div style="color:var(--emerald); font-weight:700; font-size:1.05rem; margin-bottom:0.4rem;">
+            ✅ ผ่านเกณฑ์การสอบทานยัน 3 ฝ่ายสมบูรณ์ (Triangulation Verified!)
+          </div>
+          <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.45;">
+            ชุดหลักฐานมีคะแนนความน่าเชื่อถือรวม <strong>${avgScore}%</strong> ครอบคลุมแหล่งกำเนิดที่หลากหลาย (${uniqueOrigins} แหล่ง) และมีหลักฐาน Tier 1-2 รองรับอย่างแน่นหนา สามารถนำไปเขียนรายงานออกใบ NCR ได้โดยไม่ถูกโต้แย้ง
+          </div>
+        `;
+      } else {
+        statusHtml = `
+          <div style="color:var(--rose); font-weight:700; font-size:1.05rem; margin-bottom:0.4rem;">
+            ⚠️ ไม่ผ่านเกณฑ์ Triangulation (Insufficient Reliability)
+          </div>
+          <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.45;">
+            ชุดหลักฐานมีคะแนนเพียง <strong>${avgScore}%</strong> หรือพึ่งพาหลักฐานจากผู้รับการตรวจมากเกินไป (พบ Tier 4) แนะนำให้ร้องขอทำ Re-performance หรือดึง Log จาก SIEM เพื่อสร้างน้ำหนักหลักฐานที่ยอมรับได้
+          </div>
+        `;
+      }
+
+      box.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:0.6rem;">
+          <div style="font-family:var(--font-display); font-weight:700;">คะแนนความน่าเชื่อถือเฉลี่ย (Average Reliability): ${avgScore}/100</div>
+          <div>ความหลากหลายของแหล่งที่มา: ${uniqueOrigins}/3 แหล่ง</div>
+        </div>
+        ${statusHtml}
+      `;
+    }
+    updateTriangulation();
+
+    // ==========================================
+    // WIDGET 9.2: SAMPLE SIZE CALCULATOR
+    // ==========================================
+    const sampleMatrix = {
+      daily: { high_strict: 45, high_standard: 25, mod_strict: 25, mod_standard: 15 },
+      weekly: { high_strict: 15, high_standard: 10, mod_strict: 10, mod_standard: 5 },
+      monthly: { high_strict: 6, high_standard: 4, mod_strict: 4, mod_standard: 2 },
+      quarterly: { high_strict: 4, high_standard: 2, mod_strict: 2, mod_standard: 2 },
+      annual: { high_strict: 1, high_standard: 1, mod_strict: 1, mod_standard: 1 },
+      automated: { high_strict: 1, high_standard: 1, mod_strict: 1, mod_standard: 1 }
+    };
+
+    function updateSampleSizeCalc() {
+      const fEl = document.getElementById('calc-freq');
+      const cEl = document.getElementById('calc-conf');
+      const dEl = document.getElementById('calc-dev');
+
+      const freq = (fEl && fEl.value) || 'daily';
+      const conf = (cEl && cEl.value) || 'high';
+      const dev = (dEl && dEl.value) || 'strict';
+
+      const key = (conf === 'high' ? 'high_' : 'mod_') + (dev === 'strict' ? 'strict' : 'standard');
+      const sampleSize = (sampleMatrix[freq] && sampleMatrix[freq][key]) || 25;
+
+      const out = document.getElementById('sample-size-output');
+      let note = '';
+      if (freq === 'automated') {
+        note = '💡 <strong>หมายเหตุระบบอัตโนมัติ:</strong> สำหรับ Automated Control อนุญาตให้สุ่มเพียง 1 รายการได้ หากสามารถยืนยันว่าการควบคุมการเปลี่ยนแปลงโปรแกรม (Change Management) มีประสิทธิผล';
+      } else if (freq === 'daily') {
+        note = '💡 <strong>เกณฑ์ AICPA Daily:</strong> สำหรับการควบคุมรายวันที่มีประชากรมากกว่า 250 รายการ การสุ่ม 25-45 รายการให้ระดับความเชื่อมั่น 90-95% ทางสถิติ';
+      } else {
+        note = '💡 แนะนำให้สุ่มแบบ Systematic Sampling โดยเลือกทุกๆ รายการที่สอดคล้องกับรอบเวลา';
+      }
+
+      out.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <div style="font-size:0.8rem; color:var(--text-dim); text-transform:uppercase; font-family:var(--font-display);">ขนาดกลุ่มตัวอย่างขั้นต่ำที่แนะนำ (Minimum Sample Size):</div>
+            <div style="font-family:var(--font-display); font-size:2.4rem; font-weight:800; color:var(--primary); line-height:1.1;">${sampleSize} รายการ</div>
+          </div>
+          <div style="max-width:480px; font-size:0.84rem; color:var(--text-muted); line-height:1.45;">
+            ${note}
+          </div>
+        </div>
+      `;
+    }
+    updateSampleSizeCalc();
+
+    // ==========================================
+    // WIDGET 9.3: ACCOUNT SIMULATION
+    // ==========================================
+    const accountPool = [
+      { id: 'ADM-01', name: 'นาย เกรียงไกร (Lead DBA)', stratum: 'S-1', role: 'DBA / Oracle Admin', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'ADM-02', name: 'นาย ธนัท (Senior SysAdmin)', stratum: 'S-1', role: 'Domain Admin (AD)', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'ADM-03', name: 'นาย ภัทรพล (Backup Admin)', stratum: 'S-1', role: 'Storage / Backup Admin', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'ADM-04', name: 'นาย ชาญวิทย์ (Network Admin)', stratum: 'S-1', role: 'Firewall Admin', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'ADM-05', name: 'นาย อานนท์ (Cloud Architect)', stratum: 'S-1', role: 'AWS/Azure Root Admin', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'MGR-01', name: 'ดร. กิตติ (ผอ.สำนักทะเบียน)', stratum: 'S-2', role: 'Executive Approver', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'MGR-02', name: 'นาง สุรีย์ (รอง ผอ.ทะเบียน)', stratum: 'S-2', role: 'Grade Approver', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'MGR-03', name: 'นาย วิศิษฏ์ (หัวหน้ากลุ่มงานระบบ)', stratum: 'S-2', role: 'System Owner', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'MGR-04', name: 'นาง นงลักษณ์ (หน.ตรวจสอบวุฒิ)', stratum: 'S-2', role: 'Graduate Auditor', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'MGR-05', name: 'นาย บุญชัย (หน.บริการการศึกษา)', stratum: 'S-2', role: 'Enrollment Officer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-01', name: 'น.ส. มาลี รักเรียน', stratum: 'S-3', role: 'Registration Staff', empStatus: 'Resigned (31/07/67)', sysStatus: 'Disabled (15/08/67)', exception: true, reason: 'Disable ล่าช้ากว่ากำหนด 15 วัน' },
+      { id: 'STF-02', name: 'นาย ประสิทธิ์ จัดการ', stratum: 'S-3', role: 'Grade Entry Staff', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-03', name: 'นาง วรรณา พิมพ์งาน', stratum: 'S-3', role: 'Transcript Officer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-04', name: 'นาย สมเกียรติ บริการ', stratum: 'S-3', role: 'Registration Staff', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-05', name: 'น.ส. ศิริพร เอกสาร', stratum: 'S-3', role: 'Registration Staff', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-06', name: 'นาย ธวัชชัย ตรวจสอบ', stratum: 'S-3', role: 'Fee & Payment Staff', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-07', name: 'นาง รัตนา การศึกษา', stratum: 'S-3', role: 'Course Scheduling', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-08', name: 'นาย ชัยวัฒน์ ข้อมูล', stratum: 'S-3', role: 'Database Clerk', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-09', name: 'น.ส. พิมพา ลงทะเบียน', stratum: 'S-3', role: 'Registration Staff', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-10', name: 'นาย เอกชัย สถิติ', stratum: 'S-3', role: 'Reporting Officer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-11', name: 'นาง จินตนา ประมวล', stratum: 'S-3', role: 'Grade Entry Staff', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-12', name: 'นาย สุรศักดิ์ ทะเบียน', stratum: 'S-3', role: 'Registration Staff', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-13', name: 'น.ส. อัมพร บันทึก', stratum: 'S-3', role: 'Registration Staff', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-14', name: 'นาย ณัฐวุฒิ บริการ', stratum: 'S-3', role: 'Student Helpdesk', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'STF-15', name: 'นาง ทิพวรรณ รับเรื่อง', stratum: 'S-3', role: 'Registration Staff', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-01', name: 'ผศ.ดร. สมชาย มั่นคง', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Resigned (30/04/67)', sysStatus: 'Active (ค้าง 6 เดือน)', exception: true, reason: 'ลาออกแล้วแต่บัญชีบน AD ยังคง Active' },
+      { id: 'FAC-02', name: 'รศ.ดร. นิตยา วิชาการ', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-03', name: 'อ. วีระศักดิ์ สอนดี', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-04', name: 'ผศ. วิภาภรณ์ วิจัย', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-05', name: 'ดร. ภาณุพงศ์ ความรู้', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-06', name: 'อ. กรกนก ศึกษา', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-07', name: 'รศ. ธีรเดช นวัตกรรม', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-08', name: 'ผศ. ชลิต ปัญญา', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-09', name: 'อ. สุพจน์ เชี่ยวชาญ', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-10', name: 'ดร. มยุรี วิทย์', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-11', name: 'รศ. ประภาส ศิลป์', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-12', name: 'ผศ. สุจิตรา ภาษา', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-13', name: 'อ. บุญธรรม กฎหมาย', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-14', name: 'ดร. กฤษณะ บริหาร', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-15', name: 'ผศ.ดร. นันทวัน นิเทศ', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-16', name: 'อ. พงษ์ศักดิ์ รัฐศาสตร์', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-17', name: 'รศ.ดร. อุไรวรรณ แพทย์', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-18', name: 'ผศ. อัครพล วิศวะ', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-19', name: 'ดร. เบญจวรรณ พยาบาล', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false },
+      { id: 'FAC-20', name: 'อ. ศรัณย์ คอมพิวเตอร์', stratum: 'S-4', role: 'Faculty / Lecturer', empStatus: 'Active', sysStatus: 'Active', exception: false }
+    ];
+
+    function runAccountSimulation() {
+      const tbody = document.getElementById('tbody-sim-accounts');
+      tbody.innerHTML = '';
+
+      let exceptionsCount = 0;
+
+      accountPool.forEach(acc => {
+        const tr = document.createElement('tr');
+        if (acc.exception) exceptionsCount++;
+
+        tr.innerHTML = `
+          <td><code>${acc.id}</code></td>
+          <td><strong>${acc.name}</strong></td>
+          <td><span class="badge-tier ${acc.stratum === 'S-1' || acc.stratum === 'S-2' ? 'tier1' : (acc.stratum === 'S-3' ? 'tier2' : 'tier3')}">${acc.stratum}</span></td>
+          <td>${acc.role}</td>
+          <td>${acc.empStatus}</td>
+          <td>${acc.sysStatus}</td>
+          <td>
+            ${acc.exception ?
+              `<span class="wp-tag fail">❌ พบข้อบกพร่อง (${acc.reason})</span>` :
+              '<span class="wp-tag pass">✓ ปกติ (สอดคล้อง)</span>'
+            }
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const devRate = ((exceptionsCount / accountPool.length) * 100).toFixed(1);
+      const sumBox = document.getElementById('account-sim-summary');
+      sumBox.innerHTML = `
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:1rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <div style="font-size:0.8rem; color:var(--text-dim); text-transform:uppercase;">ขนาดกลุ่มตัวอย่างที่สุ่มตรวจ (Sample Size):</div>
+            <div style="font-family:var(--font-display); font-size:1.6rem; font-weight:800; color:var(--primary);">${accountPool.length} บัญชี (จากประชากร 200 คน)</div>
+          </div>
+          <div>
+            <div style="font-size:0.8rem; color:var(--text-dim); text-transform:uppercase;">ข้อบกพร่องที่พบ (Exceptions):</div>
+            <div style="font-family:var(--font-display); font-size:1.6rem; font-weight:800; color:var(--rose);">${exceptionsCount} บัญชี (${devRate}%)</div>
+          </div>
+          <div>
+            <div style="font-size:0.8rem; color:var(--text-dim); text-transform:uppercase;">การประเมินผลระดับงานตรวจ:</div>
+            <div style="font-weight:700; color:var(--rose);">Major Non-Conformity (Control Failure)</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function resetAccountSimulation() {
+      document.getElementById('tbody-sim-accounts').innerHTML = '<tr><td colspan="7" style="text-align:center; padding:1.5rem; color:var(--text-muted);">คลิกปุ่มด้านบนเพื่อเริ่มต้นการสุ่มตรวจกลุ่มตัวอย่าง 45 บัญชี</td></tr>';
+      document.getElementById('account-sim-summary').innerHTML = '';
+    }
+
+    // ==========================================
+    // WIDGET 9.4: WORKING PAPER INSPECTOR
+    // ==========================================
+    const wpData = {
+      wp01: {
+        ref: 'WP-2024-REG-IAM01',
+        title: 'การตัดสิทธิ์พนักงานลาออก (JML Leaver Process)',
+        finding: 'Major Non-Conformity (Major NCR)',
+        obj: 'ทดสอบประสิทธิผลการดำเนินงาน (Operating Effectiveness) ของการตัดสิทธิ์ภายใน 24 ชม.',
+        proc: '1. ตรวจรายชื่อลาออก 12 คนจาก EV-04 <br>2. เทียบวันลาออกกับ Timestamp การ Disable บน Active Directory และ Oracle DB',
+        result: 'ตัดสิทธิ์ตรงเวลา 10 บัญชี (83.3%) | พบข้อบกพร่อง 2 บัญชี (16.7%): บัญชีอาจารย์ค้าง 6 เดือน และบัญชีเจ้าหน้าที่ระงับล่าช้า 15 วัน',
+        leadNote: '📌 <strong>Lead Auditor Review Note:</strong> การพบว่าอดีตอาจารย์ยังมีการล็อกอินเข้ามาอ่านระบบเมื่อเดือน ก.ค. 67 เป็นหลักฐานเชิงประจักษ์ของการเกิด Unauthorized Access จริง ซึ่งเข้าข่าย Major NCR ทันทีตาม ISO 27001'
+      },
+      wp02: {
+        ref: 'WP-2024-REG-DB02',
+        title: 'การตรวจสอบร่องรอยการแก้ไขเกรดนักศึกษา (Grade Audit Trail & PAM)',
+        finding: 'Minor Non-Conformity (Minor NCR)',
+        obj: 'ทดสอบว่าการแก้ไขเกรดย้อนหลังมี Audit Trail ครบถ้วน ไม่สามารถลบทำลายได้ และคุมสิทธิ์ DBA',
+        proc: '1. สุ่มตรวจ 25 รายการแก้เกรดเทียบกับใบคำร้อง <br>2. ตรวจสอบสิทธิ์ของบัญชี SYSTEM/DBA ในการแก้ไขตาราง GRADE_AUDIT_LOG',
+        result: 'เอกสารอนุมัติครบ 25 รายการ | แต่ตาราง Audit Trail ขาดการส่งไป WORM Storage และแอดมินยังล็อกอินตรงโดยไม่ผ่าน PAM',
+        leadNote: '📌 <strong>Lead Auditor Review Note:</strong> แม้ไม่พบหลักฐานการทุจริตแก้เกรด แต่การที่สถาปัตยกรรมเปิดโอกาสให้ DBA สามารถเข้าถึงและสั่ง DROP/DELETE Log ได้ ถือเป็นข้อบกพร่องเชิงโครงสร้างที่ต้องปรับปรุงก่อนรอบถัดไป'
+      }
+    };
+
+    function showWpInspector(key) {
+      document.getElementById('btn-wp-01').classList.toggle('active', key === 'wp01');
+      document.getElementById('btn-wp-02').classList.toggle('active', key === 'wp02');
+
+      const d = wpData[key];
+      const card = document.getElementById('wp-inspector-card');
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem; border-bottom:1px solid var(--border-color); padding-bottom:0.4rem; flex-wrap:wrap; gap:0.5rem;">
+          <div>
+            <span style="font-family:var(--font-code); font-weight:700; background:var(--primary); color:#fff; padding:0.2rem 0.5rem; border-radius:4px; font-size:0.8rem;">${d.ref}</span>
+            <strong style="margin-left:0.5rem; font-family:var(--font-display);">${d.title}</strong>
+          </div>
+          <span style="font-weight:700; color:${key === 'wp01' ? 'var(--rose)' : 'var(--amber)'}; font-size:0.85rem;">${d.finding}</span>
+        </div>
+        <div style="font-size:0.84rem; line-height:1.5; margin-bottom:0.6rem;">
+          <strong>วัตถุประสงค์ (Objective):</strong> ${d.obj}
+        </div>
+        <div style="font-size:0.84rem; line-height:1.5; margin-bottom:0.6rem;">
+          <strong>ขั้นตอนการตรวจ (Procedures):</strong><br>${d.proc}
+        </div>
+        <div style="font-size:0.84rem; line-height:1.5; margin-bottom:0.8rem; background:var(--bg-surface); padding:0.6rem 0.8rem; border-radius:6px; border-left:3px solid var(--primary);">
+          <strong>ผลการทดสอบเชิงประจักษ์ (Test Results):</strong><br>${d.result}
+        </div>
+        <div style="font-size:0.82rem; line-height:1.45; background:var(--primary-glow); padding:0.6rem 0.8rem; border-radius:6px; color:var(--text-main);">
+          ${d.leadNote}
+        </div>
+      `;
+    }
+    showWpInspector('wp01');
+
+    // ==========================================
+    // WIDGET 9.5: LIVE CRYPTOGRAPHIC HASH (SHA-256)
+    // ==========================================
+    // Pure JS SHA-256 implementation fallback & Web Crypto API support
+    async function sha256(message) {
+      if (window.crypto && window.crypto.subtle) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      } else {
+        // Simple hash mock if in isolated env
+        let h = 0x811c9dc5;
+        for (let i = 0; i < message.length; i++) {
+          h ^= message.charCodeAt(i);
+          h = Math.imul(h, 0x01000193);
+        }
+        return ('00000000' + (h >>> 0).toString(16)).repeat(8).substring(0, 64);
+      }
+    }
+
+    async function calcLiveHash() {
+      const inputEl = document.getElementById('txt-log-input');
+      const input = (inputEl && inputEl.value) || '';
+      const hashValEl = document.getElementById('hdc-sha256-val');
+      const hash = await sha256(input);
+      if (hashValEl) hashValEl.textContent = hash;
+    }
+    calcLiveHash();
+  </script>
+</body>
+</html>

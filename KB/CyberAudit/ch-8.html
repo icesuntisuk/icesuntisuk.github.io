@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 8: การบริหารโปรแกรมตรวจและการวางแผนการตรวจ (Audit Programme Management and Audit Planning) | NECS1312</title>
+  <meta name="description" content="บทที่ 8: การบริหารโปรแกรมตรวจและการวางแผนการตรวจ — การบริหารโปรแกรมตรวจตาม ISO 19011, Audit Universe, Risk-based Audit Priority, สมรรถนะทีมตรวจ, กายวิภาค 13 องค์ประกอบของ Audit Plan, การสุ่มตัวอย่าง, ความเสี่ยงของงานตรวจ, พิธีการประชุมเปิดการตรวจ, ตารางกำหนดการตรวจ 2 วัน และกระดาษทำการ Pre-Audit">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-body: 'Sarabun', sans-serif;
+      --font-display: 'Chakra Petch', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #f1f5f9;
+      --bg-input: #ffffff;
+      --border-color: #e2e8f0;
+      --border-accent: #cbd5e1;
+
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-glow: rgba(2, 132, 199, 0.15);
+
+      --cyan: #0891b2;
+      --cyan-light: #ecfeff;
+      --emerald: #059669;
+      --emerald-light: #ecfdf5;
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --rose: #e11d48;
+      --rose-light: #fff1f2;
+      --purple: #7c3aed;
+      --purple-light: #f5f3ff;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+
+      --font-scale: 1;
+      --line-height: 1.75;
+      --toc-width: 320px;
+      --content-max-w: 920px;
+    }
+
+    [data-theme="sepia"] {
+      --bg-base: #fbf7ee;
+      --bg-surface: #f4ede0;
+      --bg-card: #eae0d0;
+      --bg-input: #fdfaf4;
+      --border-color: #ded1be;
+      --border-accent: #ccbba5;
+      --text-main: #382d21;
+      --text-muted: #6e5e4e;
+      --text-dim: #9b8a78;
+      --primary: #965318;
+      --primary-hover: #7b4211;
+      --primary-glow: rgba(150, 83, 24, 0.15);
+      --cyan: #0d7685;
+      --cyan-light: #e6f7f9;
+      --emerald: #1e7e4e;
+      --emerald-light: #e4f5ec;
+      --amber: #b45309;
+      --amber-light: #fef3c7;
+      --rose: #b91c1c;
+      --rose-light: #fee2e2;
+      --purple: #6d28d9;
+      --purple-light: #ede9fe;
+    }
+
+    [data-theme="dark"] {
+      --bg-base: #0b0f19;
+      --bg-surface: #111827;
+      --bg-card: #1f2937;
+      --bg-input: #1e293b;
+      --border-color: #374151;
+      --border-accent: #4b5563;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --primary: #38bdf8;
+      --primary-hover: #7dd3fc;
+      --primary-glow: rgba(56, 189, 248, 0.2);
+      --cyan: #22d3ee;
+      --cyan-light: rgba(34, 211, 238, 0.1);
+      --emerald: #34d399;
+      --emerald-light: rgba(52, 211, 153, 0.1);
+      --amber: #fbbf24;
+      --amber-light: rgba(251, 191, 36, 0.1);
+      --rose: #fb7185;
+      --rose-light: rgba(251, 113, 133, 0.1);
+      --purple: #a78bfa;
+      --purple-light: rgba(167, 139, 250, 0.1);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: calc(16px * var(--font-scale)); }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: var(--line-height);
+      transition: background-color 0.2s ease, color 0.2s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--cyan));
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s ease-out;
+    }
+
+    .top-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      padding: 0.6rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .badge-course {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.25rem 0.65rem;
+      border-radius: 4px;
+      border: 1px solid var(--primary);
+    }
+
+    .nav-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 480px;
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .btn-ctrl {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.35rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-family: var(--font-display);
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .btn-ctrl:hover {
+      background: var(--bg-surface);
+      color: var(--text-main);
+    }
+    .btn-ctrl.active {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-icon {
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.15s;
+    }
+    .btn-icon:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .layout-container {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .sidebar-toc {
+      width: var(--toc-width);
+      flex-shrink: 0;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-color);
+      height: calc(100vh - 54px);
+      position: sticky;
+      top: 54px;
+      overflow-y: auto;
+      padding: 1.2rem 0.8rem;
+      transition: transform 0.25s ease;
+    }
+
+    .sidebar-toc::-webkit-scrollbar { width: 4px; }
+    .sidebar-toc::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 2px; }
+
+    .toc-header {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      padding: 0 0.6rem 0.8rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toc-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .toc-link {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+      transition: all 0.15s ease;
+    }
+    .toc-link:hover {
+      background: var(--bg-card);
+      color: var(--primary);
+    }
+    .toc-link.active {
+      background: var(--primary-glow);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .toc-bullet {
+      color: var(--text-dim);
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .toc-link.active .toc-bullet {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .toc-level-1 { padding-left: 0.5rem; font-weight: 600; }
+    .toc-level-2 { padding-left: 0.8rem; }
+    .toc-level-3 { padding-left: 1.4rem; font-size: 0.78rem; }
+
+    .content-main {
+      flex: 1;
+      min-width: 0;
+      padding: 2.5rem 3rem 5rem;
+      max-width: var(--content-max-w);
+      margin: 0 auto;
+    }
+
+    .content-heading {
+      font-family: var(--font-display);
+      color: var(--text-main);
+      scroll-margin-top: 75px;
+      margin-top: 2.2rem;
+      margin-bottom: 0.9rem;
+      line-height: 1.35;
+    }
+    h1.content-heading {
+      font-size: 1.85rem;
+      font-weight: 700;
+      margin-top: 0;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.8rem;
+      color: var(--primary);
+    }
+    h2.content-heading {
+      font-size: 1.4rem;
+      font-weight: 700;
+      border-left: 4px solid var(--primary);
+      padding-left: 0.75rem;
+      margin-top: 2.8rem;
+    }
+    h3.content-heading {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1.8rem;
+      color: var(--cyan);
+    }
+    h4.content-heading {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    .content-p {
+      margin-bottom: 1.15rem;
+      color: var(--text-main);
+      font-size: 0.98rem;
+    }
+
+    .content-list {
+      margin-bottom: 1.2rem;
+      padding-left: 1.5rem;
+    }
+    .content-list li {
+      margin-bottom: 0.45rem;
+      font-size: 0.96rem;
+    }
+
+    .section-divider {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2.5rem 0;
+    }
+
+    .content-blockquote {
+      background: var(--bg-card);
+      border-left: 4px solid var(--primary);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.4rem 0;
+      font-style: normal;
+      color: var(--text-muted);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .code-block {
+      background: #0f172a;
+      color: #f8fafc;
+      font-family: var(--font-code);
+      padding: 1.1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      margin: 1.4rem 0;
+      border: 1px solid #1e293b;
+    }
+
+    code {
+      font-family: var(--font-code);
+      background: var(--bg-card);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      border: 1px solid var(--border-color);
+      color: var(--primary);
+    }
+
+    .math-tex {
+      font-family: var(--font-code);
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+      background: var(--bg-surface);
+    }
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      text-align: left;
+    }
+    .content-table th {
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-family: var(--font-display);
+      font-weight: 700;
+      padding: 0.75rem 0.9rem;
+      border-bottom: 2px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .content-table td {
+      padding: 0.7rem 0.9rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+      vertical-align: top;
+    }
+    .content-table tr:hover td {
+      background: var(--primary-glow);
+    }
+
+    /* FIGURE BOX STYLES */
+    .figure-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.4rem;
+      margin: 2rem 0;
+      box-shadow: var(--shadow-md);
+    }
+    .figure-header {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.6rem;
+    }
+    .figure-tag {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.75rem;
+      background: var(--primary);
+      color: #fff;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+    .figure-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-main);
+    }
+    .figure-caption {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
+      padding-top: 0.6rem;
+      text-align: center;
+    }
+
+    /* Fig 8.1 Comparison */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1rem;
+      align-items: stretch;
+    }
+    .comp-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+    .comp-card.prog { border-top: 4px solid var(--purple); }
+    .comp-card.plan { border-top: 4px solid var(--primary); }
+    .comp-badge {
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.3rem;
+    }
+    .comp-card h4 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--text-main);
+      margin-bottom: 0.7rem;
+    }
+    .comp-card ul {
+      padding-left: 1.2rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .comp-card li { margin-bottom: 0.4rem; }
+    .comp-vs {
+      align-self: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      padding: 0.5rem;
+    }
+
+    /* Fig 8.2 PDCA */
+    .pdca-flow-grid {
+      display: grid;
+      grid-template-columns: repeat(7, auto);
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .pdca-node {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      flex: 1;
+    }
+    .pdca-letter {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .plan-node .pdca-letter { color: var(--primary); }
+    .do-node .pdca-letter { color: var(--cyan); }
+    .check-node .pdca-letter { color: var(--amber); }
+    .act-node .pdca-letter { color: var(--emerald); }
+    .pdca-title {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .pdca-node p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+    .pdca-arrow { font-size: 1.2rem; color: var(--text-dim); text-align: center; }
+
+    /* Fig 8.3 Universe */
+    .universe-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .universe-core {
+      background: var(--primary-glow);
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .u-core-badge { font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; color: var(--primary); }
+    .u-core-title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
+    .u-core-desc { font-size: 0.85rem; color: var(--text-muted); }
+    .universe-branches {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.8rem;
+    }
+    .u-branch {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem;
+    }
+    .u-b-icon { font-size: 1.3rem; margin-bottom: 0.3rem; }
+    .u-b-title { font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; }
+    .u-b-desc { font-size: 0.78rem; color: var(--text-muted); }
+
+    /* Fig 8.4 Competency */
+    .competency-pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.8rem;
+    }
+    .pillar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      border-top: 3px solid var(--cyan);
+    }
+    .pillar-num {
+      font-family: var(--font-display);
+      font-weight: 800;
+      color: var(--cyan);
+      font-size: 1.2rem;
+      margin-bottom: 0.2rem;
+    }
+    .pillar-card h4 { font-family: var(--font-display); font-size: 0.88rem; font-weight: 700; margin-bottom: 0.1rem; }
+    .pillar-sub { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.4rem; }
+    .pillar-card p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Fig 8.5 13 Elements */
+    .anatomy-13-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 0.6rem;
+    }
+    .ana-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.6rem 0.8rem;
+    }
+    .ana-idx {
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--primary);
+      background: var(--primary-glow);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+    }
+    .ana-info { font-size: 0.78rem; color: var(--text-muted); display: flex; flex-direction: column; }
+    .ana-info strong { font-size: 0.82rem; color: var(--text-main); }
+
+    /* Fig 8.6 Risk Mitigation */
+    .risk-mitigation-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.7rem;
+    }
+    .rm-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+    }
+    .rm-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
+    .rm-name { font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; }
+    .rm-desc { font-size: 0.8rem; color: var(--rose); margin-bottom: 0.4rem; }
+    .rm-action { font-size: 0.8rem; color: var(--text-muted); background: var(--bg-surface); padding: 0.5rem 0.7rem; border-radius: 6px; border-left: 3px solid var(--emerald); }
+
+    /* Fig 8.7 Opening Agenda */
+    .agenda-stepper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.6rem 0.9rem;
+    }
+    .step-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+    .step-content { font-size: 0.84rem; color: var(--text-muted); }
+    .step-content strong { color: var(--text-main); margin-right: 0.3rem; }
+
+    /* Fig 8.8 Master Schedule Table */
+    .master-prog-table-wrap { overflow-x: auto; }
+    .prog-master-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    .prog-master-table th, .prog-master-table td { padding: 0.7rem 0.8rem; border-bottom: 1px solid var(--border-color); }
+    .prog-master-table th { background: var(--bg-card); font-family: var(--font-display); font-weight: 700; text-align: left; }
+    .badge-q { font-family: var(--font-display); font-weight: 700; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.78rem; }
+    .badge-q.q1 { background: rgba(2, 132, 199, 0.15); color: var(--primary); }
+    .badge-q.q2 { background: rgba(5, 150, 105, 0.15); color: var(--emerald); }
+    .badge-q.q3 { background: rgba(217, 119, 6, 0.15); color: var(--amber); }
+    .badge-q.q4 { background: rgba(124, 58, 237, 0.15); color: var(--purple); }
+
+    /* Fig 8.9 Working Paper Mock */
+    .working-paper-mock {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-accent);
+      border-radius: 8px;
+      padding: 1.1rem;
+      font-size: 0.84rem;
+    }
+    .wp-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 2px solid var(--primary); padding-bottom: 0.4rem; }
+    .wp-title-text { font-family: var(--font-code); font-weight: 700; color: var(--primary); }
+    .wp-date-badge { font-family: var(--font-code); font-size: 0.75rem; color: var(--text-dim); }
+    .wp-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin-bottom: 0.9rem; font-size: 0.8rem; }
+    .wp-table-mini { border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; }
+    .wp-tr { display: grid; grid-template-columns: 2fr 3fr 1fr; padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--border-color); font-size: 0.8rem; align-items: center; }
+    .wp-tr.head { background: var(--bg-card); font-weight: 700; }
+    .wp-tag { text-align: center; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
+    .wp-tag.pass { background: var(--emerald-light); color: var(--emerald); }
+    .wp-tag.cond { background: var(--amber-light); color: var(--amber); }
+    .wp-tag.fail { background: var(--rose-light); color: var(--rose); }
+
+    /* Fig 8.10 Professional Dialogue */
+    .perspective-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+    .persp-title { font-family: var(--font-display); font-weight: 700; margin-bottom: 0.8rem; color: var(--cyan); }
+    .persp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .persp-side { background: var(--bg-card); border-radius: 6px; padding: 0.9rem; }
+    .persp-side.aud { border-left: 4px solid var(--primary); }
+    .persp-side.imp { border-left: 4px solid var(--emerald); }
+    .persp-badge { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; margin-bottom: 0.5rem; }
+    .persp-side.aud .persp-badge { color: var(--primary); }
+    .persp-side.imp .persp-badge { color: var(--emerald); }
+    .persp-side p { font-size: 0.82rem; margin-bottom: 0.4rem; line-height: 1.45; font-style: italic; }
+
+    /* Fig 8.11 2-Day Schedule */
+    .schedule-timeline-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .sched-day-col { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+    .sched-day-header { padding: 0.8rem 1rem; color: #fff; }
+    .sched-day-header.day1 { background: var(--primary); }
+    .sched-day-header.day2 { background: var(--cyan); }
+    .sd-tag { font-family: var(--font-display); font-weight: 800; font-size: 0.8rem; }
+    .sd-title { font-size: 0.85rem; font-weight: 600; opacity: 0.95; }
+    .sched-event-list { padding: 0.6rem; display: flex; flex-direction: column; gap: 0.4rem; }
+    .se-item { display: flex; gap: 0.6rem; font-size: 0.8rem; padding: 0.4rem 0.5rem; border-radius: 4px; background: var(--bg-surface); }
+    .se-item.lunch { background: var(--amber-light); color: var(--amber); font-weight: 600; }
+    .se-item.wrap { border-left: 3px solid var(--purple); font-weight: 600; }
+    .se-time { font-family: var(--font-code); font-size: 0.75rem; color: var(--text-dim); flex-shrink: 0; align-self: center; }
+
+    /* Fig 8.12 Evidence 15 */
+    .evidence-grid-15 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.5rem; }
+    .ev-item { display: flex; align-items: center; gap: 0.6rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.5rem 0.7rem; font-size: 0.8rem; }
+    .ev-num { font-family: var(--font-code); font-weight: 700; color: var(--primary); background: var(--primary-glow); padding: 0.15rem 0.35rem; border-radius: 4px; }
+
+    /* WIDGET SHARED STYLES */
+    .widget-box {
+      background: var(--bg-surface);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2.5rem 0;
+      box-shadow: var(--shadow-lg);
+    }
+    .widget-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.6rem;
+    }
+    .widget-badge {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.75rem;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      color: #fff;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+    .widget-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-main);
+    }
+    .widget-intro { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.2rem; }
+
+    /* Widget 8.1 Calculator */
+    .preset-buttons-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.2rem; }
+    .btn-preset { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.35rem 0.7rem; font-size: 0.8rem; font-family: var(--font-body); cursor: pointer; color: var(--text-main); transition: all 0.15s; }
+    .btn-preset:hover { background: var(--primary-glow); border-color: var(--primary); color: var(--primary); }
+    .calc-grid-6 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .calc-field { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.8rem 1rem; }
+    .calc-field label { display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .val-badge { font-family: var(--font-code); background: var(--primary); color: #fff; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.75rem; }
+    .calc-field input[type="range"] { width: 100%; accent-color: var(--primary); cursor: pointer; }
+    .field-hint { display: block; font-size: 0.72rem; color: var(--text-dim); margin-top: 0.25rem; }
+    .score-output-card { display: flex; flex-wrap: wrap; gap: 1.5rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; align-items: center; }
+    .soc-left { min-width: 200px; }
+    .soc-title { font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-family: var(--font-display); }
+    .soc-score { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; color: var(--primary); line-height: 1.1; margin: 0.2rem 0; }
+    .soc-tier { font-family: var(--font-display); font-size: 0.8rem; font-weight: 700; color: var(--rose); }
+    .soc-right { flex: 1; border-left: 2px solid var(--border-color); padding-left: 1.2rem; }
+    .soc-rec-title { font-family: var(--font-display); font-size: 0.88rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .soc-rec-body { font-size: 0.84rem; color: var(--text-muted); line-height: 1.45; }
+
+    /* Widget 8.2 Universe */
+    .univ-controls { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.8rem; margin-bottom: 1.2rem; }
+    .univ-search-wrap input { width: 280px; padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input); font-size: 0.85rem; color: var(--text-main); }
+    .univ-filter-btns { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .btn-u-filter { border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-muted); border-radius: 6px; padding: 0.35rem 0.7rem; font-size: 0.8rem; cursor: pointer; transition: all 0.15s; }
+    .btn-u-filter.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .univ-items-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.8rem; max-height: 480px; overflow-y: auto; padding-right: 0.3rem; }
+    .univ-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.9rem; transition: transform 0.15s; }
+    .univ-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+    .uc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.3rem; }
+    .uc-name { font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; }
+    .uc-tier { font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 4px; }
+    .uc-tier.tier1 { background: var(--rose-light); color: var(--rose); }
+    .uc-tier.tier2 { background: var(--amber-light); color: var(--amber); }
+    .uc-tier.tier3 { background: var(--emerald-light); color: var(--emerald); }
+    .uc-desc { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+    .uc-meta { font-size: 0.74rem; color: var(--text-dim); display: flex; justify-content: space-between; }
+
+    /* Widget 8.3 Team Builder */
+    .team-builder-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .col-head { font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.6rem; color: var(--text-main); }
+    .candidate-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 380px; overflow-y: auto; }
+    .cand-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.6rem 0.8rem; cursor: pointer; transition: all 0.15s; }
+    .cand-item.selected { border-color: var(--primary); background: var(--primary-glow); }
+    .cand-name { font-weight: 600; font-size: 0.85rem; }
+    .cand-role { font-size: 0.74rem; color: var(--text-dim); }
+    .cand-skills { font-size: 0.72rem; color: var(--text-muted); }
+    .team-summary-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; }
+    .skill-bar-row { margin-bottom: 0.6rem; }
+    .sbr-label { display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.2rem; }
+    .sbr-bar { height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; }
+    .sbr-fill { height: 100%; background: var(--primary); transition: width 0.3s; }
+
+    /* Widget 8.4 Accordion */
+    .plan-elements-accordion { display: flex; flex-direction: column; gap: 0.4rem; }
+    .acc-item { border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; background: var(--bg-card); }
+    .acc-header { padding: 0.65rem 0.9rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+    .acc-header:hover { background: var(--primary-glow); color: var(--primary); }
+    .acc-content { display: none; padding: 0.8rem 1rem; background: var(--bg-surface); border-top: 1px solid var(--border-color); font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+    .acc-content.open { display: block; }
+
+    /* Widget 8.5 Conflict Sim */
+    .sim-scenario-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; }
+    .sim-tag { font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; color: var(--rose); margin-bottom: 0.3rem; }
+    .sim-quote { font-size: 0.92rem; font-style: italic; color: var(--text-main); margin-bottom: 1rem; border-left: 3px solid var(--rose); padding-left: 0.8rem; }
+    .sim-options { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+    .sim-btn-opt { text-align: left; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.7rem 0.9rem; font-size: 0.84rem; cursor: pointer; color: var(--text-main); transition: all 0.15s; }
+    .sim-btn-opt:hover { border-color: var(--primary); background: var(--primary-glow); }
+    .sim-feedback { display: none; padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.82rem; line-height: 1.45; }
+    .sim-feedback.correct { background: var(--emerald-light); color: var(--emerald); border: 1px solid var(--emerald); }
+    .sim-feedback.wrong { background: var(--rose-light); color: var(--rose); border: 1px solid var(--rose); }
+
+    /* Bottom Navigation */
+    .chapter-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+    .btn-nav-chapter {
+      text-decoration: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.9rem;
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+    .btn-nav-chapter:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+    }
+
+    .toc-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 850;
+    }
+
+    @media (max-width: 992px) {
+      .sidebar-toc {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 950;
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-lg);
+      }
+      .sidebar-toc.open { transform: translateX(0); }
+      .toc-backdrop.open { display: block; }
+      .content-main { padding: 1.5rem 1rem; }
+      .nav-title { max-width: 200px; }
+      .comparison-grid, .pdca-flow-grid, .schedule-timeline-grid, .persp-grid, .team-builder-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Reading Progress Bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-navbar">
+    <div class="navbar-left">
+      <button class="btn-icon" id="btn-toggle-toc" title="เปิด/ปิด สารบัญ (Table of Contents)">
+        <span>☰</span> สารบัญ
+      </button>
+      <span class="badge-course">NECS1312 // CH-8</span>
+      <span class="nav-title">บทที่ 8: การบริหารโปรแกรมตรวจและการวางแผนการตรวจ</span>
+    </div>
+
+    <div class="navbar-right">
+      <!-- Font Scale -->
+      <div class="control-group">
+        <button class="btn-ctrl" id="btn-font-dec" title="ลดขนาดตัวอักษร">A-</button>
+        <button class="btn-ctrl" id="btn-font-reset" title="ขนาดปกติ">A</button>
+        <button class="btn-ctrl" id="btn-font-inc" title="เพิ่มขนาดตัวอักษร">A+</button>
+      </div>
+
+      <!-- Theme Switcher -->
+      <div class="control-group">
+        <button class="btn-ctrl active" id="btn-theme-light" title="ธีมสว่าง">Light</button>
+        <button class="btn-ctrl" id="btn-theme-sepia" title="ธีมถนอมสายตา">Sepia</button>
+        <button class="btn-ctrl" id="btn-theme-dark" title="ธีมมืด">Dark</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="toc-backdrop" id="toc-backdrop"></div>
+
+  <div class="layout-container">
+    <!-- Sidebar TOC -->
+    <aside class="sidebar-toc" id="sidebar-toc">
+      <div class="toc-header">
+        <span>สารบัญเนื้อหา (TOC)</span>
+        <button class="btn-ctrl" id="btn-close-toc" style="padding:2px 6px;">✕</button>
+      </div>
+      <nav class="toc-nav" id="toc-nav"><a href="#sec-บทที่-8-การบริหารโปรแกรมตรวจและการวางแผนการตรวจ-audit-programme-management-and-audit-planning-1" class="toc-link toc-level-1" data-target="sec-บทที่-8-การบริหารโปรแกรมตรวจและการวางแผนการตรวจ-audit-programme-management-and-audit-planning-1"><span class="toc-bullet">›</span> <span class="toc-text">บทที่ 8 การบริหารโปรแกรมตรวจและการวางแผนการตรวจ (Audit Programme Management and Audit Planning)</span></a><a href="#sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-13" class="toc-link toc-level-2" data-target="sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-13"><span class="toc-bullet">›</span> <span class="toc-text">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</span></a><a href="#sec-ส่วนที่-1-การบริหารโปรแกรมการตรวจ-audit-programme-management-ตาม-iso-19011-25" class="toc-link toc-level-2" data-target="sec-ส่วนที่-1-การบริหารโปรแกรมการตรวจ-audit-programme-management-ตาม-iso-19011-25"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 1: การบริหารโปรแกรมการตรวจ (Audit Programme Management ตาม ISO 19011)</span></a><a href="#sec-1-1-ความแตกต่างระหว่าง-audit-programme-กับ-audit-plan-27" class="toc-link toc-level-3" data-target="sec-1-1-ความแตกต่างระหว่าง-audit-programme-กับ-audit-plan-27"><span class="toc-bullet">›</span> <span class="toc-text">1.1 ความแตกต่างระหว่าง Audit Programme กับ Audit Plan</span></a><a href="#sec-1-2-การกำหนดจักรวาลการตรวจ-audit-universe-72" class="toc-link toc-level-3" data-target="sec-1-2-การกำหนดจักรวาลการตรวจ-audit-universe-72"><span class="toc-bullet">›</span> <span class="toc-text">1.2 การกำหนดจักรวาลการตรวจ (Audit Universe)</span></a><a href="#sec-1-3-การจัดลำดับความสำคัญแบบ-risk-based-risk-based-audit-planning-96" class="toc-link toc-level-3" data-target="sec-1-3-การจัดลำดับความสำคัญแบบ-risk-based-risk-based-audit-planning-96"><span class="toc-bullet">›</span> <span class="toc-text">1.3 การจัดลำดับความสำคัญแบบ Risk-based (Risk-based Audit Planning)</span></a><a href="#sec-1-4-สมรรถนะของทีมตรวจและการจัดทีม-auditor-competency-team-selection-117" class="toc-link toc-level-3" data-target="sec-1-4-สมรรถนะของทีมตรวจและการจัดทีม-auditor-competency-team-selection-117"><span class="toc-bullet">›</span> <span class="toc-text">1.4 สมรรถนะของทีมตรวจและการจัดทีม (Auditor Competency &amp; Team Selection)</span></a><a href="#sec-ส่วนที่-2-การจัดทำแผนการตรวจเฉพาะกิจ-audit-plan-deep-dive-150" class="toc-link toc-level-2" data-target="sec-ส่วนที่-2-การจัดทำแผนการตรวจเฉพาะกิจ-audit-plan-deep-dive-150"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 2: การจัดทำแผนการตรวจเฉพาะกิจ (Audit Plan Deep Dive)</span></a><a href="#sec-2-1-กายวิภาค-13-องค์ประกอบมาตรฐานของ-audit-plan-152" class="toc-link toc-level-3" data-target="sec-2-1-กายวิภาค-13-องค์ประกอบมาตรฐานของ-audit-plan-152"><span class="toc-bullet">›</span> <span class="toc-text">2.1 กายวิภาค 13 องค์ประกอบมาตรฐานของ Audit Plan</span></a><a href="#sec-2-2-แนวทางการสุ่มตัวอย่างในแผนการตรวจ-sampling-approach-in-audit-plan-178" class="toc-link toc-level-3" data-target="sec-2-2-แนวทางการสุ่มตัวอย่างในแผนการตรวจ-sampling-approach-in-audit-plan-178"><span class="toc-bullet">›</span> <span class="toc-text">2.2 แนวทางการสุ่มตัวอย่างในแผนการตรวจ (Sampling Approach in Audit Plan)</span></a><a href="#sec-2-3-การบริหารความเสี่ยงของงานตรวจ-audit-risk-management-198" class="toc-link toc-level-3" data-target="sec-2-3-การบริหารความเสี่ยงของงานตรวจ-audit-risk-management-198"><span class="toc-bullet">›</span> <span class="toc-text">2.3 การบริหารความเสี่ยงของงานตรวจ (Audit Risk Management)</span></a><a href="#sec-2-4-การเตรียมการตรวจระยะไกลและการตรวจแบบผสมผสาน-remote-hybrid-audit-230" class="toc-link toc-level-3" data-target="sec-2-4-การเตรียมการตรวจระยะไกลและการตรวจแบบผสมผสาน-remote-hybrid-audit-230"><span class="toc-bullet">›</span> <span class="toc-text">2.4 การเตรียมการตรวจระยะไกลและการตรวจแบบผสมผสาน (Remote &amp; Hybrid Audit)</span></a><a href="#sec-2-5-ระเบียบวาระและพิธีการประชุมเปิดการตรวจ-opening-meeting-protocol-agenda-240" class="toc-link toc-level-3" data-target="sec-2-5-ระเบียบวาระและพิธีการประชุมเปิดการตรวจ-opening-meeting-protocol-agenda-240"><span class="toc-bullet">›</span> <span class="toc-text">2.5 ระเบียบวาระและพิธีการประชุมเปิดการตรวจ (Opening Meeting Protocol &amp; Agenda)</span></a><a href="#sec-2-6-ข้อจำกัดของการตรวจ-audit-limitations-268" class="toc-link toc-level-3" data-target="sec-2-6-ข้อจำกัดของการตรวจ-audit-limitations-268"><span class="toc-bullet">›</span> <span class="toc-text">2.6 ข้อจำกัดของการตรวจ (Audit Limitations)</span></a><a href="#sec-ส่วนที่-3-กรณีศึกษาเชิงประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-279" class="toc-link toc-level-2" data-target="sec-ส่วนที่-3-กรณีศึกษาเชิงประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-279"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 3: กรณีศึกษาเชิงประยุกต์ &quot;มหาวิทยาลัยดิจิทัลสมมติ&quot; (Core Case Study)</span></a><a href="#sec-3-1-จักรวาลการตรวจของมหาวิทยาลัยดิจิทัลสมมติ-audit-universe-281" class="toc-link toc-level-3" data-target="sec-3-1-จักรวาลการตรวจของมหาวิทยาลัยดิจิทัลสมมติ-audit-universe-281"><span class="toc-bullet">›</span> <span class="toc-text">3.1 จักรวาลการตรวจของมหาวิทยาลัยดิจิทัลสมมติ (Audit Universe)</span></a><a href="#sec-3-2-แผนโปรแกรมการตรวจประจำปีงบประมาณ-2568-annual-audit-programme-2025-300" class="toc-link toc-level-3" data-target="sec-3-2-แผนโปรแกรมการตรวจประจำปีงบประมาณ-2568-annual-audit-programme-2025-300"><span class="toc-bullet">›</span> <span class="toc-text">3.2 แผนโปรแกรมการตรวจประจำปีงบประมาณ 2568 (Annual Audit Programme 2025)</span></a><a href="#sec-3-3-แผนการตรวจเฉพาะกิจ-audit-plan-ระบบบริการการศึกษาและทะเบียนนักศึกษา-328" class="toc-link toc-level-3" data-target="sec-3-3-แผนการตรวจเฉพาะกิจ-audit-plan-ระบบบริการการศึกษาและทะเบียนนักศึกษา-328"><span class="toc-bullet">›</span> <span class="toc-text">3.3 แผนการตรวจเฉพาะกิจ (Audit Plan: ระบบบริการการศึกษาและทะเบียนนักศึกษา)</span></a><a href="#sec-3-4-กำหนดการตรวจรายชั่วโมง-detailed-2-day-audit-schedule-364" class="toc-link toc-level-3" data-target="sec-3-4-กำหนดการตรวจรายชั่วโมง-detailed-2-day-audit-schedule-364"><span class="toc-bullet">›</span> <span class="toc-text">3.4 กำหนดการตรวจรายชั่วโมง (Detailed 2-Day Audit Schedule)</span></a><a href="#sec-3-5-ตารางเมทริกซ์สมรรถนะทีมผู้ตรวจสอบ-auditor-competency-matrix-405" class="toc-link toc-level-3" data-target="sec-3-5-ตารางเมทริกซ์สมรรถนะทีมผู้ตรวจสอบ-auditor-competency-matrix-405"><span class="toc-bullet">›</span> <span class="toc-text">3.5 ตารางเมทริกซ์สมรรถนะทีมผู้ตรวจสอบ (Auditor Competency Matrix)</span></a><a href="#sec-3-6-รายการขอเอกสารและหลักฐานล่วงหน้า-evidence-request-list-15-รายการหลัก-416" class="toc-link toc-level-3" data-target="sec-3-6-รายการขอเอกสารและหลักฐานล่วงหน้า-evidence-request-list-15-รายการหลัก-416"><span class="toc-bullet">›</span> <span class="toc-text">3.6 รายการขอเอกสารและหลักฐานล่วงหน้า (Evidence Request List: 15 รายการหลัก)</span></a><a href="#sec-ส่วนที่-4-มุมมองและการตรวจสอบของ-lead-auditor-audit-governance-readiness-440" class="toc-link toc-level-2" data-target="sec-ส่วนที่-4-มุมมองและการตรวจสอบของ-lead-auditor-audit-governance-readiness-440"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 4: มุมมองและการตรวจสอบของ Lead Auditor (Audit Governance &amp; Readiness)</span></a><a href="#sec-4-1-กระดาษทำการตรวจสอบความพร้อมก่อนลงพื้นที่-pre-audit-readiness-working-paper-442" class="toc-link toc-level-3" data-target="sec-4-1-กระดาษทำการตรวจสอบความพร้อมก่อนลงพื้นที่-pre-audit-readiness-working-paper-442"><span class="toc-bullet">›</span> <span class="toc-text">4.1 กระดาษทำการตรวจสอบความพร้อมก่อนลงพื้นที่ (Pre-Audit Readiness Working Paper)</span></a><a href="#sec-กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน-active-learning-simulation-481" class="toc-link toc-level-2" data-target="sec-กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน-active-learning-simulation-481"><span class="toc-bullet">›</span> <span class="toc-text">กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน (Active Learning Simulation)</span></a><a href="#sec-กิจกรรม-the-opening-meeting-showdown-ข้อพิพาทในที่ประชุมเปิดการตรวจ-483" class="toc-link toc-level-3" data-target="sec-กิจกรรม-the-opening-meeting-showdown-ข้อพิพาทในที่ประชุมเปิดการตรวจ-483"><span class="toc-bullet">›</span> <span class="toc-text">กิจกรรม: &quot;The Opening Meeting Showdown&quot; (ข้อพิพาทในที่ประชุมเปิดการตรวจ)</span></a><a href="#sec-มุมมองวิชาชีพประจำบท-professional-perspectives-496" class="toc-link toc-level-2" data-target="sec-มุมมองวิชาชีพประจำบท-professional-perspectives-496"><span class="toc-bullet">›</span> <span class="toc-text">มุมมองวิชาชีพประจำบท (Professional Perspectives)</span></a><a href="#sec-แบบฝึกหัดและการบ้านประจำบทที่-8-520" class="toc-link toc-level-2" data-target="sec-แบบฝึกหัดและการบ้านประจำบทที่-8-520"><span class="toc-bullet">›</span> <span class="toc-text">แบบฝึกหัดและการบ้านประจำบทที่ 8</span></a><a href="#sec-คำถามทบทวนท้ายบท-review-questions-answers-539" class="toc-link toc-level-2" data-target="sec-คำถามทบทวนท้ายบท-review-questions-answers-539"><span class="toc-bullet">›</span> <span class="toc-text">คำถามทบทวนท้ายบท (Review Questions &amp; Answers)</span></a><a href="#sec-สรุปบทที่-8-564" class="toc-link toc-level-2" data-target="sec-สรุปบทที่-8-564"><span class="toc-bullet">›</span> <span class="toc-text">สรุปบทที่ 8</span></a><a href="#sec-เอกสารอ้างอิงและมาตรฐานสากล-574" class="toc-link toc-level-2" data-target="sec-เอกสารอ้างอิงและมาตรฐานสากล-574"><span class="toc-bullet">›</span> <span class="toc-text">เอกสารอ้างอิงและมาตรฐานสากล</span></a></nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content-main" id="content-main">
+      <h1 class="content-heading" id="sec-บทที่-8-การบริหารโปรแกรมตรวจและการวางแผนการตรวจ-audit-programme-management-and-audit-planning-1">บทที่ 8 การบริหารโปรแกรมตรวจและการวางแผนการตรวจ (Audit Programme Management and Audit Planning)</h1>
+<p class="content-p">ในวิชาชีพการตรวจสอบความมั่นคงปลอดภัยไซเบอร์ มีคำกล่าวเตือนใจคลาสสิกที่ว่า <strong>"การล้มเหลวในการวางแผน คือการวางแผนที่จะล้มเหลว (Failing to plan is planning to fail)"</strong> การตรวจสอบความมั่นคงปลอดภัยสารสนเทศมิใช่การเดินเข้าไปในห้องเซิร์ฟเวอร์แล้วเริ่มต้นสุ่มตรวจตามความพอใจ หรือการไล่จับผิดผู้ดูแลระบบอย่างกะทันหัน หากแต่เป็น <strong>"กระบวนการที่เป็นระบบ เป็นอิสระ และมีเอกสารกำกับ (Systematic, Independent and Documented Process)"</strong> ตามมาตรฐานสากล <strong>ISO 19011</strong></p>
+<p class="content-p">ในประเทศไทย พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 มาตรา 54 บัญญัติไว้อย่างเด็ดขาดว่า หน่วยงานโครงสร้างพื้นฐานสำคัญทางสารสนเทศ (CII) มีหน้าที่ต้องจัดให้มีการตรวจสอบด้านความมั่นคงปลอดภัยไซเบอร์โดยผู้ตรวจสอบอิสระอย่างน้อยปีละ 1 ครั้ง และต้องรายงานผลต่อ สกมช. ภายใน 30 วัน การตรวจสอบดังกล่าวจะเกิดขึ้นได้อย่างมีประสิทธิผลและได้รับความร่วมมือจากองค์กร จำเป็นต้องอาศัยการบริหารจัดการใน 2 ระดับ:</p>
+<ol class="content-list ordered">
+<li><strong>ระดับยุทธศาสตร์ (Strategic Level):</strong> การบริหาร <strong>โปรแกรมการตรวจ (Audit Programme)</strong> ซึ่งครอบคลุมการจัดสรรทรัพยากร การกำหนดขอบเขตจักรวาลการตรวจ (Audit Universe) และการวางวงรอบการตรวจสอบตลอดทั้งปีหรือหลายปี</li>
+<li><strong>ระดับปฏิบัติการ (Operational Level):</strong> การจัดทำ <strong>แผนการตรวจเฉพาะกิจ (Audit Plan)</strong> สำหรับการลงพื้นที่ตรวจประเมินระบบใดระบบหนึ่ง ตั้งแต่วัตถุประสงค์ ขอบเขต เกณฑ์การตรวจ ตารางเวลา การสุ่มตัวอย่าง การบริหารความเสี่ยงของงานตรวจ ตลอดจนการจัดประชุมเปิดการตรวจ (Opening Meeting)</li>
+</ol>
+<p class="content-p">ในบทนี้ นักศึกษาจะได้เปลี่ยนบทบาทจาก "ผู้จัดทำระบบ (Lead Implementer)" ในบทที่ 4–7 เข้าสู่บทบาทของ <strong>"หัวหน้าทีมผู้ตรวจสอบ (Lead Auditor)"</strong> เพื่อเรียนรู้ศิลปะและวิทยาศาสตร์ในการบริหารโปรแกรมการตรวจ การประเมินความเสี่ยงของงานตรวจ และการจัดทำชุดเอกสารการวางแผนการตรวจที่สมบูรณ์ตามมาตรฐานวิชาชีพสากล</p>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-13">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</h2>
+<p class="content-p">เมื่อสิ้นสุดการเรียนรู้ในบทนี้ นักศึกษาสามารถ:</p>
+<ol class="content-list ordered">
+<li><strong>แยกแยะและอธิบายโครงสร้างของ Audit Programme กับ Audit Plan ได้อย่างถูกต้อง (CLO1, CLO3):</strong> อธิบายความแตกต่างระหว่างโปรแกรมการตรวจระยะยาวกับแผนการตรวจเฉพาะกิจตามมาตรฐาน ISO 19011 พร้อมทั้งจำแนกองค์ประกอบของจักรวาลการตรวจ (Audit Universe) ได้อย่างครอบคลุม</li>
+<li><strong>จัดลำดับความสำคัญของงานตรวจตามฐานความเสี่ยงได้ (CLO3, CLO4):</strong> ประยุกต์ใช้ 6 ปัจจัยความเสี่ยง (Criticality, Regulatory Exposure, Previous Findings, Incidents, Changes, Management Concern) ในการคำนวณและจัดลำดับความเร่งด่วนในการตรวจสอบ (Risk-based Audit Scheduling) ได้อย่างมีหลักการ</li>
+<li><strong>กำหนดสมรรถนะและจัดโครงสร้างทีมผู้ตรวจสอบได้อย่างเหมาะสม (CLO1, CLO3):</strong> วิเคราะห์ทักษะความเชี่ยวชาญ 5 มิติที่จำเป็น จัดทำตารางประเมินสมรรถนะทีมตรวจ (Auditor Competency Matrix) และกำหนดบทบาทหน้าที่ของ Lead Auditor, Technical Auditor, Legal Auditor และ Observer ได้</li>
+<li><strong>จัดทำแผนการตรวจเฉพาะกิจครอบคลุม 13 องค์ประกอบมาตรฐานได้ (CLO3):</strong> ออกแบบ Audit Plan สำหรับระบบสารสนเทศสำคัญ ระบุวัตถุประสงค์ ขอบเขต เกณฑ์การตรวจ วิธีการตรวจ แผนการสุ่มตัวอย่าง รายการขอหลักฐานล่วงหน้า (Evidence Request List) และการเตรียมการตรวจระยะไกล (Remote Audit) ได้อย่างเป็นรูปธรรม</li>
+<li><strong>วิเคราะห์ความเสี่ยงของงานตรวจและนำการประชุมเปิดได้อย่างเป็นมืออาชีพ (CLO1, CLO3):</strong> ชี้ชัดและวางมาตรการลดความเสี่ยงของงานตรวจ (Audit Risks) ระบุข้อจำกัดของการตรวจ (Audit Limitations) และจัดทำระเบียบวาระพร้อมนำการประชุมเปิดการตรวจ (Opening Meeting Protocol) ได้อย่างมีประสิทธิภาพ</li>
+</ol>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-1-การบริหารโปรแกรมการตรวจ-audit-programme-management-ตาม-iso-19011-25">ส่วนที่ 1: การบริหารโปรแกรมการตรวจ (Audit Programme Management ตาม ISO 19011)</h2>
+<h3 class="content-heading" id="sec-1-1-ความแตกต่างระหว่าง-audit-programme-กับ-audit-plan-27">1.1 ความแตกต่างระหว่าง Audit Programme กับ Audit Plan</h3>
+<blockquote class="content-blockquote">[!NOTE]<br><strong>หมายเหตุทางวิชาการและสถานะมาตรฐาน ISO 19011:</strong><br>มาตรฐานสากลที่เป็นแกนหลักของการตรวจประเมินระบบการบริหารจัดการคือ <strong>ISO 19011 (Guidelines for auditing management systems)</strong> ปัจจุบันฉบับประกาศใช้ทางการคือ <strong>ISO 19011:2018</strong> ทั้งนี้ องค์การระหว่างประเทศว่าด้วยการมาตรฐาน (ISO) กำลังอยู่ระหว่างกระบวนการทบทวนและจัดทำมาตรฐานฉบับปรับปรุงใหม่ คือ <strong>ISO 19011:2026</strong> (สามารถติดตามสถานะการพัฒนามาตรฐานได้ที่ <a href="https://www.iso.org/standard/88984.html" target="_blank" rel="noopener">ISO 19011:2026 Official Standard Page</a>) ผู้สอนและนักศึกษาควรปรับการอ้างอิงให้ตรงกับฉบับที่สถาบันการศึกษามีสิทธิ์ใช้งานตามลิขสิทธิ์</blockquote>
+<p class="content-p">หนึ่งในความสับสนที่พบบ่อยที่สุดในหมู่นักศึกษาและผู้ตรวจสอบมือใหม่ คือการใช้คำว่า "Audit Programme" และ "Audit Plan" สลับกัน ในมาตรฐานสากล <strong>ISO 19011</strong> ได้แยกแยะนิยามและขอบเขตของเอกสารทั้งสองอย่างชัดเจน:</p>
+
+<div class="figure-box" id="figure-8-1">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 8.1</div>
+    <div class="figure-title">การเปรียบเทียบ Audit Programme (ยุทธศาสตร์) กับ Audit Plan (ปฏิบัติการ)</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="comp-card prog">
+      <div class="comp-badge">STRATEGIC LEVEL (ยุทธศาสตร์)</div>
+      <h4>Audit Programme (โปรแกรมการตรวจ)</h4>
+      <ul>
+        <li><strong>กรอบเวลา:</strong> ระยะยาว (1–3 ปี) หรือแผนแม่บทประจำปี</li>
+        <li><strong>ขอบเขต:</strong> ครอบคลุมการตรวจหลายครั้ง (Multiple Audits) ทั่วทั้งองค์กร</li>
+        <li><strong>ผู้รับผิดชอบ:</strong> คณะกรรมการตรวจสอบ / Audit Programme Manager</li>
+        <li><strong>ผลลัพธ์:</strong> แผนแม่บทการตรวจประจำปี และการจัดสรรงบประมาณ/กำลังคน</li>
+        <li><strong>ตัวอย่าง:</strong> แผนการตรวจความมั่นคงปลอดภัยสารสนเทศของมหาวิทยาลัย ประจำปีงบประมาณ 2568</li>
+      </ul>
+    </div>
+    <div class="comp-vs">VS</div>
+    <div class="comp-card plan">
+      <div class="comp-badge">OPERATIONAL LEVEL (ปฏิบัติการ)</div>
+      <h4>Audit Plan (แผนการตรวจเฉพาะกิจ)</h4>
+      <ul>
+        <li><strong>กรอบเวลา:</strong> ระยะสั้นเฉพาะกิจ (เช่น 2–5 วันทำการ)</li>
+        <li><strong>ขอบเขต:</strong> มุ่งเน้นการตรวจระบบใดระบบหนึ่งเป็นการเฉพาะ (Single Audit)</li>
+        <li><strong>ผู้รับผิดชอบ:</strong> Lead Auditor (หัวหน้าทีมผู้ตรวจสอบประจำงาน)</li>
+        <li><strong>ผลลัพธ์:</strong> กำหนดการรายชั่วโมง, รายชื่อทีม, แผนการสุ่ม และ Evidence Request List</li>
+        <li><strong>ตัวอย่าง:</strong> แผนการตรวจระบบบริการการศึกษาและทะเบียนนักศึกษา (REG DB) วันที่ 15–16 พ.ย. 68</li>
+      </ul>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 8.1:</strong> ความแตกต่างเชิงโครงสร้างและระดับการตัดสินใจระหว่าง Audit Programme กับ Audit Plan ตาม ISO 19011
+  </div>
+</div>
+
+
+<div class="figure-box" id="figure-8-2">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 8.2</div>
+    <div class="figure-title">วงจรการบริหาร Audit Programme ตามหลักการ PDCA (ISO 19011: Clause 5)</div>
+  </div>
+  <div class="pdca-flow-grid">
+    <div class="pdca-node plan-node">
+      <div class="pdca-letter">P</div>
+      <div class="pdca-title">PLAN (วางแผนโปรแกรม)</div>
+      <p>กำหนดวัตถุประสงค์, วิเคราะห์ความเสี่ยงของโปรแกรม, กำหนดขอบเขต Audit Universe และจัดสรรทรัพยากร</p>
+    </div>
+    <div class="pdca-arrow">➔</div>
+    <div class="pdca-node do-node">
+      <div class="pdca-letter">D</div>
+      <div class="pdca-title">DO (นำโปรแกรมไปปฏิบัติ)</div>
+      <p>คัดเลือกทีมตรวจ, มอบหมายงาน, จัดทำแผนการตรวจเฉพาะกิจ (Audit Plan) และดำเนินการตรวจแต่ละรอบ</p>
+    </div>
+    <div class="pdca-arrow">➔</div>
+    <div class="pdca-node check-node">
+      <div class="pdca-letter">C</div>
+      <div class="pdca-title">CHECK (ติดตามและประเมินผล)</div>
+      <p>วัดผลความตรงต่อเวลา, ประเมินสมรรถนะผู้ตรวจ, ตรวจสอบคุณภาพรายงาน และรับฟัง Feedback จากผู้รับการตรวจ</p>
+    </div>
+    <div class="pdca-arrow">➔</div>
+    <div class="pdca-node act-node">
+      <div class="pdca-letter">A</div>
+      <div class="pdca-title">ACT (ทบทวนและปรับปรุง)</div>
+      <p>ปรับปรุงโปรแกรมการตรวจในปีถัดไป, พัฒนาทักษะทีมตรวจ และรายงานผลสรุปต่อคณะกรรมการตรวจสอบ (Audit Committee)</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 8.2:</strong> วงจรการบริหารโปรแกรมการตรวจแบบปิด (Continuous Audit Programme Improvement)
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-1-2-การกำหนดจักรวาลการตรวจ-audit-universe-72">1.2 การกำหนดจักรวาลการตรวจ (Audit Universe)</h3>
+<p class="content-p"><strong>"Audit Universe (จักรวาลการตรวจ)"</strong> หมายถึง <em>ผลรวมของหน่วยงาน ระบบ กิจกรรม และสินทรัพย์ทั้งหมดภายในองค์กรที่มีโอกาสถูกเลือกขึ้นมาตรวจสอบ</em> การจัดทำ Audit Universe ที่สมบูรณ์เป็นหน้าที่แรกของผู้บริหารโปรแกรมตรวจ เพื่อป้องกันการเกิด "จุดบอด (Blind Spots)" ที่ไม่เคยได้รับการตรวจสอบเลย</p>
+<p class="content-p">โครงสร้างของ Audit Universe ต้องครอบคลุม <strong>5 มิติหลัก</strong>:</p>
+
+<div class="figure-box" id="figure-8-3">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 8.3</div>
+    <div class="figure-title">ผังโครงสร้างจักรวาลการตรวจ (Audit Universe Architecture)</div>
+  </div>
+  <div class="universe-container">
+    <div class="universe-core">
+      <div class="u-core-badge">CORE UNIVERSE</div>
+      <div class="u-core-title">จักรวาลการตรวจ (Audit Universe)</div>
+      <div class="u-core-desc">สินทรัพย์ กระบวนการ และหน่วยงานทั้งหมดในองค์กรที่มีความเสี่ยงด้านไซเบอร์</div>
+    </div>
+    <div class="universe-branches">
+      <div class="u-branch">
+        <div class="u-b-icon">💻</div>
+        <div class="u-b-title">IT Systems & Infrastructure</div>
+        <div class="u-b-desc">ระบบทะเบียน (REG), ระบบการเงิน (ERP), ระบบโรงพยาบาล (HIS), Data Center, Cloud AWS/Azure</div>
+      </div>
+      <div class="u-branch">
+        <div class="u-b-icon">⚙️</div>
+        <div class="u-b-title">Business & Operational Processes</div>
+        <div class="u-b-desc">กระบวนการรับนักศึกษา, การจัดซื้อจัดจ้าง, การจ่ายเงินเดือน, การตัดสิทธิ์พนักงานลาออก (JML)</div>
+      </div>
+      <div class="u-branch">
+        <div class="u-b-icon">⚖️</div>
+        <div class="u-b-title">Regulatory & Governance Mandates</div>
+        <div class="u-b-desc">พ.ร.บ.ไซเบอร์ฯ ม.54, พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล (PDPA), ISO/IEC 27001, เกณฑ์ สกอ./กมช.</div>
+      </div>
+      <div class="u-branch">
+        <div class="u-b-icon">🏢</div>
+        <div class="u-b-title">Entities & Organizational Units</div>
+        <div class="u-b-desc">คณะ/วิทยาลัย 14 แห่ง, สำนักวิทยบริการ, สำนักไอที, ศูนย์บริหารความเสี่ยง, โรงพยาบาลมหาวิทยาลัย</div>
+      </div>
+      <div class="u-branch">
+        <div class="u-b-icon">☁️</div>
+        <div class="u-b-title">Third Parties & Cloud Providers</div>
+        <div class="u-b-desc">ผู้ดูแลระบบคลาวด์ภายนอก, ผู้ให้บริการซอฟต์แวร์ SaaS, คู่สัญญาติดตั้งและบำรุงรักษาเครือข่าย</div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 8.3:</strong> องค์ประกอบ 5 มิติของจักรวาลการตรวจ เพื่อป้องกันการเกิดจุดบอด (Audit Blindspots)
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-1-3-การจัดลำดับความสำคัญแบบ-risk-based-risk-based-audit-planning-96">1.3 การจัดลำดับความสำคัญแบบ Risk-based (Risk-based Audit Planning)</h3>
+
+<div class="widget-box" id="widget-8-1">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 8.1</div>
+    <div class="widget-title">เครื่องมือคำนวณค่าน้ำหนักและจัดลำดับความเร่งด่วนในการตรวจสอบ (Risk-based Audit Priority Calculator)</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-intro">
+      ตามมาตรฐาน ISO 19011 การจัดโปรแกรมตรวจต้องมุ่งเน้นระบบที่มีความเสี่ยงสูงสุดก่อน คำนวณด้วยสูตรค่าน้ำหนัก 6 ปัจจัย:<br>
+      <code>Audit Priority Score = (0.25 × C) + (0.20 × R) + (0.20 × P) + (0.15 × I) + (0.10 × CH) + (0.10 × M)</code>
+    </p>
+
+    <!-- Presets -->
+    <div class="preset-buttons-row">
+      <span style="font-size:0.85rem; font-weight:600; color:var(--text-muted); align-self:center;">ชุดข้อมูลจำลอง:</span>
+      <button class="btn-preset" onclick="loadScorePreset('reg')">🎓 ระบบทะเบียนนักศึกษา (REG DB)</button>
+      <button class="btn-preset" onclick="loadScorePreset('his')">🏥 ระบบ รพ.มหาวิทยาลัย (HIS)</button>
+      <button class="btn-preset" onclick="loadScorePreset('cloud')">☁️ การย้าย ERP ขึ้น Cloud</button>
+      <button class="btn-preset" onclick="loadScorePreset('web')">🌐 เว็บไซต์ประชาสัมพันธ์</button>
+    </div>
+
+    <div class="calc-grid-6">
+      <div class="calc-field">
+        <label>
+          <span>ความสำคัญของสินทรัพย์ (Criticality: C) [25%]</span>
+          <span class="val-badge" id="lbl-c">5</span>
+        </label>
+        <input type="range" id="input-c" min="1" max="5" value="5" oninput="updateScoreCalc()">
+        <span class="field-hint">1 = สินทรัพย์ทั่วไป, 5 = ระบบหลักหยุดชะงักไม่ได้ (CII)</span>
+      </div>
+
+      <div class="calc-field">
+        <label>
+          <span>ผลกระทบด้านกฎหมาย (Regulatory: R) [20%]</span>
+          <span class="val-badge" id="lbl-r">5</span>
+        </label>
+        <input type="range" id="input-r" min="1" max="5" value="5" oninput="updateScoreCalc()">
+        <span class="field-hint">1 = ไม่มีข้อบังคับตรง, 5 = ม.54 พ.ร.บ.ไซเบอร์ฯ / PDPA โทษหนัก</span>
+      </div>
+
+      <div class="calc-field">
+        <label>
+          <span>ประวัติข้อตรวจพบเดิม (Past Findings: P) [20%]</span>
+          <span class="val-badge" id="lbl-p">4</span>
+        </label>
+        <input type="range" id="input-p" min="1" max="5" value="4" oninput="updateScoreCalc()">
+        <span class="field-hint">1 = ไม่มีข้อตรวจพบ, 5 = พบ Major Non-conformity ซ้ำซาก</span>
+      </div>
+
+      <div class="calc-field">
+        <label>
+          <span>ประวัติเหตุการณ์ภัยคุกคาม (Incident History: I) [15%]</span>
+          <span class="val-badge" id="lbl-i">4</span>
+        </label>
+        <input type="range" id="input-i" min="1" max="5" value="4" oninput="updateScoreCalc()">
+        <span class="field-hint">1 = ไม่เคยถูกโจมตี, 5 = มีประวัติถูกแรนซัมแวร์/ข้อมูลรั่วไหล</span>
+      </div>
+
+      <div class="calc-field">
+        <label>
+          <span>การเปลี่ยนแปลงสถาปัตยกรรม (Recent Changes: CH) [10%]</span>
+          <span class="val-badge" id="lbl-ch">3</span>
+        </label>
+        <input type="range" id="input-ch" min="1" max="5" value="3" oninput="updateScoreCalc()">
+        <span class="field-hint">1 = เสถียรไม่มีการเปลี่ยน, 5 = เพิ่งปรับเปลี่ยนระบบใหญ่/ย้ายคลาวด์</span>
+      </div>
+
+      <div class="calc-field">
+        <label>
+          <span>ข้อกังวลฝ่ายบริหาร (Management Concern: M) [10%]</span>
+          <span class="val-badge" id="lbl-m">4</span>
+        </label>
+        <input type="range" id="input-m" min="1" max="5" value="4" oninput="updateScoreCalc()">
+        <span class="field-hint">1 = ฝ่ายบริหารไม่ได้เจาะจง, 5 = บอร์ดสั่งการให้ตรวจเร่งด่วน</span>
+      </div>
+    </div>
+
+    <!-- Output Box -->
+    <div class="score-output-card" id="score-output-card">
+      <div class="soc-left">
+        <div class="soc-title">ผลการประเมินคะแนนความเร่งด่วน</div>
+        <div class="soc-score" id="soc-score-val">4.35 / 5.00</div>
+        <div class="soc-tier" id="soc-tier-badge">TIER 1: ความเร่งด่วนวิกฤต (Critical Priority)</div>
+      </div>
+      <div class="soc-right">
+        <div class="soc-rec-title">ข้อเสนอแนะในการจัดโปรแกรมการตรวจ:</div>
+        <div class="soc-rec-body" id="soc-rec-text">
+          ต้องบรรจุไว้ในไตรมาสที่ 1 (Q1) ของแผนประจำปี บังคับตรวจแบบเต็มรูปแบบ (Full Scope) ประจำทุกปี พร้อมสุ่มตรวจย่อยติดตามผลทุก 6 เดือน
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="content-p">เนื่องจากทรัพยากร งบประมาณ และเวลาของทีมผู้ตรวจสอบมีจำกัด ผู้บริหารโปรแกรมตรวจจึงไม่สามารถตรวจสอบทุกระบบพร้อมกันได้ในทุกไตรมาส จึงต้องนำหลักการ <strong>Risk-based Approach</strong> มาใช้ในการจัดลำดับความสำคัญ โดยพิจารณาจาก <strong>6 ปัจจัยความเสี่ยงสำคัญ</strong>:</p>
+<ol class="content-list ordered">
+<li><strong>Business Criticality (ความสำคัญต่อภารกิจหลัก):</strong> ระบบนี้เป็น Tier 1 หรือไม่ หากระบบล่มจะสร้างความเสียหายต่อชื่อเสียงหรือการเงินรุนแรงเพียงใด</li>
+<li><strong>Regulatory Exposure (ความเสี่ยงด้านกฎหมายและการกำกับดูแล):</strong> เป็นระบบ CII ภายใต้ พ.ร.บ.ไซเบอร์ 2562 หรือจัดเก็บข้อมูลอ่อนไหวตาม PDPA หรือไม่</li>
+<li><strong>Previous Audit Findings (ประวัติข้อบกพร่องเดิม):</strong> การตรวจครั้งก่อนพบ Major Non-conformity หรือพบข้อบกพร่องซ้ำซากที่ยังปิดไม่ลงหรือไม่</li>
+<li><strong>Incident History (ประวัติการเกิดภัยคุกคาม):</strong> ในรอบ 1–2 ปีที่ผ่านมา เคยถูกโจมตีทางไซเบอร์ มัลแวร์ หรือมีข้อมูลรั่วไหลหรือไม่</li>
+<li><strong>Technology & Organizational Change (การเปลี่ยนแปลงระบบ):</strong> มีการย้ายขึ้น Cloud, เปลี่ยนสถาปัตยกรรมใหม่ หรือเปลี่ยนผู้บริหาร/ทีมงานสำคัญหรือไม่</li>
+<li><strong>Management Concern (ข้อกังวลของผู้บริหาร):</strong> ผู้บริหารระดับสูง คณะกรรมการตรวจสอบ หรือ CISO มีความกังวลเป็นพิเศษในประเด็นใด</li>
+</ol>
+<h4 class="content-heading" id="sec-การคำนวณค่าน้ำหนักความเร่งด่วนในการตรวจสอบ-audit-priority-scoring-107">การคำนวณค่าน้ำหนักความเร่งด่วนในการตรวจสอบ (Audit Priority Scoring):</h4>
+<p class="content-p">$<code class="math-tex">\text{Audit Priority Score} = \sum (\text{Risk Factor Score} \times \text{Weight})</code>$</p>
+<ul class="content-list ">
+<li>ระบบที่ได้คะแนนความเสี่ยง <strong>สูงมาก (High Risk):</strong> ต้องจัดให้มีการตรวจสอบ <strong>ทุก 6 เดือน หรือปีละ 1 ครั้ง</strong></li>
+<li>ระบบที่ได้คะแนนความเสี่ยง <strong>ปานกลาง (Medium Risk):</strong> จัดให้มีการตรวจสอบ <strong>ทุก 1–2 ปี</strong></li>
+<li>ระบบที่ได้คะแนนความเสี่ยง <strong>ต่ำ (Low Risk):</strong> จัดให้มีการตรวจสอบ <strong>ทุก 2–3 ปี หรือเมื่อมีการเปลี่ยนแปลงสำคัญ</strong></li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-1-4-สมรรถนะของทีมตรวจและการจัดทีม-auditor-competency-team-selection-117">1.4 สมรรถนะของทีมตรวจและการจัดทีม (Auditor Competency & Team Selection)</h3>
+
+<div class="widget-box" id="widget-8-3">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 8.3</div>
+    <div class="widget-title">เครื่องมือจัดสรรทีมตรวจและประเมินสมรรถนะ (Auditor Competency Matrix & Team Builder)</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-intro">
+      ตาม ISO 19011 หัวหน้าทีมผู้ตรวจ (Lead Auditor) ต้องมั่นใจว่าคณะผู้ตรวจสอบมีสมรรถนะครบ 5 มิติ เลือกสมาชิกเข้าร่วมทีมตรวจเพื่อประเมินความพร้อมและตรวจจับทักษะที่ขาดหายไป (Skill Gap)
+    </p>
+
+    <div class="team-builder-layout">
+      <div class="candidates-col">
+        <div class="col-head">รายชื่อผู้ตรวจสอบในสังกัด (Auditor Pool):</div>
+        <div class="candidate-list" id="candidate-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="team-status-col">
+        <div class="col-head">สรุปสมรรถนะทีมที่เลือก (Selected Team Competency):</div>
+        <div class="team-summary-box" id="team-summary-box">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="content-p">ตามมาตรฐาน ISO 19011 ข้อ 7 ความน่าเชื่อถือของผลการตรวจสอบขึ้นอยู่กับ <strong>"ความรู้ ความสามารถ และสมรรถนะ (Competence)"</strong> ของทีมผู้ตรวจสอบ Lead Auditor ต้องจัดตั้งทีมที่มีความเชี่ยวชาญผสมผสาน (Multidisciplinary Team) ครอบคลุม <strong>5 เสาหลักสมรรถนะ</strong>:</p>
+
+<div class="figure-box" id="figure-8-4">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 8.4</div>
+    <div class="figure-title">5 เสาหลักสมรรถนะของทีมผู้ตรวจสอบความมั่นคงปลอดภัย (Auditor Competency Pillars)</div>
+  </div>
+  <div class="competency-pillars-grid">
+    <div class="pillar-card">
+      <div class="pillar-num">1</div>
+      <h4>Legal & Regulatory</h4>
+      <div class="pillar-sub">กฎหมายและข้อบังคับ</div>
+      <p>ความรู้กฎหมายไซเบอร์ 2562, PDPA 2562, พ.ร.บ.คอมพิวเตอร์ฯ และประกาศสำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช.)</p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-num">2</div>
+      <h4>Technical Standards</h4>
+      <div class="pillar-sub">มาตรฐานและกรอบงานสากล</div>
+      <p>ความเข้าใจเชิงลึกใน ISO/IEC 27001:2022, ISO/IEC 27002, NIST CSF 2.0, NIST SP 800-53 และ CIS Controls v8</p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-num">3</div>
+      <h4>Cybersecurity Tech</h4>
+      <div class="pillar-sub">เทคโนโลยีความมั่นคงปลอดภัย</div>
+      <p>ความเข้าใจสถาปัตยกรรม Active Directory, Cloud Security (AWS/Azure), Network Firewall, EDR, Vulnerability Scanning และ Database Vault</p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-num">4</div>
+      <h4>Audit Methodology</h4>
+      <div class="pillar-sub">ศาสตร์การตรวจสอบตาม ISO 19011</div>
+      <p>ทักษะการสุ่มตัวอย่าง (Sampling), การเก็บรวบรวมหลักฐานเชิงประจักษ์ (Evidence Gathering), การเขียน Working Paper และการออกใบ NCR</p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-num">5</div>
+      <h4>Soft Skills & Ethics</h4>
+      <div class="pillar-sub">ทักษะปฏิสัมพันธ์และจริยธรรม</div>
+      <p>ความเป็นอิสระ (Independence), ความเที่ยงธรรม (Objectivity), การสัมภาษณ์เชิงสอบสวน (Interviewing), การรับมือข้อโต้แย้ง และการรักษาความลับ</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 8.4:</strong> กรอบสมรรถนะ 5 ด้านตาม ISO 19011: ข้อกำหนดในการคัดเลือกและมอบหมายงานทีมตรวจ
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-การแบ่งบทบาทหน้าที่ในคณะผู้ตรวจสอบ-audit-team-roles-142">การแบ่งบทบาทหน้าที่ในคณะผู้ตรวจสอบ (Audit Team Roles):</h4>
+<ul class="content-list ">
+<li><strong>Lead Auditor (หัวหน้าทีมผู้ตรวจ):</strong> รับผิดชอบภาพรวมของแผนการตรวจ การสื่อสารกับผู้บริหาร การนำประชุมเปิด-ปิด การตัดสินข้อพิพาท และการสรุปรายงานผล</li>
+<li><strong>Technical Auditor (ผู้ตรวจสอบทางเทคนิค):</strong> รับผิดชอบการสุ่มตรวจคอนฟิกระบบ สแกนพอร์ต ตรวจสอบ Log และทดสอบการทำงานของ Firewall / Database</li>
+<li><strong>Legal / Governance Auditor (ผู้ตรวจสอบด้านกฎหมาย):</strong> รับผิดชอบการตรวจทานนโยบาย สัญญาจ้างคู่ค้า หนังสือยินยอม PDPA และระเบียบปฏิบัติ</li>
+<li><strong>Auditor-in-Training / Observer (ผู้สังเกตการณ์):</strong> ผู้เข้ารับการฝึกอบรมหรือตัวแทนจากหน่วยงานกำกับดูแล มีหน้าที่สังเกตการณ์โดยไม่มีสิทธิ์แทรกแซงการตรวจ</li>
+</ul>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-2-การจัดทำแผนการตรวจเฉพาะกิจ-audit-plan-deep-dive-150">ส่วนที่ 2: การจัดทำแผนการตรวจเฉพาะกิจ (Audit Plan Deep Dive)</h2>
+<h3 class="content-heading" id="sec-2-1-กายวิภาค-13-องค์ประกอบมาตรฐานของ-audit-plan-152">2.1 กายวิภาค 13 องค์ประกอบมาตรฐานของ Audit Plan</h3>
+
+<div class="widget-box" id="widget-8-4">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 8.4</div>
+    <div class="widget-title">เครื่องมือตรวจสอบความสมบูรณ์ของแผนการตรวจ 13 องค์ประกอบ (13-Element Audit Plan Inspector)</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-intro">
+      คลิกเพื่อตรวจสอบข้อกำหนดมาตรฐานและตัวอย่างจริงของ 13 องค์ประกอบในแผนการตรวจเฉพาะกิจตาม ISO 19011
+    </p>
+
+    <div class="plan-elements-accordion" id="plan-elements-accordion">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</div>
+
+<p class="content-p">เมื่อถึงกำหนดการตรวจสอบระบบงานใดระบบงานหนึ่ง Lead Auditor ต้องจัดทำเอกสาร <strong>แผนการตรวจ (Audit Plan)</strong> ซึ่งเป็นข้อตกลงร่วมกันอย่างเป็นทางการระหว่างทีมผู้ตรวจและผู้รับการตรวจ ประกอบด้วย <strong>13 องค์ประกอบบังคับ</strong>:</p>
+
+<div class="figure-box" id="figure-8-5">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 8.5</div>
+    <div class="figure-title">กายวิภาค 13 องค์ประกอบมาตรฐานของแผนการตรวจเฉพาะกิจ (The 13 Anatomy Elements of an Audit Plan)</div>
+  </div>
+  <div class="anatomy-13-grid">
+    <div class="ana-item"><span class="ana-idx">01</span><div class="ana-info"><strong>Audit Objective</strong>วัตถุประสงค์การตรวจ</div></div>
+    <div class="ana-item"><span class="ana-idx">02</span><div class="ana-info"><strong>Audit Scope</strong>ขอบเขตระบบและหน่วยงาน</div></div>
+    <div class="ana-item"><span class="ana-idx">03</span><div class="ana-info"><strong>Audit Criteria</strong>เกณฑ์อ้างอิงและมาตรฐาน</div></div>
+    <div class="ana-item"><span class="ana-idx">04</span><div class="ana-info"><strong>Audit Methodology</strong>วิธีการและเทคนิคการตรวจ</div></div>
+    <div class="ana-item"><span class="ana-idx">05</span><div class="ana-info"><strong>Audit Team & Roles</strong>รายชื่อและหน้าที่ในทีมตรวจ</div></div>
+    <div class="ana-item"><span class="ana-idx">06</span><div class="ana-info"><strong>Hourly Schedule</strong>กำหนดการตรวจรายชั่วโมง</div></div>
+    <div class="ana-item"><span class="ana-idx">07</span><div class="ana-info"><strong>Sampling Approach</strong>แผนและสูตรการสุ่มตัวอย่าง</div></div>
+    <div class="ana-item"><span class="ana-idx">08</span><div class="ana-info"><strong>Logistics & Access</strong>การจัดเตรียมสถานที่และสิทธิ์</div></div>
+    <div class="ana-item"><span class="ana-idx">09</span><div class="ana-info"><strong>Remote Protocol</strong>ขั้นตอนการตรวจทางไกล</div></div>
+    <div class="ana-item"><span class="ana-idx">10</span><div class="ana-info"><strong>Evidence Request</strong>รายการขอหลักฐานล่วงหน้า</div></div>
+    <div class="ana-item"><span class="ana-idx">11</span><div class="ana-info"><strong>Audit Risks</strong>ความเสี่ยงของงานตรวจ</div></div>
+    <div class="ana-item"><span class="ana-idx">12</span><div class="ana-info"><strong>Working Papers</strong>โครงสร้างกระดาษทำการ</div></div>
+    <div class="ana-item"><span class="ana-idx">13</span><div class="ana-info"><strong>Reporting & Closing</strong>การสรุปผลและรายงานทางการ</div></div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 8.5:</strong> สถาปัตยกรรมเอกสาร Audit Plan ที่สมบูรณ์แบบตามแนวทาง ISO 19011 Clause 6.3.2
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-2-แนวทางการสุ่มตัวอย่างในแผนการตรวจ-sampling-approach-in-audit-plan-178">2.2 แนวทางการสุ่มตัวอย่างในแผนการตรวจ (Sampling Approach in Audit Plan)</h3>
+<p class="content-p">ในการตรวจสอบระบบสารสนเทศที่มีปริมาณข้อมูล บันทึกประวัติ และธุรกรรมมหาศาล คณะผู้ตรวจสอบไม่สามารถตรวจเอกสารหรือตรวจสอบ Log ได้ครบ 100% จึงต้องกำหนด <strong>"แนวทางการสุ่มตัวอย่าง (Sampling Approach)"</strong> ไว้อย่างชัดเจนใน Audit Plan ตามแนวทางของ ISO 19011 และมาตรฐานการตรวจสอบระบบสารสนเทศ ISACA ITAF:</p>
+<ol class="content-list ordered">
+<li><strong>การสุ่มตามดุลยพินิจและฐานความเสี่ยง (Judgmental / Risk-based Sampling - Non-statistical):</strong></li>
+</ol>
+<ul class="content-list ">
+<li>ผู้ตรวจสอบเลือกตัวอย่างโดยใช้ประสบการณ์และความเชี่ยวชาญวิชาชีพ มุ่งเน้นรายการที่มีความเสี่ยงสูง เช่น รายการสิทธิ์ระดับ Root/DBA, บัญชีที่มีการเข้าถึงนอกเวลาทำการ, หรือผู้ใช้ที่มีประวัติฝ่าฝืนนโยบาย</li>
+<li><strong>ข้อดี:</strong> เจาะจงจุดเสี่ยงวิกฤตได้ตรงเป้าหมาย รวดเร็ว และประหยัดเวลา</li>
+<li><strong>ข้อจำกัด:</strong> ไม่สามารถนำผลลัพธ์ไปอนุมานทางสถิติเพื่อสรุปภาพรวมของประชากรทั้งหมดได้</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>การสุ่มทางสถิติ (Statistical Sampling):</strong></li>
+</ol>
+<ul class="content-list ">
+<li>การสุ่มตัวอย่างแบบสุ่มแท้จริง (Random Sampling) หรือแบบมีชั้นภูมิ (Stratified Sampling) โดยคำนึงถึงระดับความเชื่อมั่น (Confidence Level เช่น 90% หรือ 95%) และอัตราความผิดพลาดที่ยอมรับได้ (Tolerable Error Rate)</li>
+<li><strong>เกณฑ์ขนาดตัวอย่างขั้นต่ำตามมาตรฐานสากล (ISACA / AICPA Guidelines สำหรับการทดสอบการควบคุมภายใน):</strong></li>
+<li>การควบคุมที่เกิดขึ้น <strong>รายปี (Annually):</strong> สุ่มตรวจอย่างน้อย 1 รายการ</li>
+<li>การควบคุมที่เกิดขึ้น <strong>รายไตรมาส (Quarterly):</strong> สุ่มตรวจอย่างน้อย 2 รายการ</li>
+<li>การควบคุมที่เกิดขึ้น <strong>รายเดือน (Monthly):</strong> สุ่มตรวจอย่างน้อย 2–5 รายการ</li>
+<li>การควบคุมที่เกิดขึ้น <strong>รายสัปดาห์ (Weekly):</strong> สุ่มตรวจอย่างน้อย 5–10 รายการ</li>
+<li>การควบคุมที่เกิดขึ้น <strong>รายวัน (Daily):</strong> สุ่มตรวจอย่างน้อย 25–40 รายการ</li>
+<li>การควบคุมที่เกิดขึ้น <strong>ตลอดเวลา/อัตโนมัติ (Automated / Many times per day):</strong> สุ่มตรวจ 25–45 รายการ</li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-3-การบริหารความเสี่ยงของงานตรวจ-audit-risk-management-198">2.3 การบริหารความเสี่ยงของงานตรวจ (Audit Risk Management)</h3>
+<p class="content-p">การตรวจสอบความมั่นคงปลอดภัยไม่ใช่กิจกรรมที่ปราศจากความเสี่ยง การตรวจอาจก่อให้เกิดผลกระทบต่อระบบงาน หรือผู้ตรวจสอบอาจสรุปผลผิดพลาดได้ Lead Auditor ต้องบริหารจัดการ <strong>5 ความเสี่ยงสำคัญของงานตรวจ (Audit Risks)</strong>:</p>
+
+<div class="figure-box" id="figure-8-6">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 8.6</div>
+    <div class="figure-title">5 ความเสี่ยงสำคัญของงานตรวจ (Audit Risks) และกลยุทธ์การลดทอนความเสี่ยง</div>
+  </div>
+  <div class="risk-mitigation-grid">
+    <div class="rm-card">
+      <div class="rm-header">
+        <span class="rm-icon">⚠️</span>
+        <span class="rm-name">1. ข้อมูลไม่ครบถ้วน / ปิดบังข้อมูล</span>
+      </div>
+      <p class="rm-desc">ผู้รับการตรวจส่งเอกสารล่าช้า หรือจงใจปกปิดข้อบกพร่อง</p>
+      <div class="rm-action"><strong>มาตรการรับมือ:</strong> ออกหนังสือ Evidence Request ล่วงหน้าอย่างน้อย 14 วัน และระบุเงื่อนไขใน Opening Meeting ว่าหากพบการปกปิดจะจัดเป็น Major Non-conformity</div>
+    </div>
+    <div class="rm-card">
+      <div class="rm-header">
+        <span class="rm-icon">📉</span>
+        <span class="rm-name">2. เวลาไม่เพียงพอ (Time Limitation)</span>
+      </div>
+      <p class="rm-desc">ระบบมีความซับซ้อนสูง ทำให้ไม่สามารถตรวจครอบคลุมทุกประเด็น</p>
+      <div class="rm-action"><strong>มาตรการรับมือ:</strong> ใช้การจัดลำดับแบบ Risk-based Audit มุ่งเน้น Key Controls และคัดแยก Supporting Controls ไว้สุ่มตรวจภายหลัง</div>
+    </div>
+    <div class="rm-card">
+      <div class="rm-header">
+        <span class="rm-icon">🚫</span>
+        <span class="rm-name">3. การต่อต้านจากผู้รับการตรวจ (Auditee Resistance)</span>
+      </div>
+      <p class="rm-desc">มีทัศนคติในแง่ลบ มองว่าผู้ตรวจสอบมาเพื่อจับผิดและสร้างภาระ</p>
+      <div class="rm-action"><strong>มาตรการรับมือ:</strong> ใช้ Opening Meeting ชี้แจงว่าการตรวจเพื่อช่วยปรับปรุงระบบ (Value Add) และขอหนังสือแต่งตั้งจากผู้บริหารระดับสูง (Audit Charter)</div>
+    </div>
+    <div class="rm-card">
+      <div class="rm-header">
+        <span class="rm-icon">⚡</span>
+        <span class="rm-name">4. ผลกระทบต่อระบบ Production (Operational Impact)</span>
+      </div>
+      <p class="rm-desc">การรันสคริปต์ตรวจสอบหรือสแกนระบบทำให้เซิร์ฟเวอร์หลักช้าหรือค้าง</p>
+      <div class="rm-action"><strong>มาตรการรับมือ:</strong> ห้ามรัน Active Vulnerability Scan บน Production ในช่วงเวลาทำงาน ให้ตรวจบน Read-only Replica หรือตรวจนอกเวลาทำการ</div>
+    </div>
+    <div class="rm-card">
+      <div class="rm-header">
+        <span class="rm-icon">⚖️</span>
+        <span class="rm-name">5. ทีมตรวจขาดความเชี่ยวชาญเฉพาะด้าน</span>
+      </div>
+      <p class="rm-desc">ตรวจระบบคลาวด์หรือฐานข้อมูลเฉพาะทางโดยไม่มีผู้เชี่ยวชาญในทีม</p>
+      <div class="rm-action"><strong>มาตรการรับมือ:</strong> ใช้ตาราง Auditor Competency Matrix ประเมินช่องว่างทักษะ และแต่งตั้งผู้เชี่ยวชาญทางเทคนิค (Technical Expert) ร่วมทีม</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 8.6:</strong> การบริหารความเสี่ยงของงานตรวจเพื่อคุ้มครองความน่าเชื่อถือของผู้ตรวจสอบและไม่รบกวนธุรกิจ
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-4-การเตรียมการตรวจระยะไกลและการตรวจแบบผสมผสาน-remote-hybrid-audit-230">2.4 การเตรียมการตรวจระยะไกลและการตรวจแบบผสมผสาน (Remote & Hybrid Audit)</h3>
+<p class="content-p">ในยุคดิจิทัล การตรวจสอบแบบออนไลน์หรือแบบผสมผสาน (Remote / Hybrid Audit) กลายเป็นแนวปฏิบัติมาตรฐานตามข้อแนะนำของ ISO 19011 อย่างไรก็ตาม การตรวจระยะไกลมีความท้าทายด้านความมั่นคงปลอดภัยอย่างยิ่ง:</p>
+<ul class="content-list ">
+<li><strong>การเลือกใช้แพลตฟอร์มการประชุม:</strong> ต้องใช้ระบบการประชุมทางไกลที่เข้ารหัสแบบ End-to-End Encryption (E2EE) เช่น MS Teams หรือ Zoom Enterprise ที่ตั้งค่าห้องรอ (Waiting Room) และบังคับใช้รหัสผ่าน</li>
+<li><strong>การแลกเปลี่ยนเอกสารหลักฐาน (Evidence Sharing):</strong> ห้ามส่งไฟล์เอกสารความลับหรือไฟล์ Dump ข้อมูลผ่านแอปพลิเคชันแชตส่วนตัว (เช่น Line) โดยเด็ดขาด ต้องใช้ระบบ Secure File Transfer (SFTP) หรือ Secure Cloud Repository ที่กำหนดสิทธิ์เฉพาะบุคคลและกำหนดอายุการเข้าถึง (Expiry Date)</li>
+<li><strong>การรักษาความถูกต้องสมบูรณ์ของหลักฐาน (Evidence Integrity):</strong> ไฟล์บันทึกหน้าจอหรือ Log ที่ผู้รับการตรวจส่งให้ ต้องมีการคำนวณค่าแฮช (SHA-256 Checksum) หรือแชร์หน้าจอสด (Live Screen Sharing) ให้ผู้ตรวจสอบดูการรันคำสั่งแบบ Real-time เพื่อป้องกันการตัดต่อดัดแปลงผลลัพธ์</li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-5-ระเบียบวาระและพิธีการประชุมเปิดการตรวจ-opening-meeting-protocol-agenda-240">2.5 ระเบียบวาระและพิธีการประชุมเปิดการตรวจ (Opening Meeting Protocol & Agenda)</h3>
+
+<div class="widget-box" id="widget-8-5">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 8.5</div>
+    <div class="widget-title">เครื่องมือจำลองสถานการณ์การประชุมเปิดและการรับมือข้อโต้แย้ง (Opening Meeting Conflict Simulator)</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-intro">
+      สวมบทบาทเป็น <strong>Lead Auditor</strong> รับมือกับสถานการณ์ท้าทายและข้อโต้แย้งจริงจากผู้รับการตรวจในที่ประชุมเปิด (Opening Meeting) เพื่อรักษาสมดุลระหว่างความเป็นอิสระทางวิชาชีพกับการสร้างความร่วมมือ
+    </p>
+
+    <div class="sim-case-box" id="sim-case-box">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</div>
+
+<p class="content-p">การประชุมเปิดการตรวจ (Opening Meeting) เป็นหมุดหมายสำคัญที่สุดในการสร้างความสัมพันธ์เชิงวิชาชีพและการกำหนดความเข้าใจที่ตรงกัน วัตถุประสงค์ไม่ใช่การแสดงอำนาจ แต่เป็นการ <strong>"สร้างความไว้วางใจ ยืนยันแผนงาน และลดความตึงเครียด"</strong></p>
+
+<div class="figure-box" id="figure-8-7">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 8.7</div>
+    <div class="figure-title">ระเบียบวาระมาตรฐานและพิธีการประชุมเปิดการตรวจ (Opening Meeting 8-Step Agenda)</div>
+  </div>
+  <div class="agenda-stepper">
+    <div class="step-item"><div class="step-badge">1</div><div class="step-content"><strong>กล่าวต้อนรับและแนะนำตัว:</strong> แนะนำตัวคณะผู้ตรวจสอบ ผู้เชี่ยวชาญ และผู้สังเกตการณ์</div></div>
+    <div class="step-item"><div class="step-badge">2</div><div class="step-content"><strong>ยืนยันวัตถุประสงค์และขอบเขต:</strong> ทวนสอบระบบ สถานที่ และขอบเขตการตรวจให้ตรงกัน</div></div>
+    <div class="step-item"><div class="step-badge">3</div><div class="step-content"><strong>ชี้แจงเกณฑ์การตรวจ:</strong> ชี้แจงมาตรฐานอ้างอิง เช่น ISO/IEC 27001, พ.ร.บ.ไซเบอร์ฯ</div></div>
+    <div class="step-item"><div class="step-badge">4</div><div class="step-content"><strong>ทบทวนตารางเวลา:</strong> นัดหมายเวลาสัมภาษณ์ ตรวจสอบเอกสาร และจุดตรวจทางกายภาพ</div></div>
+    <div class="step-item"><div class="step-badge">5</div><div class="step-content"><strong>อธิบายวิธีการสุ่มตัวอย่าง:</strong> ชี้แจงว่าการตรวจอิงการสุ่มตรวจ (Sampling Limitations)</div></div>
+    <div class="step-item"><div class="step-badge">6</div><div class="step-content"><strong>ช่องทางการสื่อสาร:</strong> กำหนด Guide ประจำทีม และช่องทางการแจ้งข้อค้นพบระหว่างวัน</div></div>
+    <div class="step-item"><div class="step-badge">7</div><div class="step-content"><strong>การรักษาความลับและความปลอดภัย:</strong> ยืนยันข้อตกลง NDA และขั้นตอนปฏิบัติตนในสถานที่</div></div>
+    <div class="step-item"><div class="step-badge">8</div><div class="step-content"><strong>นัดหมายการประชุมปิด (Closing Meeting):</strong> ยืนยันวัน เวลา และผู้มีสิทธิ์เข้าร่วมรับฟังผล</div></div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 8.7:</strong> วาระการประชุมเปิดการตรวจตามมาตรฐาน ISO 19011 เพื่อสร้างความร่วมมือและความโปร่งใส
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-6-ข้อจำกัดของการตรวจ-audit-limitations-268">2.6 ข้อจำกัดของการตรวจ (Audit Limitations)</h3>
+<p class="content-p">ผู้ตรวจสอบต้องมีความซื่อสัตย์ในวิชาชีพโดยระบุ <strong>"ข้อจำกัดของการตรวจ"</strong> ไว้ในแผนการตรวจและรายงานผลเสมอ เพื่อไม่ให้ผู้บริหารเข้าใจผิดว่าการผ่านการตรวจหมายถึงระบบปลอดภัย 100%:</p>
+<ol class="content-list ordered">
+<li><strong>Time Limitation (ข้อจำกัดด้านเวลา):</strong> การตรวจมีระยะเวลาจำกัด (เช่น 2 วัน) จึงสามารถตรวจได้เฉพาะช่วงเวลาหนึ่ง ไม่สามารถเฝ้าดูระบบได้ตลอด 365 วัน</li>
+<li><strong>Sampling Limitation (ข้อจำกัดจากการสุ่มตัวอย่าง):</strong> การสุ่มตรวจตัวอย่าง (เช่น 25 รายการ จาก 10,000 รายการ) แม้จะถูกต้องตามหลักสถิติ แต่มีความเสี่ยงที่ข้อบกพร่องอาจตกอยู่ในกลุ่มที่ไม่ถูกสุ่มตรวจ</li>
+<li><strong>Scope Limitation (ข้อจำกัดด้านขอบเขต):</strong> ตรวจเฉพาะระบบที่กำหนดใน Scope หากระบบภายนอกที่ไม่ถูกตรวจเกิดรั่วไหล ย่อมอยู่นอกเหนือการรับรอง</li>
+<li><strong>Technology Limitation (ข้อจำกัดด้านเทคโนโลยี):</strong> การตรวจไม่ใช่การเจาะระบบ (Penetration Testing) จึงไม่สามารถรับประกันได้ว่าไม่มีช่องโหว่ Zero-Day ที่ยังไม่ปรากฏในการตั้งค่า</li>
+</ol>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-3-กรณีศึกษาเชิงประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-279">ส่วนที่ 3: กรณีศึกษาเชิงประยุกต์ "มหาวิทยาลัยดิจิทัลสมมติ" (Core Case Study)</h2>
+<h3 class="content-heading" id="sec-3-1-จักรวาลการตรวจของมหาวิทยาลัยดิจิทัลสมมติ-audit-universe-281">3.1 จักรวาลการตรวจของมหาวิทยาลัยดิจิทัลสมมติ (Audit Universe)</h3>
+
+<div class="widget-box" id="widget-8-2">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 8.2</div>
+    <div class="widget-title">เครื่องมือสำรวจจักรวาลการตรวจและโปรแกรมตรวจประจำปี 2568 (Audit Universe & Programme Explorer)</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-intro">
+      สำรวจจักรวาลการตรวจของ <strong>“มหาวิทยาลัยดิจิทัลสมมติ”</strong> กรองตามหมวดหมู่สินทรัพย์ หรือค้นหาชื่อระบบเพื่อดูความเสี่ยงและรอบการตรวจสอบ
+    </p>
+    <div class="univ-controls">
+      <div class="univ-search-wrap">
+        <input type="text" id="univ-search" placeholder="พิมพ์ชื่อระบบ หรือมาตรฐาน..." oninput="filterUniverse()">
+      </div>
+      <div class="univ-filter-btns">
+        <button class="btn-u-filter active" onclick="setUnivFilter('all')">ทั้งหมด</button>
+        <button class="btn-u-filter" onclick="setUnivFilter('core')">ระบบสารสนเทศหลัก</button>
+        <button class="btn-u-filter" onclick="setUnivFilter('infra')">โครงสร้างพื้นฐาน</button>
+        <button class="btn-u-filter" onclick="setUnivFilter('process')">กระบวนการ</button>
+        <button class="btn-u-filter" onclick="setUnivFilter('cloud')">คลาวด์ & พันธมิตร</button>
+      </div>
+    </div>
+
+    <div class="univ-items-grid" id="univ-items-grid">
+      <!-- Populated via JS -->
+    </div>
+  </div>
+</div>
+
+<p class="content-p">ตารางจำแนกหน่วยตรวจย่อยในจักรวาลการตรวจ 10 ส่วนงานหลัก พร้อมการประเมินคะแนนความเสี่ยงเพื่อจัดลำดับความถี่ในการตรวจ:</p>
+<div class="table-container"><table class="content-table"><thead><tr><th>รหัสหน่วย</th><th>ส่วนงาน / ระบบงานที่ตรวจ</th><th>ประเภทสินทรัพย์</th><th>ระดับความสำคัญ (Criticality)</th><th>ความเสี่ยงกฎหมาย (Regulatory)</th><th>ประวัติเดิม / เหตุการณ์</th><th>คะแนนความเสี่ยงรวม (1–10)</th><th>ความถี่ในการตรวจสอบที่กำหนด</th></tr></thead><tbody><tr><td><strong>UNV-01</strong></td><td><strong>ระบบลงทะเบียนเรียนและบริการการศึกษา (REG System)</strong></td><td>Mission-Critical App & DB</td><td><strong>Tier 1</strong> (สูงมาก)</td><td>พ.ร.บ.ไซเบอร์ (CII) & PDPA</td><td>เคยระบบล่มช่วงลงทะเบียน</td><td><strong>9.5</strong></td><td><strong>ปีละ 1 ครั้ง (ไตรมาส 1)</strong></td></tr><tr><td><strong>UNV-02</strong></td><td><strong>ระบบบริหารการเงิน บัญชี และเงินเดือน (ERP/Payroll)</strong></td><td>Business-Critical App & DB</td><td><strong>Tier 1</strong> (สูงมาก)</td><td>PDPA, กฎหมายภาษีอากร</td><td>มีการเปลี่ยนระบบใหม่</td><td><strong>8.8</strong></td><td><strong>ปีละ 1 ครั้ง (ไตรมาส 2)</strong></td></tr><tr><td><strong>UNV-03</strong></td><td><strong>ระบบพิสูจน์ตัวตนกลาง (Active Directory / Azure AD)</strong></td><td>Identity & Access Infrastructure</td><td><strong>Tier 1</strong> (สูงมาก)</td><td>พ.ร.บ.ไซเบอร์ & กฎหมายคอมฯ</td><td>พบบัญชีค้างในระบบ</td><td><strong>9.2</strong></td><td><strong>ปีละ 1 ครั้ง (ไตรมาส 1)</strong></td></tr><tr><td><strong>UNV-04</strong></td><td><strong>โครงสร้างพื้นฐานศูนย์ข้อมูลหลัก (Data Center & UPS)</strong></td><td>Physical & Facility</td><td><strong>Tier 1</strong> (สูงมาก)</td><td>ประกาศ กกม. ด้านกายภาพ</td><td>แบตเตอรี่ UPS ใกล้หมดอายุ</td><td><strong>8.0</strong></td><td><strong>ปีละ 1 ครั้ง (ไตรมาส 3)</strong></td></tr><tr><td><strong>UNV-05</strong></td><td><strong>เครือข่ายหลักและอุปกรณ์ไฟร์วอลล์ (Core Network & FW)</strong></td><td>Network & Security Devices</td><td><strong>Tier 1</strong> (สูงมาก)</td><td>พ.ร.บ.คอมพิวเตอร์ ม.26</td><td>มีการแก้กฎบ่อยครั้ง</td><td><strong>8.5</strong></td><td><strong>ปีละ 1 ครั้ง (ไตรมาส 2)</strong></td></tr><tr><td><strong>UNV-06</strong></td><td><strong>ระบบบริหารการเรียนรู้ออนไลน์ (LMS / Moodle)</strong></td><td>Application & Cloud</td><td><strong>Tier 2</strong> (ปานกลาง)</td><td>PDPA ข้อมูลนักศึกษา</td><td>ไม่เคยมีประวัติถูกเจาะ</td><td><strong>6.5</strong></td><td><strong>ทุก 2 ปี (ปี 2568)</strong></td></tr><tr><td><strong>UNV-07</strong></td><td><strong>บริการอีเมลและคลาวด์ออฟฟิศ (Microsoft 365 SaaS)</strong></td><td>Third-Party SaaS</td><td><strong>Tier 2</strong> (ปานกลาง)</td><td>PDPA ข้อมูลส่วนบุคคล</td><td>พบผู้ใช้โดน Phishing</td><td><strong>7.2</strong></td><td><strong>ทุก 2 ปี (ปี 2568)</strong></td></tr><tr><td><strong>UNV-08</strong></td><td><strong>เว็บไซต์ประชาสัมพันธ์หลักของมหาวิทยาลัย</strong></td><td>Web Public Service</td><td><strong>Tier 3</strong> (ต่ำ)</td><td>ข้อมูลสาธารณะ</td><td>เคยถูก Deface เมื่อ 2 ปีก่อน</td><td><strong>5.5</strong></td><td><strong>ทุก 3 ปี (ปี 2569)</strong></td></tr><tr><td><strong>UNV-09</strong></td><td><strong>ระบบกล้องวงจรปิดและการควบคุมการเข้า-ออกอาคาร</strong></td><td>Physical Security IoT</td><td><strong>Tier 3</strong> (ต่ำ)</td><td>PDPA ภาพถ่ายบุคคล</td><td>กล้องบางตัวใช้รหัส Default</td><td><strong>6.0</strong></td><td><strong>ทุก 2 ปี (ปี 2569)</strong></td></tr><tr><td><strong>UNV-10</strong></td><td><strong>ระบบเครือข่ายไร้สายหอพักนักศึกษา (Dormitory Wi-Fi)</strong></td><td>Network Infrastructure</td><td><strong>Tier 4</strong> (ต่ำ)</td><td>พ.ร.บ.คอมพิวเตอร์ (Log)</td><td>นักศึกษาบ่นสัญญาณช้า</td><td><strong>4.8</strong></td><td><strong>ทุก 3 ปี (ปี 2570)</strong></td></tr></tbody></table></div>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-3-2-แผนโปรแกรมการตรวจประจำปีงบประมาณ-2568-annual-audit-programme-2025-300">3.2 แผนโปรแกรมการตรวจประจำปีงบประมาณ 2568 (Annual Audit Programme 2025)</h3>
+
+<div class="figure-box" id="figure-8-8">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 8.8</div>
+    <div class="figure-title">แผนโปรแกรมการตรวจสอบความมั่นคงปลอดภัยไซเบอร์ ประจำปี 2568 (Annual Master Schedule)</div>
+  </div>
+  <div class="master-prog-table-wrap">
+    <table class="prog-master-table">
+      <thead>
+        <tr>
+          <th>ไตรมาส</th>
+          <th>ช่วงเวลา</th>
+          <th>ระบบงานเป้าหมาย</th>
+          <th>ขอบเขต / หน่วยงาน</th>
+          <th>ทีมผู้ตรวจสอบ</th>
+          <th>เป้าหมายหลัก</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge-q q1">Q1</span></td>
+          <td>พ.ย. 67</td>
+          <td><strong>ระบบบริการการศึกษาและทะเบียน (REG)</strong></td>
+          <td>Database, Web Server, Active Directory (สำนักทะเบียน)</td>
+          <td>Lead + Tech + Legal</td>
+          <td>ตรวจรับรองความสอดคล้อง ม.54 พ.ร.บ.ไซเบอร์ฯ</td>
+        </tr>
+        <tr>
+          <td><span class="badge-q q2">Q2</span></td>
+          <td>ก.พ. 68</td>
+          <td><strong>ระบบสารสนเทศโรงพยาบาลมหาวิทยาลัย (HIS)</strong></td>
+          <td>Electronic Health Records, Medical Devices Network</td>
+          <td>Lead + Health Tech Expert</td>
+          <td>ประเมินความปลอดภัยข้อมูลผู้ป่วยและ PDPA</td>
+        </tr>
+        <tr>
+          <td><span class="badge-q q3">Q3</span></td>
+          <td>พ.ค. 68</td>
+          <td><strong>ระบบบัญชีและการเงินกลาง (ERP Finance)</strong></td>
+          <td>Financial Transactions, e-Payment Gateway</td>
+          <td>Lead + Financial IT Auditor</td>
+          <td>ตรวจการแบ่งแยกหน้าที่ (SoD) และ Audit Trail</td>
+        </tr>
+        <tr>
+          <td><span class="badge-q q4">Q4</span></td>
+          <td>ส.ค. 68</td>
+          <td><strong>โครงสร้างพื้นฐานเครือข่ายและระบบคลาวด์</strong></td>
+          <td>Core Firewall, AWS Infrastructure, Multi-Cloud VPC</td>
+          <td>Lead + Cloud Security Auditor</td>
+          <td>ตรวจ Hardening, Penetration Test และ BCP/DRP</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 8.8:</strong> ตัวอย่างแผนแม่บทโปรแกรมการตรวจประจำปีของมหาวิทยาลัยดิจิทัลสมมติ
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-3-3-แผนการตรวจเฉพาะกิจ-audit-plan-ระบบบริการการศึกษาและทะเบียนนักศึกษา-328">3.3 แผนการตรวจเฉพาะกิจ (Audit Plan: ระบบบริการการศึกษาและทะเบียนนักศึกษา)</h3>
+<ul class="content-list ">
+<li><strong>รหัสแผนการตรวจ:</strong> AUD-PLAN-2024-REG01</li>
+<li><strong>ชื่อโครงการตรวจ:</strong> การตรวจสอบความมั่นคงปลอดภัยระบบบริการการศึกษาและทะเบียนนักศึกษา ประจำปี 2568</li>
+<li><strong>หน่วยงานผู้รับการตรวจ (Auditee):</strong> สำนักบริการการศึกษา และ สำนักเทคโนโลยีสารสนเทศ มหาวิทยาลัยดิจิทัลสมมติ</li>
+<li><strong>วัตถุประสงค์การตรวจ (Audit Objective):</strong></li>
+</ul>
+<ol class="content-list ordered">
+<li>เพื่อประเมินความสอดคล้องของระบบบริการการศึกษาตามเกณฑ์ประกาศ กกม. พ.ศ. 2564 และข้อกำหนดตามมาตรา 54 แห่ง พ.ร.บ.ไซเบอร์ 2562</li>
+<li>เพื่อทดสอบประสิทธิผลของการออกแบบ (ToD) และการดำเนินงานจริง (ToE) ของมาตรการควบคุมด้าน IAM, การสำรองข้อมูล, การบริหารช่องโหว่ และการป้องกันข้อมูลส่วนบุคคลตาม PDPA</li>
+</ol>
+<ul class="content-list ">
+<li><strong>ขอบเขตการตรวจ (Audit Scope):</strong></li>
+<li><em>ระบบที่ตรวจ:</em> เซิร์ฟเวอร์เว็บแอปพลิเคชันลงทะเบียน (REG Web), เครื่องแม่ข่ายฐานข้อมูล (Oracle DB), ฐานข้อมูลประวัตินักศึกษา, และการเชื่อมต่อ API ไปยังระบบธนาคาร</li>
+<li><em>ขอบเขตด้านสถานที่:</em> ศูนย์ข้อมูลหลัก อาคารบรรณสาร ชั้น 3 และระบบบริหารจัดการบนคลาวด์</li>
+<li><em>ช่วงเวลาของข้อมูลที่สุ่มตรวจ:</em> ข้อมูลการดำเนินงานตั้งแต่วันที่ 1 ตุลาคม 2566 ถึง 30 กันยายน 2567 (รอบ 1 ปีงบประมาณ)</li>
+<li><strong>เกณฑ์การตรวจ (Audit Criteria):</strong></li>
+</ul>
+<ol class="content-list ordered">
+<li>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 (มาตรา 44, 45, 54, 56)</li>
+<li>ประกาศ กกม. เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานฯ พ.ศ. 2564</li>
+<li>มาตรฐาน ISO/IEC 27001:2022 (Annex A Controls A.5.15–A.5.18, A.8.8, A.8.13, A.8.20, A.8.24)</li>
+<li>นโยบายและแนวปฏิบัติความมั่นคงปลอดภัยสารสนเทศของมหาวิทยาลัย ฉบับปรับปรุงปี 2566</li>
+</ol>
+<ul class="content-list ">
+<li><strong>วิธีการตรวจสอบ (Audit Methods):</strong></li>
+<li>การตรวจประเมินแบบผสมผสาน (Hybrid Audit): สัมภาษณ์และตรวจสอบเอกสารผ่านระบบออนไลน์ 40% และลงพื้นที่ตรวจทางเทคนิค ณ Data Center 60%</li>
+<li>การตรวจสอบหลักฐานเชิงประจักษ์ (Inspection of Records, Configurations, and Logs)</li>
+<li><strong>แผนการสุ่มตัวอย่าง (Sampling Approach):</strong></li>
+<li>การสุ่มตรวจกระบวนการ IAM: สุ่มตรวจรายการขอสิทธิ์ผู้ใช้ใหม่ 25 รายการ (แบบสุ่มสถิติ) และสุ่มตรวจรายการตัดสิทธิ์พนักงานลาออก 10 รายการ (100% ของพนักงานลาออกในรอบปี)</li>
+<li>การสุ่มตรวจบัญชีสิทธิ์สูง (PAM): ตรวจสอบ 100% ของบัญชี Admin/Root บนระบบ REG และสุ่มตรวจ Audit Trail การเข้าถึงฐานข้อมูล 30 วันย้อนหลัง</li>
+<li><strong>พิธีสารการสื่อสาร (Communication Protocol):</strong></li>
+<li>ช่องทางหลัก: นัดหมายและส่งเอกสารผ่านอีเมลทางการของโครงการตรวจ <code>audit-team@digitaluniv.ac.th</code></li>
+<li>การแจ้งเหตุการณ์วิกฤต (Immediate Escalation): หากพบช่องโหว่ระดับ Critical ที่กำลังถูกคุกคาม Lead Auditor จะแจ้ง CISO ภายใน 1 ชั่วโมงทันทีโดยไม่ต้องรอประชุมปิด</li>
+<li>การสรุปประจำวัน (Daily Debrief): ประชุมสรุป 30 นาทีทุกสิ้นวันตรวจ เวลา 16:30 น.</li>
+<li><strong>การจัดเตรียมการตรวจระยะไกล (Remote Audit Arrangement):</strong></li>
+<li>ระบบประชุม: MS Teams ห้องประชุมเฉพาะ มี Waiting Room และรหัสผ่าน</li>
+<li>ระบบรับส่งเอกสาร: SFTP ของมหาวิทยาลัย มีการยืนยันค่า SHA-256 Checksum ทุกไฟล์</li>
+<li><strong>ความเสี่ยงและข้อจำกัดของงานตรวจ (Audit Risks & Limitations):</strong></li>
+<li>ความเสี่ยง: ระบบ REG เปิดรับลงทะเบียนล่าช้าในวันตรวจ <code class="math-tex">\rightarrow</code> งดการสแกนช่องโหว่เครือข่ายบน Production ระหว่าง 08:30–16:30 น.</li>
+<li>ข้อจำกัด: ไม่ครอบคลุมการเจาะระบบ (Penetration Test) เชิงลึก และข้อจำกัดจากการสุ่มตัวอย่างตามระยะเวลาตรวจ 2 วันทำการ</li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-3-4-กำหนดการตรวจรายชั่วโมง-detailed-2-day-audit-schedule-364">3.4 กำหนดการตรวจรายชั่วโมง (Detailed 2-Day Audit Schedule)</h3>
+
+<div class="figure-box" id="figure-8-11">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 8.11</div>
+    <div class="figure-title">ตารางกำหนดการตรวจ 2 วันรายชั่วโมง (Detailed 2-Day Audit Schedule Timeline)</div>
+  </div>
+  <div class="schedule-timeline-grid">
+    <div class="sched-day-col">
+      <div class="sched-day-header day1">
+        <div class="sd-tag">DAY 1</div>
+        <div class="sd-title">การกำกับดูแล, นโยบาย และการควบคุมตัวตน (IAM)</div>
+      </div>
+      <div class="sched-event-list">
+        <div class="se-item"><span class="se-time">09:00–09:45</span><div class="se-info"><strong>Opening Meeting:</strong> ประชุมเปิดการตรวจ ณ ห้องประชุมสำนักไอที</div></div>
+        <div class="se-item"><span class="se-time">09:45–10:30</span><div class="se-info"><strong>Policy Review:</strong> ตรวจสอบนโยบายความมั่นคงปลอดภัยสารสนเทศและ ISMS Scope</div></div>
+        <div class="se-item"><span class="se-time">10:45–12:00</span><div class="se-info"><strong>IAM & JML Process:</strong> ตรวจการตัดสิทธิ์พนักงานลาออก และสุ่มตรวจ 25 บัญชี</div></div>
+        <div class="se-item lunch"><span class="se-time">12:00–13:00</span><div class="se-info">พักรับประทานอาหารกลางวัน</div></div>
+        <div class="se-item"><span class="se-time">13:00–14:30</span><div class="se-info"><strong>Privileged Access:</strong> ตรวจสอบการใช้งาน PAM และบัญชีผู้ดูแลระบบโดเมน</div></div>
+        <div class="se-item"><span class="se-time">14:45–16:00</span><div class="se-info"><strong>Data Center Physical:</strong> ตรวจห้องเครื่องแม่ข่าย, Access Control, กล้อง และดับเพลิง</div></div>
+        <div class="se-item wrap"><span class="se-time">16:00–16:30</span><div class="se-info"><strong>Day 1 Wrap-up:</strong> สรุปผลการตรวจประจำวันและประสานงานหลักฐานตกค้าง</div></div>
+      </div>
+    </div>
+
+    <div class="sched-day-col">
+      <div class="sched-day-header day2">
+        <div class="sd-tag">DAY 2</div>
+        <div class="sd-title">เครือข่าย, ความปลอดภัยเซิร์ฟเวอร์, การสำรองข้อมูล และการประชุมปิด</div>
+      </div>
+      <div class="sched-event-list">
+        <div class="se-item"><span class="se-time">09:00–10:30</span><div class="se-info"><strong>Network & Firewall:</strong> ตรวจสอบ Segmentation, กฎไฟร์วอลล์ และทราฟฟิก DMZ</div></div>
+        <div class="se-item"><span class="se-time">10:45–12:00</span><div class="se-info"><strong>Vulnerability & Patch:</strong> ตรวจสอบ SLA การลงแพตช์ และสแกนช่องโหว่ Nessus</div></div>
+        <div class="se-item lunch"><span class="se-time">12:00–13:00</span><div class="se-info">พักรับประทานอาหารกลางวัน</div></div>
+        <div class="se-item"><span class="se-time">13:00–14:15</span><div class="se-info"><strong>Backup & Disaster Recovery:</strong> ตรวจสอบกฎ 3-2-1-1-0 และหลักฐานการซ้อม Restore</div></div>
+        <div class="se-item"><span class="se-time">14:30–15:30</span><div class="se-info"><strong>Team Deliberation:</strong> ทีมผู้ตรวจประชุมปิดห้องเพื่อลงมติข้อค้นพบและร่างใบ NCR</div></div>
+        <div class="se-item wrap"><span class="se-time">15:30–16:30</span><div class="se-info"><strong>Closing Meeting:</strong> ประชุมปิดการตรวจและรายงานข้อค้นพบต่อผู้บริหาร</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 8.11:</strong> ผังกำหนดการตรวจมาตรฐาน 2 วันสำหรับการประเมินระบบงานสำคัญตาม ISO 19011
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-วันที่-1-การตรวจด้านการกำกับดูแล-นโยบาย-และการควบคุมตัวตน-iam-366">วันที่ 1: การตรวจด้านการกำกับดูแล, นโยบาย และการควบคุมตัวตน (IAM)</h4>
+<ul class="content-list ">
+<li><strong>09:00 – 09:45 น. | การประชุมเปิดการตรวจ (Opening Meeting):</strong></li>
+<li>ผู้เข้าร่วม: ผู้บริหารสำนักไอที, ผอ.กองบริการการศึกษา, CISO, และคณะผู้ตรวจสอบ</li>
+<li>วาระ: แนะนำตัว ยืนยันวัตถุประสงค์ ขอบเขต เกณฑ์ พิธีสารการสื่อสาร และการลงนาม NDA</li>
+<li><strong>09:45 – 10:30 น. | การตรวจทานนโยบายและบทบาทหน้าที่ (Governance & Roles):</strong></li>
+<li>ผู้ถูกสัมภาษณ์: CISO และเจ้าหน้าที่นโยบาย</li>
+<li>ประเด็นตรวจ: นโยบาย ISMS, โครงสร้าง RACI, การทบทวนประจำปี, และการอบรม Security Awareness</li>
+<li><strong>10:30 – 12:00 น. | การตรวจสอบกระบวนการบริหารจัดการตัวตน (IAM & JML Process):</strong></li>
+<li>ผู้ถูกสัมภาษณ์: ผู้ดูแลระบบ Active Directory และเจ้าหน้าที่ HR</li>
+<li>ประเด็นตรวจ: กระบวนการ Joiner-Mover-Leaver, สุ่มตรวจรายการตัดสิทธิ์พนักงานลาออก 10 คน, การบังคับใช้ MFA</li>
+<li><strong>12:00 – 13:00 น. | พักรับประทานอาหารกลางวัน</strong></li>
+<li><strong>13:00 – 15:00 น. | การตรวจสอบบัญชีสิทธิ์สูงและการเข้าถึงฐานข้อมูล (PAM & DB Access):</strong></li>
+<li>ผู้ถูกสัมภาษณ์: Lead Database Administrator (DBA)</li>
+<li>ประเด็นตรวจ: สิทธิ์ระดับ DBA, การใช้งาน PAM Vault, การเปิดใช้ Data Encryption at Rest (TDE), การสุ่มตรวจ Audit Trail การแก้ไขเกรด</li>
+<li><strong>15:00 – 16:30 น. | การตรวจสอบการบริหารจัดการช่องโหว่และแพตช์ (Vulnerability & Patch):</strong></li>
+<li>ผู้ถูกสัมภาษณ์: Vulnerability Management Team / System Admin</li>
+<li>ประเด็นตรวจ: รายงานผลสแกน Nessus ล่าสุด, กระบวนการทดสอบแพตช์บน Staging, การจัดการข้อยกเว้น</li>
+<li><strong>16:30 – 17:00 น. | การประชุมสรุปผลประจำวันของผู้ตรวจ (Auditors Daily Wrap-up):</strong></li>
+<li>สรุปข้อสังเกตเบื้องต้น และแจ้งรายการหลักฐานที่ต้องการเพิ่มเติมสำหรับวันที่ 2</li>
+</ul>
+<h4 class="content-heading" id="sec-วันที่-2-การตรวจโครงสร้างเครือข่าย-การสำรองข้อมูล-และการประชุมปิด-386">วันที่ 2: การตรวจโครงสร้างเครือข่าย, การสำรองข้อมูล และการประชุมปิด</h4>
+<ul class="content-list ">
+<li><strong>09:00 – 10:30 น. | การตรวจสอบความมั่นคงปลอดภัยระบบเครือข่าย (Network Security):</strong></li>
+<li>ผู้ถูกสัมภาษณ์: Network Security Engineer</li>
+<li>ประเด็นตรวจ: การแบ่งแยกโซน (VLAN / DMZ), การตรวจทบทวนกฎไฟร์วอลล์ (Rule Review), กฎ Any-Any, และการเชื่อมต่อ VPN</li>
+<li><strong>10:30 – 12:00 น. | การตรวจสอบระบบสำรองข้อมูลและกู้คืน (Backup & Recovery):</strong></li>
+<li>ผู้ถูกสัมภาษณ์: Backup Administrator และ DBA</li>
+<li>ประเด็นตรวจ: กฎ 3-2-1, การตั้งค่า Immutable Storage (S3 Object Lock), และขอดูรายงานผลการทดสอบกู้คืน (Restore Drill)</li>
+<li><strong>12:00 – 13:00 น. | พักรับประทานอาหารกลางวัน</strong></li>
+<li><strong>13:00 – 14:30 น. | การตรวจสถานที่จริง ณ ศูนย์ข้อมูลหลัก (Physical Data Center Inspection):</strong></li>
+<li>ผู้ถูกสัมภาษณ์: Facilities Manager</li>
+<li>ประเด็นตรวจ: ระบบสแกนลายนิ้วมือ, กล้อง CCTV, สมุดบันทึกผู้มาติดต่อ, ระบบดับเพลิง FM-200, และการติดป้าย Asset Tag</li>
+<li><strong>14:30 – 16:00 น. | การประชุมภายในของคณะผู้ตรวจ (Auditor Deliberation):</strong></li>
+<li>ทีมผู้ตรวจประชุมลับเพื่อรวบรวมหลักฐาน วิเคราะห์ระดับความรุนแรงของข้อค้นพบ (Major/Minor NCR, OFI) และยกร่างรายงานสรุป</li>
+<li><strong>16:00 – 17:00 น. | การประชุมปิดการตรวจ (Closing Meeting):</strong></li>
+<li>ผู้เข้าร่วม: คณะผู้บริหารและผู้รับการตรวจทั้งหมด</li>
+<li>วาระ: ขอบคุณ ชี้แจงข้อค้นพบเบื้องต้น ชี้แจงขั้นตอนการส่งมอบรายงานฉบับร่าง และกรอบเวลาในการส่งแผนแก้ไข (CAP)</li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-3-5-ตารางเมทริกซ์สมรรถนะทีมผู้ตรวจสอบ-auditor-competency-matrix-405">3.5 ตารางเมทริกซ์สมรรถนะทีมผู้ตรวจสอบ (Auditor Competency Matrix)</h3>
+<div class="table-container"><table class="content-table"><thead><tr><th>รายชื่อผู้ตรวจสอบ</th><th>บทบาทในทีม</th><th>ความรู้กฎหมาย (Cyber Act / PDPA)</th><th>ความรู้ระบบปฏิบัติการ และฐานข้อมูล</th><th>สถาปัตยกรรม เครือข่าย & Cloud</th><th>ทักษะการสัมภาษณ์ และรวบรวมหลักฐาน</th><th>ใบรับรองวิชาชีพที่ถือครอง</th></tr></thead><tbody><tr><td><strong>ดร. วรเมธ ตรวจละเอียด</strong></td><td><strong>Lead Auditor</strong></td><td>เชี่ยวชาญขั้นสูง (Expert)</td><td>ดี (Proficient)</td><td>ดี (Proficient)</td><td>เชี่ยวชาญขั้นสูง (Expert)</td><td>CISA, CISSP, ISO 27001 LA</td></tr><tr><td><strong>นาย พิชญ์ เจาะระบบ</strong></td><td><strong>Technical Auditor</strong></td><td>พอใช้ (Competent)</td><td>เชี่ยวชาญขั้นสูง (Expert)</td><td>เชี่ยวชาญขั้นสูง (Expert)</td><td>ดี (Proficient)</td><td>CEH, OSCP, AWS Security Spec</td></tr><tr><td><strong>นางสาว กานดา นิติกรรม</strong></td><td><strong>Legal & Governance</strong></td><td>เชี่ยวชาญขั้นสูง (Expert)</td><td>พื้นฐาน (Basic)</td><td>พื้นฐาน (Basic)</td><td>เชี่ยวชาญขั้นสูง (Expert)</td><td>น.บ., น.ม., CIPP/E, CDPO</td></tr><tr><td><strong>นาย ภัทรพล เรียนรู้งาน</strong></td><td><strong>Observer</strong></td><td>พอใช้ (Competent)</td><td>พอใช้ (Competent)</td><td>พอใช้ (Competent)</td><td>กำลังพัฒนา (Developing)</td><td>CompTIA Security+</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-3-6-รายการขอเอกสารและหลักฐานล่วงหน้า-evidence-request-list-15-รายการหลัก-416">3.6 รายการขอเอกสารและหลักฐานล่วงหน้า (Evidence Request List: 15 รายการหลัก)</h3>
+
+<div class="figure-box" id="figure-8-12">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 8.12</div>
+    <div class="figure-title">รายการขอเอกสารและหลักฐานล่วงหน้า 15 รายการสำคัญ (Evidence Request List Infographic)</div>
+  </div>
+  <div class="evidence-grid-15">
+    <div class="ev-item"><span class="ev-num">01</span><span>ผังโครงสร้างองค์กร & คณะกรรมการความปลอดภัย</span></div>
+    <div class="ev-item"><span class="ev-num">02</span><span>นโยบายความมั่นคงปลอดภัยสารสนเทศฉบับอนุมัติล่าสุด</span></div>
+    <div class="ev-item"><span class="ev-num">03</span><span>ระเบียบปฏิบัติการจัดการวงจรชีวิตผู้ใช้ (JML SOP)</span></div>
+    <div class="ev-item"><span class="ev-num">04</span><span>รายชื่อพนักงานและอาจารย์ที่ลาออกย้อนหลัง 12 เดือน</span></div>
+    <div class="ev-item"><span class="ev-num">05</span><span>รายงานการทบทวนสิทธิ์การเข้าถึงรอบ 6 เดือนล่าสุด</span></div>
+    <div class="ev-item"><span class="ev-num">06</span><span>ผังเครือข่ายและสถาปัตยกรรมระบบ (Architecture Diagram)</span></div>
+    <div class="ev-item"><span class="ev-num">07</span><span>คอนฟิกูเรชันกฎไฟร์วอลล์ (Firewall Rule Base Export)</span></div>
+    <div class="ev-item"><span class="ev-num">08</span><span>รายงานการสแกนช่องโหว่ความปลอดภัย 3 เดือนล่าสุด</span></div>
+    <div class="ev-item"><span class="ev-num">09</span><span>บันทึกการลงแพตช์ความปลอดภัยระดับ Critical/High</span></div>
+    <div class="ev-item"><span class="ev-num">10</span><span>เอกสาร Baseline Server Hardening ตาม CIS Benchmarks</span></div>
+    <div class="ev-item"><span class="ev-num">11</span><span>บันทึกความสำเร็จการสำรองข้อมูลรายวัน 30 วันล่าสุด</span></div>
+    <div class="ev-item"><span class="ev-num">12</span><span>รายงานผลการซ้อมกู้คืนระบบ (Restore Drill Report)</span></div>
+    <div class="ev-item"><span class="ev-num">13</span><span>แผนรองรับการดำเนินธุรกิจต่อเนื่อง (BCP/DRP Plan)</span></div>
+    <div class="ev-item"><span class="ev-num">14</span><span>บันทึกเหตุการณ์ความไม่ปลอดภัยไซเบอร์ (Incident Logs)</span></div>
+    <div class="ev-item"><span class="ev-num">15</span><span>รายงานผลการตรวจประเมินภายนอกหรือเพนเทสต์รอบล่าสุด</span></div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 8.12:</strong> รายการตรวจสอบหลักฐาน 15 ชิ้นที่ต้องขอจากผู้รับการตรวจล่วงหน้าอย่างน้อย 14 วัน
+  </div>
+</div>
+
+<p class="content-p">ตารางส่งมอบเอกสารที่ Lead Auditor ส่งให้สำนักไอทีและสำนักทะเบียนล่วงหน้า 14 วันก่อนวันตรวจ:</p>
+<div class="table-container"><table class="content-table"><thead><tr><th>รหัสขอ</th><th>รายการเอกสาร / หลักฐานที่ขอ (Evidence Item)</th><th>หน่วยงานผู้รับผิดชอบ</th><th>รูปแบบหลักฐานที่ต้องการ</th><th>วันที่กำหนดส่งมอบ</th></tr></thead><tbody><tr><td><strong>EV-01</strong></td><td>เอกสารนโยบายความมั่นคงปลอดภัยสารสนเทศฉบับล่าสุด (ISMS Policy)</td><td>CISO / สำนักไอที</td><td>ไฟล์ PDF ที่ลงนามอนุมัติแล้ว</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-02</strong></td><td>แผนผังโครงสร้างสถาปัตยกรรมเครือข่ายปัจจุบัน (Network Diagram)</td><td>ทีมเครือข่าย</td><td>ไฟล์ PDF / Visio ระบุโซน VLAN</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-03</strong></td><td>ทะเบียนสินทรัพย์สารสนเทศของระบบลงทะเบียน (Asset Register)</td><td>สำนักไอที / ทะเบียน</td><td>ตาราง Excel ครอบคลุม 11 ฟิลด์</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-04</strong></td><td>รายชื่อพนักงานและอาจารย์ที่ลาออกในรอบ 1 ปีที่ผ่านมา</td><td>กองทรัพยากรบุคคล</td><td>รายชื่อและวันที่มีผลอย่างเป็นทางการ</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-05</strong></td><td>คู่มือขั้นตอนการปฏิบัติงาน JML (Joiner-Mover-Leaver SOP)</td><td>กองบุคคล / ไอที</td><td>ไฟล์เอกสารขั้นตอนการทำงาน</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-06</strong></td><td>บันทึกการอนุมัติสิทธิ์เข้าถึงระบบ REG ล่าสุด 10 รายการ</td><td>สำนักทะเบียน</td><td>แบบฟอร์มขอสิทธิ์ที่มีลายเซ็นอนุมัติ</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-07</strong></td><td>รายชื่อผู้ดูแลระบบที่มีสิทธิ์ระดับ Admin/Root บน REG DB</td><td>Lead DBA</td><td>เอกสารรับรองจากผู้บริหารไอที</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-08</strong></td><td>รายงานผลการสแกนหาช่องโหว่ความปลอดภัยประจำไตรมาสล่าสุด</td><td>SecOps Team</td><td>รายงานจาก Nessus / Qualys</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-09</strong></td><td>นโยบายและขั้นตอนการทดสอบแพตช์ (Patch Management SOP)</td><td>สำนักไอที</td><td>เอกสารขั้นตอนปฏิบัติงาน</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-10</strong></td><td>กฎไฟร์วอลล์ของอุปกรณ์ Core Firewall (Export Rulebase)</td><td>ทีมความปลอดภัยเครือข่าย</td><td>ไฟล์ข้อความ หรือรายงานสรุปกฎ</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-11</strong></td><td>นโยบายการสำรองข้อมูลและระยะเวลาจัดเก็บ (Backup Policy)</td><td>Lead DBA / Backup</td><td>เอกสารนโยบายที่เป็นลายลักษณ์อักษร</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-12</strong></td><td>รายงานบันทึกความสำเร็จของงานสำรองข้อมูลย้อนหลัง 30 วัน</td><td>Backup Admin</td><td>Log File / Dashboard Report</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-13</strong></td><td>รายงานผลการทดสอบกู้คืนข้อมูล (Restore Drill Report) ล่าสุด</td><td>Lead DBA</td><td>รายงานบันทึกผลการซ้อมกู้ระบบ</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-14</strong></td><td>แผนบริหารความต่อเนื่องทางธุรกิจและกู้ระบบ (BCP & DRP)</td><td>CISO / กองแผนงาน</td><td>เอกสารแผนแม่บทและรายชื่อทีมงาน</td><td>1 พ.ย. 2567</td></tr><tr><td><strong>EV-15</strong></td><td>สัญญาจ้างและข้อตกลงระดับบริการ (SLA / NDA) ของผู้พัฒนาภายนอก</td><td>กองคลัง / พัสดุ</td><td>สัญญาที่มีเงื่อนไขความปลอดภัย</td><td>1 พ.ย. 2567</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-4-มุมมองและการตรวจสอบของ-lead-auditor-audit-governance-readiness-440">ส่วนที่ 4: มุมมองและการตรวจสอบของ Lead Auditor (Audit Governance & Readiness)</h2>
+<h3 class="content-heading" id="sec-4-1-กระดาษทำการตรวจสอบความพร้อมก่อนลงพื้นที่-pre-audit-readiness-working-paper-442">4.1 กระดาษทำการตรวจสอบความพร้อมก่อนลงพื้นที่ (Pre-Audit Readiness Working Paper)</h3>
+
+<div class="figure-box" id="figure-8-9">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 8.9</div>
+    <div class="figure-title">ตัวอย่างกระดาษทำการตรวจสอบความพร้อมก่อนลงพื้นที่ (Pre-Audit Readiness Working Paper)</div>
+  </div>
+  <div class="working-paper-mock">
+    <div class="wp-topbar">
+      <div class="wp-title-text">WORKING PAPER REF: WP-2568-PRE-01</div>
+      <div class="wp-date-badge">DATE: 01/11/2025</div>
+    </div>
+    <div class="wp-meta-grid">
+      <div><strong>Audit Client:</strong> มหาวิทยาลัยดิจิทัลสมมติ (ระบบ REG System)</div>
+      <div><strong>Lead Auditor:</strong> นายธนกฤต วิบูลย์ชัย (CISA, CISSP)</div>
+      <div><strong>Audit Target:</strong> ตรวจความพร้อมด้านเอกสารและสิทธิ์ก่อนลงพื้นที่จริง</div>
+      <div><strong>Review Status:</strong> ผ่านการอนุมัติขั้นต้น (Provisionally Ready)</div>
+    </div>
+    <div class="wp-table-mini">
+      <div class="wp-tr head"><span>หัวข้อตรวจความพร้อม</span><span>หลักฐานที่ได้รับ</span><span>ผลการประเมิน</span></div>
+      <div class="wp-tr"><span>1. หนังสือแต่งตั้งทีมตรวจ & NDA</span><span>ลงนามครบถ้วนทุกฝ่าย</span><span class="wp-tag pass">ผ่าน</span></div>
+      <div class="wp-tr"><span>2. เอกสารนโยบายและ SOP 8 ฉบับ</span><span>ได้รับฉบับล่าสุดครบถ้วน</span><span class="wp-tag pass">ผ่าน</span></div>
+      <div class="wp-tr"><span>3. ผัง Network Architecture</span><span>ได้รับเวอร์ชัน 2.4 (อัปเดต 2 เดือนก่อน)</span><span class="wp-tag pass">ผ่าน</span></div>
+      <div class="wp-tr"><span>4. สิทธิ์เข้าถึงระบบ Read-only</span><span>บัญชี AuditAD01 สร้างแล้ว รอเปิดสิทธิ์ในวันตรวจ</span><span class="wp-tag cond">เงื่อนไข</span></div>
+      <div class="wp-tr"><span>5. รายชื่อพนักงานลาออกย้อนหลัง 1 ปี</span><span>ฝ่ายบุคคลยังไม่ได้ส่งรายการมา</span><span class="wp-tag fail">รอติดตาม</span></div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 8.9:</strong> เอกสารกระดาษทำการของ Lead Auditor เพื่อสรุปความพร้อมก่อนเข้าตรวจตามกำหนดการ
+  </div>
+</div>
+
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน-active-learning-simulation-481">กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน (Active Learning Simulation)</h2>
+<h3 class="content-heading" id="sec-กิจกรรม-the-opening-meeting-showdown-ข้อพิพาทในที่ประชุมเปิดการตรวจ-483">กิจกรรม: "The Opening Meeting Showdown" (ข้อพิพาทในที่ประชุมเปิดการตรวจ)</h3>
+<ul class="content-list ">
+<li><strong>ระยะเวลา:</strong> 15–20 นาที</li>
+<li><strong>สถานการณ์สมมติ:</strong> คณะผู้ตรวจสอบเดินทางมาถึงห้องประชุมเปิดการตรวจตามนัดหมาย แต่เมื่อเริ่มการประชุม ผู้อำนวยการสำนักไอทีได้กล่าวแถลงอย่างไม่พอใจว่า <em>"ฝ่ายไอทีกำลังยุ่งอยู่กับการเตรียมระบบรับสมัครนักศึกษาใหม่ ไม่มีเวลามานั่งตอบคำถามทั้งวัน และไม่อนุญาตให้ทีมตรวจสแกนพอร์ตหรือรันคำสั่งใด ๆ บนเซิร์ฟเวอร์จริงเด็ดขาด เพราะเกรงว่าระบบจะล่ม อีกทั้งสัญญาว่าจ้างบริษัทภายนอกที่ขอมา (EV-15) เป็นความลับทางการค้า ไม่สามารถเปิดเผยให้คนนอกดูได้"</em></li>
+<li><strong>การแบ่งกลุ่มบทบาทในห้องเรียน (5 กลุ่ม):</strong></li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>กลุ่ม Lead Auditor (หัวหน้าทีมผู้ตรวจ):</strong> ต้องใช้จิตวิทยาและหลักการวิชาชีพในการชี้แจงเจตนารมณ์ของการตรวจ อ้างอิงหน้าที่ตามกฎหมาย พ.ร.บ.ไซเบอร์ ม.54 ยืนยันการรักษาความลับ (NDA) และเสนอทางเลือกประนีประนอม (Compromise) ที่ยังคงรักษาประสิทธิผลของการตรวจไว้ได้</li>
+<li><strong>กลุ่มผู้อำนวยการสำนักไอที (Hostile Auditee):</strong> พยายามยกอุปสรรคทางเทคนิคและภาระงานประจำมาเป็นข้ออ้างเพื่อลดทอนเวลาตรวจและจำกัดการเข้าถึงระบบจริง</li>
+<li><strong>กลุ่ม CISO ของมหาวิทยาลัย (Lead Implementer):</strong> ต้องทำหน้าที่เป็นคนกลาง (Mediator) ช่วยอธิบายให้ผู้บริหารไอทีเข้าใจว่าการตรวจสอบนี้เป็นประโยชน์ต่อองค์กรในการของบประมาณปรับปรุงความปลอดภัย และช่วยหาทางออกทางเทคนิค</li>
+<li><strong>กลุ่มนิติกรประจำมหาวิทยาลัย (Legal Counsel):</strong> ตรวจสอบข้อกฎหมายเรื่องการเปิดเผยสัญญาคู่ค้า เสนอแนะวิธีการทำ Data Masking หรือการให้เปิดอ่านเฉพาะในห้องประชุมโดยไม่อนุญาตให้นำไฟล์ออกไป</li>
+<li><strong>กลุ่ม Technical Auditor (ผู้ตรวจทางเทคนิค):</strong> เสนอแนะวิธีการเก็บหลักฐานทางเลือก เช่น การให้แอดมินเป็นผู้รันคำสั่งแสดงค่าคอนฟิกบนหน้าจอโดยผู้ตรวจทำหน้าที่สังเกตการณ์ แทนการสแกนเครือข่ายโดยตรง</li>
+</ol>
+<ul class="content-list ">
+<li><strong>ประเด็นอภิปรายสรุป:</strong> นักศึกษาจะได้เรียนรู้ว่าความสำเร็จของการตรวจสอบมิได้ขึ้นอยู่กับทักษะทางเทคนิคเพียงอย่างเดียว แต่ขึ้นอยู่กับ <strong>Soft Skills, Professional Skepticism, Diplomacy และการบริหารข้อขัดแย้ง</strong> ของ Lead Auditor</li>
+</ul>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-มุมมองวิชาชีพประจำบท-professional-perspectives-496">มุมมองวิชาชีพประจำบท (Professional Perspectives)</h2>
+
+<div class="figure-box" id="figure-8-10">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 8.10</div>
+    <div class="figure-title">บทสนทนาข้ามสายวิชาชีพ (Lead Auditor vs Auditee / Lead Implementer Dialogue)</div>
+  </div>
+  <div class="perspective-box">
+    <div class="persp-title">💬 บทสนทนาข้ามสายวิชาชีพ (Professional Dialogue)</div>
+    <div class="persp-grid">
+      <div class="persp-side aud">
+        <div class="persp-badge">Lead Auditor (หัวหน้าทีมผู้ตรวจสอบ)</div>
+        <p>"เราไม่ได้มาเพื่อจับผิดหรือขัดขวางการทำงานของคุณครับ แต่มาเพื่อช่วยเป็นกระจกสะท้อนความมั่นคงปลอดภัย และช่วยให้ผู้บริหารจัดสรรงบประมาณแก้ไขจุดอ่อนได้ตรงจุด"</p>
+        <p>"เราจำเป็นต้องขอสิทธิ์แบบ Read-only เข้าไปตรวจสอบการตั้งค่าจริง เพราะบันทึกภาพถ่ายหน้าจอไม่สามารถใช้ยืนยันความมีอยู่จริงได้อย่างสมบูรณ์ครับ"</p>
+        <p>"หากมีระบบที่มีความเสี่ยงสูงต่อความต่อเนื่องทางธุรกิจ โปรดแจ้งเราในที่ประชุมเปิด เราจะวางแผนตรวจสอบร่วมกันโดยไม่กระทบต่อผู้ใช้งานครับ"</p>
+      </div>
+      <div class="persp-side imp">
+        <div class="persp-badge">Lead Implementer / Auditee (ผู้รับการตรวจ)</div>
+        <p>"ยินดีต้อนรับครับอาจารย์ ทางเราได้เตรียมห้องประชุม ผู้ประสานงาน และเอกสารตามรายการขอหลักฐานไว้ล่วงหน้าเรียบร้อยแล้วครับ"</p>
+        <p>"สำหรับระบบฐานข้อมูลทะเบียน เราได้สร้างบัญชีผู้ใช้ทดสอบและ Read-only View ให้ตรวจสอบ เพื่อความปลอดภัยของข้อมูลส่วนบุคคลนักศึกษาครับ"</p>
+        <p>"ช่วงบ่ายสองโมงจะมีช่วงการประมวลผลเกรดประจำสัปดาห์ หากเป็นไปได้อยากขอให้เว้นการทดสอบระบบเครือข่ายในช่วงเวลาดังกล่าวครับ"</p>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 8.10:</strong> การสื่อสารเชิงสร้างสรรค์และการสร้างสัมพันธภาพทางวิชาชีพในกระบวนการตรวจสอบ
+  </div>
+</div>
+
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-แบบฝึกหัดและการบ้านประจำบทที่-8-520">แบบฝึกหัดและการบ้านประจำบทที่ 8</h2>
+<p class="content-p">เพื่อเป็นส่วนหนึ่งของการจัดทำแฟ้มสะสมงาน <strong>Cybersecurity Audit Portfolio</strong> ให้นักศึกษาจัดทำชุดเอกสารการวางแผนการตรวจสอบความมั่นคงปลอดภัยไซเบอร์สำหรับ <strong>“มหาวิทยาลัยดิจิทัลสมมติ”</strong> ประกอบด้วย 6 ชิ้นงานสำคัญ:</p>
+<ol class="content-list ordered">
+<li><strong>Audit Programme ระยะ 1 ปี (Annual Audit Programme):</strong></li>
+</ol>
+<ul class="content-list ">
+<li>จัดทำแผนแม่บทการตรวจประจำปีงบประมาณ ครอบคลุม 4 ไตรมาส ระบุระบบที่ตรวจ วัตถุประสงค์ และทรัพยากร</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>Audit Plan ฉบับสมบูรณ์สำหรับระบบสำคัญ 1 ระบบ:</strong></li>
+</ol>
+<ul class="content-list ">
+<li>จัดทำแผนการตรวจสำหรับระบบทะเบียนเรียน (REG System) หรือระบบการเงิน (ERP) ครอบคลุม 13 องค์ประกอบมาตรฐาน</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>กำหนดการตรวจรายชั่วโมง (Audit Schedule):</strong></li>
+</ol>
+<ul class="content-list ">
+<li>ตารางนัดหมายเวลาแบบ 2 วันทำการ ระบุกิจกรรม ผู้สัมภาษณ์ ผู้ถูกสัมภาษณ์ และสถานที่</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>ตารางประเมินสมรรถนะทีมตรวจ (Auditor Competency Matrix):</strong></li>
+</ol>
+<ul class="content-list ">
+<li>วิเคราะห์และจัดสรรสมาชิกทีมตรวจ 4 คน ครอบคลุม 5 มิติสมรรถนะ</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>รายการขอหลักฐานล่วงหน้า (Evidence Request List):</strong></li>
+</ol>
+<ul class="content-list ">
+<li>กำหนดรายการเอกสารและหลักฐานที่ต้องขออย่างน้อย 15 รายการ ระบุหน่วยงานผู้รับผิดชอบและรูปแบบหลักฐาน</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>ระเบียบวาระการประชุมเปิดการตรวจ (Opening Meeting Agenda):</strong></li>
+</ol>
+<ul class="content-list ">
+<li>ร่างกำหนดการและหัวข้อการประชุมเปิดการตรวจฉบับทางการ</li>
+</ul>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-คำถามทบทวนท้ายบท-review-questions-answers-539">คำถามทบทวนท้ายบท (Review Questions & Answers)</h2>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างที่สำคัญที่สุดระหว่าง Audit Programme และ Audit Plan</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> <strong>Audit Programme</strong> คือการบริหารจัดการในระดับยุทธศาสตร์ระยะยาว (เช่น รอบ 1–3 ปี) ที่ครอบคลุมการตรวจสอบหลายครั้งทั่วทั้งองค์กร ดูแลโดยคณะกรรมการตรวจสอบหรือผู้จัดการโปรแกรมตรวจ ส่วน <strong>Audit Plan</strong> คือแผนการดำเนินงานในระดับปฏิบัติการระยะสั้นสำหรับการตรวจสอบเฉพาะกิจครั้งหนึ่ง โดยระบุรายละเอียดเฉพาะเจาะจงของระบบที่จะลงพื้นที่ตรวจ ตารางเวลา ทีมตรวจ และรายการหลักฐาน จัดทำโดย Lead Auditor ประจำงานตรวจนั้น</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> "Audit Universe" คืออะไร และเหตุใดจึงมีความสำคัญต่อการวางแผนตรวจสอบ?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> Audit Universe คือขอบเขตภาพรวมของหน่วยงาน ระบบสารสนเทศ กระบวนการ สถานที่ และคู่ค้าภายนอกทั้งหมดในองค์กรที่มีโอกาสถูกเลือกมาตรวจสอบ มีความสำคัญเพื่อให้ผู้บริหารโปรแกรมการตรวจมองเห็นภาพรวมขององค์กรทั้งหมด ป้องกันการเกิดจุดบอด (Blind Spots) และใช้เป็นฐานข้อมูลในการจัดลำดับความสำคัญตามความเสี่ยง (Risk-based Prioritization)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> จงระบุ 6 ปัจจัยความเสี่ยงที่นำมาใช้ในการจัดลำดับความเร่งด่วนของการตรวจสอบ (Risk-based Audit Planning)</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> (1) Business Criticality (ความสำคัญต่อภารกิจ) (2) Regulatory Exposure (ข้อกำหนดกฎหมายและค่าปรับ) (3) Previous Audit Findings (ประวัติข้อบกพร่องเดิม) (4) Incident History (ประวัติการเกิดเหตุภัยคุกคาม) (5) Technology & Organizational Change (การเปลี่ยนแปลงระบบหรือโครงสร้าง) (6) Management Concern (ข้อกังวลเฉพาะของผู้บริหาร)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> ตาม พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 มาตรา 54 กำหนดหน้าที่เกี่ยวกับการตรวจสอบไว้แก่หน่วยงานใด และมีเงื่อนไขอย่างไร?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> กำหนดหน้าที่แก่ <strong>หน่วยงานโครงสร้างพื้นฐานสำคัญทางสารสนเทศ (CII)</strong> ว่าจะต้องจัดให้มีการประเมินความเสี่ยงและจัดให้มีการตรวจสอบด้านความมั่นคงปลอดภัยไซเบอร์โดยผู้ตรวจสอบด้านความมั่นคงปลอดภัยสารสนเทศอิสระ <strong>อย่างน้อยปีละหนึ่งครั้ง</strong> และต้องส่งรายงานผลการตรวจสอบให้แก่ สกมช. ภายใน 30 วันนับแต่วันที่ดำเนินการแล้วเสร็จ</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> จงยกตัวอย่าง "ความเสี่ยงของงานตรวจ (Audit Risk)" มาอย่างน้อย 2 ประการ พร้อมระบุแนวทางป้องกัน</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> (1) <strong>ความเสี่ยงข้อมูลไม่ครบถ้วนจากการปกปิดของผู้รับการตรวจ:</strong> ป้องกันด้วยการตรวจสอบยันหลายทาง (Triangulation) สัมภาษณ์บุคคลหลายระดับ และสุ่มตรวจ Log อิสระ (2) <strong>ความเสี่ยงผลประโยชน์ทับซ้อน (Conflict of Interest):</strong> ป้องกันด้วยการคัดกรองประวัติผู้ตรวจ โดยห้ามมิให้ผู้ที่เคยมีส่วนร่วมในการออกแบบ ติดตั้ง หรือบริหารระบบนั้นในรอบ 2–3 ปี เข้าเป็นผู้ตรวจสอบระบบดังกล่าว</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> วัตถุประสงค์หลักของการจัด "Opening Meeting" คืออะไร และเหตุใดจึงห้ามข้ามขั้นตอนนี้?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> วัตถุประสงค์คือเพื่อแนะนำตัว ยืนยันวัตถุประสงค์ ขอบเขต เกณฑ์การตรวจ และตารางเวลาให้เข้าใจตรงกัน ตลอดจนสร้างความไว้วางใจ ลดความขัดแย้ง และยืนยันการรักษาความลับ ห้ามข้ามขั้นตอนนี้เพราะหากผู้รับการตรวจไม่เข้าใจเจตนารมณ์ อาจเกิดการขัดขวาง ไม่ให้ความร่วมมือ หรือเกิดข้อพิพาทเรื่องการขอหลักฐานในภายหลัง</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> เหตุใดการขอเอกสารหลักฐานล่วงหน้า (Evidence Request List) จึงมีความจำเป็นอย่างยิ่งในการตรวจประเมิน?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> เพราะช่วยให้ผู้รับการตรวจมีเวลาในการรวบรวมและจัดเตรียมเอกสาร ช่วยลดเวลาที่สูญเปล่าในวันลงพื้นที่ตรวจจริง และช่วยให้ผู้ตรวจสอบมีโอกาสศึกษาทำความเข้าใจระบบงานล่วงหน้า ทำให้การสัมภาษณ์ตรงประเด็นและมีประสิทธิภาพสูงขึ้น</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> ข้อจำกัดของการตรวจ (Audit Limitations) ด้าน "Sampling Limitation" หมายถึงอะไร?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> หมายถึงข้อจำกัดที่เกิดจากการที่ผู้ตรวจสอบไม่สามารถตรวจสอบธุรกรรมหรือบันทึกข้อมูลได้ครบ 100% จึงต้องใช้วิธีการสุ่มตัวอย่าง ซึ่งแม้จะทำตามหลักวิชาการสถิติแล้ว แต่ก็ยังมีความเสี่ยงคงเหลือว่าข้อบกพร่องบางรายการอาจแฝงอยู่ในส่วนที่ไม่ถูกสุ่มตรวจ ดังนั้นการผ่านการตรวจจึงไม่ได้หมายความว่าระบบปราศจากข้อผิดพลาดโดยสิ้นเชิง</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> ในการตรวจระยะไกล (Remote Audit) มีข้อควรระวังสำคัญเรื่องการรักษาความลับและการแลกเปลี่ยนหลักฐานอย่างไร?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> ต้องไม่ใช้ช่องทางสื่อสารสาธารณะที่ไม่ปลอดภัย (เช่น แอปพลิเคชันแชตส่วนตัว) ในการรับส่งไฟล์ข้อมูลความลับ ต้องใช้แพลตฟอร์มการแชร์ไฟล์ที่มีการเข้ารหัส (SFTP หรือ Secure Cloud Storage) ที่จำกัดสิทธิ์เฉพาะบุคคลและกำหนดอายุการเข้าถึง ตลอดจนตรวจสอบค่าแฮช (Checksum) ของไฟล์เพื่อยืนยันความถูกต้องสมบูรณ์</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> หากผู้บริหารไอทีแจ้งในที่ประชุมเปิดว่า "ไม่ยินยอมให้สแกนพอร์ตบนเซิร์ฟเวอร์ Production เพราะกลัวระบบล่ม" Lead Auditor ควรมีแนวทางแก้ปัญหาอย่างไร?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> Lead Auditor ควรใช้แนวทางประนีประนอมทางวิชาชีพ: (1) ชี้แจงว่าจะไม่ใช้เครื่องมือยิง Exploit แต่เป็นการสแกนแบบปลอดภัย (2) เสนอเลื่อนเวลาการสแกนไปทำนอกเวลาทำการที่มีผู้ใช้งานน้อย (3) หรือใช้การสแกนบนระบบ Staging/UAT ที่มีคอนฟิกเหมือน Production (4) หรือให้แอดมินเป็นผู้รันคำสั่งแสดงพอร์ตที่เปิดอยู่ (เช่น <code>netstat</code> หรือ firewall rules) บนหน้าจอสดให้ผู้ตรวจดูแทน</li>
+</ul>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-สรุปบทที่-8-564">สรุปบทที่ 8</h2>
+<p class="content-p">การตรวจสอบความมั่นคงปลอดภัยไซเบอร์จะประสบความสำเร็จได้ ต้องเริ่มต้นจากการวางแผนที่เป็นระบบและมีมาตรฐานสากลรองรับ</p>
+<p class="content-p">ในระดับยุทธศาสตร์ <strong>การบริหารโปรแกรมการตรวจ (Audit Programme)</strong> ตามแนวทาง ISO 19011 ช่วยให้องค์กรสามารถบริหารจัดการจักรวาลการตรวจ (Audit Universe) จัดลำดับความสำคัญของระบบงานตามฐานความเสี่ยง (Risk-based Prioritization) กำหนดความถี่ในการตรวจสอบที่เหมาะสม และจัดตั้งคณะผู้ตรวจสอบที่มีสมรรถนะครบถ้วนทั้งด้านกฎหมาย สถาปัตยกรรมทางเทคนิค และทักษะการตรวจสอบ</p>
+<p class="content-p">ในระดับปฏิบัติการ <strong>การจัดทำแผนการตรวจเฉพาะกิจ (Audit Plan)</strong> ซึ่งครอบคลุม 13 องค์ประกอบมาตรฐาน การจัดตารางเวลาการตรวจ การขอหลักฐานล่วงหน้า (Evidence Request List) การเตรียมการตรวจระยะไกล ตลอดจนการบริหารความเสี่ยงของงานตรวจและการดำเนินพิธีการประชุมเปิดการตรวจ (Opening Meeting) อย่างมืออาชีพ จะช่วยสร้างความร่วมมืออันดีระหว่างผู้ตรวจและผู้รับการตรวจ ลดความตึงเครียด และทำให้การตรวจสอบบรรลุวัตถุประสงค์ในการยกระดับความมั่นคงปลอดภัยขององค์กรอย่างแท้จริง</p>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-เอกสารอ้างอิงและมาตรฐานสากล-574">เอกสารอ้างอิงและมาตรฐานสากล</h2>
+<ol class="content-list ordered">
+<li><strong>International Organization for Standardization (ISO).</strong> (2018). <em>ISO 19011:2018 Guidelines for auditing management systems</em>. Geneva: ISO.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2022). <em>ISO/IEC 27001:2022 Information security, cybersecurity and privacy protection — Information security management systems — Requirements</em> (Clause 9.2: Internal audit). Geneva: ISO.</li>
+<li><strong>Information Systems Audit and Control Association (ISACA).</strong> (2020). <em>ITAF: Information Technology Assurance Framework (4th Edition)</em>. Rolling Meadows, IL: ISACA.</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2024). <em>The NIST Cybersecurity Framework (CSF) 2.0</em> (Govern Function: GV.PO, GV.OV). U.S. Department of Commerce.</li>
+<li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562 (มาตรา 54: การตรวจสอบด้านความมั่นคงปลอดภัยไซเบอร์ของหน่วยงาน CII).</li>
+<li><strong>ประกาศคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2564.</strong> ราชกิจจานุเบกษา เล่ม 138 ตอนพิเศษ 245 ง วันที่ 7 ตุลาคม 2564.</li>
+<li><strong>The Institute of Internal Auditors (IIA).</strong> (2024). <em>Global Internal Audit Standards</em>. Lake Mary, FL: IIA.</li>
+</ol>
+
+      <!-- Bottom Chapter Navigation -->
+      <footer class="chapter-nav-footer">
+        <a href="ch-7.html" class="btn-nav-chapter">
+          <span>◀</span> บทที่ 7: การออกแบบและนำมาตรการควบคุมไปปฏิบัติ
+        </a>
+        <a href="ch-9.html" class="btn-nav-chapter">
+          บทที่ 9: เทคนิคการตรวจออนไลน์ การสุ่มตัวอย่าง และหลักฐานการตรวจ <span>▶</span>
+        </a>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // ==========================================
+    // UI CONTROLS & THEME SWITCHER
+    // ==========================================
+    const htmlEl = document.documentElement;
+    const btnLight = document.getElementById('btn-theme-light');
+    const btnSepia = document.getElementById('btn-theme-sepia');
+    const btnDark = document.getElementById('btn-theme-dark');
+
+    function setTheme(theme) {
+      htmlEl.setAttribute('data-theme', theme);
+      localStorage.setItem('necs_theme', theme);
+      [btnLight, btnSepia, btnDark].forEach(btn => {
+        if (btn) btn.classList.remove('active');
+      });
+      if (theme === 'light' && btnLight) btnLight.classList.add('active');
+      if (theme === 'sepia' && btnSepia) btnSepia.classList.add('active');
+      if (theme === 'dark' && btnDark) btnDark.classList.add('active');
+    }
+
+    if (btnLight) btnLight.onclick = () => setTheme('light');
+    if (btnSepia) btnSepia.onclick = () => setTheme('sepia');
+    if (btnDark) btnDark.onclick = () => setTheme('dark');
+
+    const savedTheme = localStorage.getItem('necs_theme');
+    if (savedTheme) setTheme(savedTheme);
+
+    // Font scaling
+    let curScale = 1;
+    function setFontScale(scale) {
+      curScale = scale;
+      htmlEl.style.setProperty('--font-scale', curScale);
+      localStorage.setItem('necs_font_scale', curScale);
+    }
+    const btnFontDec = document.getElementById('btn-font-dec');
+    const btnFontReset = document.getElementById('btn-font-reset');
+    const btnFontInc = document.getElementById('btn-font-inc');
+    if (btnFontDec) btnFontDec.onclick = () => setFontScale(Math.max(0.85, curScale - 0.05));
+    if (btnFontReset) btnFontReset.onclick = () => setFontScale(1);
+    if (btnFontInc) btnFontInc.onclick = () => setFontScale(Math.min(1.25, curScale + 0.05));
+
+    const savedScale = parseFloat(localStorage.getItem('necs_font_scale'));
+    if (!isNaN(savedScale)) setFontScale(savedScale);
+
+    // Sidebar & Backdrop
+    const sidebar = document.getElementById('sidebar-toc');
+    const backdrop = document.getElementById('toc-backdrop');
+    const btnToggleToc = document.getElementById('btn-toggle-toc');
+    const btnCloseToc = document.getElementById('btn-close-toc');
+
+    function toggleSidebar() {
+      if (sidebar) sidebar.classList.toggle('open');
+      if (backdrop) backdrop.classList.toggle('open');
+    }
+    if (btnToggleToc) btnToggleToc.onclick = toggleSidebar;
+    if (btnCloseToc) btnCloseToc.onclick = toggleSidebar;
+    if (backdrop) backdrop.onclick = toggleSidebar;
+
+    // Reading Progress & Active TOC Link
+    const progressBar = document.getElementById('progress-bar');
+    const tocLinks = document.querySelectorAll('.toc-link');
+
+    window.addEventListener('scroll', () => {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+      if (progressBar) progressBar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+
+      let currentActiveId = '';
+      const headings = document.querySelectorAll('.content-heading');
+      headings.forEach(h => {
+        const top = h.getBoundingClientRect().top;
+        if (top <= 120) {
+          currentActiveId = h.id;
+        }
+      });
+      if (currentActiveId) {
+        tocLinks.forEach(link => {
+          if (link.getAttribute('data-target') === currentActiveId) {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        });
+      }
+    });
+
+    // ==========================================
+    // WIDGET 8.1: AUDIT PRIORITY CALCULATOR
+    // ==========================================
+    const presets8 = {
+      reg: { c: 5, r: 5, p: 4, i: 4, ch: 3, m: 4 },
+      his: { c: 5, r: 5, p: 5, i: 5, ch: 4, m: 5 },
+      cloud: { c: 4, r: 4, p: 3, i: 2, ch: 5, m: 4 },
+      web: { c: 2, r: 2, p: 2, i: 3, ch: 2, m: 2 }
+    };
+
+    function loadScorePreset(key) {
+      const p = presets8[key];
+      if (!p) return;
+      document.getElementById('input-c').value = p.c;
+      document.getElementById('input-r').value = p.r;
+      document.getElementById('input-p').value = p.p;
+      document.getElementById('input-i').value = p.i;
+      document.getElementById('input-ch').value = p.ch;
+      document.getElementById('input-m').value = p.m;
+      updateScoreCalc();
+    }
+
+    function updateScoreCalc() {
+      const c = parseFloat(document.getElementById('input-c').value);
+      const r = parseFloat(document.getElementById('input-r').value);
+      const p = parseFloat(document.getElementById('input-p').value);
+      const i = parseFloat(document.getElementById('input-i').value);
+      const ch = parseFloat(document.getElementById('input-ch').value);
+      const m = parseFloat(document.getElementById('input-m').value);
+
+      document.getElementById('lbl-c').textContent = c;
+      document.getElementById('lbl-r').textContent = r;
+      document.getElementById('lbl-p').textContent = p;
+      document.getElementById('lbl-i').textContent = i;
+      document.getElementById('lbl-ch').textContent = ch;
+      document.getElementById('lbl-m').textContent = m;
+
+      // Formula: (0.25*C) + (0.20*R) + (0.20*P) + (0.15*I) + (0.10*CH) + (0.10*M)
+      const score = (0.25 * c) + (0.20 * r) + (0.20 * p) + (0.15 * i) + (0.10 * ch) + (0.10 * m);
+      document.getElementById('soc-score-val').textContent = score.toFixed(2) + ' / 5.00';
+
+      const tierBadge = document.getElementById('soc-tier-badge');
+      const recText = document.getElementById('soc-rec-text');
+
+      if (score >= 4.0) {
+        tierBadge.textContent = 'TIER 1: ความเร่งด่วนวิกฤต (Critical Priority)';
+        tierBadge.style.color = 'var(--rose)';
+        recText.textContent = 'จัดสรรไว้ในไตรมาสที่ 1 (Q1) ของแผนประจำปี บังคับตรวจแบบเต็มรูปแบบ (Full Scope) ประจำทุกปี พร้อมสุ่มตรวจย่อยติดตามผลทุก 6 เดือน';
+      } else if (score >= 3.0) {
+        tierBadge.textContent = 'TIER 2: ความเร่งด่วนปานกลางถึงสูง (High Priority)';
+        tierBadge.style.color = 'var(--amber)';
+        recText.textContent = 'จัดสรรไว้ในไตรมาสที่ 2 หรือ 3 (Q2-Q3) ของแผนประจำปี ตรวจประเมินทุก 1-2 ปี มุ่งเน้นการตรวจเฉพาะประเด็นความเปลี่ยนแปลงและการควบคุมหลัก';
+      } else {
+        tierBadge.textContent = 'TIER 3: ความเร่งด่วนปกติ (Standard Priority)';
+        tierBadge.style.color = 'var(--emerald)';
+        recText.textContent = 'จัดรอบการตรวจทุก 2-3 ปี หรือใช้วิธีการสุ่มตรวจประเมินตนเอง (Self-Assessment Review) ร่วมกับการตรวจทางเทคนิคแบบอัตโนมัติ';
+      }
+    }
+    updateScoreCalc();
+
+    // ==========================================
+    // WIDGET 8.2: UNIVERSE EXPLORER
+    // ==========================================
+    const universeData = [
+      { id: 1, cat: 'core', name: 'ระบบบริการการศึกษาและทะเบียน (REG)', tier: 'tier1', score: '4.35', desc: 'ฐานข้อมูลประวัตินักศึกษา เกรด และระบบลงทะเบียนเรียนออนไลน์', freq: 'รายปี (Annual)', std: 'ม.54 พ.ร.บ.ไซเบอร์ฯ, PDPA, ISO 27001' },
+      { id: 2, cat: 'core', name: 'ระบบสารสนเทศโรงพยาบาลมหาวิทยาลัย (HIS)', tier: 'tier1', score: '4.80', desc: 'ข้อมูลเวชระเบียนผู้ป่วย ระบบจ่ายยา และการเบิกจ่ายสิทธิสุขภาพ', freq: 'รายปี (Annual)', std: 'พ.ร.บ.ไซเบอร์ฯ (CII สธ.), PDPA มาตรา 26' },
+      { id: 3, cat: 'core', name: 'ระบบบัญชีและการเงินกลาง (ERP Finance)', tier: 'tier1', score: '4.10', desc: 'การเบิกจ่ายงบประมาณ การจัดซื้อจัดจ้าง และการจ่ายเงินเดือน', freq: 'รายปี (Annual)', std: 'ISO 27001, ระเบียบการตรวจเงินแผ่นดิน' },
+      { id: 4, cat: 'infra', name: 'โครงสร้างพื้นฐาน Data Center & Active Directory', tier: 'tier1', score: '4.50', desc: 'ระบบยืนยันตัวตนกลาง (AD), DNS, Core Switch, ไฟร์วอลล์หลัก', freq: 'รายปี (Annual)', std: 'ISO 27001, CIS Benchmarks L1' },
+      { id: 5, cat: 'infra', name: 'ระบบเครือข่ายไร้สายทั่วมหาวิทยาลัย (Uni-WiFi)', tier: 'tier2', score: '3.40', desc: 'เครือข่าย Wi-Fi สำหรับนักศึกษา 25,000 คน และเครือข่าย Guest', freq: 'ทุก 2 ปี', std: 'พ.ร.บ.คอมพิวเตอร์ฯ ม.26 (Log)' },
+      { id: 6, cat: 'process', name: 'กระบวนการบริหารวงจรชีวิตผู้ใช้งาน (JML Process)', tier: 'tier2', score: '3.80', desc: 'การรับเข้า ย้ายแผนก และการเพิกถอนสิทธิ์พนักงานลาออกของ HR', freq: 'รายปี (Annual)', std: 'ISO 27001 A.5.3, A.6.1' },
+      { id: 7, cat: 'process', name: 'กระบวนการตอบสนองต่อเหตุการณ์ภัยคุกคาม (Incident Response)', tier: 'tier2', score: '3.60', desc: 'ขั้นตอนการแจ้งเตือนและการประสานงาน ThaiCERT ภายใน 24 ชม.', freq: 'ทุก 2 ปี', std: 'ม.57 พ.ร.บ.ไซเบอร์ฯ' },
+      { id: 8, cat: 'cloud', name: 'โครงสร้างพื้นฐานคลาวด์ AWS/Azure Migration', tier: 'tier1', score: '4.00', desc: 'ระบบงานที่ย้ายไปรันบนคลาวด์ พร้อมระบบสำรองข้อมูล S3 WORM', freq: 'รายปี (Annual)', std: 'ISO 27017, CIS AWS Foundation' },
+      { id: 9, cat: 'cloud', name: 'ผู้ให้บริการภายนอกดูแลเครือข่าย (Managed NOC)', tier: 'tier2', score: '3.50', desc: 'สัญญาจ้าง Outsource เฝ้าระวังเครือข่าย 24x7 และสิทธิ์ Remote Support', freq: 'ทุก 2 ปี', std: 'ISO 27001 A.5.19, A.5.20' },
+      { id: 10, cat: 'core', name: 'ระบบการเรียนการสอนออนไลน์ (LMS Canvas/Moodle)', tier: 'tier2', score: '3.20', desc: 'ข้อสอบออนไลน์ งานมอบหมาย และการส่งไฟล์ของนักศึกษา', freq: 'ทุก 2 ปี', std: 'PDPA, ISO 27001' }
+    ];
+
+    let currentUnivCat = 'all';
+
+    function setUnivFilter(cat) {
+      currentUnivCat = cat;
+      document.querySelectorAll('.btn-u-filter').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      filterUniverse();
+    }
+
+    function filterUniverse() {
+      const search = (document.getElementById('univ-search').value || '').toLowerCase();
+      const container = document.getElementById('univ-items-grid');
+      container.innerHTML = '';
+
+      const filtered = universeData.filter(item => {
+        const matchCat = (currentUnivCat === 'all' || item.cat === currentUnivCat);
+        const matchSearch = item.name.toLowerCase().includes(search) || item.desc.toLowerCase().includes(search) || item.std.toLowerCase().includes(search);
+        return matchCat && matchSearch;
+      });
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'univ-card';
+        card.innerHTML = `
+          <div class="uc-top">
+            <div class="uc-name">${item.name}</div>
+            <span class="uc-tier ${item.tier}">${item.score} (${item.tier.toUpperCase()})</span>
+          </div>
+          <div class="uc-desc">${item.desc}</div>
+          <div class="uc-meta">
+            <span>รอบ: ${item.freq}</span>
+            <span>เกณฑ์: ${item.std.substring(0, 24)}...</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+    filterUniverse();
+
+    // ==========================================
+    // WIDGET 8.3: COMPETENCY MATRIX BUILDER
+    // ==========================================
+    const auditorPool = [
+      { id: 1, name: 'ดร.ธนกฤต วิบูลย์ชัย (CISA, CISSP)', role: 'Lead Auditor', skills: { legal: 90, std: 95, tech: 85, audit: 95, soft: 90 } },
+      { id: 2, name: 'คุณกิตติศักดิ์ พงษ์ศิริ (OSCP, CEH)', role: 'Technical Auditor', skills: { legal: 45, std: 70, tech: 95, audit: 75, soft: 65 } },
+      { id: 3, name: 'ทนายวรัญญา นิติกานต์ (LL.M., CIPP/E)', role: 'Legal & Regulatory Auditor', skills: { legal: 95, std: 80, tech: 40, audit: 70, soft: 85 } },
+      { id: 4, name: 'คุณศุภกร คลาวด์เดฟ (AWS Solutions Arch)', role: 'Cloud Tech Specialist', skills: { legal: 30, std: 65, tech: 95, audit: 55, soft: 70 } },
+      { id: 5, name: 'น.ส.ชลิตา ตรวจประเมิน (CIA, CISM)', role: 'Audit Process Specialist', skills: { legal: 75, std: 90, tech: 60, audit: 95, soft: 90 } }
+    ];
+
+    let selectedAuditorIds = [1, 2, 3]; // Default balanced team
+
+    function renderAuditorPool() {
+      const list = document.getElementById('candidate-list');
+      list.innerHTML = '';
+      auditorPool.forEach(a => {
+        const isSel = selectedAuditorIds.includes(a.id);
+        const item = document.createElement('div');
+        item.className = 'cand-item ' + (isSel ? 'selected' : '');
+        item.onclick = () => toggleAuditor(a.id);
+        item.innerHTML = `
+          <div>
+            <div class="cand-name">${a.name}</div>
+            <div class="cand-role">${a.role}</div>
+          </div>
+          <div style="font-family:var(--font-display); font-size:0.8rem; font-weight:700; color:${isSel ? 'var(--primary)' : 'var(--text-dim)'};">
+            ${isSel ? '✓ เลือกแล้ว' : '+ เพิ่มเข้าทีม'}
+          </div>
+        `;
+        list.appendChild(item);
+      });
+      renderTeamSummary();
+    }
+
+    function toggleAuditor(id) {
+      if (selectedAuditorIds.includes(id)) {
+        if (selectedAuditorIds.length <= 1) {
+          alert('ทีมผู้ตรวจสอบต้องมีสมาชิกอย่างน้อย 1 คน');
+          return;
+        }
+        selectedAuditorIds = selectedAuditorIds.filter(x => x !== id);
+      } else {
+        selectedAuditorIds.push(id);
+      }
+      renderAuditorPool();
+    }
+
+    function renderTeamSummary() {
+      const box = document.getElementById('team-summary-box');
+      const selected = auditorPool.filter(a => selectedAuditorIds.includes(a.id));
+
+      const pillars = [
+        { key: 'legal', name: '1. Legal & Regulatory' },
+        { key: 'std', name: '2. Standards & Frameworks' },
+        { key: 'tech', name: '3. Technical Security' },
+        { key: 'audit', name: '4. Audit Methodology' },
+        { key: 'soft', name: '5. Soft Skills & Ethics' }
+      ];
+
+      let html = `<div style="font-size:0.8rem; margin-bottom:0.8rem;">จำนวนสมาชิกในทีม: <strong>${selected.length} ท่าน</strong></div>`;
+
+      pillars.forEach(p => {
+        const maxScore = Math.max(...selected.map(a => a.skills[p.key]));
+        let barColor = 'var(--emerald)';
+        if (maxScore < 60) barColor = 'var(--rose)';
+        else if (maxScore < 80) barColor = 'var(--amber)';
+
+        html += `
+          <div class="skill-bar-row">
+            <div class="sbr-label">
+              <span>${p.name}</span>
+              <span style="font-weight:700; color:${barColor};">${maxScore}%</span>
+            </div>
+            <div class="sbr-bar">
+              <div class="sbr-fill" style="width:${maxScore}%; background:${barColor};"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      // Status Assessment
+      const minPillar = Math.min(...pillars.map(p => Math.max(...selected.map(a => a.skills[p.key]))));
+      let statusHtml = '';
+      if (minPillar >= 80) {
+        statusHtml = '<div style="margin-top:0.8rem; padding:0.6rem; border-radius:6px; background:var(--emerald-light); color:var(--emerald); font-size:0.8rem; font-weight:700;">✅ ทีมมีความพร้อมสมบูรณ์แบบ (Optimal Team Competency)</div>';
+      } else if (minPillar >= 60) {
+        statusHtml = '<div style="margin-top:0.8rem; padding:0.6rem; border-radius:6px; background:var(--amber-light); color:var(--amber); font-size:0.8rem; font-weight:700;">⚠️ ทีมมีความพร้อมปานกลาง แนะนำให้เสริมทักษะหรือเพิ่มที่ปรึกษา</div>';
+      } else {
+        statusHtml = '<div style="margin-top:0.8rem; padding:0.6rem; border-radius:6px; background:var(--rose-light); color:var(--rose); font-size:0.8rem; font-weight:700;">❌ พบ Skill Gap รุนแรงในทีม! ไม่ผ่านเกณฑ์ ISO 19011 Clause 7</div>';
+      }
+      box.innerHTML = html + statusHtml;
+    }
+    renderAuditorPool();
+
+    // ==========================================
+    // WIDGET 8.4: 13-ELEMENT ACCORDION
+    // ==========================================
+    const planElements13 = [
+      { id: 1, title: '1. Audit Objective (วัตถุประสงค์การตรวจ)', desc: 'ระบุเป้าหมายชัดเจนว่าตรวจเพื่ออะไร เช่น ตรวจเพื่อประเมินความสอดคล้องตาม ม.54 พ.ร.บ.ไซเบอร์ฯ หรือตรวจรับรอง ISO/IEC 27001' },
+      { id: 2, title: '2. Audit Scope (ขอบเขตการตรวจ)', desc: 'ระบุขอบเขตทางกายภาพ เครือข่าย ระบบสารสนเทศ และหน่วยงานที่ตรวจ เช่น ระบบทะเบียน REG ณ สำนักวิทยบริการและเทคโนโลยีสารสนเทศ' },
+      { id: 3, title: '3. Audit Criteria (เกณฑ์การตรวจ)', desc: 'ระบุมาตรฐาน กฎหมาย และนโยบายที่ใช้เป็นบรรทัดฐานตัดสิน เช่น ISO/IEC 27001:2022, ประกาศ กมช. 2564, PDPA 2562' },
+      { id: 4, title: '4. Audit Methodology (วิธีการตรวจ)', desc: 'ชี้แจงวิธีการรวบรวมหลักฐาน เช่น การสัมภาษณ์ (Inquiry), การตรวจทานเอกสาร (Inspection), การสังเกตการณ์ (Observation) และการทดสอบซ้ำ (Re-performance)' },
+      { id: 5, title: '5. Audit Team & Roles (รายชื่อและหน้าที่ทีมตรวจ)', desc: 'ระบุบทบาทของ Lead Auditor, Technical Auditor, Legal Auditor, Technical Expert และ Observer เพื่อความโปร่งใสและหน้าที่รับผิดชอบชัดเจน' },
+      { id: 6, title: '6. Hourly Schedule (กำหนดการตรวจรายชั่วโมง)', desc: 'ตารางเวลาลงพื้นที่อย่างละเอียด แยกตามวัน เวลา และสถานที่ เพื่อให้ผู้รับการตรวจจัดสรรผู้ประสานงานได้ตรงเวลา' },
+      { id: 7, title: '7. Sampling Approach (แนวทางการสุ่มตัวอย่าง)', desc: 'กำหนดขนาดและเกณฑ์การสุ่ม เช่น สุ่ม 25 บัญชีจากประชากร 200 คน (Statistical Sampling) หรือสุ่มแบบเฉพาะเจาะจงในระบบความเสี่ยงสูง' },
+      { id: 8, title: '8. Logistics & Working Conditions (การจัดเตรียมสถานที่)', desc: 'ห้องประชุมทำงานของผู้ตรวจสอบ การเชื่อมต่อเครือข่าย ป้ายชื่อ และอุปกรณ์ป้องกันอันตรายใน Data Center' },
+      { id: 9, title: '9. Remote Audit Protocol (ข้อตกลงการตรวจระยะไกล)', desc: 'เครื่องมือประชุมทางไกล (Zoom/Teams), วิธีการแชร์หน้าจอ และมาตรการรักษาความปลอดภัยของไฟล์หลักฐานขณะส่งข้ามระบบ' },
+      { id: 10, title: '10. Evidence Request List (รายการขอหลักฐานล่วงหน้า)', desc: 'รายการเอกสารและ Log ที่ต้องส่งมอบให้ผู้ตรวจล่วงหน้าอย่างน้อย 14 วัน เพื่อศึกษาทำความเข้าใจก่อนลงพื้นที่จริง' },
+      { id: 11, title: '11. Audit Risk Management (การบริหารความเสี่ยงของงานตรวจ)', desc: 'การระบุความเสี่ยงที่งานตรวจอาจสะดุด และมาตรการลดผลกระทบต่อระบบ Production' },
+      { id: 12, title: '12. Working Paper Structure (โครงสร้างกระดาษทำการ)', desc: 'แม่แบบกระดาษทำการ (Audit Working Papers) ที่ผู้ตรวจต้องใช้บันทึกหลักฐานและการวิเคราะห์ผล' },
+      { id: 13, title: '13. Reporting & Deliverables (การส่งมอบรายงาน)', desc: 'กำหนดเวลาส่งมอบรายงานฉบับร่าง (Draft Report), รายงานฉบับสมบูรณ์ และการนัดหมายประชุมปิดการตรวจ (Closing Meeting)' }
+    ];
+
+    function renderAccordion() {
+      const container = document.getElementById('plan-elements-accordion');
+      container.innerHTML = '';
+      planElements13.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'acc-item';
+        div.innerHTML = `
+          <div class="acc-header" onclick="toggleAcc(${item.id})">
+            <span>${item.title}</span>
+            <span id="acc-icon-${item.id}">+</span>
+          </div>
+          <div class="acc-content" id="acc-content-${item.id}">
+            ${item.desc}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function toggleAcc(id) {
+      const content = document.getElementById('acc-content-' + id);
+      const icon = document.getElementById('acc-icon-' + id);
+      if (content.classList.contains('open')) {
+        content.classList.remove('open');
+        icon.textContent = '+';
+      } else {
+        content.classList.add('open');
+        icon.textContent = '−';
+      }
+    }
+    renderAccordion();
+
+    // ==========================================
+    // WIDGET 8.5: OPENING MEETING CONFLICT SIM
+    // ==========================================
+    const simScenarios = [
+      {
+        id: 1,
+        title: 'สถานการณ์ที่ 1: ผู้บริหารระดับสูงไม่เข้าร่วมประชุมเปิด',
+        quote: 'ผู้รับการตรวจ: "ท่านคณบดีและผู้บริหารติดประชุมด่วน จึงมอบหมายให้น้องพนักงานธุรการที่เพิ่งเข้ามาทำงาน 2 สัปดาห์มานั่งประชุมเปิดแทนครับ"',
+        options: [
+          {
+            text: 'A) ดำเนินการประชุมต่อไปตามปกติ เพราะมีตัวแทนมาแล้ว ไม่จำเป็นต้องให้ผู้บริหารอยู่',
+            correct: false,
+            feedback: '❌ ไม่ถูกต้อง! การไม่มีผู้บริหารระดับสูงรับทราบวัตถุประสงค์และข้อตกลง จะทำให้เกิดปัญหาการต่อต้านและขาดความร่วมมือในขั้นตอนสุ่มตรวจจริง'
+          },
+          {
+            text: 'B) ชี้แจงถึงความสำคัญตาม ISO 19011 และขอพบผู้บริหารอย่างน้อย 15 นาที หรือขอเลื่อนเวลาประชุมเปิดออกไปเล็กน้อยเพื่อให้ผู้มีอำนาจตัดสินใจเข้าร่วม',
+            correct: true,
+            feedback: '✅ ถูกต้องสมบูรณ์! Lead Auditor ต้องใช้การเจรจาอย่างมืออาชีพ ย้ำว่าที่ประชุมเปิดเป็นการยืนยันความร่วมมือและสิทธิ์การเข้าถึงข้อมูลตามอำนาจหน้าที่'
+          },
+          {
+            text: 'C) สั่งยกเลิกการตรวจทันที และออกใบ Major Non-conformity เรื่องไม่ให้ความร่วมมือ',
+            correct: false,
+            feedback: '❌ รุนแรงเกินไป! การยกเลิกงานตรวจทันทีโดยไม่เจรจาประนีประนอมขัดกับหลักปฏิสัมพันธ์วิชาชีพ (Diplomatic & Professional Behavior)'
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: 'สถานการณ์ที่ 2: ปฏิเสธการให้ตรวจการตั้งค่าไฟร์วอลล์ อ้างเป็นความลับ',
+        quote: 'ฝ่ายไอที: "ทางเราไม่สามารถเปิดหน้าจอแสดง Rulebase ของ Next-Gen Firewall ให้ดูได้ครับ เพราะเป็นความลับระดับสูง เกรงว่าข้อมูลจะรั่วไหล"',
+        options: [
+          {
+            text: 'A) ยินยอมตามที่ฝ่ายไอทีแจ้ง และข้ามการตรวจไฟร์วอลล์ไปตรวจหัวข้ออื่นแทน',
+            correct: false,
+            feedback: '❌ ไม่ถูกต้อง! การยอมตามคำขอจะทำให้เกิด Scope Limitation ที่รุนแรง และไม่สามารถยืนยันความปลอดภัยของระบบเครือข่ายได้'
+          },
+          {
+            text: 'B) ยืนยันสัญญารักษาความลับ (NDA) และเสนอทางเลือกให้ผู้ดูแลระบบเป็นผู้เปิดหน้าจอให้ดูโดยตรง (Observation) ร่วมกับทีมตรวจในห้องปิด',
+            correct: true,
+            feedback: '✅ ถูกต้องสมบูรณ์! การยืนยันพันธกรณี NDA และใช้วิธีการ Observation โดยผู้ดูแลระบบเป็นคนควบคุมหน้าจอ ช่วยคลายความกังวลและได้หลักฐานตามต้องการ'
+          },
+          {
+            text: 'C) ขู่ว่าจะรายงานต่อ สกมช. ให้สั่งปรับมหาวิทยาลัยในทันที',
+            correct: false,
+            feedback: '❌ ไม่เหมาะสม! ผู้ตรวจสอบต้องไม่ใช้การข่มขู่ในที่ประชุมเปิด ควรใช้ข้อเท็จจริงและแนวทางประนีประนอมทางเทคนิค'
+          }
+        ]
+      }
+    ];
+
+    let curSimIdx = 0;
+
+    function renderSimScenario() {
+      const box = document.getElementById('sim-case-box');
+      const sc = simScenarios[curSimIdx];
+
+      let optsHtml = '';
+      sc.options.forEach((opt, idx) => {
+        optsHtml += `<button class="sim-btn-opt" onclick="checkSimAnswer(${idx})">${opt.text}</button>`;
+      });
+
+      box.innerHTML = `
+        <div class="sim-scenario-card">
+          <div class="sim-tag">${sc.title}</div>
+          <div class="sim-quote">${sc.quote}</div>
+          <div style="font-weight:600; font-size:0.85rem; margin-bottom:0.6rem;">ท่านจะตัดสินใจในฐานะ Lead Auditor อย่างไร?</div>
+          <div class="sim-options">${optsHtml}</div>
+          <div class="sim-feedback" id="sim-feedback-box"></div>
+          <div style="display:flex; justify-content:space-between; margin-top:1rem;">
+            <button class="btn-ctrl" onclick="prevSimScenario()" ${curSimIdx === 0 ? 'disabled style="opacity:0.5;"' : ''}>◀ สถานการณ์ก่อนหน้า</button>
+            <button class="btn-ctrl" onclick="nextSimScenario()" ${curSimIdx === simScenarios.length - 1 ? 'disabled style="opacity:0.5;"' : ''}>สถานการณ์ถัดไป ▶</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function checkSimAnswer(idx) {
+      const sc = simScenarios[curSimIdx];
+      const opt = sc.options[idx];
+      const fbBox = document.getElementById('sim-feedback-box');
+      fbBox.style.display = 'block';
+      fbBox.className = 'sim-feedback ' + (opt.correct ? 'correct' : 'wrong');
+      fbBox.textContent = opt.feedback;
+    }
+
+    function nextSimScenario() {
+      if (curSimIdx < simScenarios.length - 1) {
+        curSimIdx++;
+        renderSimScenario();
+      }
+    }
+
+    function prevSimScenario() {
+      if (curSimIdx > 0) {
+        curSimIdx--;
+        renderSimScenario();
+      }
+    }
+    renderSimScenario();
+  </script>
+</body>
+</html>

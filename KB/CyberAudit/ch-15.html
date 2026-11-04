@@ -1,0 +1,2223 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 15: การประชุมปิด การติดตามผล และการทบทวนกระบวนการตรวจ (Closing Meeting, Follow-up Audit, and Audit Programme Review) - การตรวจสอบความมั่นคงปลอดภัยสารสนเทศ</title>
+  <meta name="description" content="บทที่ 15: การประชุมปิด การติดตามผล และการทบทวนกระบวนการตรวจ วาระการประชุมปิด การบริหารข้อโต้แย้งโดยไม่ต่อรองความเสี่ยง วงจรสถานะข้อค้นพบ CAP และ 18 แฟ้มชิ้นงาน Audit Portfolio">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f766e;
+      --primary-hover: #115e59;
+      --primary-glow: rgba(15, 118, 110, 0.14);
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --border-color: #e2e8f0;
+      --border-subtle: #edf2f7;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --text-dim: #64748b;
+      --code-bg: #f1f5f9;
+      --code-border: #cbd5e1;
+      --font-body: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Inter', 'Prompt', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+      --emerald: #059669;
+      --emerald-bg: rgba(5, 150, 105, 0.1);
+      --amber: #d97706;
+      --amber-bg: rgba(217, 119, 6, 0.1);
+      --rose: #e11d48;
+      --rose-bg: rgba(225, 29, 72, 0.1);
+      --purple: #7c3aed;
+      --purple-bg: rgba(124, 58, 237, 0.1);
+      --blue: #0284c7;
+      --blue-bg: rgba(2, 132, 199, 0.1);
+      --base-font-size: 16px;
+    }
+
+    [data-theme="sepia"] {
+      --primary: #0f766e;
+      --primary-hover: #115e59;
+      --primary-glow: rgba(15, 118, 110, 0.16);
+      --bg-page: #fbf0d9;
+      --bg-surface: #f4e3c1;
+      --bg-card: #f7e8cb;
+      --border-color: #e6d3aa;
+      --border-subtle: #ecdcb9;
+      --text-main: #433422;
+      --text-muted: #5c4731;
+      --text-dim: #7d654a;
+      --code-bg: #efe0c0;
+      --code-border: #dcc89f;
+      --emerald: #2e7d32;
+      --emerald-bg: rgba(46, 125, 50, 0.12);
+      --amber: #b45309;
+      --amber-bg: rgba(180, 83, 9, 0.12);
+      --rose: #9f1239;
+      --rose-bg: rgba(159, 18, 57, 0.12);
+      --purple: #6d28d9;
+      --purple-bg: rgba(109, 40, 217, 0.12);
+      --blue: #0369a1;
+      --blue-bg: rgba(3, 105, 161, 0.12);
+    }
+
+    [data-theme="dark"] {
+      --primary: #14b8a6;
+      --primary-hover: #2dd4bf;
+      --primary-glow: rgba(20, 184, 166, 0.22);
+      --bg-page: #0b0f19;
+      --bg-surface: #111827;
+      --bg-card: #1f2937;
+      --border-color: #374151;
+      --border-subtle: #1f2937;
+      --text-main: #f9fafb;
+      --text-muted: #d1d5db;
+      --text-dim: #9ca3af;
+      --code-bg: #030712;
+      --code-border: #374151;
+      --emerald: #10b981;
+      --emerald-bg: rgba(16, 185, 129, 0.15);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245, 158, 11, 0.15);
+      --rose: #f43f5e;
+      --rose-bg: rgba(244, 63, 94, 0.15);
+      --purple: #a855f7;
+      --purple-bg: rgba(168, 85, 247, 0.15);
+      --blue: #38bdf8;
+      --blue-bg: rgba(56, 189, 248, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: var(--base-font-size); scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    /* Top Fixed Progress & Reader Bar */
+    .top-nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .progress-track { width: 100%; height: 3px; background: transparent; }
+    .progress-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.1s linear; }
+
+    .nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0.5rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      text-decoration: none;
+    }
+    .nav-brand-badge {
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-family: var(--font-code);
+      font-size: 0.75rem;
+      border: 1px solid var(--primary);
+    }
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .nav-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .nav-btn:hover {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Layout */
+    .page-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 2rem 1.5rem 4rem;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 2.5rem;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .page-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+      .sidebar-toc { display: none; }
+    }
+
+    /* Sidebar TOC */
+    .sidebar-toc {
+      position: sticky;
+      top: 4rem;
+      max-height: calc(100vh - 5rem);
+      overflow-y: auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .toc-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 0.85rem;
+      display: block;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+    .toc-list { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+    .toc-item a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      display: block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      line-height: 1.4;
+      transition: all 0.15s;
+    }
+    .toc-item a:hover {
+      color: var(--primary);
+      background: var(--primary-glow);
+    }
+    .toc-h1 { font-weight: 700; }
+    .toc-h2 { font-weight: 600; padding-left: 0.6rem; }
+    .toc-h3 { padding-left: 1.2rem; font-size: 0.76rem; color: var(--text-dim); }
+
+    /* Main Article */
+    .main-article {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2.5rem 3rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+    @media (max-width: 640px) {
+      .main-article { padding: 1.5rem 1rem; }
+    }
+
+    /* Header */
+    .chapter-header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+    .chapter-badge {
+      display: inline-block;
+      font-family: var(--font-code);
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.3rem 0.85rem;
+      border-radius: 6px;
+      margin-bottom: 0.85rem;
+      border: 1px solid var(--primary);
+      letter-spacing: 0.05em;
+    }
+    .chapter-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.35;
+      color: var(--text-main);
+    }
+
+    /* Headings */
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1rem;
+      color: var(--text-main);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .subsection-heading {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 2rem 0 0.85rem;
+      color: var(--text-main);
+    }
+    .sub-subsection-heading {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 1.5rem 0 0.65rem;
+      color: var(--text-main);
+    }
+    .sub-level5-heading {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 1.25rem 0 0.5rem;
+      color: var(--text-dim);
+    }
+
+    /* Prose Content */
+    .content-paragraph {
+      margin-bottom: 1.15rem;
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+    .content-list {
+      margin: 0.75rem 0 1.25rem 1.8rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
+    .content-list li { margin-bottom: 0.4rem; }
+    .content-divider {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2.5rem 0;
+    }
+    .content-quote {
+      background: var(--bg-card);
+      border-left: 4px solid var(--primary);
+      padding: 1.1rem 1.5rem;
+      margin: 1.25rem 0;
+      border-radius: 0 8px 8px 0;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      padding: 1.1rem;
+      overflow-x: auto;
+      font-family: var(--font-code);
+      font-size: 0.86rem;
+      margin: 1.25rem 0;
+      color: var(--text-main);
+    }
+    code {
+      font-family: var(--font-code);
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.86em;
+    }
+
+    /* Table */
+    .table-responsive {
+      overflow-x: auto;
+      margin: 1.25rem 0;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      text-align: left;
+    }
+    .data-table th, .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .data-table th {
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-weight: 700;
+    }
+    .data-table tr:hover {
+      background: var(--primary-glow);
+    }
+
+    /* Visual Figures */
+    .figure-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    }
+    .figure-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+    .figure-tag {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+    .figure-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .figure-caption {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px dashed var(--border-color);
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    /* Principles & Grids */
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.85rem;
+    }
+    .principle-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .p-num {
+      font-family: var(--font-code);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+    .p-title { font-weight: 700; font-size: 0.88rem; color: var(--text-main); margin-bottom: 0.25rem; }
+    .p-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Smartr & Pillars */
+    .smartr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.85rem;
+    }
+    .smartr-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem;
+    }
+    .s-letter { font-family: var(--font-code); font-size: 1.5rem; font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: 0.35rem; }
+    .s-title { font-weight: 700; font-size: 0.84rem; color: var(--text-main); margin-bottom: 0.25rem; }
+    .s-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Traps Grid */
+    .traps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+    .trap-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-top: 3px solid var(--rose);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .trap-num { font-family: var(--font-code); font-size: 0.72rem; font-weight: 700; color: var(--rose); margin-bottom: 0.3rem; }
+    .trap-title { font-weight: 700; font-size: 0.88rem; color: var(--text-main); margin-bottom: 0.3rem; }
+    .trap-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.45; }
+
+    /* CAP Hierarchy Visual */
+    .cap-hierarchy-visual {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .cap-tier {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .tier-1 { border-left: 5px solid var(--rose); }
+    .tier-2 { border-left: 5px solid var(--amber); }
+    .tier-3 { border-left: 5px solid var(--emerald); }
+    .tier-label { font-family: var(--font-code); font-size: 0.7rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; }
+    .tier-head { font-weight: 700; font-size: 0.95rem; color: var(--text-main); margin-bottom: 0.35rem; }
+    .tier-body { font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* Lifecycle Flow */
+    .lifecycle-flow {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .life-step {
+      flex: 1;
+      min-width: 140px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem;
+      text-align: center;
+    }
+    .life-arrow { font-size: 1.2rem; color: var(--primary); font-weight: 700; }
+    .life-status { font-family: var(--font-code); font-size: 0.72rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.35rem; }
+    .step-open .life-status { background: var(--rose-bg); color: var(--rose); }
+    .step-prog .life-status { background: var(--amber-bg); color: var(--amber); }
+    .step-verify .life-status { background: var(--blue-bg); color: var(--blue); }
+    .step-closed .life-status { background: var(--emerald-bg); color: var(--emerald); }
+    .life-name { font-weight: 700; font-size: 0.85rem; color: var(--text-main); margin-bottom: 0.25rem; }
+    .life-desc { font-size: 0.74rem; color: var(--text-dim); line-height: 1.35; }
+
+    /* Exec Summary Card */
+    .exec-summary-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    .exec-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.84rem;
+    }
+    .meta-label { color: var(--text-dim); font-weight: 600; margin-right: 0.35rem; }
+    .meta-val { color: var(--text-main); font-weight: 500; }
+
+    /* Portfolio Grid */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 0.65rem;
+    }
+    .port-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 0.6rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      color: var(--text-main);
+    }
+    .port-item code { color: var(--primary); font-weight: 700; margin-right: 0.4rem; }
+
+    /* Dialogue */
+    .dialogue-container { display: flex; flex-direction: column; gap: 1rem; }
+    .chat-bubble {
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      font-size: 0.86rem;
+      line-height: 1.6;
+    }
+    .chat-auditor { background: var(--bg-surface); border-left: 4px solid var(--primary); }
+    .chat-auditee { background: var(--bg-surface); border-left: 4px solid var(--blue); margin-left: 2rem; }
+    .chat-author { font-weight: 700; margin-bottom: 0.35rem; font-size: 0.84rem; color: var(--text-main); }
+
+    /* Status Badges */
+    .badge-status {
+      display: inline-block;
+      padding: 0.18rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.76rem;
+      font-weight: 600;
+    }
+    .badge-status.pass { background: var(--emerald-bg); color: var(--emerald); }
+    .badge-status.warn { background: var(--amber-bg); color: var(--amber); }
+    .badge-status.fail { background: var(--rose-bg); color: var(--rose); }
+    .badge-status.info { background: var(--blue-bg); color: var(--blue); }
+
+    /* Interactive Widgets */
+    .interactive-widget {
+      background: var(--bg-surface);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2.5rem 0;
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+    .widget-header {
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .widget-tag {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+    .widget-title { font-size: 1.15rem; font-weight: 800; color: var(--text-main); }
+    .vol-select-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .vol-select-btn:hover {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .vol-select-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Chapter Footer Navigation */
+    .chapter-nav-footer {
+      margin-top: 3.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn-nav-chapter {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.85rem 1.4rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: all 0.2s;
+    }
+    .btn-nav-chapter:hover {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .btn-nav-finish {
+      background: var(--emerald-bg);
+      border-color: var(--emerald);
+      color: var(--emerald);
+    }
+    .btn-nav-finish:hover {
+      background: var(--emerald);
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-nav-bar">
+    <div class="progress-track">
+      <div class="progress-fill" id="reading-progress-bar"></div>
+    </div>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">
+        <span class="nav-brand-badge">NECS1312 // CH-15</span>
+        <span>การประชุมปิด การติดตามผล และการทบทวน</span>
+      </a>
+      <div class="nav-controls">
+        <button class="nav-btn" id="font-decrease" onclick="adjustFontSize(-1)">A-</button>
+        <button class="nav-btn" id="font-reset" onclick="adjustFontSize(0)">A</button>
+        <button class="nav-btn" id="font-increase" onclick="adjustFontSize(1)">A+</button>
+        <button class="nav-btn" id="theme-toggle" onclick="cycleTheme()">🌓 ธีม</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-container">
+    <aside class="sidebar-toc">
+      
+<div class="toc-container">
+  <div class="toc-header">
+    <span class="toc-title">สารบัญประจำบทที่ 15</span>
+  </div>
+  <ul class="toc-list">
+
+    <li class="toc-item toc-h1">
+      <a href="#บทที่-15-การประชุมปิด-การติดตามผล-และการทบทวนกระบวนการตรวจ-closing-meeting-follow-up-audit-and-audit-programme-review" class="toc-link">บทที่ 15 การประชุมปิด การติดตามผล และการทบทวนกระบวนการตรวจ (Closing Meeting, Follow-up Audit, and Audit Programme Review)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes" class="toc-link">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-1-การดำเนินการประชุมปิดการตรวจสอบและการบริหารข้อขัดแย้ง-the-closing-meeting-conflict-management" class="toc-link">ส่วนที่ 1: การดำเนินการประชุมปิดการตรวจสอบและการบริหารข้อขัดแย้ง (The Closing Meeting &amp; Conflict Management)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-1-วัตถุประสงค์และวาระมาตรฐานของการประชุมปิด-closing-meeting-architecture" class="toc-link">1.1 วัตถุประสงค์และวาระมาตรฐานของการประชุมปิด (Closing Meeting Architecture)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-2-ศิลปะการจัดการข้อโต้แย้งและการเจรจาอย่างมืออาชีพ-dispute-resolution-no-horse-trading" class="toc-link">1.2 ศิลปะการจัดการข้อโต้แย้งและการเจรจาอย่างมืออาชีพ (Dispute Resolution &amp; No Horse-Trading)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-3-สิ่งที่ไม่ควรทำในการประชุมปิด-what-not-to-do-in-a-closing-meeting" class="toc-link">1.3 สิ่งที่ไม่ควรทำในการประชุมปิด (What NOT to Do in a Closing Meeting)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-2-การติดตามผล-แผนปฏิบัติการแก้ไข-และการทบทวนแผนงานตรวจ-follow-up-audit-qaip" class="toc-link">ส่วนที่ 2: การติดตามผล แผนปฏิบัติการแก้ไข และการทบทวนแผนงานตรวจ (Follow-up Audit &amp; QAIP)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-1-โครงสร้างของแผนปฏิบัติการแก้ไข-corrective-action-plan-cap" class="toc-link">2.1 โครงสร้างของแผนปฏิบัติการแก้ไข (Corrective Action Plan: CAP)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-2-เทคนิคการตรวจยืนยันการปิดข้อค้นพบ-verification-techniques-for-finding-closure" class="toc-link">2.2 เทคนิคการตรวจยืนยันการปิดข้อค้นพบ (Verification Techniques for Finding Closure)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-3-วงจรชีวิตและสถานะของข้อค้นพบ-finding-lifecycle-status-tracking" class="toc-link">2.3 วงจรชีวิตและสถานะของข้อค้นพบ (Finding Lifecycle &amp; Status Tracking)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-4-การทบทวนและประกันคุณภาพของแผนงานตรวจสอบ-audit-programme-review-qaip" class="toc-link">2.4 การทบทวนและประกันคุณภาพของแผนงานตรวจสอบ (Audit Programme Review &amp; QAIP)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-5-การแสดงบทบาทระหว่าง-lead-auditor-และ-lead-implementer-ตามกรอบ-สกมช" class="toc-link">2.5 การแสดงบทบาทระหว่าง Lead Auditor และ Lead Implementer ตามกรอบ สกมช.</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-3-กรณีศึกษาเชิงลึก-มหาวิทยาลัยดิจิทัลสมมติ-การประชุมปิดและการติดตามผลลัพธ์" class="toc-link">ส่วนที่ 3: กรณีศึกษาเชิงลึก &quot;มหาวิทยาลัยดิจิทัลสมมติ&quot; — การประชุมปิดและการติดตามผลลัพธ์</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-1-บันทึกการประชุมปิดการตรวจสอบ-minutes-of-closing-meeting-sample" class="toc-link">3.1 บันทึกการประชุมปิดการตรวจสอบ (Minutes of Closing Meeting Sample)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-2-ทะเบียนติดตามข้อค้นพบและการตรวจยืนยัน-audit-tracking-register-wp-15-01" class="toc-link">3.2 ทะเบียนติดตามข้อค้นพบและการตรวจยืนยัน (Audit Tracking Register WP-15-01)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-4-กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน-active-learning-simulation" class="toc-link">ส่วนที่ 4: กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน (Active Learning Simulation)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#กิจกรรม-the-executive-closing-meeting-finding-defense-simulation-ระยะเวลา-25-นาที" class="toc-link">กิจกรรม: &quot;The Executive Closing Meeting &amp; Finding Defense Simulation&quot; (ระยะเวลา 25 นาที)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-5-มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls" class="toc-link">ส่วนที่ 5: มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives &amp; Common Pitfalls)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#5-1-บทสนทนาจำลองเชิงวิชาชีพ-lead-auditor-vs-lead-implementer-dialogue" class="toc-link">5.1 บทสนทนาจำลองเชิงวิชาชีพ (Lead Auditor vs Lead Implementer Dialogue)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#5-2-4-กับดักหลุมพรางที่พบบ่อยในขั้นตอนการปิดและติดตามผล-4-common-pitfalls" class="toc-link">5.2 4 กับดักหลุมพรางที่พบบ่อยในขั้นตอนการปิดและติดตามผล (4 Common Pitfalls)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-6-การบ้านประจำบทที่-15-final-cybersecurity-audit-portfolio-18-artifacts" class="toc-link">ส่วนที่ 6: การบ้านประจำบทที่ 15: Final Cybersecurity Audit Portfolio (18 Artifacts)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#เกณฑ์การประเมินผลพอร์ตโฟลิโอ-portfolio-assessment-rubric-10-คะแนนมาตรฐาน" class="toc-link">เกณฑ์การประเมินผลพอร์ตโฟลิโอ (Portfolio Assessment Rubric - 10 คะแนนมาตรฐาน):</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers" class="toc-link">ส่วนที่ 7: คำถามทบทวนท้ายบท (Review Questions &amp; Detailed Answers)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#สรุปบทที่-15-และภาพรวมหลักสูตรการตรวจสอบความมั่นคงปลอดภัยไซเบอร์-course-capstone" class="toc-link">สรุปบทที่ 15 และภาพรวมหลักสูตรการตรวจสอบความมั่นคงปลอดภัยไซเบอร์ (Course Capstone)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#เอกสารอ้างอิงและมาตรฐานสากล" class="toc-link">เอกสารอ้างอิงและมาตรฐานสากล</a>
+    </li>
+  
+  </ul>
+</div>
+
+    </aside>
+
+    <main class="main-article">
+      
+          <header class="chapter-header" id="บทที่-15-การประชุมปิด-การติดตามผล-และการทบทวนกระบวนการตรวจ-closing-meeting-follow-up-audit-and-audit-programme-review">
+            <div class="chapter-badge">NECS1312 // CH-15</div>
+            <h1 class="chapter-title">บทที่ 15 การประชุมปิด การติดตามผล และการทบทวนกระบวนการตรวจ (Closing Meeting, Follow-up Audit, and Audit Programme Review)</h1>
+          </header>
+        
+<p class="content-paragraph">ยินดีต้อนรับสู่บทสุดท้ายของหลักสูตรการตรวจสอบความมั่นคงปลอดภัยไซเบอร์และระบบสารสนเทศ (Cybersecurity and IT Audit) ในวงการตรวจสอบระดับสากล มีคำกล่าวเปรียบเทียบอันทรงคุณค่าที่สะท้อนถึงบทสรุปของงานตรวจสอบไว้ว่า:</p>
+<blockquote class="content-quote"><strong>"การตรวจพบช่องโหว่และเขียนรายงาน เป็นเพียงการ 'วินิจฉัยโรค'   แต่การประชุมปิดอย่างเข้าใจ การติดตามผลการแก้ไขอย่างจริงจัง และการประเมินตนเองอย่างต่อเนื่อง   คือสิ่งที่ 'รักษาคนไข้ให้หายขาด' และสร้างภูมิคุ้มกันที่ยั่งยืนให้แก่องค์กร"</strong></blockquote>
+<p class="content-paragraph">งานตรวจสอบระบบสารสนเทศมิได้สิ้นสุดลงเมื่อผู้ตรวจสอบส่งมอบร่างรายงานการตรวจสอบฉบับร่าง หากแต่ช่วงเวลาที่สำคัญที่สุดในการสร้างความร่วมมือและความเปลี่ยนแปลงเชิงบวก คือ <strong>"การประชุมปิดการตรวจสอบ (Closing Meeting / Exit Conference)"</strong> ซึ่งเป็นเวทีที่ผู้ตรวจสอบต้องนำเสนอข้อค้นพบต่อผู้บริหารระดับสูงและผู้รับการตรวจด้วยความกล้าหาญทางวิชาชีพ ความเป็นกลาง และความเข้าอกเข้าใจในบริบทการทำงานจริง</p>
+<p class="content-paragraph">ยิ่งไปกว่านั้น คุณค่าที่แท้จริงของการตรวจสอบจะเกิดขึ้นก็ต่อเมื่อข้อค้นพบได้รับการ <strong>"แก้ไขและติดตามผล (Follow-up Audit)"</strong> จนมั่นใจได้ว่าความเสี่ยงตกค้าง (Residual Risk) ลดลงสู่อยู่ในระดับที่ยอมรับได้ และหน่วยงานตรวจสอบเองต้องมี <strong>"การทบทวนคุณภาพของแผนงานตรวจสอบ (Audit Programme Review & Lessons Learned)"</strong> เพื่อพัฒนาขีดความสามารถของตนเองอย่างต่อเนื่อง</p>
+<p class="content-paragraph">บทนี้ได้รับการออกแบบเพื่อเตรียมนักศึกษาก้าวสู่ความเป็นมืออาชีพ ทั้งในบทบาทของ <strong>Lead Auditor (ผู้ตรวจสอบอิสระ)</strong> และการเข้าใจมุมมองของ <strong>Lead Implementer (ผู้นำการนำมาตรการไปปฏิบัติ)</strong> ตามกรอบพัฒนาสมรรถนะของศูนย์ความเป็นเลิศด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ (NCSA) และมาตรฐานสากล <strong>ISACA ITAF (Standards 2402 & 2403)</strong>, <strong>IIA Global Internal Audit Standards (2024)</strong>, และ <strong>ISO 19011:2018</strong></p>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes">
+            <h2 class="section-heading">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</h2>
+          </section>
+        
+<p class="content-paragraph">เมื่อสิ้นสุดการเรียนรู้ในบทนี้ นักศึกษาสามารถ:</p>
+<ol class="content-list">
+<li><strong>วางแผนและดำเนินการประชุมปิดการตรวจสอบได้อย่างเป็นมืออาชีพ (CLO2, CLO4):</strong> กำหนดวาระ นำเสนอแนวปฏิบัติที่ดี (Positive Practices) และข้อค้นพบสำคัญ (Significant Findings) จัดการข้อโต้แย้งและความเห็นต่างอย่างสร้างสรรค์ โดยไม่ต่อรองหรือลดทอนข้อค้นพบเพื่อหลีกเลี่ยงความขัดแย้ง (No Horse-Trading)</li>
+<li><strong>ประเมินความเพียงพอของแผนปฏิบัติการแก้ไข (Corrective Action Plan: CAP) ได้ (CLO3, CLO4):</strong> วิเคราะห์ความสอดคล้องระหว่าง Correction, Root Cause, Corrective Action และ Preventive Improvement รวมถึงประเมินความเหมาะสมของผู้รับผิดชอบ กรอบเวลา และความเสี่ยงที่เหลืออยู่ (Residual Risk)</li>
+<li><strong>จัดทำและดำเนินการตรวจสอบติดตามผล (Follow-up Audit) ได้ (CLO3, CLO4):</strong> ประยุกต์ใช้เทคนิคการตรวจยืนยันการปิดข้อค้นพบ (Document Review, Configuration Inspection, Re-performance, Sample Testing) และบริหารจัดการวงจรสถานะของข้อค้นพบ (Open, In Progress, Pending Verification, Closed, Risk Accepted, Overdue)</li>
+<li><strong>ประเมินและทบทวนคุณภาพของแผนงานการตรวจสอบ (Audit Programme Review & QAIP) ได้ (CLO4):</strong> วัดผลสัมฤทธิ์ผ่านตัวชี้วัดสากล (Audit Universe Coverage, Completion Rate, Recurring Findings, MTTR) และถอดบทเรียน (Lessons Learned) เพื่อปรับปรุงเครื่องมือ Template และระเบียบวิธีตรวจสอบ</li>
+<li><strong>แยกแยะและบูรณาการบทบาทระหว่าง Lead Auditor และ Lead Implementer ได้อย่างชัดเจน (CLO1, CLO4):</strong> อธิบายความแตกต่างในมุมมอง ความรับผิดชอบ และจรรยาบรรณวิชาชีพตามกรอบของ สกมช. (NCSA) เพื่อสร้างความร่วมมือเชิงสร้างสรรค์ในการยกระดับความมั่นคงปลอดภัยขององค์กร</li>
+</ol>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-1-การดำเนินการประชุมปิดการตรวจสอบและการบริหารข้อขัดแย้ง-the-closing-meeting-conflict-management">
+            <h2 class="section-heading">ส่วนที่ 1: การดำเนินการประชุมปิดการตรวจสอบและการบริหารข้อขัดแย้ง (The Closing Meeting & Conflict Management)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="1-1-วัตถุประสงค์และวาระมาตรฐานของการประชุมปิด-closing-meeting-architecture">1.1 วัตถุประสงค์และวาระมาตรฐานของการประชุมปิด (Closing Meeting Architecture)</h3>
+
+<div class="interactive-widget" id="widget-15-1">
+  <div class="widget-header">
+    <div class="widget-tag">WIDGET 15.1 // INTERACTIVE SIMULATOR</div>
+    <div class="widget-title">เครื่องมือจำลองการเจรจาในห้องประชุมปิด (Closing Meeting Dispute Resolution Simulator)</div>
+  </div>
+  <div class="widget-body">
+    <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:0.85rem;">
+      สวมบทบาทเป็น Lead IT Auditor ในการเผชิญหน้ากับข้อโต้แย้งจากฝ่ายบริหารและผู้รับการตรวจ เพื่อฝึกทักษะการเจรจาอย่างมืออาชีพ ปราศจากการยอมแลกเปลี่ยนระดับความเสี่ยง (No Horse-Trading):
+    </p>
+
+    <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1rem;">
+      <button class="vol-select-btn active" id="conflict-btn-budget" onclick="selectConflictScenario('budget')">กรณี 1: อ้างงบถูกตัด</button>
+      <button class="vol-select-btn" id="conflict-btn-horsetrading" onclick="selectConflictScenario('horsetrading')">กรณี 2: ขอต่อรองลดเกรด</button>
+      <button class="vol-select-btn" id="conflict-btn-outsource" onclick="selectConflictScenario('outsource')">กรณี 3: Outsource ปฏิเสธ</button>
+    </div>
+
+    <div id="conflict-widget-display">
+      <!-- Rendered dynamically -->
+    </div>
+  </div>
+</div>
+
+<p class="content-paragraph">การประชุมปิดการตรวจสอบ (Closing Meeting / Exit Conference) เป็นหมุดหมายสำคัญที่สุดในการสรุปผลการตรวจสอบภาคสนาม (Fieldwork) ตามมาตรฐาน <strong>ISO 19011 (Clause 6.6)</strong> และ <strong>ISACA ITAF (Standard 2402)</strong> โดยมีวัตถุประสงค์หลัก 5 ประการ:</p>
+
+<div class="figure-box" id="figure-15-1">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 15.1</div>
+    <div class="figure-title">5 วัตถุประสงค์หลักของการประชุมปิดการตรวจสอบ (5 Objectives of the Closing Meeting)</div>
+  </div>
+  <div class="principles-grid">
+    <div class="principle-card">
+      <div class="p-num">01</div>
+      <div class="p-title">📢 No Surprises</div>
+      <div class="p-desc">สร้างความมั่นใจว่าจะไม่มีข้อค้นพบใหม่ที่ผู้รับการตรวจไม่เคยรับทราบมาก่อนโผล่ขึ้นมาในรายงานฉบับสุดท้าย</div>
+    </div>
+    <div class="principle-card">
+      <div class="p-num">02</div>
+      <div class="p-title">🤝 Fact Alignment</div>
+      <div class="p-desc">สอบทานยืนยันความถูกต้องของข้อเท็จจริง ตัวเลข และพยานหลักฐานเชิงประจักษ์ร่วมกันก่อนออกรายงานทางการ</div>
+    </div>
+    <div class="principle-card">
+      <div class="p-num">03</div>
+      <div class="p-title">⚖️ Contextual Clarity</div>
+      <div class="p-desc">เปิดโอกาสให้ฝ่ายบริหารได้ชี้แจงบริบท ข้อจำกัดทางธุรกิจ และอุปสรรคในการปฏิบัติงานอย่างเป็นกลาง</div>
+    </div>
+    <div class="principle-card">
+      <div class="p-num">04</div>
+      <div class="p-title">📝 Action Agreement</div>
+      <div class="p-desc">เจรจาทำความเข้าใจและบรรลุข้อตกลงร่วมกันในแนวทางการแก้ไข (Corrective Action Plan: CAP) และกรอบเวลา</div>
+    </div>
+    <div class="principle-card">
+      <div class="p-num">05</div>
+      <div class="p-title">🌟 Constructive Tone</div>
+      <div class="p-desc">เน้นย้ำความร่วมมือเชิงสร้างสรรค์ เพื่อเปลี่ยนข้อค้นพบให้กลายเป็นพลังขับเคลื่อนการยกระดับธรรมาภิบาลดิจิทัล</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 15.1:</strong> วัตถุประสงค์หลัก 5 ประการของการประชุมปิดการตรวจสอบตามมาตรฐานสากล ISACA ITAF & ISO 19011
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="วาระการประชุมมาตรฐาน-standard-closing-meeting-agenda">วาระการประชุมมาตรฐาน (Standard Closing Meeting Agenda):</h4>
+<ol class="content-list">
+<li><strong>บทนำ (Opening):</strong> กล่าวขอบคุณผู้บริหารและทีมงานผู้รับการตรวจที่ให้ความร่วมมือ แนะนำทีมผู้ตรวจสอบ และยืนยันวัตถุประสงค์และขอบเขตการตรวจ</li>
+<li><strong>ขอบเขตและข้อจำกัด (Scope & Limitations):</strong> ชี้แจงช่วงเวลา ระบบงานที่เข้าตรวจ และข้อจำกัดในการสุ่มตรวจ (Sampling Limitation) เพื่อให้ผู้บริหารเข้าใจว่าการตรวจสอบมิได้เป็นการรับประกันความปลอดภัย 100%</li>
+<li><strong>จุดแข็งและแนวปฏิบัติที่ดี (Positive Practices):</strong> ชื่นชมระบบหรือมาตรการควบคุมที่หน่วยงานทำได้ดี เพื่อสร้างบรรยากาศแห่งความร่วมมือและสะท้อนความเป็นกลาง</li>
+<li><strong>การนำเสนอข้อค้นพบสำคัญ (Significant Findings Presentation):</strong> สรุปข้อค้นพบลำดับความสำคัญสูง (Critical และ High) ทีละประเด็นตามโครงสร้าง 5Cs + E อย่างกระชับ</li>
+<li><strong>การเปิดรับฟังความเห็น (Discussion & Clarifications):</strong> เปิดโอกาสให้ผู้รับการตรวจซักถาม ชี้แจง หรือนำเสนอเอกสารหลักฐานเพิ่มเติม</li>
+<li><strong>ขั้นตอนถัดไปและกรอบเวลา (Next Steps):</strong> ชี้แจงกำหนดการส่งรายงานฉบับร่าง (Draft Report), กรอบเวลาส่ง Management Response & CAP (โดยทั่วไป 10–15 วันทำการ), และการออกรายงานฉบับสมบูรณ์ (Final Report)</li>
+</ol>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="1-2-ศิลปะการจัดการข้อโต้แย้งและการเจรจาอย่างมืออาชีพ-dispute-resolution-no-horse-trading">1.2 ศิลปะการจัดการข้อโต้แย้งและการเจรจาอย่างมืออาชีพ (Dispute Resolution & No Horse-Trading)</h3>
+<p class="content-paragraph">ในระหว่างการประชุมปิด มักเกิดความตึงเครียดหรือการโต้แย้งจากผู้รับการตรวจ โดยเฉพาะเมื่อพบข้อบกพร่องระดับ Critical หรือ High ผู้ตรวจสอบต้องยึดมั่นในหลักการจัดการข้อขัดแย้งเชิงวิชาชีพ:</p>
+
+<div class="figure-box" id="figure-15-2">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 15.2</div>
+    <div class="figure-title">4 เสาหลักในการจัดการข้อขัดแย้งเชิงวิชาชีพ (4 Pillars of Conflict Resolution)</div>
+  </div>
+  <div class="smartr-grid">
+    <div class="smartr-card">
+      <div class="s-letter">1</div>
+      <div class="s-title">Separate People from Problems</div>
+      <div class="s-desc">แยกตัวบุคคลออกจากปัญหา มุ่งเน้นความล้มเหลวของ "ระบบและการควบคุม" ไม่ใช่ความผิดของบุคคล</div>
+    </div>
+    <div class="smartr-card">
+      <div class="s-letter">2</div>
+      <div class="s-title">Focus on Risks, Not Blame</div>
+      <div class="s-desc">มุ่งเน้นความเสี่ยงต่อธุรกิจและองค์กร ไม่ใช่การตัดสินว่าใครผิดหรือประณามการทำงานในอดีต</div>
+    </div>
+    <div class="smartr-card">
+      <div class="s-letter">3</div>
+      <div class="s-title">Evidence-Based Discussion</div>
+      <div class="s-desc">เจรจาบนฐานของพยานหลักฐานเชิงประจักษ์ (Audit Evidence) เท่านั้น หากมีหลักฐานใหม่ให้นำมาสอบทานยัน</div>
+    </div>
+    <div class="smartr-card">
+      <div class="s-letter">4</div>
+      <div class="s-title">No Audit Horse-Trading</div>
+      <div class="s-desc">ห้ามแลกเปลี่ยนหรือยอมลดระดับความเสี่ยงเพื่อเลี่ยงความขัดแย้ง รักษาความเป็นอิสระและจรรยาบรรณวิชาชีพ 100%</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 15.2:</strong> หลักการเจรจาและระงับข้อพิพาทอย่างมืออาชีพตามกรอบการเจรจาแบบ Harvard Negotiation Project
+  </div>
+</div>
+
+<ol class="content-list">
+<li><strong>การแยกข้อเท็จจริงออกจากอารมณ์ (Separating Facts from Emotions):</strong></li>
+</ol>
+<ul class="content-list">
+<li>เมื่อผู้รับการตรวจแสดงความไม่พอใจหรือโต้แย้งด้วยอารมณ์ ผู้ตรวจสอบต้องตอบรับด้วยความสงบนิ่ง (Active Listening) ไม่โต้เถียง และดึงบทสนทนากลับมาสู่ "พยานหลักฐานเชิงประจักษ์"</li>
+</ul>
+<ol class="content-list">
+<li><strong>การยึดโยงกับ Criteria และ Evidence:</strong></li>
+</ol>
+<ul class="content-list">
+<li>หากผู้รับการตรวจกล่าวว่า <em>"ข้อค้นพบนี้รุนแรงเกินไป"</em> ผู้ตรวจสอบต้องแสดงเกณฑ์เปรียบเทียบ (Criteria เช่น ข้อกฎหมาย หรือมาตรฐาน ISO) ควบคู่กับหลักฐานที่ตรวจพบ (Evidence เช่น ภาพหน้าจอ หรือผลคำสั่ง) เพื่อชี้ให้เห็นว่าข้อสรุปนั้นมีที่มาที่ไปอย่างไร</li>
+</ul>
+<ol class="content-list">
+<li><strong>การบันทึกข้อคิดเห็นของผู้รับการตรวจ (Recording Auditee's Perspective):</strong></li>
+</ol>
+<ul class="content-list">
+<li>หากผู้รับการตรวจยังมีมุมมองที่แตกต่าง ผู้ตรวจสอบควรแจ้งว่า: <em>"เราจะบันทึกข้อคิดเห็นและเหตุผลของท่านลงในรายงานการตรวจสอบอย่างเป็นทางการในส่วน Management Response เพื่อให้คณะกรรมการตรวจสอบได้รับทราบมุมมองของท่านอย่างครบถ้วน"</em></li>
+</ul>
+<ol class="content-list">
+<li><strong>กฎเหล็ก: ห้ามต่อรองข้อค้นพบ (The "No Horse-Trading" Rule):</strong></li>
+</ol>
+<ul class="content-list">
+<li>> [!CAUTION]</li>
+</ul>
+<p class="content-paragraph">     > <strong>ข้อห้ามเด็ดขาดทางจรรยาบรรณ:</strong> ผู้ตรวจสอบต้องไม่ยอม "ต่อรองลดระดับความเสี่ยง" เช่น ยอมลดจาก High เป็น Medium หรือยอมลบข้อค้นพบออก เพื่อแลกกับการที่ผู้รับการตรวจยอมรับรายงานโดยไม่อิดออด การกระทำดังกล่าวถือเป็นการทำลายความเป็นอิสระ (Independence) และความซื่อสัตย์สุจริต (Integrity) ของวิชาชีพผู้ตรวจสอบอย่างร้ายแรง</p>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="1-3-สิ่งที่ไม่ควรทำในการประชุมปิด-what-not-to-do-in-a-closing-meeting">1.3 สิ่งที่ไม่ควรทำในการประชุมปิด (What NOT to Do in a Closing Meeting)</h3>
+
+<div class="figure-box" id="figure-15-3">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 15.3</div>
+    <div class="figure-title">4 ข้อผิดพลาดร้ายแรงที่ต้องหลีกเลี่ยงในการประชุมปิด (4 Fatal Mistakes in Exit Conference)</div>
+  </div>
+  <div class="traps-grid">
+    <div class="trap-card">
+      <div class="trap-num">MISTAKE 01</div>
+      <div class="trap-title">💣 The Ambush / Gotcha!</div>
+      <div class="trap-desc">การนำข้อค้นพบใหม่ที่ไม่เคยแจ้งหรือสอบถามมาก่อนมาเปิดเผยกลางที่ประชุม ทำให้เกิดความตกใจและกำแพงต่อต้านทันที</div>
+    </div>
+    <div class="trap-card">
+      <div class="trap-num">MISTAKE 02</div>
+      <div class="trap-title">🥊 Defensive Arguing</div>
+      <div class="trap-desc">การโต้เถียงด้วยอารมณ์และพยายามเอาชนะผู้รับการตรวจ แทนที่จะรับฟังข้อเท็จจริงเพิ่มเติมด้วยความสุขุมและเป็นกลาง</div>
+    </div>
+    <div class="trap-card">
+      <div class="trap-num">MISTAKE 03</div>
+      <div class="trap-title">🤝 Rating Compromise</div>
+      <div class="trap-desc">การยอมลดระดับความเสี่ยงจาก Critical เป็น High เพื่อตัดความรำคาญหรือเอาใจฝ่ายบริหาร ถือเป็นการทำลายจรรยาบรรณ</div>
+    </div>
+    <div class="trap-card">
+      <div class="trap-num">MISTAKE 04</div>
+      <div class="trap-title">⏳ Vague Next Steps</div>
+      <div class="trap-desc">การปิดประชุมโดยไม่มีข้อสรุปชัดเจนเรื่องกำหนดส่งแผน CAP, เจ้าภาพผู้รับผิดชอบ และนัดหมายการติดตามผลครั้งถัดไป</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 15.3:</strong> ข้อผิดพลาด 4 ประการที่บั่นทอนความน่าเชื่อถือของผู้ตรวจสอบและทำให้การประชุมปิดล้มเหลว
+  </div>
+</div>
+
+<ul class="content-list">
+<li><strong>No Surprises Rule:</strong> ผู้ตรวจสอบต้องไม่นำข้อค้นพบสำคัญมาเปิดเผยเป็นครั้งแรกในการประชุมปิด ข้อค้นพบที่สำคัญควรได้รับการสื่อสารและตรวจสอบข้อเท็จจริงเบื้องต้นร่วมกับผู้รับการตรวจล่วงหน้าตั้งแต่ระหว่างการตรวจภาคสนาม (Continuous Communication)</li>
+<li><strong>ห้ามให้การรับรองความปลอดภัยที่สมบูรณ์ (No Clean Bill of Health):</strong> ผู้ตรวจสอบต้องไม่กล่าวว่า <em>"ระบบของท่านปลอดภัย 100% แล้ว"</em> เพราะการตรวจสอบมีข้อจำกัดด้านการสุ่มตัวอย่างและขอบเขตเวลา การรับรองเช่นนั้นอาจนำไปสู่ความรับผิดทางกฎหมายหากเกิดเหตุการณ์บุกรุกในภายหลัง</li>
+</ul>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-2-การติดตามผล-แผนปฏิบัติการแก้ไข-และการทบทวนแผนงานตรวจ-follow-up-audit-qaip">
+            <h2 class="section-heading">ส่วนที่ 2: การติดตามผล แผนปฏิบัติการแก้ไข และการทบทวนแผนงานตรวจ (Follow-up Audit & QAIP)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="2-1-โครงสร้างของแผนปฏิบัติการแก้ไข-corrective-action-plan-cap">2.1 โครงสร้างของแผนปฏิบัติการแก้ไข (Corrective Action Plan: CAP)</h3>
+
+<div class="interactive-widget" id="widget-15-2">
+  <div class="widget-header">
+    <div class="widget-tag">WIDGET 15.2 // INTERACTIVE BUILDER</div>
+    <div class="widget-title">เครื่องมือออกแบบลำดับชั้นแผนปฏิบัติการแก้ไข (CAP Hierarchy Builder)</div>
+  </div>
+  <div class="widget-body">
+    <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:0.85rem;">
+      ศึกษาการจัดทำแผนปฏิบัติการแก้ไข (CAP) ที่สมบูรณ์แบบ 3 ระดับ: ตั้งแต่การหยุดความเสียหายฉุกเฉิน (Containment) การซ่อมแซมจุดเกิดเหตุ (Remediation) ไปจนถึงการกำจัดสาเหตุรากเชิงระบบ (Systemic Fix):
+    </p>
+
+    <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1rem;">
+      <button class="vol-select-btn active" id="cap-case-btn-mfa" onclick="switchCapCase('mfa')">เคส 1: ขาด MFA</button>
+      <button class="vol-select-btn" id="cap-case-btn-logs" onclick="switchCapCase('logs')">เคส 2: ล็อกไม่ถึง 90 วัน</button>
+      <button class="vol-select-btn" id="cap-case-btn-s3" onclick="switchCapCase('s3')">เคส 3: บัตรประชาชนรั่วบนคลาวด์</button>
+    </div>
+
+    <div id="cap-hierarchy-display">
+      <!-- Rendered dynamically -->
+    </div>
+  </div>
+</div>
+
+<p class="content-paragraph">การแก้ไขข้อค้นพบที่มีประสิทธิภาพต้องประกอบด้วยการดำเนินการ 4 ระดับ เพื่อขจัดปัญหาอย่างถอนรากถอนโคน:</p>
+
+<div class="figure-box" id="figure-15-4">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 15.4</div>
+    <div class="figure-title">ลำดับชั้นของการแก้ไขปัญหาในแผนปฏิบัติการ (CAP Hierarchy of Action)</div>
+  </div>
+  <div class="cap-hierarchy-visual">
+    <div class="cap-tier tier-1">
+      <div class="tier-label">LEVEL 1 // ฉุกเฉิน</div>
+      <div class="tier-head">🛑 1. การควบคุมความเสียหายเฉพาะหน้า (Containment Actions)</div>
+      <div class="tier-body">มาตรการเร่งด่วนเพื่อหยุดความเสียหายทันทีภายใน 24–48 ชั่วโมง เช่น การปิดพอร์ต RDP, การตัดการเชื่อมต่อบัญชีที่ถูกเจาะ, การเปิด Block Public Access บน Bucket</div>
+    </div>
+    <div class="cap-tier tier-2">
+      <div class="tier-label">LEVEL 2 // การเยียวยา</div>
+      <div class="tier-head">🔧 2. การแก้ไขจุดบกพร่องที่เกิดเหตุ (Remediation Actions)</div>
+      <div class="tier-body">การซ่อมแซมจุดที่พบข้อบกพร่องโดยตรงภายใน 15–30 วัน เช่น การเปิดใช้ MFA บน VPN ทั้งหมด, การจัดซื้อพื้นที่สตอเรจสำหรับเก็บบันทึกล็อก 90 วัน, การเข้ารหัสไฟล์บัตรประชาชน</div>
+    </div>
+    <div class="cap-tier tier-3">
+      <div class="tier-label">LEVEL 3 // ยั่งยืน</div>
+      <div class="tier-head">🌳 3. การกำจัดสาเหตุรากเชิงระบบ (Systemic Root Cause Fixes)</div>
+      <div class="tier-body">การปรับปรุงนโยบาย กระบวนการกำกับดูแล และสถาปัตยกรรมเพื่อป้องกันไม่ให้เกิดปัญหาซ้ำ เช่น การตั้ง IT Governance Committee, ระบบ Automated Offboarding, นโยบาย Change Management</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 15.4:</strong> โครงสร้างลำดับชั้น 3 ระดับของแผนปฏิบัติการแก้ไข (Corrective Action Plan: CAP) ที่มีคุณภาพ
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="เกณฑ์การประเมินความเพียงพอของแผนปฏิบัติการแก้ไข-cap-evaluation-criteria">เกณฑ์การประเมินความเพียงพอของแผนปฏิบัติการแก้ไข (CAP Evaluation Criteria):</h4>
+<p class="content-paragraph">เมื่อได้รับ CAP จากฝ่ายบริหาร ผู้ตรวจสอบต้องประเมินผ่าน 5 คำถามหลัก:</p>
+<ol class="content-list">
+<li><strong>Addressing Root Cause:</strong> กิจกรรมที่เสนอแก้ที่สาเหตุราก หรือแก้เพียงแค่อาการเฉพาะหน้า?</li>
+<li><strong>Accountability (Owner):</strong> มีการระบุชื่อ-ตำแหน่งผู้รับผิดชอบหลักรายบุคคลอย่างชัดเจนหรือไม่ (ห้ามระบุชื่อแผนกลอย ๆ เช่น "ฝ่ายไอที")?</li>
+<li><strong>Feasibility & Due Date:</strong> กำหนดเวลาแล้วเสร็จสอดคล้องกับระดับความเสี่ยงและความเป็นไปได้จริงหรือไม่ (เช่น ระดับ Critical ไม่ควรเกิน 30 วัน)?</li>
+<li><strong>Compensating Controls:</strong> ในระหว่างที่รอการแก้ไขขั้นสมบูรณ์ มีมาตรการชดเชยชั่วคราวเพื่อลดความเสี่ยงหรือไม่?</li>
+<li><strong>Residual Risk:</strong> หากปฏิบัติตามแผนนี้ครบถ้วน ความเสี่ยงที่เหลืออยู่จะลดลงมาอยู่ในระดับที่องค์กรยอมรับได้หรือไม่?</li>
+</ol>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="2-2-เทคนิคการตรวจยืนยันการปิดข้อค้นพบ-verification-techniques-for-finding-closure">2.2 เทคนิคการตรวจยืนยันการปิดข้อค้นพบ (Verification Techniques for Finding Closure)</h3>
+<p class="content-paragraph">ตามมาตรฐาน <strong>ISACA ITAF Standard 2403 (Follow-up Activities)</strong> ผู้ตรวจสอบ <strong>"ห้ามปิดข้อค้นพบเพียงเพราะฝ่ายบริหารส่งอีเมลแจ้งว่าแก้ไขแล้ว"</strong> แต่ต้องทำการตรวจสอบยืนยันเชิงประจักษ์ผ่าน 5 เทคนิค:</p>
+<div class="table-responsive"><table class="data-table"><thead><tr><th>เทคนิคการตรวจยืนยัน</th><th>รายละเอียดการปฏิบัติงานของผู้ตรวจสอบ</th><th>ตัวอย่างหลักฐานที่ใช้</th></tr></thead><tbody><tr><td><strong>1. Document Review</strong></td><td>ตรวจสอบเอกสารนโยบาย คู่มือปฏิบัติงาน (SOP) หรือสัญญาที่ได้รับการแก้ไขและลงนามอนุมัติใหม่</td><td>เอกสาร DPA ที่คู่ค้าลงนามแล้ว, นโยบาย Password Policy ฉบับปรับปรุง</td></tr><tr><td><strong>2. Configuration Review</strong></td><td>ตรวจสอบภาพถ่ายหน้าจอ หรือตรวจสอบการตั้งค่าจริงบนระบบเซิร์ฟเวอร์ ไฟร์วอลล์ หรือคอนโซลคลาวด์</td><td>หน้าจอ AWS Block Public Access = ON, ตารางพอร์ตบน Firewall</td></tr><tr><td><strong>3. Re-performance / Testing</strong></td><td>ผู้ตรวจสอบทำการทดสอบซ้ำด้วยตนเอง เพื่อพิสูจน์ว่าช่องโหว่ได้รับการอุดแล้วจริง</td><td>ทดสอบล็อกอินโดยไม่ใส่ MFA (ต้องถูกบล็อก), การรันคำสั่งสแกนพอร์ตซ้ำ</td></tr><tr><td><strong>4. In-depth Interview</strong></td><td>สัมภาษณ์ผู้ปฏิบัติงานจริงเพื่อยืนยันว่ามีความเข้าใจและปฏิบัติตามขั้นตอนใหม่จริง มิใช่เพียงมีเอกสาร</td><td>สัมภาษณ์เจ้าหน้าที่ Helpdesk เกี่ยวกับขั้นตอนรับแจ้งเหตุฉุกเฉินใหม่</td></tr><tr><td><strong>5. Sample Testing</strong></td><td>สุ่มตรวจกลุ่มตัวอย่างชุดใหม่ที่เกิดขึ้นหลังจากการแก้ไข</td><td>สุ่มตรวจบัญชีพนักงานที่ลาออกในเดือนล่าสุดจำนวน 10 บัญชีว่าถูกปิดจริง</td></tr></tbody></table></div>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="2-3-วงจรชีวิตและสถานะของข้อค้นพบ-finding-lifecycle-status-tracking">2.3 วงจรชีวิตและสถานะของข้อค้นพบ (Finding Lifecycle & Status Tracking)</h3>
+
+<div class="interactive-widget" id="widget-15-3">
+  <div class="widget-header">
+    <div class="widget-tag">WIDGET 15.3 // INTERACTIVE REGISTER</div>
+    <div class="widget-title">ระบบทะเบียนจำลองการติดตามและตรวจยืนยันข้อค้นพบ (Audit Follow-up Register Simulator)</div>
+  </div>
+  <div class="widget-body">
+    <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:0.85rem;">
+      จำลองการบริหารจัดการทะเบียนติดตามผลการแก้ไข (Audit Tracking Register WP-15-01) สามารถคลิกสลับสถานะของข้อค้นพบและจำลองการเข้าตรวจยืนยัน (Re-testing):
+    </p>
+
+    <div id="tracking-register-display">
+      <!-- Rendered dynamically -->
+    </div>
+  </div>
+</div>
+
+
+<div class="figure-box" id="figure-15-11">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 15.11</div>
+    <div class="figure-title">ผังกระบวนการติดตามผลและการทดสอบซ้ำ (Audit Follow-up & Re-testing Workflow)</div>
+  </div>
+  <div class="lifecycle-flow">
+    <div class="life-step step-open">
+      <div class="life-status">STAGE 1</div>
+      <div class="life-name">Notification & CAP</div>
+      <div class="life-desc">แจ้งข้อค้นพบและรับแผน CAP พร้อม Due Date ชัดเจน</div>
+    </div>
+    <div class="life-arrow">➔</div>
+    <div class="life-step step-prog">
+      <div class="life-status">STAGE 2</div>
+      <div class="life-name">Interim Milestone</div>
+      <div class="life-desc">ติดตามความคืบหน้าตามรอบระยะเวลา (30/60 วัน)</div>
+    </div>
+    <div class="life-arrow">➔</div>
+    <div class="life-step step-verify">
+      <div class="life-status">STAGE 3</div>
+      <div class="life-name">Re-testing Phase</div>
+      <div class="life-desc">ลงพื้นที่ทดสอบซ้ำเชิงเทคนิค สุ่มตรวจหลักฐานจริง</div>
+    </div>
+    <div class="life-arrow">➔</div>
+    <div class="life-step step-closed">
+      <div class="life-status">STAGE 4</div>
+      <div class="life-name">Formal Closure</div>
+      <div class="life-desc">ออกหนังสือรับรองการปิดข้อค้นพบเสนอต่อบอร์ด</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 15.11:</strong> ขั้นตอนการติดตามผลการแก้ไขและการตรวจสอบซ้ำ (Re-testing) เพื่อรับรองความปลอดภัยจริง
+  </div>
+</div>
+
+<p class="content-paragraph">หน่วยงานตรวจสอบต้องจัดทำ <strong>ทะเบียนติดตามข้อค้นพบ (Audit Tracking Register)</strong> เพื่อติดตามความคืบหน้าอย่างเป็นระบบ โดยแบ่งสถานะออกเป็น 6 ระดับ:</p>
+
+<div class="figure-box" id="figure-15-5">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 15.5</div>
+    <div class="figure-title">วงจรชีวิตและสถานะของข้อค้นพบการตรวจสอบ (Finding Status Lifecycle)</div>
+  </div>
+  <div class="lifecycle-flow">
+    <div class="life-step step-open">
+      <div class="life-status">OPEN</div>
+      <div class="life-name">เปิดข้อค้นพบ</div>
+      <div class="life-desc">ระบุในรายงาน รอรับแผน CAP จากฝ่ายบริหาร (SLA เริ่มนับ)</div>
+    </div>
+    <div class="life-arrow">➔</div>
+    <div class="life-step step-prog">
+      <div class="life-status">IN PROGRESS</div>
+      <div class="life-name">อยู่ระหว่างแก้ไข</div>
+      <div class="life-desc">ฝ่ายบริหารกำลังลงมือแก้ไขตามแผนงานและกรอบเวลาที่ตกลง</div>
+    </div>
+    <div class="life-arrow">➔</div>
+    <div class="life-step step-verify">
+      <div class="life-status">PENDING VERIFY</div>
+      <div class="life-name">รอการตรวจยืนยัน</div>
+      <div class="life-desc">ฝ่ายบริหารแจ้งว่าเสร็จแล้ว ส่งมอบหลักฐานให้ผู้ตรวจสอบ</div>
+    </div>
+    <div class="life-arrow">➔</div>
+    <div class="life-step step-closed">
+      <div class="life-status">CLOSED</div>
+      <div class="life-name">ปิดข้อค้นพบสมบูรณ์</div>
+      <div class="life-desc">ผู้ตรวจสอบทำ Re-test สำเร็จ ยืนยันว่าการควบคุมทำงานได้จริง</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 15.5:</strong> วงจรสถานะของข้อค้นพบตั้งแต่เปิดจนถึงปิดยืนยันผลตามมาตรฐาน IIA & ISACA
+  </div>
+</div>
+
+<ul class="content-list">
+<li><strong>Closed (ปิดข้อค้นพบ):</strong> ตรวจยืนยันด้วยหลักฐานเชิงประจักษ์แล้วว่าการควบคุมทำงานได้อย่างมีประสิทธิผล</li>
+<li><strong>Overdue (เกินกำหนด):</strong> พ้นกำหนด Due Date แต่ยังแก้ไขไม่เสร็จ ต้องรายงานต่อ CISO และคณะกรรมการตรวจสอบในรายงานติดตามผลประจำไตรมาส</li>
+<li><strong>Risk Accepted (ยอมรับความเสี่ยง):</strong> ฝ่ายบริหารตัดสินใจไม่แก้ไขเนื่องจากข้อจำกัดทางเทคนิคหรือต้นทุน โดยต้องมีหนังสืออนุมัติรับความเสี่ยงจาก CEO/Audit Committee พร้อมระบุมาตรการเฝ้าระวังชดเชย</li>
+</ul>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="2-4-การทบทวนและประกันคุณภาพของแผนงานตรวจสอบ-audit-programme-review-qaip">2.4 การทบทวนและประกันคุณภาพของแผนงานตรวจสอบ (Audit Programme Review & QAIP)</h3>
+
+<div class="interactive-widget" id="widget-15-4">
+  <div class="widget-header">
+    <div class="widget-tag">WIDGET 15.4 // GOVERNANCE EVALUATOR</div>
+    <div class="widget-title">เครื่องมือประเมินเกณฑ์การยอมรับความเสี่ยง (Formal Risk Acceptance Governance Evaluator)</div>
+  </div>
+  <div class="widget-body">
+    <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:0.85rem;">
+      ในกรณีที่ฝ่ายบริหารไม่สามารถแก้ไขข้อค้นพบได้และยื่นขอ "ยอมรับความเสี่ยง (Formal Risk Acceptance)" ประเมินว่าข้อเสนอดังกล่าวถูกต้องตามหลักธรรมาภิบาลและกฎหมายหรือไม่:
+    </p>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:0.75rem; margin-bottom:1rem;">
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          1. ผู้มีอำนาจลงนาม (Sign-off Authority):
+        </label>
+        <select id="w4-auth" style="width:100%; font-size:0.82rem; padding:0.45rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" onchange="evalRiskAcceptance()">
+          <option value="board" selected>Audit Committee / สภามหาวิทยาลัย</option>
+          <option value="cio">CIO / ผู้อำนวยการฝ่ายไอที</option>
+          <option value="manager">ผู้จัดการแผนก / หัวหน้าทีม</option>
+        </select>
+      </div>
+
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          2. มาตรการชดเชย (Compensating Controls):
+        </label>
+        <select id="w4-compensating" style="width:100%; font-size:0.82rem; padding:0.45rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" onchange="evalRiskAcceptance()">
+          <option value="strong" selected>มีมาตรการชดเชยที่รัดกุม (เช่น EDR + WAF + SOC Monitor 24/7)</option>
+          <option value="none">ไม่มีมาตรการชดเชยเพิ่มเติม</option>
+        </select>
+      </div>
+
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          3. กรอบเวลาการสิ้นสุด (Time-bound Expiration):
+        </label>
+        <select id="w4-time" style="width:100%; font-size:0.82rem; padding:0.45rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" onchange="evalRiskAcceptance()">
+          <option value="six_months" selected>มีกำหนดทบทวนใน 6 เดือน</option>
+          <option value="indefinite">อนุมัติตลอดชีพไม่มีกำหนดสิ้นสุด</option>
+        </select>
+      </div>
+
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          4. การละเมิดกฎหมายภาคบังคับ (Legal Mandate):
+        </label>
+        <select id="w4-legal-violation" style="width:100%; font-size:0.82rem; padding:0.45rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" onchange="evalRiskAcceptance()">
+          <option value="no" selected>ไม่ขัดต่อกฎหมายภาคบังคับ (ขัดเฉพาะระเบียบภายใน)</option>
+          <option value="yes">ขัดต่อกฎหมายภาคบังคับ (พ.ร.บ.ไซเบอร์ CII / PDPA)</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="risk-accept-result" style="background:var(--bg-surface); padding:1rem; border-radius:8px; border:1px solid var(--border-color);">
+      <!-- Rendered dynamically -->
+    </div>
+  </div>
+</div>
+
+<p class="content-paragraph">เพื่อให้การตรวจสอบระบบสารสนเทศพัฒนาอย่างต่อเนื่อง ตามมาตรฐาน <strong>IIA Quality Assurance and Improvement Program (QAIP)</strong> ผู้บริหารงานตรวจสอบ (Chief Audit Executive: CAE) ต้องวัดผลสัมฤทธิ์ผ่าน 6 ตัวชี้วัดสากล:</p>
+<ol class="content-list">
+<li><strong>Audit Universe Coverage:</strong> ร้อยละของระบบงานสำคัญและสินทรัพย์เสี่ยงสูงที่ได้รับการตรวจสอบตามรอบระยะเวลา</li>
+<li><strong>Audit Plan Completion Rate:</strong> ร้อยละของงานตรวจสอบที่แล้วเสร็จตามแผนงานประจำปี</li>
+<li><strong>Recurring Findings Rate:</strong> สัดส่วนของข้อค้นพบที่เกิดขึ้นซ้ำด้วยสาเหตุเดิม (หากมีสูง แสดงว่า CAP ขององค์กรไม่มีประสิทธิผล)</li>
+<li><strong>Mean Time to Remediate (MTTR for Findings):</strong> ระยะเวลาเฉลี่ยที่หน่วยงานใช้ในการแก้ไขข้อค้นพบให้แล้วเสร็จ</li>
+<li><strong>Auditee Satisfaction Score:</strong> ผลการประเมินความพึงพอใจและความเป็นมืออาชีพจากผู้รับการตรวจหลังเสร็จสิ้นภารกิจ</li>
+<li><strong>Independence & Competency Review:</strong> การประเมินความเป็นอิสระและชั่วโมงการพัฒนาความรู้ทางวิชาชีพต่อเนื่อง (CPE) ของทีมผู้ตรวจสอบ</li>
+</ol>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="2-5-การแสดงบทบาทระหว่าง-lead-auditor-และ-lead-implementer-ตามกรอบ-สกมช">2.5 การแสดงบทบาทระหว่าง Lead Auditor และ Lead Implementer ตามกรอบ สกมช.</h3>
+<p class="content-paragraph">ตามกรอบการพัฒนาบุคลากรด้านความมั่นคงปลอดภัยไซเบอร์ของ <strong>ศูนย์ความเป็นเลิศด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ (NCSC / สกมช.)</strong> องค์กรจำเป็นต้องมีบุคลากรที่มีสมรรถนะทั้งสองด้านทำงานสอดประสานกัน:</p>
+
+<div class="figure-box" id="figure-15-6">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 15.6</div>
+    <div class="figure-title">การเปรียบเทียบมิติการทำงานระหว่าง Lead Implementer กับ Lead Auditor ตามกรอบ สกมช.</div>
+  </div>
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:20%;">มิติการทำงาน</th>
+          <th style="width:40%;">Lead Implementer (ผู้รับการตรวจ / ผู้ปฏิบัติตามเกณฑ์)</th>
+          <th style="width:40%;">Lead Auditor (ผู้ตรวจสอบ / ผู้ให้ความเชื่อมั่น)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>วัตถุประสงค์หลัก</strong></td>
+          <td>ผู้ออกแบบ สร้าง นำมาตรการไปปฏิบัติจริง และควบคุมความปลอดภัยระบบให้ใช้งานได้ต่อเนื่อง</td>
+          <td>ผู้ประเมิน ให้ความเชื่อมั่นอิสระ ค้นหาช่องว่าง และรายงานความเสี่ยงที่แท้จริงต่อบอร์ด</td>
+        </tr>
+        <tr>
+          <td><strong>จุดเน้นการทำงาน</strong></td>
+          <td>แก้ปัญหาทางเทคนิค บริหารงบประมาณ ทรัพยากร และรักษาระดับการให้บริการ (SLA)</td>
+          <td>ยึดถือเกณฑ์มาตรฐาน พยานหลักฐานเชิงประจักษ์ และการประเมินการควบคุมภายในอย่างเป็นกลาง</td>
+        </tr>
+        <tr>
+          <td><strong>มุมมองต่อข้อค้นพบ</strong></td>
+          <td>มองเป็นภาระงาน อุปสรรค หรือหลักฐานสะท้อนความบกพร่องในการทำงาน</td>
+          <td>มองเป็นโอกาสเชิงยุทธศาสตร์ในการปรับปรุงระบบและสนับสนุนการขออนุมัติงบประมาณ</td>
+        </tr>
+        <tr>
+          <td><strong>บทสรุปแห่งความสำเร็จ</strong></td>
+          <td>ระบบทำงานได้อย่างปลอดภัย ตอบสนองธุรกิจ และผ่านเกณฑ์การตรวจสอบ</td>
+          <td>รายงานสะท้อนความเสี่ยงตรงไปตรงมา และผลักดันให้เกิดการแก้ไขอย่างยั่งยืน</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 15.6:</strong> การเปรียบเทียบเชิงวิชาชีพเพื่อสร้างความเข้าใจอันดีระหว่างฝั่งผู้ตรวจสอบและผู้ปฏิบัติการ
+  </div>
+</div>
+
+<ul class="content-list">
+<li><strong>ความร่วมมืออย่างสร้างสรรค์ (Constructive Collaboration):</strong> Lead Auditor ต้องเข้าใจข้อจำกัดเชิงปฏิบัติการของ Lead Implementer (เช่น ข้อจำกัดด้านงบประมาณ ระบบ Legacy ที่ปรับเปลี่ยนยาก) และ Lead Implementer ต้องมอง Lead Auditor เป็นพันธมิตรที่ช่วยชี้จุดบกพร่องและช่วยผลักดันทรัพยากรจากผู้บริหาร มิใช่มองเป็นศัตรูผู้จับผิด</li>
+</ul>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-3-กรณีศึกษาเชิงลึก-มหาวิทยาลัยดิจิทัลสมมติ-การประชุมปิดและการติดตามผลลัพธ์">
+            <h2 class="section-heading">ส่วนที่ 3: กรณีศึกษาเชิงลึก "มหาวิทยาลัยดิจิทัลสมมติ" — การประชุมปิดและการติดตามผลลัพธ์</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="3-1-บันทึกการประชุมปิดการตรวจสอบ-minutes-of-closing-meeting-sample">3.1 บันทึกการประชุมปิดการตรวจสอบ (Minutes of Closing Meeting Sample)</h3>
+
+<div class="figure-box" id="figure-15-7">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 15.7</div>
+    <div class="figure-title">มหาวิทยาลัยดิจิทัลสมมติ - บันทึกการประชุมปิดการตรวจสอบ (Exit Meeting Minutes Card)</div>
+  </div>
+  <div class="exec-summary-card">
+    <div class="exec-meta-grid">
+      <div class="exec-meta-item">
+        <span class="meta-label">การประชุม:</span>
+        <span class="meta-val">บันทึกการประชุมปิดการตรวจสอบระบบสารสนเทศ (Closing Meeting Minutes)</span>
+      </div>
+      <div class="exec-meta-item">
+        <span class="meta-label">วันเวลา/สถานที่:</span>
+        <span class="meta-val">28 พฤศจิกายน 2567 เวลา 10:00 - 11:30 น. // ห้องประชุมสภามหาวิทยาลัย</span>
+      </div>
+      <div class="exec-meta-item">
+        <span class="meta-label">ผู้เข้าร่วม:</span>
+        <span class="meta-val">ประธาน Audit Committee, อธิการบดี, CIO, IT Director, DPO, Lead Auditor</span>
+      </div>
+      <div class="exec-meta-item">
+        <span class="meta-label">ผลการเจรจา:</span>
+        <span class="meta-val">ฝ่ายบริหารเห็นชอบกับข้อค้นพบทั้งหมด 5 ข้อ และตกลงส่งมอบแผน CAP ฉบับสมบูรณ์ใน 14 วัน</span>
+      </div>
+    </div>
+    <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.6;">
+      <strong>สาระสำคัญ:</strong> ที่ประชุมมีมติเห็นพ้องว่ารายงานการตรวจสอบนี้เป็นเอกสารสะท้อนความเสี่ยงเชิงยุทธศาสตร์ที่มีคุณค่าสูง โดยเฉพาะประเด็นการขาดการเก็บบันทึกล็อก 90 วัน ซึ่งสภามหาวิทยาลัยจะนำเข้าสู่วาระพิจารณาจัดสรรงบประมาณพิเศษในการจัดซื้อระบบ Cloud Storage Archive โดยเร่งด่วน
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 15.7:</strong> ตัวอย่างเอกสารบันทึกการประชุมปิดการตรวจสอบจริงตามมาตรฐานวิชาชีพ
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="1-สรุปประเด็นการนำเสนอของ-lead-auditor">1. สรุปประเด็นการนำเสนอของ Lead Auditor:</h4>
+<ul class="content-list">
+<li><strong>Positive Practices:</strong> ชื่นชมการจัดทำระบบ Single Sign-On (SSO) สำหรับนักศึกษา และการลงทุนยกระดับโครงสร้างพื้นฐานเครือข่ายความเร็วสูง</li>
+<li><strong>Key Findings:</strong> นำเสนอข้อค้นพบระดับ Critical จำนวน 2 ข้อ (ขาด MFA บน VPN/Cloud และ S3 Bucket เปิดเผยสำเนาบัตรประชาชน) และระดับ High จำนวน 2 ข้อ (ล็อกไม่ครบ 90 วัน และสัญญา Outsource ขาด Right to Audit/DPA)</li>
+</ul>
+<h4 class="sub-subsection-heading" id="2-บันทึกข้อโต้แย้งและการเจรจา-key-discussion-dispute-resolution">2. บันทึกข้อโต้แย้งและการเจรจา (Key Discussion & Dispute Resolution):</h4>
+<ul class="content-list">
+<li><strong>ประเด็นโต้แย้งเรื่อง S3 Public Bucket:</strong></li>
+<li><em>ผอ.ศูนย์ดิจิทัล:</em> ชี้แจงว่าปัญหา S3 Bucket ถูกทีม Outsource แก้ไขปิดกั้นเรียบร้อยแล้วตั้งแต่วันที่ 21 พ.ย. (หลังถูกตรวจพบ) จึงขอความกรุณาให้ผู้ตรวจสอบ <strong>"ถอดข้อค้นพบนี้ออกจากรายงาน หรือปรับลดระดับความเสี่ยงเป็น Low"</strong> เพื่อไม่ให้กระทบต่อผลการประเมินประจำปีของสำนักคอมพิวเตอร์</li>
+<li><em>Lead Auditor ชี้แจง:</em> ยืนยันว่า <strong>ไม่สามารถลบข้อค้นพบหรือลดระดับความเสี่ยงได้</strong> เนื่องจาก:</li>
+</ul>
+<ol class="content-list">
+<li>การจัดระดับความเสี่ยงพิจารณาจากสภาพความเสี่ยงดั้งเดิม (Inherent Risk) ขณะที่ตรวจพบ ซึ่งข้อมูลสำเนาบัตรประชาชนได้รั่วไหลสู่สาธารณะไปแล้ว เข้าข่ายผิดกฎหมาย PDPA ซึ่งเป็นความรับผิดที่เกิดขึ้นแล้ว</li>
+<li>อย่างไรก็ตาม ผู้ตรวจสอบจะบันทึกในรายงานอย่างชัดเจนว่า <strong>"ฝ่ายบริหารได้ดำเนินการแก้ไขอย่างรวดเร็วทันที (Quick Fix Closed Finding)"</strong> พร้อมทั้งใส่คำชื่นชมในความใส่ใจของทีมงาน</li>
+</ol>
+<ul class="content-list">
+<li><em>ข้อสรุป:</em> อธิการบดีเห็นชอบกับคำชี้แจงของผู้ตรวจสอบ และสั่งการให้ฝ่ายกฎหมายร่วมกับ DPO รายงาน สคส. ตามขั้นตอนกฎหมาย</li>
+</ul>
+<h4 class="sub-subsection-heading" id="3-ข้อตกลงกรอบเวลาถัดไป-agreed-next-steps">3. ข้อตกลงกรอบเวลาถัดไป (Agreed Next Steps):</h4>
+<ul class="content-list">
+<li>ฝ่ายตรวจสอบจะส่งรายงานฉบับสมบูรณ์ภายในวันที่ 4 ธันวาคม 2567</li>
+<li>ศูนย์เทคโนโลยีดิจิทัลและฝ่ายนิติการจะจัดทำ Corrective Action Plan (CAP) ส่งกลับภายในวันที่ 18 ธันวาคม 2567</li>
+</ul>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="3-2-ทะเบียนติดตามข้อค้นพบและการตรวจยืนยัน-audit-tracking-register-wp-15-01">3.2 ทะเบียนติดตามข้อค้นพบและการตรวจยืนยัน (Audit Tracking Register WP-15-01)</h3>
+<p class="content-paragraph">จากการเข้าตรวจติดตามผล (Follow-up Audit) ณ วันที่ 15 กุมภาพันธ์ 2568 (3 เดือนหลังออกรายงาน) ปรากฏผลการตรวจยืนยันดังนี้:</p>
+
+<div class="figure-box" id="figure-15-8">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 15.8</div>
+    <div class="figure-title">มหาวิทยาลัยดิจิทัลสมมติ - ทะเบียนติดตามผลการแก้ไขข้อค้นพบ (Audit Follow-up Register WP-15-01)</div>
+  </div>
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>รหัส</th>
+          <th>ชื่อข้อค้นพบ</th>
+          <th>ระดับความเสี่ยง</th>
+          <th>กำหนดแล้วเสร็จ</th>
+          <th>สถานะปัจจุบัน</th>
+          <th>ผลการตรวจยืนยัน (Audit Verification)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>F-01</code></td>
+          <td>ขาด MFA บน VPN/Cloud</td>
+          <td><span class="badge-status fail">CRITICAL</span></td>
+          <td>15 ธ.ค. 67</td>
+          <td><span class="badge-status pass">CLOSED</span></td>
+          <td>ผู้ตรวจสอบทำ Re-test ยืนยันว่าระบบ VPN และ Cloud Console บังคับใช้ MFA 100%</td>
+        </tr>
+        <tr>
+          <td><code>F-02</code></td>
+          <td>เก็บบันทึกล็อกไม่ครบ 90 วัน</td>
+          <td><span class="badge-status warn">HIGH</span></td>
+          <td>30 ม.ค. 68</td>
+          <td><span class="badge-status warn">IN PROGRESS</span></td>
+          <td>จัดซื้อ WORM Cloud Storage แล้ว อยู่ระหว่างทดสอบสคริปต์ Archive อัตโนมัติ</td>
+        </tr>
+        <tr>
+          <td><code>F-03</code></td>
+          <td>บัตรประชาชนเปิด Public บน Cloud</td>
+          <td><span class="badge-status fail">CRITICAL</span></td>
+          <td>ทันที</td>
+          <td><span class="badge-status pass">CLOSED</span></td>
+          <td>เปิด Block Public Access และเข้ารหัส KMS เรียบร้อย พร้อมรายงาน DPO แล้ว</td>
+        </tr>
+        <tr>
+          <td><code>F-04</code></td>
+          <td>สัญญา Outsource ขาด DPA/Right to Audit</td>
+          <td><span class="badge-status warn">HIGH</span></td>
+          <td>15 ม.ค. 68</td>
+          <td><span class="badge-status warn">IN PROGRESS</span></td>
+          <td>ฝ่ายกฎหมายตรวจร่างสัญญาแนบท้าย (Addendum) เตรียมเรียกคู่ค้าลงนาม</td>
+        </tr>
+        <tr>
+          <td><code>F-05</code></td>
+          <td>ขาด Ransomware Playbook & ซักซ้อม</td>
+          <td><span class="badge-status info">MEDIUM</span></td>
+          <td>28 ก.พ. 68</td>
+          <td><span class="badge-status info">OPEN</span></td>
+          <td>ว่าจ้างที่ปรึกษาช่วยจัดทำ Playbook และเตรียมจัดซ้อม Tabletop Exercise</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 15.8:</strong> ทะเบียนติดตามผลการแก้ไขข้อค้นพบฉบับสมบูรณ์ (Audit Working Paper WP-15-01)
+  </div>
+</div>
+
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-4-กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน-active-learning-simulation">
+            <h2 class="section-heading">ส่วนที่ 4: กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน (Active Learning Simulation)</h2>
+          </section>
+        
+
+<div class="interactive-widget" id="widget-15-5">
+  <div class="widget-header">
+    <div class="widget-tag">WIDGET 15.5 // ACTIVE LEARNING CLINIC</div>
+    <div class="widget-title">ห้องปฏิบัติการจำลองการประชุมปิด: Executive Closing Meeting Defense Clinic</div>
+  </div>
+  <div class="widget-body">
+    <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:0.85rem;">
+      เผชิญหน้ากับสถานการณ์จำลองในห้องประชุมปิดต่อหน้าคณะกรรมการตรวจสอบและผู้บริหารระดับสูง ฝึกทักษะการเจรจาและการสรุปข้อตกลงปิดการตรวจสอบ (Closing Agreement):
+    </p>
+
+    <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1rem;">
+      <button class="vol-select-btn active" id="ws-step-btn-1" onclick="setWorkshopStep(1)">ภารกิจที่ 1: การเปิดประชุมอย่างสร้างสรรค์</button>
+      <button class="vol-select-btn" id="ws-step-btn-2" onclick="setWorkshopStep(2)">ภารกิจที่ 2: การรับมือแรงกดดันข้อค้นพบ Critical</button>
+      <button class="vol-select-btn" id="ws-step-btn-3" onclick="setWorkshopStep(3)">ภารกิจที่ 3: การสรุปข้อตกลงและก้าวถัดไป</button>
+    </div>
+
+    <div id="workshop-step-content" style="background:var(--bg-card); padding:1rem; border-radius:8px; border:1px solid var(--border-color); margin-bottom:1rem;">
+      <!-- Step rendered dynamically -->
+    </div>
+
+    <div id="workshop-score-summary" style="background:var(--bg-surface); padding:0.85rem 1rem; border-radius:8px; border:1px solid var(--border-color);">
+      <!-- Summary rendered dynamically -->
+    </div>
+  </div>
+</div>
+
+<h3 class="subsection-heading" id="กิจกรรม-the-executive-closing-meeting-finding-defense-simulation-ระยะเวลา-25-นาที">กิจกรรม: "The Executive Closing Meeting & Finding Defense Simulation" (ระยะเวลา 25 นาที)</h3>
+<h4 class="sub-subsection-heading" id="1-วัตถุประสงค์ของกิจกรรม">1. วัตถุประสงค์ของกิจกรรม</h4>
+<p class="content-paragraph">เพื่อฝึกทักษะการสื่อสาร การนำเสนอข้อค้นพบที่มีความอ่อนไหวสูง และศิลปะการรับมือข้อโต้แย้งจากผู้บริหารระดับสูงโดยยังคงรักษาจรรยาบรรณวิชาชีพและความเป็นอิสระได้อย่างสง่างาม</p>
+<h4 class="sub-subsection-heading" id="2-การจัดกลุ่มและบทบาทสมมติ-role-play-scenario">2. การจัดกลุ่มและบทบาทสมมติ (Role-Play Scenario)</h4>
+<p class="content-paragraph">แบ่งนักศึกษาออกเป็นกลุ่มละ 5 คน สวมบทบาทดังนี้:</p>
+<ul class="content-list">
+<li><strong>บทบาทที่ 1: Lead Cyber Auditor (ผู้ตรวจสอบหลัก):</strong> ทำหน้าที่ประธานการนำเสนอ สรุปภาพรวม และอธิบายข้อค้นพบ Critical</li>
+<li><strong>บทบาทที่ 2: Technical Auditor (ผู้ช่วยฝ่ายเทคนิค):</strong> ชี้แจงหลักฐานเชิงประจักษ์ (Log, Screenshots) ตอบคำถามทางเทคนิค</li>
+<li><strong>บทบาทที่ 3: อธิการบดี / ประธานเจ้าหน้าที่บริหาร (President / CEO):</strong> รับฟังภาพรวม ให้ความสำคัญกับชื่อเสียงองค์กรและผลกระทบทางกฎหมาย</li>
+<li><strong>บทบาทที่ 4: ผู้อำนวยการฝ่ายไอที (CIO / IT Director):</strong> พยายามชี้แจงข้อจำกัดเรื่องงบประมาณ กำลังคน และขอต่อรองลดระดับความเสี่ยง</li>
+<li><strong>บทบาทที่ 5: ที่ปรึกษากฎหมาย / DPO (Legal Counsel):</strong> ซักถามเรื่องความรับผิดตามกฎหมาย PDPA และ พ.ร.บ.ไซเบอร์ฯ</li>
+</ul>
+<h4 class="sub-subsection-heading" id="3-สถานการณ์จำลองและแรงกดดัน-injects">3. สถานการณ์จำลองและแรงกดดัน (Injects)</h4>
+<ul class="content-list">
+<li><strong>นาทีที่ 5 (Pushback 1):</strong> ผอ.ไอที กล่าวในที่ประชุมว่า: <em>"ข้อค้นพบเรื่อง MFA ระดับ Critical รุนแรงเกินไป เพราะเรามีไฟร์วอลล์กั้นอยู่แล้ว และการบังคับใช้ MFA จะทำให้อาจารย์อาวุโสล็อกอินไม่ได้ ขอต่อรองให้ลดเป็นระดับ Low ได้ไหม?"</em></li>
+<li><strong>นาทีที่ 12 (Pushback 2):</strong> อธิการบดีถามว่า: <em>"หากมหาวิทยาลัยทำตามข้อเสนอแนะของคุณทั้งหมด คุณรับประกันได้ไหมว่าเราจะไม่ถูกแฮกอีกตลอดไป?"</em></li>
+<li><strong>นาทีที่ 18 (Compromise Request):</strong> ที่ปรึกษากฎหมายเสนอว่า: <em>"เรื่องข้อมูลรั่วไหลบนคลาวด์ ถ้าเราปิดบักเก็ตไปแล้ว เราไม่แจ้ง สคส. ได้ไหม เพื่อไม่ให้เป็นข่าว?"</em></li>
+</ul>
+<h4 class="sub-subsection-heading" id="4-ภารกิจของนักศึกษา">4. ภารกิจของนักศึกษา</h4>
+<p class="content-paragraph">ทีมผู้ตรวจสอบต้องตอบรับข้อโต้แย้งทั้ง 3 ข้ออย่างสุภาพ ยึดมั่นในหลักการ อธิบายข้อกฎหมาย และรักษาระดับความเสี่ยงตามมาตรฐานวิชาชีพ พร้อมร่าง <strong>บันทึกข้อตกลงการประชุมปิด (Closing Meeting Agreement)</strong> ส่งท้ายคาบ</p>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-5-มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls">
+            <h2 class="section-heading">ส่วนที่ 5: มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives & Common Pitfalls)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="5-1-บทสนทนาจำลองเชิงวิชาชีพ-lead-auditor-vs-lead-implementer-dialogue">5.1 บทสนทนาจำลองเชิงวิชาชีพ (Lead Auditor vs Lead Implementer Dialogue)</h3>
+
+<div class="figure-box" id="figure-15-12">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 15.12</div>
+    <div class="figure-title">บทสนทนาจำลองเชิงวิชาชีพ: การสร้างพันธมิตรระหว่าง Lead Auditor กับ Lead Implementer</div>
+  </div>
+  <div class="dialogue-container">
+    <div class="chat-bubble chat-auditor">
+      <div class="chat-author">🔍 Lead IT Auditor</div>
+      <div class="chat-msg">
+        "พี่สมเกียรติครับ ในการประชุมปิดเมื่อวานนี้ ผมขอขอบคุณพี่มากครับที่ช่วยชี้แจงข้อเท็จจริงเรื่องระบบล็อกให้ท่านประธานและบอร์ดเข้าใจ ผมทราบดีว่าทีมไอทีทำงานหนักมากเพื่อประคองระบบ REG ไม่ให้ล่มในช่วงลงทะเบียน และข้อค้นพบเรื่องล็อกนี้ เราตั้งใจเขียนขึ้นมาเพื่อเป็น 'เครื่องมือสนับสนุน' ให้พี่ของบประมาณจากสภามหาวิทยาลัยได้สำเร็จครับ"
+      </div>
+    </div>
+    <div class="chat-bubble chat-auditee">
+      <div class="chat-author">💻 Lead Implementer (หัวหน้าฝ่ายเครือข่ายและความมั่นคงปลอดภัย)</div>
+      <div class="chat-msg">
+        "ขอบคุณอาจารย์มากครับ ตอนแรกที่เห็นร่างรายงานพวกผมตกใจมาก คิดว่าจะโดนตั้งกรรมการสอบ แต่พอได้ฟังอาจารย์อธิบายในห้องประชุมปิดว่าเป้าหมายคือการช่วยพวกเราของบและคุ้มครองมหาวิทยาลัยตามกฎหมาย ทีมงานทุกคนมีกำลังใจขึ้นเยอะเลยครับ ตอนนี้เราเปิดใช้งาน MFA สำเร็จแล้ว และกำลังเริ่มทำเรื่องขออนุมัติงบ WORM Storage ตามข้อเสนอแนะเลยครับ"
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 15.12:</strong> การสร้างความสัมพันธ์เชิงหุ้นส่วนการทำงาน (Constructive Partnership) ที่เปลี่ยนรายงานตรวจสอบให้เกิดการลงมือแก้ไขจริง
+  </div>
+</div>
+
+<p class="content-paragraph">บทสนทนานี้สะท้อนการแลกเปลี่ยนมุมมองอย่างเปิดใจระหว่างผู้ตรวจกับผู้นำการนำระบบไปปฏิบัติ:</p>
+<blockquote class="content-quote"><strong>Lead Implementer (หัวหน้าทีมพัฒนาและวางระบบความปลอดภัย):</strong> "คุณผู้ตรวจสอบครับ บางครั้งพวกผมรู้สึกว่าผู้ตรวจสอบทำงานสบายกว่าพวกผมมาก คุณเดินเข้ามา ชี้ว่าตรงนั้นผิด ตรงนี้ไม่สอดคล้องกับมาตรฐาน แล้วคุณก็เขียนรายงานไปให้บอร์ด จากนั้นก็เดินจากไป... ปล่อยให้พวกผมต้องอดหลับอดนอนแก้ระบบภายใต้งบประมาณที่จำกัดและผู้ใช้งานที่คอยก่นด่า"     <strong>Lead Auditor:</strong> "ผมเข้าใจความรู้สึกของคุณอย่างยิ่งครับ และขอขอบคุณที่คุณพูดความจริงกับผม   ในฐานะผู้ตรวจสอบ ผมไม่ได้มองว่าหน้าที่ของผมคือการมาจับผิดเพื่อสร้างงานให้คุณเหนื่อยเพิ่มขึ้นเลยครับ แต่หน้าที่ของผมคือการเป็น <strong>'กระจกสะท้อนความจริง'</strong> ให้องค์กรเห็นว่ากำแพงป้องกันของเรามีรอยร้าวตรงไหนบ้างก่อนที่แฮกเกอร์จะเห็น   ผมรู้ว่าคุณขอซื้อระบบ MFA และขยายสตอเรจสำหรับเก็บล็อกมา 2 ปีแล้ว แต่ผู้บริหารไม่อนุมัติงบ... รายงานการตรวจสอบฉบับนี้แหละครับที่จะเป็น <strong>'พลังสนับสนุนอย่างเป็นทางการ'</strong> ให้กับทีม Implementer ของคุณ เพราะเมื่อข้อบกพร่องนี้ถูกบันทึกเป็นรายงานระดับ High ต่อคณะกรรมการตรวจสอบ ผู้บริหารจะไม่สามารถเพิกเฉยต่อการจัดสรรงบประมาณให้คุณได้อีกต่อไป   เราไม่ได้อยู่คนละฝั่งกันครับ แต่เราคือพันธมิตรที่ทำงานร่วมกันเพื่อปกป้ององค์กรนี้ครับ"     <strong>Lead Implementer:</strong> "ขอบคุณมากครับที่เข้าใจหัวอกคนทำงานจริง ถ้ารายงานของคุณช่วยผลักดันงบประมาณให้เราได้จริง ๆ ผมยินดีให้ความร่วมมือเต็มที่ในการทำ Corrective Action Plan ร่วมกันครับ"</blockquote>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="5-2-4-กับดักหลุมพรางที่พบบ่อยในขั้นตอนการปิดและติดตามผล-4-common-pitfalls">5.2 4 กับดักหลุมพรางที่พบบ่อยในขั้นตอนการปิดและติดตามผล (4 Common Pitfalls)</h3>
+
+<div class="figure-box" id="figure-15-9">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 15.9</div>
+    <div class="figure-title">4 หลุมพรางอันตรายในงาน Closing & Follow-up (4 Closing & Follow-up Traps)</div>
+  </div>
+  <div class="traps-grid">
+    <div class="trap-card">
+      <div class="trap-num">TRAP 01</div>
+      <div class="trap-title">🏷️ The Rubber-Stamp Closure</div>
+      <div class="trap-desc">การปิดข้อค้นพบบนกระดาษเพียงเพราะผู้รับการตรวจส่งอีเมลแจ้งว่าเสร็จแล้ว โดยไม่เคยทำการทดสอบซ้ำ (Re-testing) เชิงเทคนิค</div>
+    </div>
+    <div class="trap-card">
+      <div class="trap-num">TRAP 02</div>
+      <div class="trap-title">🤝 The Audit Horse-Trading</div>
+      <div class="trap-desc">การยอมประนีประนอมต่อรองลดระดับความเสี่ยงเพื่อเลี่ยงความขัดแย้งในที่ประชุมปิด ทำลายความเป็นอิสระและจรรยาบรรณวิชาชีพ</div>
+    </div>
+    <div class="trap-card">
+      <div class="trap-num">TRAP 03</div>
+      <div class="trap-title">💤 The Follow-up Amnesia</div>
+      <div class="trap-desc">การออกรายงานแล้วทิ้งขว้าง ไม่เคยติดตามผลจริง ทำให้ข้อค้นพบค้างเติ่งข้ามปีและความเสี่ยงยังคงอยู่กับองค์กรตลอดไป</div>
+    </div>
+    <div class="trap-card">
+      <div class="trap-num">TRAP 04</div>
+      <div class="trap-title">🧱 The Implementer Alienation</div>
+      <div class="trap-desc">การมองผู้ปฏิบัติงานเป็นจำเลยจนสร้างกำแพงต่อต้าน ทำให้ไม่ได้รับความร่วมมือในการให้ข้อมูลและการทดสอบติดตามผล</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 15.9:</strong> 4 กับดักสำคัญในขั้นตอนสุดท้ายของงานตรวจสอบที่ผู้ตรวจสอบชั้นนำต้องระมัดระวัง
+  </div>
+</div>
+
+<ol class="content-list">
+<li><strong>The Rubber-Stamp Closure (การปิดประเด็นแบบตรายาง):</strong> การหลงเชื่ออีเมลหรือคำบอกเล่าของผู้รับการตรวจว่า "แก้เสร็จแล้ว" แล้วรีบเปลี่ยนสถานะเป็น Closed โดยไม่มีการตรวจ Re-test หรือขอดูหลักฐานการตั้งค่าจริง</li>
+<li><strong>The Audit Horse-Trading (การแลกเปลี่ยนต่อรองผลการตรวจ):</strong> การยอมลดระดับความเสี่ยงจาก High เป็น Medium หรือลบข้อค้นพบออก เพื่อแลกกับการที่ผู้รับการตรวจจะไม่ร้องเรียนหรือยอมเซ็นรับรายงาน เป็นการละเมิดจรรยาบรรณวิชาชีพอย่างร้ายแรง</li>
+<li><strong>The Follow-up Amnesia (โรคความจำเสื่อมหลังออกรายงาน):</strong> หน่วยงานตรวจสอบมุ่งมั่นตรวจและออกรายงานอย่างเข้มข้น แต่เมื่อรายงานออกแล้วกลับไม่มีระบบติดตามผล (No Tracking Register) ปล่อยให้ข้อค้นพบค้างเติ่งข้ามปีโดยไม่มีใครเหลียวแล</li>
+<li><strong>The Implementer Alienation (การผลักคนปฏิบัติงานเป็นศัตรู):</strong> ทัศนคติของผู้ตรวจสอบที่วางตัวเป็นผู้มีอำนาจเหนือกว่า มุ่งเน้นการตำหนิบุคคล ทำให้ทีมผู้ปฏิบัติงานตั้งป้อมต่อต้าน ปกปิดข้อมูล และปฏิเสธการให้ความร่วมมือในการตรวจสอบรอบถัดไป</li>
+</ol>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-6-การบ้านประจำบทที่-15-final-cybersecurity-audit-portfolio-18-artifacts">
+            <h2 class="section-heading">ส่วนที่ 6: การบ้านประจำบทที่ 15: Final Cybersecurity Audit Portfolio (18 Artifacts)</h2>
+          </section>
+        
+<p class="content-paragraph">ในสัปดาห์สุดท้ายนี้ ให้นักศึกษาทุกคนรวบรวม สังเคราะห์ และปรับปรุงชิ้นงานที่ได้จัดทำตลอดทั้ง 15 สัปดาห์ เพื่อส่งมอบเป็น <strong>"แฟ้มสะสมผลงานการตรวจสอบความมั่นคงปลอดภัยไซเบอร์ฉบับสมบูรณ์ (Final Cybersecurity Audit Portfolio)"</strong> จำนวน 18 รายการ:</p>
+
+<div class="figure-box" id="figure-15-10">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 15.10</div>
+    <div class="figure-title">สารบัญ 18 ชิ้นงานใน Final Cybersecurity Audit Portfolio (18 Course Portfolio Artifacts)</div>
+  </div>
+  <div class="portfolio-grid">
+    <div class="port-item"><code>01</code> Legal Requirement Register</div>
+    <div class="port-item"><code>02</code> Compliance Obligations Matrix</div>
+    <div class="port-item"><code>03</code> Audit Scope Statement</div>
+    <div class="port-item"><code>04</code> Information Asset Register</div>
+    <div class="port-item"><code>05</code> Data Classification Matrix</div>
+    <div class="port-item"><code>06</code> Cyber Risk Assessment Matrix</div>
+    <div class="port-item"><code>07</code> Network Architecture Diagram</div>
+    <div class="port-item"><code>08</code> Access Control Audit Program</div>
+    <div class="port-item"><code>09</code> Vulnerability Assessment Report</div>
+    <div class="port-item"><code>10</code> SOC & Log Management Review</div>
+    <div class="port-item"><code>11</code> Incident Response TTX Evaluation</div>
+    <div class="port-item"><code>12</code> Cloud Security Audit Checklist</div>
+    <div class="port-item"><code>13</code> TPRM Due Diligence Dossier</div>
+    <div class="port-item"><code>14</code> Audit Working Papers (WP Portfolio)</div>
+    <div class="port-item"><code>15</code> Comprehensive IT Audit Report</div>
+    <div class="port-item"><code>16</code> Exit Conference Minutes</div>
+    <div class="port-item"><code>17</code> Audit Finding Tracking Register</div>
+    <div class="port-item"><code>18</code> Audit Programme Quality Review (QAIP)</div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 15.10:</strong> โครงสร้าง 18 แฟ้มชิ้นงานกระดาษทำการและการประเมินผลรวบยอดตลอด 15 บทเรียน
+  </div>
+</div>
+
+<h3 class="subsection-heading" id="เกณฑ์การประเมินผลพอร์ตโฟลิโอ-portfolio-assessment-rubric-10-คะแนนมาตรฐาน">เกณฑ์การประเมินผลพอร์ตโฟลิโอ (Portfolio Assessment Rubric - 10 คะแนนมาตรฐาน):</h3>
+<ol class="content-list">
+<li><strong>ความถูกต้องของแนวคิด กฎหมาย และมาตรฐาน (2 คะแนน):</strong> อ้างอิง พ.ร.บ.ไซเบอร์ฯ, PDPA, พ.ร.บ.คอมฯ, ISO 27001, และ NIST ได้อย่างถูกต้องตามราชกิจจานุเบกษา</li>
+<li><strong>การเชื่อมโยงข้อกำหนด ความเสี่ยง มาตรการ และหลักฐาน (2 คะแนน):</strong> มี Audit Trail ที่สมบูรณ์ สามารถสืบค้นย้อนกลับระหว่างข้อกำหนด <code class="math-tex">\rightarrow</code> ความเสี่ยง <code class="math-tex">\rightarrow</code> มาตรการ <code class="math-tex">\rightarrow</code> หลักฐาน <code class="math-tex">\rightarrow</code> ข้อค้นพบ ได้อย่างไร้รอยต่อ</li>
+<li><strong>คุณภาพการวิเคราะห์และการให้เหตุผล (2 คะแนน):</strong> การวิเคราะห์สาเหตุราก (5 Whys), การประเมินผลกระทบ, และการเขียนข้อเสนอแนะเชิงระบบที่ปฏิบัติได้จริง</li>
+<li><strong>ความครบถ้วนและตรวจสอบย้อนกลับได้ของหลักฐาน (2 คะแนน):</strong> เอกสารหลักฐานมีความน่าเชื่อถือ ระบุหมายเลขอ้างอิงกระดาษทำการ (WP Reference) ชัดเจนทุกจุด</li>
+<li><strong>รูปแบบเอกสารและการใช้ศัพท์วิชาชีพ (1 คะแนน):</strong> ใช้ภาษาทางการ เป็นกลาง ถูกต้องตามหลักวิชาชีพการตรวจสอบสากล</li>
+<li><strong>การอ้างอิงแหล่งข้อมูล (1 คะแนน):</strong> ระบุแหล่งอ้างอิง เอกสารมาตรฐาน และกฎหมายอย่างถูกต้องตามมาตรฐานสากล</li>
+</ol>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers">
+            <h2 class="section-heading">ส่วนที่ 7: คำถามทบทวนท้ายบท (Review Questions & Detailed Answers)</h2>
+          </section>
+        
+<ol class="content-list">
+<li><strong>คำถาม:</strong> จงอธิบายวัตถุประสงค์หลักของการประชุมปิดการตรวจสอบ (Closing Meeting) และเหตุใดจึงไม่ควรนำข้อค้นพบที่ไม่เคยแจ้งมาก่อนมาเปิดเผยเป็นครั้งแรกในที่ประชุมนี้?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> วัตถุประสงค์หลักคือการยืนยันขอบเขต นำเสนอข้อสรุปและข้อค้นพบสำคัญ รับฟังข้อเท็จจริงเพิ่มเติม และตกลงกรอบเวลาการจัดทำแผนแก้ไข (CAP) ไม่ควรนำข้อค้นพบใหม่มาเปิดเผยเป็นครั้งแรก (No Surprises Rule) เพราะจะทำให้ผู้รับการตรวจรู้สึกไม่เป็นธรรม ตั้งป้อมต่อต้าน และไม่มีเวลาเตรียมข้อมูลมาชี้แจง ข้อค้นพบควรได้รับการสื่อสารเบื้องต้นมาตลอดการตรวจภาคสนาม</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> "No Horse-Trading" ในการประชุมปิดการตรวจสอบหมายถึงอะไร และมีความสำคัญต่อจรรยาบรรณวิชาชีพอย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> หมายถึงการห้ามมิให้ผู้ตรวจสอบทำการ "ต่อรองแลกเปลี่ยนข้อค้นพบ" เช่น การยอมลดระดับความเสี่ยงจาก Critical/High เป็น Medium หรือยอมลบข้อค้นพบออก เพื่อแลกกับการที่ผู้รับการตรวจยอมรับรายงาน มีความสำคัญสูงสุดในการรักษาความเป็นอิสระ (Independence) ความซื่อสัตย์ (Integrity) และความเที่ยงธรรม (Objectivity) ของวิชาชีพ</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> หากผู้รับการตรวจโต้แย้งว่า "ข้อค้นพบเรื่องนี้รุนแรงเกินไปและขอให้ปรับลดระดับความเสี่ยง" ผู้ตรวจสอบควรใช้หลักการใดในการจัดการข้อขัดแย้งนี้?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ผู้ตรวจสอบต้องรับฟังด้วยความสงบ ดึงบทสนทนากลับมาสู่เกณฑ์อ้างอิง (Criteria) และพยานหลักฐานเชิงประจักษ์ (Evidence) อธิบายเหตุผลการจัดระดับความเสี่ยงตาม Impact และ Likelihood อย่างโปร่งใส และหากผู้รับการตรวจยังไม่เห็นด้วย ให้บันทึกเหตุผลของผู้รับการตรวจลงในส่วน Management Response ของรายงาน เพื่อให้คณะกรรมการตรวจสอบพิจารณา</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง "Correction", "Corrective Action" และ "Preventive Improvement" ในแผนปฏิบัติการแก้ไข (CAP)</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> <strong>Correction</strong> คือการแก้ปัญหาเฉพาะหน้าทันที (เช่น ลบบัญชีที่ตกค้างออกทันที); <strong>Corrective Action</strong> คือการแก้ปัญหาที่สาเหตุรากเพื่อไม่ให้เกิดปัญหาเดิมซ้ำ (เช่น ปรับปรุงระบบ Automated Offboarding เชื่อมต่อระหว่าง HR กับ AD); <strong>Preventive Improvement</strong> คือการปรับปรุงเชิงป้องกันในภาพรวมขององค์กร (เช่น การจัดอบรมและตั้งระบบตรวจสอบสิทธิ์อัตโนมัติในทุกระบบงาน)</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> เหตุใดผู้ตรวจสอบจึง "ห้ามปิดข้อค้นพบ (Close Finding)" เพียงเพราะได้รับอีเมลแจ้งจากผู้รับการตรวจว่าดำเนินการแก้ไขเรียบร้อยแล้ว?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพราะคำบอกเล่าหรืออีเมลไม่ถือเป็นหลักฐานเชิงประจักษ์ที่มีความเชื่อมั่นเพียงพอ ผู้ตรวจสอบต้องทำการตรวจยืนยัน (Verification) ผ่านการตรวจสอบเอกสารอนุมัติใหม่ การตรวจดูการตั้งค่าจริง (Configuration Review) หรือการทดสอบซ้ำ (Re-performance) ด้วยตนเอง เพื่อพิสูจน์ว่ามาตรการควบคุมทำงานได้จริงและมีประสิทธิผล</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ในทะเบียนติดตามข้อค้นพบ สถานะ "Overdue" และ "Risk Accepted" มีความหมายและแนวทางปฏิบัติแตกต่างกันอย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> <strong>Overdue</strong> หมายถึงข้อค้นพบที่พ้นกำหนดเวลาแล้วเสร็จ (Due Date) แต่ยังแก้ไขไม่เสร็จสิ้น ต้องรายงานยกระดับต่อ CISO และคณะกรรมการตรวจสอบเพื่อเร่งรัด; ส่วน <strong>Risk Accepted</strong> หมายถึงฝ่ายบริหารระดับสูงตัดสินใจอย่างเป็นทางการที่จะไม่แก้ไขความเสี่ยงนั้นเนื่องจากข้อจำกัดทางธุรกิจ โดยต้องมีหนังสืออนุมัติลงนามเป็นลายลักษณ์อักษรและรายงานให้คณะกรรมการตรวจสอบรับทราบ</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> การทบทวนแผนงานการตรวจสอบ (Audit Programme Review & QAIP) มีตัวชี้วัดใดบ้างที่สะท้อนถึงประสิทธิผลของกระบวนการตรวจสอบ?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> 1. ร้อยละของระบบงานสำคัญที่ได้รับการตรวจสอบ (Audit Universe Coverage), 2. อัตรางานตรวจที่เสร็จตามแผน (Completion Rate), 3. อัตราการเกิดข้อค้นพบซ้ำ (Recurring Findings Rate), 4. ระยะเวลาเฉลี่ยในการปิดข้อค้นพบ (Mean Time to Remediate - MTTR), และ 5. ผลประเมินความพึงพอใจของผู้รับการตรวจ (Auditee Satisfaction)</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ตามกรอบสมรรถนะของ สกมช. (NCSA) บทบาทของ "Lead Implementer" และ "Lead Auditor" มีความแตกต่างกันอย่างไรในการบริหารจัดการความมั่นคงปลอดภัย?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> <strong>Lead Implementer</strong> เป็นผู้ออกแบบ สร้าง และนำมาตรการควบคุมไปปฏิบัติจริงในระบบ ต้องบริหารจัดการข้อจำกัดทางเทคนิค งบประมาณ และความต่อเนื่องของธุรกิจ; ส่วน <strong>Lead Auditor</strong> เป็นผู้ประเมินอิสระที่เข้ามาสอบทาน ค้นหาข้อบกพร่อง และให้ความเชื่อมั่นต่อผู้บริหารระดับสูง ทั้งสองฝ่ายต้องทำงานร่วมกันแบบ Constructive Partnership</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> เหตุใดผู้ตรวจสอบจึงไม่ควรกล่าวคำรับรองว่า "ระบบของหน่วยงานมีความมั่นคงปลอดภัย 100% ปราศจากช่องโหว่" ในการประชุมปิด?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพราะขัดต่อข้อเท็จจริงทางเทคนิคและความเป็นจริงของการตรวจสอบ ซึ่งใช้การสุ่มตรวจตัวอย่าง (Audit Sampling) ภายใต้ข้อจำกัดของเวลาและทรัพยากร ความมั่นคงปลอดภัยเป็นเรื่องสัมพัทธ์และภัยคุกคามมีการเปลี่ยนแปลงตลอดเวลา การรับรอง 100% อาจนำไปสู่ความประมาทเลินเล่อและสร้างความรับผิดชอบทางกฎหมายแก่ผู้ตรวจสอบ</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> การจัดทำ "Individual Reflection (บทความสะท้อนคิด)" มีประโยชน์อย่างไรต่อการพัฒนาวิชาชีพของผู้ตรวจสอบระบบสารสนเทศ?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ช่วยให้ผู้ตรวจสอบได้ทบทวนประสบการณ์ ประเมินจุดแข็งและจุดอ่อนของตนเอง ทั้งในด้านทักษะทางเทคนิค (Hard Skills) เช่น การวิเคราะห์ล็อกหรือการสแกนช่องโหว่ และทักษะด้านปฏิสัมพันธ์ (Soft Skills) เช่น การสื่อสาร การเจรจาต่อรอง และจรรยาบรรณวิชาชีพ เพื่อนำไปสู่การพัฒนาตนเองอย่างต่อเนื่อง (Continual Professional Development)</li>
+</ul>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="สรุปบทที่-15-และภาพรวมหลักสูตรการตรวจสอบความมั่นคงปลอดภัยไซเบอร์-course-capstone">
+            <h2 class="section-heading">สรุปบทที่ 15 และภาพรวมหลักสูตรการตรวจสอบความมั่นคงปลอดภัยไซเบอร์ (Course Capstone)</h2>
+          </section>
+        
+<p class="content-paragraph">การเดินทางตลอด 15 สัปดาห์ของหลักสูตร <strong>การตรวจสอบความมั่นคงปลอดภัยไซเบอร์และระบบสารสนเทศ (Cybersecurity and IT Audit)</strong> ได้นำพานักศึกษาผ่านทุกมิติของวิชาชีพ:</p>
+<ul class="content-list">
+<li>เริ่มต้นจากการวางรากฐานธรรมาภิบาล กฎหมาย พ.ร.บ.ไซเบอร์ฯ 2562, PDPA 2562, และมาตรฐานสากล ISO/IEC 27001 ในช่วงสัปดาห์แรก ๆ</li>
+<li>ก้าวเข้าสู่การบริหารความเสี่ยง การวางแผนงานตรวจ (Audit Planning) การรวบรวมพยานหลักฐาน และการสุ่มตรวจตามหลักสถิติ</li>
+<li>เจาะลึกการตรวจสอบภาคสนามทางเทคนิคระดับสูง ทั้ง Physical & Environmental, Identity & Access Management (IAM), Operating Systems, Network & Perimeter, และ Log Management & SIEM</li>
+<li>รับมือกับวิกฤตการณ์ภัยคุกคามใน Incident Management, การตรวจสอบคลาวด์และคู่ค้าภายนอก (Cloud & Third-Party)</li>
+<li>และปิดท้ายด้วยศิลปะชั้นสูงของการสื่อสาร: การเขียนข้อค้นพบ (Audit Findings), การจัดทำรายงาน, การประชุมปิด (Closing Meeting), และการติดตามผลลัพธ์ (Follow-up)</li>
+</ul>
+<p class="content-paragraph"><strong>สัจธรรมสุดท้ายสำหรับผู้ตรวจสอบสารสนเทศ:</strong></p>
+<p class="content-paragraph">ความมั่นคงปลอดภัยไซเบอร์มิใช่ "จุดหมายปลายทาง" แต่เป็น <strong>"การเดินทางและการปรับปรุงอย่างต่อเนื่อง (Continual Journey)"</strong> ผู้ตรวจสอบระบบสารสนเทศที่ดีมิใช่ผู้ที่รู้ลึกเฉพาะคำสั่งคอมพิวเตอร์หรือท่องจำข้อกฎหมายได้ทั้งหมด หากแต่เป็นผู้ที่มี <strong>ความซื่อสัตย์สุจริต (Integrity), ความเป็นอิสระทางความคิด (Independence), ความเฉียบคมเชิงธุรกิจ (Business Acumen), และความเมตตาธรรมในการสื่อสารเชิงสร้างสรรค์ (Constructive Empathy)</strong></p>
+<p class="content-paragraph">ขอให้นักศึกษาทุกคนนำองค์ความรู้ ทักษะ และจรรยาบรรณวิชาชีพที่ได้ฝึกฝนไปใช้เป็นเข็มทิศในการปกป้องระบบสารสนเทศ ข้อมูลส่วนบุคคลของประชาชน และความมั่นคงปลอดภัยทางไซเบอร์ของประเทศชาติอย่างภาคภูมิใจ</p>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="เอกสารอ้างอิงและมาตรฐานสากล">
+            <h2 class="section-heading">เอกสารอ้างอิงและมาตรฐานสากล</h2>
+          </section>
+        
+<ol class="content-list">
+<li><strong>Information Systems Audit and Control Association (ISACA).</strong> (2020). <em>ITAF: Information Technology Assurance Framework (4th Edition)</em> (Standard 2402 Communication, Standard 2403 Follow-up Activities). Rolling Meadows, IL: ISACA.</li>
+<li><strong>Institute of Internal Auditors (IIA).</strong> (2024). <em>Global Internal Audit Standards (GIAS)</em> (Domain 5: Performing Internal Audit Services, Topic 11.3 Follow-up). Lake Mary, FL: IIA.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2018). <em>ISO 19011:2018 Guidelines for auditing management systems</em> (Clause 6.6 Conducting closing meeting, Clause 6.7 Conducting audit follow-up, Clause 7 Competence and evaluation of auditors). Geneva: ISO.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2020). <em>ISO/IEC 27007:2020 Information security, cybersecurity and privacy protection — Guidelines for information security management systems auditing</em>. Geneva: ISO.</li>
+<li><strong>สำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช.).</strong> (2566). <em>แนวทางการพัฒนาสมรรถนะบุคลากรด้านความมั่นคงปลอดภัยไซเบอร์: Lead Implementer และ Lead Auditor</em>. ศูนย์ความเป็นเลิศด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ (NCSC). สืบค้นจาก https://ncsec.ncsa.or.th/lead_implementer-lead_auditor/</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2018). <em>NIST Cybersecurity Framework (CSF) Version 1.1 / 2.0</em> (Govern and Identify Functions). U.S. Department of Commerce.</li>
+<li><strong>Center for Internet Security (CIS).</strong> (2021). <em>CIS Critical Security Controls (Version 8)</em> (Control 18: Penetration Testing, Control 17: Incident Response Management). East Greenbush, NY: CIS.</li>
+<li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+<li><strong>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+</ol>
+
+      <!-- Bottom Chapter Navigation -->
+      <footer class="chapter-nav-footer">
+        <a href="ch-14.html" class="btn-nav-chapter">
+          <span>◀</span> บทที่ 14: การจัดทำข้อค้นพบและรายงานการตรวจ
+        </a>
+        <a href="ch1-elearning.html" class="btn-nav-chapter btn-nav-finish">
+          🎉 จบบริบูรณ์หลักสูตร // กลับสู่สารบัญหลักสูตร 🎓 <span>▶</span>
+        </a>
+      </footer>
+    </main>
+  </div>
+
+  <div id="progress-bar" style="display:none;"></div>
+
+  <script>
+// ==========================================
+// CHAPTER 15 CLIENT-SIDE JAVASCRIPT
+// Theme, Reader Controls, and Interactive Widgets
+// ==========================================
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ------------------------------------------
+// Reader Controls: Theme & Font
+// ------------------------------------------
+const themes = ['light', 'sepia', 'dark'];
+let currentThemeIdx = 0;
+
+function cycleTheme() {
+  currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+  setTheme(themes[currentThemeIdx]);
+}
+
+function setTheme(theme) {
+  if (!themes.includes(theme)) theme = 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  try {
+    localStorage.setItem('audit_course_theme', theme);
+  } catch (e) {}
+  currentThemeIdx = themes.indexOf(theme);
+}
+
+let currentFontSize = 16;
+function adjustFontSize(delta) {
+  if (delta === 0) {
+    currentFontSize = 16;
+  } else {
+    currentFontSize = Math.min(22, Math.max(13, currentFontSize + delta));
+  }
+  document.documentElement.style.setProperty('--base-font-size', currentFontSize + 'px');
+  try {
+    localStorage.setItem('audit_course_font_size', currentFontSize);
+  } catch (e) {}
+}
+
+// Init Reader Controls
+(function initReader() {
+  try {
+    const savedTheme = localStorage.getItem('audit_course_theme');
+    if (savedTheme) setTheme(savedTheme);
+    const savedFontSize = localStorage.getItem('audit_course_font_size');
+    if (savedFontSize) adjustFontSize(parseInt(savedFontSize, 10) - 16);
+  } catch (e) {}
+
+  window.addEventListener('scroll', function() {
+    const bar = document.getElementById('reading-progress-bar');
+    if (!bar) return;
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+    bar.style.width = scrolled + '%';
+  });
+})();
+
+// ==========================================
+// WIDGET 15.1: CLOSING MEETING CONFLICT RESOLUTION
+// ==========================================
+const conflictScenarios = {
+  budget: {
+    title: 'กรณีที่ 1: ฝ่ายไอทีอ้างข้อจำกัดด้านงบประมาณ (Budget Cut Defense)',
+    dialogue: 'ผู้อำนวยการไอที: "ที่เราเก็บล็อกได้แค่ 18 วัน เพราะฝ่ายการเงินตัดงบจัดซื้อดิสก์ไปเมื่อปีก่อน การที่คุณให้ความเสี่ยงเป็นระดับ High และบอกว่าเราไม่วางแผน มันไม่เป็นธรรมกับฝ่ายไอทีเลย!"',
+    choices: [
+      {
+        text: 'ยอมลดระดับความเสี่ยงเป็น Medium เพื่อเห็นใจฝ่ายไอที และบันทึกว่าความผิดอยู่ที่ฝ่ายการเงิน',
+        score: 10,
+        feedback: '❌ ตกหลุมพราง Audit Horse-Trading! การลดระดับความเสี่ยงเพื่อเอาใจผู้รับการตรวจบิดเบือนข้อเท็จจริง และการกล่าวโทษฝ่ายการเงินเป็นการชี้นิ้วจับผิดบุคคล (Finger-pointing)'
+      },
+      {
+        text: 'ยืนยันระดับความเสี่ยง High ด้วยข้อเท็จจริงทางกฎหมาย (พ.ร.บ.คอมพิวเตอร์ฯ) และชี้ให้เห็นว่ารายงานนี้คือ "เครื่องมือช่วยขออนุมัติงบพิเศษ" ต่อบอร์ด',
+        score: 100,
+        feedback: '🎉 ยอดเยี่ยมระดับ Lead IT Auditor! ผู้ตรวจสอบประเมินความเสี่ยงต่อองค์กรอย่างเป็นกลาง พร้อมเปลี่ยนข้อค้นพบให้กลายเป็นพลังหนุนฝ่ายไอทีในการของบประมาณจากสภามหาวิทยาลัย'
+      }
+    ]
+  },
+  horsetrading: {
+    title: 'กรณีที่ 2: การขอต่อรองลดระดับความเสี่ยงเพื่อผลประโยชน์ส่วนตัว (Rating Bargaining)',
+    dialogue: 'CIO: "ข้อค้นพบเรื่องขาด MFA ช่วยปรับลดจาก Critical เป็น Low ได้ไหม? ถ้าบอร์ดเห็นคำว่า Critical แผนกเราจะถูกตัดโบนัสประจำปี แต่เรารับปากว่าจะรีบแก้ให้เสร็จเดือนหน้า"',
+    choices: [
+      {
+        text: 'ปฏิเสธทันทีด้วยความโกรธ พร้อมขู่ว่าจะรายงานพฤติกรรมนี้ต่อคณะกรรมการสอบสวนทางวินัย',
+        score: 30,
+        feedback: '⚠️ ตอบสนองด้วยอารมณ์ ทำให้เกิดความเป็นปรปักษ์และทำลายความร่วมมือในการทำงาน'
+      },
+      {
+        text: 'ชี้แจงอย่างสุขุมว่าเกณฑ์ Critical พิจารณาจากความเสี่ยงการถูกบุกรุก Core Service ซึ่งขัดต่อเกณฑ์ สกมช. พร้อมเสนอทางออกให้ระบุในรายงานว่า "ฝ่ายบริหารตอบรับแก้ไขทันที (Agree & In Progress)"',
+        score: 100,
+        feedback: '🎉 มืออาชีพสมบูรณ์แบบ! ไม่ยอมแลกเปลี่ยนระดับความเสี่ยง (No Horse-Trading) แต่ช่วยสะท้อนความตั้งใจจริงของฝ่ายบริหารลงใน Management Response อย่างเป็นธรรม'
+      }
+    ]
+  },
+  outsource: {
+    title: 'กรณีที่ 3: ผู้รับจ้าง Outsource ปฏิเสธความรับผิด (Outsource Denial)',
+    dialogue: 'ผู้จัดการ Outsource: "S3 Bucket ที่เปิด Public เป็นเพียงเซิร์ฟเวอร์ทดสอบ (Staging) ไม่ใช่ระบบจริง จึงไม่ควรถือเป็นข้อค้นพบที่มีผลกระทบ"',
+    choices: [
+      {
+        text: 'เปิดผลการสแกนและพยานหลักฐาน (Evidence WP-13-02) แสดงไฟล์บัตรประชาชนจริง 60,000 ไฟล์ที่ดาวน์โหลดได้จากเน็ต ยืนยันข้อเท็จจริงเชิงประจักษ์',
+        score: 100,
+        feedback: '🎉 เฉียบคมและหนักแน่น! เมื่อผู้รับการตรวจพยายามโต้แย้งข้อเท็จจริง พยานหลักฐานเชิงประจักษ์ (Audit Evidence) ที่สอบทานย้อนกลับได้คือเครื่องมือยุติข้อโต้แย้งที่ดีที่สุด'
+      },
+      {
+        text: 'ยอมรับฟังคำชี้แจงและตัดข้อค้นพบนี้ออกจากรายงานเพื่อรักษาความสัมพันธ์กับคู่ค้า',
+        score: 0,
+        feedback: '🚨 ละเลยหน้าที่ร้ายแรง! ข้อค้นพบนี้มีความเสี่ยงต่อกฎหมาย PDPA มหาศาล การลบข้อค้นพบทิ้งถือเป็นการสมรู้ร่วมคิดปกปิดความเสี่ยง'
+      }
+    ]
+  }
+};
+
+let currentConflictKey = 'budget';
+let conflictChoiceSelected = null;
+
+function selectConflictScenario(key) {
+  currentConflictKey = key;
+  conflictChoiceSelected = null;
+  ['budget', 'horsetrading', 'outsource'].forEach(k => {
+    const btn = document.getElementById('conflict-btn-' + k);
+    if (btn) btn.classList.toggle('active', k === key);
+  });
+  renderConflictWidget();
+}
+
+function answerConflict(idx) {
+  conflictChoiceSelected = idx;
+  renderConflictWidget();
+}
+
+function renderConflictWidget() {
+  const container = document.getElementById('conflict-widget-display');
+  if (!container) return;
+  const s = conflictScenarios[currentConflictKey];
+
+  let choicesHtml = '';
+  s.choices.forEach((c, idx) => {
+    const isSel = conflictChoiceSelected === idx;
+    choicesHtml += `
+      <button class="vol-select-btn ${isSel ? 'active' : ''}" style="width:100%; text-align:left; margin-bottom:0.5rem; line-height:1.45;" onclick="answerConflict(${idx})">
+        ${c.text}
+      </button>
+    `;
+  });
+
+  let fbHtml = '';
+  if (conflictChoiceSelected !== null) {
+    const ch = s.choices[conflictChoiceSelected];
+    fbHtml = `
+      <div style="background:var(--bg-surface); padding:0.85rem; border-radius:6px; border:1px solid var(--border-color); font-size:0.83rem; margin-top:0.75rem;">
+        ${ch.feedback}
+      </div>
+    `;
+  }
+
+  container.innerHTML = `
+    <div style="font-weight:700; font-size:0.95rem; color:var(--text-main); margin-bottom:0.4rem;">${s.title}</div>
+    <div style="background:var(--bg-card); padding:0.85rem; border-left:4px solid var(--primary); border-radius:0 6px 6px 0; font-size:0.84rem; color:var(--text-muted); font-style:italic; margin-bottom:0.85rem;">
+      ${s.dialogue}
+    </div>
+    <div style="font-weight:600; font-size:0.84rem; color:var(--text-main); margin-bottom:0.5rem;">ท่านจะตอบสนองในฐานะ Lead IT Auditor อย่างไร?</div>
+    <div>${choicesHtml}</div>
+    ${fbHtml}
+  `;
+}
+
+// ==========================================
+// WIDGET 15.2: CAP HIERARCHY BUILDER
+// ==========================================
+const capHierarchyData = {
+  mfa: {
+    name: 'ข้อค้นพบ: ขาด MFA บน VPN และ Cloud Management Console',
+    l1: 'L1: Containment (ทันทีใน 24 ชม.) — เปลี่ยนรหัสผ่าน Admin ทั้งหมดเป็น Random Password 20 ตัวอักษร และจำกัด IP Source สำหรับล็อกอิน VPN ชั่วคราว',
+    l2: 'L2: Remediation (15-30 วัน) — จัดตั้งระบบ MFA บังคับใช้ Authenticator App บน VPN และ Cloud Console ทั้งหมด',
+    l3: 'L3: Systemic Fix (ยั่งยืน) — ตรานโยบาย Identity & Access Management (IAM Policy) ระดับมหาวิทยาลัย และจัดตั้งคณะกรรมการ Change Management อนุมัติสิทธิ์'
+  },
+  logs: {
+    name: 'ข้อค้นพบ: เก็บล็อกย้อนหลังได้เพียง 18 วัน (ขัด พ.ร.บ.คอมพิวเตอร์ฯ ม.26)',
+    l1: 'L1: Containment (ทันทีใน 24 ชม.) — หยุดสคริปต์ลบล็อกอัตโนมัติ และย้ายล็อกเก่าไปยัง External Storage สำรองฉุกเฉิน',
+    l2: 'L2: Remediation (15-30 วัน) — จัดซื้อ Cloud Storage WORM Archive เพื่อโอนย้ายล็อกที่มีอายุเกิน 14 วันไปจัดเก็บระยะยาวให้ครบ 90 วัน',
+    l3: 'L3: Systemic Fix (ยั่งยืน) — จัดทำแผน Capacity Planning ประจำปีสำหรับระบบจัดเก็บข้อมูล และพัฒนาระบบ Centralized SIEM Monitoring Dashboard'
+  },
+  s3: {
+    name: 'ข้อค้นพบ: บัตรประชาชนนักศึกษาเปิด Public Read บน Cloud Storage',
+    l1: 'L1: Containment (ทันทีใน 24 ชม.) — เปิดฟังก์ชัน Block Public Access บน Cloud Storage Bucket ทันที และตัดสิทธิ์การเข้าถึงจากอินเทอร์เน็ต',
+    l2: 'L2: Remediation (15-30 วัน) — เข้ารหัสไฟล์ทั้งหมดด้วยกุญแจ KMS, ตรวจสอบ Access Log ย้อนหลัง และรายงานเหตุละเมิดต่อ DPO และ สคส. ตามกฎหมาย',
+    l3: 'L3: Systemic Fix (ยั่งยืน) — บังคับใช้กระบวนการ Security Acceptance Testing ก่อนนำระบบขึ้นใช้งานจริง และปรับปรุงสัญญาจัดจ้างคู่ค้าให้มี DPA และ Right to Audit'
+  }
+};
+
+let activeCapKey = 'mfa';
+function switchCapCase(key) {
+  activeCapKey = key;
+  ['mfa', 'logs', 's3'].forEach(k => {
+    const btn = document.getElementById('cap-case-btn-' + k);
+    if (btn) btn.classList.toggle('active', k === key);
+  });
+  renderCapHierarchy();
+}
+
+function renderCapHierarchy() {
+  const container = document.getElementById('cap-hierarchy-display');
+  if (!container) return;
+  const d = capHierarchyData[activeCapKey];
+
+  container.innerHTML = `
+    <div style="font-weight:700; font-size:0.95rem; color:var(--text-main); margin-bottom:0.75rem;">${d.name}</div>
+    <div style="display:flex; flex-direction:column; gap:0.6rem;">
+      <div style="background:var(--rose-bg); border-left:4px solid var(--rose); padding:0.75rem 1rem; border-radius:0 6px 6px 0; font-size:0.83rem;">
+        <strong style="color:var(--rose); display:block; margin-bottom:0.2rem;">🛑 ระดับที่ 1: การควบคุมความเสียหายเฉพาะหน้า (Containment Action)</strong>
+        <span style="color:var(--text-main);">${d.l1}</span>
+      </div>
+      <div style="background:var(--amber-bg); border-left:4px solid var(--amber); padding:0.75rem 1rem; border-radius:0 6px 6px 0; font-size:0.83rem;">
+        <strong style="color:var(--amber); display:block; margin-bottom:0.2rem;">🔧 ระดับที่ 2: การแก้ไขจุดบกพร่องที่เกิดเหตุ (Remediation Action)</strong>
+        <span style="color:var(--text-main);">${d.l2}</span>
+      </div>
+      <div style="background:var(--emerald-bg); border-left:4px solid var(--emerald); padding:0.75rem 1rem; border-radius:0 6px 6px 0; font-size:0.83rem;">
+        <strong style="color:var(--emerald); display:block; margin-bottom:0.2rem;">🌳 ระดับที่ 3: การกำจัดสาเหตุรากเชิงระบบอย่างยั่งยืน (Systemic Root Cause Fix)</strong>
+        <span style="color:var(--text-main);">${d.l3}</span>
+      </div>
+    </div>
+  `;
+}
+
+// ==========================================
+// WIDGET 15.3: FINDING LIFECYCLE & TRACKING REGISTER
+// ==========================================
+let findingsTracking = [
+  { id: 'F-01', title: 'ขาด MFA บน VPN/Cloud', risk: 'CRITICAL', status: 'CLOSED', verified: true, retestNote: 'ทดสอบ Re-test ยืนยันว่าระบบ VPN และ IAM บังคับใช้ MFA 100%' },
+  { id: 'F-02', title: 'เก็บบันทึกล็อกไม่ครบ 90 วัน', risk: 'HIGH', status: 'IN_PROGRESS', verified: false, retestNote: 'จัดซื้อ Cloud Storage แล้ว อยู่ระหว่างติดตั้งสคริปต์สำรองข้อมูล' },
+  { id: 'F-03', title: 'บัตรประชาชนเปิด Public บน Cloud', risk: 'CRITICAL', status: 'CLOSED', verified: true, retestNote: 'Block Public Access สำเร็จ และเข้ารหัส KMS เรียบร้อย' },
+  { id: 'F-04', title: 'สัญญา Outsource ขาด DPA / Right to Audit', risk: 'HIGH', status: 'IN_PROGRESS', verified: false, retestNote: 'ส่งร่างสัญญาแนบท้ายให้ฝ่ายกฎหมายตรวจทาน' },
+  { id: 'F-05', title: 'ขาด Ransomware Playbook & ซักซ้อม', risk: 'MEDIUM', status: 'OPEN', verified: false, retestNote: 'รอจัดสรรงบประมาณไตรมาสถัดไป' }
+];
+
+function toggleFindingStatus(idx) {
+  const f = findingsTracking[idx];
+  if (f.status === 'OPEN') {
+    f.status = 'IN_PROGRESS';
+    f.verified = false;
+  } else if (f.status === 'IN_PROGRESS') {
+    f.status = 'PENDING_VERIFY';
+    f.verified = false;
+  } else if (f.status === 'PENDING_VERIFY') {
+    f.status = 'CLOSED';
+    f.verified = true;
+    f.retestNote = 'ผู้ตรวจสอบเข้า Re-testing และตรวจสอบหลักฐานเรียบร้อย (Verified by Lead Auditor)';
+  } else {
+    f.status = 'OPEN';
+    f.verified = false;
+    f.retestNote = 'เปิดสถานะใหม่เพื่อรอการดำเนินการ';
+  }
+  renderTrackingRegister();
+}
+
+function retestAllPending() {
+  findingsTracking.forEach(f => {
+    if (f.status === 'PENDING_VERIFY' || f.status === 'IN_PROGRESS') {
+      f.status = 'CLOSED';
+      f.verified = true;
+      f.retestNote = 'Re-test สำเร็จ: หลักฐานเชิงประจักษ์ผ่านเกณฑ์การควบคุมสมบูรณ์';
+    }
+  });
+  renderTrackingRegister();
+}
+
+function renderTrackingRegister() {
+  const container = document.getElementById('tracking-register-display');
+  if (!container) return;
+
+  let rowsHtml = '';
+  findingsTracking.forEach((f, idx) => {
+    let sClass = 'fail';
+    let sText = 'OPEN';
+    if (f.status === 'IN_PROGRESS') { sClass = 'warn'; sText = 'IN PROGRESS'; }
+    else if (f.status === 'PENDING_VERIFY') { sClass = 'info'; sText = 'PENDING VERIFY'; }
+    else if (f.status === 'CLOSED') { sClass = 'pass'; sText = 'CLOSED (VERIFIED)'; }
+
+    rowsHtml += `
+      <tr>
+        <td style="font-family:var(--font-code); font-weight:700;">${f.id}</td>
+        <td>
+          <div style="font-weight:600; color:var(--text-main);">${f.title}</div>
+          <div style="font-size:0.75rem; color:var(--text-dim); margin-top:0.15rem;">${f.retestNote}</div>
+        </td>
+        <td><span class="badge-status ${f.risk === 'CRITICAL' ? 'fail' : (f.risk === 'HIGH' ? 'warn' : 'info')}">${f.risk}</span></td>
+        <td>
+          <span class="badge-status ${sClass}" style="cursor:pointer;" onclick="toggleFindingStatus(${idx})" title="คลิกเพื่อเปลี่ยนสถานะจำลอง">
+            ${sText} 🔄
+          </span>
+        </td>
+      </tr>
+    `;
+  });
+
+  const closedCount = findingsTracking.filter(f => f.status === 'CLOSED').length;
+  const progressPct = Math.round((closedCount / findingsTracking.length) * 100);
+
+  container.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:0.75rem; gap:0.5rem;">
+      <div>
+        <span style="font-size:0.82rem; color:var(--text-dim);">ความคืบหน้าการปิดข้อค้นพบ (Remediation Progress):</span>
+        <strong style="margin-left:0.5rem; font-size:1.15rem; color:${progressPct >= 80 ? 'var(--emerald)' : 'var(--amber)'};">${closedCount} / ${findingsTracking.length} ข้อ (${progressPct}%)</strong>
+      </div>
+      <button class="vol-select-btn" onclick="retestAllPending()">🔍 ดำเนินการ Re-test ยืนยันผลทั้งหมด</button>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table" style="font-size:0.82rem;">
+        <thead>
+          <tr>
+            <th style="width:10%;">รหัส</th>
+            <th style="width:50%;">ชื่อข้อค้นพบ & ผลการตรวจยืนยัน</th>
+            <th style="width:18%;">ระดับความเสี่ยง</th>
+            <th style="width:22%;">สถานะ (คลิกเพื่อสลับ)</th>
+          </tr>
+        </thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ==========================================
+// WIDGET 15.4: FORMAL RISK ACCEPTANCE EVALUATOR
+// ==========================================
+function evalRiskAcceptance() {
+  const authority = document.getElementById('w4-auth')?.value || 'manager';
+  const comp = document.getElementById('w4-compensating')?.value || 'none';
+  const time = document.getElementById('w4-time')?.value || 'indefinite';
+  const legal = document.getElementById('w4-legal-violation')?.value || 'yes';
+  const display = document.getElementById('risk-accept-result');
+  if (!display) return;
+
+  let isAcceptable = true;
+  let reasons = [];
+
+  if (legal === 'yes') {
+    isAcceptable = false;
+    reasons.push('🚨 ผิดกฎหมายภาคบังคับ (พ.ร.บ.ไซเบอร์/PDPA): คณะกรรมการหรือฝ่ายบริหารไม่มีอำนาจตามกฎหมายในการ "ยอมรับความเสี่ยงที่จะทำผิดกฎหมาย" ได้!');
+  }
+
+  if (authority !== 'board') {
+    isAcceptable = false;
+    reasons.push('❌ ผู้มีอำนาจลงนามไม่ถูกต้อง: การยอมรับความเสี่ยงระดับสูงต้องผ่านมติของ Audit Committee หรือสภามหาวิทยาลัยเท่านั้น ผู้จัดการไอทีไม่มีสิทธิ์ยอมรับแทน');
+  }
+
+  if (comp === 'none') {
+    isAcceptable = false;
+    reasons.push('⚠️ ขาดมาตรการชดเชย (No Compensating Controls): การยอมรับความเสี่ยงโดยปล่อยระบบว่างเปล่าถือเป็นความประมาทเลินเล่ออย่างร้ายแรง');
+  } else {
+    reasons.push('✓ มีการจัดตั้งมาตรการชดเชยเพื่อลดความรุนแรงของผลกระทบ');
+  }
+
+  if (time === 'indefinite') {
+    isAcceptable = false;
+    reasons.push('❌ ไม่มีกรอบเวลาสิ้นสุด: การยอมรับความเสี่ยงต้องมีกำหนดเวลาทบทวนชัดเจน (เช่น ภายใน 6 เดือน) ห้ามอนุมัติตลอดชีพ');
+  } else {
+    reasons.push('✓ มีกรอบเวลาการสิ้นสุดและทบทวนความเสี่ยงที่แน่นอน');
+  }
+
+  display.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:0.6rem; gap:0.5rem;">
+      <div>
+        <span style="font-size:0.82rem; color:var(--text-dim); text-transform:uppercase;">คำตัดสินของคณะกรรมการตรวจสอบ (Audit Committee Verdict):</span>
+      </div>
+      <div>
+        <span class="badge-status ${isAcceptable ? 'pass' : 'fail'}" style="font-size:0.88rem; font-weight:700;">
+          ${isAcceptable ? '✓ อนุมัติการยอมรับความเสี่ยงแบบมีเงื่อนไข (Risk Accepted)' : '❌ ไม่อนุมัติการยอมรับความเสี่ยง (Risk Acceptance REJECTED)'}
+        </span>
+      </div>
+    </div>
+    <div style="font-size:0.82rem; line-height:1.45; color:var(--text-muted); margin-bottom:0.75rem;">
+      ${reasons.map(r => '<div style="margin-bottom:0.3rem;">' + r + '</div>').join('')}
+    </div>
+    <div style="background:var(--bg-card); padding:0.75rem; border-radius:6px; border-left:4px solid ${isAcceptable ? 'var(--emerald)' : 'var(--rose)'}; font-size:0.82rem;">
+      <strong>ข้อสั่งการของบอร์ด:</strong> ${isAcceptable ? 'บันทึกการยอมรับความเสี่ยงเข้าสู่ Risk Register พร้อมกำหนดนัดตรวจ Re-test ทบทวนในอีก 6 เดือน' : 'สั่งการให้ฝ่ายบริหารจัดสรรงบประมาณเร่งด่วนและดำเนินการแก้ไขให้แล้วเสร็จภายใน 30 วัน'}
+    </div>
+  `;
+}
+
+// ==========================================
+// WIDGET 15.5: ACTIVE LEARNING CLINIC
+// ==========================================
+let curWsStep = 1;
+let wsAnswers = { 1: null, 2: null, 3: null };
+
+const wsStepsData = {
+  1: {
+    title: 'ภารกิจที่ 1: การเปิดการประชุมปิดอย่างสร้างสรรค์ (Constructive Opening)',
+    desc: 'ท่านกำลังเริ่มต้นการประชุมปิดต่อหน้าอธิการบดี คณะกรรมการตรวจสอบ และผู้อำนวยการฝ่ายต่างๆ ที่กำลังมีสีหน้ากังวล',
+    question: 'ในฐานะ Lead Auditor ประโยคเปิดการประชุมข้อใดสะท้อนมาตรฐานสากลและสร้างบรรยากาศร่วมมือได้ดีที่สุด?',
+    choices: [
+      { text: 'วันนี้เรามารวมตัวกันเพื่อชี้แจงความผิดพลาดและความบกพร่องทั้งหมดที่ฝ่ายไอทีทำไว้ในรอบปีที่ผ่านมา', score: 0, feedback: '❌ ทำลายบรรยากาศทันที! มุ่งเน้นการตำหนิและสร้างกำแพงต่อต้าน' },
+      { text: 'ขอขอบคุณทุกฝ่ายที่ให้ความร่วมมืออย่างดียิ่ง วัตถุประสงค์ของการประชุมวันนี้คือการร่วมกันมองภาพความเสี่ยงของมหาวิทยาลัยอย่างเป็นกลาง เพื่อสนับสนุนให้เกิดการพัฒนาธรรมาภิบาลดิจิทัลอย่างยั่งยืน', score: 100, feedback: '🎉 ยอดเยี่ยมระดับมืออาชีพ! สร้างจิตวิญญาณแห่งความเป็นหุ้นส่วนเชิงสร้างสรรค์ (Constructive Partnership)' }
+    ]
+  },
+  2: {
+    title: 'ภารกิจที่ 2: การรับมือแรงกดดันเรื่องข้อค้นพบ Critical (Finding Defense)',
+    desc: 'CIO กดดันในห้องประชุม: "ระบบ VPN ของเราเปิดมา 5 ปีไม่เคยโดนเจาะ การระบุว่าขาด MFA เป็น Critical มันเวอร์เกินไป ขอให้ผู้ตรวจลดระดับลง"',
+    question: 'ท่านจะตอบอย่างไรเพื่อรักษาความเป็นอิสระและมาตรฐานวิชาชีพ?',
+    choices: [
+      { text: 'อธิบายว่าการไม่เคยถูกเจาะไม่ได้แปลว่าปลอดภัย และการเชื่อมต่อ VPN สู่ Core Network ขาด MFA ถือเป็น Critical ตามมาตรฐาน สกมช. แต่จะบันทึกข้อคิดเห็นของ CIO ลงในรายงานอย่างครบถ้วน', score: 100, feedback: '🎉 ถูกต้องแม่นยำ! ยืนยันข้อเท็จจริงและเกณฑ์มาตรฐานสากลโดยไม่ลดหย่อนความเสี่ยง พร้อมให้พื้นที่ฝ่ายบริหารชี้แจงตามหลักวิชาชีพ' },
+      { text: 'ยอมลดระดับเป็น High เพื่อไม่ให้บรรยากาศในที่ประชุมตึงเครียดเกินไป', score: 10, feedback: '❌ ขัดจรรยาบรรณวิชาชีพ! การยอมต่อรองระดับความเสี่ยงเพื่อหนีความตึงเครียดทำลายความน่าเชื่อถือของผู้ตรวจสอบ' }
+    ]
+  },
+  3: {
+    title: 'ภารกิจที่ 3: การสรุปข้อตกลงและก้าวถัดไป (Agreed Next Steps & CAP Sign-off)',
+    desc: 'ก่อนปิดการประชุม ผู้ตรวจสอบต้องสรุปข้อตกลงและกรอบเวลาการดำเนินการถัดไปให้ชัดเจน',
+    question: 'ข้อใดคือขั้นตอนการสรุปปิดการประชุมที่สมบูรณ์ที่สุด?',
+    choices: [
+      { text: 'ขอให้ทุกฝ่ายแยกย้ายกลับไปทำงาน และรอให้ผู้ตรวจสอบส่งรายงานฉบับสมบูรณ์ไปให้เมื่อใดก็ได้', score: 10, feedback: '⚠️ ขาดกรอบเวลาที่ชัดเจน ทำให้งานติดตามผลชะงักงัน' },
+      { text: 'กำหนดกรอบเวลาให้ฝ่ายบริหารส่งมอบแผน CAP ที่ระบุผู้รับผิดชอบรายบุคคลและ Due Date ภายใน 14 วันทำการ พร้อมนัดหมายการติดตามผล (Follow-up Audit) รอบถัดไป', score: 100, feedback: '🎉 สมบูรณ์แบบ! มีกรอบเวลาและพันธะสัญญาที่ชัดเจนตามมาตรฐาน ISACA ITAF' }
+    ]
+  }
+};
+
+function setWorkshopStep(step) {
+  curWsStep = step;
+  for (let s = 1; s <= 3; s++) {
+    const btn = document.getElementById('ws-step-btn-' + s);
+    if (btn) btn.classList.toggle('active', s === step);
+  }
+  renderWsStep();
+}
+
+function answerWs(step, choiceIdx) {
+  wsAnswers[step] = choiceIdx;
+  renderWsStep();
+}
+
+function renderWsStep() {
+  const container = document.getElementById('workshop-step-content');
+  if (!container) return;
+
+  const t = wsStepsData[curWsStep];
+  const answered = wsAnswers[curWsStep];
+
+  let choicesHtml = '';
+  t.choices.forEach((ch, idx) => {
+    const isSelected = answered === idx;
+    choicesHtml += `
+      <button class="vol-select-btn ${isSelected ? 'active' : ''}" style="margin-bottom:0.5rem; width:100%; text-align:left; line-height:1.45;" onclick="answerWs(${curWsStep}, ${idx})">
+        ${ch.text}
+      </button>
+    `;
+  });
+
+  let fbHtml = '';
+  if (answered !== null) {
+    const ch = t.choices[answered];
+    fbHtml = `
+      <div style="background:var(--bg-surface); padding:0.75rem; border-radius:6px; border:1px solid var(--border-color); font-size:0.83rem; margin-top:0.75rem;">
+        ${ch.feedback}
+      </div>
+    `;
+  }
+
+  container.innerHTML = `
+    <div style="font-weight:700; font-size:1rem; color:var(--text-main); margin-bottom:0.35rem;">${t.title}</div>
+    <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:0.75rem;">${t.desc}</p>
+    <div style="font-weight:600; font-size:0.86rem; color:var(--text-main); margin-bottom:0.6rem;">โจทย์: ${t.question}</div>
+    <div>${choicesHtml}</div>
+    ${fbHtml}
+  `;
+
+  renderWsScore();
+}
+
+function renderWsScore() {
+  const scoreCard = document.getElementById('workshop-score-summary');
+  if (!scoreCard) return;
+
+  let total = 0;
+  let count = 0;
+  for (let s = 1; s <= 3; s++) {
+    if (wsAnswers[s] !== null) {
+      count++;
+      total += wsStepsData[s].choices[wsAnswers[s]].score;
+    }
+  }
+  const avg = count > 0 ? Math.round(total / count) : 0;
+
+  scoreCard.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+      <div>
+        <span style="font-size:0.82rem; color:var(--text-dim); text-transform:uppercase;">คะแนนการทำหน้าที่ Lead IT Auditor ในการประชุมปิด:</span>
+        <strong style="margin-left:0.5rem; font-size:1.2rem; color:${avg >= 80 ? 'var(--emerald)' : (avg >= 50 ? 'var(--amber)' : 'var(--rose)')};">${avg} / 100 คะแนน</strong>
+      </div>
+      <div style="font-size:0.82rem; color:var(--text-muted);">
+        ${count === 3 ? (avg === 100 ? '🎉 ยอดเยี่ยม! คุณมีคุณสมบัติของ Lead Cybersecurity & IT Auditor ชั้นนำอย่างสมบูรณ์แบบ' : 'ปฏิบัติครบถ้วน มีความเข้าใจในกลยุทธ์การบริหารการประชุมปิด') : 'ตอบให้ครบทั้ง 3 ภารกิจเพื่อประเมินผลสัมฤทธิ์'}
+      </div>
+    </div>
+  `;
+}
+
+// Initial calls when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  selectConflictScenario('budget');
+  switchCapCase('mfa');
+  renderTrackingRegister();
+  evalRiskAcceptance();
+  renderWsStep();
+});
+
+  </script>
+</body>
+</html>

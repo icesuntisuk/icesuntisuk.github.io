@@ -1,0 +1,2538 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 13: การตรวจสอบความสอดคล้อง ข้อมูลส่วนบุคคล คลาวด์ และผู้ให้บริการภายนอก (Compliance, Privacy, Cloud, and Third-Party Audit) - การตรวจสอบความมั่นคงปลอดภัยสารสนเทศ</title>
+  <meta name="description" content="บทที่ 13: การตรวจสอบความสอดคล้อง ข้อมูลส่วนบุคคล คลาวด์ และผู้ให้บริการภายนอก กรอบการทำงาน PDPA 2562, NCSA Cloud Guideline, AICPA SOC 2 Type II, TPRM และ Shared Responsibility Model">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-glow: rgba(79, 70, 229, 0.12);
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --border-color: #e2e8f0;
+      --border-subtle: #edf2f7;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --text-dim: #64748b;
+      --code-bg: #f1f5f9;
+      --code-border: #cbd5e1;
+      --font-body: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Inter', 'Prompt', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+      --emerald: #059669;
+      --emerald-bg: rgba(5, 150, 105, 0.1);
+      --amber: #d97706;
+      --amber-bg: rgba(217, 119, 6, 0.1);
+      --rose: #e11d48;
+      --rose-bg: rgba(225, 29, 72, 0.1);
+      --purple: #7c3aed;
+      --purple-bg: rgba(124, 58, 237, 0.1);
+      --blue: #0284c7;
+      --blue-bg: rgba(2, 132, 199, 0.1);
+      --base-font-size: 16px;
+    }
+
+    [data-theme="sepia"] {
+      --primary: #4338ca;
+      --primary-hover: #3730a3;
+      --primary-glow: rgba(67, 56, 202, 0.15);
+      --bg-page: #fbf0d9;
+      --bg-surface: #f4e3c1;
+      --bg-card: #f7e8cb;
+      --border-color: #e6d3aa;
+      --border-subtle: #ecdcb9;
+      --text-main: #433422;
+      --text-muted: #5c4731;
+      --text-dim: #7d654a;
+      --code-bg: #efe0c0;
+      --code-border: #dcc89f;
+      --emerald: #2e7d32;
+      --emerald-bg: rgba(46, 125, 50, 0.12);
+      --amber: #b45309;
+      --amber-bg: rgba(180, 83, 9, 0.12);
+      --rose: #9f1239;
+      --rose-bg: rgba(159, 18, 57, 0.12);
+      --purple: #6b21a8;
+      --purple-bg: rgba(107, 33, 168, 0.12);
+    }
+
+    [data-theme="dark"] {
+      --primary: #818cf8;
+      --primary-hover: #a5b4fc;
+      --primary-glow: rgba(129, 140, 248, 0.15);
+      --bg-page: #0b1120;
+      --bg-surface: #0f172a;
+      --bg-card: #1e293b;
+      --border-color: #334155;
+      --border-subtle: #1e293b;
+      --text-main: #f1f5f9;
+      --text-muted: #cbd5e1;
+      --text-dim: #94a3b8;
+      --code-bg: #090e17;
+      --code-border: #1e293b;
+      --emerald: #10b981;
+      --emerald-bg: rgba(16, 185, 129, 0.15);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245, 158, 11, 0.15);
+      --rose: #fb7185;
+      --rose-bg: rgba(251, 113, 133, 0.15);
+      --purple: #a855f7;
+      --purple-bg: rgba(168, 85, 247, 0.15);
+      --blue: #38bdf8;
+      --blue-bg: rgba(56, 189, 248, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      font-size: var(--base-font-size);
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.75;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Reading Progress Bar */
+    .reading-progress-track {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: transparent;
+      z-index: 1000;
+    }
+    .reading-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #4f46e5, #818cf8);
+      transition: width 0.1s ease;
+    }
+
+    /* Site Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 900;
+      padding: 0.65rem 1.5rem;
+      backdrop-filter: blur(8px);
+    }
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .course-badge {
+      font-family: var(--font-code);
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid var(--primary);
+      letter-spacing: 0.05em;
+    }
+    .chapter-indicator {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .control-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .control-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Layout */
+    .page-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 2.5rem;
+      padding: 2.5rem 1.5rem 5rem 1.5rem;
+    }
+
+    /* Sidebar TOC */
+    .sidebar-toc {
+      position: sticky;
+      top: 4.5rem;
+      height: calc(100vh - 5.5rem);
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+    .toc-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .toc-header {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 0.75rem;
+    }
+    .toc-list { list-style: none; }
+    .toc-item { margin-bottom: 0.35rem; }
+    .toc-item a {
+      display: block;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.84rem;
+      line-height: 1.4;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+    .toc-item a:hover {
+      background: var(--primary-glow);
+      color: var(--primary);
+    }
+    .toc-h1 { font-weight: 700; }
+    .toc-h2 { font-weight: 600; margin-left: 0.5rem; }
+    .toc-h3 { font-size: 0.8rem; margin-left: 1rem; color: var(--text-dim); }
+
+    /* Main Article */
+    .main-article {
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .chapter-header {
+      margin-bottom: 2.5rem;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+    }
+    .chapter-badge {
+      display: inline-block;
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-glow);
+      padding: 0.3rem 0.75rem;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+      border: 1px solid var(--primary);
+    }
+    .chapter-title {
+      font-family: var(--font-display);
+      font-size: 2.1rem;
+      font-weight: 800;
+      line-height: 1.3;
+      color: var(--text-main);
+    }
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 3rem 0 1.25rem 0;
+      color: var(--text-main);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+    .subsection-heading {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 2rem 0 1rem 0;
+      color: var(--text-main);
+    }
+    .sub-subsection-heading {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin: 1.5rem 0 0.6rem 0;
+      color: var(--text-muted);
+    }
+    .sub-level5-heading {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin: 1rem 0 0.4rem 0;
+      color: var(--primary);
+    }
+    .content-paragraph {
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+    .content-list {
+      margin: 0.8rem 0 1.2rem 1.75rem;
+      color: var(--text-muted);
+    }
+    .content-list li { margin-bottom: 0.4rem; }
+    .content-blockquote {
+      background: var(--bg-card);
+      border-left: 4px solid var(--primary);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+      font-style: normal;
+      color: var(--text-main);
+    }
+    .section-divider {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2.5rem 0;
+    }
+    code {
+      font-family: var(--font-code);
+      font-size: 0.88em;
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      padding: 0.15em 0.35em;
+      border-radius: 4px;
+      color: var(--text-main);
+    }
+    pre.code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      padding: 1.1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.2rem 0;
+      font-family: var(--font-code);
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+
+    /* Standard Tables */
+    .table-responsive {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      background: var(--bg-surface);
+      text-align: left;
+    }
+    .content-table th {
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-weight: 700;
+      padding: 0.75rem 1rem;
+      border-bottom: 2px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .content-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    .content-table tr:hover td { background: var(--primary-glow); }
+
+    /* Figures & Cards */
+    .figure-box, .widget-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+    .figure-header, .widget-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.65rem;
+    }
+    .figure-tag, .widget-tag {
+      font-family: var(--font-code);
+      font-weight: 800;
+      font-size: 0.75rem;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+    .figure-title, .widget-title {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .figure-caption {
+      margin-top: 1rem;
+      font-size: 0.84rem;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border-color);
+      padding-top: 0.6rem;
+      font-style: italic;
+    }
+    .widget-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Badges */
+    .badge-status {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-family: var(--font-code);
+    }
+    .badge-status.pass { background: var(--emerald-bg); color: var(--emerald); border: 1px solid var(--emerald); }
+    .badge-status.warn { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber); }
+    .badge-status.fail { background: var(--rose-bg); color: var(--rose); border: 1px solid var(--rose); }
+
+    /* Figure 13.1 Pyramid */
+    .pyramid-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    .pyramid-tier {
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      position: relative;
+      transition: transform 0.2s ease;
+    }
+    .pyramid-tier:hover { transform: translateX(4px); }
+    .tier-badge {
+      font-size: 0.72rem;
+      font-family: var(--font-code);
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 0.35rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+    }
+    .tier-national { border-left: 6px solid var(--rose); }
+    .tier-national .tier-badge { background: var(--rose-bg); color: var(--rose); }
+    .tier-sectoral { border-left: 6px solid var(--amber); }
+    .tier-sectoral .tier-badge { background: var(--amber-bg); color: var(--amber); }
+    .tier-contracts { border-left: 6px solid var(--primary); }
+    .tier-contracts .tier-badge { background: var(--primary-glow); color: var(--primary); }
+    .tier-internal { border-left: 6px solid var(--emerald); }
+    .tier-internal .tier-badge { background: var(--emerald-bg); color: var(--emerald); }
+    .tier-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.35rem; color: var(--text-main); }
+    .pyramid-tier p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem; }
+    .tier-meta { font-size: 0.76rem; color: var(--text-dim); font-family: var(--font-code); }
+
+    /* Figure 13.2 PDPA Pillars */
+    .pdpa-pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .pillar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      position: relative;
+    }
+    .pillar-card.full-width { grid-column: 1 / -1; border-top: 3px solid var(--rose); }
+    .pillar-num {
+      font-family: var(--font-code);
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--primary);
+      opacity: 0.85;
+      margin-bottom: 0.2rem;
+    }
+    .pillar-title { font-weight: 700; font-size: 0.92rem; color: var(--text-main); margin-bottom: 0.4rem; }
+    .pillar-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.45; margin-bottom: 0.6rem; }
+    .pillar-law { font-family: var(--font-code); font-size: 0.72rem; color: var(--text-dim); background: var(--code-bg); display: inline-block; padding: 0.15rem 0.4rem; border-radius: 4px; }
+
+    /* Figure 13.3 Shared Responsibility */
+    .shared-table tr.layer-highlight td {
+      background: rgba(225, 29, 72, 0.04);
+      border-left: 3px solid var(--rose);
+    }
+
+    /* Figure 13.4 TPRM Flow */
+    .tprm-flow-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 0.75rem;
+      margin: 1.25rem 0;
+    }
+    .tprm-step {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 0.75rem;
+      text-align: center;
+      position: relative;
+    }
+    .tprm-step .step-badge {
+      font-size: 0.7rem;
+      font-family: var(--font-code);
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.4rem;
+    }
+    .tprm-step .step-icon { font-size: 1.5rem; margin-bottom: 0.35rem; }
+    .tprm-step .step-title { font-size: 0.84rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; line-height: 1.3; }
+    .step-list { list-style: none; text-align: left; font-size: 0.76rem; color: var(--text-muted); padding-left: 0; }
+    .step-list li { margin-bottom: 0.3rem; padding-left: 0.8rem; position: relative; line-height: 1.35; }
+    .step-list li::before { content: "•"; position: absolute; left: 0; color: var(--primary); }
+
+    /* Figure 13.5 Pitfalls */
+    .pitfalls-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .p-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+      border-top: 4px solid var(--amber);
+    }
+    .p-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+    .p-num { font-size: 0.75rem; font-family: var(--font-code); font-weight: 700; color: var(--amber); }
+    .p-title { font-size: 0.92rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; }
+    .p-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; margin-bottom: 0.75rem; }
+    .p-action { font-size: 0.78rem; background: var(--bg-surface); padding: 0.5rem; border-radius: 6px; border-left: 3px solid var(--primary); color: var(--text-main); }
+
+    /* Figure 13.6 Case Facts */
+    .case-facts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .c-fact {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      border-left: 4px solid var(--rose);
+    }
+    .c-fact.full-span { grid-column: 1 / -1; border-left-color: var(--amber); }
+    .fact-icon { font-size: 1.3rem; margin-bottom: 0.25rem; }
+    .fact-title { font-weight: 700; font-size: 0.88rem; color: var(--text-main); margin-bottom: 0.35rem; }
+    .c-fact p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; }
+
+    /* Figure 13.7 Working Paper Card */
+    .working-paper-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      font-family: var(--font-body);
+    }
+    .wp-header-block {
+      text-align: center;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    .wp-org-title { font-weight: 700; font-size: 1.05rem; color: var(--text-main); }
+    .wp-doc-type { font-size: 0.88rem; color: var(--primary); font-weight: 600; }
+    .wp-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.5rem 1.5rem;
+      font-size: 0.82rem;
+      background: var(--bg-surface);
+      padding: 0.85rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 1rem;
+    }
+    .wp-section-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 0.35rem; color: var(--text-main); }
+    .wp-summary-content p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* Figure 13.8 Findings Matrix */
+    .findings-matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .find-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .find-card.c-critical { border-top: 4px solid var(--rose); }
+    .find-card.c-high { border-top: 4px solid var(--amber); }
+    .find-badge { font-family: var(--font-code); font-size: 0.72rem; font-weight: 800; margin-bottom: 0.35rem; }
+    .find-card.c-critical .find-badge { color: var(--rose); }
+    .find-card.c-high .find-badge { color: var(--amber); }
+    .find-title { font-weight: 700; font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.5rem; }
+    .find-body { font-size: 0.8rem; color: var(--text-muted); line-height: 1.45; display: flex; flex-direction: column; gap: 0.35rem; }
+
+    /* Figure 13.9 Traps */
+    .traps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .trap-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .trap-icon { font-size: 1.4rem; margin-bottom: 0.3rem; }
+    .trap-title { font-weight: 700; font-size: 0.88rem; color: var(--text-main); margin-bottom: 0.35rem; }
+    .trap-box p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.45; }
+
+    /* Figure 13.11 Dialogue */
+    .dialogue-box {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .dialogue-bubble {
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      border: 1px solid var(--border-color);
+    }
+    .dialogue-role { font-weight: 700; font-size: 0.82rem; margin-bottom: 0.35rem; text-transform: uppercase; }
+    .d-procurement { background: rgba(217, 119, 6, 0.08); border-left: 5px solid var(--amber); }
+    .d-procurement .dialogue-role { color: var(--amber); }
+    .d-auditor { background: rgba(79, 70, 229, 0.08); border-left: 5px solid var(--primary); }
+    .d-auditor .dialogue-role { color: var(--primary); }
+    .d-architect { background: rgba(5, 150, 105, 0.08); border-left: 5px solid var(--emerald); }
+    .d-architect .dialogue-role { color: var(--emerald); }
+
+    /* Figure 13.12 Decision Tree */
+    .decision-tree-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .dt-node {
+      background: var(--bg-card);
+      padding: 0.85rem 1.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      text-align: center;
+    }
+    .dt-start { border-left: 5px solid var(--primary); }
+    .dt-badge { font-family: var(--font-code); font-weight: 800; font-size: 0.75rem; color: var(--primary); margin-bottom: 0.2rem; }
+    .dt-text { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+    .dt-arrow { text-align: center; font-size: 0.82rem; color: var(--text-dim); font-family: var(--font-code); }
+    .dt-branch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .dt-path {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .path-title { font-weight: 700; font-size: 0.88rem; color: var(--text-main); margin-bottom: 0.4rem; }
+    .path-condition { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 0.5rem; }
+    .path-list { font-size: 0.78rem; color: var(--text-muted); margin-left: 1.2rem; margin-bottom: 0.6rem; }
+    .path-result { font-size: 0.78rem; font-weight: 700; padding: 0.3rem 0.5rem; border-radius: 4px; text-align: center; }
+    .res-pass { background: var(--emerald-bg); color: var(--emerald); border: 1px solid var(--emerald); }
+    .dt-fallback-box {
+      background: var(--rose-bg);
+      border: 1px solid var(--rose);
+      border-radius: 8px;
+      padding: 0.85rem 1.25rem;
+      text-align: center;
+    }
+    .dt-danger-tag { font-weight: 700; color: var(--rose); font-size: 0.9rem; margin-bottom: 0.25rem; }
+    .dt-fallback-box p { font-size: 0.82rem; color: var(--text-main); }
+
+    /* Interactive Buttons */
+    .model-tab-btn, .vol-select-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .model-tab-btn.active, .vol-select-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Footer Nav */
+    .chapter-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+    .btn-nav-chapter {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .btn-nav-chapter:hover {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar-toc { display: none; }
+      .page-container { padding: 1.5rem 1rem 4rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="reading-progress-track">
+    <div class="reading-progress-bar" id="reading-progress-bar"></div>
+    <div id="progress-bar" style="display:none;"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-branding">
+        <span class="course-badge">NECS1312 // CH-13</span>
+        <span class="chapter-indicator">การตรวจสอบความสอดคล้อง ข้อมูลส่วนบุคคล คลาวด์ และผู้ให้บริการภายนอก</span>
+      </div>
+      <div class="header-controls">
+        <button class="control-btn" id="theme-toggle" onclick="cycleTheme()" title="สลับโหมดสี">🌓</button>
+        <button class="control-btn" id="btn-theme-light" onclick="setTheme('light')" title="Light Mode">☀️</button>
+        <button class="control-btn" id="btn-theme-sepia" onclick="setTheme('sepia')" title="Sepia Mode">📜</button>
+        <button class="control-btn" id="btn-theme-dark" onclick="setTheme('dark')" title="Dark Mode">🌙</button>
+        <div style="width:1px; height:18px; background:var(--border-color); margin:0 0.2rem;"></div>
+        <button class="control-btn" id="font-decrease" onclick="adjustFontSize(-1)" title="Smaller Font">A-</button>
+        <button class="control-btn" id="font-reset" onclick="adjustFontSize(0)" title="Default Font">A</button>
+        <button class="control-btn" id="font-increase" onclick="adjustFontSize(1)" title="Larger Font">A+</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-container">
+    <aside class="sidebar-toc">
+      
+<div class="toc-container">
+  <div class="toc-header">
+    <span class="toc-title">สารบัญประจำบทที่ 13</span>
+  </div>
+  <ul class="toc-list">
+
+    <li class="toc-item toc-h1">
+      <a href="#บทที่-13-การตรวจสอบความสอดคล้อง-ข้อมูลส่วนบุคคล-คลาวด์-และผู้ให้บริการภายนอก-compliance-privacy-cloud-and-third-party-audit" class="toc-link">บทที่ 13 การตรวจสอบความสอดคล้อง ข้อมูลส่วนบุคคล คลาวด์ และผู้ให้บริการภายนอก (Compliance, Privacy, Cloud, and Third-Party Audit)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes" class="toc-link">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-1-ทฤษฎีและการตรวจสอบความสอดคล้องและการคุ้มครองข้อมูลส่วนบุคคล-compliance-privacy-audit" class="toc-link">ส่วนที่ 1: ทฤษฎีและการตรวจสอบความสอดคล้องและการคุ้มครองข้อมูลส่วนบุคคล (Compliance &amp; Privacy Audit)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-1-แหล่งข้อกำหนดและการบูรณาการกฎหมาย-compliance-obligations-harmonization" class="toc-link">1.1 แหล่งข้อกำหนดและการบูรณาการกฎหมาย (Compliance Obligations &amp; Harmonization)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-2-การตรวจสอบมาตรการคุ้มครองข้อมูลส่วนบุคคล-pdpa-information-security-audit" class="toc-link">1.2 การตรวจสอบมาตรการคุ้มครองข้อมูลส่วนบุคคล (PDPA Information Security Audit)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-2-การตรวจสอบความมั่นคงปลอดภัยบนระบบคลาวด์และห่วงโซ่อุปทาน-cloud-third-party-audit" class="toc-link">ส่วนที่ 2: การตรวจสอบความมั่นคงปลอดภัยบนระบบคลาวด์และห่วงโซ่อุปทาน (Cloud &amp; Third-Party Audit)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-1-แบบจำลองความรับผิดชอบร่วมบนคลาวด์-cloud-shared-responsibility-model" class="toc-link">2.1 แบบจำลองความรับผิดชอบร่วมบนคลาวด์ (Cloud Shared Responsibility Model)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-2-แนวทางการตรวจระบบคลาวด์ตามมาตรฐาน-สกมช-ncsa-cloud-security-guideline" class="toc-link">2.2 แนวทางการตรวจระบบคลาวด์ตามมาตรฐาน สกมช. (NCSA Cloud Security Guideline)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-3-การบริหารความเสี่ยงผู้ให้บริการภายนอกตลอดวงจรชีวิต-third-party-risk-lifecycle" class="toc-link">2.3 การบริหารความเสี่ยงผู้ให้บริการภายนอกตลอดวงจรชีวิต (Third-Party Risk Lifecycle)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-4-การวิเคราะห์รายงานความเชื่อมั่นอิสระ-independent-assurance-reports-และข้อจำกัด" class="toc-link">2.4 การวิเคราะห์รายงานความเชื่อมั่นอิสระ (Independent Assurance Reports) และข้อจำกัด</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-3-กรณีศึกษาเชิงลึก-มหาวิทยาลัยดิจิทัลสมมติ-โครงการย้ายระบบทะเบียนสู่ระบบคลาวด์และการจ้างงาน-outsource" class="toc-link">ส่วนที่ 3: กรณีศึกษาเชิงลึก &quot;มหาวิทยาลัยดิจิทัลสมมติ&quot; — โครงการย้ายระบบทะเบียนสู่ระบบคลาวด์และการจ้างงาน Outsource</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-1-ภูมิหลังและบริบทของโครงการ-cloud-third-party-dilemma" class="toc-link">3.1 ภูมิหลังและบริบทของโครงการ (Cloud &amp; Third-Party Dilemma)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-2-ข้อเท็จจริงที่ตรวจพบจากการเข้าตรวจสอบจริง-audit-investigation-facts" class="toc-link">3.2 ข้อเท็จจริงที่ตรวจพบจากการเข้าตรวจสอบจริง (Audit Investigation Facts)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-3-กระดาษทำการตรวจสอบฉบับสมบูรณ์-audit-working-paper-wp-13-01" class="toc-link">3.3 กระดาษทำการตรวจสอบฉบับสมบูรณ์ (Audit Working Paper WP-13-01)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-4-กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน-active-learning-simulation" class="toc-link">ส่วนที่ 4: กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน (Active Learning Simulation)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#กิจกรรม-soc-2-type-ii-cuec-forensic-workshop-ระยะเวลา-25-นาที" class="toc-link">กิจกรรม: &quot;SOC 2 Type II &amp; CUEC Forensic Workshop&quot; (ระยะเวลา 25 นาที)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-5-มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls" class="toc-link">ส่วนที่ 5: มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives &amp; Common Pitfalls)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#5-1-บทสนทนาจำลองเชิงวิชาชีพ-auditor-vs-cloud-solution-architect-procurement-director" class="toc-link">5.1 บทสนทนาจำลองเชิงวิชาชีพ (Auditor vs Cloud Solution Architect &amp; Procurement Director)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#5-2-4-กับดักหลุมพรางที่พบบ่อยในการตรวจคลาวด์และคู่ค้า-4-common-pitfalls" class="toc-link">5.2 4 กับดักหลุมพรางที่พบบ่อยในการตรวจคลาวด์และคู่ค้า (4 Common Pitfalls)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-6-การบ้านและงานมอบหมายประจำสัปดาห์-weekly-homework-week-13" class="toc-link">ส่วนที่ 6: การบ้านและงานมอบหมายประจำสัปดาห์ (Weekly Homework Week 13)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#ข้อกำหนดโครงสร้างของแบบตรวจเช็กลิสต์-checklist-structure" class="toc-link">ข้อกำหนดโครงสร้างของแบบตรวจเช็กลิสต์ (Checklist Structure):</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#ขอบเขต-10-หมวดหมู่ที่ต้องครอบคลุม-หมวดละอย่างน้อย-2-ข้อ" class="toc-link">ขอบเขต 10 หมวดหมู่ที่ต้องครอบคลุม (หมวดละอย่างน้อย 2 ข้อ):</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers" class="toc-link">ส่วนที่ 7: คำถามทบทวนท้ายบท (Review Questions &amp; Detailed Answers)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#สรุปบทที่-13" class="toc-link">สรุปบทที่ 13</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#เอกสารอ้างอิงและมาตรฐานสากล" class="toc-link">เอกสารอ้างอิงและมาตรฐานสากล</a>
+    </li>
+  
+  </ul>
+</div>
+
+    </aside>
+
+    <main class="main-article">
+      
+          <header class="chapter-header" id="บทที่-13-การตรวจสอบความสอดคล้อง-ข้อมูลส่วนบุคคล-คลาวด์-และผู้ให้บริการภายนอก-compliance-privacy-cloud-and-third-party-audit">
+            <div class="chapter-badge">NECS1312 // CH-13</div>
+            <h1 class="chapter-title">บทที่ 13 การตรวจสอบความสอดคล้อง ข้อมูลส่วนบุคคล คลาวด์ และผู้ให้บริการภายนอก (Compliance, Privacy, Cloud, and Third-Party Audit)</h1>
+          </header>
+        
+<p class="content-paragraph">ในภูมิทัศน์เทคโนโลยีสารสนเทศสมัยใหม่ องค์กรแทบไม่มีระบบสารสนเทศที่ดำเนินงานอยู่ภายในกำแพงองค์กร (On-Premises Data Center) อย่างโดดเดี่ยวอีกต่อไป องค์กรส่วนใหญ่ก้าวเข้าสู่ยุค <strong>Hybrid Cloud และ Multi-Cloud</strong> มีการว่าจ้างบริษัทภายนอก (Outsource/Vendors) เพื่อพัฒนาซอฟต์แวร์ บำรุงรักษาระบบ และใช้บริการซอฟต์แวร์สำเร็จรูปบนคลาวด์ (Software-as-a-Service: SaaS) เพื่อขับเคลื่อนธุรกิจอย่างรวดเร็ว</p>
+<p class="content-paragraph">อย่างไรก็ตาม ความสะดวกและความยืดหยุ่นของเทคโนโลยีคลาวด์และห่วงโซ่อุปทานดิจิทัล ก่อให้เกิด <strong>"ความเสี่ยงข้ามพรมแดนและความรับผิดชอบที่ซับซ้อน"</strong>:</p>
+<blockquote class="content-blockquote">**"องค์กรสามารถถ่ายโอน (Outsource) การประมวลผลและการจัดเก็บข้อมูลไปยังคลาวด์หรือคู่ค้าภายนอกได้  <br>แต่สิ่งที่ไม่สามารถถ่ายโอนออกไปได้โดยเด็ดขาด คือ 'ความรับผิดชอบและความรับผิดตามกฎหมาย (Accountability & Legal Liability)'"**</blockquote>
+<p class="content-paragraph">หากผู้ให้บริการคลาวด์หรือคู่ค้าภายนอกทำข้อมูลส่วนบุคคลของลูกค้าหรือนักศึกษารั่วไหล องค์กรในฐานะ <strong>ผู้ควบคุมข้อมูลส่วนบุคคล (Data Controller)</strong> หรือหน่วยงานโครงสร้างพื้นฐานสำคัญ ยังคงต้องเป็นผู้รับผิดชอบตามกฎหมายอย่างหลีกเลี่ยงไม่ได้ ภายใต้:</p>
+<ol class="content-list">
+<li><strong>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA):</strong> กำหนดมาตรการคุ้มครองสิทธิของเจ้าของข้อมูล การควบคุมการประมวลผล และการจัดทำข้อตกลงการประมวลผลข้อมูล (Data Processing Agreement: DPA)</li>
+<li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 และกรอบแนวทางคลาวด์ สกมช. (NCSA Cloud Security Guideline):</strong> กำหนดมาตรฐานความมั่นคงปลอดภัยขั้นต่ำสำหรับบริการคลาวด์ที่ภาครัฐและหน่วยงาน CII ใช้งาน</li>
+<li><strong>มาตรฐานการตรวจสอบและรายงานความเชื่อมั่นสากล (AICPA SOC 2, ISO/IEC 27017, ISO/IEC 27018, CSA STAR):</strong> เครื่องมือสำคัญที่ผู้ตรวจสอบต้องใช้ในการประเมินความมั่นคงปลอดภัยของผู้ให้บริการภายนอก</li>
+</ol>
+<p class="content-paragraph">ในบทนี้ นักศึกษาจะได้สวมบทบาทเป็น <strong>Lead Compliance & Cloud Auditor</strong> ในการบูรณาการกฎหมายและมาตรฐานเข้าด้วยกัน การวิเคราะห์แบบจำลองความรับผิดชอบร่วม (Shared Responsibility Model) การประเมินความเสี่ยงคู่ค้า และการตรวจสอบรายงานการรับประกันอิสระ (Independent Assurance Report) อย่างลึกซึ้ง</p>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes">
+            <h2 class="section-heading">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</h2>
+          </section>
+        
+<p class="content-paragraph">เมื่อสิ้นสุดการเรียนรู้ในบทนี้ นักศึกษาสามารถ:</p>
+<ol class="content-list">
+<li><strong>บูรณาการและตรวจสอบความสอดคล้องของกฎหมาย นโยบาย และมาตรฐานสากลได้ (CLO1, CLO4):</strong> จัดทำและตรวจสอบทะเบียนภาระผูกพัน (Compliance Obligations Register) บูรณาการข้อกำหนดที่ทับซ้อนกัน (Harmonization) และประเมินขอบเขตการบังคับใช้ (Statement of Applicability: SoA) ได้อย่างเป็นระบบ</li>
+<li><strong>ประเมินมาตรการคุ้มครองข้อมูลส่วนบุคคลตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 ได้ (CLO1, CLO3):</strong> ตรวจสอบบัญชีรายการข้อมูลส่วนบุคคล (Data Inventory / RoPA), หลักการจำกัดวัตถุประสงค์ (Purpose Limitation), การลดปริมาณข้อมูล (Data Minimization), สิทธิ์การเข้าถึง, การทำลายข้อมูลอย่างปลอดภัย, และการโอนข้อมูลข้ามพรมแดน</li>
+<li><strong>วิเคราะห์ความเสี่ยงและประเมินแบบจำลองความรับผิดชอบร่วมบนคลาวด์ได้ (CLO2, CLO3):</strong> จำแนกหน้าที่ระหว่างผู้ให้บริการ (CSP) และผู้ใช้บริการ (Customer) ตามรูปแบบ IaaS, PaaS, SaaS และประเมินการควบคุมด้าน IAM, การเข้ารหัส, ล็อก, และการสำรองข้อมูลบนคลาวด์ตามแนวทางของ สกมช.</li>
+<li><strong>ตรวจสอบและประเมินความเสี่ยงของผู้ให้บริการภายนอกและห่วงโซ่อุปทานได้ (CLO3, CLO4):</strong> ตรวจสอบการทำ Due Diligence, ข้อกำหนดความมั่นคงปลอดภัยในสัญญา (Security Clauses), สิทธิในการเข้าตรวจสอบ (Right to Audit), การกำกับดูแลผู้รับจ้างช่วง (Subcontractors), และการสิ้นสุดสัญญา</li>
+<li><strong>วิเคราะห์รายงานความเชื่อมั่นอิสระ (SOC Reports & Certifications) และข้อจำกัดในการพึ่งพาได้ (CLO3, CLO4):</strong> อ่านและประเมินรายงาน SOC 2 Type II, ระบุเงื่อนไข Complementary User Entity Controls (CUECs), ตรวจสอบขอบเขตใบรับรอง ISO 27017/27018 และจัดทำ Third-Party & Cloud Audit Working Paper ได้อย่างถูกต้อง</li>
+</ol>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-1-ทฤษฎีและการตรวจสอบความสอดคล้องและการคุ้มครองข้อมูลส่วนบุคคล-compliance-privacy-audit">
+            <h2 class="section-heading">ส่วนที่ 1: ทฤษฎีและการตรวจสอบความสอดคล้องและการคุ้มครองข้อมูลส่วนบุคคล (Compliance & Privacy Audit)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="1-1-แหล่งข้อกำหนดและการบูรณาการกฎหมาย-compliance-obligations-harmonization">1.1 แหล่งข้อกำหนดและการบูรณาการกฎหมาย (Compliance Obligations & Harmonization)</h3>
+<p class="content-paragraph">ในการปฏิบัติงานจริง องค์กรต้องเผชิญกับคลื่นแห่งกฎหมาย ประกาศ และมาตรฐานความมั่นคงปลอดภัยจำนวนมหาศาล หากผู้ตรวจสอบไม่เข้าใจโครงสร้าง จะทำให้เกิดความสับสนและสิ้นเปลืองทรัพยากร:</p>
+
+<div class="figure-box" id="figure-13-1">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 13.1</div>
+    <div class="figure-title">พีระมิดลำดับชั้นแหล่งข้อกำหนดที่องค์กรต้องปฏิบัติตาม (Compliance Obligations Pyramid)</div>
+  </div>
+  <div class="pyramid-container">
+    <div class="pyramid-tier tier-national">
+      <div class="tier-badge">LEVEL 1 // สูงสุด</div>
+      <div class="tier-title">🏛️ 1. กฎหมายภาคบังคับระดับชาติ (Mandatory National Laws)</div>
+      <p>มีบทลงโทษทางอาญาและทางปกครองขั้นร้ายแรง เช่น <strong>พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562</strong>, <strong>พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA)</strong>, พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์</p>
+      <div class="tier-meta">ผลกระทบ: โทษปรับสูงสุด 5 ล้านบาท / จำคุก / ความรับผิดส่วนตัวของกรรมการ</div>
+    </div>
+    <div class="pyramid-tier tier-sectoral">
+      <div class="tier-badge">LEVEL 2 // กฎหมายเฉพาะกลุ่ม</div>
+      <div class="tier-title">📑 2. กฎเกณฑ์กำกับดูแลเฉพาะภาคส่วน (Sectoral Regulatory Directives)</div>
+      <p>ประกาศและข้อกำหนดจากองค์กรกำกับดูแลเฉพาะทาง เช่น <strong>ประกาศ สกมช. (NCSA Cloud Guideline)</strong>, ประกาศ ธปท. (BoT IT Risk), ก.ล.ต. (SEC), กสทช. (NBTC)</p>
+      <div class="tier-meta">ผลกระทบ: การเพิกถอนใบอนุญาตประกอบกิจการ / การสั่งระงับการให้บริการระบบ</div>
+    </div>
+    <div class="pyramid-tier tier-contracts">
+      <div class="tier-badge">LEVEL 3 // พันธะสัญญา</div>
+      <div class="tier-title">🤝 3. พันธะสัญญาและมาตรฐานสากล (Contracts, SLAs & Global Standards)</div>
+      <p>ข้อกำหนดที่องค์กรตกลงผูกพันตนเอง เช่น <strong>ISO/IEC 27001</strong>, <strong>ISO/IEC 27017/27018</strong>, <strong>PCI-DSS</strong>, <strong>AICPA SOC 2</strong>, สัญญาบริการ Cloud SLA และ Data Processing Agreement (DPA)</p>
+      <div class="tier-meta">ผลกระทบ: การฟ้องร้องเรียกค่าเสียหายผิดสัญญา / การสูญเสียใบรับรองความน่าเชื่อถือ</div>
+    </div>
+    <div class="pyramid-tier tier-internal">
+      <div class="tier-badge">LEVEL 4 // ภายในองค์กร</div>
+      <div class="tier-title">🏢 4. นโยบายและระเบียบปฏิบัติภายใน (Internal Policies & Procedures)</div>
+      <p>กฎระเบียบที่คณะกรรมการและฝ่ายบริหารกำหนดขึ้น เช่น นโยบายความมั่นคงปลอดภัยสารสนเทศ (ISMS Policy), นโยบายการใช้เทคโนโลยีที่ยอมรับได้ (AUP), Cloud Usage Policy</p>
+      <div class="tier-meta">ผลกระทบ: ความผิดทางวินัย / การประเมินผลการปฏิบัติงานภายใน</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 13.1:</strong> พีระมิดลำดับชั้นข้อกำหนดความสอดคล้องและการบูรณาการกฎเกณฑ์ (Harmonization) เพื่อป้องกันการควบคุมที่ซ้ำซ้อน
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="1-การจัดทำทะเบียนภาระผูกพัน-compliance-obligations-register">1. การจัดทำทะเบียนภาระผูกพัน (Compliance Obligations Register)</h4>
+<p class="content-paragraph">ผู้ตรวจสอบต้องตรวจสอบว่าองค์กรมีเอกสารรวบรวมกฎหมาย กฎเกณฑ์ และสัญญาที่องค์กรมีพันธะผูกพันหรือไม่ โดยต้องระบุ:</p>
+<ul class="content-list">
+<li>ชื่อกฎหมาย/มาตรฐาน และหน่วยงานกำกับดูแล</li>
+<li>ข้อกำหนดเฉพาะที่เกี่ยวข้องกับระบบสารสนเทศขององค์กร</li>
+<li>ผู้รับผิดชอบภายในองค์กร (Obligation Owner)</li>
+<li>สถานะความสอดคล้อง (Compliant / Partially Compliant / Non-Compliant)</li>
+<li>ความเป็นปัจจุบันของกฎหมาย (Last Review Date & Legal Horizon Scanning)</li>
+</ul>
+<h4 class="sub-subsection-heading" id="2-การบูรณาการข้อกำหนดซ้ำซ้อน-harmonization-of-controls">2. การบูรณาการข้อกำหนดซ้ำซ้อน (Harmonization of Controls)</h4>
+<p class="content-paragraph">แทนที่จะสร้างมาตรการควบคุมแยกตามแต่ละกฎหมาย (ซึ่งจะทำให้มีระบบควบคุมซ้ำซ้อนและสิ้นเปลือง) ผู้ตรวจสอบต้องประเมินว่าองค์กรใช้แนวทาง <strong>"Map Once, Comply with Many"</strong> หรือไม่ เช่น:</p>
+<ul class="content-list">
+<li>การตั้งค่าการยืนยันตัวตนแบบหลายปัจจัย (MFA) สามารถตอบสนองได้ทั้ง <strong>ISO/IEC 27001 (Control A.8.5)</strong>, <strong>ประกาศ สกมช. เรื่อง มาตรฐานขั้นต่ำ</strong>, <strong>ประกาศ ธปท. เรื่อง เสถียรภาพระบบไอที</strong>, และ <strong>มาตรการรักษาความมั่นคงปลอดภัยของข้อมูลส่วนบุคคล (PDPA)</strong></li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-2-การตรวจสอบมาตรการคุ้มครองข้อมูลส่วนบุคคล-pdpa-information-security-audit">1.2 การตรวจสอบมาตรการคุ้มครองข้อมูลส่วนบุคคล (PDPA Information Security Audit)</h3>
+
+<div class="widget-box" id="widget-13-2">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE CALCULATOR // WIDGET 13.2</div>
+    <div class="widget-title">PDPA Compliance & Cross-Border Transfer Evaluator (เครื่องมือประเมินการโอนข้อมูลข้ามพรมแดน)</div>
+  </div>
+  <p class="widget-desc">
+    กำหนดพารามิเตอร์การประมวลผลและการโอนข้อมูลส่วนบุคคล เพื่อประเมินความสอดคล้องตามกฎหมาย PDPA (มาตรา 28, 29, 37) และประเมินความเสี่ยงต่อโทษปรับ
+  </p>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1rem; margin-bottom:1.25rem;">
+    <div>
+      <label style="font-size:0.82rem; font-weight:700; color:var(--text-dim); display:block; margin-bottom:0.3rem;">1. ประเภทข้อมูลที่ประมวลผล:</label>
+      <select id="w2-data-type" onchange="runPdpaEvaluator()" style="width:100%; padding:0.5rem; background:var(--bg-surface); color:var(--text-main); border:1px solid var(--border-color); border-radius:6px;">
+        <option value="general">ข้อมูลส่วนบุคคลทั่วไป (ชื่อ, เบอร์โทร, อีเมล)</option>
+        <option value="sensitive" selected>ข้อมูลอ่อนไหว Sensitive PII (สำเนาบัตรประชาชน, ข้อมูลสุขภาพ ม.26)</option>
+      </select>
+    </div>
+
+    <div>
+      <label style="font-size:0.82rem; font-weight:700; color:var(--text-dim); display:block; margin-bottom:0.3rem;">2. ที่ตั้งศูนย์ข้อมูล / ปลายทาง:</label>
+      <select id="w2-destination" onchange="runPdpaEvaluator()" style="width:100%; padding:0.5rem; background:var(--bg-surface); color:var(--text-main); border:1px solid var(--border-color); border-radius:6px;">
+        <option value="thailand">ภายในประเทศไทย (Thailand Data Center)</option>
+        <option value="adequate">ต่างประเทศที่มี Adequacy Decision (เช่น EU/Japan)</option>
+        <option value="foreign_inadequate" selected>ต่างประเทศทั่วไปที่ยังไม่มีประกาศรับรอง (เช่น Region ทั่วไป)</option>
+      </select>
+    </div>
+
+    <div>
+      <label style="font-size:0.82rem; font-weight:700; color:var(--text-dim); display:block; margin-bottom:0.3rem;">3. กลไกคุ้มครองทางกฎหมาย:</label>
+      <select id="w2-safeguard" onchange="runPdpaEvaluator()" style="width:100%; padding:0.5rem; background:var(--bg-surface); color:var(--text-main); border:1px solid var(--border-color); border-radius:6px;">
+        <option value="none" selected>ไม่มีข้อตกลงใด ๆ (No Legal Safeguard)</option>
+        <option value="scc">มีสัญญาข้อกำหนดมาตรฐาน (SCCs ตามประกาศ สคส.)</option>
+        <option value="bcr">มีกฎเกณฑ์องค์กร (BCRs ได้รับอนุมัติ)</option>
+        <option value="consent">ขอความยินยอมชัดแจ้งเป็นรายกรณี (Explicit Consent)</option>
+      </select>
+    </div>
+
+    <div>
+      <label style="font-size:0.82rem; font-weight:700; color:var(--text-dim); display:block; margin-bottom:0.3rem;">4. การจัดทำข้อตกลง DPA กับคู่ค้า:</label>
+      <select id="w2-has-dpa" onchange="runPdpaEvaluator()" style="width:100%; padding:0.5rem; background:var(--bg-surface); color:var(--text-main); border:1px solid var(--border-color); border-radius:6px;">
+        <option value="no" selected>ไม่มีสัญญา DPA (ขาดการควบคุมตาม ม.40)</option>
+        <option value="yes">มีสัญญา DPA ฉบับสมบูรณ์ พร้อม Right to Audit</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="pdpa-eval-result" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:8px; padding:1.25rem;">
+    <!-- Rendered dynamically via JS -->
+  </div>
+</div>
+
+
+<div class="figure-box" id="figure-13-12">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 13.12</div>
+    <div class="figure-title">แผนผังการตัดสินใจการโอนข้อมูลส่วนบุคคลข้ามพรมแดนตาม PDPA (Cross-Border Transfer Decision Flowchart)</div>
+  </div>
+  <div class="decision-tree-container">
+    <div class="dt-node dt-start">
+      <div class="dt-badge">START</div>
+      <div class="dt-text">ต้องการส่งหรือโอนข้อมูลส่วนบุคคลไปยังศูนย์ข้อมูล/คู่ค้าต่างประเทศหรือไม่?</div>
+    </div>
+    <div class="dt-arrow">⬇ ใช่ (ไปยัง Data Center ต่างประเทศ เช่น AWS eu-west-1, Singapore)</div>
+    <div class="dt-branch-grid">
+      <div class="dt-path p1">
+        <div class="path-title">แนวทางที่ 1: มาตรา 28 (Adequacy Decision)</div>
+        <div class="path-condition">ประเทศปลายทางมีมาตรฐานคุ้มครองข้อมูลส่วนบุคคลที่ "เพียงพอ" ตามประกาศของคณะกรรมการ สคส. หรือไม่?</div>
+        <div class="path-result res-pass">✓ โอนได้ชอบด้วยกฎหมายตาม ม.28</div>
+      </div>
+      <div class="dt-path p2">
+        <div class="path-title">แนวทางที่ 2: มาตรา 29 (Appropriate Safeguards)</div>
+        <div class="path-condition">หากประเทศปลายทางไม่มีประกาศรับรอง มีกลไกคุ้มครองอย่างใดอย่างหนึ่งดังต่อไปนี้หรือไม่?</div>
+        <ul class="path-list">
+          <li><strong>BCRs:</strong> Binding Corporate Rules สำหรับองค์กรในเครือที่ผ่านการอนุมัติ</li>
+          <li><strong>SCCs:</strong> Standard Contractual Clauses สัญญามาตรฐานตามประกาศ สคส.</li>
+        </ul>
+        <div class="path-result res-pass">✓ โอนได้ชอบด้วยกฎหมายตาม ม.29</div>
+      </div>
+      <div class="dt-path p3">
+        <div class="path-title">แนวทางที่ 3: ข้อยกเว้นตามกฎหมาย (Statutory Exceptions)</div>
+        <div class="path-condition">หากไม่มี ม.28 และ ม.29 ตรงกับข้อยกเว้นจำเพาะหรือไม่?</div>
+        <ul class="path-list">
+          <li>ได้แจ้งและได้รับความยินยอมชัดแจ้ง (Explicit Consent)</li>
+          <li>จำเป็นต่อการปฏิบัติตามสัญญาที่เจ้าของข้อมูลเป็นคู่สัญญา</li>
+          <li>เพื่อป้องกันอันตรายต่อชีวิต ร่างกาย สุขภาพ</li>
+        </ul>
+        <div class="path-result res-pass">✓ โอนได้เฉพาะกรณีฉุกเฉิน/เฉพาะคราว</div>
+      </div>
+    </div>
+    <div class="dt-fallback-box">
+      <div class="dt-danger-tag">❌ หากไม่เข้าเกณฑ์ข้อใดเลย: การโอนข้อมูลถือว่า "ไม่ชอบด้วยกฎหมาย"</div>
+      <p>มีโทษปรับทางปกครองสูงสุด 5 ล้านบาท ตามมาตรา 83 และผู้บริหารองค์กรมีความรับผิดตามกฎหมาย</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 13.12:</strong> แผนภูมิกระบวนการตัดสินใจของผู้ตรวจสอบในการสอบทานความชอบด้วยกฎหมายของการส่งหรือโอนข้อมูลส่วนบุคคลไปต่างประเทศ
+  </div>
+</div>
+
+<p class="content-paragraph">ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 และประกาศคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล เรื่อง มาตรการรักษาความมั่นคงปลอดภัยของผู้ควบคุมข้อมูลส่วนบุคคล พ.ศ. 2565 ผู้ตรวจสอบต้องตรวจสอบ 7 แกนหลัก:</p>
+
+<div class="figure-box" id="figure-13-2">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 13.2</div>
+    <div class="figure-title">7 แกนการตรวจสอบด้านการคุ้มครองข้อมูลส่วนบุคคล (PDPA 7 Audit Pillars)</div>
+  </div>
+  <div class="pdpa-pillars-grid">
+    <div class="pillar-card">
+      <div class="pillar-num">01</div>
+      <div class="pillar-title">📋 Data Inventory / RoPA</div>
+      <div class="pillar-desc">ตรวจสอบทะเบียนกิจกรรมการประมวลผลตามมาตรา 39 ต้องสอดคล้องกับโครงสร้างฐานข้อมูลจริง ไม่ใช่เอกสารแบบผักชีโรยหน้า</div>
+      <div class="pillar-law">PDPA ม.39</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-num">02</div>
+      <div class="pillar-title">🎯 Purpose Limitation</div>
+      <div class="pillar-desc">ประมวลผลข้อมูลตรงตามฐานกฎหมายและวัตถุประสงค์ที่แจ้งไว้ใน Privacy Notice เท่านั้น ห้ามนำไปใช้ผิดวัตถุประสงค์</div>
+      <div class="pillar-law">PDPA ม.21</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-num">03</div>
+      <div class="pillar-title">📉 Data Minimization</div>
+      <div class="pillar-desc">จัดเก็บและรวบรวมข้อมูลส่วนบุคคลเพียงเท่าที่จำเป็นอย่างแท้จริงต่อการให้บริการ (Adequate, Relevant, Limited)</div>
+      <div class="pillar-law">PDPA ม.22</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-num">04</div>
+      <div class="pillar-title">🔐 Access Control & Identity</div>
+      <div class="pillar-desc">ควบคุมสิทธิ์ตามหลัก Least Privilege เข้ารหัสข้อมูล Sensitive PII ทั้งขณะจัดเก็บ (At Rest) และขณะส่งผ่านเครือข่าย (In Transit)</div>
+      <div class="pillar-law">ประกาศ สคส. 2565</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-num">05</div>
+      <div class="pillar-title">⏳ Retention & Disposal</div>
+      <div class="pillar-desc">กำหนดอายุการจัดเก็บชัดเจน และทำลายข้อมูลอย่างปลอดภัยเมื่อพ้นกำหนดตามมาตรฐานสากล (NIST SP 800-88 Cryptographic Erase)</div>
+      <div class="pillar-law">PDPA ม.37(3)</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-num">06</div>
+      <div class="pillar-title">🌐 Cross-Border Transfer</div>
+      <div class="pillar-desc">ตรวจสอบการโอนข้อมูลข้ามพรมแดนไปยังศูนย์ข้อมูลต่างประเทศ ต้องมี Adequacy Decision, BCRs หรือสัญญามาตรฐาน SCCs</div>
+      <div class="pillar-law">PDPA ม.28, 29</div>
+    </div>
+    <div class="pillar-card full-width">
+      <div class="pillar-num">07</div>
+      <div class="pillar-title">🚨 Data Breach Management & 72-Hour Notification</div>
+      <div class="pillar-desc">มีระบบเฝ้าระวัง ตรวจจับ และกระบวนการแจ้งเหตุละเมิดข้อมูลส่วนบุคคลต่อสำนักงาน สคส. <strong>ภายใน 72 ชั่วโมง</strong> และแจ้งเจ้าของข้อมูลเมื่อมีความเสี่ยงสูงมาก</div>
+      <div class="pillar-law">PDPA ม.37(4)</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 13.2:</strong> กรอบการตรวจประเมิน 7 แกนหลักด้านการคุ้มครองข้อมูลส่วนบุคคลตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562
+  </div>
+</div>
+
+<ol class="content-list">
+<li><strong>บันทึกรายการของกิจกรรมการประมวลผล (Records of Processing Activities: RoPA):</strong></li>
+</ol>
+<ul class="content-list">
+<li><em>จุดที่ต้องตรวจ:</em> มีการจัดทำ Data Inventory หรือ RoPA ตามมาตรา 39 ครบถ้วนหรือไม่ มีการระบุประเภทข้อมูล วัตถุประสงค์ ระยะเวลาจัดเก็บ และผู้รับข้อมูลภายนอกหรือไม่ ข้อมูลใน RoPA ต้องตรงกับข้อมูลจริงในฐานข้อมูล มิใช่จัดทำขึ้นเพียงเพื่อผ่านการตรวจ (Tick-box exercise)</li>
+</ul>
+<ol class="content-list">
+<li><strong>การจำกัดการเข้าถึงและการเข้ารหัส (Access Control & Encryption of PII):</strong></li>
+</ol>
+<ul class="content-list">
+<li>บัญชีผู้ใช้ที่เข้าถึงข้อมูลส่วนบุคคลต้องยึดหลัก Need-to-know และ Least Privilege</li>
+<li>ข้อมูลส่วนบุคคลที่มีความอ่อนไหว (Sensitive PII เช่น ข้อมูลสุขภาพ, ข้อมูลประวัติอาชญากรรม) ต้องได้รับการเข้ารหัสทั้งในขณะจัดเก็บ (Encryption at Rest: AES-256) และขณะส่งผ่านเครือข่าย (Encryption in Transit: TLS 1.3)</li>
+</ul>
+<ol class="content-list">
+<li><strong>ระยะเวลาการเก็บรักษาและการทำลายอย่างปลอดภัย (Retention & Secure Disposal):</strong></li>
+</ol>
+<ul class="content-list">
+<li>มีการกำหนดระยะเวลาจัดเก็บ (Retention Period) ที่ชัดเจน เมื่อสิ้นสุดระยะเวลาหรือพ้นวัตถุประสงค์ องค์กรต้องมีกระบวนการลบ ทำลาย หรือทำให้ข้อมูลนั้นไม่สามารถระบุตัวบุคคลได้อีก (Anonymization)</li>
+<li><em>จุดตรวจทางเทคนิค:</em> การทำลายข้อมูลบนสื่อบันทึกต้องปฏิบัติตามมาตรฐานสากล เช่น <strong>NIST SP 800-88 Rev. 1 (Guidelines for Media Sanitization)</strong> เช่น การทำ Overwrite, Degaussing, หรือ Cryptographic Erase สำหรับข้อมูลบนคลาวด์</li>
+</ul>
+<ol class="content-list">
+<li><strong>การโอนข้อมูลส่วนบุคคลไปยังต่างประเทศ (Cross-Border Data Transfer - มาตรา 28 และ 29):</strong></li>
+</ol>
+<ul class="content-list">
+<li>หากองค์กรใช้บริการคลาวด์ที่มีศูนย์ข้อมูล (Data Center) ตั้งอยู่นอกประเทศไทย หรือส่งข้อมูลให้เวนเดอร์ต่างประเทศ ผู้ตรวจสอบต้องตรวจว่าประเทศปลายทางมีมาตรฐานคุ้มครองข้อมูลส่วนบุคคลที่เพียงพอ หรือมีสัญญาข้อกำหนดมาตรฐาน (Standard Contractual Clauses: SCCs) หรือได้รับการยินยอมอย่างถูกต้องตามกฎหมายหรือไม่</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-2-การตรวจสอบความมั่นคงปลอดภัยบนระบบคลาวด์และห่วงโซ่อุปทาน-cloud-third-party-audit">
+            <h2 class="section-heading">ส่วนที่ 2: การตรวจสอบความมั่นคงปลอดภัยบนระบบคลาวด์และห่วงโซ่อุปทาน (Cloud & Third-Party Audit)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="2-1-แบบจำลองความรับผิดชอบร่วมบนคลาวด์-cloud-shared-responsibility-model">2.1 แบบจำลองความรับผิดชอบร่วมบนคลาวด์ (Cloud Shared Responsibility Model)</h3>
+
+<div class="widget-box" id="widget-13-1">
+  <div class="widget-header">
+    <div class="widget-tag">INTERACTIVE SIMULATOR // WIDGET 13.1</div>
+    <div class="widget-title">Cloud Shared Responsibility Matrix Simulator (แบบจำลองความรับผิดชอบร่วมบนคลาวด์)</div>
+  </div>
+  <p class="widget-desc">
+    ทดลองสลับรูปแบบบริการคลาวด์ (IaaS, PaaS, SaaS) เพื่อดูการกระจายหน้าที่ความรับผิดชอบในแต่ละเลเยอร์ และร่วมทดสอบความเข้าใจในบทบาทของผู้ตรวจสอบ
+  </p>
+
+  <div class="model-switcher-tabs" style="display:flex; gap:0.5rem; margin-bottom:1.25rem; flex-wrap:wrap;">
+    <button class="model-tab-btn active" id="btn-model-iaas" onclick="switchCloudModel('iaas')">🖥️ IaaS (เช่น AWS EC2, Azure VM)</button>
+    <button class="model-tab-btn" id="btn-model-paas" onclick="switchCloudModel('paas')">📦 PaaS (เช่น AWS RDS, Azure SQL)</button>
+    <button class="model-tab-btn" id="btn-model-saas" onclick="switchCloudModel('saas')">☁️ SaaS (เช่น Microsoft 365, Google Workspace)</button>
+  </div>
+
+  <div id="shared-matrix-display" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:8px; padding:1.25rem; margin-bottom:1.5rem;">
+    <!-- Rendered dynamically via JS -->
+  </div>
+
+  <div style="background:var(--bg-card); padding:1rem 1.25rem; border-radius:8px; border-left:4px solid var(--primary); margin-bottom:1.25rem;">
+    <div style="font-weight:700; color:var(--text-main); margin-bottom:0.4rem;">🎯 แบบฝึกหัดท้าทายความคิดของผู้ตรวจสอบ (Auditor Knowledge Challenge):</div>
+    <div id="quiz-question-text" style="font-size:0.9rem; color:var(--text-muted); margin-bottom:0.75rem;">
+      "หากระบบเว็บรับสมัครนักศึกษาถูกแฮกเนื่องจากมีการเปิด S3 Bucket เก็บสำเนาบัตรประชาชนเป็น Public Read ใครเป็นผู้รับผิดชอบ?"
+    </div>
+    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+      <button class="control-btn" onclick="checkQuizAnswer('csp')">🏢 ผู้ให้บริการคลาวด์ (AWS/Azure/GCP)</button>
+      <button class="control-btn" onclick="checkQuizAnswer('customer')">🏛️ มหาวิทยาลัย (ลูกค้าผู้ใช้บริการ)</button>
+      <button class="control-btn" onclick="checkQuizAnswer('both')">🤝 รับผิดชอบร่วมกันคนละครึ่ง</button>
+    </div>
+    <div id="quiz-feedback" style="display:none; font-size:0.85rem; padding:0.6rem; border-radius:6px; margin-top:0.5rem;"></div>
+  </div>
+</div>
+
+<p class="content-paragraph">ข้อผิดพลาดที่อันตรายที่สุดของผู้บริหารองค์กรคือความเข้าใจผิดว่า: <em>"เมื่อย้ายระบบขึ้นไปไว้บน AWS, Microsoft Azure หรือ Google Cloud แล้ว เรื่องความปลอดภัยทั้งหมดกลายเป็นหน้าที่ของคลาวด์"</em> </p>
+<p class="content-paragraph">ในความเป็นจริง ความมั่นคงปลอดภัยบนคลาวด์ถูกแบ่งตาม <strong>Shared Responsibility Model</strong> อย่างเคร่งครัด:</p>
+
+<div class="figure-box" id="figure-13-3">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 13.3</div>
+    <div class="figure-title">แบบจำลองความรับผิดชอบร่วมบนคลาวด์ (Cloud Shared Responsibility Model: IaaS vs PaaS vs SaaS)</div>
+  </div>
+  <div class="shared-resp-wrapper">
+    <div class="table-responsive">
+      <table class="content-table shared-table">
+        <thead>
+          <tr>
+            <th style="min-width:200px;">เลเยอร์การควบคุม (Architecture Layer)</th>
+            <th style="text-align:center;">IaaS (Infrastructure as a Service)</th>
+            <th style="text-align:center;">PaaS (Platform as a Service)</th>
+            <th style="text-align:center;">SaaS (Software as a Service)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="layer-highlight">
+            <td><strong>1. ข้อมูลและการจำแนกสิทธิ์ (Data & PII)</strong></td>
+            <td style="text-align:center;"><span class="badge-status fail">ลูกค้า 100%</span></td>
+            <td style="text-align:center;"><span class="badge-status fail">ลูกค้า 100%</span></td>
+            <td style="text-align:center;"><span class="badge-status fail">ลูกค้า 100%</span></td>
+          </tr>
+          <tr class="layer-highlight">
+            <td><strong>2. การบริหารตัวตนและสิทธิ์ (IAM & Accounts)</strong></td>
+            <td style="text-align:center;"><span class="badge-status fail">ลูกค้า 100%</span></td>
+            <td style="text-align:center;"><span class="badge-status fail">ลูกค้า 100%</span></td>
+            <td style="text-align:center;"><span class="badge-status fail">ลูกค้า 100%</span></td>
+          </tr>
+          <tr>
+            <td><strong>3. แอปพลิเคชัน (Application Logic & Code)</strong></td>
+            <td style="text-align:center;"><span class="badge-status fail">ลูกค้า</span></td>
+            <td style="text-align:center;"><span class="badge-status fail">ลูกค้า</span></td>
+            <td style="text-align:center;"><span class="badge-status pass">ผู้ให้บริการ (CSP)</span></td>
+          </tr>
+          <tr>
+            <td><strong>4. ระบบปฏิบัติการ (Operating System & Patches)</strong></td>
+            <td style="text-align:center;"><span class="badge-status fail">ลูกค้า</span></td>
+            <td style="text-align:center;"><span class="badge-status pass">ผู้ให้บริการ (CSP)</span></td>
+            <td style="text-align:center;"><span class="badge-status pass">ผู้ให้บริการ (CSP)</span></td>
+          </tr>
+          <tr>
+            <td><strong>5. ฐานข้อมูลและมิดเดิลแวร์ (DB & Middleware Engine)</strong></td>
+            <td style="text-align:center;"><span class="badge-status fail">ลูกค้า</span></td>
+            <td style="text-align:center;"><span class="badge-status pass">ผู้ให้บริการ (CSP)</span></td>
+            <td style="text-align:center;"><span class="badge-status pass">ผู้ให้บริการ (CSP)</span></td>
+          </tr>
+          <tr>
+            <td><strong>6. โครงสร้างเครือข่ายเสมือน (VPC, Security Groups)</strong></td>
+            <td style="text-align:center;"><span class="badge-status fail">ลูกค้า</span></td>
+            <td style="text-align:center;"><span class="badge-status warn">ร่วมกัน (Shared)</span></td>
+            <td style="text-align:center;"><span class="badge-status pass">ผู้ให้บริการ (CSP)</span></td>
+          </tr>
+          <tr>
+            <td><strong>7. เครือข่ายและฮาร์ดแวร์จริง (Physical Network & Compute)</strong></td>
+            <td style="text-align:center;"><span class="badge-status pass">ผู้ให้บริการ (CSP)</span></td>
+            <td style="text-align:center;"><span class="badge-status pass">ผู้ให้บริการ (CSP)</span></td>
+            <td style="text-align:center;"><span class="badge-status pass">ผู้ให้บริการ (CSP)</span></td>
+          </tr>
+          <tr>
+            <td><strong>8. กายภาพศูนย์ข้อมูล (Physical Data Center & Power)</strong></td>
+            <td style="text-align:center;"><span class="badge-status pass">ผู้ให้บริการ (CSP)</span></td>
+            <td style="text-align:center;"><span class="badge-status pass">ผู้ให้บริการ (CSP)</span></td>
+            <td style="text-align:center;"><span class="badge-status pass">ผู้ให้บริการ (CSP)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 13.3:</strong> กฎเหล็กของผู้ตรวจสอบ: ไม่ว่าจะเป็นคลาวด์รูปแบบใด <strong>"ข้อมูล (Data)"</strong> และ <strong>"การจัดการสิทธิ์ (IAM)"</strong> ยังคงเป็นหน้าที่ของลูกค้า 100% เสมอ
+  </div>
+</div>
+
+<blockquote class="content-blockquote">[!IMPORTANT]<br><strong>หลักการสำคัญของผู้ตรวจสอบ:</strong><br>1. ไม่ว่าจะเป็น IaaS, PaaS หรือ SaaS: <strong>"ข้อมูล (Data)"</strong> และ <strong>"การบริหารจัดการสิทธิ์และการเข้าถึง (Identity and Access Management: IAM)"</strong> เป็น <strong>ความรับผิดชอบของลูกค้า (Customer) 100% เสมอ</strong><br>2. ความล้มเหลวด้านความมั่นคงปลอดภัยบนคลาวด์กว่า 99% เกิดจาก <strong>"การกำหนดค่าผิดพลาดของลูกค้าเอง (Customer Misconfiguration)"</strong> เช่น การเปิด S3 Bucket หรือ Blob Storage เป็นสาธารณะ, การไม่เปิด MFA สำหรับบัญชี Root/Admin, หรือการฝัง API Keys ไว้ใน Source Code</blockquote>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-2-แนวทางการตรวจระบบคลาวด์ตามมาตรฐาน-สกมช-ncsa-cloud-security-guideline">2.2 แนวทางการตรวจระบบคลาวด์ตามมาตรฐาน สกมช. (NCSA Cloud Security Guideline)</h3>
+<p class="content-paragraph">สำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช.) ได้เผยแพร่แนวทางปฏิบัติและกรอบมาตรฐานความมั่นคงปลอดภัยสำหรับระบบคลาวด์ โดยผู้ตรวจสอบต้องใช้เป็นเกณฑ์ในการประเมินระบบคลาวด์ของหน่วยงานรัฐและเอกชน:</p>
+<ol class="content-list">
+<li><strong>การควบคุมการเข้าถึงและการจัดการตัวตน (Cloud IAM):</strong></li>
+</ol>
+<ul class="content-list">
+<li>บัญชี Root Account ของ Cloud Provider ต้องไม่ถูกนำมาใช้งานประจำวัน ต้องตั้งค่ารหัสผ่านที่ซับซ้อน บังคับใช้ Hardware MFA และเก็บรักษากุญแจในที่ปลอดภัย</li>
+<li>การใช้งานต้องผ่านบัญชีรายบุคคลที่มีการกำหนดบทบาทตามหน้าที่ (Role-Based Access Control: RBAC) และมอบสิทธิ์ขั้นต่ำ (Least Privilege)</li>
+</ul>
+<ol class="content-list">
+<li><strong>การเข้ารหัสข้อมูลและการจัดการกุญแจ (Cloud Encryption & KMS):</strong></li>
+</ol>
+<ul class="content-list">
+<li>ข้อมูลต้องได้รับการเข้ารหัสขณะจัดเก็บ (Encryption at Rest) เป็นค่าเริ่มต้น</li>
+<li>ผู้ตรวจสอบต้องประเมินว่าองค์กรใช้กุญแจเข้ารหัสแบบใด:</li>
+<li><em>Cloud-Managed Keys:</em> CSP เป็นผู้ดูแลกุญแจให้ทั้งหมด (ความปลอดภัยระดับพื้นฐาน)</li>
+<li><em>Customer-Managed Keys (CMK / BYOK):</em> ลูกค้าเป็นผู้ควบคุมวงจรกุญแจ (Key Lifecycle) เองผ่านระบบ Cloud KMS (แนะนำสำหรับระบบสำคัญ)</li>
+</ul>
+<ol class="content-list">
+<li><strong>การบันทึกและตรวจสอบล็อกบนคลาวด์ (Cloud Logging & Auditing):</strong></li>
+</ol>
+<ul class="content-list">
+<li>ต้องเปิดใช้งานบริการบันทึกกิจกรรมระดับ Management Plane และ Data Plane ตลอดเวลา เช่น <strong>AWS CloudTrail</strong>, <strong>Azure Activity Log</strong>, <strong>GCP Cloud Audit Logs</strong></li>
+<li>ล็อกต้องถูกส่งต่อไปจัดเก็บยัง Central Log Bucket ที่มีการเปิดคุณสมบัติ WORM / Object Lock และส่งต่อเข้าศูนย์ SIEM ภายนอก</li>
+</ul>
+<ol class="content-list">
+<li><strong>ความมั่นคงปลอดภัยของโครงสร้างพื้นฐานเครือข่ายคลาวด์ (Network Security Posture):</strong></li>
+</ol>
+<ul class="content-list">
+<li>การแบ่งส่วนเครือข่ายเสมือน (VPC / VNet Subnetting)</li>
+<li>ต้องไม่มีการเปิด Security Group หรือ Firewall Rules อนุญาตพอร์ตบริหารจัดการ (RDP Port 3389, SSH Port 22) ตรงสู่เครือข่ายอินเทอร์เน็ตสาธารณะ (<code>0.0.0.0/0</code>) การเข้าถึงต้องทำผ่าน Bastion Host, VPN, หรือ Cloud Identity-Aware Proxy (IAP) เท่านั้น</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-3-การบริหารความเสี่ยงผู้ให้บริการภายนอกตลอดวงจรชีวิต-third-party-risk-lifecycle">2.3 การบริหารความเสี่ยงผู้ให้บริการภายนอกตลอดวงจรชีวิต (Third-Party Risk Lifecycle)</h3>
+
+<div class="widget-box" id="widget-13-4">
+  <div class="widget-header">
+    <div class="widget-tag">RISK SCORER // WIDGET 13.4</div>
+    <div class="widget-title">Third-Party Risk Management (TPRM) Due Diligence Scorer (เครื่องมือประเมินระดับความเสี่ยงคู่ค้า)</div>
+  </div>
+  <p class="widget-desc">
+    ประเมินระดับความเสี่ยงของคู่ค้าและผู้รับจ้างภายนอก (Vendor Risk Tiering) เพื่อกำหนดความเข้มงวดในการตรวจสอบและเงื่อนไขในสัญญา
+  </p>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1rem; margin-bottom:1.25rem;">
+    <div>
+      <label style="font-size:0.82rem; font-weight:700; color:var(--text-dim); display:block; margin-bottom:0.3rem;">1. ขอบเขตการเข้าถึงข้อมูลของคู่ค้า:</label>
+      <select id="w4-data-access" onchange="calcTprmScore()" style="width:100%; padding:0.5rem; background:var(--bg-surface); color:var(--text-main); border:1px solid var(--border-color); border-radius:6px;">
+        <option value="40" selected>เข้าถึงข้อมูลสำคัญ/Sensitive PII/การเงิน (คะแนนความเสี่ยง +40)</option>
+        <option value="25">เข้าถึงข้อมูลภายในทั่วไป Internal Data (คะแนนความเสี่ยง +25)</option>
+        <option value="10">เข้าถึงเฉพาะข้อมูลเปิดเผยสาธารณะ Public Data (คะแนนความเสี่ยง +10)</option>
+      </select>
+    </div>
+
+    <div>
+      <label style="font-size:0.82rem; font-weight:700; color:var(--text-dim); display:block; margin-bottom:0.3rem;">2. ช่องทางการเชื่อมต่อระบบเครือข่าย:</label>
+      <select id="w4-network-conn" onchange="calcTprmScore()" style="width:100%; padding:0.5rem; background:var(--bg-surface); color:var(--text-main); border:1px solid var(--border-color); border-radius:6px;">
+        <option value="30" selected>เชื่อมต่อเครือข่ายหลักผ่าน Site-to-Site VPN หรือสิทธิ์ Admin (คะแนน +30)</option>
+        <option value="15">เชื่อมต่อผ่าน API ภายนอกหรือ Web Portal (คะแนน +15)</option>
+        <option value="5">ไม่มีการเชื่อมต่อเครือข่ายตรง Standalone (คะแนน +5)</option>
+      </select>
+    </div>
+
+    <div>
+      <label style="font-size:0.82rem; font-weight:700; color:var(--text-dim); display:block; margin-bottom:0.3rem;">3. สิทธิในสัญญาจัดซื้อ (Right to Audit & DPA):</label>
+      <select id="w4-contract-status" onchange="calcTprmScore()" style="width:100%; padding:0.5rem; background:var(--bg-surface); color:var(--text-main); border:1px solid var(--border-color); border-radius:6px;">
+        <option value="20" selected>ไม่มีข้อสัญญา Right to Audit และไม่มี DPA (คะแนน +20)</option>
+        <option value="10">มีสัญญาทั่วไปแต่เงื่อนไขไม่รัดกุม (คะแนน +10)</option>
+        <option value="0">มีสิทธิ Right to Audit และ DPA สมบูรณ์ (คะแนน 0)</option>
+      </select>
+    </div>
+
+    <div>
+      <label style="font-size:0.82rem; font-weight:700; color:var(--text-dim); display:block; margin-bottom:0.3rem;">4. การจ้างช่วงต่อ (Subcontracting):</label>
+      <select id="w4-subcontract" onchange="calcTprmScore()" style="width:100%; padding:0.5rem; background:var(--bg-surface); color:var(--text-main); border:1px solid var(--border-color); border-radius:6px;">
+        <option value="10" selected>คู่ค้านำงานไปจ้างช่วงต่อโดยไม่แจ้งองค์กร (คะแนน +10)</option>
+        <option value="0">ทำงานด้วยบุคลากรตนเอง หรือขออนุมัติเป็นลายลักษณ์อักษร (คะแนน 0)</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="tprm-result-display" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:8px; padding:1.25rem;">
+    <!-- Rendered dynamically via JS -->
+  </div>
+</div>
+
+<p class="content-paragraph">การบริหารความเสี่ยงคู่ค้า (Third-Party Risk Management: TPRM) มิใช่เพียงการทำแบบสอบถามครั้งเดียวตอนจัดซื้อ แต่ต้องครอบคลุม 5 ระยะสำคัญ:</p>
+
+<div class="figure-box" id="figure-13-4">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 13.4</div>
+    <div class="figure-title">วงจรชีวิตการบริหารความเสี่ยงผู้ให้บริการภายนอก (Third-Party Risk Management: TPRM Lifecycle)</div>
+  </div>
+  <div class="tprm-flow-grid">
+    <div class="tprm-step s1">
+      <div class="step-badge">STAGE 1</div>
+      <div class="step-icon">🔍</div>
+      <div class="step-title">1. การประเมินก่อนจัดซื้อ<br>(Due Diligence)</div>
+      <ul class="step-list">
+        <li>คัดกรองประวัติด้าน Cyber & Financial</li>
+        <li>ตรวจสอบใบรับรอง ISO 27001, SOC 2</li>
+        <li>จำแนกระดับความเสี่ยงคู่ค้า (Risk Tiering)</li>
+      </ul>
+    </div>
+    <div class="tprm-step s2">
+      <div class="step-badge">STAGE 2</div>
+      <div class="step-icon">📜</div>
+      <div class="step-title">2. การทำสัญญาและข้อตกลง<br>(Contracting & DPA)</div>
+      <ul class="step-list">
+        <li>ระบุสิทธิ <strong>Right to Audit</strong> ชัดเจน</li>
+        <li>ทำสัญญาข้อตกลง DPA ตาม PDPA ม.40</li>
+        <li>กำหนด SLA แจ้งเหตุละเมิดใน 12–24 ชม.</li>
+        <li>ห้ามจ้างช่วง (Subcontract) โดยไม่แจ้ง</li>
+      </ul>
+    </div>
+    <div class="tprm-step s3">
+      <div class="step-badge">STAGE 3</div>
+      <div class="step-icon">🚀</div>
+      <div class="step-title">3. การส่งมอบและเชื่อมต่อ<br>(Onboarding & Integration)</div>
+      <ul class="step-list">
+        <li>กำหนดสิทธิ์แบบ Least Privilege & RBAC</li>
+        <li>บังคับใช้ Hardware MFA รายบุคคล</li>
+        <li>จัดทำ Network Segmentation / Jump Host</li>
+      </ul>
+    </div>
+    <div class="tprm-step s4">
+      <div class="step-badge">STAGE 4</div>
+      <div class="step-icon">📊</div>
+      <div class="step-title">4. การเฝ้าระวังต่อเนื่อง<br>(Continuous Monitoring)</div>
+      <ul class="step-list">
+        <li>ตรวจรายงาน SOC 2 Type II ประจำปี</li>
+        <li>ขอหนังสือรับรอง Bridge Letter</li>
+        <li>ทบทวนสิทธิ์บัญชีผู้ใช้ทุกไตรมาส</li>
+      </ul>
+    </div>
+    <div class="tprm-step s5">
+      <div class="step-badge">STAGE 5</div>
+      <div class="step-icon">🛑</div>
+      <div class="step-title">5. การสิ้นสุดสัญญา<br>(Offboarding & Termination)</div>
+      <ul class="step-list">
+        <li>ตัดสิทธิ์การเข้าถึงระบบทั้งหมดทันที</li>
+        <li>ส่งคืนข้อมูลทั้งหมด (Data Portability)</li>
+        <li>ออกหนังสือรับรองทำลายข้อมูล (Destruction)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 13.4:</strong> 5 ระยะสำคัญในการกำกับดูแลความมั่นคงปลอดภัยของคู่ค้าและห่วงโซ่อุปทานดิจิทัลอย่างครบวงจร
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="ข้อกำหนดสำคัญในสัญญา-mandatory-security-contract-clauses-ที่ผู้ตรวจสอบต้องตรวจ">ข้อกำหนดสำคัญในสัญญา (Mandatory Security Contract Clauses) ที่ผู้ตรวจสอบต้องตรวจ:</h4>
+<ol class="content-list">
+<li><strong>Right to Audit Clause (สิทธิในการเข้าตรวจสอบ):</strong> สัญญาต้องระบุให้องค์กรหรือตัวแทนผู้ตรวจสอบอิสระมีสิทธิเข้าตรวจสอบระบบ กระบวนการ และสถานที่ของผู้ให้บริการได้</li>
+<li><strong>Data Processing Agreement (DPA):</strong> สัญญาการประมวลผลข้อมูลส่วนบุคคลตาม PDPA กำหนดวัตถุประสงค์ ขอบเขต และมาตรการรักษาความปลอดภัยอย่างชัดเจน</li>
+<li><strong>Incident Notification SLA:</strong> กำหนดให้ผู้ให้บริการต้องแจ้งให้องค์กรทราบทันทีเมื่อเกิดเหตุการณ์ด้านความมั่นคงปลอดภัยหรือข้อมูลรั่วไหล <strong>(เช่น ภายใน 12 หรือ 24 ชั่วโมง)</strong> เพื่อให้องค์กรสามารถปฏิบัติตามกรอบเวลา 72 ชั่วโมงของ PDPA ได้ทัน</li>
+<li><strong>Subcontractor Governance:</strong> ข้อกำหนดห้ามมิให้ผู้ให้บริการส่งต่องานหรือข้อมูลให้แก่ผู้รับจ้างช่วง (Sub-processor) เว้นแต่จะได้รับความยินยอมเป็นลายลักษณ์อักษรจากองค์กรก่อน</li>
+<li><strong>Data Return and Certified Sanitization:</strong> เมื่อสิ้นสุดสัญญา ผู้ให้บริการต้องส่งมอบข้อมูลทั้งหมดคืนในรูปแบบที่ตกลงกัน และต้องทำลายข้อมูลสำรองทั้งหมดพร้อมออก <strong>หนังสือรับรองการทำลายข้อมูล (Certificate of Data Destruction)</strong></li>
+</ol>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-4-การวิเคราะห์รายงานความเชื่อมั่นอิสระ-independent-assurance-reports-และข้อจำกัด">2.4 การวิเคราะห์รายงานความเชื่อมั่นอิสระ (Independent Assurance Reports) และข้อจำกัด</h3>
+
+<div class="widget-box" id="widget-13-3">
+  <div class="widget-header">
+    <div class="widget-tag">FORENSIC TOOL // WIDGET 13.3</div>
+    <div class="widget-title">SOC 2 Type II & CUEC Forensic Analyzer (เครื่องมือถอดรหัสรายงานความเชื่อมั่นคลาวด์)</div>
+  </div>
+  <p class="widget-desc">
+    ประเมินความสมบูรณ์ของรายงาน SOC 2 Type II ที่ได้รับจากผู้ให้บริการ ผ่าน 3 เกณฑ์วิกฤตของผู้ตรวจสอบ เพื่อตัดสินว่าสามารถพึ่งพารายงาน (Audit Reliance) ได้หรือไม่
+  </p>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem; margin-bottom:1.25rem;">
+    <div style="background:var(--bg-surface); padding:1rem; border-radius:8px; border:1px solid var(--border-color);">
+      <div style="font-weight:700; font-size:0.88rem; color:var(--text-main); margin-bottom:0.4rem;">1. Scope & Region Alignment</div>
+      <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.5rem;">ระบบคลาวด์ที่องค์กรใช้งาน อยู่ในขอบเขตและ Region เดียวกับที่ระบุในรายงานหรือไม่?</p>
+      <select id="w3-scope-match" onchange="runSoc2Analyzer()" style="width:100%; padding:0.45rem; background:var(--bg-card); color:var(--text-main); border:1px solid var(--border-color); border-radius:4px;">
+        <option value="match">ตรงกัน 100% (Region และ Service ครอบคลุม)</option>
+        <option value="mismatch" selected>ไม่ตรงกัน (Scope Mismatch: ใช้ US แต่รายงานตรวจแค่ EU/SG)</option>
+      </select>
+    </div>
+
+    <div style="background:var(--bg-surface); padding:1rem; border-radius:8px; border:1px solid var(--border-color);">
+      <div style="font-weight:700; font-size:0.88rem; color:var(--text-main); margin-bottom:0.4rem;">2. Timing Period & Gap Letter</div>
+      <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.5rem;">ช่วงเวลาของรายงานครอบคลุมปีงบประมาณที่ตรวจ และมี Bridge Letter หรือไม่?</p>
+      <select id="w3-timing-gap" onchange="runSoc2Analyzer()" style="width:100%; padding:0.45rem; background:var(--bg-card); color:var(--text-main); border:1px solid var(--border-color); border-radius:4px;">
+        <option value="current">ครอบคลุมช่วงเวลาที่ตรวจสมบูรณ์</option>
+        <option value="has_bridge">มีช่วงว่าง (Gap) แต่มี Bridge Letter รับรอง</option>
+        <option value="expired" selected>รายงานหมดอายุ & ขาด Bridge Letter (Timing Gap)</option>
+      </select>
+    </div>
+
+    <div style="background:var(--bg-surface); padding:1rem; border-radius:8px; border:1px solid var(--border-color);">
+      <div style="font-weight:700; font-size:0.88rem; color:var(--text-main); margin-bottom:0.4rem;">3. CUEC Implementation (ฝั่งลูกค้า)</div>
+      <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.5rem;">องค์กรเราได้นำเงื่อนไขควบคุมเสริม (CUECs) ในรายงานไปปฏิบัติตามหรือไม่?</p>
+      <select id="w3-cuec-status" onchange="runSoc2Analyzer()" style="width:100%; padding:0.45rem; background:var(--bg-card); color:var(--text-main); border:1px solid var(--border-color); border-radius:4px;">
+        <option value="full">ปฏิบัติตาม CUECs ครบทุกข้อ (เปิด MFA, KMS, Export Logs)</option>
+        <option value="partial">ปฏิบัติเพียงบางข้อ (มีช่องว่าง)</option>
+        <option value="ignored" selected>ละเลยไม่เคยอ่านและไม่ได้ปฏิบัติตาม CUEC เลย (Ignored)</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="soc2-verdict-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:8px; padding:1.25rem;">
+    <!-- Rendered dynamically via JS -->
+  </div>
+</div>
+
+
+<div class="figure-box" id="figure-13-10">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 13.10</div>
+    <div class="figure-title">ตารางเปรียบเทียบมาตรฐานรายงานความเชื่อมั่นอิสระ (Independent Assurance Reports Comparison)</div>
+  </div>
+  <div class="table-responsive">
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>มาตรฐานรายงาน</th>
+          <th>วัตถุประสงค์หลัก</th>
+          <th>เป้าหมายการประเมิน</th>
+          <th>ระดับความน่าเชื่อถือสำหรับ IT Auditor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>AICPA SOC 1</strong><br>(SSAE 18 / ISAE 3402)</td>
+          <td>รายงานความเชื่อมั่นด้านการควบคุมภายในที่กระทบต่อรายงานทางการเงิน (ICFR)</td>
+          <td>ระบบบัญชี, Billing, ERP Transaction</td>
+          <td><span class="badge-status warn">เฉพาะทางบัญชี</span> (ไม่ตอบโจทย์ Security โดยตรง)</td>
+        </tr>
+        <tr>
+          <td><strong>AICPA SOC 2 Type I</strong></td>
+          <td>ตรวจเฉพาะความเหมาะสมในการออกแบบการควบคุม ณ จุดเวลาใดเวลาหนึ่ง (Point-in-Time)</td>
+          <td>Trust Services Criteria (Security, Availability, Privacy)</td>
+          <td><span class="badge-status warn">ปานกลาง</span> (ไม่พิสูจน์ประสิทธิผลจริงข้ามเวลา)</td>
+        </tr>
+        <tr>
+          <td><strong>AICPA SOC 2 Type II</strong></td>
+          <td>ตรวจทั้งการออกแบบและ <strong>ประสิทธิผลการทำงานจริงตลอดช่วงเวลา (6–12 เดือน)</strong></td>
+          <td>ผลการทดสอบเชิงลึกราย Control และระบุข้อผิดพลาด (Exceptions)</td>
+          <td><span class="badge-status pass">ระดับทองคำ (Gold Standard)</span> ต้องร้องขอเสมอ</td>
+        </tr>
+        <tr>
+          <td><strong>AICPA SOC 3</strong></td>
+          <td>รายงานสรุปภาพรวมสำหรับเผยแพร่สู่สาธารณะ (General Use Summary)</td>
+          <td>สรุปว่าผ่านเกณฑ์ TSC หรือไม่ โดยไม่มีตารางทดสอบผล</td>
+          <td><span class="badge-status fail">ต่ำสำหรับงานตรวจ</span> (ใช้เป็นเพียงข้อมูลเบื้องต้น)</td>
+        </tr>
+        <tr>
+          <td><strong>ISO/IEC 27017 & 27018</strong></td>
+          <td>มาตรฐานความมั่นคงปลอดภัยคลาวด์ และการคุ้มครองข้อมูลส่วนบุคคล (PII) บนคลาวด์</td>
+          <td>Cloud Controls เสริมตาม ISO 27002 Annex A</td>
+          <td><span class="badge-status pass">สูงมาก</span> ยืนยันมาตรฐานผู้ให้บริการระดับสากล</td>
+        </tr>
+        <tr>
+          <td><strong>CSA STAR Certification</strong></td>
+          <td>การรับรองตามกรอบ Cloud Controls Matrix (CCM) ของ Cloud Security Alliance</td>
+          <td>ประเมินความปลอดภัยคลาวด์ตามระดับ Level 1 (Self) ถึง Level 2 (Third-Party)</td>
+          <td><span class="badge-status pass">สูง</span> มาตรฐานเฉพาะทางสำหรับ Cloud Security</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 13.10:</strong> การเปรียบเทียบประเภทและระดับความน่าเชื่อถือของรายงานการรับรองความเชื่อมั่นอิสระ
+  </div>
+</div>
+
+<p class="content-paragraph">เนื่องจากผู้ให้บริการคลาวด์รายใหญ่ระดับโลก (เช่น AWS, Microsoft, Google) ไม่อนุญาตให้ผู้ตรวจสอบของแต่ละลูกค้ารายย่อยเดินเข้าไปตรวจในศูนย์ข้อมูลจริง ผู้ตรวจสอบจึงต้องอาศัย <strong>รายงานการรับรองความเชื่อมั่นอิสระ (Third-Party Assurance Reports)</strong>:</p>
+<h4 class="sub-subsection-heading" id="1-ตระกูลรายงาน-service-organization-control-soc-reports-ตามมาตรฐาน-aicpa">1. ตระกูลรายงาน Service Organization Control (SOC Reports) ตามมาตรฐาน AICPA</h4>
+<ul class="content-list">
+<li><strong>SOC 1 (SSAE 18 / ISAE 3402):</strong> เน้นการควบคุมภายในที่มีผลกระทบต่อ <strong>"รายงานทางการเงิน (Internal Control over Financial Reporting: ICFR)"</strong></li>
+<li><strong>SOC 2:</strong> เน้นการควบคุมด้านความมั่นคงปลอดภัยตามหลัก <strong>Trust Services Criteria (TSC)</strong> 5 ด้าน:</li>
+<li>Security (ความมั่นคงปลอดภัย - เกณฑ์บังคับ)</li>
+<li>Availability (ความพร้อมใช้)</li>
+<li>Processing Integrity (ความสมบูรณ์ของการประมวลผล)</li>
+<li>Confidentiality (การรักษาความลับ)</li>
+<li>Privacy (ความเป็นส่วนตัวของข้อมูล)</li>
+<li><strong>ความแตกต่างระหว่าง Type I และ Type II:</strong></li>
+<li><strong>Type I:</strong> ตรวจสอบเฉพาะ <strong>"การออกแบบการควบคุม (Design Suitability)"</strong> ณ จุดเวลาใดเวลาหนึ่ง (Point in Time) — <em>มีน้ำหนักน้อย ไม่ยืนยันว่าใช้งานได้จริง</em></li>
+<li><strong>Type II:</strong> ตรวจสอบทั้ง <strong>"การออกแบบและประสิทธิผลของการทำงานจริง (Operating Effectiveness)"</strong> ตลอดช่วงระยะเวลาหนึ่ง (โดยทั่วไปครอบคลุม 6–12 เดือน) — <strong>เป็นรายงานที่ผู้ตรวจสอบต้องร้องขอเสมอ</strong></li>
+<li><strong>SOC 3:</strong> รายงานสรุปสำหรับเปิดเผยต่อสาธารณะ (General Use) ไม่มีรายละเอียดผลการทดสอบการควบคุมเชิงลึก</li>
+</ul>
+<h4 class="sub-subsection-heading" id="2-ข้อจำกัดและกับดักในการพึ่งพาใบรับรอง-limitations-audit-pitfalls">2. ข้อจำกัดและกับดักในการพึ่งพาใบรับรอง (Limitations & Audit Pitfalls)</h4>
+
+<div class="figure-box" id="figure-13-5">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 13.5</div>
+    <div class="figure-title">3 กับดักร้ายแรงในการพึ่งพาใบรับรองของผู้ให้บริการคลาวด์ (3 Major Vendor Certification Traps)</div>
+  </div>
+  <div class="pitfalls-cards-grid">
+    <div class="p-card">
+      <div class="p-icon">🗺️</div>
+      <div class="p-num">TRAP 01</div>
+      <div class="p-title">Scope Mismatch<br>(ขอบเขตไม่ตรงกับที่ใช้งานจริง)</div>
+      <div class="p-desc">
+        ผู้ให้บริการโอ้อวดใบรับรอง ISO 27001 หรือ SOC 2 แต่เมื่ออ่านหน้าขอบเขต (Scope) กลับพบว่ารับรองเฉพาะ Data Center ในต่างประเทศ หรือครอบคลุมเฉพาะบริการ Co-location แต่ไม่รวมระบบ Managed Application ที่องค์กรจ้างทำ
+      </div>
+      <div class="p-action"><strong>จุดตรวจของผู้ตรวจสอบ:</strong> ตรวจสอบ System Description ใน SOC 2 Section III เทียบกับ Region และ Service ที่ใช้จริง</div>
+    </div>
+    <div class="p-card">
+      <div class="p-icon">⏳</div>
+      <div class="p-num">TRAP 02</div>
+      <div class="p-title">Timing Gap<br>(รายงานหมดอายุ / ขาด Bridge Letter)</div>
+      <div class="p-desc">
+        รายงาน SOC 2 Type II มีอายุสิ้นสุดไปแล้วหลายเดือนก่อนวันเข้าตรวจ หากไม่มีหนังสือรับรองความต่อเนื่อง จะเกิดช่องว่าง (Period Gap) ที่ไม่มีการตรวจสอบความมั่นคงปลอดภัย
+      </div>
+      <div class="p-action"><strong>จุดตรวจของผู้ตรวจสอบ:</strong> หากรายงานหมดอายุเกิน 3 เดือน ต้องเรียกตรวจ <em>Bridge Letter (Gap Letter)</em> ที่ลงนามโดยผู้บริหารคู่ค้า</div>
+    </div>
+    <div class="p-card">
+      <div class="p-icon">⚠️</div>
+      <div class="p-num">TRAP 03</div>
+      <div class="p-title">The CUEC Blindspot<br>(การละเลยเงื่อนไขความรับผิดชอบของลูกค้า)</div>
+      <div class="p-desc">
+        รายงาน SOC 2 ทุกฉบับจะระบุว่าระบบจะปลอดภัยก็ต่อเมื่อ "ลูกค้าต้องปฏิบัติตาม Complementary User Entity Controls (CUECs)" เช่น การเปิด MFA, การเปิด KMS, การดึงล็อก หากลูกค้าละเลย ระบบจะเกิดช่องโหว่ทันที
+      </div>
+      <div class="p-action"><strong>จุดตรวจของผู้ตรวจสอบ:</strong> สกัดรายการ CUEC ทั้งหมดในรายงาน SOC 2 มาสร้างเป็น Audit Checklist ฝั่งองค์กรเรา</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 13.5:</strong> 3 จุดบอดทางเทคนิคที่ผู้ตรวจสอบต้องไม่หลงกลภาพลวงตาของใบรับรองภายนอก
+  </div>
+</div>
+
+<ol class="content-list">
+<li><strong>Scope Mismatch (ขอบเขตไม่ตรงกัน):</strong></li>
+</ol>
+<ul class="content-list">
+<li><em>ตัวอย่าง:</em> ผู้ให้บริการคลาวด์อวดอ้างว่าได้รับใบรับรอง ISO 27001 หรือ SOC 2 แต่เมื่อผู้ตรวจสอบอ่านขอบเขต (Scope) กลับพบว่าใบรับรองนั้นครอบคลุมเฉพาะ "บริการ Co-location ในประเทศสิงคโปร์" แต่มิได้ครอบคลุม "บริการ Managed Application ในประเทศไทย" ที่องค์กรกำลังใช้งานอยู่</li>
+</ul>
+<ol class="content-list">
+<li><strong>Timing Gap (ช่องว่างของระยะเวลาการตรวจสอบ):</strong></li>
+</ol>
+<ul class="content-list">
+<li>หากรายงาน SOC 2 Type II สิ้นสุดระยะเวลาครอบคลุม ณ วันที่ 30 มิถุนายน แต่องค์กรกำลังทำการตรวจสอบประจำปีในเดือนธันวาคม จะเกิดช่องว่าง 6 เดือน ผู้ตรวจสอบต้องขอ <strong>"หนังสือรับรองการไม่มีการเปลี่ยนแปลงที่มีนัยสำคัญ (Bridge Letter หรือ Gap Letter)"</strong> จากผู้บริหารของผู้ให้บริการ</li>
+</ul>
+<ol class="content-list">
+<li><strong>Complementary User Entity Controls (CUECs) — กับดักที่อันตรายที่สุด:</strong></li>
+</ol>
+<ul class="content-list">
+<li>ในรายงาน SOC 2 ผู้สอบบัญชีอิสระจะระบุเงื่อนไขเสมอว่า: <em>"ระบบของผู้ให้บริการจะมีความปลอดภัยตามรายงานนี้ ก็ต่อเมื่อ <strong>ผู้ใช้บริการ (User Entity / ลูกค้า)</strong> ได้ปฏิบัติตามการควบคุมเสริมที่กำหนดไว้ (CUECs) ด้วย"</em></li>
+<li><em>ตัวอย่าง CUEC:</em> ผู้ให้บริการคลาวด์ระบุว่า ข้อมูลสำรองจะปลอดภัยก็ต่อเมื่อ <strong>ลูกค้าเป็นผู้เปิดใช้งานฟังก์ชัน Multi-Factor Authentication (MFA) และเปิดการเข้ารหัสด้วย Customer Key</strong> หากลูกค้าละเลยไม่ตั้งค่าตาม CUEC ระบบก็ไม่มีความปลอดภัย และผู้ให้บริการไม่ต้องรับผิดชอบ!</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-3-กรณีศึกษาเชิงลึก-มหาวิทยาลัยดิจิทัลสมมติ-โครงการย้ายระบบทะเบียนสู่ระบบคลาวด์และการจ้างงาน-outsource">
+            <h2 class="section-heading">ส่วนที่ 3: กรณีศึกษาเชิงลึก "มหาวิทยาลัยดิจิทัลสมมติ" — โครงการย้ายระบบทะเบียนสู่ระบบคลาวด์และการจ้างงาน Outsource</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="3-1-ภูมิหลังและบริบทของโครงการ-cloud-third-party-dilemma">3.1 ภูมิหลังและบริบทของโครงการ (Cloud & Third-Party Dilemma)</h3>
+<p class="content-paragraph">เพื่อแก้ปัญหาระบบล่มและเซิร์ฟเวอร์ในศูนย์ข้อมูล Data Center ถูกแรนซัมแวร์โจมตี (จากบทที่ 12) ผู้บริหารของ <strong>"มหาวิทยาลัยดิจิทัลสมมติ"</strong> ได้อนุมัติโครงการเร่งด่วน:</p>
+<ol class="content-list">
+<li>ว่าจ้างบริษัท <strong>"สมาร์ทคลาวด์โซลูชัน จำกัด (Outsource Vendor)"</strong> พัฒนาระบบทะเบียนนักศึกษาใหม่ (New REG Cloud System) บนสถาปัตยกรรมคลาวด์แบบ SaaS/IaaS โดยเช่าใช้ทรัพยากรบนระบบคลาวด์ต่างประเทศ</li>
+<li>มีการถ่ายโอนฐานข้อมูลประวัตินักศึกษา อาจารย์ และบุคลากรจำนวนกว่า 60,000 ราย ซึ่งประกอบด้วยข้อมูลส่วนบุคคล เช่น เลขบัตรประชาชน ผลการเรียน ข้อมูลทางการเงิน และข้อมูลสุขภาพจากโรงพยาบาลมหาวิทยาลัย ขึ้นสู่ระบบคลาวด์</li>
+<li>ผู้อำนวยการฝ่ายเทคโนโลยีดิจิทัลรายงานต่อที่ประชุมสภามหาวิทยาลัยว่า: <em>"ระบบใหม่มีความมั่นคงปลอดภัยสูงสุด 100% เพราะผู้ให้บริการคลาวด์ได้รับใบรับรองมาตรฐาน ISO/IEC 27001 และ SOC 2 ระดับโลก จึงไม่มีความเสี่ยงด้านความปลอดภัยอีกต่อไป"</em></li>
+</ol>
+<h3 class="subsection-heading" id="3-2-ข้อเท็จจริงที่ตรวจพบจากการเข้าตรวจสอบจริง-audit-investigation-facts">3.2 ข้อเท็จจริงที่ตรวจพบจากการเข้าตรวจสอบจริง (Audit Investigation Facts)</h3>
+<p class="content-paragraph">เมื่อทีมผู้ตรวจสอบระบบสารสนเทศ (IT Audit Team) เข้าดำเนินการตรวจสอบความสอดคล้องตามเกณฑ์ PDPA, กรอบแนวทางคลาวด์ สกมช., และมาตรฐานสากล กลับพบข้อเท็จจริงที่น่าตกใจ:</p>
+
+<div class="figure-box" id="figure-13-6">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 13.6</div>
+    <div class="figure-title">สรุปข้อเท็จจริงเชิงวิกฤต: โครงการระบบทะเบียนบนคลาวด์ (Cloud REG Case Facts)</div>
+  </div>
+  <div class="case-facts-grid">
+    <div class="c-fact f1">
+      <div class="fact-icon">📄</div>
+      <div class="fact-title">1. สัญญาไร้เขี้ยวเล็บ (No DPA & No Right to Audit)</div>
+      <p>สัญญาจ้างบริษัท สมาร์ทคลาวด์โซลูชัน จำกัด ไม่มีข้อตกลง DPA ตาม PDPA ม.40 ไม่มีสิทธิ Right to Audit และกำหนดแจ้งเหตุข้อมูลรั่วไหลกว้าง ๆ ว่า "ตามความเหมาะสม"</p>
+    </div>
+    <div class="c-fact f2">
+      <div class="fact-icon">🔑</div>
+      <div class="fact-title">2. แชร์บัญชี Root ไร้ MFA ผ่านแอปพลิเคชันแชต</div>
+      <p>ทีม Outsource 8 คน ใช้บัญชี Cloud Root/Admin ร่วมกัน ไม่เปิดใช้งาน Multi-Factor Authentication (MFA) และส่งรหัสผ่านผ่านแอปพลิเคชัน LINE</p>
+    </div>
+    <div class="c-fact f3">
+      <div class="fact-icon">🌐</div>
+      <div class="fact-title">3. S3 Bucket สำเนาบัตรประชาชนตั้งเป็น Public Read</div>
+      <p>ไฟล์สำเนาบัตรประจำตัวประชาชนและรูปถ่ายนักศึกษากว่า 60,000 รายการ ถูกเปิดให้อินเทอร์เน็ตเข้าถึงได้โดยตรง ไม่ต้องยืนยันตัวตน และไม่มีการเข้ารหัสข้อมูล</p>
+    </div>
+    <div class="c-fact f4">
+      <div class="fact-icon">✈️</div>
+      <div class="fact-title">4. ฐานข้อมูลคลาวด์ตั้งใน Region ยุโรป (eu-west-1)</div>
+      <p>ข้อมูลส่วนบุคคลถูกนำไปจัดเก็บบนคลาวด์ต่างประเทศ โดยที่ Privacy Notice ระบุว่าเก็บในไทย และไม่มีการประเมินความเพียงพอตาม PDPA ม.28/29</p>
+    </div>
+    <div class="c-fact f5 full-span">
+      <div class="fact-icon">🙈</div>
+      <div class="fact-title">5. หลงเชื่อใบรับรองคลาวด์ แต่ละเลยเงื่อนไข CUECs 100%</div>
+      <p>ฝ่ายไอทีเชื่อว่าใบรับรอง SOC 2 ของคลาวด์คุ้มครองระบบสมบูรณ์แล้ว แต่ไม่เคยเปิดอ่าน Section III จึงไม่ได้เปิด KMS และไม่ได้สร้างระบบเฝ้าระวังล็อกของตนเอง</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 13.6:</strong> ภาพรวมสภาพปัญหาและความผิดพลาดเชิงสถาปัตยกรรมและกฎหมายในกรณีศึกษา "มหาวิทยาลัยดิจิทัลสมมติ"
+  </div>
+</div>
+
+<ol class="content-list">
+<li><strong>สัญญาจ้างขาดสาระสำคัญด้านความมั่นคงปลอดภัย:</strong> สัญญาจ้างพัฒนาระบบไม่มีการระบุข้อกำหนด <strong>Right to Audit (สิทธิในการเข้าตรวจสอบ)</strong>, ไม่มีข้อตกลงการประมวลผลข้อมูลส่วนบุคคล (<strong>Data Processing Agreement: DPA</strong> ตาม PDPA), และกำหนดเวลาให้เวนเดอร์แจ้งเหตุการณ์รั่วไหลไว้กว้าง ๆ ว่า <em>"ให้แจ้งตามความเหมาะสม"</em> (ไม่ระบุกรอบเวลาชั่วโมง)</li>
+<li><strong>การบริหารจัดการสิทธิ์และการเข้าถึง (IAM Misconfiguration):</strong> วิศวกรของบริษัท Outsource จำนวน 8 คน ใช้บัญชีบริหารจัดการระบบคลาวด์ (Cloud Administrator) บัญชีเดียวกันร่วมกัน โดยไม่มีการเปิดใช้งาน Multi-Factor Authentication (MFA) และมีการส่งรหัสผ่านผ่านแอปพลิเคชัน LINE</li>
+<li><strong>การกำหนดค่าพื้นที่จัดเก็บข้อมูลรั่วไหล (S3 Bucket Public Exposure):</strong> อ็อบเจกต์สตอเรจบนคลาวด์ที่ใช้จัดเก็บไฟล์สำเนาบัตรประจำตัวประชาชนและรูปถ่ายนักศึกษาถูกกำหนดค่าสิทธิ์เป็น <strong>"Public Read"</strong> ทำให้บุคคลภายนอกสามารถดาวน์โหลดเอกสารได้โดยตรงผ่านอินเทอร์เน็ตโดยไม่ต้องยืนยันตัวตน</li>
+<li><strong>การโอนข้อมูลออกนอกประเทศโดยมิชอบ (Cross-Border Non-Compliance):</strong> ข้อมูลส่วนบุคคลของนักศึกษาถูกนำไปจัดเก็บในศูนย์ข้อมูลคลาวด์ที่ตั้งอยู่ในทวีปยุโรป (Region <code>eu-west-1</code>) โดยที่แบบฟอร์มขอความยินยอม (Consent) และนโยบายความเป็นส่วนตัว (Privacy Notice) ระบุว่าข้อมูลถูกจัดเก็บภายในประเทศไทยเท่านั้น และไม่มีการประเมินความเพียงพอของมาตรการตามมาตรา 28/29 ของ PDPA</li>
+<li><strong>การละเลยเงื่อนไข CUEC ในรายงาน SOC 2:</strong> ฝ่ายไอทีอ้างอิงใบรับรอง SOC 2 ของผู้ให้บริการคลาวด์ แต่เมื่อผู้ตรวจสอบเปิดอ่านรายงาน SOC 2 Section III พบว่าผู้ให้บริการระบุเงื่อนไข CUEC ข้อ 4 ชัดเจนว่า: <em>"ลูกค้าต้องเป็นผู้เปิดใช้งานการเข้ารหัสข้อมูล (KMS Encryption at Rest) และจัดตั้งระบบเฝ้าระวังความปลอดภัยของตนเอง"</em> ซึ่งมหาวิทยาลัยไม่ได้ดำเนินการใด ๆ ตามเงื่อนไขดังกล่าวเลย</li>
+</ol>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="3-3-กระดาษทำการตรวจสอบฉบับสมบูรณ์-audit-working-paper-wp-13-01">3.3 กระดาษทำการตรวจสอบฉบับสมบูรณ์ (Audit Working Paper WP-13-01)</h3>
+
+<div class="figure-box" id="figure-13-7">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 13.7</div>
+    <div class="figure-title">กระดาษทำการตรวจสอบมาตรฐานวิชาชีพ (Audit Working Paper WP-13-01)</div>
+  </div>
+  <div class="working-paper-card">
+    <div class="wp-header-block">
+      <div class="wp-org-title">มหาวิทยาลัยดิจิทัลสมมติ — ฝ่ายตรวจสอบภายใน</div>
+      <div class="wp-doc-type">กระดาษทำการตรวจสอบระบบสารสนเทศ (Information Systems Audit Working Paper)</div>
+    </div>
+    <div class="wp-meta-grid">
+      <div class="wp-meta-item"><strong>รหัสกระดาษทำการ:</strong> WP-13-01</div>
+      <div class="wp-meta-item"><strong>วันที่ตรวจสอบ:</strong> 20 พฤศจิกายน 2567</div>
+      <div class="wp-meta-item"><strong>หัวข้อการตรวจ:</strong> การตรวจสอบความสอดคล้อง ข้อมูลส่วนบุคคล คลาวด์ และคู่ค้า</div>
+      <div class="wp-meta-item"><strong>ระบบเป้าหมาย:</strong> ระบบทะเบียนนักศึกษาใหม่บนคลาวด์ (New REG Cloud System)</div>
+      <div class="wp-meta-item"><strong>ผู้ตรวจสอบ:</strong> นางสาวกานดา ตรวจสอบดี (Lead IT Auditor)</div>
+      <div class="wp-meta-item"><strong>ผู้สอบทาน:</strong> นายธนากร ตรวจการดี (Audit Manager)</div>
+    </div>
+    <div class="wp-summary-content">
+      <div class="wp-section-title">สรุปภาพรวมผลการตรวจ (Executive Audit Summary):</div>
+      <p>การตรวจสอบโครงการระบบทะเบียนนักศึกษาใหม่บนคลาวด์ พบข้อบกพร่องระดับวิกฤต (Critical Deficiencies) ทั้งในมิติการบริหารสัญญาคู่ค้า การกำกับดูแลข้อมูลส่วนบุคคลตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 และการกำหนดค่าความปลอดภัยบนคลาวด์ตาม Shared Responsibility Model ส่งผลให้ข้อมูลส่วนบุคคลอ่อนไหวของนักศึกษาและบุคลากรกว่า 60,000 ราย ตกอยู่ในสภาพถูกเปิดเผยสู่สาธารณะและมีความเสี่ยงต่อโทษปรับสูงสุดตามกฎหมาย</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 13.7:</strong> โครงสร้างมาตรฐานกระดาษทำการตรวจสอบระบบสารสนเทศ WP-13-01
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="1-วัตถุประสงค์การตรวจสอบ-audit-objectives">1. วัตถุประสงค์การตรวจสอบ (Audit Objectives)</h4>
+<ol class="content-list">
+<li>เพื่อประเมินความสอดคล้องตามกฎหมายคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) ในโครงการระบบทะเบียนบนคลาวด์</li>
+<li>เพื่อประเมินการบริหารจัดการความเสี่ยงจากผู้ให้บริการภายนอก (Third-Party Risk Management) และความรัดกุมของสัญญา</li>
+<li>เพื่อตรวจสอบการกำหนดค่าความมั่นคงปลอดภัยบนระบบคลาวด์ตามแบบจำลองความรับผิดชอบร่วม (Shared Responsibility Model) และแนวทางของ สกมช.</li>
+</ol>
+<h4 class="sub-subsection-heading" id="2-เกณฑ์การตรวจสอบ-audit-criteria">2. เกณฑ์การตรวจสอบ (Audit Criteria)</h4>
+<ol class="content-list">
+<li>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (มาตรา 28, 29, 37, 39, 40)</li>
+<li>ประกาศคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล เรื่อง มาตรการรักษาความมั่นคงปลอดภัยของผู้ควบคุมข้อมูลส่วนบุคคล พ.ศ. 2565</li>
+<li>แนวทางปฏิบัติและกรอบมาตรฐานความมั่นคงปลอดภัยคลาวด์ สกมช. (NCSA Cloud Security Guideline)</li>
+<li>มาตรฐาน ISO/IEC 27017:2015 (Security controls for cloud services) และ ISO/IEC 27002:2022 (Control 5.19 - 5.23 Supplier relationships)</li>
+<li>กรอบรายงานการรับรองความเชื่อมั่น AICPA SOC 2 Trust Services Criteria</li>
+</ol>
+<h4 class="sub-subsection-heading" id="3-ผลการตรวจสอบและข้อค้นพบเชิงประจักษ์-audit-findings-gap-analysis">3. ผลการตรวจสอบและข้อค้นพบเชิงประจักษ์ (Audit Findings & Gap Analysis)</h4>
+
+<div class="figure-box" id="figure-13-8">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 13.8</div>
+    <div class="figure-title">ผังเมทริกซ์ 4 ข้อค้นพบเชิงประจักษ์ (Audit Findings & Gap Matrix WP-13-01)</div>
+  </div>
+  <div class="findings-matrix-grid">
+    <div class="find-card c-critical">
+      <div class="find-badge">FINDING 1 // CRITICAL</div>
+      <div class="find-title">ขาดข้อตกลง DPA และขาดสิทธิ Right to Audit ในสัญญา</div>
+      <div class="find-body">
+        <div><strong>Condition:</strong> สัญญาไม่มี DPA, ไม่มีสิทธิเข้าตรวจ, SLA แจ้งเหตุรั่วไหลไม่ระบุชั่วโมง</div>
+        <div><strong>Criteria:</strong> PDPA ม.40, ISO 27002 Control 5.20</div>
+        <div><strong>Effect:</strong> ไม่สามารถบังคับใช้ความปลอดภัย เสี่ยงโทษปรับ PDPA สูงสุด 3 ล้านบาท</div>
+      </div>
+    </div>
+    <div class="find-card c-critical">
+      <div class="find-badge">FINDING 2 // CRITICAL</div>
+      <div class="find-title">สำเนาบัตรประชาชน 60,000 ไฟล์เปิดเป็น Public Read บน Cloud Storage</div>
+      <div class="find-body">
+        <div><strong>Condition:</strong> S3 Bucket เปิด Public Read ไม่เข้ารหัส ใครก็โหลดไฟล์ได้โดยตรง</div>
+        <div><strong>Criteria:</strong> ประกาศ สคส. 2565, แนวทาง สกมช. ข้อ 4.2, ISO 27001 A.8.24</div>
+        <div><strong>Effect:</strong> ข้อมูลส่วนบุคคลอ่อนไหวรั่วไหลสู่สาธารณะ เสี่ยงคดีแบบกลุ่ม (Class Action)</div>
+      </div>
+    </div>
+    <div class="find-card c-high">
+      <div class="find-badge">FINDING 3 // HIGH</div>
+      <div class="find-title">ใช้บัญชี Root ร่วมกัน ไร้ MFA และละเลย CUECs ใน SOC 2</div>
+      <div class="find-body">
+        <div><strong>Condition:</strong> Outsource ใช้ Root ร่วมกัน ส่งรหัสผ่านทาง LINE ไม่ปฏิบัติตาม CUEC ใน SOC 2</div>
+        <div><strong>Criteria:</strong> Shared Responsibility Model, AICPA SOC 2 TSC CC6.1/6.3</div>
+        <div><strong>Effect:</strong> เสี่ยงต่อ Account Takeover สูง คลาวด์ไม่ต้องรับผิดชอบเพราะความผิดลูกค้า</div>
+      </div>
+    </div>
+    <div class="find-card c-high">
+      <div class="find-badge">FINDING 4 // HIGH</div>
+      <div class="find-title">โอนข้อมูลส่วนบุคคลไปจัดเก็บต่างประเทศโดยขัดต่อกฎหมาย PDPA</div>
+      <div class="find-body">
+        <div><strong>Condition:</strong> นำข้อมูลไปเก็บที่ Region ยุโรป ทั้งที่แจ้งว่าเก็บในไทย และไม่มี SCCs/BCRs</div>
+        <div><strong>Criteria:</strong> PDPA ม.28, ม.29 การโอนข้อมูลข้ามพรมแดน</div>
+        <div><strong>Effect:</strong> การส่งข้อมูลออกนอกประเทศไม่ชอบด้วยกฎหมาย มีความรับผิดทางแพ่งและปกครอง</div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 13.8:</strong> เมทริกซ์ 4 ข้อค้นพบเชิงประจักษ์ จำแนกตามระดับความรุนแรงและผลกระทบทางกฎหมาย
+  </div>
+</div>
+
+<h5 class="sub-level5-heading" id="ข้อค้นพบที่-1-ความล้มเหลวในการจัดทำข้อตกลงการประมวลผลข้อมูลส่วนบุคคล-dpa-และการขาดข้อสัญญา-right-to-audit">ข้อค้นพบที่ 1: ความล้มเหลวในการจัดทำข้อตกลงการประมวลผลข้อมูลส่วนบุคคล (DPA) และการขาดข้อสัญญา Right to Audit</h5>
+<ul class="content-list">
+<li><strong>สภาพความเป็นจริง (Condition):</strong> สัญญาจ้างบริษัท สมาร์ทคลาวด์โซลูชัน จำกัด ไม่มีข้อตกลงการประมวลผลข้อมูล (Data Processing Agreement: DPA) ตามกฎหมาย PDPA ไม่มีข้อกำหนดเรื่องสิทธิในการเข้าตรวจสอบระบบ (Right to Audit) และไม่มีการกำหนด SLA การแจ้งเตือนเหตุข้อมูลรั่วไหลเป็นรายชั่วโมงที่ชัดเจน</li>
+<li><strong>เกณฑ์เปรียบเทียบ (Criteria):</strong> พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 มาตรา 40 กำหนดให้ผู้ควบคุมข้อมูลต้องจัดให้มีข้อตกลงระหว่างกันเพื่อควบคุมการดำเนินงานของผู้ประมวลผลข้อมูลส่วนบุคคล และ ISO 27002 Control 5.20 กำหนดให้สัญญาต้องระบุสิทธิในการตรวจสอบและการแจ้งเหตุการณ์</li>
+<li><strong>สาเหตุ (Cause):</strong> ฝ่ายจัดซื้อใช้แบบฟอร์มสัญญาจ้างบริการเทคโนโลยีทั่วไป โดยมิได้ส่งร่างสัญญาให้ฝ่ายกฎหมายหรือ DPO ตรวจทานด้านการคุ้มครองข้อมูลก่อนลงนาม</li>
+<li><strong>ผลกระทบ (Effect):</strong> มหาวิทยาลัยไม่สามารถบังคับใช้มาตรการความปลอดภัยกับคู่ค้าได้ ไม่สามารถเข้าตรวจสอบความถูกต้องของระบบ และมีความเสี่ยงสูงที่จะถูกลงโทษปรับทางปกครองตามกฎหมาย PDPA (สูงสุด 3 ล้านบาท)</li>
+<li><strong>ข้อเสนอแนะ (Recommendation):</strong> จัดทำสัญญาแนบท้าย (Addendum) ว่าด้วย Data Processing Agreement (DPA) ทันที โดยระบุสิทธิ Right to Audit ข้อกำหนดการแจ้งเหตุละเมิดภายใน 24 ชั่วโมง และเงื่อนไขการห้ามใช้ Subcontractor โดยไม่ได้รับอนุญาต</li>
+</ul>
+<h5 class="sub-level5-heading" id="ข้อค้นพบที่-2-การเปิดเผยข้อมูลสำเนาบัตรประชาชนสู่สาธารณะผ่าน-cloud-storage-ที่กำหนดค่าผิดพลาด-s3-public-exposure">ข้อค้นพบที่ 2: การเปิดเผยข้อมูลสำเนาบัตรประชาชนสู่สาธารณะผ่าน Cloud Storage ที่กำหนดค่าผิดพลาด (S3 Public Exposure)</h5>
+<ul class="content-list">
+<li><strong>สภาพความเป็นจริง (Condition):</strong> บักเก็ตจัดเก็บข้อมูลบนคลาวด์ (Cloud Storage Bucket) ที่บรรจุสำเนาบัตรประชาชนและเอกสารทางการเงินของนักศึกษากว่า 60,000 ไฟล์ ถูกเปิดสิทธิ์การเข้าถึงระดับสาธารณะ (Public Read Access) โดยไม่มีการพิสูจน์ตัวตนและไม่มีการเข้ารหัสข้อมูล (Unencrypted)</li>
+<li><strong>เกณฑ์เปรียบเทียบ (Criteria):</strong> ประกาศ สคส. เรื่อง มาตรการรักษาความมั่นคงปลอดภัยฯ พ.ศ. 2565 และแนวทางคลาวด์ สกมช. ข้อ 4.2 กำหนดให้ต้องมีการควบคุมการเข้าถึงข้อมูลส่วนบุคคลอย่างเข้มงวด และต้องปิดกั้นการเข้าถึงจากสาธารณะ (Block Public Access)</li>
+<li><strong>สาเหตุ (Cause):</strong> ผู้พัฒนาของบริษัท Outsource ตั้งค่า Public เพื่อความสะดวกในการทดสอบระบบและเรียกแสดงผลรูปภาพบนเว็บแอปพลิเคชัน และมหาวิทยาลัยขาดกระบวนการตรวจรับงานด้านความมั่นคงปลอดภัย (Security Acceptance Testing)</li>
+<li><strong>ผลกระทบ (Effect):</strong> ข้อมูลส่วนบุคคลอ่อนไหวของนักศึกษาและบุคลากรรั่วไหลสู่สาธารณะ เข้าข่ายเหตุละเมิดข้อมูลส่วนบุคคลร้ายแรงตามกฎหมาย PDPA ซึ่งต้องรายงาน สคส. และอาจถูกฟ้องร้องดำเนินคดีแบบกลุ่ม (Class Action)</li>
+<li><strong>ข้อเสนอแนะ (Recommendation):</strong> ดำเนินการเปิดฟังก์ชัน "Block Public Access" บน Cloud Storage ทันที, บังคับใช้ Pre-signed URLs สำหรับการเข้าถึงไฟล์ชั่วคราว, เปิดใช้งานการเข้ารหัสด้วย Customer-Managed Key (KMS), และตรวจสอบ Log การเข้าถึงย้อนหลังเพื่อประเมินปริมาณข้อมูลที่ถูกดึงออกไป</li>
+</ul>
+<h5 class="sub-level5-heading" id="ข้อค้นพบที่-3-ความเข้าใจผิดในแบบจำลองความรับผิดชอบร่วมและการละเลยเงื่อนไข-cuecs-ในรายงาน-soc-2">ข้อค้นพบที่ 3: ความเข้าใจผิดในแบบจำลองความรับผิดชอบร่วมและการละเลยเงื่อนไข CUECs ในรายงาน SOC 2</h5>
+<ul class="content-list">
+<li><strong>สภาพความเป็นจริง (Condition):</strong> ฝ่ายไอทีไม่ได้ดำเนินการกำหนดค่าความปลอดภัยในฝั่งผู้ใช้บริการ (Customer Responsibility) เช่น การไม่เปิด MFA สำหรับบัญชีผู้ดูแลระบบ, การใช้รหัสผ่านร่วมกัน (Shared Root Credentials), และไม่ดำเนินการตามข้อกำหนด Complementary User Entity Controls (CUECs) ที่ระบุไว้ในรายงาน SOC 2 ของผู้ให้บริการคลาวด์</li>
+<li><strong>เกณฑ์เปรียบเทียบ (Criteria):</strong> Cloud Shared Responsibility Model และเกณฑ์ AICPA SOC 2 TSC CC6.1 และ CC6.3 ซึ่งระบุว่าความปลอดภัยของระบบคลาวด์ขึ้นอยู่กับการปฏิบัติตาม CUEC ของผู้ใช้บริการ</li>
+<li><strong>สาเหตุ (Cause):</strong> บุคลากรฝ่ายไอทีขาดความรู้ความเข้าใจในสถาปัตยกรรมคลาวด์ เข้าใจผิดว่าใบรับรอง SOC 2 ของคลาวด์ครอบคลุมการควบคุมทั้งหมดแล้ว</li>
+<li><strong>ผลกระทบ (Effect):</strong> บัญชีผู้ดูแลระบบเสี่ยงต่อการถูกเจาะยึดครอง (Account Takeover) ได้ง่าย และทำให้ระบบคลาวด์ทั้งหมดของมหาวิทยาลัยตกอยู่ในความเสี่ยงวิกฤต</li>
+<li><strong>ข้อเสนอแนะ (Recommendation):</strong> ยกเลิกการใช้บัญชีร่วมกัน สร้างบัญชีรายบุคคลตามหลัก Least Privilege พร้อมบังคับใช้ Hardware MFA, จัดทำ CUEC Compliance Checklist เพื่อติดตามการตั้งค่าตามข้อกำหนดของผู้ให้บริการคลาวด์ให้ครบถ้วนทุกข้อ</li>
+</ul>
+<h5 class="sub-level5-heading" id="ข้อค้นพบที่-4-การโอนข้อมูลส่วนบุคคลไปจัดเก็บต่างประเทศโดยขัดต่อกฎหมาย-pdpa-unlawful-cross-border-data-transfer">ข้อค้นพบที่ 4: การโอนข้อมูลส่วนบุคคลไปจัดเก็บต่างประเทศโดยขัดต่อกฎหมาย PDPA (Unlawful Cross-Border Data Transfer)</h5>
+<ul class="content-list">
+<li><strong>สภาพความเป็นจริง (Condition):</strong> ระบบฐานข้อมูลคลาวด์ถูกจัดตั้งอยู่ในเขตพื้นที่ต่างประเทศ (Europe Region) โดยที่หนังสือแจ้งการประมวลผล (Privacy Notice) ระบุว่าข้อมูลจัดเก็บในไทย และไม่มีการทำข้อสัญญามาตรฐาน (SCCs) หรือประเมินความเพียงพอของประเทศปลายทางตามกฎหมาย</li>
+<li><strong>เกณฑ์เปรียบเทียบ (Criteria):</strong> พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 มาตรา 28 และมาตรา 29</li>
+<li><strong>สาเหตุ (Cause):</strong> บริษัท Outsource เลือกใช้ Region ต่างประเทศเนื่องจากมีค่าบริการเช่าใช้เซิร์ฟเวอร์ถูกกว่า โดยไม่ได้ปรึกษาเจ้าหน้าที่คุ้มครองข้อมูลส่วนบุคคล (DPO) ของมหาวิทยาลัย</li>
+<li><strong>ผลกระทบ (Effect):</strong> การโอนข้อมูลข้ามพรมแดนไม่ชอบด้วยกฎหมาย มีความเสี่ยงต่อโทษปรับทางปกครองตาม PDPA</li>
+<li><strong>ข้อเสนอแนะ (Recommendation):</strong> วางแผนย้ายศูนย์ข้อมูลคลาวด์ (Data Migration) กลับมายังศูนย์ข้อมูลที่ตั้งอยู่ในประเทศไทย (Thailand Region) หรือประเทศที่มีมาตรฐานคุ้มครองข้อมูลส่วนบุคคลที่ได้รับการรับรอง และปรับปรุงเอกสารแจ้งสิทธิ (Privacy Notice) ให้สอดคล้องกับข้อเท็จจริง</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-4-กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน-active-learning-simulation">
+            <h2 class="section-heading">ส่วนที่ 4: กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน (Active Learning Simulation)</h2>
+          </section>
+        
+
+<div class="widget-box" id="widget-13-5">
+  <div class="widget-header">
+    <div class="widget-tag">WORKSHOP SIMULATOR // WIDGET 13.5</div>
+    <div class="widget-title">SOC 2 Type II & CUEC Forensic Workshop Simulator (จำลองกิจกรรมสืบสวนในชั้นเรียน)</div>
+  </div>
+  <p class="widget-desc">
+    สวมบทบาทเป็น Lead IT Auditor ตรวจวิเคราะห์กรณีศึกษาจำลอง "MegaCloud Global Services" ตอบคำถาม 3 ภารกิจ และร่างข้อค้นพบการตรวจสอบตามโครงสร้าง 5Cs
+  </p>
+
+  <div class="workshop-nav-steps" style="display:flex; gap:0.5rem; margin-bottom:1.25rem; flex-wrap:wrap;">
+    <button class="vol-select-btn active" id="ws-step-btn-1" onclick="setWorkshopStep(1)">ภารกิจที่ 1: Scope & Period</button>
+    <button class="vol-select-btn" id="ws-step-btn-2" onclick="setWorkshopStep(2)">ภารกิจที่ 2: CUEC Gap Analysis</button>
+    <button class="vol-select-btn" id="ws-step-btn-3" onclick="setWorkshopStep(3)">ภารกิจที่ 3: Draft Finding (5Cs)</button>
+  </div>
+
+  <div id="workshop-step-content" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:8px; padding:1.25rem; margin-bottom:1rem;">
+    <!-- Rendered dynamically via JS -->
+  </div>
+
+  <div id="workshop-score-summary" style="background:var(--bg-card); border-radius:8px; padding:1rem; border:1px solid var(--border-color);">
+    <!-- Score summary -->
+  </div>
+</div>
+
+<h3 class="subsection-heading" id="กิจกรรม-soc-2-type-ii-cuec-forensic-workshop-ระยะเวลา-25-นาที">กิจกรรม: "SOC 2 Type II & CUEC Forensic Workshop" (ระยะเวลา 25 นาที)</h3>
+<h4 class="sub-subsection-heading" id="1-วัตถุประสงค์ของกิจกรรม">1. วัตถุประสงค์ของกิจกรรม</h4>
+<p class="content-paragraph">เพื่อฝึกทักษะให้นักศึกษาสามารถอ่านรายงานการรับรองความเชื่อมั่นสากล (SOC 2 Type II Report) วิเคราะห์ขอบเขตที่แท้จริง และสกัดหาเงื่อนไขความรับผิดชอบของผู้ใช้บริการ (CUECs) ได้อย่างถูกต้อง</p>
+<h4 class="sub-subsection-heading" id="2-กรณีศึกษาจำลองและเอกสารแจกในชั้นเรียน-artifact-snippet">2. กรณีศึกษาจำลองและเอกสารแจกในชั้นเรียน (Artifact Snippet)</h4>
+<p class="content-paragraph">อาจารย์แจกเอกสารสรุปคัดย่อจากรายงาน <strong>SOC 2 Type II Report ของ "MegaCloud Global Services"</strong> โดยมีข้อความสำคัญใน Section III:</p>
+<blockquote class="content-blockquote"><strong>Excerpt from Independent Service Auditor's Report (SOC 2 Type II):</strong>  <br><em>Scope:</em> This report covers the Cloud Virtual Infrastructure System located in Singapore and Ireland Data Centers for the period October 1, 2023 to September 30, 2024.  <br> <br><em>Complementary User Entity Controls (CUECs):</em>  <br>The controls described in this report are designed with the assumption that user entities will implement the following complementary controls:  <br>- <strong>CUEC-01 (Access Management):</strong> User entities are responsible for configuring identity management, ensuring unique user IDs, and enforcing Multi-Factor Authentication (MFA) on all administrative consoles.  <br>- <strong>CUEC-02 (Data Protection):</strong> User entities are solely responsible for enabling encryption at rest for all storage volumes using customer-managed cryptographic keys, and ensuring access permissions on public storage buckets are restricted to authorized personnel.  <br>- <strong>CUEC-03 (Audit & Logging):</strong> User entities must independently enable logging features (e.g., API activity logging) and export logs to their own external centralized repository for continuous monitoring.</blockquote>
+<h4 class="sub-subsection-heading" id="3-ข้อมูลสภาพจริงของหน่วยงานที่รับการตรวจ-client-condition">3. ข้อมูลสภาพจริงของหน่วยงานที่รับการตรวจ (Client Condition)</h4>
+<ul class="content-list">
+<li>บริษัทผู้รับการตรวจใช้บริการคลาวด์นี้ในการประมวลผลระบบชำระเงิน แต่ Data Center ที่เลือกใช้อยู่ใน <strong>"US-East (Virginia)"</strong></li>
+<li>ผู้รับการตรวจไม่เคยเปิดใช้งาน MFA บนคอนโซล</li>
+<li>ข้อมูลใน Bucket ไม่ได้เปิดการเข้ารหัส และไม่มีการดึง Log ออกมาเฝ้าระวัง</li>
+</ul>
+<h4 class="sub-subsection-heading" id="4-ภารกิจของนักศึกษา-deliverables-ในชั้นเรียน">4. ภารกิจของนักศึกษา (Deliverables ในชั้นเรียน)</h4>
+<p class="content-paragraph">ให้นักศึกษาแบ่งกลุ่มละ 4 คน สวมบทบาทเป็น <strong>Lead IT Auditor</strong> และตอบคำถาม 3 ข้อลงในแบบฟอร์ม:</p>
+<ol class="content-list">
+<li><strong>Scope & Period Analysis:</strong> ใบรับรองนี้สามารถใช้เป็นหลักฐานความเชื่อมั่นสำหรับระบบชำระเงินของผู้รับการตรวจได้สมบูรณ์หรือไม่? เพราะเหตุใด? (ชี้ประเด็นเรื่อง Region และ Period)</li>
+<li><strong>CUEC Gap Identification:</strong> จาก CUECs ทั้ง 3 ข้อ มีข้อใดบ้างที่ผู้รับการตรวจสอบตก และจะส่งผลกระทบต่อความมั่นคงปลอดภัยของระบบอย่างไร?</li>
+<li><strong>Audit Finding Drafting:</strong> ร่วมกันเขียนร่างข้อค้นพบการตรวจสอบ (Audit Finding) จำนวน 1 ข้อ ตามโครงสร้าง Criteria, Condition, Cause, Effect, Recommendation</li>
+</ol>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-5-มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls">
+            <h2 class="section-heading">ส่วนที่ 5: มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives & Common Pitfalls)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="5-1-บทสนทนาจำลองเชิงวิชาชีพ-auditor-vs-cloud-solution-architect-procurement-director">5.1 บทสนทนาจำลองเชิงวิชาชีพ (Auditor vs Cloud Solution Architect & Procurement Director)</h3>
+
+<div class="figure-box" id="figure-13-11">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 13.11</div>
+    <div class="figure-title">บทสนทนาจำลองเชิงวิชาชีพ: ข้อโต้แย้งในห้องประชุมสัญญาระบบคลาวด์ (Professional Dialogue)</div>
+  </div>
+  <div class="dialogue-box">
+    <div class="dialogue-bubble d-procurement">
+      <div class="dialogue-role">ผู้อำนวยการฝ่ายจัดซื้อ (Procurement Director)</div>
+      <p>"คุณผู้ตรวจสอบครับ เราจัดซื้อระบบคลาวด์ระดับโลกที่มีใบรับรอง ISO 27001 และ SOC 2 ครบถ้วน บริษัทคู่ค้าก็เป็นบริษัทเทคโนโลยีชั้นนำ ทำไมในรายงานตรวจสอบของคุณถึงบอกว่าโครงการนี้มีความเสี่ยงสูงมากเรื่องสัญญาและสิทธิการตรวจสอบ (Right to Audit) ล่ะครับ? ในสัญญามาตรฐานของบริษัทระดับโลกเขาไม่ยอมให้ใครเข้าไปตรวจ Data Center ของเขาอยู่แล้ว คุณกำลังเรียกร้องสิ่งที่เป็นไปไม่ได้หรือเปล่า?"</p>
+    </div>
+    <div class="dialogue-bubble d-auditor">
+      <div class="dialogue-role">Lead Cloud & Compliance Auditor (ผู้ตรวจสอบระบบสารสนเทศ)</div>
+      <p>"เข้าใจประเด็นของท่านผู้อำนวยการเป็นอย่างดีครับ แต่ในฐานะผู้ตรวจสอบ เราต้องแยกแยะระหว่าง <strong>'การตรวจสอบทางกายภาพใน Data Center ของคลาวด์'</strong> กับ <strong>'การตรวจสอบกระบวนการและการกำหนดค่าของผู้ให้บริการพัฒนาซอฟต์แวร์ (Outsource Developer)'</strong> ครับ  
+      สำหรับผู้ให้บริการคลาวด์ระดับโลก เรายอมรับการตรวจสอบผ่านรายงาน SOC 2 Type II ได้โดยไม่ต้องเดินเข้าไปใน Data Center  
+      แต่ในกรณีนี้ มหาวิทยาลัยกำลังว่าจ้าง <em>'บริษัท Outsource ในไทย'</em> มาเขียนโค้ดและบริหารจัดการระบบให้เรา บริษัท Outsource รายนี้ต่างหากครับที่ต้องมีข้อสัญญา Right to Audit เพื่อให้เราเข้าไปตรวจขั้นตอนการพัฒนาซอฟต์แวร์ การจัดการรหัสผ่าน และการรักษาความลับของข้อมูลนักศึกษา  
+      หากในสัญญาไม่มีข้อนี้ เมื่อข้อมูลรั่วไหล มหาวิทยาลัยจะไม่สามารถเข้าไปพิสูจน์ข้อเท็จจริงได้เลย และหาก สคส. หรือ สกมช. เรียกตรวจสอบ มหาวิทยาลัยจะต้องเป็นผู้รับโทษแต่เพียงผู้เดียวครับ"</p>
+    </div>
+    <div class="dialogue-bubble d-architect">
+      <div class="dialogue-role">Cloud Solution Architect (วิศวกรสถาปัตยกรรมคลาวด์)</div>
+      <p>"ผมเห็นด้วยกับท่านผู้ตรวจสอบครับ ทางทีมเทคนิคเรายอมรับว่าเราหลงลืมเรื่อง CUEC ไปจริง ๆ เราคิดว่าเมื่อเปิดใช้บริการคลาวด์แล้ว ทุกอย่างจะถูกเข้ารหัสและปลอดภัยโดยอัตโนมัติ การที่ผู้ตรวจสอบชี้ให้เห็นว่า CUEC กำหนดให้เราต้องเปิด KMS และควบคุม Bucket Access เอง ทำให้เราตาสว่างและจะรีบนำข้อเสนอแนะนี้ไปกำหนดค่าระบบใหม่ทั้งหมดทันทีครับ"</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 13.11:</strong> ตัวอย่างการเจรจาเชิงวิชาชีพและการให้เหตุผลทางกฎหมาย-เทคนิคของผู้ตรวจสอบเพื่อขจัดข้อโต้แย้งของฝ่ายบริหาร
+  </div>
+</div>
+
+<p class="content-paragraph">บทสนทนานี้สะท้อนให้เห็นถึงข้อโต้แย้งในชีวิตจริงระหว่างผู้ตรวจสอบกับฝ่ายจัดซื้อและวิศวกรสถาปัตยกรรมคลาวด์:</p>
+<blockquote class="content-blockquote"><strong>ผู้อำนวยการฝ่ายจัดซื้อ:</strong> "คุณผู้ตรวจสอบครับ เราจัดซื้อระบบคลาวด์ระดับโลกที่มีใบรับรอง ISO 27001 และ SOC 2 ครบถ้วน บริษัทคู่ค้าก็เป็นบริษัทเทคโนโลยีชั้นนำ ทำไมในรายงานตรวจสอบของคุณถึงบอกว่าโครงการนี้มีความเสี่ยงสูงมากเรื่องสัญญาและสิทธิการตรวจสอบ (Right to Audit) ล่ะครับ? ในสัญญามาตรฐานของบริษัทระดับโลกเขาไม่ยอมให้ใครเข้าไปตรวจ Data Center ของเขาอยู่แล้ว คุณกำลังเรียกร้องสิ่งที่เป็นไปไม่ได้หรือเปล่า?"  <br> <br><strong>Lead Cloud Auditor:</strong> "เข้าใจประเด็นของท่านผู้อำนวยการเป็นอย่างดีครับ แต่ในฐานะผู้ตรวจสอบ เราต้องแยกแยะระหว่าง 'การตรวจสอบทางกายภาพใน Data Center ของคลาวด์' กับ 'การตรวจสอบกระบวนการและการกำหนดค่าของผู้ให้บริการพัฒนาซอฟต์แวร์ (Outsource Developer)' ครับ  <br>สำหรับผู้ให้บริการคลาวด์ระดับโลก เรายอมรับการตรวจสอบผ่านรายงาน SOC 2 Type II ได้โดยไม่ต้องเดินเข้าไปใน Data Center  <br>แต่ในกรณีนี้ มหาวิทยาลัยกำลังว่าจ้าง 'บริษัท Outsource ในไทย' มาเขียนโค้ดและบริหารจัดการระบบให้เรา บริษัท Outsource รายนี้ต่างหากครับที่ต้องมีข้อสัญญา Right to Audit เพื่อให้เราเข้าไปตรวจขั้นตอนการพัฒนาซอฟต์แวร์ การจัดการรหัสผ่าน และการรักษาความลับของข้อมูลนักศึกษา  <br>หากในสัญญาไม่มีข้อนี้ เมื่อข้อมูลรั่วไหล มหาวิทยาลัยจะไม่สามารถเข้าไปพิสูจน์ข้อเท็จจริงได้เลย และหาก สคส. หรือ สกมช. เรียกตรวจสอบ มหาวิทยาลัยจะต้องเป็นผู้รับโทษแต่เพียงผู้เดียวครับ"  <br> <br><strong>Cloud Solution Architect:</strong> "ผมเห็นด้วยกับท่านผู้ตรวจสอบครับ ทางทีมเทคนิคเรายอมรับว่าเราหลงลืมเรื่อง CUEC ไปจริง ๆ เราคิดว่าเมื่อเปิดใช้บริการคลาวด์แล้ว ทุกอย่างจะถูกเข้ารหัสและปลอดภัยโดยอัตโนมัติ การที่ผู้ตรวจสอบชี้ให้เห็นว่า CUEC กำหนดให้เราต้องเปิด KMS และควบคุม Bucket Access เอง ทำให้เราตาสว่างและจะรีบนำข้อเสนอแนะนี้ไปกำหนดค่าระบบใหม่ทั้งหมดทันทีครับ"</blockquote>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="5-2-4-กับดักหลุมพรางที่พบบ่อยในการตรวจคลาวด์และคู่ค้า-4-common-pitfalls">5.2 4 กับดักหลุมพรางที่พบบ่อยในการตรวจคลาวด์และคู่ค้า (4 Common Pitfalls)</h3>
+
+<div class="figure-box" id="figure-13-9">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 13.9</div>
+    <div class="figure-title">4 หลุมพรางอันตรายในงานตรวจสอบคลาวด์และคู่ค้า (4 Critical Traps in Cloud & Vendor Audit)</div>
+  </div>
+  <div class="traps-grid">
+    <div class="trap-box">
+      <div class="trap-icon">1️⃣</div>
+      <div class="trap-title">The Certification Fallacy<br>(มายาคติแห่งใบรับรอง)</div>
+      <p>หลงเชื่อว่าเมื่อเวนเดอร์มีใบรับรอง ISO 27001 หรือ SOC 2 แล้ว ทุกอย่างจะปลอดภัย โดยไม่ได้ตรวจดู Scope ที่แท้จริง ไม่ได้ดูช่วงเวลา และละเลยการปฏิบัติตาม CUECs ในฝั่งตนเอง</p>
+    </div>
+    <div class="trap-box">
+      <div class="trap-icon">2️⃣</div>
+      <div class="trap-title">The Missing Right to Audit<br>(การละเลยสิทธิเข้าตรวจสอบ)</div>
+      <p>ยอมลงนามในสัญญาจัดซื้อแบบฟอร์มสำเร็จรูปของคู่ค้าที่ตัดสิทธิการเข้าตรวจสอบของลูกค้าทิ้ง ทำให้เมื่อเกิดเหตุการณ์ข้อมูลรั่วไหล องค์กรไม่สามารถขอหลักฐานหรือพิสูจน์ข้อเท็จจริงได้</p>
+    </div>
+    <div class="trap-box">
+      <div class="trap-icon">3️⃣</div>
+      <div class="trap-title">The "Tick-Box" RoPA<br>(บัญชีข้อมูลแบบขึ้นหิ้ง)</div>
+      <p>จัดทำทะเบียน RoPA ขึ้นเพียงเพื่อให้มีส่งหน่วยงานกำกับดูแล แต่ไม่ตรงกับระบบฐานข้อมูลจริงบนคลาวด์ ขาดการระบุปลายทางข้ามพรมแดน และไม่มีการปรับปรุงให้เป็นปัจจุบัน</p>
+    </div>
+    <div class="trap-box">
+      <div class="trap-icon">4️⃣</div>
+      <div class="trap-title">The Blind Subcontracting<br>(ห่วงโซ่อุปทานมืด)</div>
+      <p>องค์กรไม่เคยทราบว่าบริษัทคู่ค้าที่ตนว่าจ้าง ได้นำซอร์สโค้ดหรือฐานข้อมูลไปจ้างช่วงต่อนักพัฒนาอิสระหรือบริษัทต่างประเทศอีกทอดหนึ่ง โดยไม่มีการควบคุมความปลอดภัยและไม่มีสัญญา DPA</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 13.9:</strong> ข้อผิดพลาดเชิงวิชาชีพที่ผู้ตรวจสอบมักพบเจอในการตรวจสอบระบบคลาวด์และห่วงโซ่อุปทานดิจิทัล
+  </div>
+</div>
+
+<ol class="content-list">
+<li><strong>The Certification Fallacy (มายาคติแห่งใบรับรอง):</strong> การทึกทักเอาเองว่าเมื่อคู่ค้าหรือคลาวด์มีใบรับรอง ISO 27001 หรือ SOC 2 แล้ว ระบบขององค์กรจะปลอดภัยทันที โดยไม่ได้อ่านขอบเขต (Scope) ไม่ได้ตรวจสอบช่วงเวลา (Period) และไม่ได้ปฏิบัติตามการควบคุมเสริมของลูกค้า (CUECs)</li>
+<li><strong>The Missing Right to Audit (การละเลยสิทธิเข้าตรวจสอบ):</strong> การยอมลงนามในสัญญาจัดซื้อแบบฟอร์มมาตรฐานของเวนเดอร์ (Vendor's Standard Contract) ที่ตัดสิทธิการเข้าตรวจสอบของลูกค้าทิ้ง ทำให้องค์กรกลายเป็น "คนตาบอด" ในการกำกับดูแลความมั่นคงปลอดภัย</li>
+<li><strong>The "Tick-Box" RoPA (บัญชีข้อมูลส่วนบุคคลแบบขึ้นหิ้ง):</strong> เอกสารทะเบียนกิจกรรมการประมวลผล (RoPA) ถูกจัดทำขึ้นโดยฝ่ายบุคคลหรือฝ่ายกฎหมายเพื่อให้มีส่งหน่วยงานกำกับดูแล แต่ไม่ตรงกับระบบจัดเก็บข้อมูลจริงของฝ่ายไอที ไม่มีการระบุการโอนข้อมูลข้ามพรมแดน และไม่มีการปรับปรุงให้เป็นปัจจุบัน</li>
+<li><strong>The Blind Subcontracting (ห่วงโซ่อุปทานมืด):</strong> องค์กรไม่ทราบว่าบริษัท Outsource ที่ตนว่าจ้าง ได้นำซอร์สโค้ดหรือข้อมูลส่วนบุคคลไปจ้างช่วง (Subcontract) ให้แก่นักพัฒนาอิสระ (Freelance) หรือบริษัทในต่างประเทศต่ออีกทอดหนึ่ง โดยไม่มีการควบคุมความปลอดภัยและไม่มีสัญญา DPA คุ้มครอง</li>
+</ol>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-6-การบ้านและงานมอบหมายประจำสัปดาห์-weekly-homework-week-13">
+            <h2 class="section-heading">ส่วนที่ 6: การบ้านและงานมอบหมายประจำสัปดาห์ (Weekly Homework Week 13)</h2>
+          </section>
+        
+<p class="content-paragraph">ให้นักศึกษาแต่ละคนสวมบทบาทเป็น <strong>Lead IT & Cloud Auditor</strong> และจัดทำเอกสาร <strong>"Third-Party and Cloud Audit Checklist" ฉบับสมบูรณ์อย่างน้อย 20 ข้อคำถาม</strong> ครอบคลุม 10 หมวดหมู่หลักตามเกณฑ์มาตรฐานสากล:</p>
+<h3 class="subsection-heading" id="ข้อกำหนดโครงสร้างของแบบตรวจเช็กลิสต์-checklist-structure">ข้อกำหนดโครงสร้างของแบบตรวจเช็กลิสต์ (Checklist Structure):</h3>
+<p class="content-paragraph">ในแต่ละข้อคำถาม (รวมอย่างน้อย 20 ข้อ) จะต้องระบุรายละเอียดให้ครบ 5 คอลัมน์:</p>
+<ol class="content-list">
+<li><strong>ข้อคำถามการตรวจสอบ (Audit Check Item):</strong> คำถามที่ชัดเจน ตรงประเด็น</li>
+<li><strong>เกณฑ์มาตรฐานอ้างอิง (Audit Criteria):</strong> อ้างอิงข้อกฎหมายหรือมาตรฐาน (เช่น PDPA มาตรา..., ISO 27001 A...., NCSA Cloud Guideline ข้อ..., SOC 2 TSC...)</li>
+<li><strong>วิธีการตรวจสอบ (Audit Procedure):</strong> ระบุว่าจะตรวจอย่างไร (Inquiry, Inspection, Observation, Re-performance)</li>
+<li><strong>หลักฐานที่ต้องเรียกตรวจ (Required Audit Evidence):</strong> ระบุชื่อเอกสารหรือหลักฐานเชิงประจักษ์ (เช่น สัญญา DPA, ภาพถ่ายหน้าจอ Cloud IAM, รายงาน SOC 2 Type II, KMS Configuration)</li>
+<li><strong>เกณฑ์การตัดสินผล (Evaluation Criteria):</strong> สิ่งที่ระบุว่า "ผ่าน (Pass)" หรือ "ไม่ผ่าน (Fail)"</li>
+</ol>
+<h3 class="subsection-heading" id="ขอบเขต-10-หมวดหมู่ที่ต้องครอบคลุม-หมวดละอย่างน้อย-2-ข้อ">ขอบเขต 10 หมวดหมู่ที่ต้องครอบคลุม (หมวดละอย่างน้อย 2 ข้อ):</h3>
+<ol class="content-list">
+<li><strong>การคัดเลือกและประเมินคู่ค้า (Vendor Selection & Due Diligence)</strong></li>
+<li><strong>ข้อกำหนดความมั่นคงปลอดภัยในสัญญาและ DPA (Contractual Security & DPA)</strong></li>
+<li><strong>สิทธิในการเข้าตรวจสอบ (Right to Audit Clauses)</strong></li>
+<li><strong>การควบคุมการเข้าถึงและการจัดการตัวตนบนคลาวด์ (Cloud Identity & Access Management - IAM)</strong></li>
+<li><strong>การเข้ารหัสข้อมูลและการจัดการกุญแจ (Cloud Encryption & Key Management - KMS)</strong></li>
+<li><strong>การบันทึกและตรวจสอบล็อกบนคลาวด์ (Cloud Logging & SIEM Integration)</strong></li>
+<li><strong>การแจ้งเตือนเหตุการณ์ละเมิดความมั่นคงปลอดภัย (Incident Notification SLAs)</strong></li>
+<li><strong>ความต่อเนื่องทางธุรกิจและการสำรองข้อมูล (Cloud Backup & Business Continuity)</strong></li>
+<li><strong>การกำกับดูแลผู้รับจ้างช่วงและการโอนข้อมูลข้ามพรมแดน (Subcontractors & Cross-Border Transfer)</strong></li>
+<li><strong>การสิ้นสุดสัญญาและการส่งคืน/ทำลายข้อมูล (Termination, Data Return & Certified Destruction)</strong></li>
+</ol>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers">
+            <h2 class="section-heading">ส่วนที่ 7: คำถามทบทวนท้ายบท (Review Questions & Detailed Answers)</h2>
+          </section>
+        
+<ol class="content-list">
+<li><strong>คำถาม:</strong> จงอธิบายความหมายของ "Cloud Shared Responsibility Model" และระบุว่าสิ่งใดเป็นความรับผิดชอบของลูกค้า 100% เสมอในทุกรูปแบบบริการ (IaaS, PaaS, SaaS)?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> หมายถึงแบบจำลองการแบ่งแยกหน้าที่ความรับผิดชอบด้านความมั่นคงปลอดภัยระหว่างผู้ให้บริการคลาวด์ (CSP) และผู้ใช้บริการ (Customer) โดยสิ่งที่ลูกค้าต้องรับผิดชอบ 100% เสมอในทุกโมเดล คือ <strong>"ข้อมูล (Data Classification & Rights Management)"</strong> และ <strong>"การบริหารจัดการตัวตนและสิทธิ์การเข้าถึง (Identity and Access Management: IAM)"</strong></li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ในการตรวจสอบผู้ให้บริการคลาวด์ เหตุใดรายงาน AICPA SOC 2 "Type II" จึงมีความน่าเชื่อถือและมีประโยชน์ต่อผู้ตรวจสอบมากกว่ารายงาน "Type I"?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพราะรายงาน Type I ตรวจสอบเฉพาะความเหมาะสมในการออกแบบการควบคุม (Design Suitability) ณ จุดเวลาใดเวลาหนึ่งเท่านั้น แต่รายงาน <strong>Type II</strong> ตรวจสอบทั้งการออกแบบและ <strong>ประสิทธิผลการทำงานจริงของการควบคุม (Operating Effectiveness)</strong> ตลอดช่วงระยะเวลาหนึ่ง (เช่น 6–12 เดือน) จึงให้ความเชื่อมั่นว่าระบบความปลอดภัยทำงานได้จริงอย่างต่อเนื่อง</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> "Complementary User Entity Controls (CUECs)" ในรายงาน SOC 2 คืออะไร และมีความสำคัญต่อผู้ตรวจสอบอย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> คือเงื่อนไขการควบคุมความมั่นคงปลอดภัยที่ผู้สอบบัญชีอิสระระบุไว้ว่า <strong>"ผู้ใช้บริการ (ลูกค้า) จะต้องนำไปปฏิบัติในฝั่งของตนเอง"</strong> เพื่อให้การควบคุมโดยรวมของผู้ให้บริการคลาวด์บรรลุผลสำเร็จ มีความสำคัญอย่างยิ่งเพราะหากลูกค้าละเลยไม่ปฏิบัติตาม CUEC (เช่น ไม่เปิด MFA, ไม่เข้ารหัสข้อมูล) ระบบจะเกิดช่องโหว่ทันที และผู้ให้บริการคลาวด์จะไม่ต้องรับผิดชอบต่อความเสียหายที่เกิดขึ้น</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 สัญญาการประมวลผลข้อมูล (Data Processing Agreement: DPA) มีความสำคัญทางกฎหมายอย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เป็นสัญญากำกับความสัมพันธ์ตามมาตรา 40 ระหว่างผู้ควบคุมข้อมูลส่วนบุคคล (Data Controller) และผู้ประมวลผลข้อมูลส่วนบุคคล (Data Processor) เพื่อกำหนดหน้าที่ ขอบเขตวัตถุประสงค์ และมาตรการความมั่นคงปลอดภัยที่ผู้ประมวลผลต้องปฏิบัติตาม เพื่อป้องกันมิให้ผู้ประมวลผลนำข้อมูลไปใช้เพื่อประโยชน์ส่วนตน และคุ้มครองมิให้เกิดเหตุข้อมูลรั่วไหล</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> เหตุใดการที่สัญญาจ้างบริการไอทีระบุว่า "ให้ผู้ให้บริการแจ้งเหตุข้อมูลรั่วไหลตามความเหมาะสม" จึงเป็นข้อบกพร่องร้ายแรงในการตรวจสอบ?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพราะขาดความชัดเจนและไม่สอดคล้องกับข้อกำหนดของกฎหมาย PDPA มาตรา 37(4) ซึ่งกำหนดให้ผู้ควบคุมข้อมูลต้องแจ้ง สคส. ภายใน 72 ชั่วโมง หากสัญญาไม่กำหนดกรอบเวลาชัดเจน (เช่น กำหนดให้แจ้งภายใน 12 หรือ 24 ชั่วโมง) คู่ค้าอาจแจ้งล่าช้าหลายวันหรือหลายสัปดาห์ ทำให้องค์กรทำผิดกฎหมายและมีความรับผิดทางแพ่งและอาญา</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> "Right to Audit Clause" ในสัญญาจัดซื้อจัดจ้างเทคโนโลยีมีความสำคัญอย่างไรต่อการตรวจสอบภายใน?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เป็นเงื่อนไขทางกฎหมายที่ให้อำนาจแก่องค์กรหรือผู้ตรวจสอบอิสระในการเข้าตรวจสอบระบบ กระบวนการ บันทึกล็อก และสถานที่ปฏิบัติงานของคู่ค้า เพื่อประเมินความสอดคล้องตามมาตรฐานความมั่นคงปลอดภัย หากไม่มีข้อสัญญานี้ คู่ค้ามีสิทธิตามกฎหมายที่จะปฏิเสธไม่ให้ผู้ตรวจสอบเข้าตรวจหรือขอดูหลักฐานใด ๆ</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> หากองค์กรจัดเก็บข้อมูลส่วนบุคคลบน Cloud Storage แต่กำหนดค่าเป็น "Public Read" จะถือเป็นการละเมิดกฎหมายและมาตรฐานใดบ้าง?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ละเมิด พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (มาตรา 37 ด้านมาตรการความมั่นคงปลอดภัย), ละเมิดประกาศ สคส. เรื่อง มาตรการรักษาความมั่นคงปลอดภัยฯ พ.ศ. 2565, ขัดต่อแนวทางคลาวด์ สกมช. ข้อ 4.2, และขัดต่อมาตรฐาน ISO/IEC 27001 (Control A.8.24 Use of cryptography และ Control A.5.15 Access control)</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ในการตรวจสอบการโอนข้อมูลส่วนบุคคลไปต่างประเทศ (Cross-Border Transfer) ผู้ตรวจสอบต้องพิจารณาเกณฑ์ใดตาม PDPA มาตรา 28 และ 29?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ต้องตรวจสอบว่า: 1. ประเทศปลายทางมีมาตรฐานคุ้มครองข้อมูลส่วนบุคคลที่เพียงพอตามที่คณะกรรมการฯ ประกาศกำหนดหรือไม่, 2. มีนโยบายการคุ้มครองข้อมูลส่วนบุคคลภายในองค์กรในเครือ (Binding Corporate Rules: BCRs) ที่ได้รับอนุมัติหรือไม่, หรือ 3. มีข้อสัญญามาตรฐาน (Standard Contractual Clauses: SCCs) หรือได้รับการยินยอมอย่างถูกต้องตามข้อยกเว้นของกฎหมายหรือไม่</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> "Bridge Letter (หรือ Gap Letter)" ในการตรวจสอบรายงาน SOC มีบทบาทหน้าที่อย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เป็นหนังสือรับรองอย่างเป็นทางการที่ออกโดยผู้บริหารของผู้ให้บริการ เพื่อรับรองต่อผู้ตรวจสอบว่าในช่วงระยะเวลาที่รายงาน SOC 2 สิ้นสุดลงจนถึงปัจจุบัน (Gap Period) ระบบการควบคุมภายในของผู้ให้บริการยังคงมีประสิทธิผลตามเดิมและไม่มีการเปลี่ยนแปลงที่มีนัยสำคัญเกิดขึ้น</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> การตรวจสอบการสิ้นสุดสัญญาบริการคลาวด์ (Cloud Offboarding & Termination) มีจุดเน้นสำคัญที่สุดเรื่องใด?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> จุดเน้นสำคัญที่สุดคือ <strong>"การส่งคืนข้อมูลอย่างสมบูรณ์ (Data Portability & Return)"</strong> และ <strong>"การทำลายข้อมูลอย่างปลอดภัยและตรวจสอบได้ (Certified Data Sanitization/Destruction)"</strong> ทั้งบนเซิร์ฟเวอร์หลักและชุดข้อมูลสำรอง โดยต้องมีหนังสือรับรองการทำลายข้อมูล (Certificate of Destruction) เป็นหลักฐานเชิงประจักษ์</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="สรุปบทที่-13">
+            <h2 class="section-heading">สรุปบทที่ 13</h2>
+          </section>
+        
+<p class="content-paragraph">การตรวจสอบความสอดคล้อง ข้อมูลส่วนบุคคล คลาวด์ และผู้ให้บริการภายนอก (Compliance, Privacy, Cloud, and Third-Party Audit) สะท้อนถึงบทบาทของผู้ตรวจสอบในระบบนิเวศไอทีสมัยใหม่ที่ไร้พรมแดน</p>
+<p class="content-paragraph">การตรวจสอบที่มีประสิทธิผลต้องเริ่มต้นจากการจัดทำทะเบียนภาระผูกพัน (Compliance Obligations Register) และการบูรณาการข้อกำหนดกฎหมาย (Harmonization) ระหว่าง พ.ร.บ.ไซเบอร์ฯ 2562, PDPA 2562, และมาตรฐานสากล เพื่อป้องกันความซ้ำซ้อน</p>
+<p class="content-paragraph">ในการใช้บริการคลาวด์ ผู้ตรวจสอบต้องตระหนักถึง <strong>แบบจำลองความรับผิดชอบร่วม (Shared Responsibility Model)</strong> โดยเข้าใจอย่างถ่องแท้ว่าความปลอดภัยของข้อมูลและการจัดการสิทธิ์ (IAM) ยังคงเป็นหน้าที่ขององค์กรเสมอ และต้องไม่หลงเชื่อมายาคติของใบรับรอง (Certification Fallacy) แต่ต้องตรวจสอบลึกถึงขอบเขตที่แท้จริง และการปฏิบัติตามเงื่อนไขการควบคุมเสริมของผู้ใช้บริการ (CUECs) อย่างเคร่งครัด</p>
+<p class="content-paragraph">และในการบริหารความเสี่ยงคู่ค้า (TPRM) ผู้ตรวจสอบต้องสอบทานความรัดกุมของสัญญา โดยเฉพาะข้อกำหนด <strong>Right to Audit</strong>, <strong>Data Processing Agreement (DPA)</strong>, กรอบเวลาการแจ้งเหตุละเมิด, และมาตรการทำลายข้อมูลเมื่อสิ้นสุดสัญญา เพื่อคุ้มครองผลประโยชน์ ชื่อเสียง และความชอบด้วยกฎหมายขององค์กรอย่างยั่งยืน</p>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="เอกสารอ้างอิงและมาตรฐานสากล">
+            <h2 class="section-heading">เอกสารอ้างอิงและมาตรฐานสากล</h2>
+          </section>
+        
+<ol class="content-list">
+<li><strong>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+<li><strong>ประกาศคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล เรื่อง มาตรการรักษาความมั่นคงปลอดภัยของผู้ควบคุมข้อมูลส่วนบุคคล พ.ศ. 2565.</strong> ราชกิจจานุเบกษา เล่ม 139 ตอนพิเศษ 144 ง วันที่ 21 มิถุนายน 2565.</li>
+<li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+<li><strong>สำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช.).</strong> (2565). <em>แนวทางและกรอบมาตรฐานความมั่นคงปลอดภัยสำหรับระบบคลาวด์ (NCSA Cloud Security Guideline)</em>. สืบค้นจาก https://cloudsecurity.ncsa.or.th/publicationdocuments.html</li>
+<li><strong>American Institute of Certified Public Accountants (AICPA).</strong> (2022). <em>SOC 2® - SOC for Service Organizations: Trust Services Criteria</em>. Durham, NC: AICPA.</li>
+<li><strong>Cloud Security Alliance (CSA).</strong> (2021). <em>Cloud Controls Matrix (CCM) Version 4.0</em>. Seattle, WA: CSA.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2015). <em>ISO/IEC 27017:2015 Information technology — Security techniques — Code of practice for information security controls based on ISO/IEC 27002 for cloud services</em>. Geneva: ISO.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2019). <em>ISO/IEC 27018:2019 Information technology — Security techniques — Code of practice for protection of personally identifiable information (PII) in public clouds acting as PII processors</em>. Geneva: ISO.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2022). <em>ISO/IEC 27001:2022 Information security, cybersecurity and privacy protection — Information security management systems — Requirements</em> (Annex A Controls: 5.19 - 5.23 Supplier relationships). Geneva: ISO.</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2011). <em>NIST SP 800-145: The NIST Definition of Cloud Computing</em>. U.S. Department of Commerce.</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2014). <em>NIST SP 800-88 Rev. 1: Guidelines for Media Sanitization</em>. U.S. Department of Commerce.</li>
+<li><strong>Information Systems Audit and Control Association (ISACA).</strong> (2020). <em>ITAF: Information Technology Assurance Framework (4th Edition)</em>. Rolling Meadows, IL: ISACA.</li>
+</ol>
+
+      <!-- Bottom Chapter Navigation -->
+      <footer class="chapter-nav-footer">
+        <a href="ch-12.html" class="btn-nav-chapter">
+          <span>◀</span> บทที่ 12: การตรวจสอบการบริหารเหตุการณ์และภัยคุกคามไซเบอร์
+        </a>
+        <a href="ch-14.html" class="btn-nav-chapter">
+          บทที่ 14: การจัดทำข้อค้นพบและรายงานการตรวจ <span>▶</span>
+        </a>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ==========================================
+// THEME & FONT CONTROLS
+// ==========================================
+function cycleTheme() {
+  const themes = ['light', 'sepia', 'dark'];
+  const cur = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = themes[(themes.indexOf(cur) + 1) % themes.length];
+  setTheme(next);
+}
+
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('audit_theme', theme);
+  const bL = document.getElementById('btn-theme-light');
+  const bS = document.getElementById('btn-theme-sepia');
+  const bD = document.getElementById('btn-theme-dark');
+  if (bL) bL.style.borderColor = theme === 'light' ? 'var(--primary)' : 'var(--border-color)';
+  if (bS) bS.style.borderColor = theme === 'sepia' ? 'var(--primary)' : 'var(--border-color)';
+  if (bD) bD.style.borderColor = theme === 'dark' ? 'var(--primary)' : 'var(--border-color)';
+}
+
+let curFontSize = 16;
+function adjustFontSize(delta) {
+  if (delta === 0) curFontSize = 16;
+  else curFontSize = Math.min(22, Math.max(13, curFontSize + delta));
+  document.documentElement.style.setProperty('--base-font-size', curFontSize + 'px');
+  localStorage.setItem('audit_font_size', curFontSize);
+}
+
+const savedTheme = localStorage.getItem('audit_theme') || 'light';
+setTheme(savedTheme);
+const savedFont = parseInt(localStorage.getItem('audit_font_size'), 10);
+if (savedFont) {
+  curFontSize = savedFont;
+  document.documentElement.style.setProperty('--base-font-size', curFontSize + 'px');
+}
+
+window.addEventListener('scroll', () => {
+  const bar = document.getElementById('reading-progress-bar');
+  if (!bar) return;
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+  bar.style.width = scrolled + '%';
+});
+
+// ==========================================
+// WIDGET 13.1: SHARED RESPONSIBILITY SIMULATOR
+// ==========================================
+const sharedData = {
+  iaas: {
+    title: 'IaaS (Infrastructure as a Service - เช่น AWS EC2, Azure VM)',
+    summary: 'ลูกค้าควบคุมทุกอย่างตั้งแต่ OS, Middleware, App, IAM, และข้อมูล | CSP ดูแลเฉพาะโครงสร้างทางกายภาพและ Virtualization',
+    layers: [
+      { name: '1. ข้อมูลและการจำแนกสิทธิ์ (Data Classification & Rights)', owner: 'ลูกค้า (100%)', badge: 'fail', note: 'ลูกค้าต้องเข้ารหัสและจัดชั้นความลับเอง' },
+      { name: '2. การจัดการสิทธิ์และตัวตน (IAM & Root Credentials)', owner: 'ลูกค้า (100%)', badge: 'fail', note: 'ลูกค้าต้องบังคับใช้ MFA และ Least Privilege' },
+      { name: '3. แอปพลิเคชัน (Application Logic & Code)', owner: 'ลูกค้า (100%)', badge: 'fail', note: 'ลูกค้าเขียนโค้ดและทดสอบความปลอดภัยเอง' },
+      { name: '4. ระบบปฏิบัติการ (OS Patching & Hardening)', owner: 'ลูกค้า (100%)', badge: 'fail', note: 'ลูกค้าต้องติดตั้ง Security Patches เอง' },
+      { name: '5. ฐานข้อมูลและมิดเดิลแวร์ (Database Engine)', owner: 'ลูกค้า (100%)', badge: 'fail', note: 'ลูกค้าต้องติดตั้งและแบ็กอัปฐานข้อมูลเอง' },
+      { name: '6. โครงสร้างเครือข่ายเสมือน (VPC, Subnets, Security Groups)', owner: 'ลูกค้า (100%)', badge: 'fail', note: 'ลูกค้ากำหนดกฎ Firewall และปิดพอร์ต 22/3389 เอง' },
+      { name: '7. เครือข่ายและเซิร์ฟเวอร์จริง (Physical Servers & Network)', owner: 'ผู้ให้บริการ CSP', badge: 'pass', note: 'CSP ดูแลเสถียรภาพและอุปกรณ์ทางกายภาพ' },
+      { name: '8. กายภาพศูนย์ข้อมูล (Physical Data Center Security)', owner: 'ผู้ให้บริการ CSP', badge: 'pass', note: 'CSP ป้องกันการบุกรุกและดูแลระบบไฟฟ้าสำรอง' }
+    ]
+  },
+  paas: {
+    title: 'PaaS (Platform as a Service - เช่น AWS RDS, Azure App Service)',
+    summary: 'CSP ดูแลโครงสร้างไปจนถึง OS และ Database Engine | ลูกค้าดูแลเฉพาะแอปพลิเคชัน, IAM, และข้อมูลส่วนบุคคล',
+    layers: [
+      { name: '1. ข้อมูลและการจำแนกสิทธิ์ (Data Classification & Rights)', owner: 'ลูกค้า (100%)', badge: 'fail', note: 'ลูกค้าต้องจัดชั้นความลับและควบคุมข้อมูลเอง' },
+      { name: '2. การจัดการสิทธิ์และตัวตน (IAM & Database Accounts)', owner: 'ลูกค้า (100%)', badge: 'fail', note: 'ลูกค้าต้องจัดการ Database User Permissions เอง' },
+      { name: '3. แอปพลิเคชัน (Application Code & Config)', owner: 'ลูกค้า (100%)', badge: 'fail', note: 'ลูกค้าดูแล Business Logic และการเชื่อมต่อ' },
+      { name: '4. ระบบปฏิบัติการ (OS & Host Maintenance)', owner: 'ผู้ให้บริการ CSP', badge: 'pass', note: 'CSP อัปเดต OS และลง Security Patches ให้อัตโนมัติ' },
+      { name: '5. ฐานข้อมูลและมิดเดิลแวร์ (DB Engine Optimization)', owner: 'ผู้ให้บริการ CSP', badge: 'pass', note: 'CSP ดูแล Availability และ Engine Patches' },
+      { name: '6. โครงสร้างเครือข่ายเสมือน (VPC Security Groups)', owner: 'ร่วมกัน (Shared)', badge: 'warn', note: 'CSP มีระบบป้องกัน แต่ลูกค้าต้องตั้งค่านโยบาย Firewall' },
+      { name: '7. เครือข่ายและเซิร์ฟเวอร์จริง (Physical Infrastructure)', owner: 'ผู้ให้บริการ CSP', badge: 'pass', note: 'CSP รับประกันระดับ SLA ทางกายภาพ' },
+      { name: '8. กายภาพศูนย์ข้อมูล (Physical Security)', owner: 'ผู้ให้บริการ CSP', badge: 'pass', note: 'CSP ได้รับใบรับรอง ISO 27001 / SOC 2' }
+    ]
+  },
+  saas: {
+    title: 'SaaS (Software as a Service - เช่น Microsoft 365, Google Workspace)',
+    summary: 'CSP ดูแลโครงสร้างซอฟต์แวร์ทั้งหมด | ลูกค้าดูแลเพียง 2 สิ่งสำคัญที่สุด: ข้อมูล และ การจัดการสิทธิ์ผู้ใช้งาน (IAM)',
+    layers: [
+      { name: '1. ข้อมูลและการจำแนกสิทธิ์ (Data & Sharing Governance)', owner: 'ลูกค้า (100%)', badge: 'fail', note: 'ลูกค้าต้องระวังไม่แชร์ลิงก์ข้อมูลให้คนภายนอก' },
+      { name: '2. การจัดการสิทธิ์และตัวตน (User Accounts & MFA)', owner: 'ลูกค้า (100%)', badge: 'fail', note: 'ลูกค้าต้องเปิดใช้งาน MFA และระงับบัญชีที่ลาออก' },
+      { name: '3. แอปพลิเคชัน (App Features & Code Security)', owner: 'ผู้ให้บริการ CSP', badge: 'pass', note: 'CSP อัปเดตเวอร์ชันและแก้บั๊กโค้ดทั้งหมด' },
+      { name: '4. ระบบปฏิบัติการ (OS & Infrastructure)', owner: 'ผู้ให้บริการ CSP', badge: 'pass', note: 'CSP จัดการเบื้องหลังโดยสมบูรณ์' },
+      { name: '5. ฐานข้อมูลและมิดเดิลแวร์ (Data Engine)', owner: 'ผู้ให้บริการ CSP', badge: 'pass', note: 'CSP ดูแลความพร้อมใช้และการจัดเก็บ' },
+      { name: '6. โครงสร้างเครือข่ายเสมือน (Network Fabric)', owner: 'ผู้ให้บริการ CSP', badge: 'pass', note: 'CSP ป้องกัน DDoS และเฝ้าระวังทราฟฟิก' },
+      { name: '7. เครือข่ายและเซิร์ฟเวอร์จริง (Server Farms)', owner: 'ผู้ให้บริการ CSP', badge: 'pass', note: 'CSP ดูแลฮาร์ดแวร์ทั่วโลก' },
+      { name: '8. กายภาพศูนย์ข้อมูล (Global Data Centers)', owner: 'ผู้ให้บริการ CSP', badge: 'pass', note: 'CSP ควบคุมการเข้าออกทางกายภาพเข้มงวด' }
+    ]
+  }
+};
+
+function switchCloudModel(model) {
+  const data = sharedData[model] || sharedData.iaas;
+  ['iaas', 'paas', 'saas'].forEach(m => {
+    const btn = document.getElementById('btn-model-' + m);
+    if (btn) btn.classList.toggle('active', m === model);
+  });
+
+  const display = document.getElementById('shared-matrix-display');
+  if (!display) return;
+
+  let rowsHtml = '';
+  data.layers.forEach(l => {
+    rowsHtml += `
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid var(--border-color); flex-wrap:wrap; gap:0.5rem;">
+        <div style="flex:1; min-width:220px;">
+          <span style="font-weight:600; font-size:0.86rem; color:var(--text-main);">${l.name}</span>
+          <div style="font-size:0.75rem; color:var(--text-dim); margin-top:0.15rem;">${l.note}</div>
+        </div>
+        <div>
+          <span class="badge-status ${l.badge}" style="font-size:0.8rem;">${l.owner}</span>
+        </div>
+      </div>
+    `;
+  });
+
+  display.innerHTML = `
+    <div style="font-weight:700; font-size:1rem; color:var(--text-main); margin-bottom:0.25rem;">${data.title}</div>
+    <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.85rem;">${data.summary}</div>
+    <div>${rowsHtml}</div>
+  `;
+}
+
+function checkQuizAnswer(ans) {
+  const fb = document.getElementById('quiz-feedback');
+  if (!fb) return;
+  fb.style.display = 'block';
+  if (ans === 'customer') {
+    fb.style.background = 'var(--emerald-bg)';
+    fb.style.border = '1px solid var(--emerald)';
+    fb.style.color = 'var(--emerald)';
+    fb.innerHTML = '<strong>🎉 ถูกต้อง 100%!</strong> ตามหลัก Shared Responsibility Model: การกำหนดค่าสิทธิ์การเข้าถึง (Access Permissions) และความปลอดภัยของข้อมูล เป็นความรับผิดชอบของลูกค้า 100% เสมอ คลาวด์มีฟังก์ชัน Block Public Access ให้แล้ว แต่ลูกค้าต้องเป็นผู้เปิดใช้งานเอง';
+  } else {
+    fb.style.background = 'var(--rose-bg)';
+    fb.style.border = '1px solid var(--rose)';
+    fb.style.color = 'var(--rose)';
+    fb.innerHTML = '<strong>❌ ยังไม่ถูกต้อง:</strong> ผู้ให้บริการคลาวด์รับผิดชอบเฉพาะ "Security OF the Cloud" (ฮาร์ดแวร์และโครงสร้างทางกายภาพ) แต่การตั้งค่า S3 Bucket ให้เปิด Public Read ถือเป็น "Security IN the Cloud" ซึ่งเป็นความรับผิดชอบของลูกค้า 100% เสมอ!';
+  }
+}
+switchCloudModel('iaas');
+
+// ==========================================
+// WIDGET 13.2: PDPA EVALUATOR
+// ==========================================
+function runPdpaEvaluator() {
+  const dType = document.getElementById('w2-data-type')?.value || 'sensitive';
+  const dest = document.getElementById('w2-destination')?.value || 'foreign_inadequate';
+  const safe = document.getElementById('w2-safeguard')?.value || 'none';
+  const dpa = document.getElementById('w2-has-dpa')?.value || 'no';
+  const resultCard = document.getElementById('pdpa-eval-result');
+  if (!resultCard) return;
+
+  let isLegal = true;
+  let reasons = [];
+  let penalty = 'ไม่มีโทษปรับ (สอดคล้องตามเกณฑ์)';
+  let severityClass = 'pass';
+  let actionDirective = '✓ ระบบสอดคล้องตามมาตรฐาน สามารถดำเนินงานได้ต่อเนื่อง';
+
+  if (dpa === 'no') {
+    isLegal = false;
+    reasons.push('❌ ละเมิด PDPA มาตรา 40: ไม่จัดทำสัญญาข้อตกลงการประมวลผลข้อมูลส่วนบุคคล (DPA) กับคู่ค้า');
+    penalty = 'โทษปรับทางปกครองสูงสุด 3 ล้านบาท (มาตรา 82)';
+    severityClass = 'fail';
+  }
+
+  if (dest === 'foreign_inadequate') {
+    if (safe === 'none') {
+      isLegal = false;
+      reasons.push('❌ ละเมิด PDPA มาตรา 28 และ 29: โอนข้อมูลไปต่างประเทศที่ไม่มี Adequacy Decision และขาดกลไกคุ้มครอง (ไม่มี SCCs/BCRs)');
+      penalty = 'โทษปรับทางปกครองสูงสุด 5 ล้านบาท (มาตรา 83) และโทษทางแพ่งชดใช้สินไหม';
+      severityClass = 'fail';
+    } else {
+      reasons.push('✓ มีกลไกคุ้มครองที่ชอบด้วยกฎหมายตามมาตรา 29 (' + (safe === 'scc' ? 'สัญญามาตรฐาน SCCs' : (safe === 'bcr' ? 'กฎเกณฑ์องค์กร BCRs' : 'ความยินยอมชัดแจ้ง Explicit Consent')) + ')');
+    }
+  } else if (dest === 'adequate') {
+    reasons.push('✓ ปลายทางมีมาตรฐานคุ้มครองข้อมูลส่วนบุคคลที่เพียงพอตามมาตรา 28 (Adequacy Decision)');
+  } else {
+    reasons.push('✓ ข้อมูลถูกจัดเก็บภายในประเทศ ไม่เข้าข่ายการโอนข้อมูลข้ามพรมแดน');
+  }
+
+  if (dType === 'sensitive') {
+    reasons.push('⚠️ ข้อมูลเป็น Sensitive PII (มาตรา 26) ต้องบังคับใช้การเข้ารหัสระดับสูง (AES-256) และบันทึกล็อกการเข้าถึงเข้มงวด');
+    if (!isLegal) {
+      severityClass = 'fail';
+      actionDirective = '🚨 ผู้ตรวจสอบต้องสั่งระงับการถ่ายโอนข้อมูลทันที (Cease Transfer), จัดทำ DPA แนบท้ายสัญญา, และทำเรื่องขออนุมัติ SCCs ต่อ DPO';
+    }
+  }
+
+  resultCard.innerHTML = `
+    <div style="font-weight:700; font-size:1rem; color:var(--text-main); margin-bottom:0.5rem;">
+      ผลการประเมินความสอดคล้องตามกฎหมาย PDPA 2562:
+    </div>
+    <div style="margin-bottom:0.75rem;">
+      <span class="badge-status ${severityClass}" style="font-size:0.88rem; padding:0.25rem 0.65rem;">
+        สถานะ: ${isLegal ? '✓ ชอบด้วยกฎหมาย (Compliant)' : '❌ ไม่ชอบด้วยกฎหมาย (Critical Non-Compliance)'}
+      </span>
+    </div>
+    <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.5; margin-bottom:0.75rem;">
+      ${reasons.map(r => '<div>' + r + '</div>').join('')}
+    </div>
+    <div style="background:var(--bg-card); padding:0.75rem; border-radius:6px; border:1px solid var(--border-color); font-size:0.82rem; margin-bottom:0.75rem;">
+      <strong>บทลงโทษตามกฎหมาย:</strong> <span style="color:${isLegal ? 'var(--emerald)' : 'var(--rose)'}; font-weight:700;">${penalty}</span>
+    </div>
+    <div style="font-size:0.83rem; font-weight:600; color:${isLegal ? 'var(--emerald)' : 'var(--rose)'};">
+      ${actionDirective}
+    </div>
+  `;
+}
+runPdpaEvaluator();
+
+// ==========================================
+// WIDGET 13.3: SOC 2 FORENSIC ANALYZER
+// ==========================================
+function runSoc2Analyzer() {
+  const scope = document.getElementById('w3-scope-match')?.value || 'mismatch';
+  const timing = document.getElementById('w3-timing-gap')?.value || 'expired';
+  const cuec = document.getElementById('w3-cuec-status')?.value || 'ignored';
+  const vCard = document.getElementById('soc2-verdict-card');
+  if (!vCard) return;
+
+  let reliance = 'ไม่สามารถพึ่งพารายงานได้โดยเด็ดขาด (Zero Reliance)';
+  let rClass = 'fail';
+  let findings = [];
+
+  if (scope === 'mismatch') {
+    findings.push('🚨 <strong>Finding 1 (Scope Mismatch):</strong> ขอบเขตของรายงาน SOC 2 ไม่ครอบคลุม Region หรือบริการที่องค์กรใช้งานจริง ทำให้ผลการตรวจสอบของผู้สอบบัญชีอิสระใช้ไม่ได้กับระบบเรา');
+  }
+  if (timing === 'expired') {
+    findings.push('🚨 <strong>Finding 2 (Timing Gap):</strong> รายงานสิ้นสุดระยะเวลาตรวจสอบไปแล้ว และไม่มีหนังสือ Bridge Letter รับรองความต่อเนื่องจากผู้บริหารคู่ค้า');
+  } else if (timing === 'has_bridge') {
+    findings.push('✓ ช่วงว่างได้รับการรับรองผ่าน Bridge Letter แล้ว (ยอมรับได้)');
+  }
+  if (cuec === 'ignored') {
+    findings.push('🚨 <strong>Finding 3 (CUEC Blindspot):</strong> ฝ่ายไอทีละเลยเงื่อนไข CUECs ไม่ได้เปิด MFA และไม่ได้เข้ารหัสด้วย KMS ทำให้ความรับผิดชอบตกเป็นขององค์กรเราเต็ม ๆ');
+  } else if (cuec === 'partial') {
+    findings.push('⚠️ CUEC ปฏิบัติเพียงบางส่วน ยังคงมีความเสี่ยงด้านความปลอดภัยตกค้าง');
+  }
+
+  if (scope === 'match' && (timing === 'current' || timing === 'has_bridge') && cuec === 'full') {
+    reliance = 'สามารถพึ่งพารายงานเพื่อเป็นหลักฐานการตรวจสอบได้สมบูรณ์ (Full Audit Reliance)';
+    rClass = 'pass';
+  } else if (scope === 'match' && cuec !== 'ignored') {
+    reliance = 'พึ่งพาได้แบบมีเงื่อนไข (Conditional Reliance with Gap Disclosures)';
+    rClass = 'warn';
+  }
+
+  vCard.innerHTML = `
+    <div style="font-weight:700; font-size:1rem; color:var(--text-main); margin-bottom:0.4rem;">
+      คำตัดสินการพึ่งพาหลักฐานของผู้ตรวจสอบ (Auditor Reliance Verdict):
+    </div>
+    <div style="margin-bottom:0.75rem;">
+      <span class="badge-status ${rClass}" style="font-size:0.86rem; padding:0.25rem 0.65rem;">${reliance}</span>
+    </div>
+    <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.5; margin-bottom:0.75rem;">
+      ${findings.map(f => '<div style="margin-bottom:0.35rem;">' + f + '</div>').join('')}
+    </div>
+    <div style="background:var(--bg-card); padding:0.75rem; border-radius:6px; border-left:4px solid var(--primary); font-size:0.82rem;">
+      <strong>คำแนะนำเชิงผู้ตรวจสอบ:</strong> ${rClass === 'pass' ? 'บันทึกรายงาน SOC 2 เข้าแฟ้มกระดาษทำการ พร้อมแนบหลักฐานการปฏิบัติตาม CUEC' : 'ต้องออกข้อค้นพบการตรวจสอบ (Audit Finding) ระดับ Critical/High และเรียกผู้บริหารฝ่ายจัดซื้อและไอทีประชุมชี้แจงทันที'}
+    </div>
+  `;
+}
+runSoc2Analyzer();
+
+// ==========================================
+// WIDGET 13.4: TPRM SCORER
+// ==========================================
+function calcTprmScore() {
+  const a = parseInt(document.getElementById('w4-data-access')?.value || '40', 10);
+  const n = parseInt(document.getElementById('w4-network-conn')?.value || '30', 10);
+  const c = parseInt(document.getElementById('w4-contract-status')?.value || '20', 10);
+  const s = parseInt(document.getElementById('w4-subcontract')?.value || '10', 10);
+  const out = document.getElementById('tprm-result-display');
+  if (!out) return;
+
+  const total = a + n + c + s;
+  let tier = 'Tier 4: ความเสี่ยงต่ำ (Low Risk Vendor)';
+  let tClass = 'pass';
+  let checkItems = ['ประเมินแบบสอบถามพื้นฐาน', 'ทบทวนสัญญาทุก 2 ปี'];
+
+  if (total >= 75) {
+    tier = 'Tier 1: ความเสี่ยงระดับวิกฤต (Critical High Risk Vendor)';
+    tClass = 'fail';
+    checkItems = [
+      '🚨 ต้องมีข้อสัญญา Right to Audit และ DPA สมบูรณ์แบบ 100%',
+      '🚨 บังคับใช้ Hardware MFA รายบุคคล และตัดสิทธิ์หลังหมดสัญญา',
+      '🚨 เรียกตรวจรายงาน SOC 2 Type II และ Bridge Letter ทุกปี',
+      '🚨 กำหนด SLA แจ้งเหตุละเมิดข้อมูลส่วนบุคคลภายใน 12–24 ชั่วโมง'
+    ];
+  } else if (total >= 50) {
+    tier = 'Tier 2: ความเสี่ยงสูง (High Risk Vendor)';
+    tClass = 'warn';
+    checkItems = [
+      '⚠️ กำหนดสิทธิ์การเข้าถึงแบบ Least Privilege และทำ Network Segmentation',
+      '⚠️ จัดทำสัญญา DPA และตรวจสอบใบรับรอง ISO 27001',
+      '⚠️ ทบทวนสิทธิ์การเข้าถึงระบบทุกไตรมาส'
+    ];
+  } else if (total >= 30) {
+    tier = 'Tier 3: ความเสี่ยงปานกลาง (Medium Risk Vendor)';
+    tClass = 'warn';
+    checkItems = ['ตรวจเช็กการเข้ารหัสข้อมูลขณะส่งผ่านเครือข่าย', 'ลงนามข้อตกลงรักษาความลับ (NDA)'];
+  }
+
+  out.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:0.6rem; gap:0.5rem;">
+      <div>
+        <span style="font-size:0.82rem; color:var(--text-dim); text-transform:uppercase;">คะแนนความเสี่ยงคู่ค้า (Vendor Risk Score):</span>
+        <strong style="margin-left:0.5rem; font-size:1.3rem; color:${total >= 75 ? 'var(--rose)' : (total >= 50 ? 'var(--amber)' : 'var(--emerald)')};">${total} / 100</strong>
+      </div>
+      <div><span class="badge-status ${tClass}" style="font-size:0.85rem;">${tier}</span></div>
+    </div>
+    <div style="background:var(--bg-card); padding:0.85rem; border-radius:6px; border:1px solid var(--border-color); font-size:0.83rem;">
+      <strong style="color:var(--text-main); display:block; margin-bottom:0.35rem;">📋 รายการตรวจสอบบังคับ (Mandatory Audit Checklist for this Tier):</strong>
+      <ul style="margin-left:1.2rem; line-height:1.45; color:var(--text-muted);">
+        ${checkItems.map(item => '<li>' + item + '</li>').join('')}
+      </ul>
+    </div>
+  `;
+}
+calcTprmScore();
+
+// ==========================================
+// WIDGET 13.5: WORKSHOP SIMULATOR
+// ==========================================
+let curWsStep = 1;
+let wsAnswers = { 1: null, 2: null, 3: null };
+
+const wsContent = {
+  1: {
+    title: 'ภารกิจที่ 1: การวิเคราะห์ Scope & Period ของรายงาน MegaCloud',
+    desc: 'ผู้รับการตรวจใช้ระบบ MegaCloud ใน Region US-East (Virginia) และตรวจในปี 2024 แต่รายงาน SOC 2 ระบุว่าครอบคลุมเฉพาะ Singapore & Ireland และสิ้นสุด ก.ย. 2024',
+    question: 'ในฐานะ Lead IT Auditor ใบรับรองนี้ใช้เป็นหลักฐานความเชื่อมั่นสมบูรณ์ได้หรือไม่?',
+    choices: [
+      { text: 'ได้ 100% เพราะ MegaCloud เป็นผู้ให้บริการระดับโลก ใบรับรองครอบคลุมทั่วโลก', score: 0, feedback: '❌ ผิด! ขอบเขต (Scope) ไม่ครอบคลุม Region US-East ที่ใช้งานจริง และเกิด Timing Gap โดยไม่มี Bridge Letter' },
+      { text: 'ไม่ได้เด็ดขาด เพราะเกิด Scope Mismatch (คนละ Region) และ Timing Gap (ขาด Bridge Letter)', score: 100, feedback: '🎉 ถูกต้องแม่นยำ! นี่คือข้อบกพร่องเรื่อง Scope Mismatch และ Timing Gap ตามมาตรฐานการตรวจสอบ' }
+    ]
+  },
+  2: {
+    title: 'ภารกิจที่ 2: การวิเคราะห์ช่องว่าง CUEC (CUEC Gap Analysis)',
+    desc: 'MegaCloud ระบุ CUEC-01 (MFA), CUEC-02 (KMS Encryption & Bucket Permissions), CUEC-03 (Audit Logs Export) แต่ผู้รับการตรวจไม่เคยเปิด MFA, เปิด Bucket Public Read, และไม่เคยดึงล็อก',
+    question: 'ข้อใดสรุปผลกระทบจากช่องว่าง CUEC ได้ถูกต้องที่สุด?',
+    choices: [
+      { text: 'ผู้รับการตรวจตก CUEC ทั้ง 3 ข้อ ทำให้ระบบไร้ความปลอดภัย และ MegaCloud ไม่ต้องรับผิดชอบความเสียหาย', score: 100, feedback: '🎉 ยอดเยี่ยม! CUEC เป็นเงื่อนไขบังคับฝั่งลูกค้า เมื่อลูกค้าละเลย ความเสียหายเกิดจากความประมาทเลินเล่อของลูกค้าเอง' },
+      { text: 'MegaCloud ต้องเป็นผู้รับผิดชอบ เพราะเป็นเจ้าของระบบคลาวด์', score: 0, feedback: '❌ ผิด! ในรายงาน SOC 2 ระบุชัดเจนว่าความปลอดภัยขึ้นอยู่กับการที่ลูกค้าปฏิบัติตาม CUEC' }
+    ]
+  },
+  3: {
+    title: 'ภารกิจที่ 3: การร่างข้อค้นพบการตรวจสอบตามโครงสร้าง 5Cs',
+    desc: 'ร่วมกันเลือกร่างข้อเสนอแนะที่สอดคล้องตามมาตรฐานวิชาชีพ ISACA ITAF',
+    question: 'ข้อเสนอแนะ (Recommendation) ข้อใดสมบูรณ์และปฏิบัติได้จริงที่สุด?',
+    choices: [
+      { text: 'สั่งยกเลิกสัญญากับ MegaCloud ทันที และย้ายระบบกลับมาทำ On-Premises', score: 20, feedback: '⚠️ ไม่สมเหตุสมผลและสร้างความเสียหายต่อการดำเนินงานขององค์กรเกินความจำเป็น' },
+      { text: 'เปิด Block Public Access บน Bucket ทันที, บังคับใช้ MFA, จัดทำ CUEC Checklist และขอ Bridge Letter', score: 100, feedback: '🎉 สมบูรณ์แบบ! เป็นข้อเสนอแนะที่แก้ปัญหาตรงจุด ตรงตามโครงสร้าง Actionable Recommendation' }
+    ]
+  }
+};
+
+function setWorkshopStep(step) {
+  curWsStep = step;
+  for (let s = 1; s <= 3; s++) {
+    const btn = document.getElementById('ws-step-btn-' + s);
+    if (btn) btn.classList.toggle('active', s === step);
+  }
+  renderWsStep();
+}
+
+function answerWs(step, choiceIdx) {
+  wsAnswers[step] = choiceIdx;
+  renderWsStep();
+}
+
+function renderWsStep() {
+  const container = document.getElementById('workshop-step-content');
+  if (!container) return;
+
+  const c = wsContent[curWsStep];
+  const answered = wsAnswers[curWsStep];
+
+  let choicesHtml = '';
+  c.choices.forEach((ch, idx) => {
+    const isSelected = answered === idx;
+    choicesHtml += `
+      <button class="vol-select-btn ${isSelected ? 'active' : ''}" style="margin-bottom:0.5rem; width:100%; text-align:left;" onclick="answerWs(${curWsStep}, ${idx})">
+        ${ch.text}
+      </button>
+    `;
+  });
+
+  let fbHtml = '';
+  if (answered !== null) {
+    const ch = c.choices[answered];
+    fbHtml = `
+      <div style="background:var(--bg-surface); padding:0.75rem; border-radius:6px; border:1px solid var(--border-color); font-size:0.83rem; margin-top:0.75rem;">
+        ${ch.feedback}
+      </div>
+    `;
+  }
+
+  container.innerHTML = `
+    <div style="font-weight:700; font-size:1rem; color:var(--text-main); margin-bottom:0.35rem;">${c.title}</div>
+    <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:0.75rem;">${c.desc}</p>
+    <div style="font-weight:600; font-size:0.86rem; color:var(--text-main); margin-bottom:0.6rem;">โจทย์: ${c.question}</div>
+    <div>${choicesHtml}</div>
+    ${fbHtml}
+  `;
+
+  renderWsScore();
+}
+
+function renderWsScore() {
+  const scoreCard = document.getElementById('workshop-score-summary');
+  if (!scoreCard) return;
+
+  let total = 0;
+  let count = 0;
+  for (let s = 1; s <= 3; s++) {
+    if (wsAnswers[s] !== null) {
+      count++;
+      total += wsContent[s].choices[wsAnswers[s]].score;
+    }
+  }
+  const avg = count > 0 ? Math.round(total / count) : 0;
+
+  scoreCard.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+      <div>
+        <span style="font-size:0.82rem; color:var(--text-dim); text-transform:uppercase;">คะแนนการประเมินทักษะ Workshop:</span>
+        <strong style="margin-left:0.5rem; font-size:1.2rem; color:${avg >= 80 ? 'var(--emerald)' : (avg >= 50 ? 'var(--amber)' : 'var(--rose)')};">${avg} / 100 คะแนน</strong>
+      </div>
+      <div style="font-size:0.82rem; color:var(--text-muted);">
+        ${count === 3 ? (avg === 100 ? '🎉 ยอดเยี่ยม! คุณสามารถวิเคราะห์รายงาน SOC 2 และ CUEC ได้อย่างถูกต้องระดับมืออาชีพ' : 'ทำภารกิจครบถ้วน มีความเข้าใจในจุดบอดของการตรวจคลาวด์') : 'ตอบให้ครบทั้ง 3 ภารกิจเพื่อประเมินผลสัมฤทธิ์'}
+      </div>
+    </div>
+  `;
+}
+renderWsStep();
+
+  </script>
+</body>
+</html>

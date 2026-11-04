@@ -1,0 +1,2854 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 10: การตรวจสอบระบบปฏิบัติการและโครงสร้างพื้นฐานเครือข่าย | Cybersecurity Audit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-body: 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Outfit', 'Sarabun', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+
+      /* Light Mode Palette */
+      --bg-body: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --text-dim: #64748b;
+      --border-color: #e2e8f0;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-glow: rgba(2, 132, 199, 0.12);
+      --accent: #2563eb;
+      --emerald: #059669;
+      --emerald-bg: #ecfdf5;
+      --amber: #d97706;
+      --amber-bg: #fffbeb;
+      --rose: #e11d48;
+      --rose-bg: #fff1f2;
+      --indigo: #4f46e5;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --radius: 12px;
+      --content-max-width: 920px;
+    }
+
+    [data-theme="sepia"] {
+      --bg-body: #fbf7ee;
+      --bg-surface: #f4ede0;
+      --bg-card: #f7f1e5;
+      --text-main: #382d21;
+      --text-muted: #574838;
+      --text-dim: #82715e;
+      --border-color: #e6dac8;
+      --primary: #965a29;
+      --primary-hover: #7c471c;
+      --primary-glow: rgba(150, 90, 41, 0.12);
+      --accent: #b45309;
+      --emerald: #15803d;
+      --emerald-bg: #edf7ed;
+      --amber: #b45309;
+      --amber-bg: #fdf5e8;
+      --rose: #be123c;
+      --rose-bg: #fae8e8;
+    }
+
+    [data-theme="dark"] {
+      --bg-body: #090d16;
+      --bg-surface: #0f172a;
+      --bg-card: #131d35;
+      --text-main: #f1f5f9;
+      --text-muted: #cbd5e1;
+      --text-dim: #94a3b8;
+      --border-color: #1e293b;
+      --primary: #38bdf8;
+      --primary-hover: #7dd3fc;
+      --primary-glow: rgba(56, 189, 248, 0.15);
+      --accent: #60a5fa;
+      --emerald: #34d399;
+      --emerald-bg: rgba(52, 211, 153, 0.1);
+      --amber: #fbbf24;
+      --amber-bg: rgba(251, 191, 36, 0.1);
+      --rose: #fb7185;
+      --rose-bg: rgba(251, 113, 133, 0.1);
+    }
+
+    /* Font Size Scaler */
+    html { font-size: 16px; }
+    html.fs-sm { font-size: 14.5px; }
+    html.fs-lg { font-size: 17.5px; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.75;
+      letter-spacing: -0.01em;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Reading Progress Bar */
+    .reading-progress-track {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: transparent;
+      z-index: 1000;
+    }
+    .reading-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.1s ease;
+    }
+
+    /* Sticky Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 900;
+      padding: 0.6rem 1.5rem;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+    }
+    .header-inner {
+      max-width: 1380px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .course-badge {
+      font-family: var(--font-code);
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      letter-spacing: 0.05em;
+      border: 1px solid var(--primary);
+    }
+    .chapter-indicator {
+      font-family: var(--font-display);
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .control-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s ease;
+    }
+    .control-btn:hover {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .control-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* Layout */
+    .page-container {
+      max-width: 1380px;
+      margin: 0 auto;
+      display: flex;
+      gap: 2.5rem;
+      padding: 2rem 1.5rem 5rem 1.5rem;
+    }
+
+    /* Sidebar TOC */
+    .sidebar-toc {
+      width: 290px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 4.5rem;
+      height: calc(100vh - 5.5rem);
+      overflow-y: auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .sidebar-toc::-webkit-scrollbar { width: 4px; }
+    .sidebar-toc::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+    .toc-title {
+      font-family: var(--font-display);
+      font-size: 0.88rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .toc-list { list-style: none; }
+    .toc-list li { margin-bottom: 0.4rem; }
+    .toc-list a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      display: block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 5px;
+      transition: all 0.15s ease;
+      line-height: 1.4;
+    }
+    .toc-list a:hover {
+      background: var(--primary-glow);
+      color: var(--primary);
+    }
+    .toc-item-h2 { font-weight: 600; }
+    .toc-item-h3 { padding-left: 0.9rem; font-size: 0.8rem !important; }
+
+    /* Main Article */
+    .main-article {
+      flex: 1;
+      max-width: var(--content-max-width);
+      min-width: 0;
+    }
+
+    /* Chapter Header */
+    .chapter-header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+    .chapter-badge {
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.6rem;
+    }
+    .chapter-title {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 800;
+      line-height: 1.25;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    /* Headings */
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 2.75rem 0 1.2rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .subsection-heading {
+      font-family: var(--font-display);
+      font-size: 1.22rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 2rem 0 0.85rem 0;
+    }
+    .sub-subsection-heading {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 1.5rem 0 0.65rem 0;
+    }
+
+    /* Typography & Prose */
+    .content-paragraph {
+      margin-bottom: 1.25rem;
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+    .content-list {
+      margin: 0.75rem 0 1.25rem 1.6rem;
+      color: var(--text-muted);
+    }
+    .content-list li {
+      margin-bottom: 0.45rem;
+    }
+    .section-divider {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2.75rem 0;
+    }
+
+    code {
+      font-family: var(--font-code);
+      background: var(--bg-surface);
+      color: var(--primary);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.86em;
+      border: 1px solid var(--border-color);
+    }
+    .code-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+      font-family: var(--font-code);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    /* Callout Alerts */
+    .callout-alert {
+      padding: 1.1rem 1.35rem;
+      border-radius: var(--radius);
+      margin: 1.75rem 0;
+      border-left: 4px solid;
+    }
+    .callout-caution { background: var(--rose-bg); border-color: var(--rose); color: var(--text-main); }
+    .callout-important { background: var(--amber-bg); border-color: var(--amber); color: var(--text-main); }
+    .callout-note { background: var(--primary-glow); border-color: var(--primary); color: var(--text-main); }
+    .callout-tip { background: var(--emerald-bg); border-color: var(--emerald); color: var(--text-main); }
+    .callout-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Blockquotes */
+    .content-blockquote {
+      border-left: 4px solid var(--primary);
+      padding: 0.85rem 1.25rem;
+      margin: 1.5rem 0;
+      background: var(--bg-surface);
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.75rem 0;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      background: var(--bg-surface);
+      box-shadow: var(--shadow-sm);
+    }
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    .content-table th {
+      background: var(--bg-card);
+      padding: 0.85rem 1.1rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+    .content-table td {
+      padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+    .content-table tr:last-child td { border-bottom: 0; }
+    .content-table tr:hover { background: var(--primary-glow); }
+
+    /* ==========================================
+       FIGURE BOXES STYLING
+       ========================================== */
+    .figure-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin: 2.25rem 0;
+      box-shadow: var(--shadow-md);
+    }
+    .figure-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+    .figure-tag {
+      font-family: var(--font-code);
+      font-size: 0.75rem;
+      font-weight: 800;
+      background: var(--primary);
+      color: #fff;
+      padding: 0.2rem 0.55rem;
+      border-radius: 5px;
+      letter-spacing: 0.05em;
+    }
+    .figure-title {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .figure-caption {
+      margin-top: 1.1rem;
+      padding-top: 0.75rem;
+      border-top: 1px dashed var(--border-color);
+      font-size: 0.84rem;
+      color: var(--text-dim);
+    }
+
+    /* Figure 10.1: OS Pillars Grid */
+    .os-pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .os-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+      position: relative;
+    }
+    .os-card-num {
+      font-family: var(--font-code);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--primary);
+      opacity: 0.35;
+      position: absolute;
+      top: 0.6rem;
+      right: 0.8rem;
+    }
+    .os-card-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      margin-bottom: 0.6rem;
+      padding-right: 2rem;
+    }
+    .os-card-body ul {
+      margin-left: 1.2rem;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+    .os-card-body li { margin-bottom: 0.3rem; }
+
+    /* Figure 10.2: Authorization Matrix */
+    .auth-matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+    .auth-os-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .auth-os-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .auth-os-badge {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+    }
+    .win-badge { background: #e0f2fe; color: #0369a1; }
+    .lnx-badge { background: #fef3c7; color: #b45309; }
+    [data-theme="dark"] .win-badge { background: #0c4a6e; color: #7dd3fc; }
+    [data-theme="dark"] .lnx-badge { background: #78350f; color: #fde68a; }
+    .auth-os-tech { font-size: 0.8rem; color: var(--text-dim); }
+    .auth-item { margin-bottom: 0.85rem; }
+    .auth-item-title { font-weight: 700; font-size: 0.88rem; color: var(--text-main); margin-bottom: 0.2rem; }
+    .auth-item p { font-size: 0.84rem; color: var(--text-muted); margin: 0; }
+
+    /* Figure 10.3: 6 Network Points Grid */
+    .net-six-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .net-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+    }
+    .net-icon { font-size: 1.5rem; margin-bottom: 0.4rem; }
+    .net-title { font-family: var(--font-display); font-weight: 700; font-size: 0.94rem; color: var(--text-main); margin-bottom: 0.4rem; }
+    .net-card p { font-size: 0.84rem; color: var(--text-muted); margin: 0; line-height: 1.45; }
+
+    /* Figure 10.4: Enterprise Architecture Flow */
+    .arch-canvas {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      padding: 0.5rem 0;
+    }
+    .arch-tier {
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      background: var(--bg-card);
+    }
+    .arch-tier.untrusted { border-color: var(--rose); background: var(--rose-bg); }
+    .arch-tier-label { font-family: var(--font-display); font-weight: 800; font-size: 0.9rem; color: var(--rose); margin-bottom: 0.4rem; }
+    .arch-tier-content { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .arch-badge {
+      font-size: 0.78rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+    .arch-flow-arrow {
+      text-align: center;
+      font-family: var(--font-code);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-dim);
+    }
+    .arch-device-bar {
+      padding: 0.65rem 1rem;
+      border-radius: 6px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+    .arch-device-bar.edge-fw { background: #3b82f6; color: #fff; }
+    .arch-device-bar.core-fw { background: #4f46e5; color: #fff; }
+    .arch-mid-grid, .arch-bottom-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.85rem;
+    }
+    .arch-zone {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem;
+      background: var(--bg-card);
+    }
+    .arch-zone.dmz { border-left: 4px solid var(--amber); }
+    .arch-zone.user-zone { border-left: 4px solid #3b82f6; }
+    .arch-zone.guest-wifi { border-left: 4px solid #10b981; }
+    .arch-zone.srv-prod { border-left: 4px solid var(--rose); }
+    .arch-zone.mgmt-zone { border-left: 4px solid #8b5cf6; }
+    .arch-zone-title { font-family: var(--font-display); font-weight: 700; font-size: 0.86rem; color: var(--text-main); margin-bottom: 0.4rem; }
+    .arch-zone-items { font-size: 0.8rem; color: var(--text-muted); line-height: 1.45; }
+
+    /* Figure 10.6: 4 Elements Grid */
+    .elements-4-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.1rem;
+    }
+    .elem-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .elem-badge {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 0.35rem;
+    }
+    .elem-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+    .elem-desc {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-bottom: 0.8rem;
+      flex-grow: 1;
+    }
+    .elem-example {
+      background: var(--bg-surface);
+      border-radius: 6px;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.8rem;
+      color: var(--text-main);
+      border-left: 3px solid var(--primary);
+    }
+
+    /* Working Paper Styling */
+    .wp-paper-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+    .wp-paper-header {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .wp-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.5rem;
+      font-size: 0.88rem;
+      margin-bottom: 0.75rem;
+    }
+    .wp-ref-code {
+      font-family: var(--font-code);
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-glow);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+    }
+    .wp-staff-grid {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      padding-top: 0.5rem;
+      border-top: 1px dashed var(--border-color);
+    }
+    .wp-paper-section {
+      margin-bottom: 1.25rem;
+    }
+    .wp-sec-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      margin-bottom: 0.4rem;
+    }
+    .wp-proc-item {
+      background: var(--bg-surface);
+      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+    .finding-block {
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      font-size: 0.86rem;
+    }
+    .finding-block.ncr { background: var(--rose-bg); border-left: 4px solid var(--rose); }
+    .finding-label {
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 0.72rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      margin-right: 0.4rem;
+      text-transform: uppercase;
+    }
+    .finding-label.crit { background: #e11d48; color: #fff; }
+    .finding-label.major { background: #b91c1c; color: #fff; }
+
+    /* Perspective Dialogue */
+    .perspective-box {
+      background: var(--bg-card);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .persp-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: var(--text-main);
+    }
+    .persp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+    .persp-side {
+      padding: 1.1rem;
+      border-radius: 8px;
+    }
+    .persp-side.aud { background: var(--primary-glow); border-left: 3px solid var(--primary); }
+    .persp-side.imp { background: var(--amber-bg); border-left: 3px solid var(--amber); }
+    .persp-badge {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+    .persp-side p { font-size: 0.85rem; line-height: 1.5; margin-bottom: 0.5rem; color: var(--text-main); }
+
+    /* Figure 10.12 Decision Tree */
+    .decision-tree-canvas {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .dt-step {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .dt-step-tag { font-family: var(--font-code); font-size: 0.75rem; font-weight: 700; color: var(--primary); }
+    .dt-step-title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin: 0.2rem 0; }
+    .dt-step-desc { font-size: 0.84rem; color: var(--text-muted); }
+    .dt-arrow { text-align: center; font-family: var(--font-code); font-size: 0.82rem; font-weight: 700; color: var(--text-dim); }
+    .dt-decision-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .dt-branch {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .dt-branch.no-criteria { border-top: 4px solid var(--amber); }
+    .dt-branch.has-criteria { border-top: 4px solid var(--rose); }
+    .dt-branch-badge { font-family: var(--font-display); font-size: 0.78rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .dt-branch-badge.warning { color: var(--amber); }
+    .dt-branch-badge.pass { color: var(--rose); }
+    .dt-branch-title { font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; margin-bottom: 0.35rem; }
+    .dt-branch p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; }
+    .dt-sub-classify { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
+    .sub-badge { font-size: 0.72rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 600; }
+    .sub-badge.crit { background: var(--rose-bg); color: var(--rose); }
+    .sub-badge.minor { background: var(--amber-bg); color: var(--amber); }
+
+    /* Tags & Badges */
+    .wp-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .wp-tag.pass { background: var(--emerald-bg); color: var(--emerald); }
+    .wp-tag.fail { background: var(--rose-bg); color: var(--rose); }
+    .badge-tier { font-size: 0.74rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 4px; }
+    .tier1 { background: #dcfce7; color: #15803d; }
+    .tier2 { background: #fef9c3; color: #854d0e; }
+    .tier3 { background: #fed7aa; color: #9a3412; }
+    .tier4 { background: #fecdd3; color: #9f1239; }
+
+    /* ==========================================
+       INTERACTIVE WIDGETS STYLING
+       ========================================== */
+    .interactive-widget-box {
+      background: var(--bg-surface);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin: 2.75rem 0;
+      box-shadow: var(--shadow-lg);
+    }
+    .widget-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+    .widget-badge {
+      font-family: var(--font-code);
+      font-size: 0.78rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      letter-spacing: 0.05em;
+    }
+    .widget-title {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+    .widget-lead {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
+    .widget-controls-bar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .btn-os-tab {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-os-tab:hover { border-color: var(--primary); }
+    .btn-os-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* Widget 10.1 Checklist */
+    .os-audit-checklist {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .check-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .check-card-info { font-size: 0.84rem; line-height: 1.4; }
+    .check-card-title { font-weight: 700; color: var(--text-main); }
+    .check-card-desc { color: var(--text-dim); font-size: 0.78rem; }
+    .check-status-badge {
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .widget-result-summary {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+    }
+
+    /* Widget 10.2 FW Evaluator */
+    .fw-evaluator-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+    .fw-eval-input-card, .fw-eval-result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+    .form-group-compact { margin-bottom: 0.75rem; }
+    .form-group-compact label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-dim); margin-bottom: 0.25rem; }
+    .form-group-compact select {
+      width: 100%;
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+    }
+
+    /* Widget 10.3 Builder */
+    .builder-select-bar { margin-bottom: 1.25rem; }
+    .builder-select-bar select {
+      width: 100%;
+      padding: 0.55rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-top: 0.4rem;
+    }
+    .finding-builder-display {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+
+    /* Widget 10.4 Triage Challenge */
+    .triage-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+    .triage-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .triage-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .triage-text { font-size: 0.88rem; line-height: 1.45; color: var(--text-main); margin-bottom: 0.75rem; }
+    .triage-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn-triage-opt {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-triage-opt:hover { border-color: var(--primary); }
+    .btn-triage-opt.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .triage-feedback {
+      margin-top: 0.65rem;
+      padding: 0.6rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    /* Widget 10.5 Perm Calc */
+    .perm-calc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+    .perm-input-card, .perm-eval-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+
+    /* Footer Nav */
+    .chapter-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 2px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+    .btn-nav-chapter {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .btn-nav-chapter:hover {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar-toc { display: none; }
+      .page-container { padding: 1.5rem 1rem 4rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="reading-progress-track">
+    <div class="reading-progress-bar" id="reading-progress-bar"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-branding">
+        <span class="course-badge">NECS1312 // CH-10</span>
+        <span class="chapter-indicator">การตรวจสอบระบบปฏิบัติการและโครงสร้างพื้นฐานเครือข่าย</span>
+      </div>
+      <div class="header-controls">
+        <button class="control-btn" id="btn-theme-light" onclick="setTheme('light')" title="Light Mode">☀️</button>
+        <button class="control-btn" id="btn-theme-sepia" onclick="setTheme('sepia')" title="Sepia Mode">📜</button>
+        <button class="control-btn" id="btn-theme-dark" onclick="setTheme('dark')" title="Dark Mode">🌙</button>
+        <div style="width:1px; height:18px; background:var(--border-color); margin:0 0.2rem;"></div>
+        <button class="control-btn" onclick="adjustFontSize(-1)" title="Smaller Font">A-</button>
+        <button class="control-btn" onclick="adjustFontSize(0)" title="Default Font">A</button>
+        <button class="control-btn" onclick="adjustFontSize(1)" title="Larger Font">A+</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-container">
+    <aside class="sidebar-toc">
+      <nav class="toc-sidebar-nav"><div class="toc-title">สารบัญเนื้อหา บทที่ 10</div><ul class="toc-list"><li class="toc-item-h1"><a href="#บทที่-10-การตรวจสอบระบบปฏิบัติการและโครงสร้างพื้นฐานเครือข่าย-operating-system-and-network-infrastructure-audit">บทที่ 10 การตรวจสอบระบบปฏิบัติการและโครงสร้างพื้นฐานเครือข่าย (Operating System and Network Infrastructure Audit)</a></li><li class="toc-item-h2"><a href="#ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</a></li><li class="toc-item-h2"><a href="#ส่วนที่-1-การตรวจสอบระบบปฏิบัติการ-operating-system-audit-windows-linux">ส่วนที่ 1: การตรวจสอบระบบปฏิบัติการ (Operating System Audit: Windows & Linux)</a></li><li class="toc-item-h3"><a href="#1-1-การบริหารจัดการบัญชีผู้ใช้งาน-account-management">1.1 การบริหารจัดการบัญชีผู้ใช้งาน (Account Management)</a></li><li class="toc-item-h3"><a href="#1-2-การพิสูจน์ตัวตน-authentication-controls">1.2 การพิสูจน์ตัวตน (Authentication Controls)</a></li><li class="toc-item-h3"><a href="#1-3-การกำหนดสิทธิ์และการควบคุมการเข้าถึง-authorization-controls">1.3 การกำหนดสิทธิ์และการควบคุมการเข้าถึง (Authorization Controls)</a></li><li class="toc-item-h3"><a href="#1-4-การเสริมความมั่นคงปลอดภัยระบบ-system-hardening">1.4 การเสริมความมั่นคงปลอดภัยระบบ (System Hardening)</a></li><li class="toc-item-h3"><a href="#1-5-การบริหารจัดการแพตช์-patch-management">1.5 การบริหารจัดการแพตช์ (Patch Management)</a></li><li class="toc-item-h3"><a href="#1-6-การบันทึกเหตุการณ์และการตรวจสอบ-audit-logging">1.6 การบันทึกเหตุการณ์และการตรวจสอบ (Audit Logging)</a></li><li class="toc-item-h2"><a href="#ส่วนที่-2-การตรวจสอบโครงสร้างพื้นฐานเครือข่าย-network-infrastructure-audit">ส่วนที่ 2: การตรวจสอบโครงสร้างพื้นฐานเครือข่าย (Network Infrastructure Audit)</a></li><li class="toc-item-h3"><a href="#2-1-เอกสารและสถาปัตยกรรมเครือข่าย-network-documentation">2.1 เอกสารและสถาปัตยกรรมเครือข่าย (Network Documentation)</a></li><li class="toc-item-h3"><a href="#2-2-การแบ่งแยกโซนเครือข่าย-network-segmentation">2.2 การแบ่งแยกโซนเครือข่าย (Network Segmentation)</a></li><li class="toc-item-h3"><a href="#2-3-การตรวจสอบกฎไฟร์วอลล์-firewall-audit-8-จุดตรวจสำคัญ">2.3 การตรวจสอบกฎไฟร์วอลล์ (Firewall Audit: 8 จุดตรวจสำคัญ)</a></li><li class="toc-item-h3"><a href="#2-4-การเข้าถึงจากระยะไกล-remote-access-security">2.4 การเข้าถึงจากระยะไกล (Remote Access Security)</a></li><li class="toc-item-h3"><a href="#2-5-การบริหารจัดการอุปกรณ์เครือข่าย-network-device-management">2.5 การบริหารจัดการอุปกรณ์เครือข่าย (Network Device Management)</a></li><li class="toc-item-h3"><a href="#2-6-ความมั่นคงปลอดภัยของเครือข่ายไร้สาย-wireless-security">2.6 ความมั่นคงปลอดภัยของเครือข่ายไร้สาย (Wireless Security)</a></li><li class="toc-item-h2"><a href="#ส่วนที่-3-ระเบียบวิธีปฏิบัติวิชาชีพ-การแยก-configuration-issue-ออกจาก-audit-finding">ส่วนที่ 3: ระเบียบวิธีปฏิบัติวิชาชีพ: "การแยก Configuration Issue ออกจาก Audit Finding"</a></li><li class="toc-item-h3"><a href="#3-1-ตารางเปรียบเทียบเชิงวิเคราะห์">3.1 ตารางเปรียบเทียบเชิงวิเคราะห์</a></li><li class="toc-item-h3"><a href="#3-2-กายวิภาค-4-องค์ประกอบของข้อค้นพบการตรวจ-the-4-elements-of-an-audit-finding">3.2 กายวิภาค 4 องค์ประกอบของข้อค้นพบการตรวจ (The 4 Elements of an Audit Finding)</a></li><li class="toc-item-h2"><a href="#ส่วนที่-4-กรณีศึกษาเชิงประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study">ส่วนที่ 4: กรณีศึกษาเชิงประยุกต์ "มหาวิทยาลัยดิจิทัลสมมติ" (Core Case Study)</a></li><li class="toc-item-h3"><a href="#4-1-ชุดหลักฐานจำลอง-5-รายการ-simulated-audit-evidence-items">4.1 ชุดหลักฐานจำลอง 5 รายการ (Simulated Audit Evidence Items)</a></li><li class="toc-item-h3"><a href="#4-2-กระดาษทำการตรวจสอบฉบับที่-1-การตรวจสอบระบบปฏิบัติการ-audit-working-paper-wp-10-01">4.2 กระดาษทำการตรวจสอบฉบับที่ 1: การตรวจสอบระบบปฏิบัติการ (Audit Working Paper: WP-10-01)</a></li><li class="toc-item-h3"><a href="#4-3-กระดาษทำการตรวจสอบฉบับที่-2-การตรวจสอบเครือข่ายและไฟร์วอลล์-audit-working-paper-wp-10-02">4.3 กระดาษทำการตรวจสอบฉบับที่ 2: การตรวจสอบเครือข่ายและไฟร์วอลล์ (Audit Working Paper: WP-10-02)</a></li><li class="toc-item-h2"><a href="#ส่วนที่-5-กิจกรรมเชิงประยุกต์ในชั้นเรียน-active-learning-simulation">ส่วนที่ 5: กิจกรรมเชิงประยุกต์ในชั้นเรียน (Active Learning Simulation)</a></li><li class="toc-item-h3"><a href="#กิจกรรม-the-infrastructure-audit-triage-challenge">กิจกรรม: "The Infrastructure Audit Triage Challenge"</a></li><li class="toc-item-h2"><a href="#ส่วนที่-6-มุมมองวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls">ส่วนที่ 6: มุมมองวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives & Common Pitfalls)</a></li><li class="toc-item-h3"><a href="#4-ข้อผิดพลาดที่พบบ่อยในการตรวจโครงสร้างพื้นฐาน">4 ข้อผิดพลาดที่พบบ่อยในการตรวจโครงสร้างพื้นฐาน:</a></li><li class="toc-item-h2"><a href="#ส่วนที่-7-แบบฝึกหัดและการบ้านประจำบทที่-10">ส่วนที่ 7: แบบฝึกหัดและการบ้านประจำบทที่ 10</a></li><li class="toc-item-h2"><a href="#ส่วนที่-8-คำถามทบทวนท้ายบท-review-questions-detailed-answers">ส่วนที่ 8: คำถามทบทวนท้ายบท (Review Questions & Detailed Answers)</a></li><li class="toc-item-h2"><a href="#สรุปบทที่-10">สรุปบทที่ 10</a></li><li class="toc-item-h2"><a href="#เอกสารอ้างอิงและมาตรฐานสากล">เอกสารอ้างอิงและมาตรฐานสากล</a></li></ul></nav>
+    </aside>
+
+    <main class="main-article">
+      
+          <header class="chapter-header" id="บทที่-10-การตรวจสอบระบบปฏิบัติการและโครงสร้างพื้นฐานเครือข่าย-operating-system-and-network-infrastructure-audit">
+            <div class="chapter-badge">NECS1312 // CH-10</div>
+            <h1 class="chapter-title">บทที่ 10 การตรวจสอบระบบปฏิบัติการและโครงสร้างพื้นฐานเครือข่าย (Operating System and Network Infrastructure Audit)</h1>
+          </header>
+        
+<p class="content-paragraph">ในการตรวจสอบความมั่นคงปลอดภัยไซเบอร์ภาคปฏิบัติ คณะผู้ตรวจสอบมักเปรียบเทียบระบบสารสนเทศระดับองค์กรว่าเปรียบเสมือน <strong>"ป้อมปราการดิจิทัล"</strong> โดยมี <strong>โครงสร้างพื้นฐานเครือข่าย (Network Infrastructure)</strong> ทำหน้าที่เป็นคูเมือง กำแพง และประตูด่านหน้า คอยกลั่นกรองและควบคุมการสัญจรของข้อมูล ในขณะที่ <strong>ระบบปฏิบัติการ (Operating System: OS)</strong> ทำหน้าที่เป็นปราสาทชั้นในที่ควบคุมทรัพยากร บัญชีผู้ใช้งาน สิทธิ์การเข้าถึง และการประมวลผลของฐานข้อมูลและแอปพลิเคชันหลัก</p>
+<p class="content-paragraph">หากกำแพงเครือข่ายเปิดกว้างอย่างหละหลวม หรือประตูระบบปฏิบัติการใช้ลูกบิดที่ไม่ได้มาตรฐาน ต่อให้แอปพลิเคชันระดับบนจะพัฒนาขึ้นมาอย่างประณีตเพียงใด ผู้โจมตีก็สามารถลักลอบเจาะทะลวงเข้ามาควบคุมระบบทั้งหมดได้ในเวลาเพียงไม่กี่นาที</p>
+<p class="content-paragraph">อย่างไรก็ตาม หน้าที่ของ <strong>ผู้ตรวจสอบด้านความมั่นคงปลอดภัย (Security Auditor)</strong> แตกต่างอย่างมีนัยสำคัญจาก <strong>ผู้ทดสอบเจาะระบบ (Penetration Tester)</strong> หรือ <strong>วิศวกรผู้ดูแลระบบ (System Administrator)</strong>:</p>
+<ul class="content-list">
+<li>ผู้ดูแลระบบมองการตั้งค่าเพื่อเน้นให้ระบบทำงานได้ราบรื่น (Functionality & Availability)</li>
+<li>ผู้ทดสอบเจาะระบบมุ่งหาช่องทางใดก็ได้เพื่อยึดครองสิทธิ์ (Exploit & Compromise)</li>
+<li><strong>ผู้ตรวจสอบมุ่งประเมิน "ประสิทธิผลของการควบคุม (Control Effectiveness)" โดยแยกแยะปัญหาทางเทคนิค (Configuration Issue) ออกจาก "ข้อค้นพบการตรวจสอบ (Audit Finding)" ที่มีเกณฑ์อ้างอิงและผลกระทบต่อภารกิจองค์กรรองรับอย่างชัดเจน</strong></li>
+</ul>
+<p class="content-paragraph">ในบทนี้ นักศึกษาจะได้ลงลึกสู่ภาคสนามทางเทคนิคของทั้งสองโลก: การตรวจสอบระบบปฏิบัติการ Windows และ Linux ตั้งแต่ระดับบัญชี การพิสูจน์ตัวตน การ Hardening การปะแพตช์ และการเก็บ Log ควบคู่ไปกับการตรวจสอบเครือข่าย ทั้งผังเครือข่าย การแบ่งโซน กฎไฟร์วอลล์ การเข้าถึงทางไกล (VPN) และเครือข่ายไร้สาย พร้อมทั้งฝึกบันทึกผลลงในกระดาษทำการ (Audit Working Paper) อย่างมืออาชีพ</p>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes">
+            <h2 class="section-heading">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</h2>
+          </section>
+        
+<p class="content-paragraph">เมื่อสิ้นสุดการเรียนรู้ในบทนี้ นักศึกษาสามารถ:</p>
+<ol class="content-list">
+<li><strong>ระบุและตรวจสอบประเด็นความมั่นคงปลอดภัยสำคัญของระบบปฏิบัติการ Windows และ Linux ได้ (CLO1, CLO3):</strong> วิเคราะห์และประเมินความเสี่ยงของการบริหารจัดการบัญชี (Account Management), การพิสูจน์ตัวตน (Authentication), การกำหนดสิทธิ์ (Authorization), การเสริมความมั่นคงปลอดภัย (Hardening), การบริหารแพตช์ (Patch Management) และการบันทึก Log ตามมาตรฐาน CIS Benchmarks ได้</li>
+<li><strong>วิเคราะห์สถาปัตยกรรมและมาตรการควบคุมเครือข่ายจากเอกสารและค่ากำหนดจริงได้ (CLO3, CLO4):</strong> ตรวจทานผังเครือข่าย (Network Diagrams), ประเมินประสิทธิผลของการแบ่งโซน (Network Segmentation), ตรวจสอบกฎไฟร์วอลล์ (Firewall Rules Audit), การเข้าถึงระยะไกล (VPN), และความปลอดภัยเครือข่ายไร้สายได้</li>
+<li><strong>แยกแยะความแตกต่างระหว่าง "Configuration Issue" กับ "Audit Finding" ได้อย่างมีหลักการ (CLO1, CLO3):</strong> อธิบายเงื่อนไข 4 ประการของข้อค้นพบการตรวจ (Condition, Criteria, Cause, Effect) และสามารถเปลี่ยนปัญหาการตั้งค่าหลุดให้กลายเป็นข้อค้นพบที่มีเกณฑ์อ้างอิงและน้ำหนักทางวิชาชีพได้</li>
+<li><strong>จัดทำกระดาษทำการตรวจสอบด้านโครงสร้างพื้นฐาน (Infrastructure Working Paper) ฉบับสมบูรณ์ได้ (CLO3, CLO4):</strong> วิเคราะห์หลักฐานจำลอง 5 ชุด บันทึกขั้นตอนการทดสอบ (Test Procedures) บันทึกผลเชิงประจักษ์ และระบุข้อสังเกตเบื้องต้นได้อย่างถูกต้องตามมาตรฐานสากล</li>
+</ol>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-1-การตรวจสอบระบบปฏิบัติการ-operating-system-audit-windows-linux">
+            <h2 class="section-heading">ส่วนที่ 1: การตรวจสอบระบบปฏิบัติการ (Operating System Audit: Windows & Linux)</h2>
+          </section>
+        
+<p class="content-paragraph">ระบบปฏิบัติการเป็นด่านสุดท้ายในการปกป้องข้อมูล การตรวจสอบ OS ต้องครอบคลุม <strong>6 แกนหลัก</strong> ตามแนวทางของ CIS Benchmarks (Center for Internet Security) และ ISO/IEC 27001:</p>
+
+<div class="figure-box" id="figure-10-1">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 10.1</div>
+    <div class="figure-title">6 แกนหลักของการตรวจสอบระบบปฏิบัติการ (6 Core Pillars of OS Audit)</div>
+  </div>
+  <div class="os-pillars-grid">
+    <div class="os-card">
+      <div class="os-card-num">01</div>
+      <div class="os-card-title">1. การตรวจบัญชีผู้ใช้ (Account Management)</div>
+      <div class="os-card-body">
+        <ul>
+          <li><strong>Active Accounts:</strong> ตรวจสถานะผูกกับบุคลากรจริง</li>
+          <li><strong>Dormant Accounts:</strong> ระงับบัญชีที่นิ่งเกิน 60-90 วัน</li>
+          <li><strong>Default Accounts:</strong> เปลี่ยนชื่อ / ปิดการใช้งาน</li>
+          <li><strong>Service Accounts:</strong> ห้ามสิทธิ์ Interactive Shell / RDP</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="os-card">
+      <div class="os-card-num">02</div>
+      <div class="os-card-title">2. การพิสูจน์ตัวตน (Authentication)</div>
+      <div class="os-card-body">
+        <ul>
+          <li><strong>Password Policy:</strong> ความยาว 14+ ตัวอักษร, ประวัติย้อนหลัง</li>
+          <li><strong>MFA Enforcement:</strong> บังคับใช้กับการเข้าถึงระยะไกลและแอดมิน</li>
+          <li><strong>Account Lockout:</strong> ล็อกบัญชีเมื่อใส่รหัสผิด 3-5 ครั้ง</li>
+          <li><strong>Session Timeout:</strong> ตัดเซสชันเมื่อไม่มีการใช้งาน 10-15 นาที</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="os-card">
+      <div class="os-card-num">03</div>
+      <div class="os-card-title">3. การควบคุมสิทธิ์ (Authorization)</div>
+      <div class="os-card-body">
+        <ul>
+          <li><strong>Local Admins:</strong> จำกัดสิทธิ์เฉพาะผู้รับผิดชอบระบบ</li>
+          <li><strong>Least Privilege:</strong> แยกหน้าที่และให้สิทธิ์ขั้นต่ำ</li>
+          <li><strong>Linux sudoers:</strong> ห้ามตั้ง <code>NOPASSWD: ALL</code> หละหลวม</li>
+          <li><strong>File Permissions:</strong> ตรวจ DACL และสิทธิ์ไฟล์ระบบ</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="os-card">
+      <div class="os-card-num">04</div>
+      <div class="os-card-title">4. การ Hardening ระบบ (Hardening)</div>
+      <div class="os-card-body">
+        <ul>
+          <li><strong>Attack Surface:</strong> ปิดพอร์ตและเซอร์วิสที่ไม่จำเป็น</li>
+          <li><strong>Insecure Protocols:</strong> ปิด Telnet, FTP, SMBv1, TLS 1.0</li>
+          <li><strong>Host Firewall:</strong> เปิดใช้งาน Windows Firewall / iptables</li>
+          <li><strong>EDR / Anti-malware:</strong> อัปเดตนิยามสม่ำเสมอและเปิด Real-time</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="os-card">
+      <div class="os-card-num">05</div>
+      <div class="os-card-title">5. การบริหารแพตช์ (Patch Management)</div>
+      <div class="os-card-body">
+        <ul>
+          <li><strong>Patch Cadence:</strong> รอบเวลาปะแพตช์รายเดือน (Patch Tuesday)</li>
+          <li><strong>EOL Tracking:</strong> ระวัง OS หมดอายุสนับสนุน (เช่น Win 2012)</li>
+          <li><strong>Critical Timelines:</strong> ปะแพตช์วิกฤตภายใน 7-14 วัน</li>
+          <li><strong>Compensating Controls:</strong> มาตรการชดเชยกรณีมีข้อยกเว้น</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="os-card">
+      <div class="os-card-num">06</div>
+      <div class="os-card-title">6. การบันทึกและตรวจ Log (Audit Logging)</div>
+      <div class="os-card-body">
+        <ul>
+          <li><strong>Windows Events:</strong> Event 4624 (Logon), 4625 (Fail), 4720, 4672</li>
+          <li><strong>Linux auditd:</strong> ตรวจจับการแก้ไฟล์ระบบและคำสั่งสิทธิ์สูง</li>
+          <li><strong>Log Forwarding:</strong> ส่งต่อไปยัง SIEM กลางแบบ WORM</li>
+          <li><strong>Log Retention:</strong> เก็บไม่น้อยกว่า 90 วันตาม พ.ร.บ.คอมฯ</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 10.1:</strong> 6 แกนหลักของการตรวจประเมินระบบปฏิบัติการตามเกณฑ์ CIS Benchmarks และ ISO/IEC 27001
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-1-การบริหารจัดการบัญชีผู้ใช้งาน-account-management">1.1 การบริหารจัดการบัญชีผู้ใช้งาน (Account Management)</h3>
+<p class="content-paragraph">ผู้ตรวจสอบต้องสุ่มตรวจและตรวจสอบสถานะของบัญชีผู้ใช้ในระบบปฏิบัติการ โดยจำแนกออกเป็น <strong>6 ประเภทบัญชี</strong>:</p>
+<ol class="content-list">
+<li><strong>Active Accounts (บัญชีที่เปิดใช้งานปกติ):</strong> ต้องมีรายชื่อผู้ครอบครองที่เป็นปัจจุบันและผูกกับพนักงานที่มีสถานะทำงานจริงในองค์กร</li>
+<li><strong>Dormant / Inactive Accounts (บัญชีที่ไม่ได้ใช้งานเป็นเวลานาน):</strong> บัญชีที่ไม่มีการล็อกอินเกิน 30, 60 หรือ 90 วัน (ตามนโยบาย) ต้องถูกระงับสิทธิ์ (Disable) โดยอัตโนมัติ เพื่อป้องกันการถูกสวมรอย</li>
+<li><strong>Default Accounts (บัญชีเริ่มต้นของระบบ):</strong> บัญชีที่ติดมากับระบบปฏิบัติการ เช่น <code>Guest</code>, <code>Administrator</code> (Windows), หรือ <code>root</code> (Linux) ต้องถูกเปลี่ยนชื่อ (Rename) ปิดการใช้งาน (Disable) หรือห้ามล็อกอินผ่านรีโมตคอนโซลโดยตรง</li>
+<li><strong>Shared / Generic Accounts (บัญชีที่ใช้ร่วมกัน):</strong> บัญชีส่วนกลางที่ไม่มีเจ้าของระบุชัดเจน เช่น <code>admin</code>, <code>operator</code>, <code>temp</code> ถือเป็นข้อบกพร่องร้ายแรงทางวิชาชีพ เนื่องจากขัดต่อหลักการความรับผิดชอบเฉพาะบุคคล (Individual Accountability)</li>
+<li><strong>Service Accounts (บัญชีบริการสำหรับแอปพลิเคชัน):</strong> บัญชีที่สร้างขึ้นเพื่อให้ระบบรัน Service (เช่น <code>svc_oracle</code>, <code>svc_backup</code>) ต้อง:</li>
+</ol>
+<ul class="content-list">
+<li>ห้ามมีสิทธิ์ล็อกอินแบบ Interactive Shell หรือ Remote Desktop</li>
+<li>ต้องกำหนดสิทธิ์เฉพาะเจาะจงเท่าที่จำเป็นต่อการรันโปรเซสเท่านั้น</li>
+<li>มีการตั้งค่ารหัสผ่านที่ซับซ้อนสูงและไม่มีวันหมดอายุ หรือใช้ Managed Service Accounts (gMSA บน Windows)</li>
+</ul>
+<ol class="content-list">
+<li><strong>Privileged Accounts (บัญชีสิทธิ์ระดับสูง):</strong> บัญชีที่มีสิทธิ์ระดับ Local Administrators บน Windows หรือสมาชิกกลุ่ม <code>wheel</code> / <code>sudo</code> บน Linux ต้องมีจำนวนน้อยที่สุดเท่าที่จำเป็น และต้องล็อกอินผ่าน Jump Host หรือ PAM เสมอ</li>
+</ol>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-2-การพิสูจน์ตัวตน-authentication-controls">1.2 การพิสูจน์ตัวตน (Authentication Controls)</h3>
+<p class="content-paragraph">การพิสูจน์ตัวตนเป็นกลไกยืนยันว่าผู้ที่ขอเข้าใช้งานคือตัวจริง จุดตรวจสอบสำคัญประกอบด้วย:</p>
+<ul class="content-list">
+<li><strong>Password Policy (นโยบายรหัสผ่าน):</strong> ตรวจสอบการตั้งค่า Group Policy Object (GPO) บน Windows หรือไฟล์ <code>/etc/security/pwquality.conf</code> บน Linux:</li>
+<li>ความยาวขั้นต่ำ (Minimum Password Length): ไม่น้อยกว่า 12–14 ตัวอักษรสำหรับผู้ใช้ทั่วไป และไม่น้อยกว่า 16 ตัวอักษรสำหรับแอดมิน</li>
+<li>ความซับซ้อน (Complexity): ต้องประกอบด้วยตัวพิมพ์ใหญ่ พิมพ์เล็ก ตัวเลข และอักขระพิเศษ</li>
+<li>อายุประวัติรหัสผ่าน (Password History): ห้ามใช้รหัสผ่านซ้ำเดิมอย่างน้อย 5–10 รุ่นก่อนหน้า</li>
+<li><strong>Multi-Factor Authentication (MFA):</strong> บังคับใช้ MFA สำหรับการเข้าถึงระบบปฏิบัติการผ่านรีโมต (Remote Desktop / SSH) และการเข้าถึงจากเครือข่ายภายนอก</li>
+<li><strong>Account Lockout Threshold (การล็อกบัญชีเมื่อใส่รหัสผิด):</strong> ต้องตั้งค่าล็อกบัญชีชั่วคราวเมื่อใส่รหัสผ่านผิดเกิน 3–5 ครั้ง เพื่อป้องกันการโจมตีแบบ Brute Force หรือ Password Spraying</li>
+<li><strong>Session Timeout (การตัดเซสชันเมื่อไม่มีการใช้งาน):</strong> ต้องตั้งค่าให้ล็อกหน้าจอ (Screen Lock) อัตโนมัติเมื่อไม่มีการเคลื่อนไหวภายใน 10–15 นาที และตัดเซสชันการเชื่อมต่อรีโมตเมื่อไม่มีการใช้งาน (Idle Timeout)</li>
+<li><strong>Authentication Logging:</strong> ตรวจสอบว่าระบบเปิดบันทึกทั้งการล็อกอินสำเร็จและไม่สำเร็จ (Success & Failure Audit) เช่น Event ID 4624 (Successful Logon) และ 4625 (Failed Logon) บน Windows</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-3-การกำหนดสิทธิ์และการควบคุมการเข้าถึง-authorization-controls">1.3 การกำหนดสิทธิ์และการควบคุมการเข้าถึง (Authorization Controls)</h3>
+<p class="content-paragraph">การควบคุมสิทธิ์ต้องยึดหลัก <strong>"สิทธิ์ขั้นต่ำเท่าที่จำเป็น (Principle of Least Privilege)"</strong>:</p>
+
+<div class="figure-box" id="figure-10-2">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 10.2</div>
+    <div class="figure-title">จุดตรวจสอบสิทธิ์ในระบบปฏิบัติการ Windows และ Linux (OS Authorization Matrix)</div>
+  </div>
+  <div class="auth-matrix-grid">
+    <div class="auth-os-card win">
+      <div class="auth-os-header">
+        <span class="auth-os-badge win-badge">🪟 Windows Server</span>
+        <div class="auth-os-tech">NTFS & Active Directory Security</div>
+      </div>
+      <div class="auth-os-items">
+        <div class="auth-item">
+          <div class="auth-item-title">👥 Local Administrators Group</div>
+          <p>ตรวจสอบสมาชิกในกลุ่ม ไม่ให้มีบัญชี Domain Users ทั่วไป หรือบัญชี Vendor ค้างอยู่</p>
+        </div>
+        <div class="auth-item">
+          <div class="auth-item-title">📂 NTFS Permissions & DACL</div>
+          <p>ตรวจทานไม่ให้มีสิทธิ์ <code>Everyone: Full Control</code> และตรวจสอบการถ่ายทอดสิทธิ์ (Permission Inheritance)</p>
+        </div>
+        <div class="auth-item">
+          <div class="auth-item-title">🔑 User Rights Assignment (GPO)</div>
+          <p>ตรวจสอบสิทธิ์ <em>Log on as a service</em>, <em>Log on through Remote Desktop</em>, และ <em>Take ownership</em></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-os-card lnx">
+      <div class="auth-os-header">
+        <span class="auth-os-badge lnx-badge">🐧 Linux (RHEL / Ubuntu)</span>
+        <div class="auth-os-tech">POSIX Permissions & sudo Framework</div>
+      </div>
+      <div class="auth-os-items">
+        <div class="auth-item">
+          <div class="auth-item-title">⚡ /etc/sudoers Configuration</div>
+          <p>ระวังการกำหนดสิทธิ์ <code>NOPASSWD: ALL</code> โดยเฉพาะบัญชีแอปพลิเคชันหรือบัญชีผู้ใช้ทั่วไป</p>
+        </div>
+        <div class="auth-item">
+          <div class="auth-item-title">🔒 System File Permissions</div>
+          <p><code>/etc/passwd</code> ต้องเป็น 644 (rw-r--r--) และ <code>/etc/shadow</code> ต้องเป็น 640 หรือ 000 (root only)</p>
+        </div>
+        <div class="auth-item">
+          <div class="auth-item-title">🚀 SUID / SGID Audit</div>
+          <p>สแกนหาไบนารีที่มีบิต SUID ผิดปกติด้วยคำสั่ง <code>find / -perm -4000 -type f</code> เพื่อกันยกระดับสิทธิ์</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 10.2:</strong> จุดตรวจสิทธิ์สำคัญในระบบปฏิบัติการ Windows และ Linux สำหรับผู้ตรวจสอบความมั่นคงปลอดภัย
+  </div>
+</div>
+
+
+<div class="interactive-widget-box" id="widget-10-5">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 10.5</div>
+    <div class="widget-title">Linux File Permission & SUID Audit Calculator</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-lead">
+      เครื่องมือคำนวณและประเมินความปลอดภัยของสิทธิ์ไฟล์ระบบ Linux (POSIX File Permissions & SUID Bits) ตามเกณฑ์ CIS Benchmark:
+    </p>
+
+    <div class="perm-calc-grid">
+      <div class="perm-input-card">
+        <div style="font-weight:700; margin-bottom:0.6rem; color:var(--text-main);">เลือกไฟล์ระบบที่ต้องการตรวจสอบ:</div>
+        <div class="form-group-compact">
+          <select id="sel-perm-file" onchange="loadPresetPermFile()">
+            <option value="shadow">/etc/shadow (ฐานข้อมูลแฮชรหัสผ่าน)</option>
+            <option value="passwd">/etc/passwd (ข้อมูลบัญชีผู้ใช้งาน)</option>
+            <option value="sudoers">/etc/sudoers (สิทธิ์ผู้ดูแลระบบ)</option>
+            <option value="custom">-- ปรับแต่งสิทธิ์เอง (Custom Octal) --</option>
+          </select>
+        </div>
+
+        <div class="perm-bits-builder" style="margin-top:1rem;">
+          <div style="font-size:0.84rem; font-weight:700; margin-bottom:0.4rem;">ตั้งค่าสิทธิ์ (Octal Permission):</div>
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <input type="text" id="txt-octal-perm" value="0640" maxlength="4" style="font-family:var(--font-code); font-size:1.2rem; font-weight:700; width:90px; text-align:center; padding:0.4rem; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-surface); color:var(--text-main);" oninput="calcPermSecurity()">
+            <div style="font-size:0.8rem; color:var(--text-dim);">(เช่น 0644, 0640, 0777, 4755 SUID)</div>
+          </div>
+        </div>
+
+        <div style="margin-top:0.8rem; display:flex; gap:1rem; flex-wrap:wrap;">
+          <label style="font-size:0.82rem; display:flex; align-items:center; gap:0.3rem;">
+            <input type="checkbox" id="chk-suid" onchange="toggleSuidBit()"> SUID Bit (4000)
+          </label>
+          <label style="font-size:0.82rem; display:flex; align-items:center; gap:0.3rem;">
+            <input type="checkbox" id="chk-sgid" onchange="toggleSgidBit()"> SGID Bit (2000)
+          </label>
+        </div>
+      </div>
+
+      <div class="perm-eval-card" id="perm-eval-card">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-4-การเสริมความมั่นคงปลอดภัยระบบ-system-hardening">1.4 การเสริมความมั่นคงปลอดภัยระบบ (System Hardening)</h3>
+<p class="content-paragraph">การ Hardening คือการปิดกั้นประตูและช่องทางที่ไม่จำเป็น เพื่อลดพื้นที่การถูกโจมตี (Attack Surface Reduction) ตามมาตรฐาน CIS Benchmarks:</p>
+<ol class="content-list">
+<li><strong>Unnecessary Services & Ports:</strong> ปิดบริการที่ไม่จำเป็น เช่น Telnet, FTP, TFTP, Print Spooler (บนเซิร์ฟเวอร์ที่ไม่ใช่ Print Server), Simple TCP/IP Services</li>
+<li><strong>Default Configurations:</strong> ลบแอปพลิเคชันตัวอย่าง (Sample Apps), รหัสผ่านเริ่มต้น, ปิดฟังก์ชัน Directory Browsing</li>
+<li><strong>Secure Protocols:</strong> ปิดการใช้งานโปรโตคอลเก่าที่ไม่ปลอดภัย เช่น SMBv1, SSLv3, TLS 1.0, TLS 1.1 และบังคับใช้เฉพาะ SSHv2, TLS 1.2, TLS 1.3</li>
+<li><strong>Host-based Firewall:</strong> ตรวจสอบว่า Windows Defender Firewall หรือ Linux iptables/ufw/firewalld มีสถานะ <strong>Active / Enabled</strong> และไม่อนุญาตให้เปิดรับพอร์ตแบบเปิดกว้าง (Inbound Any)</li>
+<li><strong>Anti-malware & Endpoint Protection (EDR):</strong> เครื่องแม่ข่ายต้องติดตั้งระบบป้องกันไวรัสและภัยคุกคาม มีการอัปเดต Signature สม่ำเสมอ และมีการตั้งค่า Real-time Protection เปิดใช้งานอยู่เสมอ</li>
+</ol>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-5-การบริหารจัดการแพตช์-patch-management">1.5 การบริหารจัดการแพตช์ (Patch Management)</h3>
+
+<div class="interactive-widget-box" id="widget-10-1">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 10.1</div>
+    <div class="widget-title">OS CIS Benchmark & Security Hardening Inspector</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-lead">
+      จำลองการตรวจสอบการตั้งค่าความมั่นคงปลอดภัยของเครื่องแม่ข่ายตาม 6 แกนหลักของ CIS Benchmarks เลือกระบบเซิร์ฟเวอร์เป้าหมายเพื่อตรวจทานจุดบกพร่องและคำนวณ <strong>Hardening Score</strong>:
+    </p>
+
+    <div class="widget-controls-bar">
+      <div class="os-selector-group">
+        <button class="btn-os-tab active" id="btn-os-win" onclick="selectOsTarget('win')">🪟 Windows Server (REG-APP-01)</button>
+        <button class="btn-os-tab" id="btn-os-lnx" onclick="selectOsTarget('lnx')">🐧 RHEL Linux 8 (REG-DB-01)</button>
+      </div>
+    </div>
+
+    <div class="os-audit-checklist" id="os-checklist-container">
+      <!-- Populated via JS -->
+    </div>
+
+    <div class="widget-result-summary" id="os-audit-summary">
+      <!-- Populated via JS -->
+    </div>
+  </div>
+</div>
+
+<p class="content-paragraph">การละเลยการปะแพตช์เป็นสาเหตุอันดับ 1 ของการถูกโจมตีทางไซเบอร์ในระดับระบบปฏิบัติการ:</p>
+<ul class="content-list">
+<li><strong>Patch Level & Cadence:</strong> ตรวจสอบรอบเวลาการติดตั้งแพตช์ความมั่นคงปลอดภัย (Security Updates) ของระบบปฏิบัติการ โดยเปรียบเทียบ OS Build / Kernel Version กับประกาศของ Vendor</li>
+<li><strong>Unsupported Software (End-of-Life: EOL):</strong> ระบบปฏิบัติการที่หมดอายุการสนับสนุนจากผู้ผลิต (เช่น Windows Server 2008, Windows Server 2012, CentOS 7, Ubuntu 18.04) จะไม่ได้รับแพตช์ความปลอดภัยอีกต่อไป <strong>ถือเป็นความเสี่ยงระดับวิกฤต</strong></li>
+<li><strong>Critical & High Patch Timelines:</strong> เกณฑ์มาตรฐานสากลและประกาศ กกม. กำหนดให้ต้องติดตั้งแพตช์สำหรับช่องโหว่ระดับ Critical (CVSS 9.0–10.0) ภายใน <strong>7–14 วัน</strong> และระดับ High ภายใน <strong>30 วัน</strong></li>
+<li><strong>Patch Exceptions & Compensating Controls:</strong> หากเซิร์ฟเวอร์ไม่สามารถลงแพตช์ได้เนื่องจากปัญหาความเข้ากันได้ของซอฟต์แวร์ (Compatibility Issue) องค์กรต้องมี <strong>"แบบฟอร์มขออนุมัติยกเว้น (Exception Request)"</strong> ที่ผู้บริหารลงนาม และต้องมี <strong>มาตรการชดเชย (Compensating Controls)</strong> เช่น ย้ายเซิร์ฟเวอร์ไปอยู่ใน Isolated VLAN และเปิดใช้ Virtual Patching บนไฟร์วอลล์</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="1-6-การบันทึกเหตุการณ์และการตรวจสอบ-audit-logging">1.6 การบันทึกเหตุการณ์และการตรวจสอบ (Audit Logging)</h3>
+<p class="content-paragraph">การตั้งค่านโยบายการบันทึก Log ต้องเพียงพอต่อการสืบสวนคดีความมั่นคงปลอดภัย:</p>
+<ul class="content-list">
+<li><strong>Windows Event Audit Policies:</strong> ตรวจสอบการเปิดใช้งาน Advanced Audit Policy Configuration:</li>
+<li>Logon / Logoff Events (Success & Failure)</li>
+<li>Account Management Events (สร้าง, ลบ, แก้ไขสิทธิ์ผู้ใช้)</li>
+<li>Privilege Use (การเรียกใช้สิทธิ์พิเศษ)</li>
+<li>Object Access (การเข้าถึงโฟลเดอร์ลับ)</li>
+<li>Policy Change (การเปลี่ยนแปลงนโยบายความปลอดภัย)</li>
+<li><strong>Linux Logging & Audit Framework:</strong></li>
+<li>ตรวจสอบการทำงานของ <code>rsyslog</code> / <code>systemd-journald</code></li>
+<li>ตรวจสอบการติดตั้งและการตั้งค่า <strong><code>auditd</code></strong> ในไฟล์ <code>/etc/audit/audit.rules</code> เพื่อเฝ้าระวังการแก้ไขไฟล์ระบบ (<code>/etc/passwd</code>, <code>/etc/shadow</code>) และการเรียกใช้คำสั่งระดับสิทธิ์สูง</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-2-การตรวจสอบโครงสร้างพื้นฐานเครือข่าย-network-infrastructure-audit">
+            <h2 class="section-heading">ส่วนที่ 2: การตรวจสอบโครงสร้างพื้นฐานเครือข่าย (Network Infrastructure Audit)</h2>
+          </section>
+        
+<p class="content-paragraph">เครือข่ายคือเส้นทางลำเลียงข้อมูล การตรวจสอบเครือข่ายต้องครอบคลุมทั้งเอกสารเชิงสถาปัตยกรรม การแบ่งแยกโซน การตรวจกฎไฟร์วอลล์ การเชื่อมต่อทางไกล และระบบไร้สาย:</p>
+
+<div class="figure-box" id="figure-10-3">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 10.3</div>
+    <div class="figure-title">6 ประเด็นสำคัญของการตรวจสอบโครงสร้างพื้นฐานเครือข่าย (Network Infrastructure Audit)</div>
+  </div>
+  <div class="net-six-grid">
+    <div class="net-card">
+      <div class="net-icon">🗺️</div>
+      <div class="net-title">1. ผังเครือข่าย (Network Documentation)</div>
+      <p>Logical Diagram, Physical Diagram, Data Flow (DFD), Subnet & VLAN Allocation Plan ที่เป็นปัจจุบัน</p>
+    </div>
+    <div class="net-card">
+      <div class="net-icon">🧱</div>
+      <div class="net-title">2. การแบ่งแยกโซน (Network Segmentation)</div>
+      <p>แยกโซน User, Server, Management (OOBM), DMZ, Guest Wi-Fi และแยกเด็ดขาดระหว่าง Dev กับ Prod</p>
+    </div>
+    <div class="net-card">
+      <div class="net-icon">🛡️</div>
+      <div class="net-title">3. กฎไฟร์วอลล์ (Firewall Rules Audit)</div>
+      <p>กำจัด Any-to-Any, ระบุ Justification & Rule Owner, กำหนด Expiry Date และบังคับเปิดบันทึก Log</p>
+    </div>
+    <div class="net-card">
+      <div class="net-icon">🔐</div>
+      <div class="net-title">4. การเข้าถึงระยะไกล (Remote Access / VPN)</div>
+      <p>SSL-VPN / IPsec เข้ารหัส AES-256, บังคับใช้ MFA ทุกบัญชี, เข้าผ่าน Jump Host, ปิดบัญชี Vendor โดยค่าเริ่มต้น</p>
+    </div>
+    <div class="net-card">
+      <div class="net-icon">⚙️</div>
+      <div class="net-title">5. การบริหารอุปกรณ์ (Device Management)</div>
+      <p>ปิด Telnet / HTTP, ใช้ SSHv2 / HTTPS / SNMPv3, ซิงก์ NTP เดียวกัน, สำรองคอนฟิก และต่อ TACACS+/RADIUS</p>
+    </div>
+    <div class="net-card">
+      <div class="net-icon">📡</div>
+      <div class="net-title">6. ความมั่นคงปลอดภัยไร้สาย (Wireless Security)</div>
+      <p>WPA3-Enterprise หรือ 802.1X, แยก Guest Wi-Fi ด้วย Captive Portal & Client Isolation, เฝ้าระวัง Rogue AP</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 10.3:</strong> 6 ประเด็นสำคัญในการตรวจประเมินสถาปัตยกรรมและอุปกรณ์เครือข่ายระดับองค์กร
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-1-เอกสารและสถาปัตยกรรมเครือข่าย-network-documentation">2.1 เอกสารและสถาปัตยกรรมเครือข่าย (Network Documentation)</h3>
+<p class="content-paragraph">ผู้ตรวจสอบต้องร้องขอและตรวจสอบเอกสารสถาปัตยกรรมเครือข่าย 4 ชุดหลัก:</p>
+<ol class="content-list">
+<li><strong>Logical Network Diagram (ผังเครือข่ายเชิงตรรกะ):</strong> แสดงการแบ่งแยก Subnet, VLAN, IP Range, Default Gateway, และอุปกรณ์ความปลอดภัย (Firewall, IPS, WAF)</li>
+<li><strong>Physical Network Diagram (ผังเครือข่ายเชิงกายภาพ):</strong> แสดงตำแหน่งตู้ Rack, การเชื่อมต่อสายสัญญาณ (Cabling), พอร์ตเชื่อมต่อของสวิตช์และเราเตอร์ใน Data Center</li>
+<li><strong>Data Flow Diagram (ผังการไหลของข้อมูล - DFD):</strong> แสดงเส้นทางการเดินทางของข้อมูลสำคัญ เช่น การไหลของข้อมูลบัตรเครดิต หรือข้อมูลทะเบียนนักศึกษา จากภายนอกผ่าน DMZ สู่ฐานข้อมูลภายใน</li>
+<li><strong>IP Address & VLAN Allocation Plan:</strong> ตารางบันทึกการจัดสรรหมายเลข IP Address เพื่อยืนยันว่าไม่มีการใช้ IP ชนกัน และมีการกำหนดโซนอย่างมีระเบียบ</li>
+</ol>
+<div class="callout-alert callout-caution"><div class="callout-title">CAUTION</div>
+<blockquote class="content-blockquote"><strong>Audit Red Flag:</strong> หากองค์กรไม่มีผังเครือข่ายที่เป็นปัจจุบัน หรือผังเครือข่ายจัดทำขึ้นเมื่อ 3 ปีก่อนโดยไม่มีการอัปเดต ถือเป็น <strong>ข้อบกพร่องด้านการกำกับดูแล (Governance Finding)</strong> เนื่องจากองค์กรไม่สามารถควบคุมขอบเขตความมั่นคงปลอดภัยของตนเองได้</blockquote>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-2-การแบ่งแยกโซนเครือข่าย-network-segmentation">2.2 การแบ่งแยกโซนเครือข่าย (Network Segmentation)</h3>
+<p class="content-paragraph">ตามมาตรฐาน ISO/IEC 27001 (Control A.8.22) และ NIST CSF องค์กรต้องแบ่งเครือข่ายออกเป็นส่วนย่อยตามระดับความไว้วางใจและความสำคัญ:</p>
+
+<div class="figure-box" id="figure-10-4">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 10.4</div>
+    <div class="figure-title">สถาปัตยกรรมเครือข่ายระดับองค์กรและการแบ่งโซน (Enterprise 3-Tier Network Segmentation)</div>
+  </div>
+  <div class="arch-canvas">
+    <!-- Internet -->
+    <div class="arch-tier untrusted">
+      <div class="arch-tier-label">🌐 UNTRUSTED ZONE (Internet)</div>
+      <div class="arch-tier-content">
+        <span class="arch-badge">Public Traffic</span>
+        <span class="arch-badge">Remote Users</span>
+        <span class="arch-badge">External Attackers</span>
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div class="arch-flow-arrow">⬇ Traffic Inspection (Inbound Filter)</div>
+
+    <!-- Edge FW -->
+    <div class="arch-device-bar edge-fw">
+      🛡️ EDGE FIREWALL (Next-Gen Firewall / WAF / DDoS Protection)
+    </div>
+
+    <!-- Mid Tier: DMZ / User / Guest -->
+    <div class="arch-mid-grid">
+      <div class="arch-zone dmz">
+        <div class="arch-zone-title">1. DMZ ZONE (VLAN 50)</div>
+        <div class="arch-zone-items">
+          <div>• Web Portal (Reverse Proxy)</div>
+          <div>• Public DNS / Mail Gateway</div>
+          <div>• SSL-VPN Gateway (MFA)</div>
+        </div>
+      </div>
+
+      <div class="arch-zone user-zone">
+        <div class="arch-zone-title">2. USER LAN (VLAN 10-20)</div>
+        <div class="arch-zone-items">
+          <div>• พนักงานสำนักงานทั่วไป</div>
+          <div>• Workstations & Laptops</div>
+          <div>• ห้ามเข้า Server โดยตรง</div>
+        </div>
+      </div>
+
+      <div class="arch-zone guest-wifi">
+        <div class="arch-zone-title">3. GUEST WI-FI (VLAN 99)</div>
+        <div class="arch-zone-items">
+          <div>• ผู้มาติดต่อ / นักศึกษาทั่วไป</div>
+          <div>• ออกเฉพาะ Internet เท่านั้น</div>
+          <div>• Client Isolation ห้ามคุยข้าม</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div class="arch-flow-arrow">⬇ Deep Packet Inspection & Internal Segmentation</div>
+
+    <!-- Core FW -->
+    <div class="arch-device-bar core-fw">
+      🛡️ CORE FIREWALL (Internal Segmentation Firewall / Zero Trust Enforcement)
+    </div>
+
+    <!-- Bottom Tier: Server / Mgmt -->
+    <div class="arch-bottom-grid">
+      <div class="arch-zone srv-prod">
+        <div class="arch-zone-title">4. PRODUCTION SERVER ZONE (VLAN 100)</div>
+        <div class="arch-zone-items">
+          <div>• Application Servers (REG-APP-01)</div>
+          <div>• Production Database (REG-DB-01)</div>
+          <div>• ห้ามอยู่ใน Subnet เดียวกับ Dev/Test!</div>
+        </div>
+      </div>
+
+      <div class="arch-zone mgmt-zone">
+        <div class="arch-zone-title">5. MANAGEMENT ZONE (OOBM VLAN 254)</div>
+        <div class="arch-zone-items">
+          <div>• Out-of-Band Hardware (iLO, iDRAC)</div>
+          <div>• Switch & Router Consoles</div>
+          <div>• เข้าถึงได้ผ่าน Bastion / Jump Host เท่านั้น</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 10.4:</strong> ผังโครงสร้างการแบ่งโซนเครือข่าย 3-Tier Enterprise Network พร้อมการแยกส่วน Production และ Management Out-of-Band
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="กฎเหล็กด้านการแบ่งโซนที่ต้องตรวจสอบ">กฎเหล็กด้านการแบ่งโซนที่ต้องตรวจสอบ:</h4>
+<ul class="content-list">
+<li><strong>Development vs Production Segregation:</strong> เครือข่ายสำหรับนักพัฒนาและทดสอบ (Dev / UAT) ต้องแยกขาดจากเครือข่ายใช้งานจริง (Production) ทางกายภาพหรือผ่านไฟร์วอลล์ ห้ามมิให้เครื่อง Dev เข้าถึงฐานข้อมูล Production ได้โดยตรง</li>
+<li><strong>Management Zone Isolation:</strong> พอร์ตบริหารจัดการอุปกรณ์เครือข่าย (Console, SSH, iLO, iDRAC) ต้องจำกัดให้อยู่ใน Management VLAN ที่เข้าถึงได้เฉพาะจาก Jump Host ที่กำหนดเท่านั้น</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-3-การตรวจสอบกฎไฟร์วอลล์-firewall-audit-8-จุดตรวจสำคัญ">2.3 การตรวจสอบกฎไฟร์วอลล์ (Firewall Audit: 8 จุดตรวจสำคัญ)</h3>
+
+<div class="interactive-widget-box" id="widget-10-2">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 10.2</div>
+    <div class="widget-title">Network Segmentation & Firewall Rule Evaluator (8 จุดตรวจสำคัญ)</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-lead">
+      ทดสอบส่งแพ็กเก็ตทราฟฟิกจำลองเข้าสู่ระบบเครือข่าย เพื่อประเมินว่ากฎไฟร์วอลล์และสถาปัตยกรรมการแบ่งโซนมีความปลอดภัย หรือมีช่องโหว่ร้ายแรงตาม <strong>8 จุดตรวจสำคัญ</strong>:
+    </p>
+
+    <div class="fw-evaluator-grid">
+      <div class="fw-eval-input-card">
+        <div style="font-weight:700; margin-bottom:0.6rem; color:var(--text-main);">จำลองการส่งข้อมูล (Traffic Simulation):</div>
+        <div class="form-group-compact">
+          <label>โซนต้นทาง (Source Zone):</label>
+          <select id="sim-fw-src" onchange="evaluateFwTraffic()">
+            <option value="internet">Internet (Untrusted Public)</option>
+            <option value="vendor">Vendor External IP (203.113.x.x)</option>
+            <option value="user_lan">User LAN (Office VLAN 10)</option>
+            <option value="guest_wifi">Guest Wi-Fi (VLAN 99)</option>
+            <option value="dev_zone">Development Subnet (192.168.10.0)</option>
+          </select>
+        </div>
+
+        <div class="form-group-compact">
+          <label>โซนปลายทาง (Destination Zone):</label>
+          <select id="sim-fw-dst" onchange="evaluateFwTraffic()">
+            <option value="internal_host">Internal Host (192.168.10.15)</option>
+            <option value="prod_db">Production DB (192.168.10.20)</option>
+            <option value="dmz_web">DMZ Web Portal (10.0.1.50)</option>
+            <option value="mgmt_ilo">Server Management (iLO Port)</option>
+          </select>
+        </div>
+
+        <div class="form-group-compact">
+          <label>พอร์ต / โปรโตคอล (Port & Protocol):</label>
+          <select id="sim-fw-port" onchange="evaluateFwTraffic()">
+            <option value="rdp">TCP 3389 (RDP - Remote Desktop)</option>
+            <option value="oracle">TCP 1521 (Oracle DB Listener)</option>
+            <option value="https">TCP 443 (HTTPS Web)</option>
+            <option value="any">Any / All Ports (Any-to-Any)</option>
+            <option value="ssh">TCP 22 (SSH Remote Shell)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fw-eval-result-card" id="fw-eval-result-card">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="content-paragraph">ไฟร์วอลล์คือหัวใจของการคัดกรองข้อมูล ผู้ตรวจสอบต้องนำตารางกฎไฟร์วอลล์ (Rulebase Export) มาตรวจสอบอย่างละเอียดตาม <strong>8 จุดตรวจสำคัญ</strong>:</p>
+<ol class="content-list">
+<li><strong>Rule Owner & Business Justification:</strong> ทุกกฎที่เปิดรับส่งข้อมูล ต้องมีระบุชื่อเจ้าของคำขอ (Requester) และเหตุผลทางธุรกิจที่จำเป็น</li>
+<li><strong>Approval Process:</strong> ต้องมีบันทึกการอนุมัติคำขอเปลี่ยนแปลง (Change Request Ticket) ผ่านการอนุมัติจากผู้มีอำนาจ</li>
+<li><strong>Specific Source & Destination:</strong> กฎที่ดีต้องระบุ IP ต้นทางและปลายทางอย่างเจาะจง ห้ามใช้ <code>Source: Any</code> หรือ <code>Destination: Any</code> ในโซนที่มีความเสี่ยงสูง</li>
+<li><strong>Specific Service & Port:</strong> ต้องระบุพอร์ตและโปรโตคอลที่จำเป็นอย่างเจาะจง เช่น TCP 443 ห้ามใช้ <code>Service: Any</code></li>
+<li><strong>Rule Expiry Date:</strong> กฎที่เปิดเพื่อการทดสอบชั่วคราวหรือเปิดให้คู่ค้าภายนอกทำงาน ต้องกำหนดวันหมดอายุของกฎ (Expiry Date) ไว้อย่างชัดเจน</li>
+<li><strong>The "Any-to-Any" Danger:</strong> การตรวจพบกฎ <code>Source: Any -> Dest: Any -> Service: Any -> Action: Permit</code> บนไฟร์วอลล์ ถือเป็นข้อค้นพบวิกฤต (Critical Finding) เว้นแต่จะเป็นกฎบล็อกปลายทาง (Clean-up Rule / Implicit Deny)</li>
+<li><strong>Obsolete & Redundant Rules:</strong> กฎที่เชื่อมโยงไปยัง IP ปลายทางที่ปลดระวางแล้ว หรือกฎที่ไม่มี Traffic วิ่งผ่านเลยในรอบ 6–12 เดือน (Zero Hit Count) ต้องถูกทบทวนและลบออก</li>
+<li><strong>Logging Enabled:</strong> ทุกกฎอนุญาตและกฎปฏิเสธ ต้องมีการเปิดการบันทึก Log (Log at Session End) และส่งไปยังศูนย์รวม Log (SIEM)</li>
+</ol>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-4-การเข้าถึงจากระยะไกล-remote-access-security">2.4 การเข้าถึงจากระยะไกล (Remote Access Security)</h3>
+<p class="content-paragraph">การทำงานแบบ Work from Home และการจ้างผู้พัฒนาภายนอก ทำให้การเข้าถึงระยะไกลกลายเป็นเป้าหมายหลักของผู้โจมตี:</p>
+<ul class="content-list">
+<li><strong>VPN Architecture & Encryption:</strong> ต้องใช้เทคโนโลยี VPN ที่ได้มาตรฐานความปลอดภัย (IPsec หรือ SSL-VPN) ที่ใช้การเข้ารหัสแข็งแกร่ง (AES-256) และปิดการใช้งานโหมดเก่าที่ไม่ปลอดภัย (เช่น PPTP หรือ L2TP ที่ไม่เข้ารหัส)</li>
+<li><strong>Mandatory Multi-Factor Authentication (MFA):</strong> บัญชีผู้ใช้งาน VPN ทุกบัญชี <strong>ต้องถูกบังคับใช้ MFA เสมอ</strong> การอนุญาตให้ใช้เฉพาะ Username/Password เข้า VPN ถือเป็นข้อบกพร่องระดับสำคัญ (Major Non-conformity)</li>
+<li><strong>Administrative Access via Jump Host:</strong> ผู้ดูแลระบบที่ล็อกอินจากระยะไกล ห้ามเข้าถึงเซิร์ฟเวอร์ปลายทางโดยตรง ต้องเชื่อมต่อผ่าน Jump Host / Bastion Host ที่มีการบันทึกภาพหน้าจอและคำสั่ง (Session Recording)</li>
+<li><strong>Third-Party / Vendor Connections:</strong> บัญชี VPN สำหรับผู้ให้บริการภายนอก (Outsourced Vendors) ต้องถูกตั้งค่าเป็น <strong>Disabled โดยค่าเริ่มต้น</strong> และเปิดใช้งานเฉพาะเมื่อมีการแจ้งขอเข้าปฏิบัติงานเป็นลายลักษณ์อักษร พร้อมทั้งกำหนดเวลาปิดอัตโนมัติ</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-5-การบริหารจัดการอุปกรณ์เครือข่าย-network-device-management">2.5 การบริหารจัดการอุปกรณ์เครือข่าย (Network Device Management)</h3>
+<p class="content-paragraph">สวิตช์ เราเตอร์ และไฟร์วอลล์ ต้องได้รับการดูแลรักษาความปลอดภัยอย่างเข้มงวด:</p>
+<ul class="content-list">
+<li><strong>Secure Management Protocols:</strong> ต้องปิดการใช้งาน Telnet, HTTP, และ SNMPv1/v2c (ซึ่งส่ง Community String แบบ Plaintext) และบังคับใช้เฉพาะ <strong>SSHv2, HTTPS, และ SNMPv3</strong> (ที่มีการพิสูจน์ตัวตนและเข้ารหัส)</li>
+<li><strong>Configuration Backup & Testing:</strong> ต้องมีการสำรองไฟล์การตั้งค่า (Running Configuration) ของอุปกรณ์เครือข่ายทุกตัวเป็นประจำ และจัดเก็บในที่ปลอดภัยพร้อมเข้ารหัส ตลอดจนมีการทดสอบกู้คืน</li>
+<li><strong>Centralized Authentication:</strong> ต้องไม่อาศัย Local Account บนอุปกรณ์เครือข่ายเป็นหลัก แต่ต้องเชื่อมต่อกับระบบควบคุมตัวตนกลาง เช่น <strong>TACACS+ หรือ RADIUS</strong> เพื่อให้ทราบตัวตนของผู้ที่ล็อกอินเข้าพิมพ์คำสั่งบนสวิตช์ได้อย่างแม่นยำ</li>
+<li><strong>Firmware Updates:</strong> ตรวจสอบประวัติการอัปเกรด Firmware ของอุปกรณ์เครือข่าย เพื่อป้องกันช่องโหว่ประเภท Remote Code Execution (RCE)</li>
+<li><strong>NTP Synchronization:</strong> อุปกรณ์เครือข่ายทุกชิ้นต้องตั้งค่าให้ซิงก์เวลากับเครื่องแม่ข่ายเวลามาตรฐาน (NTP Server) เดียวกัน เพื่อให้ Timestamp ของ Log สามารถนำมาสอบทานยันกันได้อย่างถูกต้อง</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="2-6-ความมั่นคงปลอดภัยของเครือข่ายไร้สาย-wireless-security">2.6 ความมั่นคงปลอดภัยของเครือข่ายไร้สาย (Wireless Security)</h3>
+<p class="content-paragraph">สัญญาณ Wi-Fi กระจายทะลุกำแพงอาคาร ทำให้ผู้โจมตีสามารถดักรับข้อมูลได้จากระยะไกล:</p>
+<ul class="content-list">
+<li><strong>Enterprise Authentication:</strong> เครือข่ายไร้สายสำหรับบุคลากรภายในองค์กร ต้องใช้มาตรฐาน <strong>WPA3-Enterprise หรือ WPA2-Enterprise (802.1X EAP-TLS / PEAP)</strong> ที่ผูกกับบัญชีผู้ใช้รายบุคคล ห้ามใช้รหัสผ่านชุดเดียวกันทั้งองค์กร (Pre-Shared Key: WPA2-Personal) บนเครือข่ายระดับองค์กร</li>
+<li><strong>Guest Wi-Fi Isolation:</strong> เครือข่าย Wi-Fi สำหรับผู้มาติดต่อ (Guest) ต้องแยก VLAN ออกจากเครือข่ายภายในอย่างเด็ดขาด มีระบบลงทะเบียนตัวตน (Captive Portal) ตาม พ.ร.บ.คอมพิวเตอร์ฯ และจำกัดให้ใช้งานได้เฉพาะการออกสู่ Internet เท่านั้น (ห้ามคุยข้ามเครื่องใน Subnet เดียวกัน - Client Isolation)</li>
+<li><strong>Rogue AP Monitoring:</strong> ต้องมีมาตรการเฝ้าระวังจุดเชื่อมต่อสัญญาณแปลกปลอม (Rogue Access Points) หรืออุปกรณ์พกพาที่พนักงานแอบนำมาเสียบเพื่อปล่อย Wi-Fi เอง</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-3-ระเบียบวิธีปฏิบัติวิชาชีพ-การแยก-configuration-issue-ออกจาก-audit-finding">
+            <h2 class="section-heading">ส่วนที่ 3: ระเบียบวิธีปฏิบัติวิชาชีพ: "การแยก Configuration Issue ออกจาก Audit Finding"</h2>
+          </section>
+        
+<p class="content-paragraph">หนึ่งในข้อผิดพลาดที่ร้ายแรงที่สุดของนักศึกษาและผู้ตรวจสอบมือใหม่ คือการ <strong>"นำปัญหาการตั้งค่าทางเทคนิค (Configuration Issue) มาเขียนเป็นข้อค้นพบการตรวจ (Audit Finding) ทันทีโดยไม่มีเกณฑ์อ้างอิง"</strong></p>
+<h3 class="subsection-heading" id="3-1-ตารางเปรียบเทียบเชิงวิเคราะห์">3.1 ตารางเปรียบเทียบเชิงวิเคราะห์</h3>
+
+<div class="figure-box" id="figure-10-5">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 10.5</div>
+    <div class="figure-title">เปรียบเทียบ Configuration Issue กับ Audit Finding (Technical Issue vs Governance Finding)</div>
+  </div>
+  <div class="compare-table-wrapper">
+    <table class="content-table compare-table">
+      <thead>
+        <tr>
+          <th style="width:20%;">มิติการวิเคราะห์</th>
+          <th style="width:40%;">Configuration Issue (ปัญหาเชิงเทคนิค)</th>
+          <th style="width:40%;">Audit Finding (ข้อค้นพบการตรวจประเมิน)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>คำนิยาม (Definition)</strong></td>
+          <td>ข้อบกพร่องในการตั้งค่าระบบที่ไม่ตรงตาม Best Practice หรือคู่มือผู้ผลิต</td>
+          <td>ข้อสรุปเชิงประเมินที่แสดงความไม่สอดคล้องระหว่างสภาพจริง (Condition) กับเกณฑ์ (Criteria) อย่างมีหลักฐาน</td>
+        </tr>
+        <tr>
+          <td><strong>มุมมอง (Perspective)</strong></td>
+          <td>มุมมองของ SysAdmin หรือ Pentester ที่เน้นหาช่องทางและซ่อมจุดอ่อนทางเทคนิค</td>
+          <td>มุมมองของผู้ตรวจสอบและผู้กำกับดูแล เน้นการควบคุมภายในและการบริหารความเสี่ยงองค์กร</td>
+        </tr>
+        <tr>
+          <td><strong>ตัวอย่าง (Example)</strong></td>
+          <td><em>"ตรวจพบพอร์ต Telnet (TCP 23) เปิดใช้งานอยู่บนเซิร์ฟเวอร์"</em></td>
+          <td><em>"เซิร์ฟเวอร์เปิดใช้งาน Telnet ซึ่งขัดต่อนโยบายความปลอดภัย ข้อ 3.2 และ ISO 27001 A.8.20 ส่งผลให้ข้อมูลรหัสผ่านเสี่ยงต่อการถูกดักรับ (MitM)"</em></td>
+        </tr>
+        <tr>
+          <td><strong>ผลลัพธ์ทางวิชาชีพ (Outcome)</strong></td>
+          <td>ผู้รับการตรวจอาจโต้แย้งว่า "ระบบจำเป็นต้องใช้" และปัดตกข้อสังเกตได้ง่าย</td>
+          <td>ชี้ชัดผลกระทบต่อภารกิจ มีน้ำหนักทางกฎหมายและนโยบาย บังคับให้ผู้บริหารต้องสั่งการแก้ไข</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 10.5:</strong> การยกระดับปัญหาการตั้งค่าหลุดทางเทคนิคให้กลายเป็นข้อค้นพบการตรวจสอบที่ทรงพลังทางวิชาชีพ
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="subsection-heading" id="3-2-กายวิภาค-4-องค์ประกอบของข้อค้นพบการตรวจ-the-4-elements-of-an-audit-finding">3.2 กายวิภาค 4 องค์ประกอบของข้อค้นพบการตรวจ (The 4 Elements of an Audit Finding)</h3>
+
+<div class="interactive-widget-box" id="widget-10-3">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 10.3</div>
+    <div class="widget-title">"Configuration Issue vs Audit Finding" Transformer (4 Elements Builder)</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-lead">
+      ฝึกฝนการเปลี่ยนปัญหาการตั้งค่าหลุดทางเทคนิค (Configuration Issue) ให้กลายเป็น <strong>Audit Finding ฉบับสมบูรณ์</strong> ตามโครงสร้าง 4 องค์ประกอบมาตรฐานสากล:
+    </p>
+
+    <div class="builder-select-bar">
+      <label><strong>เลือกปัญหาทางเทคนิคที่ตรวจพบ:</strong></label>
+      <select id="sel-config-issue" onchange="transformFinding()">
+        <option value="rdp_internet">พบกฎไฟร์วอลล์เปิดพอร์ต RDP (3389) ตรงจาก Internet สู่ภายใน</option>
+        <option value="eol_os">เซิร์ฟเวอร์ยังคงรันบน Windows Server 2012 R2 (End-of-Life)</option>
+        <option value="vendor_no_mfa">บัญชี VPN ของ Vendor ใช้เพียงรหัสผ่านธรรมดา โดยไม่มี MFA</option>
+        <option value="sudoers_nopasswd">ไฟล์ /etc/sudoers กำหนดสิทธิ์ NOPASSWD: ALL ให้บัญชีแอปพลิเคชัน</option>
+        <option value="dev_prod_shared">เซิร์ฟเวอร์ฐานข้อมูล Production อยู่ Subnet เดียวกับเครื่อง Dev/Test</option>
+      </select>
+    </div>
+
+    <div class="finding-builder-display" id="finding-builder-display">
+      <!-- Populated via JS -->
+    </div>
+  </div>
+</div>
+
+
+<div class="figure-box" id="figure-10-12">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 10.12</div>
+    <div class="figure-title">แผนผังกระบวนการตัดสินใจยกระดับข้อค้นพบ (Audit Finding Formulation Decision Tree)</div>
+  </div>
+  <div class="decision-tree-canvas">
+    <div class="dt-step step1">
+      <div class="dt-step-tag">STEP 1: DETECT</div>
+      <div class="dt-step-title">ตรวจพบปัญหาการตั้งค่าทางเทคนิค (Condition)</div>
+      <div class="dt-step-desc">เช่น พอร์ตเปิดอยู่, รหัสผ่านสั้น, ขาดแพตช์, คอนฟิกหลุดจาก Best Practice</div>
+    </div>
+
+    <div class="dt-arrow">⬇ มีหลักฐานอ้างอิงและเกณฑ์รองรับหรือไม่?</div>
+
+    <div class="dt-decision-grid">
+      <div class="dt-branch no-criteria">
+        <div class="dt-branch-badge warning">ไม่มีเกณฑ์ (No Criteria / No Policy)</div>
+        <div class="dt-branch-title">บันทึกเป็นข้อสังเกต (Observation / OFI)</div>
+        <p>ห้ามออกใบ NCR! ให้เสนอแนะต่อผู้บริหารว่าควรจัดทำหรือปรับปรุงนโยบายความมั่นคงปลอดภัยในเรื่องนี้</p>
+      </div>
+
+      <div class="dt-branch has-criteria">
+        <div class="dt-branch-badge pass">มีเกณฑ์ (Criteria Exists: ISO/กกม./นโยบาย)</div>
+        <div class="dt-branch-title">ยกระดับเป็นข้อค้นพบ (Audit Finding)</div>
+        <p>วิเคราะห์หาสาเหตุที่แท้จริง (Root Cause) และชี้ชัดผลกระทบต่อภารกิจองค์กร (Impact / Effect)</p>
+        <div class="dt-sub-classify">
+          <span class="sub-badge crit">Critical / Major NCR: ขาดการควบคุมวิกฤต</span>
+          <span class="sub-badge minor">Minor NCR: ข้อบกพร่องเฉพาะจุด</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 10.12:</strong> แผนผังการตัดสินใจเพื่อจำแนกและยกระดับปัญหาทางเทคนิคสู่ข้อค้นพบตามมาตรฐานวิชาชีพ
+  </div>
+</div>
+
+<p class="content-paragraph">เพื่อให้ข้อค้นพบมีความสมบูรณ์ทางวิชาชีพและไม่สามารถถูกโต้แย้งได้ ผู้ตรวจสอบต้องเขียนให้ครบ <strong>4 องค์ประกอบ</strong>:</p>
+
+<div class="figure-box" id="figure-10-6">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 10.6</div>
+    <div class="figure-title">กายวิภาค 4 องค์ประกอบมาตรฐานของข้อค้นพบการตรวจ (The 4 Elements of an Audit Finding)</div>
+  </div>
+  <div class="elements-4-grid">
+    <div class="elem-card">
+      <div class="elem-badge">01 // CONDITION</div>
+      <div class="elem-title">สภาพที่ตรวจพบ (Condition)</div>
+      <div class="elem-desc">
+        ข้อเท็จจริงเชิงประจักษ์ที่ค้นพบในระหว่างการตรวจ พร้อมหลักฐานสนับสนุนที่ยืนยันได้ (What is)
+      </div>
+      <div class="elem-example">
+        <strong>ตัวอย่าง:</strong> พบกฎไฟร์วอลล์ FW-02 เปิดพอร์ต RDP (TCP 3389) ตรงจาก Internet สู่เซิร์ฟเวอร์ภายใน
+      </div>
+    </div>
+
+    <div class="elem-card">
+      <div class="elem-badge">02 // CRITERIA</div>
+      <div class="elem-title">เกณฑ์อ้างอิง (Criteria)</div>
+      <div class="elem-desc">
+        มาตรฐาน กฎหมาย นโยบาย หรือข้อตกลงสัญญาที่ใช้วัดความถูกต้อง (What should be)
+      </div>
+      <div class="elem-example">
+        <strong>ตัวอย่าง:</strong> นโยบายความมั่นคงปลอดภัยสารสนเทศ หมวด 6 ข้อ 6.1 และ ISO/IEC 27001 Control A.8.20
+      </div>
+    </div>
+
+    <div class="elem-card">
+      <div class="elem-badge">03 // CAUSE</div>
+      <div class="elem-title">สาเหตุที่เกิด (Cause)</div>
+      <div class="elem-desc">
+        รากเหง้าของปัญหา (Root Cause) ว่าทำไมจึงเกิดสภาพความไม่สอดคล้องนี้ขึ้น (Why did it happen)
+      </div>
+      <div class="elem-example">
+        <strong>ตัวอย่าง:</strong> ขาดกระบวนการทบทวนกฎไฟร์วอลล์ประจำปี และไม่มีกระบวนการควบคุมการเข้าถึงชั่วคราว
+      </div>
+    </div>
+
+    <div class="elem-card">
+      <div class="elem-badge">04 // EFFECT</div>
+      <div class="elem-title">ผลกระทบ (Effect)</div>
+      <div class="elem-desc">
+        ความเสี่ยง ความเสียหายต่อการดำเนินงาน การเงิน หรือผลกระทบทางกฎหมายหากไม่แก้ไข (What is the impact)
+      </div>
+      <div class="elem-example">
+        <strong>ตัวอย่าง:</strong> เสี่ยงต่อการถูกโจมตีด้วย Ransomware เจาะยึดเครื่องแม่ข่าย และข้อมูลนักศึกษารั่วไหล
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 10.6:</strong> โครงสร้าง 4 องค์ประกอบมาตรฐานสากล (Condition, Criteria, Cause, Effect) สำหรับการเขียนข้อค้นพบการตรวจ
+  </div>
+</div>
+
+<div class="callout-alert callout-important"><div class="callout-title">IMPORTANT</div>
+<blockquote class="content-blockquote"><strong>กฎเหล็กของผู้ตรวจสอบ:</strong> หากตรวจพบการตั้งค่าที่ไม่ดี (Condition) แต่ <strong>ไม่มี Criteria ใดๆ ในองค์กรระบุห้ามไว้เลย</strong> ผู้ตรวจสอบ <strong>ห้ามเขียนเป็น Non-conformity (NCR)</strong> แต่ให้บันทึกเป็น <strong>ข้อสังเกตหรือโอกาสในการปรับปรุง (Observation / Opportunity for Improvement: OFI)</strong> พร้อมเสนอแนะให้องค์กรกำหนดนโยบายในเรื่องนั้น</blockquote>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-4-กรณีศึกษาเชิงประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study">
+            <h2 class="section-heading">ส่วนที่ 4: กรณีศึกษาเชิงประยุกต์ "มหาวิทยาลัยดิจิทัลสมมติ" (Core Case Study)</h2>
+          </section>
+        
+<p class="content-paragraph">คณะผู้ตรวจสอบได้ลงพื้นที่ตรวจสอบโครงสร้างพื้นฐานของ <strong>ระบบทะเบียนและบริการการศึกษา (REG System)</strong> ณ ศูนย์ข้อมูลหลัก และได้รับชุดหลักฐานจำลองมาทั้งสิ้น 5 ชุด เพื่อทำการวิเคราะห์:</p>
+<h3 class="subsection-heading" id="4-1-ชุดหลักฐานจำลอง-5-รายการ-simulated-audit-evidence-items">4.1 ชุดหลักฐานจำลอง 5 รายการ (Simulated Audit Evidence Items)</h3>
+
+<div class="figure-box" id="figure-10-11">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 10.11</div>
+    <div class="figure-title">ทะเบียนคุมพยานหลักฐานจำลอง 5 รายการ (Evidence Register: EV-10-01 ถึง EV-10-05)</div>
+  </div>
+  <div class="table-container">
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>Evidence ID</th>
+          <th>รายการหลักฐาน</th>
+          <th>แหล่งกำเนิด (Source)</th>
+          <th>วันที่รับมอบ</th>
+          <th>ประเภทไฟล์</th>
+          <th>ประเด็นความเสี่ยงสำคัญที่ตรวจพบ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>EV-10-01</code></td>
+          <td>OS Accounts Export</td>
+          <td>REG-APP-01, REG-DB-01</td>
+          <td>15 พ.ย. 67</td>
+          <td>CSV / Text</td>
+          <td>พบบัญชี Dormant 180 วัน, Service Acct มี RDP, Linux sudoers NOPASSWD</td>
+        </tr>
+        <tr>
+          <td><code>EV-10-02</code></td>
+          <td>OS Patch Status Report</td>
+          <td>WSUS & Nessus Report</td>
+          <td>15 พ.ย. 67</td>
+          <td>PDF / HTML</td>
+          <td>พบ Windows Server 2012 R2 (EOL) และค้างแพตช์ Critical นาน 4 เดือน</td>
+        </tr>
+        <tr>
+          <td><code>EV-10-03</code></td>
+          <td>Network Architecture Diagram</td>
+          <td>ฝ่ายเครือข่ายคอมพิวเตอร์</td>
+          <td>15 พ.ย. 67</td>
+          <td>Visio / PDF</td>
+          <td>Prod DB อยู่ Subnet เดียวกับ Dev/Test และพอร์ต iLO อยู่บน User LAN</td>
+        </tr>
+        <tr>
+          <td><code>EV-10-04</code></td>
+          <td>Core Firewall Rulebase</td>
+          <td>Next-Gen Firewall Config</td>
+          <td>15 พ.ย. 67</td>
+          <td>CSV Export</td>
+          <td>พบกฎ RDP สู่เน็ต (FW-02), Any-to-Any ไร้ Log (FW-03), กฎ DB ไร้ Expiry</td>
+        </tr>
+        <tr>
+          <td><code>EV-10-05</code></td>
+          <td>VPN User Accounts Register</td>
+          <td>SSL-VPN Gateway DB</td>
+          <td>15 พ.ย. 67</td>
+          <td>Excel / Sheet</td>
+          <td>บัญชี Vendor 3 รายไม่มี MFA และเปิดใช้งานค้างไว้ตลอด 24 ชม.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 10.11:</strong> ทะเบียนคุมพยานหลักฐานจำลอง 5 ชุดสำหรับการตรวจสอบระบบปฏิบัติการและเครือข่าย
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="หลักฐานชุดที่-1-รายชื่อบัญชีผู้ใช้ระบบปฏิบัติการ-os-accounts-export-ev-10-01">หลักฐานชุดที่ 1: รายชื่อบัญชีผู้ใช้ระบบปฏิบัติการ (OS Accounts Export: EV-10-01)</h4>
+<p class="content-paragraph">ตารางส่งออกบัญชีผู้ใช้จากเครื่องแม่ข่าย <code>REG-APP-01</code> (Windows Server) และ <code>REG-DB-01</code> (RHEL Linux):</p>
+<ul class="content-list">
+<li>บนเครื่อง <code>REG-APP-01</code> (Windows Server 2019):</li>
+<li>บัญชี <code>Administrator</code> ยังคงเปิดใช้งานอยู่ (ไม่ได้ Rename และไม่ได้ Disable)</li>
+<li>พบบัญชี <code>test_dev</code> อยู่ในกลุ่ม <code>Local Administrators</code> และไม่มีการล็อกอินมานานกว่า 180 วัน (Dormant Account)</li>
+<li>พบบัญชี <code>reg_batch</code> เป็น Service Account แต่มีการตั้งค่าสิทธิ์ให้สามารถล็อกอินผ่าน Remote Desktop (RDP) ได้</li>
+<li>บนเครื่อง <code>REG-DB-01</code> (RHEL Linux 8):</li>
+<li>ในไฟล์ <code>/etc/sudoers</code> พบบรรทัด: <code>appadmin ALL=(ALL) NOPASSWD: ALL</code></li>
+<li>บัญชี <code>root</code> ยังคงอนุญาตให้ล็อกอินตรงผ่าน SSH ได้ (<code>PermitRootLogin yes</code> ใน <code>/etc/ssh/sshd_config</code>)</li>
+</ul>
+<h4 class="sub-subsection-heading" id="หลักฐานชุดที่-2-รายงานสถานะแพตช์ระบบปฏิบัติการ-os-patch-status-report-ev-10-02">หลักฐานชุดที่ 2: รายงานสถานะแพตช์ระบบปฏิบัติการ (OS Patch Status Report: EV-10-02)</h4>
+<ul class="content-list">
+<li>เครื่องแม่ข่าย <code>REG-WEB-OLD</code> ยังคงรันบน <strong>Windows Server 2012 R2</strong> ซึ่งเป็นระบบปฏิบัติการที่สิ้นสุดระยะเวลาการสนับสนุน (End-of-Life: EOL) จาก Microsoft ตั้งแต่เดือนตุลาคม 2566</li>
+<li>เครื่องแม่ข่าย <code>REG-APP-01</code> ขาดการติดตั้งแพตช์ความมั่นคงปลอดภัยประจำเดือน (Cumulative Update) ย้อนหลัง 4 เดือน โดยตรวจพบช่องโหว่ระดับ Critical (CVSS 9.8 - Remote Code Execution) ที่ยังไม่ได้รับการแก้ไข</li>
+<li>เมื่อสอบถามใบขออนุมัติยกเว้นการติดตั้งแพตช์ (Patch Exception Form) ผู้รับการตรวจ <strong>ไม่มีเอกสารใดๆ รองรับ</strong></li>
+</ul>
+<h4 class="sub-subsection-heading" id="หลักฐานชุดที่-3-แผนผังเครือข่ายสถาปัตยกรรมระบบทะเบียน-network-diagram-ev-10-03">หลักฐานชุดที่ 3: แผนผังเครือข่ายสถาปัตยกรรมระบบทะเบียน (Network Diagram: EV-10-03)</h4>
+<p class="content-paragraph">จากการตรวจสอบผังเครือข่าย พบข้อบกพร่องเชิงสถาปัตยกรรม:</p>
+<ul class="content-list">
+<li>เซิร์ฟเวอร์ฐานข้อมูล <code>REG-DB-01</code> (Production Database) เชื่อมต่ออยู่ใน Subnet <code>192.168.10.0/24</code> เดียวกันกับเซิร์ฟเวอร์ทดสอบระบบของนักศึกษาฝึกงาน (<code>REG-DEV-TEST</code>) โดยไม่มีไฟร์วอลล์ขวางกั้นระหว่างกัน</li>
+<li>พอร์ตบริหารจัดการฮาร์ดแวร์เซิร์ฟเวอร์ (iLO / IPMI) เชื่อมต่ออยู่บนเครือข่าย LAN เดียวกันกับเครื่องคอมพิวเตอร์พนักงานสำนักงานทั่วไป (VLAN 20)</li>
+</ul>
+<h4 class="sub-subsection-heading" id="หลักฐานชุดที่-4-ตารางกฎไฟร์วอลล์หลักของระบบทะเบียน-core-firewall-rulebase-ev-10-04">หลักฐานชุดที่ 4: ตารางกฎไฟร์วอลล์หลักของระบบทะเบียน (Core Firewall Rulebase: EV-10-04)</h4>
+<p class="content-paragraph">ตารางกฎที่สกัดมาจากอุปกรณ์ Next-Generation Firewall:</p>
+
+<div class="figure-box" id="figure-10-10">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 10.10</div>
+    <div class="figure-title">ตารางวิเคราะห์กฎไฟร์วอลล์หลักของระบบทะเบียน (Core Firewall Rulebase Audit: EV-10-04)</div>
+  </div>
+  <div class="fw-rule-dashboard">
+    <div class="table-container">
+      <table class="content-table fw-analysis-table">
+        <thead>
+          <tr>
+            <th>Rule ID</th>
+            <th>Name</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Service / Port</th>
+            <th>Action</th>
+            <th>Log</th>
+            <th>Audit Verdict</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>FW-01</code></td>
+            <td>Web Inbound</td>
+            <td>Internet (Any)</td>
+            <td>DMZ (10.0.1.50)</td>
+            <td>TCP 80, 443</td>
+            <td><span class="wp-tag pass">Permit</span></td>
+            <td>Yes</td>
+            <td><span class="badge-tier tier1">✓ สอดคล้อง (DMZ Web)</span></td>
+          </tr>
+          <tr class="row-vuln-crit">
+            <td><code>FW-02</code></td>
+            <td>RDP Direct</td>
+            <td>Internet (Any)</td>
+            <td>Internal (192.168.10.15)</td>
+            <td>TCP 3389 (RDP)</td>
+            <td><span class="wp-tag fail">Permit</span></td>
+            <td>Yes</td>
+            <td><span class="badge-tier tier4">❌ วิกฤต: RDP จาก Internet</span></td>
+          </tr>
+          <tr class="row-vuln-major">
+            <td><code>FW-03</code></td>
+            <td>Any to Any</td>
+            <td>192.168.10.0/24</td>
+            <td>192.168.20.0/24</td>
+            <td>Any</td>
+            <td><span class="wp-tag fail">Permit</span></td>
+            <td><span class="wp-tag fail">No Log</span></td>
+            <td><span class="badge-tier tier3">⚠️ ร้ายแรง: กฎตกค้าง 2 ปี ไม่มี Log</span></td>
+          </tr>
+          <tr class="row-vuln-major">
+            <td><code>FW-04</code></td>
+            <td>Vendor DB</td>
+            <td>Vendor IP (203.113.x.x)</td>
+            <td>Server (192.168.10.20)</td>
+            <td>TCP 1521 (Oracle)</td>
+            <td><span class="wp-tag fail">Permit</span></td>
+            <td>Yes</td>
+            <td><span class="badge-tier tier2">⚠️ บกพร่อง: ไม่มี Expiry Date</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 10.10:</strong> ผลการประเมินตารางกฎไฟร์วอลล์หลักของระบบทะเบียน เปรียบเทียบกับ 8 จุดตรวจสำคัญ
+  </div>
+</div>
+
+<div class="table-container"><table class="content-table"><thead><tr><th>Rule ID</th><th>Name</th><th>Source Zone / IP</th><th>Dest Zone / IP</th><th>Service / Port</th><th>Action</th><th>Expiry Date</th><th>Log</th><th>Comment</th></tr></thead><tbody><tr><td><strong>FW-01</strong></td><td>Web Inbound</td><td>Internet (Any)</td><td>DMZ (<code>10.0.1.50</code>)</td><td>TCP 80, 443</td><td>Permit</td><td>None</td><td>Yes</td><td>เว็บลงทะเบียน</td></tr><tr><td><strong>FW-02</strong></td><td>RDP Direct</td><td>Internet (Any)</td><td>Internal (<code>192.168.10.15</code>)</td><td>TCP 3389</td><td>Permit</td><td>None</td><td>Yes</td><td>เปิดให้โปรแกรมเมอร์เข้าแก้บั๊ก</td></tr><tr><td><strong>FW-03</strong></td><td>Any to Any</td><td>Internal (<code>192.168.10.0/24</code>)</td><td>Internal (<code>192.168.20.0/24</code>)</td><td>Any</td><td>Permit</td><td>None</td><td>No</td><td>กฎชั่วคราวซิงก์ข้อมูล (2 ปีก่อน)</td></tr><tr><td><strong>FW-04</strong></td><td>Vendor DB</td><td>Vendor IP (<code>203.113.x.x</code>)</td><td>Server (<code>192.168.10.20</code>)</td><td>TCP 1521 (Oracle)</td><td>Permit</td><td>None</td><td>Yes</td><td>ให้บริษัทคู่ค้าดูแล DB</td></tr></tbody></table></div>
+<h4 class="sub-subsection-heading" id="หลักฐานชุดที่-5-ทะเบียนบัญชีผู้ใช้งาน-vpn-vpn-user-accounts-register-ev-10-05">หลักฐานชุดที่ 5: ทะเบียนบัญชีผู้ใช้งาน VPN (VPN User Accounts Register: EV-10-05)</h4>
+<ul class="content-list">
+<li>มีบัญชี VPN สำหรับบริษัทภายนอก (Vendor Account) จำนวน 3 บัญชี: <code>vendor_support1</code>, <code>vendor_support2</code>, <code>vendor_consultant</code></li>
+<li>ทั้ง 3 บัญชี <strong>ใช้เพียงรหัสผ่านธรรมดาในการล็อกอิน (Single-Factor Authentication)</strong> โดยไม่มีการบังคับใช้ MFA</li>
+<li>สถานะของทั้ง 3 บัญชีถูกเปิดใช้งานค้างไว้ตลอด 24 ชั่วโมง (Always Enabled) โดยไม่มีการกำหนดวันหมดอายุของบัญชี</li>
+</ul>
+<hr class="section-divider">
+<h3 class="subsection-heading" id="4-2-กระดาษทำการตรวจสอบฉบับที่-1-การตรวจสอบระบบปฏิบัติการ-audit-working-paper-wp-10-01">4.2 กระดาษทำการตรวจสอบฉบับที่ 1: การตรวจสอบระบบปฏิบัติการ (Audit Working Paper: WP-10-01)</h3>
+
+<div class="figure-box" id="figure-10-7">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 10.7</div>
+    <div class="figure-title">กระดาษทำการตรวจสอบฉบับที่ 1: การตรวจสอบระบบปฏิบัติการ (Audit Working Paper: WP-10-01)</div>
+  </div>
+  <div class="wp-paper-card">
+    <div class="wp-paper-header">
+      <div class="wp-meta-grid">
+        <div><strong>WP Reference:</strong> <span class="wp-ref-code">WP-2024-REG-OS01</span></div>
+        <div><strong>Engagement Ref:</strong> AUD-PLAN-REG01</div>
+        <div><strong>System / Area:</strong> เครื่องแม่ข่ายระบบ REG (Windows Server & RHEL Linux)</div>
+        <div><strong>Audit Period:</strong> ต.ค. 2566 – ก.ย. 2567</div>
+      </div>
+      <div class="wp-staff-grid">
+        <div><strong>Prepared by:</strong> นาย พิชญ์ เจาะระบบ (Technical Auditor) | 15/11/2567</div>
+        <div><strong>Reviewed by:</strong> ดร. วรเมธ ตรวจละเอียด (Lead Auditor) | 16/11/2567</div>
+      </div>
+    </div>
+
+    <div class="wp-paper-section">
+      <div class="wp-sec-title">1. วัตถุประสงค์การตรวจ (Audit Objective)</div>
+      <p>เพื่อทดสอบว่าระบบปฏิบัติการของเครื่องแม่ข่ายระบบทะเบียน (REG System) ได้รับการบริหารจัดการบัญชี การกำหนดสิทธิ์ และการปะแพตช์อย่างมั่นคงปลอดภัยตามเกณฑ์มาตรฐานสากลและนโยบายของมหาวิทยาลัย</p>
+    </div>
+
+    <div class="wp-paper-section">
+      <div class="wp-sec-title">2. เกณฑ์การตรวจ (Audit Criteria)</div>
+      <ul>
+        <li>ISO/IEC 27001:2022 Control A.8.9 (Configuration management), A.8.19 (Privileged access rights)</li>
+        <li>ประกาศ กกม. พ.ศ. 2564 หมวด 3 ข้อ 15 (การปรับปรุงช่องโหว่และการจัดการสิทธิ์ดูแลระบบ)</li>
+        <li>นโยบายความมั่นคงปลอดภัยสารสนเทศ มหาวิทยาลัยดิจิทัลสมมติ หมวด 5 ข้อ 5.2</li>
+      </ul>
+    </div>
+
+    <div class="wp-paper-section">
+      <div class="wp-sec-title">3. ขอบเขตและหลักฐานที่ใช้ (Scope & Evidence Reference)</div>
+      <p>• เซิร์ฟเวอร์เป้าหมาย: <code>REG-APP-01</code> (Windows Server 2019) และ <code>REG-DB-01</code> (RHEL 8)<br>
+      • หลักฐานอ้างอิง: <code>EV-10-01</code> (OS Accounts Export) และ <code>EV-10-02</code> (Patch Status Report)</p>
+    </div>
+
+    <div class="wp-paper-section">
+      <div class="wp-sec-title">4. ขั้นตอนการตรวจสอบและผลการทดสอบ (Procedures & Detailed Results)</div>
+      <div class="wp-proc-item">
+        <strong>1. ตรวจสอบบัญชีผู้ใช้บน Windows (REG-APP-01):</strong><br>
+        ผลการตรวจ: พบบัญชี <code>test_dev</code> ค้างในกลุ่ม Local Administrators ไม่ได้ใช้งาน 180 วัน (Dormant Account) และบัญชี <code>reg_batch</code> (Service Account) มีสิทธิ์ล็อกอิน RDP ได้ ➔ ขัดต่อนโยบาย Least Privilege
+      </div>
+      <div class="wp-proc-item">
+        <strong>2. ตรวจสอบการตั้งค่า sudoers และ root login บน Linux (REG-DB-01):</strong><br>
+        ผลการตรวจ: ไฟล์ <code>/etc/sudoers</code> กำหนด <code>appadmin ALL=(ALL) NOPASSWD: ALL</code> และเปิด <code>PermitRootLogin yes</code> บน SSH ➔ มีความเสี่ยงต่อการถูกยึดครองสิทธิ์ root โดยง่าย
+      </div>
+      <div class="wp-proc-item">
+        <strong>3. ตรวจสอบสถานะแพตช์และการสนับสนุนระบบปฏิบัติการ:</strong><br>
+        ผลการตรวจ: เครื่องแม่ข่าย <code>REG-WEB-OLD</code> ใช้ Windows Server 2012 R2 (End-of-Life: EOL) และเครื่อง <code>REG-APP-01</code> ค้างแพตช์ Critical นานเกิน 4 เดือน โดยไม่มีใบขออนุมัติยกเว้น (Patch Exception Form)
+      </div>
+    </div>
+
+    <div class="wp-paper-section finding-section">
+      <div class="wp-sec-title">5. การวิเคราะห์และการจัดระดับข้อค้นพบ (Analysis & Finding Classification)</div>
+      <div class="finding-block ncr">
+        <span class="finding-label major">Major NCR</span>
+        <strong>ข้อค้นพบที่ 1:</strong> การใช้งานระบบปฏิบัติการที่สิ้นสุดอายุการสนับสนุน (EOL) และขาดการปะแพตช์ความมั่นคงปลอดภัยระดับวิกฤต โดยไม่มีมาตรการชดเชยที่ได้รับอนุมัติ
+      </div>
+      <div class="finding-block ncr">
+        <span class="finding-label major">Major NCR</span>
+        <strong>ข้อค้นพบที่ 2:</strong> การกำหนดสิทธิ์ระดับผู้ดูแลระบบ (Privileged Access) หละหลวม พบบัญชีค้าง (Dormant) และการตั้งค่า NOPASSWD บนบัญชีผู้ใช้งานระบบ
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 10.7:</strong> กระดาษทำการตรวจสอบ WP-10-01 บันทึกผลการตรวจระบบปฏิบัติการ Windows และ Linux
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="subsection-heading" id="4-3-กระดาษทำการตรวจสอบฉบับที่-2-การตรวจสอบเครือข่ายและไฟร์วอลล์-audit-working-paper-wp-10-02">4.3 กระดาษทำการตรวจสอบฉบับที่ 2: การตรวจสอบเครือข่ายและไฟร์วอลล์ (Audit Working Paper: WP-10-02)</h3>
+
+<div class="figure-box" id="figure-10-8">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 10.8</div>
+    <div class="figure-title">กระดาษทำการตรวจสอบฉบับที่ 2: การตรวจสอบเครือข่ายและไฟร์วอลล์ (Audit Working Paper: WP-10-02)</div>
+  </div>
+  <div class="wp-paper-card">
+    <div class="wp-paper-header">
+      <div class="wp-meta-grid">
+        <div><strong>WP Reference:</strong> <span class="wp-ref-code">WP-2024-REG-NET02</span></div>
+        <div><strong>Engagement Ref:</strong> AUD-PLAN-REG01</div>
+        <div><strong>System / Area:</strong> เครือข่ายและไฟร์วอลล์ระบบ REG (Core Network & Next-Gen Firewall)</div>
+        <div><strong>Audit Period:</strong> ต.ค. 2566 – ก.ย. 2567</div>
+      </div>
+      <div class="wp-staff-grid">
+        <div><strong>Prepared by:</strong> นาย พิชญ์ เจาะระบบ (Technical Auditor) | 15/11/2567</div>
+        <div><strong>Reviewed by:</strong> ดร. วรเมธ ตรวจละเอียด (Lead Auditor) | 16/11/2567</div>
+      </div>
+    </div>
+
+    <div class="wp-paper-section">
+      <div class="wp-sec-title">1. วัตถุประสงค์การตรวจ (Audit Objective)</div>
+      <p>เพื่อทดสอบว่าโครงสร้างเครือข่ายมีการแบ่งแยกโซนอย่างปลอดภัย กฎไฟร์วอลล์มีการควบคุมรัดกุม และการเข้าถึงจากระยะไกลผ่าน VPN มีการพิสูจน์ตัวตนแบบหลายปัจจัย (MFA) ตามมาตรฐานกำหนด</p>
+    </div>
+
+    <div class="wp-paper-section">
+      <div class="wp-sec-title">2. เกณฑ์การตรวจ (Audit Criteria)</div>
+      <ul>
+        <li>ISO/IEC 27001:2022 Control A.8.20 (Network security), A.8.22 (Segregation of networks)</li>
+        <li>ประกาศ กกม. พ.ศ. 2564 หมวด 3 ข้อ 17 (การรักษาความมั่นคงปลอดภัยเครือข่ายและการเข้าถึง)</li>
+        <li>นโยบายความมั่นคงปลอดภัยสารสนเทศ มหาวิทยาลัยดิจิทัลสมมติ หมวด 6 ข้อ 6.1 (ห้ามเปิด RDP สู่ภายนอก)</li>
+      </ul>
+    </div>
+
+    <div class="wp-paper-section">
+      <div class="wp-sec-title">3. ขอบเขตและหลักฐานที่ใช้ (Scope & Evidence Reference)</div>
+      <p>• อุปกรณ์: Core Firewall (Next-Gen FW) และระบบ SSL-VPN ของมหาวิทยาลัย<br>
+      • เอกสารหลักฐาน: <code>EV-10-03</code> (Network Diagram), <code>EV-10-04</code> (Rulebase), <code>EV-10-05</code> (VPN Users)</p>
+    </div>
+
+    <div class="wp-paper-section">
+      <div class="wp-sec-title">4. ขั้นตอนการตรวจสอบและผลการทดสอบ (Procedures & Detailed Results)</div>
+      <div class="wp-proc-item">
+        <strong>1. ตรวจสอบการแบ่งโซนเครือข่าย (Segmentation Review):</strong><br>
+        ผลการตรวจ: เซิร์ฟเวอร์ฐานข้อมูล Production อยู่ Subnet เดียวกับเครื่อง Dev/Test ของนักศึกษาฝึกงาน และพอร์ต iLO อยู่บน Office LAN ➔ ไม่มีการแบ่งแยกโซนความปลอดภัยตามเกณฑ์
+      </div>
+      <div class="wp-proc-item">
+        <strong>2. ตรวจสอบตารางกฎไฟร์วอลล์ (Firewall Rules Analysis):</strong><br>
+        - กฎ FW-02: เปิดพอร์ต RDP (3389) ตรงจาก <code>Internet: Any</code> สู่เครื่องภายใน<br>
+        - กฎ FW-03: เปิด Any-to-Any ข้าม Subnet ทิ้งไว้ 2 ปี โดยไม่มีการบันทึก Log<br>
+        - กฎ FW-04: เปิดพอร์ต Oracle SQL (1521) ให้ Vendor โดยไม่มีวันหมดอายุของกฎ
+      </div>
+      <div class="wp-proc-item">
+        <strong>3. ตรวจสอบระบบ VPN สำหรับบุคคลภายนอก:</strong><br>
+        ผลการตรวจ: บัญชี Vendor 3 บัญชี ไม่มีการใช้ MFA และเปิดใช้งานค้างไว้ตลอด 24 ชั่วโมง โดยไม่มีกำหนดวันหมดอายุ
+      </div>
+    </div>
+
+    <div class="wp-paper-section finding-section">
+      <div class="wp-sec-title">5. การวิเคราะห์และการจัดระดับข้อค้นพบ (Analysis & Finding Classification)</div>
+      <div class="finding-block ncr">
+        <span class="finding-label crit">Critical Major NCR</span>
+        <strong>ข้อค้นพบที่ 1:</strong> การเปิดช่องทางเข้าถึงระยะไกลที่ไม่ปลอดภัย (Insecure Remote Access) โดยเปิดพอร์ต RDP สู่สาธารณะ และระบบ VPN บุคคลภายนอกไม่มี MFA
+      </div>
+      <div class="finding-block ncr">
+        <span class="finding-label major">Major NCR</span>
+        <strong>ข้อค้นพบที่ 2:</strong> ความบกพร่องในการแบ่งแยกโซนเครือข่าย (Network Segmentation Failure) ระหว่างสภาพแวดล้อม Development และ Production Database
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 10.8:</strong> กระดาษทำการตรวจสอบ WP-10-02 บันทึกผลการตรวจโครงสร้างเครือข่าย กฎไฟร์วอลล์ และ VPN
+  </div>
+</div>
+
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-5-กิจกรรมเชิงประยุกต์ในชั้นเรียน-active-learning-simulation">
+            <h2 class="section-heading">ส่วนที่ 5: กิจกรรมเชิงประยุกต์ในชั้นเรียน (Active Learning Simulation)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="กิจกรรม-the-infrastructure-audit-triage-challenge">กิจกรรม: "The Infrastructure Audit Triage Challenge"</h3>
+<ul class="content-list">
+<li><strong>ระยะเวลา:</strong> 15–20 นาที</li>
+<li><strong>สถานการณ์จำลอง:</strong> </li>
+</ul>
+<p class="content-paragraph">  ในระหว่างการตรวจ Technical Auditor ได้ส่งบันทึกสิ่งที่ตรวจพบเบื้องต้น 4 รายการมาให้ Lead Auditor พิจารณา:</p>
+<ol class="content-list">
+<li><em>รายการ ก:</em> เครื่องเซิร์ฟเวอร์ฐานข้อมูลไม่ได้เปลี่ยนภาพพื้นหลังหน้าจอ Desktop เป็นรูปโลโก้มหาวิทยาลัย</li>
+<li><em>รายการ ข:</em> ตรวจพบพอร์ต SMBv1 (พอร์ต 445) ยังคงเปิดใช้งานอยู่บนเซิร์ฟเวอร์ Windows ทั้งที่มีประกาศยกเลิกใช้งานเนื่องจากช่องโหว่ EternalBlue</li>
+<li><em>รายการ ค:</em> วิศวกรเครือข่ายตั้งค่าชื่อ Hostname ของไฟร์วอลล์ว่า <code>fw-test-01</code> ทั้งที่เป็นอุปกรณ์ใช้งานจริงบน Production</li>
+<li><em>รายการ ง:</em> กฎไฟร์วอลล์อนุญาตให้เครื่องในโซน Guest Wi-Fi สามารถยิงคำสั่ง Ping (ICMP) ไปยัง Default Gateway ของเซิร์ฟเวอร์ระบบการเงินได้</li>
+</ol>
+<ul class="content-list">
+<li><strong>ภารกิจของผู้เรียน (แบ่งกลุ่ม 4–5 คน):</strong></li>
+</ul>
+<ol class="content-list">
+<li>จำแนกว่ารายการใดเป็นเพียง <strong>"Configuration Issue / Cosmetic Issue"</strong> ที่ไม่มีผลต่อความมั่นคงปลอดภัย และรายการใดเป็น <strong>"Audit Finding"</strong> ที่แท้จริง</li>
+<li>สำหรับรายการที่เป็น Audit Finding ให้นักศึกษาจับคู่กับ <strong>Criteria มาตรฐาน</strong> (เช่น ISO 27001 หรือ ประกาศ กกม.) พร้อมระบุ <strong>Effect (ผลกระทบ)</strong> ที่จะเกิดขึ้นหากไม่แก้ไข</li>
+<li>ร่างประโยคชี้แจงเพื่อนำเสนอต่อผู้บริหารฝ่ายไอทีในที่ประชุมสรุปประจำวัน</li>
+</ol>
+<ul class="content-list">
+<li><strong>บทเรียนที่ได้รับ:</strong> นักศึกษาจะได้ฝึกฝนการกลั่นกรองข้อค้นพบ ไม่นำเรื่องเล็กน้อยที่ไม่เกี่ยวข้องกับความมั่นคงปลอดภัย (Cosmetic issues) มาเขียนเป็นข้อค้นพบ ซึ่งจะทำให้สูญเสียความน่าเชื่อถือในวิชาชีพ</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-6-มุมมองวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls">
+            <h2 class="section-heading">ส่วนที่ 6: มุมมองวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives & Common Pitfalls)</h2>
+          </section>
+        
+
+<div class="interactive-widget-box" id="widget-10-4">
+  <div class="widget-header">
+    <div class="widget-badge">INTERACTIVE WIDGET 10.4</div>
+    <div class="widget-title">The Infrastructure Audit Triage Challenge (Active Learning Simulator)</div>
+  </div>
+  <div class="widget-body">
+    <p class="widget-lead">
+      สวมบทบาทเป็น <strong>Lead Auditor</strong> ในการคัดกรอง 4 ประเด็นที่ Technical Auditor ส่งมา ตัดสินใจว่าประเด็นใดคือ Cosmetic / Config Issue และประเด็นใดคือ Audit Finding ที่แท้จริง:
+    </p>
+
+    <div class="triage-items-list" id="triage-items-list">
+      <!-- Populated via JS -->
+    </div>
+
+    <div class="triage-score-bar" id="triage-score-bar">
+      <!-- Populated via JS -->
+    </div>
+  </div>
+</div>
+
+
+<div class="figure-box" id="figure-10-9">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 10.9</div>
+    <div class="figure-title">บทสนทนาสะท้อนมุมมองวิชาชีพ (Professional Audit Perspectives: Lead Auditor vs System & Network Admin)</div>
+  </div>
+  <div class="perspective-box">
+    <div class="persp-title">💬 บทสนทนาสะท้อนมุมมองวิชาชีพ (Interrogation Dialogue)</div>
+    <div class="persp-grid">
+      <div class="persp-side aud">
+        <div class="persp-badge">Lead Auditor (หัวหน้าทีมผู้ตรวจสอบ)</div>
+        <p>"เราตรวจพบกฎ FW-02 เปิดพอร์ต RDP (3389) ตรงจากอินเทอร์เน็ต และบัญชี Vendor VPN ไม่มี MFA ครับ ซึ่งเป็นช่องโหว่วิกฤตตามมาตรฐานสากล"</p>
+        <p>"ความสะดวกในการแก้ปัญหาตอนเที่ยงคืน ต้องไม่แลกกับความเสี่ยงที่ระบบทั้งหมดจะถูกแรนซัมแวร์ยึดครองในเวลาเพียง 15 นาทีครับ"</p>
+        <p>"หากจำเป็นต้องรีโมต ต้องเข้าผ่าน SSL-VPN ที่ผูกกับ MFA แล้วเด้งเข้า Jump Host เพื่อบันทึกหน้าจอคำสั่งเท่านั้นครับ"</p>
+      </div>
+      <div class="persp-side imp">
+        <div class="persp-badge">Network / System Admin (วิศวกรผู้ดูแลระบบ)</div>
+        <p>"พอร์ตนี้จำเป็นจริงๆ ครับอาจารย์ เพราะระบบชอบมีปัญหาตอนเที่ยงคืน โปรแกรมเมอร์นอกจะได้รีโมตเข้ามาดูหน้าจอและแก้บั๊กได้ทันทีครับ"</p>
+        <p>"ถ้าต้องต่อหลายขั้นตอน เกรงว่าจะแก้ปัญหาให้นักศึกษาลงทะเบียนไม่ทันเวลาครับ... แต่ถ้ามองในมุมความเสี่ยงแรนซัมแวร์ ผมยอมรับว่าน่ากลัวมากครับ"</p>
+        <p>"เข้าใจแนวทางแล้วครับ เดี๋ยวผมจะปิดกฎ RDP ทันที และเปลี่ยนเป็นให้ต่อผ่าน SSL-VPN พร้อมติดตั้งแอปฯ OTP บนมือถือให้ Vendor ทุกรายครับ"</p>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 10.9:</strong> บทสนทนาสะท้อนมุมมองระหว่างความสะดวกในการปฏิบัติงาน (Operational Convenience) กับการควบคุมความมั่นคงปลอดภัย (Security Assurance)
+  </div>
+</div>
+
+<h3 class="subsection-heading" id="4-ข้อผิดพลาดที่พบบ่อยในการตรวจโครงสร้างพื้นฐาน">4 ข้อผิดพลาดที่พบบ่อยในการตรวจโครงสร้างพื้นฐาน:</h3>
+<ol class="content-list">
+<li><strong>Focusing only on Vulnerability Scanners:</strong> พึ่งพาแต่รายงานสรุปจากเครื่องมือสแกน (เช่น Nessus) โดยไม่ได้เปิดดูคอนฟิกจริงหรือตรวจสอบนโยบายขององค์กร</li>
+<li><strong>Accepting Outdated Network Diagrams:</strong> เชื่อถือผังเครือข่ายในกระดาษโดยไม่ได้สุ่มทดสอบเส้นทาง Routing หรือ Ping จริง</li>
+<li><strong>Ignoring Service Accounts:</strong> ตรวจเฉพาะบัญชีพนักงานที่เป็นบุคคล แต่ละเลยบัญชี Service Accounts ซึ่งมักถูกตั้งรหัสผ่านง่ายและมีสิทธิ์ระดับ Local System</li>
+<li><strong>Writing Findings without Root Cause:</strong> เขียนรายงานเพียงว่า "พบพอร์ตเปิดอยู่" โดยไม่ได้สืบหาสาเหตุว่าทำไมจึงเปิด (เช่น ขาดกระบวนการ Firewall Change Management) ทำให้องค์กรไม่สามารถแก้ปัญหาที่ต้นตอได้</li>
+</ol>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-7-แบบฝึกหัดและการบ้านประจำบทที่-10">
+            <h2 class="section-heading">ส่วนที่ 7: แบบฝึกหัดและการบ้านประจำบทที่ 10</h2>
+          </section>
+        
+<p class="content-paragraph">เพื่อเป็นส่วนหนึ่งของการจัดทำแฟ้มสะสมงาน <strong>Cybersecurity Audit Portfolio (ชิ้นงานที่ 10)</strong> ให้นักศึกษานำ <strong>ชุดหลักฐานจำลอง 5 ชุด (EV-10-01 ถึง EV-10-05)</strong> จากกรณีศึกษามหาวิทยาลัยดิจิทัลสมมติในบทนี้ ไปวิเคราะห์และจัดทำเอกสาร:</p>
+<ol class="content-list">
+<li><strong>Audit Working Paper ด้านระบบปฏิบัติการและเครือข่าย:</strong></li>
+</ol>
+<ul class="content-list">
+<li>จัดทำกระดาษทำการบันทึกขั้นตอนการทดสอบ ผลลัพธ์เชิงประจักษ์ และข้อสรุปผลการตรวจอย่างละเอียด</li>
+</ul>
+<ol class="content-list">
+<li><strong>การจัดทำรายการข้อสังเกตและข้อค้นพบเบื้องต้นอย่างน้อย 5 ประเด็น:</strong></li>
+</ol>
+<ul class="content-list">
+<li>เลือก 5 ประเด็นความเสี่ยงสำคัญจากหลักฐานจำลอง (เช่น EOL OS, Insecure RDP, Any-to-Any, Vendor VPN without MFA, Segmentation Failure)</li>
+<li>เขียนอธิบายให้ครบถ้วนตามโครงสร้าง 4 องค์ประกอบ:</li>
+<li><strong>สภาพที่ตรวจพบ (Condition)</strong></li>
+<li><strong>เกณฑ์อ้างอิง (Criteria: อ้างอิง ISO 27001 / ประกาศ กกม. / นโยบาย)</strong></li>
+<li><strong>สาเหตุที่เกิด (Cause)</strong></li>
+<li><strong>ผลกระทบที่อาจเกิดขึ้น (Effect)</strong></li>
+<li><em>หมายเหตุ: ต้องเชื่อมโยงกับเกณฑ์ตรวจให้ชัดเจน ห้ามระบุเป็นข้อบกพร่องลอยๆ โดยไม่มี Criteria รองรับ</em></li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-8-คำถามทบทวนท้ายบท-review-questions-detailed-answers">
+            <h2 class="section-heading">ส่วนที่ 8: คำถามทบทวนท้ายบท (Review Questions & Detailed Answers)</h2>
+          </section>
+        
+<ol class="content-list">
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง Service Account และ User Account ทั่วไป พร้อมระบุแนวทางการควบคุมความปลอดภัยของ Service Account</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> <strong>User Account</strong> เป็นบัญชีของบุคคลสำหรับล็อกอินใช้งานคอมพิวเตอร์ ส่วน <strong>Service Account</strong> เป็นบัญชีที่สร้างขึ้นเพื่อให้แอปพลิเคชันหรือเซอร์วิสของระบบรันเบื้องหลัง การควบคุม Service Account ต้อง: (1) ห้ามมีสิทธิ์ Interactive Shell หรือ RDP (2) กำหนดสิทธิ์เท่าที่จำเป็น (Least Privilege) (3) ใช้รหัสผ่านที่ซับซ้อนสูงและไม่มีการแชร์ให้บุคคลทั่วไป หรือใช้เทคโนโลยี Group Managed Service Accounts (gMSA)</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> เพราะเหตุใดระบบปฏิบัติการที่สิ้นสุดระยะเวลาการสนับสนุน (End-of-Life: EOL) จึงถือเป็นความเสี่ยงระดับวิกฤตในการตรวจสอบ?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพราะผู้ผลิต (Vendor) จะยุติการพัฒนาและแจกจ่ายแพตช์ความมั่นคงปลอดภัยสำหรับระบบนั้นโดยสิ้นเชิง ทำให้เมื่อมีช่องโหว่ใหม่ (Zero-Day Vulnerability) ถูกค้นพบ ระบบจะไม่ได้รับการป้องกันอีกต่อไป ผู้โจมตีสามารถใช้ Exploit โจมตีระบบได้สำเร็จอย่างง่ายดาย</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> หากองค์กรมีความจำเป็นต้องใช้งานเซิร์ฟเวอร์รุ่นเก่าที่ไม่สามารถปะแพตช์ได้ ผู้ตรวจสอบควรแนะนำให้ใช้มาตรการใด?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> แนะนำให้ใช้ <strong>มาตรการชดเชย (Compensating Controls)</strong> ได้แก่: (1) ย้ายเซิร์ฟเวอร์ไปอยู่ใน Isolated VLAN ที่แยกขาดจากเครือข่ายอื่น (2) กำหนดกฎไฟร์วอลล์บล็อกการเข้าถึงจากภายนอกอย่างเด็ดขาด (3) ใช้งาน Virtual Patching บน Web Application Firewall (WAF) หรือ IPS (4) จัดทำเอกสารขออนุมัติยกเว้น (Exception Form) ที่ผู้บริหารลงนามรับทราบความเสี่ยง</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> จงอธิบายความเสี่ยงของการมีกฎแบบ "Any-to-Any" บนไฟร์วอลล์</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> กฎ Any-to-Any ที่อนุญาตให้ทราฟฟิกใดๆ วิ่งผ่านได้โดยไม่จำกัด IP และพอร์ต จะทำลายคุณสมบัติการแบ่งโซนเครือข่าย (Segmentation) ทำให้ไฟร์วอลล์ไม่สามารถทำหน้าที่คัดกรองข้อมูลได้ หากเครือข่ายจุดใดจุดหนึ่งถูกเจาะ ผู้โจมตีจะสามารถแพร่กระจายการโจมตี (Lateral Movement) ไปยังทุกระบบทั่วทั้งองค์กรได้อย่างอิสระ</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> เหตุใดการเปิดพอร์ต RDP (TCP 3389) ตรงสู่เครือข่ายอินเทอร์เน็ตจึงเป็นข้อห้ามร้ายแรงในเชิงความมั่นคงปลอดภัย?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพราะ RDP เป็นเป้าหมายหลักในการโจมตีแบบ Brute Force, Credential Stuffing และมักมีช่องโหว่ระดับ Remote Code Execution (เช่น BlueKeep) ซึ่งเป็นช่องทางหลักที่กลุ่มแรนซัมแวร์ (Ransomware) ใช้ในการเจาะทะลวงระบบเพื่อฝังมัลแวร์เรียกค่าไถ่</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ในการตรวจสอบระบบไร้สาย (Wi-Fi) เหตุใดองค์กรจึงไม่ควรใช้ WPA2-Personal (Pre-Shared Key)?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพราะ WPA2-Personal ใช้รหัสผ่านชุดเดียวกันร่วมกันทั้งองค์กร ทำให้: (1) ไม่สามารถระบุตัวตนผู้ใช้งานรายบุคคลได้ (ขาด Individual Accountability) (2) หากพนักงานลาออกหรือทำรหัสหลุด ทุกคนต้องเปลี่ยนรหัสใหม่ทั้งหมด ซึ่งในทางปฏิบัติทำได้ยาก องค์กรจึงควรใช้ WPA2/WPA3-Enterprise ที่ยืนยันตัวตนแยกตามบัญชีผู้ใช้</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง "Configuration Issue" กับ "Audit Finding"</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> <strong>Configuration Issue</strong> คือข้อบกพร่องทางเทคนิคในการตั้งค่าระบบที่ไม่ตรงตาม Best Practice ในมุมมองของแอดมิน ส่วน <strong>Audit Finding</strong> คือข้อสรุปเชิงประเมินของผู้ตรวจสอบที่ชี้ชัดว่าสภาพความเป็นจริง (Condition) ขัดแย้งกับเกณฑ์มาตรฐานหรือนโยบาย (Criteria) ที่องค์กรต้องปฏิบัติตาม โดยมีหลักฐานเชิงประจักษ์และระบุผลกระทบต่อความเสี่ยงองค์กรชัดเจน</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> จงระบุ 4 องค์ประกอบสำคัญของ Audit Finding พร้อมยกตัวอย่างสั้นๆ</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> (1) <strong>Condition:</strong> พบกฎไฟร์วอลล์เปิดพอร์ต RDP สู่เน็ต (2) <strong>Criteria:</strong> นโยบายไอทีข้อ 6.1 ห้ามเปิด RDP สู่ภายนอก (3) <strong>Cause:</strong> ขาดการทบทวนกฎประจำปี (4) <strong>Effect:</strong> เสี่ยงต่อการถูกแรนซัมแวร์โจมตี</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ในการตรวจสอบบัญชีสิทธิ์สูงบน Linux ผู้ตรวจสอบควรตรวจสอบไฟล์ใดเป็นพิเศษ และมองหาจุดเสี่ยงใด?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ควรตรวจสอบไฟล์ <code>/etc/sudoers</code> และ <code>/etc/sudoers.d/</code> โดยมองหาการกำหนดสิทธิ์แบบกว้างเกินไป โดยเฉพาะการใช้คำสั่ง <code>NOPASSWD: ALL</code> ซึ่งทำให้ผู้ใช้สามารถยกระดับเป็น root ได้โดยไม่ต้องใส่รหัสผ่าน ตลอดจนตรวจสอบไฟล์ <code>/etc/passwd</code> เพื่อดูว่ามีบัญชีอื่นนอกจาก root ที่มี UID เป็น 0 หรือไม่</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> เหตุใดการตรวจสอบการเข้าถึงผ่าน VPN ของบริษัทภายนอก (Vendor) จึงต้องมีการตั้งค่าให้บัญชี Disabled เป็นค่าเริ่มต้น?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพื่อป้องกันไม่ให้บุคคลภายนอกสามารถล็อกอินเข้าสู่เครือข่ายภายในขององค์กรได้ตลอดเวลาโดยที่องค์กรไม่รู้ตัว บัญชีควรถูกเปิดใช้งานเฉพาะเมื่อมีคำขอปฏิบัติงานที่มีกำหนดเวลาชัดเจน และปิดทันทีเมื่องานเสร็จสิ้น เพื่อจำกัดพื้นที่การโจมตี (Attack Surface)</li>
+</ul>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="สรุปบทที่-10">
+            <h2 class="section-heading">สรุปบทที่ 10</h2>
+          </section>
+        
+<p class="content-paragraph">การตรวจสอบระบบปฏิบัติการและโครงสร้างพื้นฐานเครือข่ายเป็นการตรวจสอบในชั้นเทคนิคที่มีความสำคัญยิ่งยวดต่อความอยู่รอดขององค์กรในยุคไซเบอร์</p>
+<p class="content-paragraph">การตรวจสอบระบบปฏิบัติการ (OS Audit) มุ่งเน้นการควบคุมบัญชีผู้ใช้ตามหลัก Least Privilege การบังคับใช้นโยบายรหัสผ่านและ MFA การทำ System Hardening ตามมาตรฐาน CIS Benchmarks การปิดกั้นเซอร์วิสที่ไม่จำเป็น การบริหารจัดการแพตช์สำหรับช่องโหว่วิกฤต และการเปิดใช้นโยบายบันทึก Log อย่างเพียงพอ</p>
+<p class="content-paragraph">การตรวจสอบโครงสร้างพื้นฐานเครือข่าย (Network Audit) มุ่งเน้นความถูกต้องของผังเครือข่าย การแบ่งแยกโซนความปลอดภัย (Network Segmentation) เพื่อป้องกันการแพร่กระจายของภัยคุกคาม การตรวจสอบกฎไฟร์วอลล์เพื่อกำจัดกฎ Any-to-Any และกฎตกค้าง การควบคุมการเข้าถึงระยะไกล (VPN) ด้วย MFA และการบริหารจัดการอุปกรณ์เครือข่ายด้วยโปรโตคอลที่เข้ารหัส</p>
+<p class="content-paragraph">ที่สำคัญที่สุด ผู้ตรวจสอบต้องมีวุฒิภาวะทางวิชาชีพในการ <strong>แยกแยะระหว่าง Configuration Issue ออกจาก Audit Finding</strong> โดยนำเสนอข้อค้นพบที่มีโครงสร้างครบทั้ง 4 ด้าน (Condition, Criteria, Cause, Effect) เพื่อให้ข้อเสนอแนะสามารถนำไปสู่การปรับปรุงความมั่นคงปลอดภัยได้อย่างตรงจุดและสร้างคุณค่าต่อองค์กรอย่างแท้จริง</p>
+<hr class="section-divider">
+
+          <section class="chapter-section-anchor" id="เอกสารอ้างอิงและมาตรฐานสากล">
+            <h2 class="section-heading">เอกสารอ้างอิงและมาตรฐานสากล</h2>
+          </section>
+        
+<ol class="content-list">
+<li><strong>Center for Internet Security (CIS).</strong> (2023). <em>CIS Microsoft Windows Server Benchmark (Version 2.0)</em>. East Greenbush, NY: CIS.</li>
+<li><strong>Center for Internet Security (CIS).</strong> (2023). <em>CIS Red Hat Enterprise Linux Benchmark (Version 3.0)</em>. East Greenbush, NY: CIS.</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2009). <em>NIST SP 800-41 Rev. 1: Guidelines on Firewalls and Firewall Policy</em>. U.S. Department of Commerce.</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2008). <em>NIST SP 800-123: Guide to General Server Security</em>. U.S. Department of Commerce.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2022). <em>ISO/IEC 27001:2022 Information security, cybersecurity and privacy protection — Information security management systems — Requirements</em> (Annex A Controls: A.8.9, A.8.19, A.8.20, A.8.21, A.8.22, A.8.23). Geneva: ISO.</li>
+<li><strong>Information Systems Audit and Control Association (ISACA).</strong> (2020). <em>ITAF: Information Technology Assurance Framework (4th Edition)</em>. Rolling Meadows, IL: ISACA.</li>
+<li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+<li><strong>ประกาศคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2564.</strong> (หมวด 3: การควบคุมความมั่นคงปลอดภัยทางเทคนิค).</li>
+</ol>
+
+      <!-- Bottom Chapter Navigation -->
+      <footer class="chapter-nav-footer">
+        <a href="ch-9.html" class="btn-nav-chapter">
+          <span>◀</span> บทที่ 9: เทคนิคการตรวจออนไลน์ การสุ่มตัวอย่าง และหลักฐานการตรวจ
+        </a>
+        <a href="ch-11.html" class="btn-nav-chapter">
+          บทที่ 11: การจัดการและตรวจสอบล็อก <span>▶</span>
+        </a>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // ==========================================
+    // THEME & FONT CONTROLS
+    // ==========================================
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('audit_theme', theme);
+      const bL = document.getElementById('btn-theme-light');
+      const bS = document.getElementById('btn-theme-sepia');
+      const bD = document.getElementById('btn-theme-dark');
+      if (bL) bL.classList.toggle('active', theme === 'light');
+      if (bS) bS.classList.toggle('active', theme === 'sepia');
+      if (bD) bD.classList.toggle('active', theme === 'dark');
+    }
+
+    const savedTheme = localStorage.getItem('audit_theme') || 'light';
+    setTheme(savedTheme);
+
+    function adjustFontSize(delta) {
+      const root = document.documentElement;
+      root.classList.remove('fs-sm', 'fs-lg');
+      if (delta === -1) root.classList.add('fs-sm');
+      if (delta === 1) root.classList.add('fs-lg');
+      localStorage.setItem('audit_font_delta', delta);
+    }
+    const savedDelta = parseInt(localStorage.getItem('audit_font_delta') || '0', 10);
+    adjustFontSize(savedDelta);
+
+    // Reading Progress
+    window.addEventListener('scroll', () => {
+      const bar = document.getElementById('reading-progress-bar');
+      if (!bar) return;
+      const totalH = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = totalH > 0 ? (window.scrollY / totalH) * 100 : 0;
+      bar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+    });
+
+    // ==========================================
+    // WIDGET 10.1: OS CIS HARDENING INSPECTOR
+    // ==========================================
+    const osData = {
+      win: {
+        name: 'REG-APP-01 (Windows Server 2019)',
+        checks: [
+          { pillar: '1. บัญชีผู้ใช้', item: 'Local Admin Dormancy', val: 'พบบัญชี test_dev ค้าง 180 วัน', pass: false, weight: 15, rec: 'ระงับและลบบัญชีที่ไม่ได้ใช้งานเกิน 90 วัน' },
+          { pillar: '1. บัญชีผู้ใช้', item: 'Service Account RDP', val: 'บัญชี reg_batch อนุญาต RDP', pass: false, weight: 15, rec: 'ถอนสิทธิ์ Interactive Logon และใช้ gMSA' },
+          { pillar: '2. พิสูจน์ตัวตน', item: 'Password Complexity', val: 'ยาว 14 ตัวอักษร, ประวัติ 10 ครั้ง', pass: true, weight: 15, rec: 'เป็นไปตามนโยบาย' },
+          { pillar: '3. ควบคุมสิทธิ์', item: 'NTFS DACL Audit', val: 'ไม่มี Everyone: Full Control', pass: true, weight: 15, rec: 'เป็นไปตามหลัก Least Privilege' },
+          { pillar: '4. Hardening', item: 'Insecure Protocols', val: 'SMBv1 ปิดแล้ว, TLS 1.2 บังคับใช้', pass: true, weight: 15, rec: 'เป็นไปตาม CIS Benchmark' },
+          { pillar: '5. Patch Mgt', item: 'Security Patch Status', val: 'ขาดแพตช์ Critical นาน 4 เดือน', pass: false, weight: 25, rec: 'ปะแพตช์ทันทีหรือจัดทำ Patch Exception' }
+        ]
+      },
+      lnx: {
+        name: 'REG-DB-01 (Red Hat Enterprise Linux 8)',
+        checks: [
+          { pillar: '1. บัญชีผู้ใช้', item: 'Direct Root SSH', val: 'PermitRootLogin yes ใน sshd_config', pass: false, weight: 20, rec: 'เปลี่ยนเป็น PermitRootLogin no และเข้าผ่าน sudo' },
+          { pillar: '3. ควบคุมสิทธิ์', item: 'sudoers NOPASSWD', val: 'appadmin ALL=(ALL) NOPASSWD: ALL', pass: false, weight: 25, rec: 'จำกัดคำสั่งเฉพาะเจาะจงและบังคับใส่รหัส' },
+          { pillar: '3. ควบคุมสิทธิ์', item: '/etc/shadow Permissions', val: 'สิทธิ์ 0640 (root:shadow)', pass: true, weight: 15, rec: 'สอดคล้องตามมาตรฐาน CIS' },
+          { pillar: '4. Hardening', item: 'Host Firewall (firewalld)', val: 'สถานะ active, บล็อก Inbound ทั่วไป', pass: true, weight: 15, rec: 'เปิดใช้งานถูกต้อง' },
+          { pillar: '5. Patch Mgt', item: 'Kernel Security Updates', val: 'เคอร์เนลเป็นเวอร์ชันปัจจุบัน', pass: true, weight: 10, rec: 'ติดตั้งแพตช์สม่ำเสมอ' },
+          { pillar: '6. Audit Log', item: 'Linux auditd Framework', val: 'auditd ทำงานและเฝ้าระวัง /etc/passwd', pass: true, weight: 15, rec: 'เปิดบันทึกสมบูรณ์' }
+        ]
+      }
+    };
+
+    let curOsTarget = 'win';
+
+    function selectOsTarget(target) {
+      curOsTarget = target;
+      const bWin = document.getElementById('btn-os-win');
+      const bLnx = document.getElementById('btn-os-lnx');
+      if (bWin) bWin.classList.toggle('active', target === 'win');
+      if (bLnx) bLnx.classList.toggle('active', target === 'lnx');
+      renderOsChecklist();
+    }
+
+    function renderOsChecklist() {
+      const container = document.getElementById('os-checklist-container');
+      const summaryBox = document.getElementById('os-audit-summary');
+      if (!container || !summaryBox) return;
+
+      const data = osData[curOsTarget] || osData.win;
+      container.innerHTML = '';
+
+      let earnedScore = 0;
+      let totalWeight = 0;
+      let failsCount = 0;
+
+      data.checks.forEach(c => {
+        totalWeight += c.weight;
+        if (c.pass) earnedScore += c.weight;
+        else failsCount++;
+
+        const card = document.createElement('div');
+        card.className = 'check-card';
+        card.innerHTML = `
+          <div class="check-card-info">
+            <div class="check-card-title">${c.item} <span style="font-size:0.75rem; color:var(--text-dim);">(${c.pillar})</span></div>
+            <div class="check-card-desc">${c.val}</div>
+          </div>
+          <span class="check-status-badge ${c.pass ? 'tier1' : 'tier4'}">${c.pass ? '✓ ผ่าน (Pass)' : '❌ บกพร่อง (Fail)'}</span>
+        `;
+        container.appendChild(card);
+      });
+
+      const scorePct = Math.round((earnedScore / totalWeight) * 100);
+
+      summaryBox.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <div style="font-size:0.8rem; color:var(--text-dim); text-transform:uppercase;">คะแนนความมั่นคงปลอดภัย (Hardening Score):</div>
+            <div style="font-family:var(--font-display); font-size:2rem; font-weight:800; color:${scorePct >= 80 ? 'var(--emerald)' : (scorePct >= 60 ? 'var(--amber)' : 'var(--rose)')};">${scorePct}%</div>
+          </div>
+          <div>
+            <div style="font-size:0.8rem; color:var(--text-dim); text-transform:uppercase;">ข้อบกพร่องที่ตรวจพบ:</div>
+            <div style="font-weight:700; color:var(--rose);">${failsCount} รายการ (พบข้อบกพร่องระดับ Major Non-Conformity)</div>
+          </div>
+          <div style="max-width:400px; font-size:0.82rem; color:var(--text-muted); line-height:1.45;">
+            💡 <strong>ข้อเสนอแนะของผู้ตรวจ:</strong> เซิร์ฟเวอร์นี้ยังไม่ผ่านเกณฑ์ CIS Level 1 Benchmark จำเป็นต้องแก้ไขจุดบกพร่องเรื่องสิทธิ์และแพตช์ก่อนการต่ออายุใบรับรองความมั่นคงปลอดภัย
+          </div>
+        </div>
+      `;
+    }
+    selectOsTarget('win');
+
+    // ==========================================
+    // WIDGET 10.2: FIREWALL RULE EVALUATOR
+    // ==========================================
+    function evaluateFwTraffic() {
+      const srcEl = document.getElementById('sim-fw-src');
+      const dstEl = document.getElementById('sim-fw-dst');
+      const portEl = document.getElementById('sim-fw-port');
+      const resBox = document.getElementById('fw-eval-result-card');
+      if (!resBox) return;
+
+      const src = (srcEl && srcEl.value) || 'internet';
+      const dst = (dstEl && dstEl.value) || 'internal_host';
+      const port = (portEl && portEl.value) || 'rdp';
+
+      let verdict = '';
+      let verdictClass = '';
+      let ruleMatch = '';
+      let analysis = '';
+
+      if (src === 'internet' && port === 'rdp') {
+        verdict = '🚨 วิกฤตร้ายแรง: เปิด RDP ตรงจาก Internet (Rule FW-02)';
+        verdictClass = 'tier4';
+        ruleMatch = 'FW-02: Internet -> Internal (TCP 3389) [Permit]';
+        analysis = '❌ <strong>ละเมิดหลักความมั่นคงปลอดภัยอย่างร้ายแรง (Critical Finding):</strong> การเปิดพอร์ต RDP สู่สาธารณะเปิดโอกาสให้ผู้โจมตีทำ Brute Force หรือยิง Exploit BlueKeep เพื่อยึดเซิร์ฟเวอร์และปล่อย Ransomware เข้าสู่เครือข่ายภายในได้โดยตรง!';
+      } else if (port === 'any' || (src === 'dev_zone' && dst === 'internal_host')) {
+        verdict = '⚠️ มีความเสี่ยงสูง: กฎ Any-to-Any ตกค้าง (Rule FW-03)';
+        verdictClass = 'tier3';
+        ruleMatch = 'FW-03: 192.168.10.0/24 -> 192.168.20.0/24 [Permit / No Log]';
+        analysis = '⚠️ <strong>ขัดต่อ 8 จุดตรวจสำคัญ:</strong> กฎ Any-to-Any ทำลายการแบ่งโซนเครือข่าย อีกทั้งยังไม่มีการบันทึก Log และเป็นกฎชั่วคราวที่เปิดทิ้งไว้กว่า 2 ปีโดยไม่มีการทบทวน';
+      } else if (src === 'vendor' && port === 'oracle') {
+        verdict = '⚠️ ข้อบกพร่องด้านการควบคุม: กฎเข้าถึง DB ขาด Expiry Date (Rule FW-04)';
+        verdictClass = 'tier2';
+        ruleMatch = 'FW-04: Vendor IP -> Server (TCP 1521) [Permit]';
+        analysis = '⚠️ <strong>ขาดการบริหารวงจรชีวิตของกฎ:</strong> การเปิดพอร์ตฐานข้อมูลให้บุคคลภายนอกโดยตรง แม้จะล็อก IP ต้นทาง แต่ต้องกำหนด Expiry Date และควบคุมผ่าน Bastion Host ที่มี MFA';
+      } else if (src === 'internet' && dst === 'dmz_web' && port === 'https') {
+        verdict = '✅ สอดคล้องตามมาตรฐาน: Inbound Web เข้าสู่ DMZ (Rule FW-01)';
+        verdictClass = 'tier1';
+        ruleMatch = 'FW-01: Internet -> DMZ (TCP 443) [Permit / Logged]';
+        analysis = '✓ <strong>การตั้งค่าถูกต้อง:</strong> ทราฟฟิกเว็บสาธารณะถูกจำกัดให้เข้าถึงเฉพาะเครื่อง Reverse Proxy ในโซน DMZ พร้อมเปิดบันทึก Log ครบถ้วน';
+      } else if (src === 'guest_wifi' && dst !== 'dmz_web') {
+        verdict = '🚨 ละเมิดการแบ่งโซน: Guest Wi-Fi วิ่งเข้า Internal Server';
+        verdictClass = 'tier4';
+        ruleMatch = 'Default Routing / Segmentation Leak';
+        analysis = '❌ <strong>Guest Isolation Failure:</strong> เครือข่ายผู้มาติดต่อ (Guest Wi-Fi) ต้องถูกจำกัดให้ออกสู่ Internet เท่านั้น ห้ามมิให้ส่งแพ็กเก็ตข้ามสู่เครือข่ายภายในองค์กรโดยเด็ดขาด';
+      } else {
+        verdict = 'ℹ️ ทราฟฟิกทั่วไป: อยู่ภายใต้การควบคุมของไฟร์วอลล์';
+        verdictClass = 'tier2';
+        ruleMatch = 'General Filter Evaluation';
+        analysis = 'ระบบไฟร์วอลล์ตรวจสอบตามกฎเกณฑ์มาตรฐาน แนะนำให้เปิด Log at Session End เสมอ';
+      }
+
+      resBox.innerHTML = `
+        <div style="font-weight:700; margin-bottom:0.4rem; color:var(--text-main);">ผลการประเมินทางวิชาชีพ (Audit Evaluation):</div>
+        <div style="margin-bottom:0.75rem;"><span class="badge-tier ${verdictClass}" style="font-size:0.86rem; padding:0.25rem 0.6rem;">${verdict}</span></div>
+        <div style="font-family:var(--font-code); font-size:0.8rem; background:var(--bg-surface); padding:0.4rem 0.6rem; border-radius:4px; margin-bottom:0.75rem; border:1px solid var(--border-color);">
+          <strong>กฎที่ตรงกับทราฟฟิก:</strong> ${ruleMatch}
+        </div>
+        <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.5;">
+          ${analysis}
+        </div>
+      `;
+    }
+    evaluateFwTraffic();
+
+    // ==========================================
+    // WIDGET 10.3: FINDING TRANSFORMER BUILDER
+    // ==========================================
+    const findingsDb = {
+      rdp_internet: {
+        condition: 'พบกฎไฟร์วอลล์ FW-02 เปิดพอร์ต Remote Desktop (TCP 3389) อนุญาตให้ไอพีใดๆ จากอินเทอร์เน็ต (Any) เชื่อมต่อตรงสู่เครื่องแม่ข่ายภายใน (192.168.10.15)',
+        criteria: 'ISO/IEC 27001:2022 Control A.8.20 (Network security) และนโยบายความมั่นคงปลอดภัยสารสนเทศ มหาวิทยาลัยดิจิทัลสมมติ หมวด 6 ข้อ 6.1 ซึ่งระบุชัดเจนว่า "ห้ามเปิดช่องทาง Remote Desktop สู่เครือข่ายภายนอกโดยตรง"',
+        cause: 'ขาดกระบวนการควบคุมการเปิดใช้งานกฎไฟร์วอลล์ชั่วคราว และขาดการทบทวนกฎไฟร์วอลล์ประจำปี (Annual Firewall Rule Review)',
+        effect: 'ระบบมีความเสี่ยงระดับวิกฤติต่อการถูกโจมตีแบบ Brute Force หรือใช้ช่องโหว่ RCE (เช่น BlueKeep) ซึ่งเป็นช่องทางหลักที่กลุ่ม Ransomware ใช้เจาะระบบและเข้ารหัสไฟล์ข้อมูล',
+        level: 'Critical Major Non-Conformity (Critical Major NCR)'
+      },
+      eol_os: {
+        condition: 'เครื่องแม่ข่าย REG-WEB-OLD ยังคงรันบนระบบปฏิบัติการ Windows Server 2012 R2 ซึ่งสิ้นสุดอายุการสนับสนุน (End-of-Life: EOL) ตั้งแต่วันที่ 10 ตุลาคม 2566',
+        criteria: 'ISO/IEC 27001:2022 Control A.8.9 (Configuration management) และประกาศ กกม. พ.ศ. 2564 หมวด 3 ข้อ 15 ซึ่งกำหนดให้ต้องปรับปรุงระบบปฏิบัติการให้ทันสมัยและมีผู้ผลิตสนับสนุน',
+        cause: 'ขาดแผนการจัดสรรงบประมาณและขาดการวางแผนวงจรชีวิตของระบบ (System Life Cycle Management)',
+        effect: 'ระบบจะไม่ได้รับแพตช์ความมั่นคงปลอดภัยอีกต่อไป หากมีช่องโหว่ใหม่ (Zero-day) ผู้โจมตีสามารถเจาะระบบได้สำเร็จโดยไม่มีกลไกป้องกัน',
+        level: 'Major Non-Conformity (Major NCR)'
+      },
+      vendor_no_mfa: {
+        condition: 'ตรวจพบบัญชี VPN สำหรับบุคคลภายนอก (Vendor Support) จำนวน 3 บัญชี ใช้เพียงรหัสผ่านธรรมดา (Single-Factor Authentication) และเปิดใช้งานค้างไว้ตลอด 24 ชั่วโมง',
+        criteria: 'ประกาศ กกม. พ.ศ. 2564 หมวด 3 ข้อ 17 และ ISO/IEC 27001:2022 Control A.8.5 (Secure authentication) กำหนดให้การเข้าถึงจากระยะไกลต้องใช้ MFA',
+        cause: 'ขาดการบังคับใช้นโยบายควบคุมการเข้าถึงของคู่ค้าภายนอก (Third-Party Access Policy)',
+        effect: 'หากรหัสผ่านของ Vendor หลุดหรือถูกดักรับ ผู้โจมตีจะสามารถล็อกอินเข้าสู่เครือข่ายภายในของมหาวิทยาลัยได้โดยไม่มีการตรวจสอบขั้นที่สอง',
+        level: 'Major Non-Conformity (Major NCR)'
+      },
+      sudoers_nopasswd: {
+        condition: 'ไฟล์ /etc/sudoers บนเซิร์ฟเวอร์ REG-DB-01 มีการกำหนดสิทธิ์ appadmin ALL=(ALL) NOPASSWD: ALL',
+        criteria: 'ISO/IEC 27001:2022 Control A.8.19 (Privileged access rights) และหลักการ Privilege Minimization',
+        cause: 'ผู้ดูแลระบบตั้งค่าเพื่อความสะดวกในการรันสคริปต์อัตโนมัติ โดยไม่ได้แยกสิทธิ์เฉพาะคำสั่ง',
+        effect: 'หากบัญชี appadmin ถูกผู้ไม่ประสงค์ดีเข้าควบคุม จะสามารถสั่งยกระดับเป็น root ได้ทันทีโดยไม่ต้องใส่รหัสผ่าน ทำลายการแบ่งแยกหน้าที่',
+        level: 'Major Non-Conformity (Major NCR)'
+      },
+      dev_prod_shared: {
+        condition: 'เซิร์ฟเวอร์ฐานข้อมูล Production (REG-DB-01) เชื่อมต่ออยู่ใน Subnet 192.168.10.0/24 เดียวกันกับเซิร์ฟเวอร์ทดสอบระบบของนักศึกษาฝึกงาน โดยไม่มีไฟร์วอลล์กั้น',
+        criteria: 'ISO/IEC 27001:2022 Control A.8.22 (Segregation of networks) และ Control A.8.31 (Separation of development, test and production environments)',
+        cause: 'การออกแบบสถาปัตยกรรมเครือข่ายในอดีตเน้นความสะดวกในการเชื่อมต่อ และขาดการจัดทำ VLAN สำหรับโซนทดสอบ',
+        effect: 'ช่องโหว่บนระบบทดสอบหรือการติดมัลแวร์ของนักศึกษาฝึกงาน สามารถแพร่กระจายข้ามสู่ฐานข้อมูล Production ได้โดยไม่มีสิ่งกีดขวาง',
+        level: 'Major Non-Conformity (Major NCR)'
+      }
+    };
+
+    function transformFinding() {
+      const selEl = document.getElementById('sel-config-issue');
+      const box = document.getElementById('finding-builder-display');
+      if (!box) return;
+
+      const key = (selEl && selEl.value) || 'rdp_internet';
+      const item = findingsDb[key] || findingsDb.rdp_internet;
+
+      box.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; flex-wrap:wrap; gap:0.5rem;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:1.05rem; color:var(--text-main);">
+            📋 ร่างข้อค้นพบฉบับสมบูรณ์ (Official Audit Finding Statement)
+          </div>
+          <span class="finding-label ${item.level.includes('Critical') ? 'crit' : 'major'}">${item.level}</span>
+        </div>
+
+        <div style="margin-bottom:0.75rem;">
+          <div style="font-family:var(--font-code); font-size:0.78rem; font-weight:800; color:var(--primary); margin-bottom:0.15rem;">1. สภาพที่ตรวจพบ (CONDITION):</div>
+          <div style="font-size:0.86rem; color:var(--text-main); line-height:1.45; background:var(--bg-surface); padding:0.5rem 0.75rem; border-radius:6px; border-left:3px solid var(--primary);">${item.condition}</div>
+        </div>
+
+        <div style="margin-bottom:0.75rem;">
+          <div style="font-family:var(--font-code); font-size:0.78rem; font-weight:800; color:var(--emerald); margin-bottom:0.15rem;">2. เกณฑ์อ้างอิง (CRITERIA):</div>
+          <div style="font-size:0.86rem; color:var(--text-main); line-height:1.45; background:var(--bg-surface); padding:0.5rem 0.75rem; border-radius:6px; border-left:3px solid var(--emerald);">${item.criteria}</div>
+        </div>
+
+        <div style="margin-bottom:0.75rem;">
+          <div style="font-family:var(--font-code); font-size:0.78rem; font-weight:800; color:var(--amber); margin-bottom:0.15rem;">3. สาเหตุที่เกิด (CAUSE / ROOT CAUSE):</div>
+          <div style="font-size:0.86rem; color:var(--text-main); line-height:1.45; background:var(--bg-surface); padding:0.5rem 0.75rem; border-radius:6px; border-left:3px solid var(--amber);">${item.cause}</div>
+        </div>
+
+        <div style="margin-bottom:0.75rem;">
+          <div style="font-family:var(--font-code); font-size:0.78rem; font-weight:800; color:var(--rose); margin-bottom:0.15rem;">4. ผลกระทบต่อองค์กร (EFFECT / RISK IMPACT):</div>
+          <div style="font-size:0.86rem; color:var(--text-main); line-height:1.45; background:var(--bg-surface); padding:0.5rem 0.75rem; border-radius:6px; border-left:3px solid var(--rose);">${item.effect}</div>
+        </div>
+      `;
+    }
+    transformFinding();
+
+    // ==========================================
+    // WIDGET 10.4: TRIAGE CHALLENGE SIMULATOR
+    // ==========================================
+    const triageData = [
+      {
+        id: 'A',
+        title: 'รายการ ก: ภาพพื้นหลัง Desktop ของเซิร์ฟเวอร์ไม่ได้เปลี่ยนเป็นโลโก้มหาวิทยาลัย',
+        type: 'cosmetic',
+        reason: 'เป็นเพียงประเด็นทางความสวยงาม (Cosmetic / UI Preference) ไม่มีผลกระทบต่อความมั่นคงปลอดภัย ห้ามนำมาเขียนเป็น Audit Finding'
+      },
+      {
+        id: 'B',
+        title: 'รายการ ข: ตรวจพบพอร์ต SMBv1 (TCP 445) ยังคงเปิดใช้งานอยู่บนเซิร์ฟเวอร์ Windows',
+        type: 'finding',
+        reason: 'เป็น Audit Finding (Major NCR) เนื่องจากขัดต่อมาตรฐาน CIS Hardening และนโยบายความมั่นคงปลอดภัย เสี่ยงต่อการถูกเจาะด้วย EternalBlue / WannaCry'
+      },
+      {
+        id: 'C',
+        title: 'รายการ ค: วิศวกรเครือข่ายตั้งชื่อ Hostname ไฟร์วอลล์ว่า "fw-test-01" บนเครื่องใช้งานจริง',
+        type: 'cosmetic',
+        reason: 'เป็น Naming Convention Issue (Configuration/Cosmetic) แม้จะไม่เรียบร้อย แต่หากการตั้งค่ากฎความปลอดภัยถูกต้อง ย่อมไม่ถือเป็น Non-Conformity'
+      },
+      {
+        id: 'D',
+        title: 'รายการ ง: กฎไฟร์วอลล์อนุญาตให้โซน Guest Wi-Fi ยิงคำสั่ง Ping (ICMP) ไปยัง Gateway ของเซิร์ฟเวอร์การเงินได้',
+        type: 'finding',
+        reason: 'เป็น Audit Finding เนื่องจากสะท้อนความบกพร่องในการแยกโซน (Segmentation Failure) ทำให้เครือข่ายภายนอกสามารถสำรวจเส้นทางระบบภายในได้'
+      }
+    ];
+
+    const triageAnswers = {};
+
+    function renderTriageList() {
+      const container = document.getElementById('triage-items-list');
+      if (!container) return;
+
+      container.innerHTML = '';
+      triageData.forEach(item => {
+        const answered = triageAnswers[item.id];
+        const isCorrect = answered === item.type;
+
+        const card = document.createElement('div');
+        card.className = 'triage-card';
+        card.innerHTML = `
+          <div class="triage-card-header">
+            <strong>${item.title}</strong>
+          </div>
+          <div class="triage-actions">
+            <button class="btn-triage-opt ${answered === 'cosmetic' ? 'selected' : ''}" onclick="answerTriage('${item.id}', 'cosmetic')">
+              🎨 Cosmetic / Config Issue (ไม่ใช่ข้อค้นพบ)
+            </button>
+            <button class="btn-triage-opt ${answered === 'finding' ? 'selected' : ''}" onclick="answerTriage('${item.id}', 'finding')">
+              🛡️ Audit Finding (ข้อค้นพบทางการ)
+            </button>
+          </div>
+          ${answered ? `
+            <div class="triage-feedback" style="background:${isCorrect ? 'var(--emerald-bg)' : 'var(--rose-bg)'}; color:var(--text-main); border-left:3px solid ${isCorrect ? 'var(--emerald)' : 'var(--rose)'};">
+              ${isCorrect ? '✅ <strong>ถูกต้อง!</strong>' : '❌ <strong>ยังไม่ถูกต้อง!</strong>'} ${item.reason}
+            </div>
+          ` : ''}
+        `;
+        container.appendChild(card);
+      });
+
+      renderTriageScore();
+    }
+
+    function answerTriage(id, choice) {
+      triageAnswers[id] = choice;
+      renderTriageList();
+    }
+
+    function renderTriageScore() {
+      const bar = document.getElementById('triage-score-bar');
+      if (!bar) return;
+
+      const keys = Object.keys(triageAnswers);
+      let correct = 0;
+      keys.forEach(k => {
+        const item = triageData.find(d => d.id === k);
+        if (item && triageAnswers[k] === item.type) correct++;
+      });
+
+      bar.innerHTML = `
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:0.9rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+          <div>
+            <span style="font-size:0.82rem; color:var(--text-dim); text-transform:uppercase;">คะแนนความแม่นยำในการคัดกรอง:</span>
+            <strong style="margin-left:0.5rem; font-size:1.15rem; color:var(--primary);">${correct} / ${triageData.length} ข้อ</strong>
+          </div>
+          <div style="font-size:0.84rem; color:var(--text-muted);">
+            ${keys.length === triageData.length ? (correct === 4 ? '🎉 ยอดเยี่ยม! คุณมีวิจารณญาณทางวิชาชีพที่แม่นยำในการแยกแยะข้อค้นพบ' : 'ฝึกฝนทำความเข้าใจเกณฑ์และการมีผลกระทบต่อความเสี่ยงเพิ่มเติม') : 'ตอบให้ครบทั้ง 4 ข้อเพื่อประเมินผล'}
+          </div>
+        </div>
+      `;
+    }
+    renderTriageList();
+
+    // ==========================================
+    // WIDGET 10.5: LINUX PERMISSION CALCULATOR
+    // ==========================================
+    const presetPerms = {
+      shadow: { octal: '0640', desc: '/etc/shadow (รหัสผ่านแฮช - ต้อง root เท่านั้น)' },
+      passwd: { octal: '0644', desc: '/etc/passwd (รายชื่อบัญชี - ทุกคนอ่านได้)' },
+      sudoers: { octal: '0440', desc: '/etc/sudoers (คอนฟิกสิทธิ์ - root อ่านอย่างเดียว)' },
+      custom: { octal: '0755', desc: 'กำหนดสิทธิ์เอง' }
+    };
+
+    function loadPresetPermFile() {
+      const sel = document.getElementById('sel-perm-file');
+      const txt = document.getElementById('txt-octal-perm');
+      if (!sel || !txt) return;
+
+      const key = sel.value;
+      if (presetPerms[key]) {
+        txt.value = presetPerms[key].octal;
+        calcPermSecurity();
+      }
+    }
+
+    function toggleSuidBit() {
+      const chk = document.getElementById('chk-suid');
+      const txt = document.getElementById('txt-octal-perm');
+      if (!chk || !txt) return;
+
+      let val = txt.value.padStart(4, '0');
+      let d0 = parseInt(val.charAt(0), 10) || 0;
+      if (chk.checked) d0 |= 4;
+      else d0 &= ~4;
+
+      txt.value = d0.toString() + val.substring(1);
+      calcPermSecurity();
+    }
+
+    function toggleSgidBit() {
+      const chk = document.getElementById('chk-sgid');
+      const txt = document.getElementById('txt-octal-perm');
+      if (!chk || !txt) return;
+
+      let val = txt.value.padStart(4, '0');
+      let d0 = parseInt(val.charAt(0), 10) || 0;
+      if (chk.checked) d0 |= 2;
+      else d0 &= ~2;
+
+      txt.value = d0.toString() + val.substring(1);
+      calcPermSecurity();
+    }
+
+    function calcPermSecurity() {
+      const txtEl = document.getElementById('txt-octal-perm');
+      const resCard = document.getElementById('perm-eval-card');
+      const chkSuid = document.getElementById('chk-suid');
+      const chkSgid = document.getElementById('chk-sgid');
+      if (!txtEl || !resCard) return;
+
+      let val = txtEl.value.trim().padStart(4, '0');
+      if (val.length > 4) val = val.substring(val.length - 4);
+
+      const d0 = parseInt(val.charAt(0), 10) || 0;
+      const d1 = parseInt(val.charAt(1), 10) || 0; // owner
+      const d2 = parseInt(val.charAt(2), 10) || 0; // group
+      const d3 = parseInt(val.charAt(3), 10) || 0; // others
+
+      if (chkSuid) chkSuid.checked = (d0 & 4) !== 0;
+      if (chkSgid) chkSgid.checked = (d0 & 2) !== 0;
+
+      const hasSuid = (d0 & 4) !== 0;
+      const otherWrite = (d3 & 2) !== 0;
+      const otherRead = (d3 & 4) !== 0;
+
+      let status = '✓ ปลอดภัยตามเกณฑ์ CIS';
+      let statusClass = 'tier1';
+      let comments = [];
+
+      if (otherWrite) {
+        status = '🚨 อันตรายวิกฤต: World-Writable (Others สามารถแก้ไขไฟล์ได้)';
+        statusClass = 'tier4';
+        comments.push('• สิทธิ์ Others มีสิทธิ์ Write (w) ผู้ใช้งานทุกคนในระบบสามารถแก้ไขหรือลบไฟล์ได้ทันที!');
+      }
+
+      if (hasSuid) {
+        status = '⚠️ มีบิต SUID: สิทธิ์ทำงานจะรันเสมือนเป็นเจ้าของไฟล์ (Root)';
+        statusClass = 'tier3';
+        comments.push('• ตรวจพบ SUID Bit (4000) หากเป็นไบนารีที่ถูกเจาะ อาจนำไปสู่ Local Privilege Escalation สู่ root');
+      }
+
+      const sel = document.getElementById('sel-perm-file');
+      if (sel && sel.value === 'shadow') {
+        if (otherRead || otherWrite) {
+          status = '🚨 ผิดมาตรฐานร้ายแรง: /etc/shadow มีสิทธิ์เปิดกว้างให้ Others อ่าน';
+          statusClass = 'tier4';
+          comments.push('• ไฟล์ /etc/shadow ต้องจำกัดเฉพาะ root อ่านได้เท่านั้น (0640 หรือ 0000)');
+        }
+      }
+
+      if (comments.length === 0) {
+        comments.push('• การกำหนดสิทธิ์สอดคล้องกับหลัก Least Privilege บนระบบ POSIX');
+      }
+
+      resCard.innerHTML = `
+        <div style="font-weight:700; color:var(--text-main); margin-bottom:0.4rem;">การวิเคราะห์ความมั่นคงปลอดภัย (Security Analysis):</div>
+        <div style="margin-bottom:0.6rem;"><span class="badge-tier ${statusClass}" style="font-size:0.86rem; padding:0.25rem 0.6rem;">${status}</span></div>
+        <div style="font-family:var(--font-code); font-size:0.82rem; background:var(--bg-surface); padding:0.5rem 0.75rem; border-radius:4px; margin-bottom:0.6rem; border:1px solid var(--border-color);">
+          <strong>ค่าสิทธิ์ Octal:</strong> ${val} | <strong>SUID:</strong> ${hasSuid ? 'YES' : 'NO'} | <strong>Others Writable:</strong> ${otherWrite ? 'YES' : 'NO'}
+        </div>
+        <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.45;">
+          ${comments.join('<br>')}
+        </div>
+      `;
+    }
+    calcPermSecurity();
+  </script>
+</body>
+</html>

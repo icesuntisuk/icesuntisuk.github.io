@@ -1,0 +1,2566 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 14: การจัดทำข้อค้นพบและรายงานการตรวจ (Audit Findings, Root Cause Analysis, and Reporting) - การตรวจสอบความมั่นคงปลอดภัยสารสนเทศ</title>
+  <meta name="description" content="บทที่ 14: การจัดทำข้อค้นพบและรายงานการตรวจ โครงสร้าง 6 องค์ประกอบ (5Cs + E), Root Cause Analysis (Five Whys & Fishbone), Executive Summary, Risk Heatmap และ SMARTR Corrective Action Plan">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7c3aed;
+      --primary-hover: #6d28d9;
+      --primary-glow: rgba(124, 58, 237, 0.14);
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --border-color: #e2e8f0;
+      --border-subtle: #edf2f7;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --text-dim: #64748b;
+      --code-bg: #f1f5f9;
+      --code-border: #cbd5e1;
+      --font-body: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Inter', 'Prompt', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+      --emerald: #059669;
+      --emerald-bg: rgba(5, 150, 105, 0.1);
+      --amber: #d97706;
+      --amber-bg: rgba(217, 119, 6, 0.1);
+      --rose: #e11d48;
+      --rose-bg: rgba(225, 29, 72, 0.1);
+      --purple: #7c3aed;
+      --purple-bg: rgba(124, 58, 237, 0.1);
+      --blue: #0284c7;
+      --blue-bg: rgba(2, 132, 199, 0.1);
+      --base-font-size: 16px;
+    }
+
+    [data-theme="sepia"] {
+      --primary: #6d28d9;
+      --primary-hover: #5b21b6;
+      --primary-glow: rgba(109, 40, 217, 0.15);
+      --bg-page: #fbf0d9;
+      --bg-surface: #f4e3c1;
+      --bg-card: #f7e8cb;
+      --border-color: #e6d3aa;
+      --border-subtle: #ecdcb9;
+      --text-main: #433422;
+      --text-muted: #5c4731;
+      --text-dim: #7d654a;
+      --code-bg: #efe0c0;
+      --code-border: #dcc89f;
+      --emerald: #2e7d32;
+      --emerald-bg: rgba(46, 125, 50, 0.12);
+      --amber: #b45309;
+      --amber-bg: rgba(180, 83, 9, 0.12);
+      --rose: #9f1239;
+      --rose-bg: rgba(159, 18, 57, 0.12);
+      --purple: #6d28d9;
+      --purple-bg: rgba(109, 40, 217, 0.12);
+      --blue: #0369a1;
+      --blue-bg: rgba(3, 105, 161, 0.12);
+    }
+
+    [data-theme="dark"] {
+      --primary: #8b5cf6;
+      --primary-hover: #a78bfa;
+      --primary-glow: rgba(139, 92, 246, 0.22);
+      --bg-page: #0b0f19;
+      --bg-surface: #111827;
+      --bg-card: #1f2937;
+      --border-color: #374151;
+      --border-subtle: #1f2937;
+      --text-main: #f9fafb;
+      --text-muted: #d1d5db;
+      --text-dim: #9ca3af;
+      --code-bg: #030712;
+      --code-border: #374151;
+      --emerald: #10b981;
+      --emerald-bg: rgba(16, 185, 129, 0.15);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245, 158, 11, 0.15);
+      --rose: #f43f5e;
+      --rose-bg: rgba(244, 63, 94, 0.15);
+      --purple: #a855f7;
+      --purple-bg: rgba(168, 85, 247, 0.15);
+      --blue: #38bdf8;
+      --blue-bg: rgba(56, 189, 248, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: var(--base-font-size); scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    /* Top Fixed Progress & Reader Bar */
+    .top-nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .progress-track { width: 100%; height: 3px; background: transparent; }
+    .progress-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.1s linear; }
+
+    .nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0.5rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      text-decoration: none;
+    }
+    .nav-brand-badge {
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-family: var(--font-code);
+      font-size: 0.75rem;
+      border: 1px solid var(--primary);
+    }
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .nav-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .nav-btn:hover {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Layout */
+    .page-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 2rem 1.5rem 4rem;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 2.5rem;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .page-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+      .sidebar-toc { display: none; }
+    }
+
+    /* Sidebar TOC */
+    .sidebar-toc {
+      position: sticky;
+      top: 4rem;
+      max-height: calc(100vh - 5rem);
+      overflow-y: auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .toc-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 0.85rem;
+      display: block;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+    .toc-list { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+    .toc-item a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      display: block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      line-height: 1.4;
+      transition: all 0.15s;
+    }
+    .toc-item a:hover {
+      color: var(--primary);
+      background: var(--primary-glow);
+    }
+    .toc-h1 { font-weight: 700; }
+    .toc-h2 { font-weight: 600; padding-left: 0.6rem; }
+    .toc-h3 { padding-left: 1.2rem; font-size: 0.76rem; color: var(--text-dim); }
+
+    /* Main Article */
+    .main-article {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2.5rem 3rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+    @media (max-width: 640px) {
+      .main-article { padding: 1.5rem 1rem; }
+    }
+
+    /* Header */
+    .chapter-header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+    .chapter-badge {
+      display: inline-block;
+      font-family: var(--font-code);
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.3rem 0.85rem;
+      border-radius: 6px;
+      margin-bottom: 0.85rem;
+      border: 1px solid var(--primary);
+      letter-spacing: 0.05em;
+    }
+    .chapter-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.35;
+      color: var(--text-main);
+    }
+
+    /* Headings */
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1rem;
+      color: var(--text-main);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .subsection-heading {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 2rem 0 0.85rem;
+      color: var(--text-main);
+    }
+    .sub-subsection-heading {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 1.5rem 0 0.65rem;
+      color: var(--text-main);
+    }
+    .sub-level5-heading {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 1.25rem 0 0.5rem;
+      color: var(--text-dim);
+    }
+
+    /* Prose Content */
+    .content-paragraph {
+      margin-bottom: 1.15rem;
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+    .content-list {
+      margin: 0.75rem 0 1.25rem 1.8rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
+    .content-list li { margin-bottom: 0.4rem; }
+    .content-divider {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2.5rem 0;
+    }
+    .content-quote {
+      background: var(--bg-card);
+      border-left: 4px solid var(--primary);
+      padding: 1.1rem 1.5rem;
+      margin: 1.25rem 0;
+      border-radius: 0 8px 8px 0;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      padding: 1.1rem;
+      overflow-x: auto;
+      font-family: var(--font-code);
+      font-size: 0.86rem;
+      margin: 1.25rem 0;
+      color: var(--text-main);
+    }
+    code {
+      font-family: var(--font-code);
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.86em;
+    }
+
+    /* Table */
+    .table-responsive {
+      overflow-x: auto;
+      margin: 1.25rem 0;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      text-align: left;
+    }
+    .data-table th, .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .data-table th {
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-weight: 700;
+    }
+    .data-table tr:hover {
+      background: var(--primary-glow);
+    }
+
+    /* Visual Figures */
+    .figure-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    }
+    .figure-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+    .figure-tag {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+    .figure-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .figure-caption {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px dashed var(--border-color);
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    /* Elements 5Cs+E Grid */
+    .elements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .element-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      position: relative;
+    }
+    .elem-badge {
+      font-family: var(--font-code);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 0.4rem;
+    }
+    .tier-crit .elem-badge { background: var(--blue-bg); color: var(--blue); }
+    .tier-cond .elem-badge { background: var(--amber-bg); color: var(--amber); }
+    .tier-evid .elem-badge { background: var(--purple-bg); color: var(--purple); }
+    .tier-cause .elem-badge { background: var(--rose-bg); color: var(--rose); }
+    .tier-risk .elem-badge { background: var(--rose-bg); color: var(--rose); }
+    .tier-reco .elem-badge { background: var(--emerald-bg); color: var(--emerald); }
+
+    .elem-name { font-weight: 700; font-size: 0.92rem; color: var(--text-main); margin-bottom: 0.25rem; }
+    .elem-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; margin-bottom: 0.4rem; }
+    .elem-sub { font-size: 0.76rem; color: var(--text-dim); font-style: italic; }
+
+    /* Principles Grid */
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.85rem;
+    }
+    .principle-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      position: relative;
+    }
+    .p-num {
+      font-family: var(--font-code);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+    .p-title { font-weight: 700; font-size: 0.88rem; color: var(--text-main); margin-bottom: 0.25rem; }
+    .p-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Comparison Grid */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    @media (max-width: 700px) { .comparison-grid { grid-template-columns: 1fr; } }
+    .comp-col {
+      background: var(--bg-surface);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    .col-symptom .comp-header { background: var(--rose-bg); color: var(--rose); border-bottom: 1px solid var(--rose); }
+    .col-root .comp-header { background: var(--emerald-bg); color: var(--emerald); border-bottom: 1px solid var(--emerald); }
+    .comp-header { padding: 0.75rem 1rem; font-weight: 700; font-size: 0.9rem; }
+    .comp-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.85rem; }
+    .comp-case { font-size: 0.84rem; }
+    .comp-case strong { color: var(--text-main); display: block; margin-bottom: 0.2rem; }
+    .comp-case p { color: var(--text-muted); margin-bottom: 0.25rem; }
+    .comp-result { font-size: 0.78rem; color: var(--text-dim); }
+
+    /* Report Arch Grid */
+    .report-arch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+    .arch-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .arch-num { font-family: var(--font-code); font-size: 0.7rem; font-weight: 700; color: var(--primary); margin-bottom: 0.25rem; }
+    .arch-title { font-weight: 700; font-size: 0.88rem; color: var(--text-main); margin-bottom: 0.35rem; }
+    .arch-desc { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.5rem; }
+    .arch-items { margin-left: 1.2rem; font-size: 0.8rem; color: var(--text-muted); line-height: 1.45; }
+
+    /* SMARTR Grid */
+    .smartr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+    }
+    .smartr-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem;
+    }
+    .s-letter { font-family: var(--font-code); font-size: 1.5rem; font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: 0.35rem; }
+    .s-title { font-weight: 700; font-size: 0.84rem; color: var(--text-main); margin-bottom: 0.25rem; }
+    .s-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Executive Summary Card */
+    .exec-summary-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    .exec-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.84rem;
+    }
+    .meta-label { color: var(--text-dim); font-weight: 600; margin-right: 0.35rem; }
+    .meta-val { color: var(--text-main); font-weight: 500; }
+    .exec-opinion-box {
+      background: var(--bg-card);
+      border-left: 4px solid var(--rose);
+      padding: 1rem;
+      border-radius: 0 6px 6px 0;
+    }
+    .opinion-title { font-weight: 700; font-size: 0.9rem; color: var(--rose); margin-bottom: 0.4rem; }
+    .opinion-body { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* Finding Flow Banner */
+    .finding-flow-banner {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-left: 5px solid var(--primary);
+      padding: 1.25rem;
+      border-radius: 8px;
+    }
+    .banner-badge { font-family: var(--font-code); font-size: 0.75rem; font-weight: 700; color: var(--primary); margin-bottom: 0.25rem; }
+    .banner-title { font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem; }
+    .banner-sub { font-size: 0.84rem; color: var(--text-dim); }
+
+    /* Traps Grid */
+    .traps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+    .trap-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-top: 3px solid var(--rose);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .trap-num { font-family: var(--font-code); font-size: 0.72rem; font-weight: 700; color: var(--rose); margin-bottom: 0.3rem; }
+    .trap-title { font-weight: 700; font-size: 0.88rem; color: var(--text-main); margin-bottom: 0.3rem; }
+    .trap-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.45; }
+
+    /* Fishbone Grid */
+    .fishbone-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+    .fb-bone {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .bone-header { font-weight: 700; font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.5rem; padding-bottom: 0.35rem; border-bottom: 2px solid var(--primary); }
+    .bone-list { margin-left: 1.2rem; font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* Dialogue */
+    .dialogue-container { display: flex; flex-direction: column; gap: 1rem; }
+    .chat-bubble {
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      font-size: 0.86rem;
+      line-height: 1.6;
+    }
+    .chat-chair { background: var(--bg-surface); border-left: 4px solid var(--purple); }
+    .chat-auditor { background: var(--bg-surface); border-left: 4px solid var(--primary); margin-left: 1.5rem; }
+    .chat-auditee { background: var(--bg-surface); border-left: 4px solid var(--blue); margin-left: 3rem; }
+    .chat-author { font-weight: 700; margin-bottom: 0.35rem; font-size: 0.84rem; color: var(--text-main); }
+
+    /* Status Badges */
+    .badge-status {
+      display: inline-block;
+      padding: 0.18rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.76rem;
+      font-weight: 600;
+    }
+    .badge-status.pass { background: var(--emerald-bg); color: var(--emerald); }
+    .badge-status.warn { background: var(--amber-bg); color: var(--amber); }
+    .badge-status.fail { background: var(--rose-bg); color: var(--rose); }
+    .badge-status.info { background: var(--blue-bg); color: var(--blue); }
+
+    /* Interactive Widgets */
+    .interactive-widget {
+      background: var(--bg-surface);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2.5rem 0;
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+    .widget-header {
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .widget-tag {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+    .widget-title { font-size: 1.15rem; font-weight: 800; color: var(--text-main); }
+    .vol-select-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .vol-select-btn:hover {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .vol-select-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Chapter Footer Navigation */
+    .chapter-nav-footer {
+      margin-top: 3.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn-nav-chapter {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.85rem 1.4rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: all 0.2s;
+    }
+    .btn-nav-chapter:hover {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="top-nav-bar">
+    <div class="progress-track">
+      <div class="progress-fill" id="reading-progress-bar"></div>
+    </div>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">
+        <span class="nav-brand-badge">NECS1312 // CH-14</span>
+        <span>การจัดทำข้อค้นพบและรายงานการตรวจ</span>
+      </a>
+      <div class="nav-controls">
+        <button class="nav-btn" id="font-decrease" onclick="adjustFontSize(-1)">A-</button>
+        <button class="nav-btn" id="font-reset" onclick="adjustFontSize(0)">A</button>
+        <button class="nav-btn" id="font-increase" onclick="adjustFontSize(1)">A+</button>
+        <button class="nav-btn" id="theme-toggle" onclick="cycleTheme()">🌓 ธีม</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-container">
+    <aside class="sidebar-toc">
+      
+<div class="toc-container">
+  <div class="toc-header">
+    <span class="toc-title">สารบัญประจำบทที่ 14</span>
+  </div>
+  <ul class="toc-list">
+
+    <li class="toc-item toc-h1">
+      <a href="#บทที่-14-การจัดทำข้อค้นพบและรายงานการตรวจ-audit-findings-root-cause-analysis-and-reporting" class="toc-link">บทที่ 14 การจัดทำข้อค้นพบและรายงานการตรวจ (Audit Findings, Root Cause Analysis, and Reporting)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes" class="toc-link">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-1-สถาปัตยกรรมข้อค้นพบการตรวจสอบและการจัดระดับความเสี่ยง-audit-finding-anatomy-risk-rating" class="toc-link">ส่วนที่ 1: สถาปัตยกรรมข้อค้นพบการตรวจสอบและการจัดระดับความเสี่ยง (Audit Finding Anatomy &amp; Risk Rating)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-1-องค์ประกอบมาตรฐาน-6-ประการของข้อค้นพบ-the-6-elements-5cs-e" class="toc-link">1.1 องค์ประกอบมาตรฐาน 6 ประการของข้อค้นพบ (The 6 Elements / 5Cs + E)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-2-ประเภทของผลการตรวจ-types-of-audit-findings-conclusions" class="toc-link">1.2 ประเภทของผลการตรวจ (Types of Audit Findings &amp; Conclusions)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-3-หลักการเขียนข้อค้นพบอย่างมืออาชีพ-principles-of-effective-finding-writing" class="toc-link">1.3 หลักการเขียนข้อค้นพบอย่างมืออาชีพ (Principles of Effective Finding Writing)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#1-4-การจัดระดับความเสี่ยงของข้อค้นพบ-risk-rating-architecture" class="toc-link">1.4 การจัดระดับความเสี่ยงของข้อค้นพบ (Risk Rating Architecture)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-2-การวิเคราะห์สาเหตุราก-สถาปัตยกรรมรายงาน-และการตอบรับของฝ่ายบริหาร-root-cause-analysis-reporting-cap" class="toc-link">ส่วนที่ 2: การวิเคราะห์สาเหตุราก สถาปัตยกรรมรายงาน และการตอบรับของฝ่ายบริหาร (Root Cause Analysis, Reporting &amp; CAP)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-1-เทคนิคการวิเคราะห์สาเหตุราก-root-cause-analysis-rca" class="toc-link">2.1 เทคนิคการวิเคราะห์สาเหตุราก (Root Cause Analysis: RCA)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-2-โครงสร้างรายงานการตรวจสอบระบบสารสนเทศฉบับสมบูรณ์-it-audit-report-architecture" class="toc-link">2.2 โครงสร้างรายงานการตรวจสอบระบบสารสนเทศฉบับสมบูรณ์ (IT Audit Report Architecture)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-3-การบริหารจัดการข้อคิดเห็นของฝ่ายบริหารและแผนปฏิบัติการแก้ไข-management-response-cap" class="toc-link">2.3 การบริหารจัดการข้อคิดเห็นของฝ่ายบริหารและแผนปฏิบัติการแก้ไข (Management Response &amp; CAP)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#2-4-คุณภาพของรายงานการตรวจตามมาตรฐานวิชาชีพ-7-dimensions-of-report-quality" class="toc-link">2.4 คุณภาพของรายงานการตรวจตามมาตรฐานวิชาชีพ (7 Dimensions of Report Quality)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-3-กรณีศึกษาเชิงลึก-มหาวิทยาลัยดิจิทัลสมมติ-การจัดทำรายงานการตรวจสอบระบบสารสนเทศประจำปี" class="toc-link">ส่วนที่ 3: กรณีศึกษาเชิงลึก &quot;มหาวิทยาลัยดิจิทัลสมมติ&quot; — การจัดทำรายงานการตรวจสอบระบบสารสนเทศประจำปี</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-1-บทสรุปสำหรับผู้บริหาร-executive-summary-sample" class="toc-link">3.1 บทสรุปสำหรับผู้บริหาร (Executive Summary Sample)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#3-2-รายละเอียดข้อค้นพบฉบับสมบูรณ์-5-ข้อ-detailed-findings-sample" class="toc-link">3.2 รายละเอียดข้อค้นพบฉบับสมบูรณ์ 5 ข้อ (Detailed Findings Sample)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-4-กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน-active-learning-simulation" class="toc-link">ส่วนที่ 4: กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน (Active Learning Simulation)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#กิจกรรม-audit-finding-5-whys-clinic-from-technical-glitch-to-board-level-finding-ระยะเวลา-25-นาที" class="toc-link">กิจกรรม: &quot;Audit Finding &amp; 5 Whys Clinic: From Technical Glitch to Board-Level Finding&quot; (ระยะเวลา 25 นาที)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-5-มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls" class="toc-link">ส่วนที่ 5: มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives &amp; Common Pitfalls)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#5-1-บทสนทนาจำลองเชิงวิชาชีพ-finding-negotiation-pushback-dialogue" class="toc-link">5.1 บทสนทนาจำลองเชิงวิชาชีพ (Finding Negotiation &amp; Pushback Dialogue)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#5-2-4-กับดักหลุมพรางที่พบบ่อยในการเขียนรายงานการตรวจ-4-common-pitfalls" class="toc-link">5.2 4 กับดักหลุมพรางที่พบบ่อยในการเขียนรายงานการตรวจ (4 Common Pitfalls)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-6-การบ้านและงานมอบหมายประจำสัปดาห์-weekly-homework-week-14" class="toc-link">ส่วนที่ 6: การบ้านและงานมอบหมายประจำสัปดาห์ (Weekly Homework Week 14)</a>
+    </li>
+  
+    <li class="toc-item toc-h3">
+      <a href="#ข้อกำหนดโครงสร้างของแต่ละข้อค้นพบ-mandatory-finding-structure" class="toc-link">ข้อกำหนดโครงสร้างของแต่ละข้อค้นพบ (Mandatory Finding Structure):</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers" class="toc-link">ส่วนที่ 7: คำถามทบทวนท้ายบท (Review Questions &amp; Detailed Answers)</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#สรุปบทที่-14" class="toc-link">สรุปบทที่ 14</a>
+    </li>
+  
+    <li class="toc-item toc-h2">
+      <a href="#เอกสารอ้างอิงและมาตรฐานสากล" class="toc-link">เอกสารอ้างอิงและมาตรฐานสากล</a>
+    </li>
+  
+  </ul>
+</div>
+
+    </aside>
+
+    <main class="main-article">
+      
+          <header class="chapter-header" id="บทที่-14-การจัดทำข้อค้นพบและรายงานการตรวจ-audit-findings-root-cause-analysis-and-reporting">
+            <div class="chapter-badge">NECS1312 // CH-14</div>
+            <h1 class="chapter-title">บทที่ 14 การจัดทำข้อค้นพบและรายงานการตรวจ (Audit Findings, Root Cause Analysis, and Reporting)</h1>
+          </header>
+        
+<p class="content-paragraph">ในวิชาชีพการตรวจสอบระบบสารสนเทศและความมั่นคงปลอดภัยไซเบอร์ มีสัจธรรมที่ผู้ตรวจสอบชั้นนำยึดถือร่วมกัน:</p>
+<blockquote class="content-quote"><strong>"แม้ว่าคุณจะทำการตรวจสอบทางเทคนิคได้อย่างยอดเยี่ยมเพียงใด ค้นพบช่องโหว่ระดับวิกฤตได้ลึกซึ้งแค่ไหน...   หากคุณไม่สามารถสื่อสารข้อค้นพบนั้นออกมาเป็น 'รายงานการตรวจสอบที่ทรงพลัง น่าเชื่อถือ และขับเคลื่อนให้เกิดการลงมือแก้ไขจริง' ได้   การตรวจสอบทั้งหมดที่ทำมาก็แทบจะไร้ความหมาย"</strong></blockquote>
+<p class="content-paragraph">รายงานการตรวจสอบ (Audit Report) และข้อค้นพบ (Audit Findings) มิใช่เพียงเอกสารสรุปความผิดพลาดเพื่อนำไปตำหนิหรือลงโทษผู้ปฏิบัติงาน หากแต่เป็น <strong>"เครื่องมือเชิงยุทธศาสตร์ของผู้บริหารระดับสูงและคณะกรรมการตรวจสอบ (Audit Committee)"</strong> ในการมองเห็นความเสี่ยงที่แท้จริง ตัดสินใจจัดสรรงบประมาณ และยกระดับธรรมาภิบาลดิจิทัลขององค์กร</p>
+<p class="content-paragraph">รายงานการตรวจสอบที่ดีต้องเชื่อมโยงช่องว่างระหว่าง <strong>"ภาษาทางเทคนิค (Technical Jargon)"</strong> ของวิศวกรคอมพิวเตอร์ กับ <strong>"ภาษาทางธุรกิจและความเสี่ยง (Business & Risk Language)"</strong> ของผู้บริหารระดับสูงได้อย่างลงตัว สามารถชี้ให้เห็นถึงสาเหตุที่แท้จริง (Root Cause) มิใช่เพียงแก้ปัญหาที่อาการ และให้ข้อเสนอแนะที่ปฏิบัติได้จริง (Actionable Recommendations) ภายใต้มาตรฐานวิชาชีพ <strong>ISACA ITAF (Standard 2401 Reporting)</strong> และ <strong>IIA Global Internal Audit Standards</strong></p>
+<p class="content-paragraph">ในบทนี้ นักศึกษาจะได้เรียนรู้โครงสร้างมาตรฐานของข้อค้นพบ (6 Elements / 5Cs + E) เทคนิคการวิเคราะห์สาเหตุราก (Root Cause Analysis: Five Whys & Fishbone Diagram) การจัดระดับความเสี่ยงอย่างเป็นธรรม การเขียนรายงานสำหรับผู้บริหาร (Executive Summary) และการบริหารจัดการข้อโต้แย้งของฝ่ายบริหาร (Management Response & Corrective Action Plan) ผ่านกรณีศึกษาบูรณาการของ "มหาวิทยาลัยดิจิทัลสมมติ"</p>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes">
+            <h2 class="section-heading">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</h2>
+          </section>
+        
+<p class="content-paragraph">เมื่อสิ้นสุดการเรียนรู้ในบทนี้ นักศึกษาสามารถ:</p>
+<ol class="content-list">
+<li><strong>เขียนข้อค้นพบการตรวจสอบตามโครงสร้าง 6 องค์ประกอบมาตรฐานสากลได้ (CLO3, CLO4):</strong> ร่างข้อค้นพบที่ประกอบด้วย Criteria, Condition, Evidence, Cause, Consequence/Risk, และ Recommendation โดยใช้ภาษาที่เป็นกลาง อิงข้อเท็จจริง และตรวจสอบย้อนกลับได้</li>
+<li><strong>วิเคราะห์หาสาเหตุรากของปัญหา (Root Cause Analysis: RCA) ได้ (CLO3):</strong> ประยุกต์ใช้เทคนิค Five Whys, กรอบ People-Process-Technology (PPT), และแผนภูมิก้างปลา (Fishbone Diagram) เพื่อระบุสาเหตุที่แท้จริงของความล้มเหลวในการควบคุมภายใน</li>
+<li><strong>จัดระดับความเสี่ยงของข้อค้นพบได้อย่างมีหลักเกณฑ์และเป็นธรรม (CLO3, CLO4):</strong> ประเมินระดับความเสี่ยง (Critical, High, Medium, Low, Informational) โดยพิจารณาจากผลกระทบ โอกาสเกิด ขอบเขตระบบ ประเภทข้อมูล มาตรการชดเชย และข้อกำหนดทางกฎหมาย</li>
+<li><strong>จัดทำโครงสร้างรายงานการตรวจสอบระบบสารสนเทศระดับมืออาชีพได้ (CLO4):</strong> เรียบเรียงรายงานทั้งในระดับ Executive Summary สำหรับผู้บริหารระดับสูง และ Detailed Findings พร้อมภาพประกอบความเสี่ยง (Risk Heatmap) สำหรับฝ่ายเทคนิค</li>
+<li><strong>บริหารจัดการกระบวนการตอบรับของฝ่ายบริหารและแผนปฏิบัติการแก้ไขได้ (CLO3, CLO4):</strong> ทบทวน Management Response, กำหนด Action Items, ผู้รับผิดชอบ (Owner), กรอบเวลา (Due Date), และการประเมินการยอมรับความเสี่ยง (Formal Risk Acceptance) ตามหลักธรรมาภิบาล</li>
+</ol>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-1-สถาปัตยกรรมข้อค้นพบการตรวจสอบและการจัดระดับความเสี่ยง-audit-finding-anatomy-risk-rating">
+            <h2 class="section-heading">ส่วนที่ 1: สถาปัตยกรรมข้อค้นพบการตรวจสอบและการจัดระดับความเสี่ยง (Audit Finding Anatomy & Risk Rating)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="1-1-องค์ประกอบมาตรฐาน-6-ประการของข้อค้นพบ-the-6-elements-5cs-e">1.1 องค์ประกอบมาตรฐาน 6 ประการของข้อค้นพบ (The 6 Elements / 5Cs + E)</h3>
+
+<div class="interactive-widget" id="widget-14-1">
+  <div class="widget-header">
+    <div class="widget-tag">WIDGET 14.1 // INTERACTIVE TOOL</div>
+    <div class="widget-title">เครื่องมือช่วยร่างและตรวจสอบคุณภาพข้อค้นพบ (Finding Builder & 5Cs+E Quality Validator)</div>
+  </div>
+  <div class="widget-body">
+    <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:0.75rem;">
+      ทดลองเขียนหรือเลือกโหลดตัวอย่างข้อค้นพบ เพื่อตรวจสอบความสมบูรณ์ตามโครงสร้าง 6 องค์ประกอบ (Criteria, Condition, Evidence, Cause, Consequence, Recommendation) พร้อมระบบตรวจจับคำต้องห้าม (Anti-patterns Checker):
+    </p>
+
+    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;">
+      <button class="vol-select-btn" onclick="loadFindingPreset('mfa')">โหลดตัวอย่าง: 1. ขาด MFA (VPN/Cloud)</button>
+      <button class="vol-select-btn" onclick="loadFindingPreset('logs')">โหลดตัวอย่าง: 2. ล็อกไม่ถึง 90 วัน</button>
+      <button class="vol-select-btn" onclick="loadFindingPreset('s3')">โหลดตัวอย่าง: 3. บัตรประชาชนรั่วบน Cloud</button>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.85rem; margin-bottom:0.85rem;">
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          1. เกณฑ์การตรวจสอบ (Criteria - สิ่งที่ควรจะเป็น):
+        </label>
+        <textarea id="w1-criteria" rows="2" style="width:100%; font-size:0.82rem; padding:0.5rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" oninput="validateFindingQuality()"></textarea>
+      </div>
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          2. สภาพความเป็นจริง (Condition - สิ่งที่เป็นจริง พร้อม Sample Size):
+        </label>
+        <textarea id="w1-condition" rows="2" style="width:100%; font-size:0.82rem; padding:0.5rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" oninput="validateFindingQuality()"></textarea>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.85rem; margin-bottom:0.85rem;">
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          3. พยานหลักฐานอ้างอิง (Evidence - เอกสาร/ล็อก/รหัสกระดาษทำการ):
+        </label>
+        <textarea id="w1-evidence" rows="2" style="width:100%; font-size:0.82rem; padding:0.5rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" oninput="validateFindingQuality()"></textarea>
+      </div>
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          4. สาเหตุรากแท้จริง (Cause - ความล้มเหลวเชิงระบบ No Personal Blame):
+        </label>
+        <textarea id="w1-cause" rows="2" style="width:100%; font-size:0.82rem; padding:0.5rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" oninput="validateFindingQuality()"></textarea>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.85rem; margin-bottom:1rem;">
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          5. ผลกระทบและความเสี่ยง (Consequence / Risk - ต่อธุรกิจและกฎหมาย):
+        </label>
+        <textarea id="w1-consequence" rows="2" style="width:100%; font-size:0.82rem; padding:0.5rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" oninput="validateFindingQuality()"></textarea>
+      </div>
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          6. ข้อเสนอแนะเชิงระบบ (Recommendation - Actionable & No Vendor Lock-in):
+        </label>
+        <textarea id="w1-recommendation" rows="2" style="width:100%; font-size:0.82rem; padding:0.5rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" oninput="validateFindingQuality()"></textarea>
+      </div>
+    </div>
+
+    <div id="finding-quality-report" style="background:var(--bg-surface); padding:1rem; border-radius:8px; border:1px solid var(--border-color);">
+      <!-- Rendered dynamically -->
+    </div>
+  </div>
+</div>
+
+<p class="content-paragraph">ในวงการตรวจสอบสากล ข้อค้นพบที่สมบูรณ์และไม่อาจถูกโต้แย้งได้ ต้องประกอบด้วยโครงสร้าง <strong>5Cs + E</strong> ดังต่อไปนี้:</p>
+
+<div class="figure-box" id="figure-14-1">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 14.1</div>
+    <div class="figure-title">โครงสร้าง 6 องค์ประกอบของข้อค้นพบตามมาตรฐานสากล (6 Elements of an Audit Finding: 5Cs + E)</div>
+  </div>
+  <div class="elements-grid">
+    <div class="element-card tier-crit">
+      <div class="elem-badge">01 // CRITERIA</div>
+      <div class="elem-name">เกณฑ์การตรวจสอบ (สิ่งที่ควรจะเป็น)</div>
+      <div class="elem-desc">กฎหมาย นโยบาย ระเบียบ หรือมาตรฐานสากลที่องค์กรต้องปฏิบัติตาม เช่น ISO 27001, ประกาศ สกมช., PDPA ม.37</div>
+      <div class="elem-sub">ถาม: "เกณฑ์ที่ใช้วัดคืออะไร? มีกำหนดไว้ที่ไหน?"</div>
+    </div>
+    <div class="element-card tier-cond">
+      <div class="elem-badge">02 // CONDITION</div>
+      <div class="elem-name">สภาพความเป็นจริง (สิ่งที่เป็นอยู่จริง)</div>
+      <div class="elem-desc">ข้อเท็จจริงเชิงประจักษ์ที่ตรวจพบ พร้อมระบุขอบเขต กลุ่มตัวอย่าง (Sample Size) และประชากรทั้งหมดอย่างแม่นยำ</div>
+      <div class="elem-sub">ถาม: "ตรวจพบอะไร? สภาพจริงต่างจากเกณฑ์อย่างไร?"</div>
+    </div>
+    <div class="element-card tier-evid">
+      <div class="elem-badge">03 // EVIDENCE</div>
+      <div class="elem-name">พยานหลักฐานอ้างอิง (Audit Traceability)</div>
+      <div class="elem-desc">เอกสาร ล็อก ภาพหน้าจอ หรือกระดาษทำการ (Working Papers) ที่บุคคลอื่นสามารถสอบทานย้อนกลับได้</div>
+      <div class="elem-sub">ถาม: "มีหลักฐานอะไรยืนยัน? ตรวจสอบย้อนกลับได้หรือไม่?"</div>
+    </div>
+    <div class="element-card tier-cause">
+      <div class="elem-badge">04 // CAUSE</div>
+      <div class="elem-name">สาเหตุรากแท้จริง (ทำไมจึงเกิด)</div>
+      <div class="elem-desc">เจาะลึกผ่านอาการผิวเผินด้วย Five Whys และกรอบ People-Process-Technology เพื่อค้นหาความล้มเหลวเชิงระบบ</div>
+      <div class="elem-sub">ถาม: "ทำไมจึงไม่ปฏิบัติตามเกณฑ์? ต้นตอแท้จริงคืออะไร?"</div>
+    </div>
+    <div class="element-card tier-risk">
+      <div class="elem-badge">05 // CONSEQUENCE / RISK</div>
+      <div class="elem-name">ผลกระทบและความเสี่ยง (ผลเสียหาย)</div>
+      <div class="elem-desc">ความเสียหายเชิงธุรกิจ การเงิน กฎหมาย หรือชื่อเสียง หากความบกพร่องนี้ไม่ได้รับการแก้ไขในเวลาอันควร</div>
+      <div class="elem-sub">ถาม: "ถ้าไม่แก้ องค์กรจะเสียหายอย่างไร?"</div>
+    </div>
+    <div class="element-card tier-reco">
+      <div class="elem-badge">06 // RECOMMENDATION</div>
+      <div class="elem-name">ข้อเสนอแนะเชิงระบบ (ทางออกยั่งยืน)</div>
+      <div class="elem-desc">แนวทางแก้ไขที่มุ่งกำจัดสาเหตุราก ปฏิบัติได้จริง (Actionable) คุ้มค่า และไม่ระบุยี่ห้อสินค้าเฉพาะเจาะจง</div>
+      <div class="elem-sub">ถาม: "ต้องแก้อย่างไรให้ตรงจุดและไม่เกิดซ้ำอีก?"</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 14.1:</strong> วงจร 6 องค์ประกอบของข้อค้นพบมาตรฐานสากล (ISACA ITAF Standard 2401 & IIA Global Standards)
+  </div>
+</div>
+
+<ol class="content-list">
+<li><strong>Criteria (เกณฑ์อ้างอิง - สิ่งที่ควรจะเป็น):</strong></li>
+</ol>
+<ul class="content-list">
+<li>บรรทัดฐาน กฎหมาย นโยบาย ระเบียบปฏิบัติ มาตรฐานสากล หรือข้อตกลงในสัญญาที่องค์กรมีพันธะต้องปฏิบัติตาม</li>
+<li><em>ตัวอย่าง:</em> นโยบายความมั่นคงปลอดภัยสารสนเทศ ข้อ 4.2 กำหนดให้ต้องมีการทบทวนสิทธิ์การเข้าถึงของผู้ใช้งานทุก 3 เดือน และยกเลิกสิทธิ์ของพนักงานที่ลาออกภายใน 24 ชั่วโมง</li>
+</ul>
+<ol class="content-list">
+<li><strong>Condition (สภาพข้อเท็จจริง - สิ่งที่เป็นอยู่จริง):</strong></li>
+</ol>
+<ul class="content-list">
+<li>ข้อเท็จจริงเชิงประจักษ์ที่ผู้ตรวจสอบตรวจพบจากการสังเกต สัมภาษณ์ หรือทดสอบระบบ โดยต้องระบุ <strong>"ขนาดของกลุ่มตัวอย่าง (Sample Size)"</strong> และ <strong>"ขอบเขตของประชากร (Population)"</strong> เสมอ</li>
+<li><em>ตัวอย่าง:</em> จากการสุ่มตรวจบัญชีผู้ใช้ในระบบทะเบียนจำนวน 50 บัญชี จากประชากรทั้งหมด 300 บัญชี พบว่ามีจำนวน 12 บัญชี (คิดเป็นร้อยละ 24) ที่เป็นของพนักงานที่ลาออกไปแล้วเกินกว่า 60 วัน แต่บัญชียังคงมีสถานะเปิดใช้งาน (Active)</li>
+</ul>
+<ol class="content-list">
+<li><strong>Evidence (พยานหลักฐานอ้างอิง):</strong></li>
+</ol>
+<ul class="content-list">
+<li>เอกสาร บันทึกข้อมูล ภาพถ่ายหน้าจอ หรือไฟล์ล็อกที่ระบุหมายเลขอ้างอิงในกระดาษทำการ (Working Paper Reference) อย่างชัดเจน เพื่อให้สามารถสอบทานย้อนกลับได้ (Audit Trail)</li>
+<li><em>ตัวอย่าง:</em> รายงานสรุปรายชื่อพนักงานที่ลาออกจากฝ่ายบุคคล (เอกสารอ้างอิง WP-03-A) เปรียบเทียบกับภาพหน้าจอ Active Directory Users and Computers (เอกสารอ้างอิง WP-03-B)</li>
+</ul>
+<ol class="content-list">
+<li><strong>Cause (สาเหตุราก):</strong></li>
+</ol>
+<ul class="content-list">
+<li>เหตุผลเบื้องลึกที่ทำให้เกิดความแตกต่างระหว่าง Criteria และ Condition โดยต้องตอบคำถามว่า <em>"ทำไมสิ่งนี้จึงเกิดขึ้น?"</em> (เกิดจากขาดนโยบาย ขาดการฝึกอบรม ขาดเครื่องมืออัตโนมัติ หรือกระบวนการสื่อสารระหว่างแผนกล้มเหลว)</li>
+<li><em>ตัวอย่าง:</em> ฝ่ายบุคคลไม่มีกระบวนการแจ้งรายชื่อพนักงานลาออกไปยังฝ่ายไอทีแบบอัตโนมัติ และฝ่ายไอทีไม่มีผู้รับผิดชอบในการติดตามทบทวนสิทธิ์อย่างเป็นทางการ</li>
+</ul>
+<ol class="content-list">
+<li><strong>Consequence / Risk (ผลกระทบและความเสี่ยง):</strong></li>
+</ol>
+<ul class="content-list">
+<li>ผลเสีย ความเสียหาย หรือความเสี่ยงที่องค์กรต้องเผชิญหากไม่ได้รับการแก้ไข โดยต้องอธิบายทั้งในมิติของ Confidentiality, Integrity, Availability, ผลกระทบทางการเงิน ภาพลักษณ์ หรือความรับผิดทางกฎหมาย</li>
+<li><em>ตัวอย่าง:</em> บัญชีที่ยังไม่ถูกระงับสิทธิ์อาจถูกอดีตพนักงานหรือผู้ไม่หวังดีใช้เป็นช่องทางเข้าถึงฐานข้อมูลทะเบียน ดัดแปลงแก้ไขผลการเรียน หรือขโมยข้อมูลส่วนบุคคลของนักศึกษา ซึ่งอาจส่งผลให้มหาวิทยาลัยถูกปรับตามกฎหมาย PDPA สูงสุดไม่เกิน 3 ล้านบาท</li>
+</ul>
+<ol class="content-list">
+<li><strong>Recommendation (ข้อเสนอแนะ):</strong></li>
+</ol>
+<ul class="content-list">
+<li>แนวทางแก้ไขที่มุ่งกำจัดสาเหตุราก (Cause) เพื่อป้องกันมิให้เกิดปัญหาซ้ำในอนาคต ต้องมีความชัดเจน ปฏิบัติได้จริง คุ้มค่าต้นทุน และไม่ผูกขาดกับตราสินค้าโดยไม่จำเป็น</li>
+<li><em>ตัวอย่าง:</em> (1) จัดทำกระบวนการบูรณาการข้อมูลอัตโนมัติระหว่างระบบ HR และ Active Directory เพื่อปิดใช้งานบัญชีทันทีเมื่อมีคำสั่งลาออกมีผลบังคับใช้, (2) กำหนดให้ฝ่ายไอทีทำการทบทวนสิทธิ์ผู้ใช้งานร่วมกับเจ้าของระบบงานทุกไตรมาส พร้อมจัดทำบันทึกหลักฐานเป็นลายลักษณ์อักษร</li>
+</ul>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="1-2-ประเภทของผลการตรวจ-types-of-audit-findings-conclusions">1.2 ประเภทของผลการตรวจ (Types of Audit Findings & Conclusions)</h3>
+<p class="content-paragraph">ตามมาตรฐาน <strong>ISO/IEC 27007</strong> และแนวทางการตรวจสอบสากล ผลการประเมินสามารถจำแนกออกเป็น 4 ประเภท:</p>
+<div class="table-responsive"><table class="data-table"><thead><tr><th>ประเภทผลการตรวจ</th><th>คำอธิบายและลักษณะสำคัญ</th><th>การดำเนินการที่ต้องการ</th></tr></thead><tbody><tr><td><strong>Conformity (ความสอดคล้อง)</strong></td><td>การปฏิบัติงานเป็นไปตามเกณฑ์ นโยบาย และมาตรฐานอย่างครบถ้วน มีการควบคุมภายในที่เพียงพอและทำงานได้อย่างมีประสิทธิผล</td><td>บันทึกเป็นจุดแข็งและแนวปฏิบัติที่ดี (Good Practice) ในรายงาน</td></tr><tr><td><strong>Major Nonconformity (ข้อบกพร่องระดับร้ายแรง)</strong></td><td>การขาดหายไปอย่างสิ้นเชิงของการควบคุมตามเกณฑ์ หรือมีความล้มเหลวเชิงระบบ (Systemic Failure) ที่ส่งผลกระทบต่อความมั่นคงปลอดภัยโดยตรง หรือการฝ่าฝืนกฎหมายอย่างชัดเจน</td><td>ต้องมีแผนปฏิบัติการแก้ไขเร่งด่วน (Immediate CAP) และรายงานต่อผู้บริหารระดับสูงทันที</td></tr><tr><td><strong>Minor Nonconformity (ข้อบกพร่องระดับย่อย)</strong></td><td>มีระบบการควบคุมอยู่แล้ว แต่พบความบกพร่องในการปฏิบัติตามเป็นบางจุด (Isolated Incident) ซึ่งยังไม่ส่งผลให้ระบบการควบคุมโดยรวมล้มเหลว</td><td>กำหนดแผนแก้ไขภายในกรอบเวลาปกติ (เช่น 30–60 วัน)</td></tr><tr><td><strong>Observation / OFI (ข้อสังเกต / โอกาสในการปรับปรุง)</strong></td><td>การปฏิบัติยังไม่ขัดต่อเกณฑ์ในปัจจุบัน แต่ผู้ตรวจสอบเล็งเห็นแนวโน้มความเสี่ยงในอนาคต หรือมีแนวปฏิบัติที่ดีกว่า (Better Practice) ที่องค์กรควรพิจารณานำมาใช้</td><td>ให้ข้อเสนอแนะเพื่อให้หน่วยงานนำไปพิจารณาพัฒนาตามความเหมาะสม</td></tr></tbody></table></div>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="1-3-หลักการเขียนข้อค้นพบอย่างมืออาชีพ-principles-of-effective-finding-writing">1.3 หลักการเขียนข้อค้นพบอย่างมืออาชีพ (Principles of Effective Finding Writing)</h3>
+<p class="content-paragraph">การเขียนข้อค้นพบที่มีคุณภาพสูง ต้องยึดถือหลักการสำคัญ 5 ประการ:</p>
+
+<div class="figure-box" id="figure-14-2">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 14.2</div>
+    <div class="figure-title">5 หลักการเขียนข้อค้นพบอย่างมืออาชีพ (5 Professional Writing Principles)</div>
+  </div>
+  <div class="principles-grid">
+    <div class="principle-card">
+      <div class="p-num">01</div>
+      <div class="p-title">⚖️ Factual & Objective</div>
+      <div class="p-desc">ใช้ภาษาที่เป็นกลาง อิงข้อเท็จจริงเชิงประจักษ์ 100% ปราศจากอารมณ์ ความรู้สึก หรืออคติส่วนตัว</div>
+    </div>
+    <div class="principle-card">
+      <div class="p-num">02</div>
+      <div class="p-title">🛡️ No Personal Blame</div>
+      <div class="p-desc">มุ่งเน้นความล้มเหลวของ "ระบบ การควบคุม และกระบวนการ" มิใช่การชี้หน้าประณาม "ตัวบุคคล"</div>
+    </div>
+    <div class="principle-card">
+      <div class="p-num">03</div>
+      <div class="p-title">📊 Sample Scoping</div>
+      <div class="p-desc">ระบุตัวเลขและอัตราส่วนชัดเจน เช่น "พบ 12 เครื่องจากกลุ่มตัวอย่าง 20 เครื่อง" เพื่อป้องกันข้อโต้แย้ง</div>
+    </div>
+    <div class="principle-card">
+      <div class="p-num">04</div>
+      <div class="p-title">🎯 No Sweeping Statements</div>
+      <div class="p-desc">ไม่ใช้คำกวาดรวม เช่น "ระบบทั้งหมดล้มเหลว" หรือ "ไม่เคยมีการดูแล" ให้ระบุเฉพาะจุดที่ตรวจพบจริง</div>
+    </div>
+    <div class="principle-card">
+      <div class="p-num">05</div>
+      <div class="p-title">🔗 Audit Traceability</div>
+      <div class="p-desc">ทุกข้อความและตัวเลขต้องมีหลักฐานอ้างอิงย้อนกลับสู่กระดาษทำการ (Working Papers WP-XX-XX) ได้เสมอ</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 14.2:</strong> หลักการ 5 ประการในการยกระดับข้อค้นพบให้มีความน่าเชื่อถือและป้องกันข้อโต้แย้งจากผู้รับการตรวจ
+  </div>
+</div>
+
+<ul class="content-list">
+<li><strong>หลีกเลี่ยงภาษาอารมณ์และการกล่าวหาเจตนา (Tone of Objectivity):</strong></li>
+<li><em>ข้อความที่ไม่ควรใช้:</em> "ฝ่ายไอทีละเลยอย่างร้ายแรงและจงใจไม่ติดตั้งแพตช์ความปลอดภัย แสดงถึงความไม่รับผิดชอบของหัวหน้าแผนก"</li>
+<li><em>ข้อความที่ถูกต้องตามมาตรฐาน:</em> "จากการตรวจสอบเซิร์ฟเวอร์ระบบงานหลักจำนวน 10 เครื่อง พบว่ามีจำนวน 4 เครื่องที่ไม่ได้รับการติดตั้งแพตช์ความปลอดภัยประจำไตรมาสที่ 3 ตามที่กำหนดไว้ในนโยบาย Patch Management Policy ข้อ 3.1"</li>
+<li><strong>การระบุขอบเขตของตัวอย่าง (Sample Scoping):</strong></li>
+<li>ห้ามเขียนกำกวม เช่น "พบเซิร์ฟเวอร์หลายเครื่องไม่ได้เปิดไฟร์วอลล์"</li>
+<li>ให้เขียนระบุตัวเลขชัดเจน: "จากการตรวจสอบเครื่องแม่ข่ายในขอบเขตการตรวจทั้งหมด 25 เครื่อง พบว่ามีจำนวน 3 เครื่อง (รหัส SRV-01, SRV-04, SRV-09) ที่ไม่ได้เปิดใช้งาน Host-based Firewall"</li>
+</ul>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="1-4-การจัดระดับความเสี่ยงของข้อค้นพบ-risk-rating-architecture">1.4 การจัดระดับความเสี่ยงของข้อค้นพบ (Risk Rating Architecture)</h3>
+
+<div class="interactive-widget" id="widget-14-3">
+  <div class="widget-header">
+    <div class="widget-tag">WIDGET 14.3 // INTERACTIVE CALCULATOR</div>
+    <div class="widget-title">เครื่องมือคำนวณระดับความเสี่ยงของข้อค้นพบและกรอบเวลาแก้ไข (Audit Finding Risk Calculator)</div>
+  </div>
+  <div class="widget-body">
+    <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:0.85rem;">
+      กำหนดตัวแปรของข้อค้นพบเพื่อประเมินระดับความเสี่ยงอย่างเป็นกลาง พร้อมคำนวณข้อตกลงระดับบริการในการแก้ไข (Action SLA):
+    </p>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:0.75rem; margin-bottom:1rem;">
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          ผลกระทบที่อาจเกิดขึ้น (Impact):
+        </label>
+        <select id="w3-impact" style="width:100%; font-size:0.82rem; padding:0.45rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" onchange="calcFindingRisk()">
+          <option value="5">5 - วิกฤตสูงสุด (Catastrophic / Core Service ล่ม)</option>
+          <option value="4" selected>4 - รุนแรงสูง (Major / ข้อมูลสำคัญรั่วไหล)</option>
+          <option value="3">3 - ปานกลาง (Moderate / กระทบประสิทธิภาพ)</option>
+          <option value="2">2 - เล็กน้อย (Minor / ความเสียหายจำกัด)</option>
+          <option value="1">1 - ต่ำมาก (Insignificant / ไม่มีผลกระทบตรง)</option>
+        </select>
+      </div>
+
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          โอกาสที่จะเกิดความเสียหาย (Likelihood):
+        </label>
+        <select id="w3-likelihood" style="width:100%; font-size:0.82rem; padding:0.45rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" onchange="calcFindingRisk()">
+          <option value="5">5 - เกิดขึ้นแน่นอน / กำลังถูกโจมตี (Almost Certain)</option>
+          <option value="4" selected>4 - โอกาสเกิดสูงมาก (Likely / มี Exploit สาธารณะ)</option>
+          <option value="3">3 - เป็นไปได้ (Possible / อาศัยเงื่อนไขภายใน)</option>
+          <option value="2">2 - โอกาสเกิดต่ำ (Unlikely / ต้องใช้สิทธิ์พิเศษ)</option>
+          <option value="1">1 - หายากมาก (Rare / ซับซ้อนสูง)</option>
+        </select>
+      </div>
+
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          ขอบเขตระบบงาน (System Scope):
+        </label>
+        <select id="w3-scope" style="width:100%; font-size:0.82rem; padding:0.45rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" onchange="calcFindingRisk()">
+          <option value="3" selected>Core System / ข้อมูล PII มหาศาล</option>
+          <option value="2">Secondary System / ข้อมูลภายใน</option>
+          <option value="1">Isolated / Test Environment</option>
+        </select>
+      </div>
+
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          ข้อกำหนดทางกฎหมาย (Legal Mandate):
+        </label>
+        <select id="w3-legal" style="width:100%; font-size:0.82rem; padding:0.45rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" onchange="calcFindingRisk()">
+          <option value="3">พ.ร.บ.ไซเบอร์ CII / PDPA มีโทษปรับทางปกครองสูง</option>
+          <option value="2" selected>พ.ร.บ.คอมพิวเตอร์ฯ ม.26 (ล็อก 90 วัน)</option>
+          <option value="1">ระเบียบปฏิบัติภายในองค์กร</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="risk-calc-result" style="background:var(--bg-surface); padding:1rem; border-radius:8px; border:1px solid var(--border-color);">
+      <!-- Rendered dynamically -->
+    </div>
+  </div>
+</div>
+
+<p class="content-paragraph">เพื่อช่วยให้ฝ่ายบริหารสามารถจัดลำดับความสำคัญในการจัดสรรทรัพยากรและงบประมาณ ผู้ตรวจสอบต้องจัดระดับความเสี่ยงของข้อค้นพบออกเป็น 5 ระดับ:</p>
+
+<div class="figure-box" id="figure-14-3">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 14.3</div>
+    <div class="figure-title">เมทริกซ์การจัดระดับความเสี่ยงของข้อค้นพบและกรอบเวลาแก้ไข (Risk Rating Matrix & Remediation SLA)</div>
+  </div>
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:18%;">ระดับความเสี่ยง (Risk Rating)</th>
+          <th style="width:52%;">นิยามและผลกระทบเชิงประจักษ์ (Definition & Impact)</th>
+          <th style="width:30%;">กรอบเวลาแก้ไข (Action SLA)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:rgba(225,29,72,0.04);">
+          <td><span class="badge-status fail" style="font-weight:700;">🚨 CRITICAL</span></td>
+          <td>มีช่องโหว่รุนแรงที่ถูกโจมตีได้ทันที, ผิดกฎหมายร้ายแรงที่มีโทษปรับสูงหรือจำคุก, หรือส่งผลให้ Core Service ล่มสลายทั้งหมด</td>
+          <td><strong>แก้ไขทันทีใน 24–48 ชม.</strong><br><small style="color:var(--text-dim);">รายงานต่อ Audit Committee ทันที</small></td>
+        </tr>
+        <tr style="background:rgba(217,119,6,0.04);">
+          <td><span class="badge-status warn" style="font-weight:700;">⚠️ HIGH</span></td>
+          <td>การควบคุมภายในล้มเหลวอย่างมีนัยสำคัญ ข้อมูลสำคัญมีความเสี่ยงสูง และไม่มีมาตรการชดเชยที่มีประสิทธิภาพ</td>
+          <td><strong>แก้ไขภายใน 15–30 วัน</strong><br><small style="color:var(--text-dim);">รายงานผู้บริหารระดับสูงรายสัปดาห์</small></td>
+        </tr>
+        <tr>
+          <td><span class="badge-status warn" style="font-weight:600;">⚡ MEDIUM</span></td>
+          <td>การควบคุมบกพร่องระดับปานกลาง มีมาตรการชดเชยบางส่วน หรืออาจส่งผลกระทบต่อประสิทธิภาพการดำเนินงาน</td>
+          <td><strong>แก้ไขภายใน 30–60 วัน</strong><br><small style="color:var(--text-dim);">ติดตามในรายงานความคืบหน้ารายเดือน</small></td>
+        </tr>
+        <tr>
+          <td><span class="badge-status pass" style="font-weight:600;">✓ LOW</span></td>
+          <td>ข้อบกพร่องเล็กน้อย ไม่กระทบต่อความมั่นคงปลอดภัยหลัก ความเสี่ยงตกค้างอยู่ในระดับต่ำ</td>
+          <td><strong>แก้ไขภายใน 60–90 วัน</strong><br><small style="color:var(--text-dim);">หรือรอบปรับปรุงระบบตามปกติ</small></td>
+        </tr>
+        <tr>
+          <td><span class="badge-status info" style="font-weight:600;">ℹ️ INFORMATIONAL</span></td>
+          <td>ข้อสังเกตเชิงบวก หรือโอกาสในการปรับปรุงกระบวนการทำงานเพื่อประสิทธิภาพและประสิทธิผลสูงสุด</td>
+          <td><strong>นำไปพิจารณาตามความเหมาะสม</strong><br><small style="color:var(--text-dim);">เพื่อยกระดับความเป็นเลิศ</small></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 14.3:</strong> เกณฑ์การประเมินระดับความเสี่ยงของข้อค้นพบและข้อตกลงระดับบริการในการแก้ไข (Action SLA)
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="7-ปัจจัยสำคัญในการพิจารณาจัดระดับความเสี่ยง-risk-rating-factors">7 ปัจจัยสำคัญในการพิจารณาจัดระดับความเสี่ยง (Risk Rating Factors)</h4>
+<p class="content-paragraph">ในการประเมินว่าข้อค้นพบใดควรจัดอยู่ในระดับใด ผู้ตรวจสอบต้องพิจารณาปัจจัย 7 ประการร่วมกัน:</p>
+<ol class="content-list">
+<li><strong>Impact (ผลกระทบที่อาจเกิดขึ้น):</strong> ความเสียหายต่อทรัพย์สิน ข้อมูล การดำเนินธุรกิจ หรือชีวิต</li>
+<li><strong>Likelihood (โอกาสหรือความน่าจะเป็นที่จะเกิดเหตุ):</strong> ความยากง่ายในการเข้าถึงช่องโหว่ หรือสถิติที่เคยเกิดขึ้นในอดีต</li>
+<li><strong>System Scope (ขอบเขตของระบบที่ได้รับผลกระทบ):</strong> ระบบงานหลัก (Mission-Critical / CII) หรือระบบสนับสนุนทั่วไป</li>
+<li><strong>Data Sensitivity (ชั้นความลับของข้อมูล):</strong> ข้อมูลความลับทางการค้า ข้อมูลส่วนบุคคลอ่อนไหว (Sensitive PII) หรือข้อมูลสาธารณะ</li>
+<li><strong>Detectability (ความสามารถในการตรวจจับ):</strong> หากเกิดเหตุ องค์กรมีระบบตรวจจับได้ทันทีหรือไม่ หรือแฝงตัวได้นาน</li>
+<li><strong>Compensating Controls (มาตรการควบคุมชดเชยที่มีอยู่):</strong> มีระบบอื่นช่วยป้องกันหรือลดทอนความเสียหายหรือไม่</li>
+<li><strong>Statutory & Regulatory Mandates (ข้อกำหนดทางกฎหมาย):</strong> มีโทษปรับ บทลงโทษทางอาญา หรือการสั่งเพิกถอนใบอนุญาตหรือไม่</li>
+</ol>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-2-การวิเคราะห์สาเหตุราก-สถาปัตยกรรมรายงาน-และการตอบรับของฝ่ายบริหาร-root-cause-analysis-reporting-cap">
+            <h2 class="section-heading">ส่วนที่ 2: การวิเคราะห์สาเหตุราก สถาปัตยกรรมรายงาน และการตอบรับของฝ่ายบริหาร (Root Cause Analysis, Reporting & CAP)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="2-1-เทคนิคการวิเคราะห์สาเหตุราก-root-cause-analysis-rca">2.1 เทคนิคการวิเคราะห์สาเหตุราก (Root Cause Analysis: RCA)</h3>
+
+<div class="interactive-widget" id="widget-14-2">
+  <div class="widget-header">
+    <div class="widget-tag">WIDGET 14.2 // INTERACTIVE SIMULATOR</div>
+    <div class="widget-title">เครื่องมือจำลองการสืบค้น Five Whys สู่สาเหตุรากแท้จริง (5 Whys Drill-down Simulator)</div>
+  </div>
+  <div class="widget-body">
+    <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:0.75rem;">
+      สำรวจกระบวนการซักถาม "ทำไม" ทีละระดับ เพื่อทะลุผ่านปัญหาผิวเผิน (Symptoms) ไปสู่รากเหง้าเชิงนโยบายและธรรมาภิบาล (Root Cause):
+    </p>
+
+    <div style="background:var(--bg-surface); padding:0.75rem 1rem; border-radius:6px; border-left:4px solid var(--primary); margin-bottom:1rem; font-size:0.84rem;">
+      <strong>โจทย์ปัญหาเริ่มต้น:</strong> เครื่องคอมพิวเตอร์แผนกการเงินเปิดพอร์ต RDP ตรงสู่อินเทอร์เน็ตสาธารณะ และถูกบอทเน็ตยิง Brute-force
+    </div>
+
+    <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1rem;">
+      <button class="vol-select-btn active" id="why-btn-1" onclick="selectWhyLevel(1)">ระดับ 1 (อาการ)</button>
+      <button class="vol-select-btn" id="why-btn-2" onclick="selectWhyLevel(2)">ระดับ 2 (ทรัพยากร)</button>
+      <button class="vol-select-btn" id="why-btn-3" onclick="selectWhyLevel(3)">ระดับ 3 (กระบวนการ)</button>
+      <button class="vol-select-btn" id="why-btn-4" onclick="selectWhyLevel(4)">ระดับ 4 (การควบคุม)</button>
+      <button class="vol-select-btn" id="why-btn-5" onclick="selectWhyLevel(5)">ระดับ 5 (สาเหตุรากแท้จริง)</button>
+    </div>
+
+    <div id="why-detail-display">
+      <!-- Rendered dynamically -->
+    </div>
+  </div>
+</div>
+
+
+<div class="figure-box" id="figure-14-11">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 14.11</div>
+    <div class="figure-title">แผนภูมิก้างปลาและการวิเคราะห์สาเหตุราก (Fishbone Diagram & Root Cause Framework)</div>
+  </div>
+  <div class="fishbone-container">
+    <div class="fb-bone bone-people">
+      <div class="bone-header">👤 บุคลากร (People)</div>
+      <ul class="bone-list">
+        <li>ขาดความตระหนักรู้ด้านความปลอดภัย</li>
+        <li>ขาดการฝึกอบรมเฉพาะทางด้านคลาวด์</li>
+        <li>พฤติกรรมความเคยชินและความสะดวกส่วนบุคคล</li>
+      </ul>
+    </div>
+    <div class="fb-bone bone-process">
+      <div class="bone-header">📋 กระบวนการ (Process)</div>
+      <ul class="bone-list">
+        <li>ไม่มี Change Management สำหรับไฟร์วอลล์</li>
+        <li>กระบวนการขอ VPN ล่าช้า ซับซ้อน</li>
+        <li>ขาด Security Acceptance Testing ก่อนใช้งานจริง</li>
+      </ul>
+    </div>
+    <div class="fb-bone bone-technology">
+      <div class="bone-header">💻 เทคโนโลยี (Technology)</div>
+      <ul class="bone-list">
+        <li>ขาดระบบสแกนหาช่องโหว่อัตโนมัติ</li>
+        <li>VPN License ไม่เพียงพอต่อการใช้งาน</li>
+        <li>ขาดระบบ Centralized Log Storage ระยะยาว</li>
+      </ul>
+    </div>
+    <div class="fb-bone bone-governance">
+      <div class="bone-header">🏛️ ธรรมาภิบาล (Governance)</div>
+      <ul class="bone-list">
+        <li>ขาดคณะกรรมการธรรมาภิบาลดิจิทัล</li>
+        <li>ไม่จัดสรรงบประมาณความมั่นคงไซเบอร์ชัดเจน</li>
+        <li>ไม่มีนโยบายความมั่นคงปลอดภัยระดับองค์กร</li>
+      </ul>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 14.11:</strong> ผังก้างปลา 4 แกน (People, Process, Technology, Governance) สำหรับการวิเคราะห์หาสาเหตุรากของความล้มเหลวในการควบคุมภายใน
+  </div>
+</div>
+
+<p class="content-paragraph">ข้อผิดพลาดที่ร้ายแรงที่สุดของการตรวจสอบ คือการแนะนำให้แก้ไขเฉพาะ <strong>"อาการของปัญหา (Symptoms)"</strong> แต่ปล่อยให้ <strong>"สาเหตุที่แท้จริง (Root Cause)"</strong> ยังคงอยู่ ซึ่งจะทำให้ปัญหาเดิมวนกลับมาเกิดขึ้นซ้ำแล้วซ้ำเล่า:</p>
+
+<div class="figure-box" id="figure-14-4">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 14.4</div>
+    <div class="figure-title">การเปรียบเทียบระหว่างการแก้ปัญหาที่อาการ กับ การแก้ไขที่สาเหตุราก (Symptom Fix vs Root Cause Analysis)</div>
+  </div>
+  <div class="comparison-grid">
+    <div class="comp-col col-symptom">
+      <div class="comp-header">🩹 การแก้ปัญหาเฉพาะหน้า (Symptom Fixer)</div>
+      <div class="comp-body">
+        <div class="comp-case">
+          <strong>กรณีบัญชีพนักงานลาออก:</strong>
+          <p>"สั่งให้ปิดบัญชีของพนักงานที่ลาออกทั้ง 12 บัญชีนั้นทันที"</p>
+          <div class="comp-result">ผลลัพธ์: พรุ่งนี้เมื่อมีพนักงานลาออกอีก บัญชีก็จะตกค้างใหม่อีกซ้ำซาก ไม่สิ้นสุด</div>
+        </div>
+        <div class="comp-case">
+          <strong>กรณีเซิร์ฟเวอร์ไม่ได้ลงแพตช์:</strong>
+          <p>"สั่งให้อัปเดตแพตช์เครื่องที่มีช่องโหว่นั้นโดยด่วน"</p>
+          <div class="comp-result">ผลลัพธ์: เครื่องอื่นในระบบก็ยังขาดแพตช์ต่อไปเมื่อมีช่องโหว่ใหม่เข้ามา</div>
+        </div>
+      </div>
+    </div>
+    <div class="comp-col col-root">
+      <div class="comp-header">🌳 การแก้ปัญหาที่สาเหตุราก (Systemic Root Cause Fix)</div>
+      <div class="comp-body">
+        <div class="comp-case">
+          <strong>กรณีบัญชีพนักงานลาออก:</strong>
+          <p>"พัฒนาระบบ Automated Offboarding เชื่อมโยงฐานข้อมูล HR เข้ากับ Active Directory และจัดทำกระบวนการทบทวนสิทธิ์ทุกไตรมาส"</p>
+          <div class="comp-result">ผลลัพธ์: ปิดช่องโหว่ถาวร ทุกบัญชีที่ลาออกจะถูกตัดสิทธิ์อัตโนมัติภายใน 24 ชม.</div>
+        </div>
+        <div class="comp-case">
+          <strong>กรณีเซิร์ฟเวอร์ไม่ได้ลงแพตช์:</strong>
+          <p>"กำหนดนโยบาย Patch Management บังคับใช้ระบบสแกนอัตโนมัติ และตั้งคณะกรรมการ Change Advisory Board"</p>
+          <div class="comp-result">ผลลัพธ์: ยกระดับสุขอนามัยไซเบอร์ของทุกระบบอย่างต่อเนื่องและมีธรรมาภิบาล</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 14.4:</strong> ความแตกต่างเชิงยุทธศาสตร์ระหว่างการแก้ปัญหาชั่วคราว (Band-aid) กับการปฏิรูปกระบวนการเพื่อความยั่งยืน
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="1-เทคนิค-five-whys-การถาม-ทำไม-5-ระดับ">1. เทคนิค Five Whys (การถาม "ทำไม" 5 ระดับ)</h4>
+<p class="content-paragraph">เทคนิคการสืบสาวราวเรื่องด้วยการตั้งคำถาม "ทำไม" ต่อเนื่องเพื่อเจาะลึกลงไปใต้ผิวน้ำ:</p>
+<ul class="content-list">
+<li><em>ปัญหาเริ่มต้น:</em> พบบัญชีผู้ดูแลระบบไม่มีการเปิดใช้งาน Multi-Factor Authentication (MFA)</li>
+<li><em>ทำไมที่ 1:</em> ทำไมจึงไม่เปิด MFA? <code class="math-tex">\rightarrow</code> เพราะผู้ดูแลระบบไม่ได้ผูกอุปกรณ์ Authenticator เข้ากับบัญชี</li>
+<li><em>ทำไมที่ 2:</em> ทำไมจึงไม่ผูกอุปกรณ์? <code class="math-tex">\rightarrow</code> เพราะนโยบายระบบของคอนโซลคลาวด์ไม่ได้ตั้งค่า "บังคับ (Enforce)" การใช้งาน MFA</li>
+<li><em>ทำไมที่ 3:</em> ทำไมจึงไม่ตั้งค่าบังคับ? <code class="math-tex">\rightarrow</code> เพราะฝ่ายโครงสร้างพื้นฐานกลัวว่าจะทำให้การทำงานฉุกเฉินนอกเวลาติดขัด</li>
+<li><em>ทำไมที่ 4:</em> ทำไมจึงไม่มีขั้นตอนรองรับกรณีฉุกเฉิน? <code class="math-tex">\rightarrow</code> เพราะองค์กรไม่มีนโยบาย Break-glass Procedure สำหรับกรณีฉุกเฉิน</li>
+<li><em>ทำไมที่ 5 (Root Cause):</em> <strong>เพราะองค์กรขาดนโยบายการควบคุมตัวตนและการเข้าถึง (IAM Policy) ที่ผ่านการอนุมัติและการออกแบบกระบวนการฉุกเฉินที่เป็นมาตรฐาน</strong></li>
+</ul>
+<h4 class="sub-subsection-heading" id="2-กรอบ-people-process-technology-ppt-framework">2. กรอบ People - Process - Technology (PPT Framework)</h4>
+<p class="content-paragraph">การจัดหมวดหมู่สาเหตุรากเพื่อนำไปสู่การแก้ไขที่รอบด้าน:</p>
+<ul class="content-list">
+<li><strong>People (มิติบุคคล):</strong> ขาดความตระหนักรู้ ขาดการฝึกอบรม ภาระงานล้นมือ หรือขาดบุคลากรที่มีทักษะเฉพาะทาง</li>
+<li><strong>Process (มิติกระบวนการ):</strong> ขาดนโยบาย ขาดคู่มือการปฏิบัติงาน (SOP) ขั้นตอนอนุมัติมีความคลุมเครือ หรือไม่มีการประสานงานข้ามแผนก</li>
+<li><strong>Technology (มิติเทคโนโลยี):</strong> ระบบเครื่องมือล้าสมัย ขาดระบบทำงานอัตโนมัติ (Automation) ซอฟต์แวร์ไม่รองรับฟังก์ชันความปลอดภัย หรือเครื่องมือแจ้งเตือนส่งสัญญาณลวงมากเกินไป</li>
+</ul>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="2-2-โครงสร้างรายงานการตรวจสอบระบบสารสนเทศฉบับสมบูรณ์-it-audit-report-architecture">2.2 โครงสร้างรายงานการตรวจสอบระบบสารสนเทศฉบับสมบูรณ์ (IT Audit Report Architecture)</h3>
+<p class="content-paragraph">รายงานการตรวจสอบระบบสารสนเทศระดับมืออาชีพตามมาตรฐาน <strong>ISACA ITAF</strong> ต้องมีโครงสร้างที่รัดกุม แบ่งออกเป็น 4 ส่วนหลัก:</p>
+
+<div class="figure-box" id="figure-14-5">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 14.5</div>
+    <div class="figure-title">สถาปัตยกรรมโครงสร้างรายงานการตรวจสอบระบบสารสนเทศ (IT Audit Report Architecture)</div>
+  </div>
+  <div class="report-arch-grid">
+    <div class="arch-card">
+      <div class="arch-num">PART 1</div>
+      <div class="arch-title">📑 EXECUTIVE SUMMARY</div>
+      <div class="arch-desc">สำหรับคณะกรรมการตรวจสอบ อธิการบดี และผู้บริหารระดับสูง</div>
+      <ul class="arch-items">
+        <li>ความเห็นสรุปของผู้ตรวจสอบ (Overall Audit Opinion)</li>
+        <li>แผนภาพสรุปความเสี่ยง (Risk Heatmap / Dashboard)</li>
+        <li>3–5 ประเด็นความเสี่ยงเชิงยุทธศาสตร์ที่ต้องการงบประมาณ/นโยบาย</li>
+      </ul>
+    </div>
+    <div class="arch-card">
+      <div class="arch-num">PART 2</div>
+      <div class="arch-title">🧭 INTRODUCTION & SCOPE</div>
+      <div class="arch-desc">บทนำ บริบท และขอบเขตการตรวจสอบ</div>
+      <ul class="arch-items">
+        <li>วัตถุประสงค์ (Objectives) และขอบเขตระบบงาน (Scope)</li>
+        <li>เกณฑ์และกรอบการตรวจสอบ (Audit Criteria & Standards)</li>
+        <li>ระเบียบวิธีตรวจสอบและข้อจำกัดในการตรวจ (Limitations)</li>
+      </ul>
+    </div>
+    <div class="arch-card">
+      <div class="arch-num">PART 3</div>
+      <div class="arch-title">🔍 DETAILED AUDIT FINDINGS</div>
+      <div class="arch-desc">รายละเอียดข้อค้นพบสำหรับผู้รับการตรวจและฝ่ายเทคนิค</div>
+      <ul class="arch-items">
+        <li>ตารางสรุปข้อค้นพบทั้งหมดตามระดับความเสี่ยง</li>
+        <li>รายละเอียดรายข้อตามโครงสร้าง 6 องค์ประกอบ (5Cs + E)</li>
+        <li>ข้อคิดเห็นและแผนปฏิบัติการแก้ไขของฝ่ายบริหาร (CAP)</li>
+      </ul>
+    </div>
+    <div class="arch-card">
+      <div class="arch-num">PART 4</div>
+      <div class="arch-title">📎 APPENDICES & REFERENCES</div>
+      <div class="arch-desc">ภาคผนวกและเอกสารหลักฐานอ้างอิง</div>
+      <ul class="arch-items">
+        <li>เกณฑ์นิยามการจัดระดับความเสี่ยง (Risk Rating Definitions)</li>
+        <li>รายชื่อผู้ให้สัมภาษณ์และทีมงานผู้ตรวจสอบ</li>
+        <li>ดัชนีอ้างอิงกระดาษทำการ (Audit Working Papers Index)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 14.5:</strong> โครงสร้างรายงานการตรวจสอบระบบสารสนเทศ 4 ส่วนมาตรฐานตามแนวทาง ISACA ITAF
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="สาระสำคัญของ-executive-summary-บทสรุปสำหรับผู้บริหาร">สาระสำคัญของ Executive Summary (บทสรุปสำหรับผู้บริหาร):</h4>
+<ul class="content-list">
+<li>ผู้บริหารระดับสูง (C-Suite / คณะกรรมการตรวจสอบ) ไม่มีเวลาอ่านรายงานหนา 50 หน้า ดังนั้น <strong>Executive Summary ความยาว 1–2 หน้า</strong> คือส่วนที่สำคัญที่สุด</li>
+<li>ต้องสรุปอย่างตรงไปตรงมาว่า:</li>
+</ul>
+<ol class="content-list">
+<li>สภาพความมั่นคงปลอดภัยโดยรวมอยู่ในระดับใด (เช่น Unsatisfactory / Needs Improvement / Satisfactory)</li>
+<li>แผนภาพสรุปจำนวนข้อค้นพบจำแนกตามระดับความเสี่ยง (Risk Breakdown Heatmap: เช่น Critical 2, High 4, Medium 3)</li>
+<li>สรุป <strong>Theme เชิงระบบ</strong> 3 ประเด็นหลักที่ต้องได้รับการสนับสนุนทรัพยากรจากคณะกรรมการบริหารทันที</li>
+</ol>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="2-3-การบริหารจัดการข้อคิดเห็นของฝ่ายบริหารและแผนปฏิบัติการแก้ไข-management-response-cap">2.3 การบริหารจัดการข้อคิดเห็นของฝ่ายบริหารและแผนปฏิบัติการแก้ไข (Management Response & CAP)</h3>
+
+<div class="interactive-widget" id="widget-14-4">
+  <div class="widget-header">
+    <div class="widget-tag">WIDGET 14.4 // INTERACTIVE AUDIT EVALUATOR</div>
+    <div class="widget-title">เครื่องมือประเมินความพร้อมของแผนปฏิบัติการแก้ไข (SMARTR CAP Evaluator)</div>
+  </div>
+  <div class="widget-body">
+    <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:0.85rem;">
+      ในฐานะผู้ตรวจสอบ ประเมินแผนปฏิบัติการแก้ไข (Corrective Action Plan) ที่ฝ่ายบริหารตอบกลับมาว่ามีคุณภาพพร้อมยอมรับ (Accept) หรือต้องสั่งแก้ไข (Request Revision):
+    </p>
+
+    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;">
+      <button class="vol-select-btn" onclick="loadCapPreset('good')">โหลดตัวอย่าง: แผน CAP ที่สมบูรณ์แบบ (Accept)</button>
+      <button class="vol-select-btn" onclick="loadCapPreset('bad')">โหลดตัวอย่าง: แผน CAP ที่คลุมเครือ (Reject)</button>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:0.75rem;">
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          1. จุดยืนของฝ่ายบริหาร (Management Position):
+        </label>
+        <select id="w4-position" style="width:100%; font-size:0.82rem; padding:0.45rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" onchange="evalCapPlan()">
+          <option value="agree" selected>เห็นชอบ (Agree) กับข้อค้นพบ</option>
+          <option value="disagree">ไม่เห็นชอบ (Disagree) กับข้อค้นพบ</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          2. วันที่กำหนดแล้วเสร็จ (Target Due Date):
+        </label>
+        <input type="text" id="w4-duedate" value="30/01/2568" style="width:100%; font-size:0.82rem; padding:0.45rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" oninput="evalCapPlan()">
+      </div>
+    </div>
+
+    <div style="margin-bottom:0.75rem;">
+      <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+        3. ขั้นตอนการแก้ไขที่ระบุ (Specific Action Plan):
+      </label>
+      <textarea id="w4-action-detail" rows="2" style="width:100%; font-size:0.82rem; padding:0.5rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" oninput="evalCapPlan()">จัดซื้อ Cloud Storage WORM Archive เพื่อย้ายล็อกอายุเกิน 14 วันไปจัดเก็บระยะยาวให้ครบ 90 วันตาม พ.ร.บ.คอมพิวเตอร์ฯ</textarea>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1rem;">
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          4. ผู้รับผิดชอบหลัก (Action Owner - ต้องระบุชื่อบุคคล):
+        </label>
+        <input type="text" id="w4-owner" value="นายพงษ์ศักดิ์ บริหารระบบ (หัวหน้าฝ่ายระบบแม่ข่าย)" style="width:100%; font-size:0.82rem; padding:0.45rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" oninput="evalCapPlan()">
+      </div>
+      <div>
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:block; margin-bottom:0.25rem;">
+          5. ทรัพยากรและงบประมาณ (Resources Required):
+        </label>
+        <input type="text" id="w4-resource" value="งบประมาณดำเนินการ 120,000 บาท/ปี" style="width:100%; font-size:0.82rem; padding:0.45rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main);" oninput="evalCapPlan()">
+      </div>
+    </div>
+
+    <div id="cap-eval-result" style="background:var(--bg-surface); padding:1rem; border-radius:8px; border:1px solid var(--border-color);">
+      <!-- Rendered dynamically -->
+    </div>
+  </div>
+</div>
+
+<p class="content-paragraph">รายงานการตรวจสอบจะยังไม่สมบูรณ์จนกว่าจะได้รับ <strong>การตอบรับอย่างเป็นทางการจากฝ่ายบริหารของผู้รับการตรวจ (Auditee Management Response)</strong>:</p>
+
+<div class="figure-box" id="figure-14-6">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 14.6</div>
+    <div class="figure-title">องค์ประกอบของแผนปฏิบัติการแก้ไขที่มีคุณภาพ (SMARTR Corrective Action Plan)</div>
+  </div>
+  <div class="smartr-grid">
+    <div class="smartr-card">
+      <div class="s-letter">S</div>
+      <div class="s-title">Specific Position & Action</div>
+      <div class="s-desc">ระบุชัดเจนว่าเห็นชอบ (Agree) หรือไม่เห็นชอบ และระบุกิจกรรมแก้ไขที่เป็นรูปธรรม ไม่คลุมเครือ</div>
+    </div>
+    <div class="smartr-card">
+      <div class="s-letter">M</div>
+      <div class="s-title">Measurable Milestones</div>
+      <div class="s-desc">มีตัวชี้วัดความสำเร็จที่ตรวจสอบวัดผลได้จริงเมื่อผู้ตรวจสอบเข้าติดตามผล (Follow-up Audit)</div>
+    </div>
+    <div class="smartr-card">
+      <div class="s-letter">A</div>
+      <div class="s-title">Accountable Owner</div>
+      <div class="s-desc">ระบุชื่อ-ตำแหน่งผู้รับผิดชอบหลักรายบุคคลอย่างชัดเจน ห้ามระบุชื่อฝ่ายหรือแผนกแบบกว้างๆ</div>
+    </div>
+    <div class="smartr-card">
+      <div class="s-letter">R</div>
+      <div class="s-title">Realistic & Resourced</div>
+      <div class="s-desc">แผนปฏิบัติการต้องทำได้จริงภายใต้งบประมาณ บุคลากร และเครื่องมือที่ได้รับการจัดสรร</div>
+    </div>
+    <div class="smartr-card">
+      <div class="s-letter">T</div>
+      <div class="s-title">Time-bound Due Date</div>
+      <div class="s-desc">กำหนดวันที่แล้วเสร็จที่แน่นอน (DD/MM/YYYY) สอดคล้องตาม Remediation SLA ของระดับความเสี่ยง</div>
+    </div>
+    <div class="smartr-card">
+      <div class="s-letter">R</div>
+      <div class="s-title">Risk Acceptance Protocol</div>
+      <div class="s-desc">หากไม่แก้ไขหรือเห็นต่าง ต้องทำหนังสือขอมติรับความเสี่ยง (Formal Risk Acceptance) ต่อบอร์ด</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 14.6:</strong> องค์ประกอบ 6 ประการของแผนปฏิบัติการแก้ไขของฝ่ายบริหาร (Management Response & CAP)
+  </div>
+</div>
+
+<blockquote class="content-quote">[!IMPORTANT] <strong>หลักการบริหารข้อขัดแย้ง (Audit Pushback & Disagree):</strong> <em> หากฝ่ายบริหารตอบว่า <strong>"ไม่เห็นชอบ (Disagree)"</strong> กับข้อค้นพบ:   </em> ผู้ตรวจสอบต้องเปิดเวทีเจรจา รับฟังเหตุผล และตรวจสอบหลักฐานเพิ่มเติมว่าข้อค้นพบมีจุดคลาดเคลื่อนหรือไม่   <em> หากผู้ตรวจสอบยังยืนยันในหลักฐานและความเสี่ยง แต่ฝ่ายบริหารตัดสินใจไม่แก้ไขเนื่องจากข้อจำกัดทางธุรกิจหรือต้นทุน:   </em> ฝ่ายบริหารต้องจัดทำ <strong>"หนังสือยอมรับความเสี่ยงอย่างเป็นทางการ (Formal Risk Acceptance Document)"</strong> ลงนามโดยผู้มีอำนาจระดับสูงสุด (เช่น CISO หรือ CEO) และผู้ตรวจสอบต้องรายงานเรื่องนี้ต่อ <strong>คณะกรรมการตรวจสอบ (Audit Committee)</strong> ทราบอย่างเป็นทางการ</blockquote>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="2-4-คุณภาพของรายงานการตรวจตามมาตรฐานวิชาชีพ-7-dimensions-of-report-quality">2.4 คุณภาพของรายงานการตรวจตามมาตรฐานวิชาชีพ (7 Dimensions of Report Quality)</h3>
+<p class="content-paragraph">ตามมาตรฐาน <strong>ISACA ITAF Standard 2401</strong> และ <strong>IIA Standard 2420</strong> รายงานการตรวจสอบต้องมีคุณสมบัติครบ 7 ประการ:</p>
+<ol class="content-list">
+<li><strong>Accuracy (ความถูกต้องแม่นยำ):</strong> ข้อมูล ตัวเลข ข้อกฎหมาย และชื่อระบบต้องถูกต้อง 100% ปราศจากข้อผิดพลาดเชิงพิมพ์หรือข้อเท็จจริง</li>
+<li><strong>Objectivity (ความเป็นกลาง):</strong> ปราศจากอคติ ใช้ภาษาที่เป็นข้อเท็จจริง สะท้อนทั้งจุดแข็งและจุดอ่อนอย่างเป็นธรรม</li>
+<li><strong>Clarity (ความชัดเจน):</strong> ใช้ภาษาที่เข้าใจง่าย หลีกเลี่ยงศัพท์เทคนิคที่ไม่มีคำอธิบาย เพื่อให้ผู้บริหารที่ไม่ใช่วิศวกรคอมพิวเตอร์สามารถเข้าใจได้ทันที</li>
+<li><strong>Conciseness (ความกระชับ):</strong> ตรงประเด็น ตัดเนื้อหาน้ำท่วมทุ่งออก มุ่งเน้นสิ่งที่ขับเคลื่อนการตัดสินใจ</li>
+<li><strong>Constructiveness (ความสร้างสรรค์):</strong> มุ่งเน้นการช่วยองค์กรแก้ไขปัญหา มิใช่มุ่งจับผิดหรือสร้างความอับอาย</li>
+<li><strong>Completeness (ความครบถ้วนสมบูรณ์):</strong> มีข้อมูลที่จำเป็นสำหรับการตัดสินใจครบถ้วน ไม่ทิ้งคำถามคาใจให้ผู้อ่าน</li>
+<li><strong>Timeliness (ความทันเวลา):</strong> ออกรายงานอย่างรวดเร็วหลังการตรวจสอบสิ้นสุด เพื่อให้สามารถสกัดกั้นความเสี่ยงได้ทันการณ์</li>
+</ol>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-3-กรณีศึกษาเชิงลึก-มหาวิทยาลัยดิจิทัลสมมติ-การจัดทำรายงานการตรวจสอบระบบสารสนเทศประจำปี">
+            <h2 class="section-heading">ส่วนที่ 3: กรณีศึกษาเชิงลึก "มหาวิทยาลัยดิจิทัลสมมติ" — การจัดทำรายงานการตรวจสอบระบบสารสนเทศประจำปี</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="3-1-บทสรุปสำหรับผู้บริหาร-executive-summary-sample">3.1 บทสรุปสำหรับผู้บริหาร (Executive Summary Sample)</h3>
+
+<div class="figure-box" id="figure-14-7">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 14.7</div>
+    <div class="figure-title">มหาวิทยาลัยดิจิทัลสมมติ - บทสรุปสำหรับผู้บริหาร (Executive Summary Card)</div>
+  </div>
+  <div class="exec-summary-card">
+    <div class="exec-meta-grid">
+      <div class="exec-meta-item">
+        <span class="meta-label">หน่วยงาน:</span>
+        <span class="meta-val">ฝ่ายตรวจสอบภายใน มหาวิทยาลัยดิจิทัลสมมติ</span>
+      </div>
+      <div class="exec-meta-item">
+        <span class="meta-label">เรียน:</span>
+        <span class="meta-val">คณะกรรมการตรวจสอบ (Audit Committee) และ อธิการบดี</span>
+      </div>
+      <div class="exec-meta-item">
+        <span class="meta-label">วันที่จัดทำ:</span>
+        <span class="meta-val">25 พฤศจิกายน 2567</span>
+      </div>
+      <div class="exec-meta-item">
+        <span class="meta-label">ขอบเขตการตรวจ:</span>
+        <span class="meta-val">ระบบสารสนเทศบริการการศึกษา (REG System), เครือข่ายแกนหลัก, และระบบคลาวด์</span>
+      </div>
+    </div>
+    <div class="exec-opinion-box">
+      <div class="opinion-title">ความเห็นสรุปของผู้ตรวจสอบในภาพรวม (Overall Audit Opinion):</div>
+      <p class="opinion-body">
+        <strong>"ต้องได้รับการปรับปรุงอย่างเร่งด่วน (Unsatisfactory / Requires Immediate Remediation)"</strong> — จากการตรวจสอบพบว่า แม้ฝ่ายเทคโนโลยีสารสนเทศมีความพยายามในการพัฒนาระบบบริการการศึกษาดิจิทัล แต่ระบบควบคุมภายในด้านความมั่นคงปลอดภัยสารสนเทศยังมีความล้มเหลวอย่างมีนัยสำคัญในด้านการพิสูจน์ตัวตน (MFA), การเก็บบันทึกล็อกตามกฎหมาย, การคุ้มครองข้อมูลส่วนบุคคลบนคลาวด์, และการบริหารสัญญาคู่ค้าภายนอก ซึ่งส่งผลให้มหาวิทยาลัยมีความเสี่ยงระดับสูงต่อการถูกเจาะระบบและถูกดำเนินคดีตามกฎหมาย
+      </p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 14.7:</strong> โครงร่างเอกสารบทสรุปสำหรับผู้บริหารจากรายงานการตรวจสอบจริงของกรณีศึกษามหาวิทยาลัยดิจิทัลสมมติ
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="1-ความเห็นสรุปของผู้ตรวจสอบ-overall-audit-opinion">1. ความเห็นสรุปของผู้ตรวจสอบ (Overall Audit Opinion)</h4>
+<p class="content-paragraph">ฝ่ายตรวจสอบภายในได้ดำเนินการตรวจสอบระบบสารสนเทศบริการการศึกษา (REG System) โครงสร้างพื้นฐานเครือข่าย และระบบคลาวด์ ประจำปีงบประมาณ 2567 ฝ่ายตรวจสอบมีความเห็นว่า:</p>
+<blockquote class="content-quote"><strong>"ระบบการควบคุมภายในด้านความมั่นคงปลอดภัยสารสนเทศของมหาวิทยาลัยอยู่ในระดับ 'ต้องปรับปรุงอย่างเร่งด่วน (Unsatisfactory / High Risk)'"</strong></blockquote>
+<p class="content-paragraph">เนื่องจากตรวจพบจุดอ่อนเชิงโครงสร้างที่มีนัยสำคัญซึ่งเปิดโอกาสให้ผู้โจมตีสามารถเข้าถึง แก้ไขเปลี่ยนแปลงข้อมูลผลการเรียน และติดตั้งโปรแกรมเรียกค่าไถ่ (Ransomware) ได้สำเร็จ ตลอดจนมีความเสี่ยงต่อการไม่ปฏิบัติตามกฎหมายคุ้มครองข้อมูลส่วนบุคคล (PDPA) และ พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562</p>
+<h4 class="sub-subsection-heading" id="2-สรุปภาพรวมข้อค้นพบจำแนกตามระดับความเสี่ยง-risk-heatmap-summary">2. สรุปภาพรวมข้อค้นพบจำแนกตามระดับความเสี่ยง (Risk Heatmap Summary)</h4>
+
+<div class="figure-box" id="figure-14-8">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 14.8</div>
+    <div class="figure-title">ตารางสรุปจำนวนข้อค้นพบตามระดับความเสี่ยงและสถานะการตอบรับของฝ่ายบริหาร</div>
+  </div>
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ระดับความเสี่ยง (Risk Rating)</th>
+          <th style="text-align:center;">จำนวนข้อค้นพบ</th>
+          <th>สถานะการตอบรับของฝ่ายบริหาร (Management Response Status)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge-status fail">CRITICAL</span></td>
+          <td style="text-align:center; font-weight:700; font-size:1.1rem; color:var(--rose);">2</td>
+          <td>ฝ่ายบริหารเห็นชอบ (Agree) ทั้งหมด และเริ่มลงมือแก้ไขทันที (ปิดได้แล้ว 1 ข้อ)</td>
+        </tr>
+        <tr>
+          <td><span class="badge-status warn">HIGH</span></td>
+          <td style="text-align:center; font-weight:700; font-size:1.1rem; color:var(--amber);">2</td>
+          <td>ฝ่ายบริหารเห็นชอบ (Agree) มีแผนปฏิบัติการและกำหนดผู้รับผิดชอบชัดเจน</td>
+        </tr>
+        <tr>
+          <td><span class="badge-status warn">MEDIUM</span></td>
+          <td style="text-align:center; font-weight:700; font-size:1.1rem; color:var(--amber);">1</td>
+          <td>ฝ่ายบริหารเห็นชอบ (Agree) อยู่ระหว่างจัดสรรงบประมาณและผู้เชี่ยวชาญ</td>
+        </tr>
+        <tr>
+          <td><span class="badge-status pass">LOW / INFORMATIONAL</span></td>
+          <td style="text-align:center; font-weight:700; font-size:1.1rem; color:var(--emerald);">2</td>
+          <td>ฝ่ายบริหารรับทราบเพื่อนำไปปรับปรุงในรอบถัดไป</td>
+        </tr>
+        <tr style="font-weight:700; background:var(--bg-surface); border-top:2px solid var(--border-color);">
+          <td>รวมทั้งสิ้น (Total Findings)</td>
+          <td style="text-align:center; font-size:1.2rem; color:var(--primary);">7</td>
+          <td>อัตราการเห็นชอบของฝ่ายบริหาร 100% (Full Management Agreement)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 14.8:</strong> สรุปสถิติข้อค้นพบตามระดับความเสี่ยงของมหาวิทยาลัยดิจิทัลสมมติ
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="3-3-ประเด็นความเสี่ยงเชิงโครงสร้างหลักที่ต้องได้รับการสนับสนุนจากสภามหาวิทยาลัย">3. 3 ประเด็นความเสี่ยงเชิงโครงสร้างหลักที่ต้องได้รับการสนับสนุนจากสภามหาวิทยาลัย:</h4>
+<ol class="content-list">
+<li><strong>วิกฤตการบริหารจัดการตัวตนและการเข้าถึง (Identity Governance Failure):</strong> การขาดระบบยืนยันตัวตนหลายปัจจัย (MFA) และการใช้บัญชีสิทธิ์ผู้ดูแลระบบร่วมกัน (Shared Root Credentials)</li>
+<li><strong>ความล้มเหลวของการสำรองข้อมูลและการกู้คืนจากภัยไซเบอร์ (Backup Resilience Breakdown):</strong> ข้อมูลสำรองถูกเชื่อมต่อผ่านเครือข่ายตลอดเวลา ขาดระบบ Immutable Storage ทำให้ถูกทำลายพร้อมระบบหลัก</li>
+<li><strong>ความเสี่ยงทางกฎหมายและสัญญาการจ้างงานภายนอก (Third-Party & Legal Exposure):</strong> การจัดซื้อระบบคลาวด์และว่าจ้าง Outsource โดยขาดสัญญา DPA และขาดข้อกำหนด Right to Audit</li>
+</ol>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="3-2-รายละเอียดข้อค้นพบฉบับสมบูรณ์-5-ข้อ-detailed-findings-sample">3.2 รายละเอียดข้อค้นพบฉบับสมบูรณ์ 5 ข้อ (Detailed Findings Sample)</h3>
+
+<div class="figure-box" id="figure-14-9">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 14.9</div>
+    <div class="figure-title">หมวดรายละเอียดข้อค้นพบการตรวจสอบ (Detailed Findings Section Architecture)</div>
+  </div>
+  <div class="finding-flow-banner">
+    <div class="banner-badge">SECTION 3.2</div>
+    <div class="banner-title">รายละเอียดข้อค้นพบฉบับสมบูรณ์ 5 ข้อหลัก (5 Major Audit Findings)</div>
+    <div class="banner-sub">จัดทำตามโครงสร้าง 6 องค์ประกอบมาตรฐานสากล (5Cs + E) พร้อมแผนปฏิบัติการแก้ไข (CAP) ที่วัดผลได้</div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 14.9:</strong> ส่วนรายละเอียดข้อค้นพบฉบับสมบูรณ์ของรายงานการตรวจสอบ
+  </div>
+</div>
+
+<h4 class="sub-subsection-heading" id="ข้อค้นพบที่-1-การขาดการยืนยันตัวตนแบบหลายปัจจัย-mfa-สำหรับการเข้าถึงระบบจากระยะไกลและสิทธิ์ระดับสูง">ข้อค้นพบที่ 1: การขาดการยืนยันตัวตนแบบหลายปัจจัย (MFA) สำหรับการเข้าถึงระบบจากระยะไกลและสิทธิ์ระดับสูง</h4>
+<ul class="content-list">
+<li><strong>ระดับความเสี่ยง (Risk Rating):</strong> <strong>CRITICAL</strong></li>
+<li><strong>เกณฑ์การตรวจสอบ (Criteria):</strong> ประกาศคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช.) เรื่อง มาตรฐานขั้นต่ำฯ ข้อ 5.2 และ ISO/IEC 27001:2022 Control A.8.5 กำหนดให้การเข้าถึงระบบสำคัญและการเข้าถึงจากระยะไกล (Remote Access / VPN) ต้องบังคับใช้ Multi-Factor Authentication (MFA)</li>
+<li><strong>สภาพความเป็นจริง (Condition):</strong> จากการตรวจสอบการเชื่อมต่อ VPN ของมหาวิทยาลัยและคอนโซลบริหารจัดการคลาวด์ พบว่าอนุญาตให้ผู้ดูแลระบบล็อกอินด้วยชื่อผู้ใช้และรหัสผ่านเพียงชั้นเดียว (Single-Factor Authentication) โดยไม่มีการบังคับใช้ MFA</li>
+<li><strong>พยานหลักฐานอ้างอิง (Evidence):</strong> ภาพหน้าจอการตั้งค่า FortiGate VPN (เอกสาร WP-09-02) และบันทึกการตั้งค่า IAM Console (เอกสาร WP-13-03)</li>
+<li><strong>สาเหตุราก (Root Cause):</strong> ฝ่ายโครงสร้างพื้นฐานกังวลเรื่องความยุ่งยากในการใช้งานของบุคลากร และไม่มีนโยบายความมั่นคงปลอดภัยระดับองค์กรที่บังคับใช้อย่างเคร่งครัด (Process & People Failure)</li>
+<li><strong>ความเสี่ยงและผลกระทบ (Risk & Impact):</strong> รหัสผ่านของผู้ดูแลระบบถูกขโมยผ่านเทคนิคฟิชชิง ส่งผลให้ผู้โจมตีสามารถล็อกอินเข้าสู่ Data Center และยึดครองระบบเซิร์ฟเวอร์ฐานข้อมูลได้โดยตรง</li>
+<li><strong>ข้อเสนอแนะ (Recommendation):</strong> บังคับใช้ MFA สำหรับการเชื่อมต่อ VPN และบัญชีผู้ดูแลระบบทั้งหมดทันที โดยใช้แอปพลิเคชัน Authenticator หรือ Hardware Token</li>
+<li><strong>ข้อคิดเห็นของฝ่ายบริหาร (Management Response):</strong></li>
+<li><em>สถานะ:</em> <strong>เห็นชอบ (Agree)</strong></li>
+<li><em>แผนปฏิบัติการ (Action Plan):</em> ดำเนินการเปิดใช้งาน MFA บนระบบ VPN และ Cloud Console ทั้งหมดสำหรับเจ้าหน้าที่ไอทีทันที และขยายผลสู่ผู้ใช้งานทุกคนภายใน 30 วัน</li>
+<li><em>ผู้รับผิดชอบ (Owner):</em> นายสมเกียรติ มั่นคง (หัวหน้าฝ่ายเครือข่ายและความมั่นคงปลอดภัย)</li>
+<li><em>กำหนดแล้วเสร็จ (Due Date):</em> 15 ธันวาคม 2567</li>
+</ul>
+<hr class="content-divider">
+<h4 class="sub-subsection-heading" id="ข้อค้นพบที่-2-ระบบจัดเก็บบันทึกข้อมูลจราจรทางคอมพิวเตอร์-log-ไม่เป็นไปตาม-พ-ร-บ-คอมพิวเตอร์ฯ-มาตรา-26">ข้อค้นพบที่ 2: ระบบจัดเก็บบันทึกข้อมูลจราจรทางคอมพิวเตอร์ (Log) ไม่เป็นไปตาม พ.ร.บ.คอมพิวเตอร์ฯ มาตรา 26</h4>
+<ul class="content-list">
+<li><strong>ระดับความเสี่ยง (Risk Rating):</strong> <strong>HIGH</strong></li>
+<li><strong>เกณฑ์การตรวจสอบ (Criteria):</strong> พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560 มาตรา 26 กำหนดให้ต้องจัดเก็บข้อมูลจราจรทางคอมพิวเตอร์ไม่น้อยกว่า 90 วัน</li>
+<li><strong>สภาพความเป็นจริง (Condition):</strong> จากการตรวจสอบระบบจัดเก็บบันทึกล็อกของเครื่องแม่ข่ายฐานข้อมูล <code>REG-DB-01</code> และไฟร์วอลล์ พบว่าเก็บบันทึกย้อนหลังได้เพียง 18 วัน เนื่องจากพื้นที่จัดเก็บบนดิสก์เต็ม และระบบมีสคริปต์อัตโนมัติในการลบล็อกที่เกิน 18 วันทิ้ง</li>
+<li><strong>พยานหลักฐานอ้างอิง (Evidence):</strong> ตาราง Log Retention Report และผลลัพธ์คำสั่งตรวจสอบพื้นที่ดิสก์บน SIEM Server (เอกสาร WP-11-01)</li>
+<li><strong>สาเหตุราก (Root Cause):</strong> ฝ่ายไอทีขาดการวางแผนคำนวณขนาดพื้นที่จัดเก็บ (Capacity Planning) สำหรับล็อกที่เพิ่มขึ้นตามปริมาณธุรกรรม (Technology Failure)</li>
+<li><strong>ความเสี่ยงและผลกระทบ (Risk & Impact):</strong> มหาวิทยาลัยมีความรับผิดทางกฎหมายตาม พ.ร.บ.คอมพิวเตอร์ฯ และเมื่อเกิดเหตุการณ์บุกรุก ผู้ตรวจสอบไม่สามารถสืบสวนหาตัวผู้กระทำความผิดย้อนหลังได้</li>
+<li><strong>ข้อเสนอแนะ (Recommendation):</strong> จัดสรรพื้นที่จัดเก็บข้อมูลระยะยาว (Cold Storage / Cloud Archive) พร้อมกำหนดนโยบาย Tiered Retention ให้เก็บบันทึกได้ไม่น้อยกว่า 90 วันตามกฎหมาย</li>
+<li><strong>ข้อคิดเห็นของฝ่ายบริหาร (Management Response):</strong></li>
+<li><em>สถานะ:</em> <strong>เห็นชอบ (Agree)</strong></li>
+<li><em>แผนปฏิบัติการ (Action Plan):</em> จัดซื้อพื้นที่จัดเก็บข้อมูลบนคลาวด์แบบ WORM Archive เพื่อส่งล็อกที่มีอายุเกิน 14 วันไปจัดเก็บระยะยาวให้ครบ 90 วัน</li>
+<li><em>ผู้รับผิดชอบ (Owner):</em> นายพงษ์ศักดิ์ บริหารระบบ (หัวหน้าฝ่ายระบบแม่ข่าย)</li>
+<li><em>กำหนดแล้วเสร็จ (Due Date):</em> 30 มกราคม 2568</li>
+</ul>
+<hr class="content-divider">
+<h4 class="sub-subsection-heading" id="ข้อค้นพบที่-3-การเปิดเผยสำเนาบัตรประชาชนนักศึกษาสู่สาธารณะบน-cloud-storage-โดยปราศจากการเข้ารหัส">ข้อค้นพบที่ 3: การเปิดเผยสำเนาบัตรประชาชนนักศึกษาสู่สาธารณะบน Cloud Storage โดยปราศจากการเข้ารหัส</h4>
+<ul class="content-list">
+<li><strong>ระดับความเสี่ยง (Risk Rating):</strong> <strong>CRITICAL</strong></li>
+<li><strong>เกณฑ์การตรวจสอบ (Criteria):</strong> พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 มาตรา 37(1) และประกาศ สคส. เรื่อง มาตรการรักษาความมั่นคงปลอดภัยฯ พ.ศ. 2565</li>
+<li><strong>สภาพความเป็นจริง (Condition):</strong> บักเก็ตจัดเก็บข้อมูลบนระบบคลาวด์ที่บรรจุสำเนาบัตรประชาชนของนักศึกษาจำนวนกว่า 60,000 ไฟล์ ถูกกำหนดสิทธิ์เป็น Public Read ทำให้บุคคลภายนอกสามารถดาวน์โหลดเอกสารได้โดยไม่ต้องยืนยันตัวตน</li>
+<li><strong>พยานหลักฐานอ้างอิง (Evidence):</strong> ลิงก์ URL สาธารณะ และผลการสแกนความมั่นคงปลอดภัยบน Cloud Storage Bucket (เอกสาร WP-13-02)</li>
+<li><strong>สาเหตุราก (Root Cause):</strong> บริษัท Outsource กำหนดค่าเปิดเป็นสาธารณะเพื่อความสะดวกในการทดสอบระบบ และมหาวิทยาลัยขาดกระบวนการทดสอบความปลอดภัยก่อนนำระบบขึ้นใช้งานจริง (Process Failure)</li>
+<li><strong>ความเสี่ยงและผลกระทบ (Risk & Impact):</strong> เกิดเหตุละเมิดข้อมูลส่วนบุคคลร้ายแรง เสี่ยงต่อโทษปรับทางปกครองสูงสุด 3 ล้านบาท และเกิดความเสียหายต่อชื่อเสียงอย่างรุนแรง</li>
+<li><strong>ข้อเสนอแนะ (Recommendation):</strong> ดำเนินการปิดกั้นการเข้าถึงจากสาธารณะ (Block Public Access) ทันที เปิดการเข้ารหัสข้อมูลด้วยกุญแจ KMS และแจ้ง DPO เพื่อดำเนินการตามกระบวนการของ PDPA</li>
+<li><strong>ข้อคิดเห็นของฝ่ายบริหาร (Management Response):</strong></li>
+<li><em>สถานะ:</em> <strong>เห็นชอบ (Agree)</strong></li>
+<li><em>แผนปฏิบัติการ (Action Plan):</em> ปิด Public Access สำเร็จแล้วเมื่อวันที่ 21 พฤศจิกายน 2567 และกำลังร่วมกับ DPO ในการประเมินผลกระทบเพื่อทำหนังสือรายงานต่อ สคส. ภายในกรอบเวลา</li>
+<li><em>ผู้รับผิดชอบ (Owner):</em> นางสาวรุ่งนภา พัฒนาระบบ (ผู้จัดการโครงการระบบคลาวด์)</li>
+<li><em>กำหนดแล้วเสร็จ (Due Date):</em> ดำเนินการแก้ไขแล้วเสร็จทันที (Closed Finding)</li>
+</ul>
+<hr class="content-divider">
+<h4 class="sub-subsection-heading" id="ข้อค้นพบที่-4-สัญญาจัดซื้อจัดจ้างระบบคลาวด์และ-outsource-ขาดข้อกำหนดสิทธิในการเข้าตรวจสอบ-right-to-audit-และ-dpa">ข้อค้นพบที่ 4: สัญญาจัดซื้อจัดจ้างระบบคลาวด์และ Outsource ขาดข้อกำหนดสิทธิในการเข้าตรวจสอบ (Right to Audit) และ DPA</h4>
+<ul class="content-list">
+<li><strong>ระดับความเสี่ยง (Risk Rating):</strong> <strong>HIGH</strong></li>
+<li><strong>เกณฑ์การตรวจสอบ (Criteria):</strong> พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 มาตรา 40 และ ISO/IEC 27001:2022 Control 5.20 Addressing information security within supplier agreements</li>
+<li><strong>สภาพความเป็นจริง (Condition):</strong> สัญญาจ้างบริษัท สมาร์ทคลาวด์โซลูชัน จำกัด ไม่มีข้อตกลงการประมวลผลข้อมูลส่วนบุคคล (DPA) ไม่มีเงื่อนไขให้มหาวิทยาลัยเข้าตรวจสอบระบบความปลอดภัยของผู้รับจ้าง (Right to Audit) และไม่มี SLA การแจ้งเตือนเหตุข้อมูลรั่วไหลเป็นรายชั่วโมง</li>
+<li><strong>พยานหลักฐานอ้างอิง (Evidence):</strong> สำเนาสัญญาจ้างเลขที่ มดส.-พสด. 142/2567 (เอกสาร WP-13-01)</li>
+<li><strong>สาเหตุราก (Root Cause):</strong> ฝ่ายจัดซื้อใช้แบบฟอร์มสัญญาจัดซื้อจัดจ้างพัสดุทั่วไปโดยมิได้ปรึกษาฝ่ายกฎหมายหรือ DPO ในขั้นตอนการร่างขอบเขตงาน (TOR) (Process Failure)</li>
+<li><strong>ความเสี่ยงและผลกระทบ (Risk & Impact):</strong> มหาวิทยาลัยไม่สามารถบังคับใช้มาตรฐานความปลอดภัยกับคู่ค้าได้ และหากเกิดเหตุข้อมูลรั่วไหลจากฝั่งคู่ค้า มหาวิทยาลัยจะไม่สามารถเข้าไปพิสูจน์ข้อเท็จจริงได้</li>
+<li><strong>ข้อเสนอแนะ (Recommendation):</strong> จัดทำสัญญาแนบท้าย (Contract Addendum) เพิ่มเติมข้อกำหนด DPA, Right to Audit, และ Incident SLA 24 ชั่วโมงกับคู่ค้าทุกราย</li>
+<li><strong>ข้อคิดเห็นของฝ่ายบริหาร (Management Response):</strong></li>
+<li><em>สถานะ:</em> <strong>เห็นชอบ (Agree)</strong></li>
+<li><em>แผนปฏิบัติการ (Action Plan):</em> ส่งร่างสัญญาแนบท้าย DPA ให้ฝ่ายกฎหมายตรวจทาน และเรียกคู่ค้าเข้ามาลงนามภายใน 45 วัน</li>
+<li><em>ผู้รับผิดชอบ (Owner):</em> นายอดิศร นิติการ (ผู้อำนวยการฝ่ายนิติการและจัดซื้อ)</li>
+<li><em>กำหนดแล้วเสร็จ (Due Date):</em> 15 มกราคม 2568</li>
+</ul>
+<hr class="content-divider">
+<h4 class="sub-subsection-heading" id="ข้อค้นพบที่-5-การขาดแผนเผชิญเหตุสำหรับภัยคุกคามมัลแวร์เรียกค่าไถ่-ransomware-playbook-และขาดการซักซ้อมแผน">ข้อค้นพบที่ 5: การขาดแผนเผชิญเหตุสำหรับภัยคุกคามมัลแวร์เรียกค่าไถ่ (Ransomware Playbook) และขาดการซักซ้อมแผน</h4>
+<ul class="content-list">
+<li><strong>ระดับความเสี่ยง (Risk Rating):</strong> <strong>MEDIUM</strong></li>
+<li><strong>เกณฑ์การตรวจสอบ (Criteria):</strong> NIST SP 800-61 Rev. 2 ข้อ 2.3 และ ISO/IEC 27001:2022 Control A.5.24 Information security incident management planning</li>
+<li><strong>สภาพความเป็นจริง (Condition):</strong> มหาวิทยาลัยมีแผน BCP ภาพรวม แต่ไม่มี Incident Playbook เฉพาะสำหรับรับมือกับ Ransomware และไม่เคยจัดประชุมซักซ้อมแผนแบบ Tabletop Exercise (TTX) ร่วมกับผู้บริหารและฝ่ายกฎหมายในรอบ 2 ปี</li>
+<li><strong>พยานหลักฐานอ้างอิง (Evidence):</strong> เอกสารแผนบริหารความต่อเนื่องทางธุรกิจ พ.ศ. 2565 (เอกสาร WP-12-01)</li>
+<li><strong>สาเหตุราก (Root Cause):</strong> ฝ่ายไอทีมองว่าแผน BCP ครอบคลุมแล้ว และขาดงบประมาณและการผลักดันการจัดซ้อมแผนร่วมข้ามฝ่าย (People & Process Failure)</li>
+<li><strong>ความเสี่ยงและผลกระทบ (Risk & Impact):</strong> เมื่อเกิดเหตุการณ์จริง ทีมปฏิบัติการและผู้บริหารเกิดความสับสน ตัดสินใจสั่งปิดเครื่องเซิร์ฟเวอร์จนทำลายหลักฐานดิจิทัลใน RAM และสื่อสารกับสาธารณะล่าช้า</li>
+<li><strong>ข้อเสนอแนะ (Recommendation):</strong> จัดทำ Cyber Incident Playbook เฉพาะทาง และจัดให้มีการซักซ้อม Tabletop Exercise อย่างน้อยปีละ 1 ครั้ง</li>
+<li><strong>ข้อคิดเห็นของฝ่ายบริหาร (Management Response):</strong></li>
+<li><em>สถานะ:</em> <strong>เห็นชอบ (Agree)</strong></li>
+<li><em>แผนปฏิบัติการ (Action Plan):</em> ว่าจ้างผู้เชี่ยวชาญภายนอกช่วยจัดทำ Playbook และเป็นผู้จัดกิจกรรมซักซ้อม Tabletop Exercise ร่วมกับคณะผู้บริหาร</li>
+<li><em>ผู้รับผิดชอบ (Owner):</em> นายสมเกียรติ มั่นคง (หัวหน้าฝ่ายเครือข่ายและความมั่นคงปลอดภัย)</li>
+<li><em>กำหนดแล้วเสร็จ (Due Date):</em> 28 กุมภาพันธ์ 2568</li>
+</ul>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-4-กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน-active-learning-simulation">
+            <h2 class="section-heading">ส่วนที่ 4: กิจกรรมการเรียนรู้เชิงปฏิบัติการในชั้นเรียน (Active Learning Simulation)</h2>
+          </section>
+        
+
+<div class="interactive-widget" id="widget-14-5">
+  <div class="widget-header">
+    <div class="widget-tag">WIDGET 14.5 // ACTIVE LEARNING SIMULATOR</div>
+    <div class="widget-title">ห้องปฏิบัติการจำลองการเขียนข้อค้นพบ: From Technical Glitch to Board-Level Finding</div>
+  </div>
+  <div class="widget-body">
+    <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:0.85rem;">
+      ร่วมฝึกทักษะการเปลี่ยนปัญหาทางเทคนิคดิบ สู่ข้อค้นพบมาตรฐาน 5Cs+E ที่พร้อมนำเสนอต่อคณะกรรมการตรวจสอบ (Audit Committee):
+    </p>
+
+    <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1rem;">
+      <button class="vol-select-btn active" id="ws-step-btn-1" onclick="setWorkshopStep(1)">ภารกิจที่ 1: แปลงเป็น Business Risk</button>
+      <button class="vol-select-btn" id="ws-step-btn-2" onclick="setWorkshopStep(2)">ภารกิจที่ 2: วิเคราะห์ 5 Whys สู่ Root Cause</button>
+      <button class="vol-select-btn" id="ws-step-btn-3" onclick="setWorkshopStep(3)">ภารกิจที่ 3: ร่าง Systemic Recommendation</button>
+    </div>
+
+    <div id="workshop-step-content" style="background:var(--bg-card); padding:1rem; border-radius:8px; border:1px solid var(--border-color); margin-bottom:1rem;">
+      <!-- Step rendered dynamically -->
+    </div>
+
+    <div id="workshop-score-summary" style="background:var(--bg-surface); padding:0.85rem 1rem; border-radius:8px; border:1px solid var(--border-color);">
+      <!-- Summary rendered dynamically -->
+    </div>
+  </div>
+</div>
+
+<h3 class="subsection-heading" id="กิจกรรม-audit-finding-5-whys-clinic-from-technical-glitch-to-board-level-finding-ระยะเวลา-25-นาที">กิจกรรม: "Audit Finding & 5 Whys Clinic: From Technical Glitch to Board-Level Finding" (ระยะเวลา 25 นาที)</h3>
+<h4 class="sub-subsection-heading" id="1-วัตถุประสงค์ของกิจกรรม">1. วัตถุประสงค์ของกิจกรรม</h4>
+<p class="content-paragraph">เพื่อฝึกทักษะให้นักศึกษาสามารถนำข้อมูลทางเทคนิคดิบ (Raw Technical Glitches) มาวิเคราะห์หาสาเหตุรากด้วยเทคนิค Five Whys และเรียบเรียงเป็นข้อค้นพบการตรวจสอบมาตรฐาน 5Cs + E ที่ทรงพลังและพร้อมเสนอต่อบอร์ดบริหาร</p>
+<h4 class="sub-subsection-heading" id="2-โจทย์สถานการณ์จำลอง-technical-scenario">2. โจทย์สถานการณ์จำลอง (Technical Scenario)</h4>
+<p class="content-paragraph">ทีมผู้ตรวจสอบได้รับข้อมูลผลการสแกนช่องโหว่และตรวจสอบระบบเครือข่ายพบว่า:</p>
+<blockquote class="content-quote"><em>"เครื่องคอมพิวเตอร์ลูกข่ายและเซิร์ฟเวอร์ในแผนกการเงินจำนวน 15 เครื่อง มีการเปิดใช้งานโปรโตคอล Remote Desktop (RDP พอร์ต 3389) ตรงสู่อินเทอร์เน็ตสาธารณะโดยไม่มีไฟร์วอลล์กั้น และพบว่ามีการใช้รหัสผ่านง่าย เช่น <code>Admin1234</code> จนถูกบอทเน็ตยิง Brute-force วันละหลายหมื่นครั้ง"</em></blockquote>
+<h4 class="sub-subsection-heading" id="3-ภารกิจของนักศึกษา-deliverables-ในชั้นเรียน">3. ภารกิจของนักศึกษา (Deliverables ในชั้นเรียน)</h4>
+<p class="content-paragraph">ให้นักศึกษาแบ่งกลุ่มละ 4–5 คน ร่วมกันปฏิบัติภารกิจ 3 ขั้นตอนลงในใบงานคลินิก:</p>
+<ol class="content-list">
+<li><strong>The 5 Whys Exercise:</strong> ดำเนินการตั้งคำถาม "ทำไม" 5 ระดับ เพื่อค้นหาสาเหตุรากเชิงระบบ (Root Cause) ของปัญหานี้</li>
+<li><strong>Drafting 5Cs + E Finding:</strong> เขียนเรียบเรียงข้อค้นพบฉบับสมบูรณ์ ประกอบด้วย:</li>
+</ol>
+<ul class="content-list">
+<li><strong>Criteria:</strong> นโยบาย/มาตรฐานที่เกี่ยวข้อง</li>
+<li><strong>Condition:</strong> สิ่งที่ตรวจพบ (ระบุจำนวนและสัดส่วน)</li>
+<li><strong>Evidence:</strong> หลักฐานที่ต้องใช้</li>
+<li><strong>Root Cause:</strong> สาเหตุรากที่ค้นพบจากข้อ 1</li>
+<li><strong>Risk & Impact:</strong> ผลกระทบต่อความลับ ข้อมูลการเงิน และกฎหมาย</li>
+<li><strong>Recommendation:</strong> ข้อเสนอแนะเชิงระบบและยั่งยืน</li>
+</ul>
+<ol class="content-list">
+<li><strong>Risk Rating Assignment:</strong> กำหนดระดับความเสี่ยง (Critical / High / Medium / Low) พร้อมชี้แจงเหตุผลประกอบ</li>
+</ol>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-5-มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย-professional-perspectives-common-pitfalls">
+            <h2 class="section-heading">ส่วนที่ 5: มุมมองเชิงวิชาชีพและข้อผิดพลาดที่พบบ่อย (Professional Perspectives & Common Pitfalls)</h2>
+          </section>
+        
+<h3 class="subsection-heading" id="5-1-บทสนทนาจำลองเชิงวิชาชีพ-finding-negotiation-pushback-dialogue">5.1 บทสนทนาจำลองเชิงวิชาชีพ (Finding Negotiation & Pushback Dialogue)</h3>
+
+<div class="figure-box" id="figure-14-12">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 14.12</div>
+    <div class="figure-title">บทสนทนาจำลองเชิงวิชาชีพ: การเจรจาผลการตรวจสอบและการรับมือข้อโต้แย้ง (Finding Review Dialogue)</div>
+  </div>
+  <div class="dialogue-container">
+    <div class="chat-bubble chat-chair">
+      <div class="chat-author">🏛️ ประธานคณะกรรมการตรวจสอบ (Audit Committee Chair)</div>
+      <div class="chat-msg">
+        "คุณผู้ตรวจสอบครับ ในข้อค้นพบที่ 2 เรื่องที่มหาวิทยาลัยเก็บล็อกได้แค่ 18 วัน ทางผู้อำนวยการไอทีเขาชี้แจงว่า เขาของบประมาณซื้อพื้นที่สตอเรจเพิ่มไปแล้วเมื่อปีก่อน แต่ฝ่ายการเงินตัดงบส่วนนี้ทิ้ง ดังนั้นการที่คุณมาจัดระดับความเสี่ยงของเขาเป็นระดับ 'High' และกล่าวหาว่าฝ่ายไอทีขาดการวางแผน มันยุติธรรมกับฝ่ายไอทีแล้วหรือ?"
+      </div>
+    </div>
+    <div class="chat-bubble chat-auditor">
+      <div class="chat-author">🔍 Lead IT Auditor</div>
+      <div class="chat-msg">
+        "กราบเรียนท่านประธานครับ ในมุมมองของการตรวจสอบ เราเข้าใจและเห็นใจข้อจำกัดด้านงบประมาณของฝ่ายไอทีเป็นอย่างยิ่งครับ แต่หน้าที่ของผู้ตรวจสอบคือ <strong>'การประเมินความเสี่ยงที่มีอยู่จริงต่อมหาวิทยาลัย (Objective Risk to the Organization)'</strong> มิใช่การตัดสินว่าใครเป็นคนผิดเป็นรายบุคคลครับ<br><br>
+        ไม่ว่าสาเหตุจะมาจากการตัดงบประมาณหรือการไม่ของบประมาณ ข้อเท็จจริงเชิงประจักษ์คือ มหาวิทยาลัยกำลังทำผิด พ.ร.บ.คอมพิวเตอร์ฯ มาตรา 26 ซึ่งมีโทษปรับตามกฎหมาย และเมื่อเกิดเหตุอาชญากรรมไซเบอร์ขึ้นจริง มหาวิทยาลัยจะไม่สามารถส่งหลักฐานให้เจ้าหน้าที่ตำรวจได้เลย ความเสี่ยงนี้จึงเป็นระดับ High อย่างแท้จริงครับ<br><br>
+        และที่สำคัญที่สุด การที่เราระบุข้อค้นพบนี้เป็นระดับ High ในรายงานนี้ จะเป็น <strong>'เครื่องมือสนับสนุนชั้นดี'</strong> ให้กับผู้อำนวยการไอที ในการนำรายงานนี้ไปเสนอต่อสภามหาวิทยาลัยเพื่อขออนุมัติงบประมาณพิเศษในการจัดซื้อระบบจัดเก็บล็อกให้ถูกต้องตามกฎหมายครับ"
+      </div>
+    </div>
+    <div class="chat-bubble chat-auditee">
+      <div class="chat-author">💻 ผู้อำนวยการฝ่ายไอที (Auditee)</div>
+      <div class="chat-msg">
+        "ขอบคุณท่านผู้ตรวจสอบมากครับ ตอนแรกผมกังวลว่าจะถูกตำหนิเรื่องการตัดงบ แต่เมื่อผู้ตรวจสอบชี้แจงว่ารายงานนี้มีเป้าหมายเพื่อช่วยให้มหาวิทยาลัยจัดสรรงบประมาณที่ถูกต้อง ทางฝ่ายไอทีเราเห็นชอบ (Agree) กับข้อค้นพบนี้อย่างเต็มที่ครับ"
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 14.12:</strong> ทักษะการสื่อสารเชิงสร้างสรรค์ (Constructive Communication) ของผู้ตรวจสอบเพื่อเปลี่ยนข้อโต้แย้งให้กลายเป็นความร่วมมือ
+  </div>
+</div>
+
+<p class="content-paragraph">บทสนทนานี้สะท้อนการประชุมเจรจาผลการตรวจสอบ (Exit Meeting / Finding Review) ระหว่างผู้ตรวจสอบกับผู้บริหารระดับสูง:</p>
+<blockquote class="content-quote"><strong>ประธานคณะกรรมการตรวจสอบ (Audit Committee Chair):</strong> "คุณผู้ตรวจสอบครับ ในข้อค้นพบที่ 2 เรื่องที่มหาวิทยาลัยเก็บล็อกได้แค่ 18 วัน ทางผู้อำนวยการไอทีเขาชี้แจงว่า เขาของบประมาณซื้อพื้นที่จัดเก็บสตอเรจเพิ่มไปแล้วเมื่อปีก่อน แต่ทางฝ่ายการเงินตัดงบส่วนนี้ทิ้ง ดังนั้นการที่คุณมาจัดระดับความเสี่ยงของเขาเป็นระดับ 'High' และกล่าวหาว่าฝ่ายไอทีขาดการวางแผน มันยุติธรรมกับฝ่ายไอทีแล้วหรือ?"     <strong>Lead IT Auditor:</strong> "กราบเรียนท่านประธานครับ ในมุมมองของการตรวจสอบ เราเข้าใจและเห็นใจข้อจำกัดด้านงบประมาณของฝ่ายไอทีเป็นอย่างยิ่งครับ   แต่หน้าที่ของผู้ตรวจสอบคือ <strong>'การประเมินความเสี่ยงที่มีอยู่จริงต่อมหาวิทยาลัย (Objective Risk to the Organization)'</strong> มิใช่การตัดสินว่าใครเป็นคนผิดเป็นรายบุคคลครับ   ไม่ว่าสาเหตุจะมาจากการตัดงบประมาณหรือการไม่ของบประมาณ ข้อเท็จจริงเชิงประจักษ์ (Condition) คือ มหาวิทยาลัยกำลังทำผิด พ.ร.บ.คอมพิวเตอร์ฯ มาตรา 26 ซึ่งมีโทษปรับตามกฎหมาย และเมื่อเกิดเหตุอาชญากรรมไซเบอร์ขึ้นจริง มหาวิทยาลัยจะไม่สามารถส่งหลักฐานให้เจ้าหน้าที่ตำรวจได้เลย ความเสี่ยงนี้จึงเป็นระดับ High อย่างแท้จริงครับ   และที่สำคัญที่สุด การที่เราระบุข้อค้นพบนี้เป็นระดับ High ในรายงานนี้ จะเป็น <strong>'เครื่องมือสนับสนุนชั้นดี'</strong> ให้กับผู้อำนวยการไอที ในการนำรายงานนี้ไปเสนอต่อสภามหาวิทยาลัยเพื่อขออนุมัติงบประมาณพิเศษในการจัดซื้อระบบจัดเก็บล็อกให้เป็นไปตามกฎหมายครับ"     <strong>ผู้อำนวยการฝ่ายไอที:</strong> "ขอบคุณท่านผู้ตรวจสอบมากครับ ตอนแรกผมกังวลว่าจะถูกตำหนิเรื่องการตัดงบ แต่เมื่อผู้ตรวจสอบชี้แจงว่ารายงานนี้มีเป้าหมายเพื่อช่วยให้มหาวิทยาลัยจัดสรรงบประมาณที่ถูกต้อง ทางฝ่ายไอทีเราเห็นชอบ (Agree) กับข้อค้นพบนี้อย่างเต็มที่ครับ"</blockquote>
+<hr class="content-divider">
+<h3 class="subsection-heading" id="5-2-4-กับดักหลุมพรางที่พบบ่อยในการเขียนรายงานการตรวจ-4-common-pitfalls">5.2 4 กับดักหลุมพรางที่พบบ่อยในการเขียนรายงานการตรวจ (4 Common Pitfalls)</h3>
+
+<div class="figure-box" id="figure-14-10">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 14.10</div>
+    <div class="figure-title">4 หลุมพรางอันตรายในการจัดทำรายงานการตรวจ (4 Dangerous Reporting Traps)</div>
+  </div>
+  <div class="traps-grid">
+    <div class="trap-card">
+      <div class="trap-num">TRAP 01</div>
+      <div class="trap-title">👉 The Finger-Pointing Trap</div>
+      <div class="trap-desc">มุ่งจับผิดบุคคล ระบุชื่อประณาม จนสร้างกำแพงต่อต้าน ผู้รับการตรวจจะไม่ร่วมมือและมุ่งแก้ตัวแทนแก้ไข</div>
+    </div>
+    <div class="trap-card">
+      <div class="trap-num">TRAP 02</div>
+      <div class="trap-title">🩹 The Symptom Fixer</div>
+      <div class="trap-desc">แนะนำให้แก้ปัญหาเฉพาะหน้าแต่ไม่แตะสาเหตุราก เช่น สั่งปิดพอร์ต แต่ไม่เคยสร้างระบบควบคุมการเปลี่ยนแปลง</div>
+    </div>
+    <div class="trap-card">
+      <div class="trap-num">TRAP 03</div>
+      <div class="trap-title">🛍️ The Vendor Salesman</div>
+      <div class="trap-desc">ข้อเสนอแนะล็อคสเปกสินค้าหรือเชียร์ยี่ห้อเฉพาะเจาะจง ขัดต่อจรรยาบรรณวิชาชีพความเป็นอิสระของผู้ตรวจสอบ</div>
+    </div>
+    <div class="trap-card">
+      <div class="trap-num">TRAP 04</div>
+      <div class="trap-title">👽 The Unreadable Jargon</div>
+      <div class="trap-desc">เขียนศัพท์เทคนิคล้วนจนผู้บริหารอ่านไม่เข้าใจ ไม่สามารถเชื่อมโยงผลกระทบทางเทคนิคสู่ความเสี่ยงทางธุรกิจได้</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 14.10:</strong> 4 กับดักหลุมพรางที่ผู้ตรวจสอบระบบสารสนเทศต้องระมัดระวังเป็นพิเศษในการจัดทำรายงาน
+  </div>
+</div>
+
+<ol class="content-list">
+<li><strong>The Finger-Pointing Trap (กับดักการชี้นิ้วจับผิดบุคคล):</strong> การใช้คำพูดเชิงประณามหรือระบุชื่อบุคคลว่าเป็นต้นเหตุของความผิดพลาด ทำให้เกิดความเป็นปรปักษ์ ผู้รับการตรวจจะไม่ให้ความร่วมมือ และมุ่งเน้นการแก้ตัวแทนที่จะมุ่งเน้นการแก้ไข</li>
+<li><strong>The Symptom Fixer (กับดักการแก้ปัญหาที่ปลายเหตุ):</strong> ข้อเสนอแนะระบุเพียงแค่ "ให้ปิดพอร์ตนี้" หรือ "ให้แก้รหัสผ่านเครื่องนี้" โดยไม่เคยสร้างระบบ นโยบาย หรือกระบวนการตรวจสอบอัตโนมัติ ทำให้เกิดปัญหาเดิมซ้ำในวันข้างหน้า</li>
+<li><strong>The Vendor Salesman (กับดักการเป็นนายหน้าขายซอฟต์แวร์):</strong> การเขียนข้อเสนอแนะที่ระบุชื่อยี่ห้อสินค้าหรือฮาร์ดแวร์โดยตรง (เช่น "แนะนำให้จัดซื้อไฟร์วอลล์ยี่ห้อ Palo Alto รุ่น XYZ") ซึ่งขัดต่อจรรยาบรรณวิชาชีพ ข้อเสนอแนะที่ดีต้องเป็นอิสระและระบุเป็น "คุณลักษณะเชิงหน้าที่ (Functional Requirements)"</li>
+<li><strong>The Unreadable Technical Jargon (กับดักภาษาต่างดาว):</strong> การเขียนรายงานเต็มไปด้วยคำศัพท์เทคนิค เช่น TCP Flags, Hash collision, Registry keys โดยไม่มีการอธิบายผลกระทบเชิงธุรกิจ ทำให้ผู้บริหารระดับสูงอ่านไม่เข้าใจและมองไม่เห็นคุณค่าของงานตรวจสอบ</li>
+</ol>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-6-การบ้านและงานมอบหมายประจำสัปดาห์-weekly-homework-week-14">
+            <h2 class="section-heading">ส่วนที่ 6: การบ้านและงานมอบหมายประจำสัปดาห์ (Weekly Homework Week 14)</h2>
+          </section>
+        
+<p class="content-paragraph">ให้นักศึกษาแต่ละคนสวมบทบาทเป็น <strong>Lead Cyber & IT Auditor</strong> นำข้อมูลกรณีศึกษาและประเด็นความเสี่ยงของ "มหาวิทยาลัยดิจิทัลสมมติ" (จากบทที่ 1 ถึงบทที่ 13) มาจัดทำเอกสาร <strong>"Audit Findings Portfolio ฉบับสมบูรณ์อย่างน้อย 5 ข้อ"</strong></p>
+<h3 class="subsection-heading" id="ข้อกำหนดโครงสร้างของแต่ละข้อค้นพบ-mandatory-finding-structure">ข้อกำหนดโครงสร้างของแต่ละข้อค้นพบ (Mandatory Finding Structure):</h3>
+<p class="content-paragraph">ในแต่ละข้อค้นพบ (รวมทั้งสิ้น 5 ข้อ) จะต้องระบุรายละเอียดให้ครบถ้วนทั้ง 10 หัวข้อดังนี้:</p>
+<ol class="content-list">
+<li><strong>ชื่อข้อค้นพบและระดับความเสี่ยง (Finding Title & Risk Rating):</strong> ระบุชื่อที่กระชับ และเลือกระดับความเสี่ยง (Critical / High / Medium / Low)</li>
+<li><strong>เกณฑ์การตรวจสอบ (Criteria):</strong> อ้างอิงกฎหมาย นโยบาย หรือมาตรฐานสากล (ISO 27001, NIST, ประกาศ สกมช., PDPA)</li>
+<li><strong>สภาพความเป็นจริง (Condition):</strong> ระบุข้อเท็จจริง ตัวเลข ขอบเขตกลุ่มตัวอย่าง (Sample Size) และประชากร</li>
+<li><strong>พยานหลักฐานอ้างอิง (Evidence Reference):</strong> ระบุรหัสกระดาษทำการหรือชื่อเอกสารอ้างอิง (เช่น WP-XX-XX)</li>
+<li><strong>การวิเคราะห์สาเหตุราก (Root Cause Analysis):</strong> สรุปผลการวิเคราะห์ด้วยเทคนิค 5 Whys หรือกรอบ PPT</li>
+<li><strong>ความเสี่ยงและผลกระทบ (Risk & Impact):</strong> อธิบายผลกระทบต่อ CIA, การเงิน, กฎหมาย หรือชื่อเสียง</li>
+<li><strong>ข้อเสนอแนะเชิงระบบ (Systemic Recommendation):</strong> ข้อเสนอแนะที่มุ่งแก้สาเหตุราก ไม่ระบุยี่ห้อสินค้า และเป็นไปได้จริง</li>
+<li><strong>การตอบรับของฝ่ายบริหาร (Management Response Position):</strong> ระบุว่า เห็นชอบ (Agree) หรือ ไม่เห็นชอบ (Disagree)</li>
+<li><strong>แผนปฏิบัติการแก้ไข (Corrective Action Plan - CAP):</strong> กิจกรรมแก้ไขที่ชัดเจนและวัดผลได้</li>
+<li><strong>ผู้รับผิดชอบและกำหนดแล้วเสร็จ (Owner & Target Due Date):</strong> ระบุตำแหน่งบุคคลผู้รับผิดชอบหลัก และวันที่แล้วเสร็จที่แน่นอน</li>
+</ol>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers">
+            <h2 class="section-heading">ส่วนที่ 7: คำถามทบทวนท้ายบท (Review Questions & Detailed Answers)</h2>
+          </section>
+        
+<ol class="content-list">
+<li><strong>คำถาม:</strong> จงอธิบายโครงสร้าง 6 องค์ประกอบของข้อค้นพบการตรวจสอบ (5Cs + E) มาโดยสังเขป</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ประกอบด้วย: 1. <strong>Criteria (เกณฑ์):</strong> สิ่งที่ควรจะเป็นตามกฎหมายหรือนโยบาย, 2. <strong>Condition (สภาพจริง):</strong> สิ่งที่ตรวจพบจริงพร้อมระบุกลุ่มตัวอย่าง, 3. <strong>Evidence (พยานหลักฐาน):</strong> เอกสารหรือล็อกอ้างอิงที่ตรวจสอบย้อนกลับได้, 4. <strong>Cause (สาเหตุ):</strong> เหตุผลเบื้องลึกที่ทำให้เกิดความบกพร่อง, 5. <strong>Consequence/Risk (ผลกระทบ):</strong> ความเสียหายต่อธุรกิจหรือความเสี่ยงที่ตามมา, 6. <strong>Recommendation (ข้อเสนอแนะ):</strong> แนวทางแก้ไขที่มุ่งกำจัดสาเหตุราก</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ในการระบุสภาพความเป็นจริง (Condition) เหตุใดผู้ตรวจสอบจึงต้องระบุ "ขนาดของกลุ่มตัวอย่าง (Sample Size)" และ "ประชากรทั้งหมด (Population)" เสมอ?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพื่อให้ผู้อ่านและฝ่ายบริหารเห็นภาพความครอบคลุมและระดับความรุนแรงของปัญหาอย่างแท้จริง การระบุเพียง "พบข้อบกพร่อง" อาจทำให้เข้าใจผิดได้ การระบุตัวเลข (เช่น พบ 5 บัญชีจากกลุ่มตัวอย่าง 20 บัญชี หรือคิดเป็น 25%) ช่วยยืนยันความเที่ยงตรงทางสถิติและป้องกันข้อโต้แย้งจากผู้รับการตรวจ</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่างการแก้ไขปัญหาที่ "อาการ (Symptom)" กับการแก้ไขที่ "สาเหตุราก (Root Cause)" พร้อมยกตัวอย่าง</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> การแก้ที่อาการเป็นการแก้ปัญหาเฉพาะหน้า ณ จุดเกิดเหตุ เช่น เมื่อพบเซิร์ฟเวอร์ไม่ได้ลงแพตช์ จึงสั่งให้ลงแพตช์เครื่องนั้น (แต่อีก 3 เดือนเครื่องอื่นก็จะไม่ลงแพตช์อีก); ส่วนการแก้ที่สาเหตุรากเป็นการแก้ไขเชิงระบบ เช่น การจัดทำกระบวนการ Patch Management ที่มีระบบสแกนอัตโนมัติและมีตัวชี้วัดกำกับดูแล เพื่อป้องกันไม่ให้เกิดความล่าช้าในการแพตช์กับทุกเครื่องในอนาคต</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> เทคนิค "Five Whys" มีประโยชน์อย่างไรในการวิเคราะห์ข้อค้นพบ และมีข้อจำกัดที่ต้องระวังอย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> มีประโยชน์ในการช่วยสืบค้นหาสาเหตุเบื้องลึกเชิงนโยบายและกระบวนการ โดยการถาม "ทำไม" ต่อเนื่อง 5 ครั้งเพื่อทะลุผ่านปัญหาผิวเผินทางเทคนิค ข้อควรระวังคือการด่วนสรุปตามสมมติฐานส่วนตัวของผู้ตรวจสอบโดยไม่มีพยานหลักฐานรองรับในแต่ละขั้น หรือการหยุดถามเร็วเกินไปจนได้เพียงอาการของปัญหา</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> หากฝ่ายบริหารของผู้รับการตรวจ "ไม่เห็นชอบ (Disagree)" กับข้อค้นพบการตรวจสอบ ผู้ตรวจสอบควรดำเนินการตามขั้นตอนอย่างไร?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ผู้ตรวจสอบต้องเปิดโอกาสให้ฝ่ายบริหารชี้แจงและนำเสนอพยานหลักฐานเพิ่มเติมเพื่อสอบทานยัน หากพิจารณาแล้วพบว่าข้อค้นพบถูกต้องและสะท้อนความเสี่ยงจริง ผู้ตรวจสอบต้องคงข้อค้นพบนั้นไว้ แต่ต้องบันทึกเหตุผลที่ไม่เห็นชอบของฝ่ายบริหารลงในรายงานอย่างเป็นกลาง และหากฝ่ายบริหารเลือกที่จะไม่แก้ไข ฝ่ายบริหารต้องจัดทำหนังสือยอมรับความเสี่ยง (Formal Risk Acceptance) เสนอต่อคณะกรรมการตรวจสอบ</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> "Executive Summary" ในรายงานการตรวจสอบระบบสารสนเทศที่ดี ควรมีลักษณะเด่นและเนื้อหาสำคัญอย่างไรบ้าง?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ควรมีความยาวกระชับ (1–2 หน้า) ใช้ภาษาธุรกิจที่เข้าใจง่าย ปราศจากศัพท์เทคนิคที่ไม่จำเป็น มีความเห็นสรุปของผู้ตรวจสอบในภาพรวม (Overall Audit Opinion) มีแผนภาพสรุปจำนวนข้อค้นพบตามระดับความเสี่ยง (Risk Heatmap) และสรุปประเด็นความเสี่ยงเชิงโครงสร้าง 3–5 ประเด็นสำคัญที่ต้องได้รับการสนับสนุนจากผู้บริหารระดับสูง</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ปัจจัยใดบ้างที่ผู้ตรวจสอบต้องนำมาพิจารณาในการกำหนด "ระดับความเสี่ยง (Risk Rating)" ของข้อค้นพบ?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ผลกระทบที่อาจเกิดขึ้น (Impact), โอกาสเกิด (Likelihood), ความสำคัญของระบบ (System Scope), ชั้นความลับของข้อมูล (Data Sensitivity), ความสามารถในการตรวจจับ (Detectability), มาตรการชดเชยที่มีอยู่ (Compensating Controls), และบทลงโทษทางกฎหมายหรือหน่วยงานกำกับดูแล (Regulatory Mandates)</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> เหตุใดข้อเสนอแนะในการตรวจสอบ (Audit Recommendation) จึงไม่ควรระบุชื่อตราสินค้าหรือผลิตภัณฑ์ซอฟต์แวร์เป็นการเฉพาะเจาะจง?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> เพราะขัดต่อจรรยาบรรณวิชาชีพด้านความเป็นอิสระและความเป็นกลาง (Independence and Objectivity) อาจทำให้ถูกมองว่ามีผลประโยชน์ทับซ้อนกับผู้จำหน่ายสินค้า และเป็นการจำกัดทางเลือกขององค์กร ข้อเสนอแนะที่ดีควรระบุเป็น "คุณลักษณะหรือมาตรฐานเชิงหน้าที่ (Functional Requirements)" เพื่อให้ฝ่ายไอทีสามารถจัดหาเทคโนโลยีที่เหมาะสมและคุ้มค่าที่สุดได้เอง</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> แผนปฏิบัติการแก้ไข (Corrective Action Plan: CAP) ที่มีคุณภาพ ต้องประกอบด้วยข้อมูลสำคัญใดบ้าง?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ต้องประกอบด้วย: 1. กิจกรรมการแก้ไขที่ชัดเจนและวัดผลได้ (Action Items), 2. ผู้รับผิดชอบหลักรายบุคคล (Action Owner), 3. วันที่กำหนดแล้วเสร็จที่แน่นอน (Target Due Date), 4. ทรัพยากรและงบประมาณที่จำเป็น (Resources Required), และ 5. ตัวชี้วัดผลสำเร็จของการแก้ไข (Success Criteria)</li>
+</ul>
+<ol class="content-list">
+<li><strong>คำถาม:</strong> ตามมาตรฐาน ISACA ITAF คุณภาพของรายงานการตรวจสอบ 7 มิติ (Dimensions of Quality) ประกอบด้วยอะไรบ้าง?</li>
+</ol>
+<ul class="content-list">
+<li><strong>แนวคำตอบ:</strong> ประกอบด้วย: 1. Accuracy (ความถูกต้อง), 2. Objectivity (ความเป็นกลาง), 3. Clarity (ความชัดเจน), 4. Conciseness (ความกระชับ), 5. Constructiveness (ความสร้างสรรค์), 6. Completeness (ความครบถ้วนสมบูรณ์), และ 7. Timeliness (ความทันเวลา)</li>
+</ul>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="สรุปบทที่-14">
+            <h2 class="section-heading">สรุปบทที่ 14</h2>
+          </section>
+        
+<p class="content-paragraph">การจัดทำข้อค้นพบและรายงานการตรวจ (Audit Findings, Root Cause Analysis, and Reporting) คือบทพิสูจน์คุณค่าสูงสุดของวิชาชีพผู้ตรวจสอบระบบสารสนเทศและความมั่นคงปลอดภัยไซเบอร์</p>
+<p class="content-paragraph">ข้อค้นพบที่ทรงพลังต้องสร้างขึ้นจากโครงสร้าง <strong>5Cs + E</strong> ที่สมบูรณ์ โดยเชื่อมโยงเกณฑ์อ้างอิง (Criteria) เข้ากับสภาพข้อเท็จจริง (Condition) ที่มีหลักฐานเชิงประจักษ์รองรับ (Evidence) ผ่านการเจาะลึกเพื่อหาสาเหตุราก (Cause) ด้วยเทคนิค Five Whys และกรอบ People-Process-Technology และประเมินความเสี่ยงต่อธุรกิจ (Consequence/Risk) อย่างเป็นธรรม ก่อนที่จะเสนอแนะทางออกเชิงระบบที่ปฏิบัติได้จริง (Recommendation)</p>
+<p class="content-paragraph">รายงานการตรวจสอบต้องตอบโจทย์ผู้อ่านทั้งสองกลุ่ม: มี <strong>Executive Summary</strong> ที่คมชัด สื่อสารภาษาความเสี่ยงเชิงยุทธศาสตร์เพื่อให้ผู้บริหารระดับสูงและคณะกรรมการตรวจสอบตัดสินใจจัดสรรงบประมาณได้อย่างแม่นยำ และมี <strong>Detailed Findings</strong> ที่มีความลึกซึ้งทางเทคนิคเพื่อเป็นคู่มือแนวทางให้ฝ่ายปฏิบัติการนำไปจัดทำแผนปฏิบัติการแก้ไข (Corrective Action Plan) ที่มีผู้รับผิดชอบและกรอบเวลาชัดเจน</p>
+<p class="content-paragraph">การสื่อสารที่เป็นกลาง ยึดถือข้อเท็จจริง ปราศจากการกล่าวหาเจตนาส่วนบุคคล และมุ่งเน้นการสร้างสรรค์ความร่วมมือ (Constructive Partnership) จะเปลี่ยนรายงานการตรวจสอบจาก "เอกสารแห่งความหวาดระแวง" ให้กลายเป็น <strong>"แผนที่นำทางสู่ธรรมาภิบาลดิจิทัลที่เข้มแข็งและยั่งยืนขององค์กร"</strong></p>
+<hr class="content-divider">
+
+          <section class="chapter-section-anchor" id="เอกสารอ้างอิงและมาตรฐานสากล">
+            <h2 class="section-heading">เอกสารอ้างอิงและมาตรฐานสากล</h2>
+          </section>
+        
+<ol class="content-list">
+<li><strong>Information Systems Audit and Control Association (ISACA).</strong> (2020). <em>ITAF: Information Technology Assurance Framework (4th Edition)</em> (Standard 2401 Reporting, Standard 2402 Communication). Rolling Meadows, IL: ISACA.</li>
+<li><strong>Institute of Internal Auditors (IIA).</strong> (2024). <em>Global Internal Audit Standards (GIAS)</em> (Standard 11.1 Concluding the Engagement, Standard 11.2 Engagement Communication). Lake Mary, FL: IIA.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2018). <em>ISO 19011:2018 Guidelines for auditing management systems</em> (Clause 6.4.7 Generating audit findings, Clause 6.5 Preparing and distributing audit report). Geneva: ISO.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2020). <em>ISO/IEC 27007:2020 Information security, cybersecurity and privacy protection — Guidelines for information security management systems auditing</em>. Geneva: ISO.</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2008). <em>NIST SP 800-115: Technical Guide to Information Security Testing and Assessment</em> (Chapter 6: Analysis and Reporting). U.S. Department of Commerce.</li>
+<li><strong>Center for Internet Security (CIS).</strong> (2021). <em>CIS Controls Assessment Specification (CAS) Version 8</em>. East Greenbush, NY: CIS.</li>
+<li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562 (หมวดการประเมินและการรายงานความเสี่ยง).</li>
+<li><strong>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562 (การประเมินความสอดคล้องและการบันทึกรายงาน).</li>
+</ol>
+
+      <!-- Bottom Chapter Navigation -->
+      <footer class="chapter-nav-footer">
+        <a href="ch-13.html" class="btn-nav-chapter">
+          <span>◀</span> บทที่ 13: การตรวจสอบความสอดคล้อง ข้อมูลส่วนบุคคล คลาวด์ และผู้ให้บริการภายนอก
+        </a>
+        <a href="ch-15.html" class="btn-nav-chapter">
+          บทที่ 15: การประชุมปิด การติดตามผล และการทบทวนกระบวนการตรวจ <span>▶</span>
+        </a>
+      </footer>
+    </main>
+  </div>
+
+  <div id="progress-bar" style="display:none;"></div>
+
+  <script>
+// ==========================================
+// CHAPTER 14 CLIENT-SIDE JAVASCRIPT
+// Theme, Reader Controls, and Interactive Widgets
+// ==========================================
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ------------------------------------------
+// Reader Controls: Theme & Font
+// ------------------------------------------
+const themes = ['light', 'sepia', 'dark'];
+let currentThemeIdx = 0;
+
+function cycleTheme() {
+  currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+  setTheme(themes[currentThemeIdx]);
+}
+
+function setTheme(theme) {
+  if (!themes.includes(theme)) theme = 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  try {
+    localStorage.setItem('audit_course_theme', theme);
+  } catch (e) {}
+  currentThemeIdx = themes.indexOf(theme);
+}
+
+let currentFontSize = 16;
+function adjustFontSize(delta) {
+  if (delta === 0) {
+    currentFontSize = 16;
+  } else {
+    currentFontSize = Math.min(22, Math.max(13, currentFontSize + delta));
+  }
+  document.documentElement.style.setProperty('--base-font-size', currentFontSize + 'px');
+  try {
+    localStorage.setItem('audit_course_font_size', currentFontSize);
+  } catch (e) {}
+}
+
+// Init Reader Controls
+(function initReader() {
+  try {
+    const savedTheme = localStorage.getItem('audit_course_theme');
+    if (savedTheme) setTheme(savedTheme);
+    const savedFontSize = localStorage.getItem('audit_course_font_size');
+    if (savedFontSize) adjustFontSize(parseInt(savedFontSize, 10) - 16);
+  } catch (e) {}
+
+  window.addEventListener('scroll', function() {
+    const bar = document.getElementById('reading-progress-bar');
+    if (!bar) return;
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+    bar.style.width = scrolled + '%';
+  });
+})();
+
+// ==========================================
+// WIDGET 14.1: FINDING BUILDER & 5Cs+E VALIDATOR
+// ==========================================
+const findingPresets = {
+  mfa: {
+    title: 'การขาดการยืนยันตัวตนแบบหลายปัจจัย (MFA) สำหรับ VPN และ Cloud Console',
+    criteria: 'ประกาศ สกมช. เรื่อง มาตรฐานขั้นต่ำฯ ข้อ 5.2 และ ISO 27001 Control A.8.5 กำหนดให้ Remote Access และ Admin บังคับใช้ MFA',
+    condition: 'จากการตรวจ 15 VPN Accounts และ 6 Cloud Admin Accounts พบว่าทั้งหมด 100% ล็อกอินด้วย Password ชั้นเดียวโดยไม่มี MFA',
+    evidence: 'บันทึกคอนฟิก FortiGate VPN (WP-09-02) และ IAM Policy Screenshot (WP-13-03)',
+    cause: 'ฝ่ายไอทีกังวลเรื่องความยุ่งยากของผู้ใช้ และไม่มีนโยบายความมั่นคงปลอดภัยระดับองค์กรที่บังคับใช้อย่างจริงจัง',
+    consequence: 'เสี่ยงต่อการถูก Phishing และ Brute-force ขโมยรหัสผ่าน ทำให้ผู้โจมตีเข้าถึง Core Data Center ได้ทันที',
+    recommendation: 'บังคับใช้ MFA ด้วย Authenticator App หรือ FIDO2 Security Key สำหรับ VPN และ Cloud ทั้งหมดทันที'
+  },
+  logs: {
+    title: 'ระบบจัดเก็บบันทึกข้อมูลจราจรทางคอมพิวเตอร์ (Log) ไม่เป็นไปตาม พ.ร.บ.คอมพิวเตอร์ฯ มาตรา 26',
+    criteria: 'พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2560 มาตรา 26 กำหนดให้จัดเก็บล็อกไม่น้อยกว่า 90 วัน',
+    condition: 'เครื่องแม่ข่าย REG-DB-01 และ Core Firewall มีการเก็บบันทึกย้อนหลังได้เพียง 18 วัน เนื่องจากเนื้อที่ดิสก์เต็ม',
+    evidence: 'Log Retention Audit Report และรายงานพื้นที่จัดเก็บบน SIEM Server (WP-11-01)',
+    cause: 'ฝ่ายไอทีขาดการคำนวณขนาดความจุข้อมูล (Capacity Planning) สำหรับล็อกที่เพิ่มขึ้นตามธุรกรรม',
+    consequence: 'มหาวิทยาลัยมีความรับผิดทางกฎหมาย และเมื่อเกิดเหตุการณ์บุกรุกจะไม่สามารถสืบสวนหาตัวผู้กระทำความผิดได้',
+    recommendation: 'จัดสรรพื้นที่จัดเก็บบน Cloud WORM Storage และกำหนดนโยบาย Tiered Retention ให้ครบ 90 วันตามกฎหมาย'
+  },
+  s3: {
+    title: 'การเปิดเผยสำเนาบัตรประชาชนนักศึกษาสู่สาธารณะบน Cloud Storage',
+    criteria: 'พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 มาตรา 37(1) และประกาศ สคส. เรื่อง มาตรการรักษาความมั่นคงปลอดภัยฯ',
+    condition: 'Cloud Storage Bucket บรรจุสำเนาบัตรประชาชน 60,000 ไฟล์ ถูกเปิดเป็น Public Read เข้าถึงได้โดยไม่ต้องล็อกอิน',
+    evidence: 'URL เข้าถึงสาธารณะ และผลการสแกนสิทธิ์ Bucket (WP-13-02)',
+    cause: 'บริษัท Outsource เปิด Public เพื่อความสะดวกในการทดสอบระบบ และขาดขั้นตอน Security Acceptance Testing ก่อนขึ้นใช้งานจริง',
+    consequence: 'เกิดเหตุละเมิดข้อมูลส่วนบุคคลร้ายแรง เสี่ยงต่อโทษปรับสูงสุด 3 ล้านบาท และความเสียหายต่อชื่อเสียงสถาบัน',
+    recommendation: 'เปิด Block Public Access ทันที, บังคับใช้การเข้ารหัส KMS, และแจ้ง DPO เพื่อดำเนินการตามกระบวนการของ PDPA'
+  }
+};
+
+function loadFindingPreset(key) {
+  const p = findingPresets[key];
+  if (!p) return;
+  document.getElementById('w1-criteria').value = p.criteria;
+  document.getElementById('w1-condition').value = p.condition;
+  document.getElementById('w1-evidence').value = p.evidence;
+  document.getElementById('w1-cause').value = p.cause;
+  document.getElementById('w1-consequence').value = p.consequence;
+  document.getElementById('w1-recommendation').value = p.recommendation;
+  validateFindingQuality();
+}
+
+function validateFindingQuality() {
+  const crit = document.getElementById('w1-criteria')?.value.trim() || '';
+  const cond = document.getElementById('w1-condition')?.value.trim() || '';
+  const evid = document.getElementById('w1-evidence')?.value.trim() || '';
+  const cause = document.getElementById('w1-cause')?.value.trim() || '';
+  const conseq = document.getElementById('w1-consequence')?.value.trim() || '';
+  const reco = document.getElementById('w1-recommendation')?.value.trim() || '';
+
+  const reportCard = document.getElementById('finding-quality-report');
+  if (!reportCard) return;
+
+  let score = 0;
+  let checklist = [];
+  let warnings = [];
+
+  // 1. Criteria check
+  if (crit.length > 15 && (crit.includes('มาตรา') || crit.includes('ISO') || crit.includes('NIST') || crit.includes('เกณฑ์') || crit.includes('ประกาศ') || crit.includes('นโยบาย'))) {
+    score += 18;
+    checklist.push('✓ Criteria มีการอ้างอิงมาตรฐาน/กฎหมายที่ตรวจสอบได้');
+  } else {
+    warnings.push('⚠️ Criteria ควรอ้างอิงกฎหมายหรือมาตรฐานสากลให้ชัดเจน');
+  }
+
+  // 2. Condition check
+  if (cond.length > 20 && (/\d+/.test(cond) || cond.includes('ร้อยละ') || cond.includes('%') || cond.includes('พบ'))) {
+    score += 18;
+    checklist.push('✓ Condition ระบุข้อเท็จจริงพร้อมกลุ่มตัวอย่างหรือตัวเลขเชิงประจักษ์');
+  } else {
+    warnings.push('⚠️ Condition ควรระบุจำนวนตัวเลขหรือกลุ่มตัวอย่าง (Sample Size/Population) เพื่อป้องกันข้อโต้แย้ง');
+  }
+
+  // 3. Evidence check
+  if (evid.length > 10 && (evid.includes('WP-') || evid.includes('เอกสาร') || evid.includes('หลักฐาน') || evid.includes('ล็อก') || evid.includes('บันทึก'))) {
+    score += 16;
+    checklist.push('✓ Evidence มีการอ้างอิงกระดาษทำการหรือหลักฐานเชิงประจักษ์ (Traceable)');
+  } else {
+    warnings.push('⚠️ Evidence ควรอ้างอิงรหัสกระดาษทำการ (เช่น WP-XX-XX) เพื่อความสามารถในการตรวจสอบย้อนกลับ');
+  }
+
+  // 4. Cause check
+  if (cause.length > 15) {
+    if (cause.includes('นาย') || cause.includes('นาง') || cause.includes('บุคคล') || cause.includes('ขี้เกียจ')) {
+      warnings.push('🚨 Cause พบคำลักษณะ Finger-Pointing (มุ่งจับผิดบุคคล)! ควรปรับเป็นความล้มเหลวเชิงระบบ (Process/Policy/Training)');
+    } else {
+      score += 16;
+      checklist.push('✓ Cause มุ่งเน้นวิเคราะห์สาเหตุเชิงระบบและกระบวนการ (No Personal Blame)');
+    }
+  } else {
+    warnings.push('⚠️ Cause ควรอธิบายสาเหตุเบื้องลึกว่าทำไมจึงไม่ปฏิบัติตามเกณฑ์');
+  }
+
+  // 5. Consequence check
+  if (conseq.length > 15 && (conseq.includes('เสี่ยง') || conseq.includes('ผลกระทบ') || conseq.includes('เสียหาย') || conseq.includes('โทษ') || conseq.includes('บาท'))) {
+    score += 16;
+    checklist.push('✓ Consequence ชี้ให้เห็นความเสี่ยงเชิงธุรกิจ กฎหมาย หรือชื่อเสียงอย่างเป็นธรรม');
+  } else {
+    warnings.push('⚠️ Consequence ควรอธิบายผลกระทบเชิงธุรกิจหรือบทลงโทษทางกฎหมายให้เห็นภาพชัด');
+  }
+
+  // 6. Recommendation check
+  if (reco.length > 15) {
+    if (reco.includes('Cisco') || reco.includes('Palo Alto') || reco.includes('Fortinet') || reco.includes('ยี่ห้อ')) {
+      warnings.push('🚨 Recommendation พบการล็อคสเปกหรือระบุชื่อยี่ห้อสินค้า! ขัดต่อจรรยาบรรณวิชาชีพ ควรระบุเป็น Functional Requirements');
+    } else {
+      score += 16;
+      checklist.push('✓ Recommendation เป็นข้อเสนอแนะเชิงระบบและไม่ล็อคสเปกสินค้า (Vendor Independent)');
+    }
+  } else {
+    warnings.push('⚠️ Recommendation ควรมุ่งแก้ไขที่สาเหตุรากและปฏิบัติได้จริง (Actionable)');
+  }
+
+  let badgeClass = score >= 85 ? 'pass' : (score >= 50 ? 'warn' : 'fail');
+  let ratingText = score >= 85 ? 'ยอดเยี่ยม (Audit Board Ready)' : (score >= 50 ? 'ปานกลาง (Needs Refinement)' : 'ต้องปรับปรุง (Incomplete)');
+
+  reportCard.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:0.75rem; gap:0.5rem;">
+      <div>
+        <span style="font-size:0.82rem; color:var(--text-dim); text-transform:uppercase;">คะแนนคุณภาพข้อค้นพบ (Finding Quality Score):</span>
+        <strong style="margin-left:0.5rem; font-size:1.3rem; color:${score >= 85 ? 'var(--emerald)' : (score >= 50 ? 'var(--amber)' : 'var(--rose)')};">${score} / 100</strong>
+      </div>
+      <div><span class="badge-status ${badgeClass}" style="font-size:0.86rem;">${ratingText}</span></div>
+    </div>
+    <div style="margin-bottom:0.75rem;">
+      <div style="font-size:0.82rem; font-weight:700; color:var(--text-main); margin-bottom:0.3rem;">องค์ประกอบที่ผ่านเกณฑ์มาตรฐาน:</div>
+      <div style="font-size:0.8rem; color:var(--emerald); line-height:1.45;">
+        ${checklist.length > 0 ? checklist.map(c => '<div>' + c + '</div>').join('') : '<div style="color:var(--text-dim);">ยังไม่มีองค์ประกอบที่ผ่านเกณฑ์</div>'}
+      </div>
+    </div>
+    ${warnings.length > 0 ? `
+      <div style="background:var(--rose-bg); padding:0.65rem 0.85rem; border-radius:6px; border-left:3px solid var(--rose); font-size:0.8rem; color:var(--rose); line-height:1.45;">
+        <div style="font-weight:700; margin-bottom:0.25rem;">ข้อสังเกตและจุดที่ควรปรับปรุง:</div>
+        ${warnings.map(w => '<div>' + w + '</div>').join('')}
+      </div>
+    ` : ''}
+  `;
+}
+
+// ==========================================
+// WIDGET 14.2: 5 WHYS & FISHBONE DRILL-DOWN
+// ==========================================
+const fiveWhysData = {
+  problem: 'เครื่องแผนกการเงินเปิดพอร์ต RDP สู่ภายนอกและใช้รหัสผ่านง่ายจนถูกบอทเน็ตยิง Brute-force',
+  whys: [
+    {
+      level: 1,
+      question: 'ทำไม (Why #1): ทำไมเครื่องแผนกการเงินจึงเปิดพอร์ต RDP ตรงสู่อินเทอร์เน็ตสาธารณะ?',
+      answer: 'เพราะเจ้าหน้าที่การเงินต้องการรีโมตเข้ามาทำบัญชีจากที่บ้านช่วง Work from Home และเจ้าหน้าที่ไอทีช่วยตั้งค่า Port Forwarding ให้',
+      fix: 'Symptom Fix: สั่งให้ปิดพอร์ต RDP บนไฟร์วอลล์ทันที (แก้ปัญหาเฉพาะหน้า แต่ไม่ตอบโจทย์การทำงานจากบ้าน)'
+    },
+    {
+      level: 2,
+      question: 'ทำไม (Why #2): ทำไมเจ้าหน้าที่ไอทีจึงไม่จัดตั้งระบบ VPN หรือ Secure Remote Access ให้ถูกต้อง?',
+      answer: 'เพราะระบบ VPN ของมหาวิทยาลัยมี License จำกัดเพียง 20 Concurrent Users และขั้นตอนการขออนุมัติ VPN ซับซ้อนใช้เวลากว่า 2 สัปดาห์',
+      fix: 'Intermediate Fix: ขออนุมัติซื้อ VPN License เพิ่ม (แก้ปัญหาได้บางส่วน แต่กระบวนการยังล่าช้า)'
+    },
+    {
+      level: 3,
+      question: 'ทำไม (Why #3): ทำไมขั้นตอนการขอเข้าถึงระบบจากระยะไกลจึงล่าช้าและไม่มีทางเลือกที่ปลอดภัยสำหรับผู้ใช้งานทั่วไป?',
+      answer: 'เพราะไม่มีการออกแบบบริการ Secure Remote Work ในระดับมาตรฐานองค์กร เจ้าหน้าที่ไอทีจึงแก้ปัญหาเฉพาะหน้าด้วยการเปิดพอร์ตแบบ Ad-hoc',
+      fix: 'Process Fix: ออกแบบกระบวนการขอใช้บริการ Remote Access แบบ Self-service อนุมัติผ่านระบบไอที'
+    },
+    {
+      level: 4,
+      question: 'ทำไม (Why #4): ทำไมเจ้าหน้าที่ไอทีจึงกล้าเปิดพอร์ตสุ่มเสี่ยงโดยไม่มีการตรวจสอบหรือยับยั้งจากระบบควบคุมภายใน?',
+      answer: 'เพราะฝ่ายไอทีไม่มีกระบวนการ Change Management สำหรับการเปลี่ยนแปลงไฟร์วอลล์ และไม่มีระบบสแกนตรวจสอบพอร์ตเปิดอัตโนมัติ',
+      fix: 'Control Fix: บังคับใช้นโยบาย Firewall Change Approval และติดตั้งระบบ Automated Vulnerability Scanner ทุกสัปดาห์'
+    },
+    {
+      level: 5,
+      question: 'ทำไม (Why #5 - ROOT CAUSE): ทำไมจึงขาดทั้งนโยบาย นวัตกรรมบริการ และกระบวนการกำกับดูแลความมั่นคงปลอดภัย?',
+      answer: 'เพราะมหาวิทยาลัยขาด "คณะกรรมการธรรมาภิบาลดิจิทัลและความมั่นคงปลอดภัยไซเบอร์ (IT Governance Committee)" ที่คอยจัดสรรงบประมาณ นโยบายความมั่นคงปลอดภัย และการบริหารความเสี่ยงระดับยุทธศาสตร์',
+      fix: 'Systemic Root Cause Fix (Board Recommendation): จัดตั้งคณะกรรมการกำกับดูแลความมั่นคงปลอดภัยสารสนเทศระดับมหาวิทยาลัย จัดสรรงบประมาณด้านความมั่นคงปลอดภัยเป็นสัดส่วนตายตัว (10-15% ของงบไอที) และกำหนดนโยบายความมั่นคงปลอดภัยที่เชื่อมโยงกับดัชนีชี้วัด (KPI) ของทุกฝ่าย'
+    }
+  ]
+};
+
+let activeWhyLevel = 1;
+function selectWhyLevel(level) {
+  activeWhyLevel = level;
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.getElementById('why-btn-' + i);
+    if (btn) btn.classList.toggle('active', i === level);
+  }
+  renderWhyDetail();
+}
+
+function renderWhyDetail() {
+  const container = document.getElementById('why-detail-display');
+  if (!container) return;
+  const item = fiveWhysData.whys[activeWhyLevel - 1];
+
+  container.innerHTML = `
+    <div style="background:var(--bg-card); padding:1rem; border-radius:8px; border:1px solid var(--border-color); margin-bottom:0.75rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap; gap:0.5rem;">
+        <span class="badge-status warn" style="font-size:0.82rem; font-weight:700;">ระดับที่ ${item.level} / 5</span>
+        <span style="font-size:0.78rem; color:var(--text-dim);">${item.level === 5 ? '🎯 สาเหตุรากแท้จริง (Ultimate Root Cause)' : 'การสืบค้นความสัมพันธ์เชิงเหตุผล'}</span>
+      </div>
+      <div style="font-weight:700; font-size:0.95rem; color:var(--text-main); margin-bottom:0.4rem;">${item.question}</div>
+      <div style="font-size:0.86rem; color:var(--text-muted); line-height:1.5; margin-bottom:0.85rem; padding-left:0.5rem; border-left:3px solid var(--primary);">
+        <strong>คำตอบจากการสัมภาษณ์/สืบค้น:</strong> ${item.answer}
+      </div>
+      <div style="background:var(--bg-surface); padding:0.75rem; border-radius:6px; border:1px solid var(--border-color); font-size:0.82rem;">
+        <strong style="color:${item.level === 5 ? 'var(--emerald)' : 'var(--amber)'}; display:block; margin-bottom:0.25rem;">
+          ${item.level === 5 ? '🏆 ข้อเสนอแนะเชิงระบบที่แก้สาเหตุราก (Systemic Recommendation):' : '🔧 แนวทางการแก้ไขในระดับนี้ (Level Action):'}
+        </strong>
+        <span style="color:var(--text-main); line-height:1.45;">${item.fix}</span>
+      </div>
+    </div>
+  `;
+}
+
+// ==========================================
+// WIDGET 14.3: RISK RATING & HEATMAP CALCULATOR
+// ==========================================
+function calcFindingRisk() {
+  const impact = parseInt(document.getElementById('w3-impact')?.value || '4', 10);
+  const likelihood = parseInt(document.getElementById('w3-likelihood')?.value || '4', 10);
+  const scope = parseInt(document.getElementById('w3-scope')?.value || '3', 10);
+  const legal = parseInt(document.getElementById('w3-legal')?.value || '2', 10);
+  const resultCard = document.getElementById('risk-calc-result');
+  if (!resultCard) return;
+
+  // Base raw score
+  const baseScore = impact * likelihood; // 1-25
+  const modifier = scope + legal; // 2-6
+  const totalScore = baseScore + (modifier * 2); // approx 5 to 37
+
+  let rating = 'LOW';
+  let badgeClass = 'pass';
+  let sla = 'แก้ไขภายใน 60–90 วัน หรือตามรอบการปรับปรุงระบบปกติ';
+  let desc = 'ข้อบกพร่องระดับต่ำ การควบคุมยังทำงานได้ดี ไม่กระทบต่อระบบสำคัญ';
+
+  if (totalScore >= 26 || (impact === 5 && likelihood >= 4)) {
+    rating = 'CRITICAL';
+    badgeClass = 'fail';
+    sla = 'แก้ไขทันทีภายใน 24–48 ชั่วโมง (Escalate to Audit Committee)';
+    desc = 'ช่องโหว่รุนแรง มีหลักฐานการถูกโจมตี หรือละเมิดกฎหมายร้ายแรง กระทบต่อ Core Services';
+  } else if (totalScore >= 18 || impact >= 4) {
+    rating = 'HIGH';
+    badgeClass = 'fail';
+    sla = 'แก้ไขภายใน 15–30 วัน (รายงานต่อ CIO / CISO ประจำสัปดาห์)';
+    desc = 'การควบคุมภายในล้มเหลวอย่างมีนัยสำคัญ ข้อมูลสำคัญมีความเสี่ยงสูง ขาดมาตรการชดเชย';
+  } else if (totalScore >= 11) {
+    rating = 'MEDIUM';
+    badgeClass = 'warn';
+    sla = 'แก้ไขภายใน 30–60 วัน (ติดตามในรายงานความคืบหน้ารายเดือน)';
+    desc = 'การควบคุมบกพร่องปานกลาง มีมาตรการชดเชยบางส่วน กระทบต่อประสิทธิภาพการทำงาน';
+  } else if (totalScore < 7) {
+    rating = 'INFORMATIONAL';
+    badgeClass = 'info';
+    sla = 'นำไปพิจารณาตามความเหมาะสมเพื่อเพิ่มประสิทธิภาพ';
+    desc = 'ข้อสังเกตเชิงบวก หรือโอกาสในการปรับปรุงกระบวนการทำงานให้ดียิ่งขึ้น';
+  }
+
+  resultCard.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:0.6rem; gap:0.5rem;">
+      <div>
+        <span style="font-size:0.82rem; color:var(--text-dim); text-transform:uppercase;">คะแนนความเสี่ยงประเมินรวม:</span>
+        <strong style="margin-left:0.5rem; font-size:1.3rem; color:${rating === 'CRITICAL' ? 'var(--rose)' : (rating === 'HIGH' ? 'var(--amber)' : 'var(--emerald)')};">${totalScore} คะแนน</strong>
+      </div>
+      <div><span class="badge-status ${badgeClass}" style="font-size:0.88rem; font-weight:700;">ระดับความเสี่ยง: ${rating}</span></div>
+    </div>
+    <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.5; margin-bottom:0.75rem;">${desc}</div>
+    <div style="background:var(--bg-card); padding:0.75rem; border-radius:6px; border-left:4px solid ${rating === 'CRITICAL' ? 'var(--rose)' : (rating === 'HIGH' ? 'var(--amber)' : 'var(--emerald)')}; font-size:0.82rem;">
+      <strong>กรอบเวลาการแก้ไข (Remediation SLA):</strong> <span style="font-weight:600; color:var(--text-main);">${sla}</span>
+    </div>
+  `;
+}
+
+// ==========================================
+// WIDGET 14.4: SMARTR CAP EVALUATOR
+// ==========================================
+function evalCapPlan() {
+  const pos = document.getElementById('w4-position')?.value || 'agree';
+  const action = document.getElementById('w4-action-detail')?.value.trim() || '';
+  const owner = document.getElementById('w4-owner')?.value.trim() || '';
+  const due = document.getElementById('w4-duedate')?.value.trim() || '';
+  const res = document.getElementById('w4-resource')?.value.trim() || '';
+  const resultCard = document.getElementById('cap-eval-result');
+  if (!resultCard) return;
+
+  let checklist = [];
+  let flaws = [];
+  let score = 0;
+
+  if (pos === 'agree') {
+    checklist.push('✓ ฝ่ายบริหารแสดงจุดยืนเห็นชอบ (Agree) กับข้อค้นพบ');
+    score += 20;
+  } else {
+    flaws.push('⚠️ ฝ่ายบริหารไม่เห็นชอบ (Disagree): ต้องแนบเอกสารชี้แจงเหตุผลและทำเรื่องขออนุมัติ Formal Risk Acceptance ต่อบอร์ด');
+  }
+
+  if (action.length > 25 && !action.includes('จะดำเนินการตรวจสอบ') && !action.includes('รับทราบ')) {
+    checklist.push('✓ Specific Action: แผนปฏิบัติการระบุกิจกรรมแก้ไขเชิงระบบชัดเจน');
+    score += 25;
+  } else {
+    flaws.push('🚨 Action Vague: แผนระบุเพียง "รับทราบ" หรือ "จะปรับปรุง" ถือว่าไม่ผ่านเกณฑ์ ต้องระบุขั้นตอนทางเทคนิคหรือนโยบายที่จับต้องได้');
+  }
+
+  const isBroadDeptOnly = (owner.startsWith('ฝ่าย') || owner.startsWith('ทีม') || owner.startsWith('คณะทำงาน')) && !owner.includes('นาย') && !owner.includes('นาง') && !owner.includes('ดร.');
+  if (owner.length > 5 && !isBroadDeptOnly) {
+    checklist.push('✓ Action Owner: ระบุชื่อ-ตำแหน่งผู้รับผิดชอบหลักรายบุคคล');
+    score += 25;
+  } else {
+    flaws.push('🚨 Action Owner ไม่ระบุตัวบุคคล: การระบุเพียงชื่อ "ฝ่ายไอที" หรือ "ทีมพัฒนา" ทำให้ขาดความรับผิดชอบ (No Single Accountability)');
+  }
+
+  if (due.length > 6 && (/\d{4}/.test(due) || due.includes('/') || due.includes('-') || due.includes('ทันที'))) {
+    checklist.push('✓ Target Due Date: กำหนดวันที่แล้วเสร็จที่แน่นอนและตรวจสอบได้');
+    score += 20;
+  } else {
+    flaws.push('🚨 Due Date ไม่ชัดเจน: การระบุ "เร็วๆ นี้" หรือ "ภายในปีนี้" ทำให้ไม่สามารถติดตามผลการตรวจสอบ (Audit Follow-up) ได้');
+  }
+
+  if (res.length > 5) {
+    checklist.push('✓ Resources: มีการระบุทรัพยากร/งบประมาณที่จำเป็น');
+    score += 10;
+  }
+
+  const isAccepted = score >= 80;
+
+  resultCard.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:0.75rem; gap:0.5rem;">
+      <div>
+        <span style="font-size:0.82rem; color:var(--text-dim); text-transform:uppercase;">คะแนนความสมบูรณ์ของแผน CAP:</span>
+        <strong style="margin-left:0.5rem; font-size:1.3rem; color:${isAccepted ? 'var(--emerald)' : 'var(--rose)'};">${score} / 100</strong>
+      </div>
+      <div>
+        <span class="badge-status ${isAccepted ? 'pass' : 'fail'}" style="font-size:0.88rem; font-weight:700;">
+          ${isAccepted ? '✓ ยอมรับแผนปฏิบัติการ (CAP Accepted)' : '❌ ส่งกลับให้แก้ไขแผน (CAP Revision Required)'}
+        </span>
+      </div>
+    </div>
+    <div style="margin-bottom:0.75rem;">
+      <div style="font-size:0.82rem; font-weight:700; color:var(--text-main); margin-bottom:0.3rem;">จุดแข็งของแผน:</div>
+      <div style="font-size:0.8rem; color:var(--emerald); line-height:1.45;">
+        ${checklist.length > 0 ? checklist.map(c => '<div>' + c + '</div>').join('') : '<div style="color:var(--text-dim);">ไม่มีองค์ประกอบที่ผ่าน</div>'}
+      </div>
+    </div>
+    ${flaws.length > 0 ? `
+      <div style="background:var(--rose-bg); padding:0.65rem 0.85rem; border-radius:6px; border-left:3px solid var(--rose); font-size:0.8rem; color:var(--rose); line-height:1.45;">
+        <div style="font-weight:700; margin-bottom:0.25rem;">ข้อบกพร่องที่ต้องสั่งแก้ไข:</div>
+        ${flaws.map(f => '<div>' + f + '</div>').join('')}
+      </div>
+    ` : ''}
+  `;
+}
+
+function loadCapPreset(type) {
+  if (type === 'good') {
+    document.getElementById('w4-position').value = 'agree';
+    document.getElementById('w4-action-detail').value = 'จัดซื้อ Cloud Storage WORM Archive เพื่อย้ายล็อกอายุเกิน 14 วันไปจัดเก็บระยะยาวให้ครบ 90 วันตาม พ.ร.บ.คอมพิวเตอร์ฯ';
+    document.getElementById('w4-owner').value = 'นายพงษ์ศักดิ์ บริหารระบบ (หัวหน้าฝ่ายระบบแม่ข่าย)';
+    document.getElementById('w4-duedate').value = '30/01/2568';
+    document.getElementById('w4-resource').value = 'งบประมาณดำเนินการ 120,000 บาท/ปี';
+  } else {
+    document.getElementById('w4-position').value = 'agree';
+    document.getElementById('w4-action-detail').value = 'ฝ่ายไอทีจะพยายามตรวจสอบและปรับปรุงระบบการเก็บบันทึกให้ดียิ่งขึ้นในอนาคต';
+    document.getElementById('w4-owner').value = 'ฝ่ายระบบสารสนเทศ';
+    document.getElementById('w4-duedate').value = 'เร็วๆ นี้เมื่อมีงบประมาณ';
+    document.getElementById('w4-resource').value = '';
+  }
+  evalCapPlan();
+}
+
+// ==========================================
+// WIDGET 14.5: CLINIC WORKSHOP SIMULATOR
+// ==========================================
+let curWsStep = 1;
+let wsAnswers = { 1: null, 2: null, 3: null };
+
+const wsTasks = {
+  1: {
+    title: 'ภารกิจที่ 1: การเปลี่ยน Technical Glitch สู่ Business Risk',
+    desc: 'โจทย์: "พบเครื่องการเงิน 15 เครื่อง เปิด RDP พอร์ต 3389 สู่เน็ตตรงๆ รหัสผ่าน Admin1234 ถูกบอทยิง Brute-force วันละหลายหมื่นครั้ง"',
+    question: 'ในฐานะ Lead Auditor ข้อความใดแปลงปัญหานี้เป็นผลกระทบเชิงยุทธศาสตร์ที่ผู้บริหารระดับสูงเข้าใจได้ดีที่สุด?',
+    choices: [
+      { text: 'เซิร์ฟเวอร์เปิดพอร์ต 3389 ทำให้แพ็กเกจ TCP SYN Flood เข้ามาเปลือง Bandwidth เครือข่าย', score: 20, feedback: '❌ ศัพท์เทคนิคเกินไป ผู้บริหารระดับสูงไม่เข้าใจผลกระทบทางธุรกิจ' },
+      { text: 'เสี่ยงต่อการถูกเจาะระบบธุรกรรมการเงิน ข้อมูลเงินเดือนรั่วไหล และอาจถูกยึดครองระบบเพื่อเรียกค่าไถ่ (Ransomware) จนระบบชะงักงัน', score: 100, feedback: '🎉 ถูกต้องแม่นยำ! นี่คือการสื่อสารภาษาความเสี่ยงทางธุรกิจ (Business & Financial Risk) ที่สร้างแรงผลักดันให้บอร์ดอนุมัติการแก้ไขทันที' }
+    ]
+  },
+  2: {
+    title: 'ภารกิจที่ 2: การวิเคราะห์ 5 Whys สู่สาเหตุรากแท้จริง',
+    desc: 'เมื่อถามลึกลงไปว่าทำไมจึงเปิดพอร์ต พบว่าเปิดเพื่อให้ทำงานบัญชีจากบ้านได้ เพราะขอ VPN ล่าช้า 2 สัปดาห์ และไอทีไม่มี Change Management',
+    question: 'ข้อใดคือสาเหตุราก (Root Cause) ที่แท้จริงของปัญหานี้?',
+    choices: [
+      { text: 'เจ้าหน้าที่การเงินขาดจิตสำนึกความปลอดภัย และเจ้าหน้าที่ไอทีขาดระเบียบวินัย', score: 0, feedback: '❌ หลุมพราง Finger-Pointing Trap! การกล่าวโทษบุคคลไม่ช่วยแก้ปัญหาเชิงระบบ' },
+      { text: 'การขาดกระบวนการกำกับดูแล Secure Remote Work และการไม่มีระบบ Firewall Change Control ที่มีประสิทธิภาพ', score: 100, feedback: '🎉 ยอดเยี่ยม! นี่คือการชี้ความล้มเหลวของกระบวนการ (Process & Governance Failure) ที่เป็นสาเหตุรากแท้จริง' }
+    ]
+  },
+  3: {
+    title: 'ภารกิจที่ 3: การให้ข้อเสนอแนะเชิงระบบ (Systemic Recommendation)',
+    desc: 'ร่วมกันร่างข้อเสนอแนะเพื่อปิดความเสี่ยงนี้อย่างถาวรและยั่งยืน',
+    question: 'ข้อเสนอแนะข้อใดมีคุณภาพระดับมืออาชีพสูงสุดตามมาตรฐาน ISACA ITAF?',
+    choices: [
+      { text: 'สั่งให้ฝ่ายการเงินห้ามทำงานจากที่บ้าน และให้จัดซื้อ Next-Gen Firewall ยี่ห้อ Palo Alto รุ่น PA-3200 ทันที', score: 10, feedback: '❌ ขัดจรรยาบรรณวิชาชีพ (ล็อคสเปกสินค้า) และขัดขวางการดำเนินงานของธุรกิจโดยไม่สมเหตุสมผล' },
+      { text: 'ปิดกั้น RDP ทันที, จัดทำบริการ VPN พร้อมบังคับใช้ MFA, วางระบบ Firewall Change Approval, และติดตั้งระบบ Vulnerability Scanning อัตโนมัติ', score: 100, feedback: '🎉 สมบูรณ์แบบ! ครอบคลุมทั้งมาตรการแก้ปัญหาฉุกเฉิน (Containment) และข้อเสนอแนะเชิงระบบที่ป้องกันการเกิดซ้ำอย่างยั่งยืน' }
+    ]
+  }
+};
+
+function setWorkshopStep(step) {
+  curWsStep = step;
+  for (let s = 1; s <= 3; s++) {
+    const btn = document.getElementById('ws-step-btn-' + s);
+    if (btn) btn.classList.toggle('active', s === step);
+  }
+  renderWsStep();
+}
+
+function answerWs(step, choiceIdx) {
+  wsAnswers[step] = choiceIdx;
+  renderWsStep();
+}
+
+function renderWsStep() {
+  const container = document.getElementById('workshop-step-content');
+  if (!container) return;
+
+  const t = wsTasks[curWsStep];
+  const answered = wsAnswers[curWsStep];
+
+  let choicesHtml = '';
+  t.choices.forEach((ch, idx) => {
+    const isSelected = answered === idx;
+    choicesHtml += `
+      <button class="vol-select-btn ${isSelected ? 'active' : ''}" style="margin-bottom:0.5rem; width:100%; text-align:left;" onclick="answerWs(${curWsStep}, ${idx})">
+        ${ch.text}
+      </button>
+    `;
+  });
+
+  let fbHtml = '';
+  if (answered !== null) {
+    const ch = t.choices[answered];
+    fbHtml = `
+      <div style="background:var(--bg-surface); padding:0.75rem; border-radius:6px; border:1px solid var(--border-color); font-size:0.83rem; margin-top:0.75rem;">
+        ${ch.feedback}
+      </div>
+    `;
+  }
+
+  container.innerHTML = `
+    <div style="font-weight:700; font-size:1rem; color:var(--text-main); margin-bottom:0.35rem;">${t.title}</div>
+    <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:0.75rem;">${t.desc}</p>
+    <div style="font-weight:600; font-size:0.86rem; color:var(--text-main); margin-bottom:0.6rem;">โจทย์: ${t.question}</div>
+    <div>${choicesHtml}</div>
+    ${fbHtml}
+  `;
+
+  renderWsScore();
+}
+
+function renderWsScore() {
+  const scoreCard = document.getElementById('workshop-score-summary');
+  if (!scoreCard) return;
+
+  let total = 0;
+  let count = 0;
+  for (let s = 1; s <= 3; s++) {
+    if (wsAnswers[s] !== null) {
+      count++;
+      total += wsTasks[s].choices[wsAnswers[s]].score;
+    }
+  }
+  const avg = count > 0 ? Math.round(total / count) : 0;
+
+  scoreCard.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+      <div>
+        <span style="font-size:0.82rem; color:var(--text-dim); text-transform:uppercase;">คะแนนคลินิกการเขียนข้อค้นพบ (Clinic Score):</span>
+        <strong style="margin-left:0.5rem; font-size:1.2rem; color:${avg >= 80 ? 'var(--emerald)' : (avg >= 50 ? 'var(--amber)' : 'var(--rose)')};">${avg} / 100 คะแนน</strong>
+      </div>
+      <div style="font-size:0.82rem; color:var(--text-muted);">
+        ${count === 3 ? (avg === 100 ? '🎉 ยอดเยี่ยม! คุณสามารถเปลี่ยน Technical Glitch สู่รายงานการตรวจสอบระดับบอร์ดได้อย่างสมบูรณ์แบบ' : 'ทำครบ 3 ภารกิจ เข้าใจโครงสร้างข้อค้นพบและการวิเคราะห์ 5 Whys') : 'ปฏิบัติภารกิจให้ครบทั้ง 3 ขั้นตอนเพื่อประเมินผล'}
+      </div>
+    </div>
+  `;
+}
+
+// Initial calls when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  loadFindingPreset('mfa');
+  selectWhyLevel(1);
+  calcFindingRisk();
+  evalCapPlan();
+  renderWsStep();
+});
+
+  </script>
+</body>
+</html>

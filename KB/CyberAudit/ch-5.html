@@ -1,0 +1,3465 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 5: การประเมินและบริหารความเสี่ยงด้านไซเบอร์ (Cybersecurity Risk Assessment) | NECS1312</title>
+  <meta name="description" content="บทที่ 5: การประเมินและบริหารความเสี่ยงด้านไซเบอร์ — องค์ประกอบความเสี่ยง, ผลกระทบ 9 มิติ, การคำนวณ SLE/ALE/ROSI, เมทริกซ์ 5x5, ยุทธศาสตร์ 4 Ts, ทะเบียนความเสี่ยงมหาวิทยาลัยดิจิทัลสมมติ">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+
+    /* DESIGN SYSTEM ROOT TOKENS */
+    :root {
+      --font-body: 'Sarabun', sans-serif;
+      --font-display: 'Chakra Petch', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+
+      /* LIGHT THEME (DEFAULT) */
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #f1f5f9;
+      --bg-input: #ffffff;
+      --border-color: #e2e8f0;
+      --border-accent: #cbd5e1;
+
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-glow: rgba(2, 132, 199, 0.15);
+
+      --cyan: #0891b2;
+      --cyan-light: #ecfeff;
+      --emerald: #059669;
+      --emerald-light: #ecfdf5;
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --rose: #e11d48;
+      --rose-light: #fff1f2;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+
+      --font-scale: 1;
+      --line-height: 1.75;
+      --toc-width: 320px;
+      --content-max-w: 920px;
+    }
+
+    [data-theme="sepia"] {
+      --bg-base: #fbf7ee;
+      --bg-surface: #f4ede0;
+      --bg-card: #eae0d0;
+      --bg-input: #fdfaf4;
+      --border-color: #ded1be;
+      --border-accent: #ccbba5;
+
+      --text-main: #2d241e;
+      --text-muted: #5e4f43;
+      --text-dim: #968372;
+
+      --primary: #b45309;
+      --primary-hover: #92400e;
+      --primary-glow: rgba(180, 83, 9, 0.15);
+
+      --cyan: #0e7490;
+      --cyan-light: #e6f6f8;
+      --emerald: #047857;
+      --emerald-light: #e6f7f0;
+      --amber: #b45309;
+      --amber-light: #faecd8;
+      --rose: #be123c;
+      --rose-light: #fae4e9;
+
+      --shadow-sm: 0 1px 3px rgba(60,40,20,0.05);
+      --shadow-md: 0 4px 6px rgba(60,40,20,0.08);
+      --shadow-lg: 0 10px 15px rgba(60,40,20,0.08);
+    }
+
+    [data-theme="dark"] {
+      --bg-base: #090d16;
+      --bg-surface: #0f172a;
+      --bg-card: #1e293b;
+      --bg-input: #131d31;
+      --border-color: #1e293b;
+      --border-accent: #334155;
+
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+
+      --primary: #38bdf8;
+      --primary-hover: #7dd3fc;
+      --primary-glow: rgba(56, 189, 248, 0.2);
+
+      --cyan: #22d3ee;
+      --cyan-light: rgba(34, 211, 238, 0.1);
+      --emerald: #34d399;
+      --emerald-light: rgba(52, 211, 153, 0.1);
+      --amber: #fbbf24;
+      --amber-light: rgba(251, 191, 36, 0.1);
+      --rose: #fb7185;
+      --rose-light: rgba(251, 113, 133, 0.1);
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.5);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.6);
+    }
+
+    /* GLOBAL RESET & BASE STYLES */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: var(--line-height);
+      font-size: calc(1rem * var(--font-scale));
+      transition: background-color 0.25s ease, color 0.25s ease;
+      overflow-x: hidden;
+    }
+
+    /* READING PROGRESS BAR */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cyan), var(--primary), var(--emerald));
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s ease-out;
+    }
+
+    /* TOP NAVBAR */
+    .top-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      backdrop-filter: blur(8px);
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-toggle-toc {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-toggle-toc:hover {
+      background: var(--primary-glow);
+      border-color: var(--primary);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .nav-brand .badge {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--primary);
+      letter-spacing: 0.5px;
+    }
+
+    .nav-brand .title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 480px;
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ctrl-group {
+      display: inline-flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 2px;
+    }
+
+    .btn-ctrl {
+      background: transparent;
+      border: none;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      font-family: var(--font-display);
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-ctrl:hover {
+      color: var(--text-main);
+    }
+
+    .btn-ctrl.active {
+      background: var(--bg-surface);
+      color: var(--primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* MAIN APP LAYOUT */
+    .app-container {
+      display: flex;
+      min-height: calc(100vh - 60px);
+      position: relative;
+    }
+
+    /* SIDEBAR TOC */
+    .sidebar-toc {
+      width: var(--toc-width);
+      flex-shrink: 0;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-color);
+      height: calc(100vh - 60px);
+      position: sticky;
+      top: 60px;
+      overflow-y: auto;
+      padding: 20px 16px;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), margin-left 0.3s ease;
+      z-index: 90;
+    }
+
+    .sidebar-toc.hidden {
+      margin-left: calc(-1 * var(--toc-width));
+      transform: translateX(-100%);
+    }
+
+    .toc-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .toc-heading {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-close-toc {
+      background: transparent;
+      border: none;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .btn-close-toc:hover {
+      color: var(--rose);
+      background: var(--rose-light);
+    }
+
+    .toc-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .toc-link {
+      display: block;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 6px 10px;
+      border-radius: 6px;
+      line-height: 1.4;
+      transition: all 0.15s ease;
+      border-left: 2px solid transparent;
+    }
+
+    .toc-link:hover {
+      color: var(--primary);
+      background: var(--primary-glow);
+      padding-left: 14px;
+    }
+
+    .toc-h1 .toc-link {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .toc-h2 .toc-link {
+      padding-left: 16px;
+    }
+
+    .toc-h3 .toc-link {
+      padding-left: 26px;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .toc-backdrop {
+      display: none;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 85;
+      backdrop-filter: blur(2px);
+    }
+
+    /* MAIN CONTENT AREA */
+    .main-reader {
+      flex: 1;
+      padding: 40px 24px 80px 24px;
+      display: flex;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .reader-article {
+      width: 100%;
+      max-width: var(--content-max-w);
+    }
+
+    /* HEADINGS & ARTICLE TYPOGRAPHY */
+    .chapter-header-banner {
+      margin-bottom: 36px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .course-badge {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+      display: inline-block;
+      background: var(--cyan-light);
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--cyan);
+    }
+
+    .chapter-main-title {
+      font-family: var(--font-display);
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+
+    .content-heading {
+      font-family: var(--font-display);
+      color: var(--text-main);
+      margin-top: 48px;
+      margin-bottom: 16px;
+      line-height: 1.35;
+      scroll-margin-top: 75px;
+    }
+
+    h2.content-heading {
+      font-size: 1.6rem;
+      border-left: 4px solid var(--primary);
+      padding-left: 14px;
+    }
+
+    h3.content-heading {
+      font-size: 1.3rem;
+      color: var(--cyan);
+    }
+
+    h4.content-heading {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+    }
+
+    .content-para {
+      margin-bottom: 18px;
+      color: var(--text-main);
+      text-align: justify;
+    }
+
+    .content-list {
+      margin-left: 24px;
+      margin-bottom: 20px;
+      color: var(--text-main);
+    }
+
+    .content-list li {
+      margin-bottom: 8px;
+      padding-left: 4px;
+    }
+
+    .content-divider {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 40px 0;
+    }
+
+    .code-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 20px 0;
+      overflow-x: auto;
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+    }
+
+    code {
+      font-family: var(--font-code);
+      background: var(--bg-card);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
+      border: 1px solid var(--border-color);
+    }
+
+    .math-tex {
+      font-family: var(--font-code);
+      background: var(--cyan-light);
+      color: var(--cyan);
+      border: 1px solid var(--cyan);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* CALLOUT BOXES */
+    .callout {
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 24px 0;
+      border-left: 4px solid;
+    }
+
+    .callout-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .callout.note {
+      background: var(--cyan-light);
+      border-color: var(--cyan);
+      color: var(--text-main);
+    }
+    .callout.note .callout-title { color: var(--cyan); }
+
+    .callout.warning {
+      background: var(--amber-light);
+      border-color: var(--amber);
+      color: var(--text-main);
+    }
+    .callout.warning .callout-title { color: var(--amber); }
+
+    .callout.danger {
+      background: var(--rose-light);
+      border-color: var(--rose);
+      color: var(--text-main);
+    }
+    .callout.danger .callout-title { color: var(--rose); }
+
+    /* TABLES */
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 24px 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .data-table th, .data-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table th {
+      background: var(--bg-card);
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:hover td {
+      background: var(--primary-glow);
+    }
+
+    /* ========================================================================
+       FIGURE CONTAINER & STYLING
+       ======================================================================== */
+    .figure-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 32px 0;
+      box-shadow: var(--shadow-md);
+    }
+
+    .figure-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+
+    .figure-tag {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+    }
+
+    .figure-title {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .figure-caption {
+      margin-top: 18px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* FIGURE 5.1: MYTH VS REALITY */
+    .myth-reality-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .mr-card {
+      border-radius: 8px;
+      padding: 18px;
+      border: 1px solid;
+    }
+
+    .mr-card.myth {
+      background: var(--rose-light);
+      border-color: var(--rose);
+    }
+
+    .mr-card.reality {
+      background: var(--emerald-light);
+      border-color: var(--emerald);
+    }
+
+    .mr-badge {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+
+    .mr-card.myth .mr-badge { color: var(--rose); }
+    .mr-card.reality .mr-badge { color: var(--emerald); }
+
+    .mr-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.88rem;
+    }
+
+    .mr-list li {
+      padding-left: 8px;
+      line-height: 1.45;
+    }
+
+    /* FIGURE 5.2: ANATOMY OF CYBER RISK */
+    .anatomy-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .anatomy-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 20px;
+      text-align: center;
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .anatomy-card.asset { border-top: 3px solid var(--primary); }
+    .anatomy-card.threat { border-top: 3px solid var(--rose); flex: 1; }
+    .anatomy-card.vuln { border-top: 3px solid var(--amber); flex: 1; }
+    .anatomy-card.control { border-top: 3px solid var(--cyan); }
+    .anatomy-card.formula {
+      background: var(--primary-glow);
+      border: 2px dashed var(--primary);
+    }
+
+    .anat-icon { font-size: 1.5rem; margin-bottom: 4px; }
+    .anat-title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text-main); }
+    .anat-desc { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
+
+    .anatomy-middle {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .anatomy-arrow {
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .arr-text { font-size: 0.75rem; color: var(--text-dim); }
+    .arr-line { font-family: var(--font-code); color: var(--rose); font-weight: 700; }
+
+    .formula-head { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--primary); }
+    .formula-result { font-size: 0.9rem; font-weight: 600; color: var(--text-main); margin-top: 4px; }
+
+    /* FIGURE 5.3: STRIDE GRID */
+    .stride-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .stride-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      transition: transform 0.2s ease;
+    }
+
+    .stride-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stride-letter {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stride-card.s .stride-letter { color: #f43f5e; }
+    .stride-card.t .stride-letter { color: #f97316; }
+    .stride-card.r .stride-letter { color: #eab308; }
+    .stride-card.i .stride-letter { color: #06b6d4; }
+    .stride-card.d .stride-letter { color: #3b82f6; }
+    .stride-card.e .stride-letter { color: #8b5cf6; }
+
+    .stride-name { font-weight: 700; font-size: 0.95rem; color: var(--text-main); }
+    .stride-violation { font-size: 0.8rem; font-weight: 600; color: var(--cyan); margin: 4px 0 8px 0; }
+    .stride-example { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* FIGURE 5.4: IMPACT 9 DIMENSIONS */
+    .impact-dimensions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .dim-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    .dim-num {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--primary);
+      background: var(--primary-glow);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .dim-content strong {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--text-main);
+    }
+
+    .dim-content span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* FIGURE 5.5: RISK MATRIX 5X5 */
+    .matrix-layout {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .matrix-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .matrix-y-axis {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .matrix-x-axis {
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .risk-matrix-table {
+      border-collapse: separate;
+      border-spacing: 4px;
+    }
+
+    .risk-matrix-table th {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      padding: 6px;
+      text-align: center;
+    }
+
+    .risk-matrix-table td {
+      width: 52px;
+      height: 44px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 6px;
+      color: #ffffff;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+    }
+
+    .lvl-crit { background: #e11d48; }
+    .lvl-high { background: #ea580c; }
+    .lvl-med  { background: #ca8a04; }
+    .lvl-low  { background: #16a34a; }
+
+    .matrix-legend-box {
+      flex: 1;
+      min-width: 260px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+    }
+
+    .leg-badge {
+      font-family: var(--font-display);
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 0.75rem;
+    }
+
+    .legend-item.crit .leg-badge { background: #e11d48; }
+    .legend-item.high .leg-badge { background: #ea580c; }
+    .legend-item.med .leg-badge { background: #ca8a04; }
+    .legend-item.low .leg-badge { background: #16a34a; }
+
+    .leg-text { flex: 1; color: var(--text-main); line-height: 1.4; }
+
+    /* FIGURE 5.6: 4 STAGES LIFECYCLE */
+    .lifecycle-stages-grid {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stage-card {
+      flex: 1;
+      min-width: 170px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stage-arrow {
+      font-size: 1.3rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .st-num { font-size: 0.75rem; font-family: var(--font-display); color: var(--text-dim); text-transform: uppercase; }
+    .st-title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--text-main); margin-top: 2px; }
+    .st-sub { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
+    .st-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .st-badge.red { background: #e11d48; }
+    .st-badge.orange { background: #ea580c; }
+    .st-badge.yellow { background: #ca8a04; }
+    .st-badge.green { background: #16a34a; }
+
+    .st-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.35; }
+
+    /* FIGURE 5.7: RISK APPETITE THRESHOLDS */
+    .threshold-diagram {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .zone-bar {
+      border-radius: 6px;
+      padding: 12px 18px;
+      color: #fff;
+    }
+
+    .zone-bar .zone-name { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
+    .zone-bar .zone-rule { font-size: 0.82rem; opacity: 0.9; margin-top: 2px; }
+
+    .crit-zone { background: linear-gradient(90deg, #be123c, #e11d48); }
+    .high-zone { background: linear-gradient(90deg, #c2410c, #ea580c); }
+    .med-zone  { background: linear-gradient(90deg, #a16207, #ca8a04); }
+    .low-zone  { background: linear-gradient(90deg, #15803d, #16a34a); }
+
+    .line-marker {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 12px;
+      background: var(--bg-card);
+      border: 1px dashed var(--border-accent);
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .marker-tag {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+
+    .marker-desc { color: var(--text-muted); }
+
+    /* FIGURE 5.8: THE 4 Ts */
+    .four-t-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .t-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .t-card.treat { border-top: 4px solid var(--primary); }
+    .t-card.terminate { border-top: 4px solid var(--rose); }
+    .t-card.transfer { border-top: 4px solid var(--cyan); }
+    .t-card.tolerate { border-top: 4px solid var(--amber); }
+
+    .t-icon { font-size: 1.6rem; }
+    .t-title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--text-main); }
+    .t-action { font-size: 0.84rem; color: var(--text-main); line-height: 1.4; }
+    .t-context { font-size: 0.78rem; color: var(--text-muted); line-height: 1.35; margin-top: auto; border-top: 1px dashed var(--border-color); padding-top: 6px; }
+
+    /* FIGURE 5.9: 6 PILLARS OF RTP */
+    .rtp-pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .pillar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      position: relative;
+    }
+
+    .p-num {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--primary-glow);
+      line-height: 1;
+    }
+
+    .p-title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text-main); margin-bottom: 6px; }
+    .p-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* FIGURE 5.10: WORKING PAPER */
+    .working-paper-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .wp-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 16px;
+      background: var(--bg-surface);
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.82rem;
+    }
+
+    .wp-body { padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+
+    .wp-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.85rem;
+    }
+
+    .wp-step-num {
+      background: var(--primary);
+      color: #fff;
+      font-family: var(--font-display);
+      font-weight: 700;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.75rem;
+    }
+
+    .wp-step-content { line-height: 1.45; }
+
+    /* FIGURE 5.11: TOPOLOGY & THREAT MAP */
+    .topology-threat-map {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .topo-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .topo-block.external { border-left: 4px solid var(--rose); }
+    .topo-block.datacenter { border-left: 4px solid var(--primary); }
+    .topo-block.cloud-zone { border-left: 4px solid var(--cyan); }
+
+    .block-title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main); }
+    .block-items { display: flex; flex-wrap: wrap; gap: 8px; }
+    .item-tag { font-size: 0.8rem; background: var(--bg-surface); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 6px; color: var(--text-muted); }
+
+    .block-sub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 10px;
+    }
+
+    .crit-node {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+    }
+
+    .crit-node strong { color: var(--rose); }
+
+    .topo-divider-firewall, .topo-divider-cloud {
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 4px;
+      border-radius: 4px;
+    }
+
+    .topo-divider-firewall { background: rgba(225, 29, 72, 0.1); color: var(--rose); border: 1px dashed var(--rose); }
+    .topo-divider-cloud { background: rgba(8, 145, 178, 0.1); color: var(--cyan); border: 1px dashed var(--cyan); }
+
+    /* FIGURE 5.12: DIALOGUE */
+    .dialogue-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .dialogue-bubble {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+
+    .dialogue-bubble.implementer { border-left: 4px solid var(--primary); }
+    .dialogue-bubble.auditor { border-left: 4px solid var(--cyan); }
+
+    .dialogue-avatar { font-size: 2rem; line-height: 1; flex-shrink: 0; }
+    .dialogue-author { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text-main); margin-bottom: 4px; }
+    .dialogue-content p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* ========================================================================
+       INTERACTIVE WIDGETS STYLES
+       ======================================================================== */
+    .interactive-widget-card {
+      background: var(--bg-surface);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 36px 0;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .widget-badge {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: var(--primary);
+      color: #fff;
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .widget-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .widget-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* WIDGET 5.1: CALCULATOR */
+    .calc-presets-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .preset-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .btn-preset {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-family: var(--font-body);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-preset:hover {
+      border-color: var(--primary);
+    }
+
+    .btn-preset.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 24px;
+    }
+
+    .calc-inputs-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .input-group input[type="number"] {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    .input-hint {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slider-row input[type="range"] {
+      flex: 1;
+    }
+
+    .slider-val {
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--primary);
+      min-width: 45px;
+    }
+
+    .calc-results-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .result-tile {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 18px;
+    }
+
+    .result-tile .res-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: var(--font-display);
+    }
+
+    .result-tile .res-num {
+      font-family: var(--font-code);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 4px 0;
+    }
+
+    .result-tile .res-num.alert { color: var(--rose); }
+    .result-tile .res-num.success { color: var(--emerald); }
+
+    .result-tile .res-formula {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      font-family: var(--font-code);
+    }
+
+    .result-tile.rosi-highlight {
+      background: var(--primary-glow);
+      border: 2px solid var(--primary);
+    }
+
+    .result-tile .res-num.highlight {
+      font-size: 1.8rem;
+      color: var(--primary);
+    }
+
+    .res-verdict {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--emerald);
+      margin-top: 4px;
+    }
+
+    /* WIDGET 5.2: MATRIX EXPLORER */
+    .interactive-matrix-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .int-matrix-grid {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .int-matrix-labels-y {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 220px;
+      font-size: 0.75rem;
+      font-family: var(--font-display);
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    .int-matrix-cells {
+      display: grid;
+      grid-template-columns: repeat(5, 52px);
+      grid-template-rows: repeat(5, 44px);
+      gap: 4px;
+    }
+
+    .int-cell {
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .int-cell:hover {
+      transform: scale(1.1);
+      box-shadow: var(--shadow-md);
+      z-index: 2;
+    }
+
+    .int-cell.selected {
+      outline: 3px solid #ffffff;
+      box-shadow: 0 0 12px var(--primary);
+      transform: scale(1.08);
+      z-index: 3;
+    }
+
+    .int-matrix-labels-x {
+      display: flex;
+      justify-content: space-between;
+      width: 276px;
+      margin-left: 70px;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      font-family: var(--font-display);
+      color: var(--text-muted);
+    }
+
+    .matrix-detail-display {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 18px 22px;
+    }
+
+    .detail-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+
+    .detail-score-badge {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-main);
+    }
+
+    .detail-level-tag {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 3px 10px;
+      border-radius: 4px;
+      color: #fff;
+    }
+
+    .detail-body {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+
+    .dt-row strong {
+      color: var(--text-main);
+    }
+
+    /* WIDGET 5.3: STRATEGY ENGINE */
+    .strategy-selector-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .btn-strat-tab {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .btn-strat-tab.active {
+      background: var(--cyan);
+      color: #fff;
+      border-color: var(--cyan);
+      font-weight: 600;
+    }
+
+    .strategy-case-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .case-scenario-desc {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      line-height: 1.5;
+      margin-bottom: 18px;
+      padding: 12px;
+      background: var(--bg-surface);
+      border-left: 4px solid var(--cyan);
+      border-radius: 4px;
+    }
+
+    .strat-choices-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .btn-strat-choice {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      font-family: var(--font-body);
+      color: var(--text-main);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+
+    .btn-strat-choice:hover {
+      border-color: var(--primary);
+    }
+
+    .btn-strat-choice.selected {
+      border-color: var(--primary);
+      background: var(--primary-glow);
+    }
+
+    .case-verdict-box {
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .case-verdict-box.correct {
+      background: var(--emerald-light);
+      border: 1px solid var(--emerald);
+      color: var(--text-main);
+    }
+
+    .case-verdict-box.incorrect {
+      background: var(--rose-light);
+      border: 1px solid var(--rose);
+      color: var(--text-main);
+    }
+
+    /* WIDGET 5.4: RISK REGISTER FILTER */
+    .filter-controls-bar {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .filter-group label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .filter-group select, .filter-group input {
+      padding: 6px 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.82rem;
+      color: var(--text-main);
+    }
+
+    .filter-group.search {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .risk-table-responsive {
+      overflow-x: auto;
+      max-height: 520px;
+    }
+
+    .data-table-enhanced {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .data-table-enhanced th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-card);
+      z-index: 5;
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--border-accent);
+      text-align: left;
+    }
+
+    .data-table-enhanced td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+
+    .risk-score-pill {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .risk-score-pill.ext { background: #e11d48; }
+    .risk-score-pill.hi  { background: #ea580c; }
+    .risk-score-pill.med { background: #ca8a04; }
+    .risk-score-pill.low { background: #16a34a; }
+
+    /* WIDGET 5.5: QUIZ */
+    .quiz-container-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    .quiz-meta-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .quiz-step-indicator {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .quiz-score-badge {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--emerald);
+    }
+
+    .quiz-question-title {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .quiz-options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .quiz-opt-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
+    }
+
+    .quiz-opt-item:hover {
+      border-color: var(--primary);
+      background: var(--primary-glow);
+    }
+
+    .quiz-opt-item input[type="radio"] {
+      margin-top: 3px;
+    }
+
+    .quiz-opt-item.selected {
+      border-color: var(--primary);
+      background: var(--primary-glow);
+    }
+
+    .quiz-controls-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .btn-quiz-nav, .btn-quiz-check {
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-family: var(--font-display);
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-quiz-nav {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    .btn-quiz-nav:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-quiz-check {
+      background: var(--primary);
+      color: #fff;
+      border: 1px solid var(--primary);
+      flex: 1;
+      max-width: 200px;
+    }
+
+    .btn-quiz-check:hover {
+      background: var(--primary-hover);
+    }
+
+    .quiz-explanation-box {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .quiz-explanation-box.correct {
+      background: var(--emerald-light);
+      border: 1px solid var(--emerald);
+      color: var(--text-main);
+    }
+
+    .quiz-explanation-box.incorrect {
+      background: var(--rose-light);
+      border: 1px solid var(--rose);
+      color: var(--text-main);
+    }
+
+    /* CHAPTER NAVIGATION GRID (BOTTOM) */
+    .chapter-nav-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 50px;
+      padding-top: 30px;
+      border-top: 2px solid var(--border-color);
+    }
+
+    .chapter-nav-card {
+      display: flex;
+      flex-direction: column;
+      padding: 18px 22px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .chapter-nav-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      background: var(--primary-glow);
+      box-shadow: var(--shadow-md);
+    }
+
+    .chapter-nav-card.prev .nav-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      margin-bottom: 4px;
+    }
+
+    .chapter-nav-card.prev .nav-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .chapter-nav-card.next {
+      text-align: right;
+    }
+
+    .chapter-nav-card.next .nav-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      margin-bottom: 4px;
+    }
+
+    .chapter-nav-card.next .nav-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* FOOTER */
+    .site-footer {
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-surface);
+    }
+
+    /* RESPONSIVE BREAKPOINTS */
+    @media (max-width: 992px) {
+      .sidebar-toc {
+        position: fixed;
+        left: 0;
+        top: 60px;
+        bottom: 0;
+        height: auto;
+        transform: translateX(-100%);
+        margin-left: 0;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .sidebar-toc.active {
+        transform: translateX(0);
+      }
+
+      .toc-backdrop.active {
+        display: block;
+      }
+
+      .calc-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .myth-reality-grid, .four-t-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .chapter-main-title {
+        font-size: 1.6rem;
+      }
+      .chapter-nav-grid {
+        grid-template-columns: 1fr;
+      }
+      .strat-choices-grid {
+        grid-template-columns: 1fr;
+      }
+      .top-navbar {
+        padding: 0 12px;
+      }
+      .nav-brand .title {
+        display: none;
+      }
+    }
+  
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <header class="top-navbar">
+    <div class="navbar-left">
+      <button type="button" class="btn-toggle-toc" id="btn-toggle-toc" title="เปิด/ปิด สารบัญ (Ctrl+B)">
+        <span>📑</span> <span>สารบัญ</span>
+      </button>
+      <div class="nav-brand">
+        <span class="badge">NECS1312 // CH-5</span>
+        <span class="title">บทที่ 5: การประเมินและบริหารความเสี่ยงด้านไซเบอร์</span>
+      </div>
+    </div>
+    <div class="navbar-right">
+      <div class="ctrl-group">
+        <button type="button" class="btn-ctrl" id="btn-font-dec" title="ลดขนาดตัวอักษร">A-</button>
+        <button type="button" class="btn-ctrl" id="btn-font-reset" title="ขนาดปกติ">A</button>
+        <button type="button" class="btn-ctrl" id="btn-font-inc" title="เพิ่มขนาดตัวอักษร">A+</button>
+      </div>
+      <div class="ctrl-group">
+        <button type="button" class="btn-ctrl active" id="btn-theme-light" title="ธีมสว่าง">Light</button>
+        <button type="button" class="btn-ctrl" id="btn-theme-sepia" title="ธีมถนอมสายตา">Sepia</button>
+        <button type="button" class="btn-ctrl" id="btn-theme-dark" title="ธีมมืด">Dark</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-container">
+    <aside class="sidebar-toc" id="sidebar-toc">
+      <div class="toc-header-bar">
+        <span class="toc-heading">สารบัญเนื้อหา</span>
+        <button type="button" class="btn-close-toc" id="btn-close-toc" title="ซ่อนแถบสารบัญ">✕ ซ่อน</button>
+      </div>
+<ul class="toc-list">
+  <li class="toc-h1"><a href="#sec-บทที่-5-การประเมินและบริหารความเสี่ยงด้านไซเบอร์-cybersecurity-risk-assessment-and-management-0" class="toc-link">บทที่ 5 การประเมินและบริหารความเสี่ยงด้านไซเบอร์ (Cybersecurity Risk Assessment and Management)</a></li>
+  <li class="toc-h2"><a href="#sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-8" class="toc-link">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</a></li>
+  <li class="toc-h2"><a href="#sec-บทนำประจำบท-สัจธรรมความมั่นคงปลอดภัยไซเบอร์-20" class="toc-link">บทนำประจำบท: สัจธรรมความมั่นคงปลอดภัยไซเบอร์</a></li>
+  <li class="toc-h3"><a href="#sec-ทำไม-zero-risk-จึงเป็นเพียงภาพลวงตา-22" class="toc-link">ทำไม &quot;Zero Risk&quot; จึงเป็นเพียงภาพลวงตา?</a></li>
+  <li class="toc-h2"><a href="#sec-ส่วนที่-1-แนวคิด-องค์ประกอบ-และการวัดระดับความเสี่ยง-risk-concepts-measurement-48" class="toc-link">ส่วนที่ 1: แนวคิด องค์ประกอบ และการวัดระดับความเสี่ยง (Risk Concepts &amp; Measurement)</a></li>
+  <li class="toc-h3"><a href="#sec-1-1-กายวิภาคของความเสี่ยงด้านไซเบอร์-anatomy-of-cyber-risk-50" class="toc-link">1.1 กายวิภาคของความเสี่ยงด้านไซเบอร์ (Anatomy of Cyber Risk)</a></li>
+  <li class="toc-h3"><a href="#sec-1-2-กรอบการจำแนกภัยคุกคามและช่องโหว่เชิงเทคนิค-stride-mitre-att-ck-101" class="toc-link">1.2 กรอบการจำแนกภัยคุกคามและช่องโหว่เชิงเทคนิค (STRIDE &amp; MITRE ATT&amp;CK)</a></li>
+  <li class="toc-h3"><a href="#sec-1-3-การวิเคราะห์ประเภทผลกระทบ-9-มิติ-the-9-impact-dimensions-122" class="toc-link">1.3 การวิเคราะห์ประเภทผลกระทบ 9 มิติ (The 9 Impact Dimensions)</a></li>
+  <li class="toc-h3"><a href="#sec-1-4-ระเบียบวิธีประเมินความเสี่ยง-เชิงคุณภาพ-กึ่งปริมาณ-และเชิงปริมาณ-154" class="toc-link">1.4 ระเบียบวิธีประเมินความเสี่ยง: เชิงคุณภาพ กึ่งปริมาณ และเชิงปริมาณ</a></li>
+  <li class="toc-h3"><a href="#sec-1-5-การประเมินความเสี่ยงเชิงปริมาณ-quantitative-risk-analysis-calculations-189" class="toc-link">1.5 การประเมินความเสี่ยงเชิงปริมาณ (Quantitative Risk Analysis &amp; Calculations)</a></li>
+  <li class="toc-h3"><a href="#sec-1-6-ตารางเมทริกซ์ความเสี่ยง-5x5-the-5x5-risk-matrix-234" class="toc-link">1.6 ตารางเมทริกซ์ความเสี่ยง 5x5 (The 5x5 Risk Matrix)</a></li>
+  <li class="toc-h3"><a href="#sec-1-7-วงจร-4-ลำดับขั้นของความเสี่ยง-the-4-stages-of-risk-lifecycle-264" class="toc-link">1.7 วงจร 4 ลำดับขั้นของความเสี่ยง (The 4 Stages of Risk Lifecycle)</a></li>
+  <li class="toc-h2"><a href="#sec-ส่วนที่-2-ยุทธศาสตร์การบำบัดความเสี่ยงและมุมมองผู้ตรวจ-risk-treatment-audit-296" class="toc-link">ส่วนที่ 2: ยุทธศาสตร์การบำบัดความเสี่ยงและมุมมองผู้ตรวจ (Risk Treatment &amp; Audit)</a></li>
+  <li class="toc-h3"><a href="#sec-2-1-การขีดเส้นแบ่งความเสี่ยง-risk-appetite-และ-risk-tolerance-298" class="toc-link">2.1 การขีดเส้นแบ่งความเสี่ยง: Risk Appetite และ Risk Tolerance</a></li>
+  <li class="toc-h3"><a href="#sec-2-2-ยุทธศาสตร์การบำบัดความเสี่ยง-4-ประการ-the-4-ts-of-risk-treatment-321" class="toc-link">2.2 ยุทธศาสตร์การบำบัดความเสี่ยง 4 ประการ (The 4 Ts of Risk Treatment)</a></li>
+  <li class="toc-h3"><a href="#sec-2-3-การจัดทำแผนจัดการความเสี่ยง-risk-treatment-plan-rtp-364" class="toc-link">2.3 การจัดทำแผนจัดการความเสี่ยง (Risk Treatment Plan: RTP)</a></li>
+  <li class="toc-h3"><a href="#sec-2-4-มุมมองและการตรวจสอบของ-lead-auditor-auditing-the-risk-assessment-process-383" class="toc-link">2.4 มุมมองและการตรวจสอบของ Lead Auditor (Auditing the Risk Assessment Process)</a></li>
+  <li class="toc-h2"><a href="#sec-ส่วนที่-3-กรณีศึกษาเชิงประยุกต์-ทะเบียนความเสี่ยง-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-448" class="toc-link">ส่วนที่ 3: กรณีศึกษาเชิงประยุกต์ ทะเบียนความเสี่ยง &quot;มหาวิทยาลัยดิจิทัลสมมติ&quot; (Core Case Study)</a></li>
+  <li class="toc-h3"><a href="#sec-ตาราง-risk-register-10-รายการความเสี่ยงด้านไซเบอร์ของมหาวิทยาลัยดิจิทัลสมมติ-470" class="toc-link">ตาราง Risk Register 10 รายการความเสี่ยงด้านไซเบอร์ของมหาวิทยาลัยดิจิทัลสมมติ:</a></li>
+  <li class="toc-h2"><a href="#sec-กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน-active-learning-simulation-487" class="toc-link">กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน (Active Learning Simulation)</a></li>
+  <li class="toc-h3"><a href="#sec-กิจกรรม-the-risk-acceptance-battle-การประลองยุทธศาสตร์การยอมรับความเสี่ยง-489" class="toc-link">กิจกรรม: &quot;The Risk Acceptance Battle&quot; (การประลองยุทธศาสตร์การยอมรับความเสี่ยง)</a></li>
+  <li class="toc-h2"><a href="#sec-มุมมองวิชาชีพประจำบท-professional-perspectives-501" class="toc-link">มุมมองวิชาชีพประจำบท (Professional Perspectives)</a></li>
+  <li class="toc-h3"><a href="#sec-สรุปข้อคิดสำคัญสำหรับผู้ประกอบวิชาชีพ-520" class="toc-link">สรุปข้อคิดสำคัญสำหรับผู้ประกอบวิชาชีพ:</a></li>
+  <li class="toc-h2"><a href="#sec-แบบฝึกหัดและการบ้านประจำบทที่-5-527" class="toc-link">แบบฝึกหัดและการบ้านประจำบทที่ 5</a></li>
+  <li class="toc-h3"><a href="#sec-ชิ้นงานที่ต้องส่งมอบ-แฟ้มทะเบียนความเสี่ยงและแผนจัดการความเสี่ยง-risk-register-rtp-531" class="toc-link">ชิ้นงานที่ต้องส่งมอบ: แฟ้มทะเบียนความเสี่ยงและแผนจัดการความเสี่ยง (Risk Register &amp; RTP)</a></li>
+  <li class="toc-h3"><a href="#sec-ข้อกำหนดในแต่ละรายการความเสี่ยง-545" class="toc-link">ข้อกำหนดในแต่ละรายการความเสี่ยง:</a></li>
+  <li class="toc-h2"><a href="#sec-สรุปบทที่-5-554" class="toc-link">สรุปบทที่ 5</a></li>
+  <li class="toc-h2"><a href="#sec-เอกสารอ้างอิงและมาตรฐานสากล-564" class="toc-link">เอกสารอ้างอิงและมาตรฐานสากล</a></li>
+</ul>
+
+    </aside>
+
+    <div class="toc-backdrop" id="toc-backdrop"></div>
+
+    <main class="main-reader">
+      <article class="reader-article">
+<header class="chapter-header-banner"><div class="course-badge">NECS1312 // CH-5</div><h1 class="chapter-main-title" id="sec-บทที่-5-การประเมินและบริหารความเสี่ยงด้านไซเบอร์-cybersecurity-risk-assessment-and-management-0">บทที่ 5 การประเมินและบริหารความเสี่ยงด้านไซเบอร์ (Cybersecurity Risk Assessment and Management)</h1></header>
+<p class="content-para">การรักษาความมั่นคงปลอดภัยไซเบอร์ไม่สามารถสร้าง "ความปลอดภัยแบบสมบูรณ์ 100%" (Zero Risk) ได้ เนื่องจากทรัพยากร งบประมาณ และเวลาขององค์กรมีจำกัด ในขณะที่ภัยคุกคามและช่องโหว่ใหม่ ๆ เกิดขึ้นอย่างต่อเนื่องทุกวัน หัวใจสำคัญของการเป็น <strong>ผู้จัดทำระบบ (Lead Implementer)</strong> และ <strong>ผู้ตรวจสอบ (Lead Auditor)</strong> จึงอยู่ที่การบริหารจัดการความเสี่ยง (Risk-Based Approach) กล่าวคือ การระบุให้ชัดเจนว่าทรัพย์สินใดมีความสำคัญ ภัยคุกคามใดมีโอกาสเกิดขึ้นสูง และสร้างผลกระทบต่อองค์กรมากที่สุด เพื่อจัดลำดับความสำคัญในการลงทุนและเลือกใช้มาตรการควบคุมความมั่นคงปลอดภัยได้อย่างคุ้มค่า เหมาะสม และสอดคล้องกับข้อกำหนดทางกฎหมาย</p>
+<p class="content-para">ในบทนี้ นักศึกษาจะได้เรียนรู้กระบวนการประเมินและบริหารความเสี่ยงด้านไซเบอร์อย่างครบวงจร ตั้งแต่องค์ประกอบของความเสี่ยง การวิเคราะห์ผลกระทบ 9 มิติ การกำหนดมาตรวัดทั้งเชิงคุณภาพ กึ่งปริมาณ และเชิงปริมาณ (คำนวณ SLE, ARO, ALE, ROSI) การสร้างตารางเมทริกซ์ความเสี่ยง (Risk Matrix) การแยกแยะความเสี่ยงแต่กำเนิด (Inherent Risk) กับความเสี่ยงคงเหลือ (Residual Risk) การกำหนดระดับความเสี่ยงที่ยอมรับได้ (Risk Appetite & Risk Tolerance) ยุทธศาสตร์การบำบัดความเสี่ยง (4 Ts) การจัดทำแผนจัดการความเสี่ยง (Risk Treatment Plan: RTP) และทะเบียนความเสี่ยง (Risk Register) ตลอดจนการตรวจสอบกระบวนการประเมินความเสี่ยงผ่านมุมมองของ Lead Auditor ด้วยกระดาษทำการตรวจสอบ (Audit Working Paper) และการตรวจจับพฤติกรรมกดคะแนนความเสี่ยง</p>
+<hr class="content-divider">
+<h2 class="content-heading" id="sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-8">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</h2>
+<p class="content-para">เมื่อสิ้นสุดการเรียนรู้ในบทนี้ นักศึกษาสามารถ:</p>
+<ol class="content-list">
+  <li><strong>อธิบายองค์ประกอบและกำหนดระเบียบวิธีประเมินความเสี่ยงได้อย่างถูกต้อง (CLO4):</strong> จำแนก 6 องค์ประกอบของความเสี่ยง (Asset, Threat, Vulnerability, Existing Control, Likelihood, Impact) ประยุกต์ใช้กรอบวิเคราะห์ภัยคุกคาม (STRIDE และ MITRE ATT&CK) และเลือกระเบียบวิธีประเมินความเสี่ยงตามมาตรฐาน ISO/IEC 27005:2022 และ NIST SP 800-30 Rev. 1 ได้อย่างถูกต้อง</li>
+  <li><strong>วิเคราะห์ประเภทผลกระทบ 9 มิติและคำนวณระดับความเสี่ยงได้ (CLO4):</strong> ประเมินผลกระทบครอบคลุมทั้งด้านเทคนิคและด้านธุรกิจ คำนวณค่าระดับความเสี่ยงด้วยสูตร <code class="math-tex">Risk = Likelihood \times Impact</code> จัดระดับความเสี่ยงบนเมทริกซ์ 5x5 และแก้โจทย์การประเมินความเสี่ยงเชิงปริมาณ (Quantitative Analysis: SLE, ARO, ALE, ROSI) ได้อย่างแม่นยำ</li>
+  <li><strong>จำแนกและวิเคราะห์ความเสี่ยงในแต่ละลำดับขั้นของวงจรชีวิตได้ (CLO4, CLO6):</strong> วิเคราะห์ความแตกต่างและความเชื่อมโยงระหว่าง Inherent Risk, Current Risk, Target Risk และ Residual Risk พร้อมทั้งประเมินประสิทธิผลของมาตรการควบคุมเดิม (Existing Controls) ได้อย่างเป็นภววิสัย</li>
+  <li><strong>กำหนดยุทธศาสตร์และจัดทำแผนปฏิบัติการจัดการความเสี่ยงได้ (CLO4):</strong> กำหนดเกณฑ์ Risk Appetite และ Risk Tolerance ขององค์กร เลือกยุทธศาสตร์การบำบัดความเสี่ยง (The 4 Ts: Avoid, Reduce, Transfer, Accept) พร้อมทั้งจัดทำแผนปฏิบัติการจัดการความเสี่ยง (Risk Treatment Plan: RTP) ที่ระบุผู้รับผิดชอบ งบประมาณ กรอบเวลา ตัวชี้วัด และหลักฐานเชิงประจักษ์ได้อย่างเป็นรูปธรรม</li>
+  <li><strong>จัดทำทะเบียนความเสี่ยงและตรวจสอบความสอดคล้องตามเกณฑ์ผู้ตรวจได้ (CLO2, CLO7):</strong> จัดทำทะเบียนความเสี่ยง (Risk Register) ฉบับสมบูรณ์สำหรับโครงสร้างพื้นฐานไอทีของมหาวิทยาลัยดิจิทัล และดำเนินการตรวจสอบกระบวนการประเมินความเสี่ยงในมุมมองของ Lead Auditor ด้วย Audit Working Paper ตรวจจับการกดคะแนนความเสี่ยง (Gaming the Matrix) และออกใบข้อค้นพบการตรวจ (Audit Finding / Non-Conformity Report) ได้อย่างถูกต้อง</li>
+</ol>
+<hr class="content-divider">
+<h2 class="content-heading" id="sec-บทนำประจำบท-สัจธรรมความมั่นคงปลอดภัยไซเบอร์-20">บทนำประจำบท: สัจธรรมความมั่นคงปลอดภัยไซเบอร์</h2>
+<h3 class="content-heading" id="sec-ทำไม-zero-risk-จึงเป็นเพียงภาพลวงตา-22">ทำไม "Zero Risk" จึงเป็นเพียงภาพลวงตา?</h3>
+<p class="content-para">ในสายตาของบุคคลภายนอก ความมั่นคงปลอดภัยไซเบอร์มักถูกมองว่าคือสถานะที่ "ระบบต้องไม่ถูกแฮกเลย" หรือ "ต้องไม่มีช่องโหว่ใด ๆ หลงเหลืออยู่" แต่นักศึกษาสาขาความมั่นคงปลอดภัยไซเบอร์ต้องตระหนักถึงความจริงพื้นฐาน 3 ประการ:</p>
+<ol class="content-list">
+  <li><strong>ช่องโหว่ใหม่เกิดขึ้นอย่างต่อเนื่อง:</strong> สถิติจาก National Vulnerability Database (NVD) ของสหรัฐอเมริกา ชี้ให้เห็นว่าในแต่ละปีมีการค้นพบและเผยแพร่ช่องโหว่ใหม่ (CVE) มากกว่า 25,000–30,000 รายการ การอุดช่องโหว่ทุกจุดในระบบสารสนเทศที่มีความซับซ้อนนับพันเซิร์ฟเวอร์ในทันทีจึงเป็นสิ่งที่เป็นไปไม่ได้ในทางปฏิบัติ</li>
+  <li><strong>ทรัพยากรขององค์กรมีจำกัด:</strong> ไม่มีองค์กรใดมีงบประมาณ บุคลากร และเวลาไม่จำกัด หากฝ่ายไอทีทุ่มงบประมาณทั้งหมดไปกับการซื้ออุปกรณ์ความปลอดภัยขั้นสูงสุด องค์กรอาจล้มละลายหรือไม่มีงบประมาณเหลือสำหรับพัฒนาบริการหลัก</li>
+  <li><strong>ความปลอดภัยที่ตึงเกินไปจะทำลายประสิทธิภาพการทำงาน:</strong> หากกำหนดมาตรการเข้มงวดสุดโต่ง เช่น บังคับเปลี่ยนรหัสผ่านทุก 3 วัน ห้ามใช้อุปกรณ์พกพา และตัดขาดอินเทอร์เน็ต พนักงานจะไม่สามารถปฏิบัติงานได้ และจะผลักดันให้เกิด <strong>Shadow IT</strong> (การแอบนำเครื่องมือส่วนตัวหรือแอปพลิเคชันภายนอกมาใช้ทำงานอย่างลับ ๆ) ซึ่งสร้างความเสี่ยงสูงกว่าเดิม</li>
+</ol>
+<p class="content-para">ดังนั้น มาตรฐานสากลเช่น <strong>ISO/IEC 27001:2022 (ข้อกำหนดข้อ 6.1)</strong>, <strong>ISO/IEC 27005:2022</strong>, <strong>NIST SP 800-30 Rev. 1</strong> ตลอดจน <strong>ประกาศ กกม. เรื่อง ประมวลแนวทางปฏิบัติฯ พ.ศ. 2564</strong> จึงกำหนดหลักการตรงกันว่า <strong>การรักษาความมั่นคงปลอดภัยต้องดำเนินไปบนพื้นฐานของการบริหารความเสี่ยง (Risk-Based Approach)</strong> ซึ่งหมายถึงการจัดสรรทรัพยากรที่มีอยู่จำกัดไปปกป้องสิ่งที่มีความสำคัญสูงสุดก่อนอย่างสมเหตุสมผล</p>
+
+<div class="figure-box" id="figure-5-1">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 5.1</div>
+    <div class="figure-title">The Zero-Risk Myth vs Reality (สัจธรรมความมั่นคงปลอดภัยไซเบอร์)</div>
+  </div>
+  <div class="myth-reality-grid">
+    <div class="mr-card myth">
+      <div class="mr-badge">❌ ความเชื่อที่ผิด (Myth)</div>
+      <ul class="mr-list">
+        <li><strong>ความปลอดภัย 100%:</strong> เราสามารถสร้างระบบที่ไม่มีทางถูกแฮกได้เลย (Zero Risk)</li>
+        <li><strong>อุดทุกช่องโหว่:</strong> ต้องแพตช์ช่องโหว่ทุกจุดบนทุกเซิร์ฟเวอร์พร้อมกันทันที</li>
+        <li><strong>ไอทีรับผิดชอบฝ่ายเดียว:</strong> ความมั่นคงปลอดภัยเป็นภาระหน้าที่ของแผนกไอทีเท่านั้น</li>
+        <li><strong>ซื้ออุปกรณ์แพงแล้วจบ:</strong> แค่ซื้อ Firewall และ EDR ราคาแพง ความเสี่ยงก็หมดไป</li>
+        <li><strong>เป้าหมายคือกำจัดความเสี่ยง:</strong> มุ่งหวังให้ไม่มีความเสี่ยงหลงเหลืออยู่ในองค์กรเลย</li>
+      </ul>
+    </div>
+    <div class="mr-card reality">
+      <div class="mr-badge">✅ ความจริงในวิชาชีพ (Reality)</div>
+      <ul class="mr-list">
+        <li><strong>Zero Risk ไม่มีจริง:</strong> มี CVE ใหม่ 25,000+ รายการต่อปี และทรัพยากรมีจำกัดเสมอ</li>
+        <li><strong>จัดลำดับตามความเสี่ยง:</strong> ต้องใช้ Risk-Based Approach ป้องกันสินทรัพย์วิกฤตก่อน</li>
+        <li><strong>ธรรมาภิบาลของบอร์ด:</strong> คณะกรรมการและผู้บริหารสูงสุดต้องเป็นผู้กำหนด Risk Appetite</li>
+        <li><strong>องค์รวม 3 เสาหลัก:</strong> ความปลอดภัยเกิดจาก People, Process, Technology ผสานกัน</li>
+        <li><strong>ควบคุมให้อยู่ในเกณฑ์:</strong> เป้าหมายคือควบคุมความเสี่ยงคงเหลือให้อยู่ในระดับที่ยอมรับได้</li>
+      </ul>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 5.1:</strong> การเปรียบเทียบกระบวนทัศน์ความเชื่อที่ผิดกับความจริงในวิชาชีพการบริหารความเสี่ยงไซเบอร์ อิงมาตรฐาน ISO 31000 และ ISO/IEC 27005:2022
+  </div>
+</div>
+<hr class="content-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-1-แนวคิด-องค์ประกอบ-และการวัดระดับความเสี่ยง-risk-concepts-measurement-48">ส่วนที่ 1: แนวคิด องค์ประกอบ และการวัดระดับความเสี่ยง (Risk Concepts & Measurement)</h2>
+<h3 class="content-heading" id="sec-1-1-กายวิภาคของความเสี่ยงด้านไซเบอร์-anatomy-of-cyber-risk-50">1.1 กายวิภาคของความเสี่ยงด้านไซเบอร์ (Anatomy of Cyber Risk)</h3>
+<p class="content-para">ตามนิยามสากลของ <strong>ISO 31000:2018</strong> ความเสี่ยงถูกนิยามสั้น ๆ แต่ทรงพลังว่า <strong>"ผลของความไม่แน่นอนต่อวัตถุประสงค์ (Effect of uncertainty on objectives)"</strong> สำหรับบริบทความมั่นคงปลอดภัยสารสนเทศ ความเสี่ยงมิใช่เรื่องของโชคชะตา แต่เป็นผลลัพธ์ที่เกิดขึ้นจากการปฏิสัมพันธ์กันของ <strong>6 องค์ประกอบหลัก</strong>:</p>
+
+<div class="figure-box" id="figure-5-2">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 5.2</div>
+    <div class="figure-title">The Anatomy of Cyber Risk (กายวิภาค 6 องค์ประกอบของความเสี่ยง)</div>
+  </div>
+  <div class="anatomy-container">
+    <div class="anatomy-top">
+      <div class="anatomy-card asset">
+        <div class="anat-icon">🏛️</div>
+        <div class="anat-title">1. สินทรัพย์ (Asset)</div>
+        <div class="anat-desc">ข้อมูลทะเบียน, ฐานข้อมูลการเงิน, เซิร์ฟเวอร์, ชื่อเสียงสถาบัน</div>
+      </div>
+    </div>
+    <div class="anatomy-middle">
+      <div class="anatomy-card threat">
+        <div class="anat-icon">🦹‍♂️</div>
+        <div class="anat-title">2. ภัยคุกคาม (Threat)</div>
+        <div class="anat-desc">Ransomware Gang, Phishing, พนักงานภายใน, แฮกเกอร์ระดับรัฐ</div>
+      </div>
+      <div class="anatomy-arrow">
+        <div class="arr-text">พยายามเจาะ / ใช้ประโยชน์</div>
+        <div class="arr-line">───────▶</div>
+      </div>
+      <div class="anatomy-card vuln">
+        <div class="anat-icon">🔓</div>
+        <div class="anat-title">3. ช่องโหว่ (Vulnerability)</div>
+        <div class="anat-desc">ซอฟต์แวร์ไม่อัปเดต (EOL), รหัสผ่านง่าย, ขาด MFA, Misconfiguration</div>
+      </div>
+    </div>
+    <div class="anatomy-filter">
+      <div class="anatomy-card control">
+        <div class="anat-icon">🛡️</div>
+        <div class="anat-title">4. มาตรการควบคุมเดิม (Existing Controls)</div>
+        <div class="anat-desc">Firewall, Antivirus, Backup เดิม — ช่วยสกัดกั้นหรือบรรเทาความเสียหายได้บางส่วน</div>
+      </div>
+    </div>
+    <div class="anatomy-bottom">
+      <div class="anatomy-card formula">
+        <div class="formula-head">5. โอกาสเกิด (Likelihood) &times; 6. ผลกระทบ (Impact)</div>
+        <div class="formula-result">= ระดับความเสี่ยงด้านไซเบอร์ (Cybersecurity Risk Level)</div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 5.2:</strong> กายวิภาคและปฏิสัมพันธ์ของ 6 องค์ประกอบที่ก่อให้เกิดความเสี่ยงด้านความมั่นคงปลอดภัยสารสนเทศ
+  </div>
+</div>
+<h4 class="content-heading" id="sec-รายละเอียดขององค์ประกอบทั้ง-6-84">รายละเอียดขององค์ประกอบทั้ง 6:</h4>
+<ol class="content-list">
+  <li><strong>สินทรัพย์ (Asset):</strong> สิ่งใดก็ตามที่มีมูลค่าและก่อให้เกิดประโยชน์ต่อองค์กร ซึ่งหากสูญหาย เสียหาย ถูกแก้ไข หรือถูกเปิดเผย จะส่งผลกระทบต่อภารกิจหลัก สินทรัพย์แบ่งออกเป็น:</li>
+  <li><em>สินทรัพย์จับต้องได้ (Tangible Assets):</em> เซิร์ฟเวอร์, สวิตช์, ไฟร์วอลล์, สายเคเบิล, ศูนย์ข้อมูล (Data Center)</li>
+  <li><em>สินทรัพย์จับต้องไม่ได้ (Intangible Assets):</em> ข้อมูลส่วนบุคคลของนักศึกษา, ฐานข้อมูลคะแนนสอบ, ทรัพย์สินทางปัญญา, รหัสต้นฉบับซอฟต์แวร์ (Source Code), และ <strong>ชื่อเสียงความน่าเชื่อถือของสถาบัน (Reputation)</strong></li>
+  <li><strong>ภัยคุกคาม (Threat):</strong> ตัวกระทำ สภาวการณ์ หรือเหตุการณ์ที่อาจสร้างความเสียหายต่อสินทรัพย์ จำแนกตามผู้ก่อภัย (Threat Actors):</li>
+  <li><em>กลุ่มอาชญากรไซเบอร์ (eCrime / Ransomware Gangs):</em> มีแรงจูงใจทางการเงิน ขู่กรรโชกทรัพย์</li>
+  <li><em>ภัยคุกคามจากบุคคลภายใน (Insider Threat):</em> พนักงาน เจ้าหน้าที่ หรือนักศึกษา ทั้งที่มีเจตนาร้าย (Malicious) หรือเกิดจากความประมาทเลินเล่อ ขาดความรู้ (Negligent)</li>
+  <li><em>กลุ่มแฮกเกอร์ระดับรัฐ (Nation-State / Advanced Persistent Threats: APTs):</em> มุ่งเน้นการจารกรรมข้อมูลความลับระดับชาติ หรือทำลายโครงสร้างพื้นฐานสำคัญ</li>
+  <li><em>ภัยธรรมชาติและสิ่งแวดล้อม (Environmental Threats):</em> น้ำท่วมศูนย์ข้อมูล, ไฟไหม้, ไฟฟ้าดับเป็นเวลานาน</li>
+  <li><strong>ช่องโหว่ (Vulnerability):</strong> จุดอ่อนหรือข้อบกพร่องในสินทรัพย์ สถาปัตยกรรม กระบวนการปฏิบัติงาน หรือการควบคุม ที่เปิดโอกาสให้ภัยคุกคามสามารถใช้ประโยชน์ (Exploit) ได้ เช่น ซอฟต์แวร์ที่หมดอายุการสนับสนุน (End-of-Life: EOL), การเปิดพอร์ตที่ไม่จำเป็นทิ้งไว้, หรือการขาดนโยบายการตรวจสอบสิทธิ์</li>
+  <li><strong>มาตรการควบคุมเดิม (Existing Controls):</strong> นโยบาย กลไก หรือเทคโนโลยีที่องค์กรมีใช้งานอยู่แล้วในปัจจุบัน ซึ่งทำหน้าที่เป็นปราการด่านแรกในการลดโอกาสเกิดหรือบรรเทาความเสียหาย</li>
+  <li><strong>โอกาสเกิด (Likelihood):</strong> ความน่าจะเป็นหรือความถี่ที่ภัยคุกคามจะสามารถตรวจพบและเจาะผ่านช่องโหว่ได้สำเร็จ โดยคำนึงถึงความยากง่ายในการโจมตี ความพร้อมของเครื่องมือโจมตี และแรงจูงใจของผู้ก่อภัย</li>
+  <li><strong>ผลกระทบ (Impact):</strong> ระดับความสูญเสีย ความเสียหาย หรือผลเสียที่เกิดขึ้นต่อองค์กรหากเหตุการณ์ภัยคุกคามนั้นเกิดขึ้นจริง</li>
+</ol>
+<hr class="content-divider">
+<h3 class="content-heading" id="sec-1-2-กรอบการจำแนกภัยคุกคามและช่องโหว่เชิงเทคนิค-stride-mitre-att-ck-101">1.2 กรอบการจำแนกภัยคุกคามและช่องโหว่เชิงเทคนิค (STRIDE & MITRE ATT&CK)</h3>
+
+<div class="figure-box" id="figure-5-3">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 5.3</div>
+    <div class="figure-title">STRIDE Threat Modeling Architecture (กรอบจำลองภัยคุกคาม STRIDE และ CIA Properties)</div>
+  </div>
+  <div class="stride-grid">
+    <div class="stride-card s">
+      <div class="stride-letter">S</div>
+      <div class="stride-name">Spoofing Identity</div>
+      <div class="stride-violation">ทำลาย: Authentication</div>
+      <div class="stride-example">แอบอ้างเป็นอาจารย์ล็อกอินเข้าสู่ระบบตัดเกรด</div>
+    </div>
+    <div class="stride-card t">
+      <div class="stride-letter">T</div>
+      <div class="stride-name">Tampering with Data</div>
+      <div class="stride-violation">ทำลาย: Integrity</div>
+      <div class="stride-example">แก้ไขเลขบัญชีรับเงินโอนค่าธรรมเนียมในระบบ ERP</div>
+    </div>
+    <div class="stride-card r">
+      <div class="stride-letter">R</div>
+      <div class="stride-name">Repudiation</div>
+      <div class="stride-violation">ทำลาย: Non-repudiation</div>
+      <div class="stride-example">เจ้าหน้าที่แอบลบไฟล์ฐานข้อมูลแล้วอ้างว่าระบบล่มเอง</div>
+    </div>
+    <div class="stride-card i">
+      <div class="stride-letter">I</div>
+      <div class="stride-name">Information Disclosure</div>
+      <div class="stride-violation">ทำลาย: Confidentiality</div>
+      <div class="stride-example">ข้อมูลบัตรประชาชนและผลการเรียนหลุดสู่ Dark Web</div>
+    </div>
+    <div class="stride-card d">
+      <div class="stride-letter">D</div>
+      <div class="stride-name">Denial of Service</div>
+      <div class="stride-violation">ทำลาย: Availability</div>
+      <div class="stride-example">ยิง DDoS ถล่มระบบทะเบียนในชั่วโมงแรกของการเปิดเทอม</div>
+    </div>
+    <div class="stride-card e">
+      <div class="stride-letter">E</div>
+      <div class="stride-name">Elevation of Privilege</div>
+      <div class="stride-violation">ทำลาย: Authorization</div>
+      <div class="stride-example">นักศึกษาใช้ Web Shell เจาะเซิร์ฟเวอร์จนได้สิทธิ์ Root</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 5.3:</strong> กรอบจำลองภัยคุกคาม STRIDE ของ Microsoft และคุณสมบัติด้านความมั่นคงปลอดภัยสารสนเทศที่ตกเป็นเป้าหมาย
+  </div>
+</div>
+<p class="content-para">ในการประเมินความเสี่ยงระดับมืออาชีพ Lead Implementer ต้องไม่ใช้ "การเดาจากความรู้สึก" แต่ต้องใช้แบบจำลองภัยคุกคาม (Threat Modeling) ที่เป็นมาตรฐานสากล:</p>
+<h4 class="content-heading" id="sec-1-2-1-แบบจำลองภัยคุกคาม-stride-model-พัฒนาโดย-microsoft-105">1.2.1 แบบจำลองภัยคุกคาม STRIDE Model (พัฒนาโดย Microsoft)</h4>
+<p class="content-para">ใช้สำหรับการวิเคราะห์ภัยคุกคามต่อระบบ สถาปัตยกรรม และการไหลเวียนของข้อมูล (Data Flow):</p>
+<div class="table-wrapper"><table class="data-table">
+<thead><tr><th>ตัวอักษร</th><th>หมวดหมู่ภัยคุกคาม (STRIDE)</th><th>คำอธิบายพฤติกรรมภัยคุกคาม</th><th>คุณสมบัติด้านความปลอดภัยที่ถูกทำลาย</th><th>ตัวอย่างสถานการณ์ในมหาวิทยาลัย</th></tr></thead><tbody>
+<tr><td><strong>S</strong></td><td><strong>Spoofing (การปลอมแปลงตัวตน)</strong></td><td>ผู้โจมตีแอบอ้างเป็นบุคคลอื่น หรือปลอมเครื่องคอมพิวเตอร์</td><td>Authentication (การพิสูจน์ตัวตน)</td><td>นักศึกษาแอบใช้รหัสผ่านของอาจารย์ล็อกอินเข้าสู่ระบบตัดเกรด</td></tr>
+<tr><td><strong>T</strong></td><td><strong>Tampering (การแก้ไขดัดแปลงข้อมูล)</strong></td><td>การแก้ไขข้อมูลในฐานข้อมูล หรือดัดแปลงข้อมูลขณะส่งผ่านเครือข่าย</td><td>Integrity (ความถูกต้องสมบูรณ์)</td><td>ผู้ไม่หวังดีดัดแปลงเลขที่บัญชีรับชำระเงินค่าธรรมเนียมในระบบ ERP</td></tr>
+<tr><td><strong>R</strong></td><td><strong>Repudiation (การปฏิเสธความรับผิด)</strong></td><td>ผู้กระทำผิดปฏิเสธว่าตนเองไม่ได้ทำ เนื่องจากไม่มีหลักฐาน Log ที่เชื่อถือได้</td><td>Non-repudiation (การห้ามปฏิเสธความรับผิด)</td><td>เจ้าหน้าที่แอบลบไฟล์สำคัญแล้วอ้างว่าระบบล่มเอง โดยระบบไม่มี Audit Trail</td></tr>
+<tr><td><strong>I</strong></td><td><strong>Information Disclosure (การเปิดเผยข้อมูล)</strong></td><td>ข้อมูลความลับหรือข้อมูลส่วนบุคคลรั่วไหลสู่ผู้ไม่มีสิทธิ์</td><td>Confidentiality (การรักษาความลับ)</td><td>ข้อมูลบัตรประชาชนและเกรดเฉลี่ยของนักศึกษาหลุดไปโพสต์บนเว็บบอร์ด</td></tr>
+<tr><td><strong>D</strong></td><td><strong>Denial of Service (การทำให้ระบบปฏิเสธบริการ)</strong></td><td>การยิงทราฟฟิกถล่มเซิร์ฟเวอร์จนระบบล่มและไม่พร้อมใช้งาน</td><td>Availability (ความพร้อมใช้งาน)</td><td>การยิง DDoS ถล่มระบบลงทะเบียนในชั่วโมงแรกของการเปิดลงทะเบียนเรียน</td></tr>
+<tr><td><strong>E</strong></td><td><strong>Elevation of Privilege (การยกระดับสิทธิ์)</strong></td><td>ผู้ใช้งานทั่วไปสามารถขโมยหรือปรับสิทธิ์ตนเองเป็นระดับ Administrator</td><td>Authorization (การอนุญาตสิทธิ์)</td><td>นักศึกษาใช้ช่องโหว่ Web Shell เจาะ Web Server จนได้สิทธิ์ Root ของเซิร์ฟเวอร์</td></tr>
+</tbody></table></div>
+<h4 class="content-heading" id="sec-1-2-2-กรอบการทำงาน-mitre-att-ck-adversarial-tactics-techniques-and-common-knowledge-117">1.2.2 กรอบการทำงาน MITRE ATT&CK (Adversarial Tactics, Techniques, and Common Knowledge)</h4>
+<p class="content-para">ช่วยให้องค์กรเข้าใจพฤติกรรมการโจมตีในโลกความเป็นจริง โดยแจกแจงเป็นยุทธวิธี (Tactics) เช่น Initial Access, Execution, Persistence, Privilege Escalation, Defense Evasion, Credential Access, Discovery, Lateral Movement, Collection, Command and Control, Exfiltration, และ Impact ซึ่ง Lead Implementer สามารถนำมาใช้ตรวจสอบว่า มาตรการควบคุมที่มีอยู่สามารถสกัดกั้นเทคนิค (Techniques) ในแต่ละขั้นตอนของการโจมตีได้หรือไม่</p>
+<hr class="content-divider">
+<h3 class="content-heading" id="sec-1-3-การวิเคราะห์ประเภทผลกระทบ-9-มิติ-the-9-impact-dimensions-122">1.3 การวิเคราะห์ประเภทผลกระทบ 9 มิติ (The 9 Impact Dimensions)</h3>
+<p class="content-para">ในการประเมินผลกระทบ (Impact Analysis) นักศึกษาต้องมองให้รอบด้าน ไม่จำกัดเฉพาะมุมมองด้านเทคนิค (CIA Triad) แต่ต้องครอบคลุมถึงผลกระทบต่อธุรกิจ สังคม และกฎหมาย:</p>
+
+<div class="figure-box" id="figure-5-4">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 5.4</div>
+    <div class="figure-title">The 9 Impact Dimensions of Cyber Risk (9 มิติการวิเคราะห์ผลกระทบด้านไซเบอร์)</div>
+  </div>
+  <div class="impact-dimensions-grid">
+    <div class="dim-item"><span class="dim-num">01</span><div class="dim-content"><strong>Confidentiality (ความลับ)</strong><span>ข้อสอบรั่วไหล ทรัพย์สินทางปัญญาถูกจารกรรม</span></div></div>
+    <div class="dim-item"><span class="dim-num">02</span><div class="dim-content"><strong>Integrity (ความถูกต้อง)</strong><span>เกรดเฉลี่ยหรือยอดเงินในบัญชีถูกดัดแปลง</span></div></div>
+    <div class="dim-item"><span class="dim-num">03</span><div class="dim-content"><strong>Availability (ความพร้อมใช้)</strong><span>ระบบลงทะเบียนล่ม นักศึกษา 25,000 คนใช้งานไม่ได้</span></div></div>
+    <div class="dim-item"><span class="dim-num">04</span><div class="dim-content"><strong>Privacy (ความเป็นส่วนตัว)</strong><span>ข้อมูลส่วนบุคคลหลุด ผิด พ.ร.บ. PDPA ม.77</span></div></div>
+    <div class="dim-item"><span class="dim-num">05</span><div class="dim-content"><strong>Financial (การเงิน)</strong><span>ค่าไถ่ ค่าสืบสวน Forensic ค่ากู้คืนระบบ ค่าปรับ</span></div></div>
+    <div class="dim-item"><span class="dim-num">06</span><div class="dim-content"><strong>Legal & Regulatory (กฎหมาย)</strong><span>โทษปรับปกครอง พ.ร.บ.ไซเบอร์ และความรับผิดทางอาญา</span></div></div>
+    <div class="dim-item"><span class="dim-num">07</span><div class="dim-content"><strong>Reputation (ชื่อเสียง)</strong><span>ตกเป็นข่าวด้านลบ สูญเสียความเชื่อมั่น อันดับมหาวิทยาลัยลดลง</span></div></div>
+    <div class="dim-item"><span class="dim-num">08</span><div class="dim-content"><strong>Safety & Health (ความปลอดภัย)</strong><span>ระบบโรงพยาบาลหรือเครื่องมือห้องผ่าตัดหยุดชะงัก</span></div></div>
+    <div class="dim-item"><span class="dim-num">09</span><div class="dim-content"><strong>Service Continuity (ความต่อเนื่อง)</strong><span>ระบบหยุดเกินเกณฑ์ RTO/RPO กระทบพันธกิจหลัก</span></div></div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 5.4:</strong> มิติการประเมินผลกระทบ 9 ด้านที่ Lead Implementer และ Lead Auditor ต้องวิเคราะห์ให้ครอบคลุมรอบด้าน
+  </div>
+</div>
+<ol class="content-list">
+  <li><strong>Confidentiality Impact:</strong> การสูญเสียการรักษาความลับ เช่น ข้อมูลข้อสอบรั่วไหลก่อนวันสอบ ข้อมูลทรัพย์สินทางปัญญาของงานวิจัยถูกขโมย</li>
+  <li><strong>Integrity Impact:</strong> การถูกดัดแปลงแก้ไขข้อมูลอย่างผิดกฎหมาย เช่น การแก้ไขเกรดเฉลี่ยในฐานข้อมูลทะเบียน การแก้เลขที่บัญชีธนาคารในระบบสั่งจ่ายเงินเดือน</li>
+  <li><strong>Availability Impact:</strong> การหยุดชะงักของบริการ เช่น ระบบทะเบียนล่มในวันเปิดภาคเรียน ทำให้นักศึกษา 25,000 คนไม่สามารถลงทะเบียนได้ตามกำหนด</li>
+  <li><strong>Privacy Impact:</strong> การละเมิดข้อมูลส่วนบุคคลตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) เช่น ข้อมูลประวัติสุขภาพ ข้อมูลพฤติกรรม หรือภาพถ่ายบัตรประชาชนของนักศึกษาและบุคลากรรั่วไหลสู่สาธารณะ</li>
+  <li><strong>Financial Impact:</strong> ความสูญเสียทางการเงินทั้งทางตรงและทางอ้อม ได้แก่ ค่าธรรมเนียมจ้างทีม Forensic ภายนอก, ค่ากู้คืนระบบ, ค่าไถ่ (หากถูกบีบบังคับ), และค่าชดเชยเยียวยาผู้เสียหาย</li>
+  <li><strong>Legal & Regulatory Impact:</strong> การถูกบังคับใช้มาตรการลงโทษตามกฎหมาย เช่น การถูกสั่งปรับทางปกครองตาม พ.ร.บ.ไซเบอร์ 2562 (ม.73 ปรับสูงสุด 1 ล้านบาท) หรือ PDPA (ปรับทางปกครองสูงสุด 5 ล้านบาท) ตลอดจนความรับผิดทางอาญาของผู้บริหารตาม ม.77</li>
+  <li><strong>Reputational Impact:</strong> การถูกเผยแพร่ข่าวเชิงลบทางสื่อมวลชนและโซเชียลมีเดีย นำไปสู่การสูญเสียความเชื่อมั่นจากผู้ปกครองและนักศึกษา ส่งผลให้อันดับของมหาวิทยาลัยตกต่ำลง</li>
+  <li><strong>Safety & Health Impact:</strong> สำหรับหน่วยงานโครงสร้างพื้นฐานสำคัญ (CII) ในโรงพยาบาลหรือระบบควบคุมอุตสาหกรรม การถูกโจมตีทางไซเบอร์อาจกระทบต่อเครื่องมือแพทย์ในห้องผ่าตัด หรือระบบจ่ายออกซิเจน ซึ่งหมายถึงอันตรายต่อชีวิตมนุษย์โดยตรง</li>
+  <li><strong>Service Continuity Impact:</strong> ระยะเวลาที่ระบบหยุดทำงานเกินกว่าเกณฑ์เป้าหมายระยะเวลาฟื้นตัว (Recovery Time Objective: RTO) หรือจุดเป้าหมายการสูญเสียข้อมูล (Recovery Point Objective: RPO) จนทำให้พันธกิจของมหาวิทยาลัยต้องหยุดชะงักอย่างกู้คืนไม่ได้</li>
+</ol>
+<hr class="content-divider">
+<h3 class="content-heading" id="sec-1-4-ระเบียบวิธีประเมินความเสี่ยง-เชิงคุณภาพ-กึ่งปริมาณ-และเชิงปริมาณ-154">1.4 ระเบียบวิธีประเมินความเสี่ยง: เชิงคุณภาพ กึ่งปริมาณ และเชิงปริมาณ</h3>
+<p class="content-para">ในการปฏิบัติงานจริง องค์กรสามารถเลือกระเบียบวิธีประเมินความเสี่ยงได้ 3 รูปแบบตามความพร้อมของข้อมูลและทรัพยากร:</p>
+<h4 class="content-heading" id="sec-1-4-1-การประเมินเชิงคุณภาพ-qualitative-approach-158">1.4.1 การประเมินเชิงคุณภาพ (Qualitative Approach)</h4>
+<ul class="content-list">
+  <li>ใช้คำอธิบายเชิงพรรณนา เช่น "ต่ำ (Low)", "ปานกลาง (Medium)", "สูง (High)"</li>
+  <li><strong>ข้อดี:</strong> ทำได้รวดเร็ว ประหยัดค่าใช้จ่าย เข้าใจง่าย ไม่ต้องอาศัยสูตรคณิตศาสตร์ เหมาะสำหรับองค์กรขนาดเล็กหรือการคัดกรองความเสี่ยงเบื้องต้น</li>
+  <li><strong>ข้อจำกัด:</strong> มีความเป็นอัตวิสัยสูง (Subjective) ขึ้นอยู่กับมุมมองส่วนบุคคลของผู้วิเคราะห์ และอาจเกิดอคติทางความคิด (Cognitive Biases) เช่น อคติจากการประเมินตนเองสูงเกินไป (Overconfidence Bias)</li>
+</ul>
+<h4 class="content-heading" id="sec-1-4-2-การประเมินกึ่งปริมาณ-semi-quantitative-approach-วิธีมาตรฐานที่ใช้แพร่หลายที่สุด-163">1.4.2 การประเมินกึ่งปริมาณ (Semi-quantitative Approach) - <em>วิธีมาตรฐานที่ใช้แพร่หลายที่สุด</em></h4>
+<ul class="content-list">
+  <li>กำหนดระดับคะแนนตัวเลข เช่น สเกล <strong>1 ถึง 5</strong> พร้อมทั้งเขียนคำนิยามกำกับไว้อย่างชัดเจนทั้งในเชิงคุณภาพและปริมาณ</li>
+  <li>นำคะแนน Likelihood (1–5) มาคูณกับคะแนน Impact (1–5) เพื่อจัดทำดัชนีชี้วัดความเสี่ยง (Risk Score 1–25)</li>
+</ul>
+<h5 class="content-heading" id="sec-ตารางเกณฑ์การให้คะแนนโอกาสเกิด-likelihood-scale-1-5-167">ตารางเกณฑ์การให้คะแนนโอกาสเกิด (Likelihood Scale: 1–5):</h5>
+<div class="table-wrapper"><table class="data-table">
+<thead><tr><th>ระดับ</th><th>ชื่อระดับ (Likelihood Level)</th><th>คำอธิบายความน่าจะเป็นและความพร้อมของภัยคุกคาม</th><th>ความถี่ที่คาดการณ์</th></tr></thead><tbody>
+<tr><td><strong>1</strong></td><td>เกิดขึ้นได้ยากมาก (Rare)</td><td>แทบไม่มีโอกาสเกิดขึ้น ต้องอาศัยทักษะขั้นสูงและทรัพยากรระดับรัฐ (Nation-State) ระบบมีมาตรการป้องกันหนาแน่นหลายชั้น</td><td>น้อยกว่า 1 ครั้งในรอบ 5 ปี</td></tr>
+<tr><td><strong>2</strong></td><td>เกิดขึ้นได้ยาก (Unlikely)</td><td>มีโอกาสเกิดขึ้นน้อย ผู้โจมตีต้องมีความรู้เฉพาะทาง ระบบมีมาตรการป้องกันและตรวจจับที่ดี</td><td>1 ครั้งในรอบ 2–3 ปี</td></tr>
+<tr><td><strong>3</strong></td><td>มีโอกาสเกิดขึ้นได้ (Possible)</td><td>มีโอกาสเกิดขึ้น มีเครื่องมือโจมตีสำเร็จรูปแพร่หลายในอินเทอร์เน็ต พนักงานอาจเผลอทำผิดพลาด</td><td>1 ครั้งในรอบ 1 ปี</td></tr>
+<tr><td><strong>4</strong></td><td>เกิดขึ้นได้บ่อย (Likely)</td><td>มีโอกาสเกิดขึ้นสูง มีความพยายามโจมตีอย่างสม่ำเสมอ หรือระบบมีช่องโหว่ที่ยังไม่ได้แก้ไข</td><td>1–2 ครั้งในรอบ 3–6 เดือน</td></tr>
+<tr><td><strong>5</strong></td><td>เกิดขึ้นแทบแน่นอน (Almost Certain)</td><td>มีโอกาสเกิดขึ้นแน่นอน ขาดมาตรการควบคุมอย่างสิ้นเชิง หรือเป็นช่องโหว่ที่กำลังถูกโจมตีในวงกว้าง</td><td>เกิดขึ้นเป็นประจำทุกเดือนหรือทุกสัปดาห์</td></tr>
+</tbody></table></div>
+<h5 class="content-heading" id="sec-ตารางเกณฑ์การให้คะแนนผลกระทบ-impact-scale-1-5-บูรณาการ-9-มิติ-177">ตารางเกณฑ์การให้คะแนนผลกระทบ (Impact Scale: 1–5) บูรณาการ 9 มิติ:</h5>
+<div class="table-wrapper"><table class="data-table">
+<thead><tr><th>ระดับ</th><th>ชื่อระดับ (Impact Level)</th><th>ด้านบริการ / การดำเนินงาน</th><th>ด้านการเงินและการสูญเสีย</th><th>ด้านกฎหมายและชื่อเสียง</th></tr></thead><tbody>
+<tr><td><strong>1</strong></td><td>เล็กน้อยมาก (Insignificant)</td><td>ระบบหยุดทำงาน < 1 ชั่วโมง ไม่กระทบต่อผู้ใช้งานทั่วไป</td><td>ความเสียหาย < 50,000 บาท</td><td>ภายในรับรู้ ไม่เป็นข่าว ไม่ผิดกฎหมาย</td></tr>
+<tr><td><strong>2</strong></td><td>เล็กน้อย (Minor)</td><td>ระบบหยุดทำงาน 1–4 ชั่วโมง กระทบเฉพาะหน่วยงานย่อย</td><td>50,000 – 200,000 บาท</td><td>มีการร้องเรียนภายในหน่วยงาน</td></tr>
+<tr><td><strong>3</strong></td><td>ปานกลาง (Moderate)</td><td>ระบบหยุดทำงาน 4–12 ชั่วโมง ส่งผลให้งานล่าช้า แต่มีกระบวนการสำรอง</td><td>200,000 – 1,000,000 บาท</td><td>มีการร้องเรียนออกสู่ภายนอก / หน่วยงานกำกับดูแลออกหนังสือตักเตือน</td></tr>
+<tr><td><strong>4</strong></td><td>รุนแรง (Major)</td><td>ระบบหลักหยุดทำงาน 12–48 ชั่วโมง กระทบนักศึกษาและอาจารย์ทั้งมหาวิทยาลัย</td><td>1,000,000 – 5,000,000 บาท</td><td>ข่าวปรากฏในสื่อมวลชนระดับประเทศ / เสี่ยงถูกปรับตาม PDPA หรือ Cyber Act</td></tr>
+<tr><td><strong>5</strong></td><td>วิกฤต / หายนะ (Catastrophic)</td><td>ระบบหลักหยุดทำงาน > 48 ชั่วโมง สูญเสียข้อมูลสำคัญอย่างถาวร</td><td>ความเสียหาย > 5,000,000 บาท</td><td>ถูกฟ้องร้องดำเนินคดี / ผู้บริหารระดับสูงต้องรับผิดตามกฎหมาย / เสียชื่อเสียงร้ายแรง</td></tr>
+</tbody></table></div>
+<hr class="content-divider">
+<h3 class="content-heading" id="sec-1-5-การประเมินความเสี่ยงเชิงปริมาณ-quantitative-risk-analysis-calculations-189">1.5 การประเมินความเสี่ยงเชิงปริมาณ (Quantitative Risk Analysis & Calculations)</h3>
+
+<div class="interactive-widget-card" id="widget-5-1">
+  <div class="widget-badge">WIDGET 5.1: INTERACTIVE CALCULATOR</div>
+  <h4 class="widget-title">เครื่องมือคำนวณความเสี่ยงเชิงปริมาณ (Quantitative Risk & ROSI Calculator)</h4>
+  <p class="widget-subtitle">ทดลองปรับค่าตัวแปรทางการเงินเพื่อคำนวณ Single Loss Expectancy (SLE), Annualized Loss Expectancy (ALE), และผลตอบแทนความคุ้มค่า (ROSI %)</p>
+  
+  <div class="calc-presets-bar">
+    <span class="preset-label">เลือกสถานการณ์จำลอง:</span>
+    <button type="button" class="btn-preset active" onclick="loadCalcPreset('ransomware')">กรณี 1: Ransomware ฐานข้อมูลนักศึกษา</button>
+    <button type="button" class="btn-preset" onclick="loadCalcPreset('ddos')">กรณี 2: DDoS ระบบลงทะเบียน</button>
+    <button type="button" class="btn-preset" onclick="loadCalcPreset('bec')">กรณี 3: Phishing BEC กองคลัง</button>
+  </div>
+
+  <div class="calc-grid">
+    <div class="calc-inputs-col">
+      <div class="input-group">
+        <label for="inp-av">มูลค่าสินทรัพย์รวม (Asset Value: AV) [บาท]</label>
+        <input type="number" id="inp-av" value="8000000" min="10000" step="50000" oninput="calculateRisk()">
+        <span class="input-hint">มูลค่าของระบบ ฐานข้อมูล หรือทรัพย์สินที่ประเมิน</span>
+      </div>
+      <div class="input-group">
+        <label for="inp-ef">สัดส่วนความเสียหาย (Exposure Factor: EF) [%]</label>
+        <div class="slider-row">
+          <input type="range" id="inp-ef" min="1" max="100" value="60" oninput="updateEfVal(this.value); calculateRisk();">
+          <span class="slider-val" id="val-ef">60%</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="inp-aro">ความถี่การเกิดต่อปี (Annualized Rate of Occurrence: ARO)</label>
+        <input type="number" id="inp-aro" value="0.5" min="0.01" max="10" step="0.05" oninput="calculateRisk()">
+        <span class="input-hint">เช่น 1 ครั้งในรอบ 2 ปี = 0.5, 1 ครั้งต่อปี = 1.0</span>
+      </div>
+      <div class="input-group">
+        <label for="inp-cost">ต้นทุนมาตรการควบคุมต่อปี (Annual Control Cost) [บาท]</label>
+        <input type="number" id="inp-cost" value="500000" min="0" step="10000" oninput="calculateRisk()">
+        <span class="input-hint">ค่า License ซอฟต์แวร์, การฝึกอบรม, หรือค่าบริการ</span>
+      </div>
+      <div class="input-group">
+        <label for="inp-alepost">ความเสียหายคาดการณ์หลังปรับปรุง (ALE Post-treatment) [บาท]</label>
+        <input type="number" id="inp-alepost" value="200000" min="0" step="10000" oninput="calculateRisk()">
+        <span class="input-hint">ความเสียหายที่ยังหลงเหลือต่อปีหลังติดตั้งมาตรการ</span>
+      </div>
+    </div>
+
+    <div class="calc-results-col">
+      <div class="result-tile">
+        <div class="res-label">Single Loss Expectancy (SLE)</div>
+        <div class="res-num" id="res-sle">4,800,000 บาท / ครั้ง</div>
+        <div class="res-formula">สูตร: AV &times; EF</div>
+      </div>
+      <div class="result-tile">
+        <div class="res-label">Annualized Loss Expectancy ก่อนปรับปรุง (ALE Prior)</div>
+        <div class="res-num alert" id="res-aleprior">2,400,000 บาท / ปี</div>
+        <div class="res-formula">สูตร: SLE &times; ARO</div>
+      </div>
+      <div class="result-tile">
+        <div class="res-label">ผลประโยชน์สุทธิที่ประหยัดได้ต่อปี (Net Annual Savings)</div>
+        <div class="res-num success" id="res-savings">1,700,000 บาท / ปี</div>
+        <div class="res-formula">สูตร: (ALE Prior - ALE Post) - Control Cost</div>
+      </div>
+      <div class="result-tile rosi-highlight">
+        <div class="res-label">ผลตอบแทนความคุ้มค่าด้านความปลอดภัย (ROSI %)</div>
+        <div class="res-num highlight" id="res-rosi">340.0%</div>
+        <div class="res-verdict" id="res-verdict">✅ คุ้มค่าอย่างยิ่งต่อการลงทุน (High Return)</div>
+      </div>
+    </div>
+  </div>
+</div>
+<p class="content-para">การประเมินเชิงปริมาณแปลงความเสี่ยงเป็น <strong>"มูลค่าตัวเงินที่คาดว่าจะสูญเสีย"</strong> ซึ่งเป็นภาษาที่คณะกรรมการบริหารและผู้บริหารระดับสูง (C-Level) ให้ความสำคัญสูงสุดในการพิจารณาอนุมัติงบประมาณ</p>
+<h4 class="content-heading" id="sec-1-5-1-สูตรคำนวณพื้นฐานทางคณิตศาสตร์-193">1.5.1 สูตรคำนวณพื้นฐานทางคณิตศาสตร์:</h4>
+<ol class="content-list">
+  <li><strong>Asset Value (AV):</strong> มูลค่ารวมของสินทรัพย์ (คำนึงถึงทั้งต้นทุนในการสร้าง การจัดซื้อ และมูลค่าข้อมูลทางธุรกิจ)</li>
+  <li><strong>Exposure Factor (EF):</strong> สัดส่วนเปอร์เซ็นต์ของความเสียหายที่คาดว่าจะเกิดขึ้นต่อสินทรัพย์นั้น หากเกิดเหตุการณ์ภัยคุกคาม (ค่าระหว่าง 0.0 ถึง 1.0 หรือ 0% ถึง 100%)</li>
+  <li><strong>Single Loss Expectancy (SLE):</strong> มูลค่าความเสียหายที่คาดว่าจะเกิดขึ้นต่อการเกิดเหตุการณ์ 1 ครั้ง</li>
+<p class="content-para">$<code class="math-tex">SLE = AV \times EF</code>$</p>
+  <li><strong>Annualized Rate of Occurrence (ARO):</strong> อัตราความถี่ที่คาดว่าเหตุการณ์นั้นจะเกิดขึ้นในรอบ 1 ปี (เช่น เกิดปีละ 2 ครั้ง <code class="math-tex">\rightarrow ARO = 2.0</code>; เกิด 1 ครั้งในรอบ 5 ปี <code class="math-tex">\rightarrow ARO = 0.2</code>)</li>
+  <li><strong>Annualized Loss Expectancy (ALE):</strong> มูลค่าความเสียหายรวมที่คาดว่าจะเกิดขึ้นเฉลี่ยในรอบ 1 ปี</li>
+<p class="content-para">$<code class="math-tex">ALE = SLE \times ARO</code>$</p>
+  <li><strong>Return on Security Investment (ROSI):</strong> ผลตอบแทนความคุ้มค่าของการลงทุนในมาตรการรักษาความปลอดภัย</li>
+<p class="content-para">$<code class="math-tex">ROSI = \frac{(ALE_{ก่อนปรับปรุง} - ALE_{หลังปรับปรุง}) - Cost_{มาตรการ}}{Cost_{มาตรการ}} \times 100\%</code>$</p>
+</ol>
+<hr class="content-divider">
+<h4 class="content-heading" id="sec-1-5-2-ตัวอย่างโจทย์คำนวณเชิงปริมาณ-3-สถานการณ์จริง-206">1.5.2 ตัวอย่างโจทย์คำนวณเชิงปริมาณ 3 สถานการณ์จริง:</h4>
+<h5 class="content-heading" id="sec-กรณีศึกษาที่-1-การประเมินความเสี่ยง-ransomware-โจมตีฐานข้อมูลนักศึกษา-208">กรณีศึกษาที่ 1: การประเมินความเสี่ยง Ransomware โจมตีฐานข้อมูลนักศึกษา</h5>
+<ul class="content-list">
+  <li><strong>ข้อมูล:</strong> ฐานข้อมูลนักศึกษามีมูลค่าสินทรัพย์รวม <code class="math-tex">AV = 8,000,000</code> บาท หากถูก Ransomware เข้ารหัส คาดว่าจะกู้คืนไม่ได้บางส่วนและเกิดความเสียหาย <code class="math-tex">EF = 60\%</code> สถิติชี้ว่ามหาวิทยาลัยในภูมิภาคถูกพยายามโจมตีด้วย Ransomware เฉลี่ยทุก 2 ปี (<code class="math-tex">ARO = 0.5</code>)</li>
+  <li><strong>การคำนวณ:</strong></li>
+  <li><code class="math-tex">SLE = 8,000,000 \times 0.60 = 4,800,000</code> บาทต่อครั้ง</li>
+  <li><code class="math-tex">ALE_{prior} = 4,800,000 \times 0.5 = 2,400,000</code> บาทต่อปี</li>
+  <li><strong>การวิเคราะห์การลงทุน:</strong> หากทีมไอทีเสนอซื้อระบบ EDR และ Immutable Backup ราคาปีละ 500,000 บาท ซึ่งสามารถลดความเสียหายลงจนเหลือ <code class="math-tex">ALE_{post} = 200,000</code> บาทต่อปี</li>
+  <li>ประโยชน์ที่ประหยัดได้ต่อปี <code class="math-tex">= 2,400,000 - 200,000 = 2,200,000</code> บาท</li>
+  <li>ผลประโยชน์สุทธิ (Net Benefit) <code class="math-tex">= 2,200,000 - 500,000 = 1,700,000</code> บาทต่อปี</li>
+  <li>คำนวณ <code class="math-tex">ROSI = \frac{2,200,000 - 500,000}{500,000} \times 100\% = 340\%</code> <code class="math-tex">\rightarrow</code> <strong>คุ้มค่าอย่างยิ่งต่อการลงทุน</strong></li>
+</ul>
+<h5 class="content-heading" id="sec-กรณีศึกษาที่-2-การโจมตี-ddos-บนระบบลงทะเบียนเรียนในสัปดาห์สำคัญ-218">กรณีศึกษาที่ 2: การโจมตี DDoS บนระบบลงทะเบียนเรียนในสัปดาห์สำคัญ</h5>
+<ul class="content-list">
+  <li><strong>ข้อมูล:</strong> ระบบลงทะเบียนมีมูลค่า <code class="math-tex">AV = 5,000,000</code> บาท หากถูกยิง DDoS ล่มตลอดวันเปิดลงทะเบียน จะเกิดความสูญเสียค่าปรับ ค่าล่วงเวลาเจ้าหน้าที่ และความสูญเสียทางธุรกิจ <code class="math-tex">EF = 30\%</code> คาดการณ์ว่าจะถูกโจมตีเฉลี่ยปีละ 1 ครั้ง (<code class="math-tex">ARO = 1.0</code>)</li>
+  <li><strong>การคำนวณ:</strong></li>
+  <li><code class="math-tex">SLE = 5,000,000 \times 0.30 = 1,500,000</code> บาท</li>
+  <li><code class="math-tex">ALE_{prior} = 1,500,000 \times 1.0 = 1,500,000</code> บาทต่อปี</li>
+  <li><strong>การตัดสินใจ:</strong> การเช่าใช้บริการ Cloudflare Anti-DDoS ราคาปีละ 300,000 บาท จะลด <code class="math-tex">ALE</code> ลงเหลือ 0 บาท ประหยัดเงินให้มหาวิทยาลัยได้สุทธิ <code class="math-tex">1,200,000</code> บาทต่อปี (<code class="math-tex">ROSI = 400\%</code>)</li>
+</ul>
+<h5 class="content-heading" id="sec-กรณีศึกษาที่-3-ภัยหลอกลวงทางการเงินผ่านอีเมล-business-email-compromise-bec-225">กรณีศึกษาที่ 3: ภัยหลอกลวงทางการเงินผ่านอีเมล (Business Email Compromise: BEC)</h5>
+<ul class="content-list">
+  <li><strong>ข้อมูล:</strong> กองคลังมีการโอนเงินงบประมาณเฉลี่ยปีละ 100 ล้านบาท มีโอกาสถูกหลอกลวงผ่านอีเมลปลอมเฉลี่ย 1 ครั้งในรอบ 4 ปี (<code class="math-tex">ARO = 0.25</code>) โดยมูลค่าการโอนเงินเฉลี่ยต่อธุรกรรมที่อาจสูญเสียคือ <code class="math-tex">SLE = 2,000,000</code> บาท</li>
+  <li><strong>การคำนวณ:</strong></li>
+  <li><code class="math-tex">ALE_{prior} = 2,000,000 \times 0.25 = 500,000</code> บาทต่อปี</li>
+  <li><strong>มาตรการควบคุม:</strong> การฝึกอบรม Phishing Awareness แก่เจ้าหน้าที่การเงิน และการติดตั้ง Email Security Gateway ต้นทุนปีละ 150,000 บาท ซึ่งลดโอกาสเกิดลงเหลือ <code class="math-tex">ARO = 0.05</code> (<code class="math-tex">ALE_{post} = 2,000,000 \times 0.05 = 100,000</code> บาท)</li>
+  <li>ประโยชน์สุทธิ <code class="math-tex">= (500,000 - 100,000) - 150,000 = 250,000</code> บาทต่อปี (<code class="math-tex">ROSI = 166.7\%</code>)</li>
+</ul>
+<hr class="content-divider">
+<h3 class="content-heading" id="sec-1-6-ตารางเมทริกซ์ความเสี่ยง-5x5-the-5x5-risk-matrix-234">1.6 ตารางเมทริกซ์ความเสี่ยง 5x5 (The 5x5 Risk Matrix)</h3>
+
+<div class="interactive-widget-card" id="widget-5-2">
+  <div class="widget-badge">WIDGET 5.2: MATRIX EXPLORER</div>
+  <h4 class="widget-title">เครื่องมือทดสอบเมทริกซ์ 5x5 และเกณฑ์การปฏิบัติการ (5x5 Risk Matrix Explorer)</h4>
+  <p class="widget-subtitle">คลิกที่ช่องคะแนนในเมทริกซ์ด้านล่าง เพื่อดูระดับความรุนแรง กรอบเวลาแก้ไข และหลักฐานที่ Lead Auditor จะขอดู</p>
+  
+  <div class="interactive-matrix-container">
+    <div class="int-matrix-grid">
+      <div class="int-matrix-labels-y">
+        <span>5: แน่นอน</span>
+        <span>4: บ่อย</span>
+        <span>3: กลาง</span>
+        <span>2: ยาก</span>
+        <span>1: ยากมาก</span>
+      </div>
+      <div class="int-matrix-cells" id="int-matrix-board">
+        <!-- Generated by JS -->
+      </div>
+    </div>
+    <div class="int-matrix-labels-x">
+      <span>1: ต่ำมาก</span>
+      <span>2: ต่ำ</span>
+      <span>3: ปานกลาง</span>
+      <span>4: สูง</span>
+      <span>5: วิกฤต</span>
+    </div>
+  </div>
+
+  <div class="matrix-detail-display" id="matrix-cell-detail">
+    <div class="detail-header">
+      <span class="detail-score-badge" id="dt-score">คะแนน: 20</span>
+      <span class="detail-level-tag" id="dt-level">🔴 Extreme (วิกฤต)</span>
+    </div>
+    <div class="detail-body">
+      <div class="dt-row"><strong>พิกัด:</strong> <span id="dt-coord">โอกาสเกิด = 4 (บ่อย), ผลกระทบ = 5 (วิกฤต)</span></div>
+      <div class="dt-row"><strong>ข้อกำหนดการปฏิบัติการ:</strong> <span id="dt-action">ยอมรับไม่ได้โดยเด็ดขาด ต้องรายงานต่อ Steering Committee และอธิการบดีภายใน 24 ชั่วโมง และต้องมีมาตรการลดความเสี่ยงเสร็จสิ้นภายใน 15–30 วัน</span></div>
+      <div class="dt-row"><strong>ตัวอย่างในมหาวิทยาลัย:</strong> <span id="dt-example">RSK-01 (Active Directory ไม่มี MFA) หรือ RSK-02 (REG System เสี่ยง Ransomware)</span></div>
+      <div class="dt-row"><strong>หลักฐานที่ Auditor ขอตรวจ:</strong> <span id="dt-evidence">รายงานการประชุมบอร์ดเร่งด่วน, เอกสารอนุมัติจัดซื้อ EDR/MFA, แผน RTP ที่ระบุ Risk Owner ชัดเจน</span></div>
+    </div>
+  </div>
+</div>
+<p class="content-para">เมื่อนำระดับคะแนน Likelihood (1–5) และ Impact (1–5) มาจัดลงตารางเมทริกซ์สองมิติ จะได้คะแนนความเสี่ยงตั้งแต่ 1 ถึง 25 คะแนน:</p>
+
+<div class="figure-box" id="figure-5-5">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 5.5</div>
+    <div class="figure-title">The 5x5 Risk Matrix & Action Thresholds (ตารางเมทริกซ์ความเสี่ยง 5x5 และเกณฑ์การปฏิบัติการ)</div>
+  </div>
+  <div class="matrix-layout">
+    <div class="matrix-wrapper">
+      <div class="matrix-y-axis">
+        <span>โอกาสเกิด (Likelihood)</span>
+      </div>
+      <div class="matrix-table-container">
+        <table class="risk-matrix-table">
+          <thead>
+            <tr>
+              <th class="matrix-corner">L \ I</th>
+              <th>1<br><small>ต่ำมาก</small></th>
+              <th>2<br><small>ต่ำ</small></th>
+              <th>3<br><small>กลาง</small></th>
+              <th>4<br><small>สูง</small></th>
+              <th>5<br><small>วิกฤต</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>5 <small>แน่นอน</small></th>
+              <td class="lvl-med">5</td>
+              <td class="lvl-high">10</td>
+              <td class="lvl-crit">15</td>
+              <td class="lvl-crit">20</td>
+              <td class="lvl-crit">25</td>
+            </tr>
+            <tr>
+              <th>4 <small>บ่อย</small></th>
+              <td class="lvl-low">4</td>
+              <td class="lvl-high">8</td>
+              <td class="lvl-high">12</td>
+              <td class="lvl-crit">16</td>
+              <td class="lvl-crit">20</td>
+            </tr>
+            <tr>
+              <th>3 <small>ปานกลาง</small></th>
+              <td class="lvl-low">3</td>
+              <td class="lvl-med">6</td>
+              <td class="lvl-high">9</td>
+              <td class="lvl-high">12</td>
+              <td class="lvl-crit">15</td>
+            </tr>
+            <tr>
+              <th>2 <small>ยาก</small></th>
+              <td class="lvl-low">2</td>
+              <td class="lvl-low">4</td>
+              <td class="lvl-med">6</td>
+              <td class="lvl-high">8</td>
+              <td class="lvl-high">10</td>
+            </tr>
+            <tr>
+              <th>1 <small>ยากมาก</small></th>
+              <td class="lvl-low">1</td>
+              <td class="lvl-low">2</td>
+              <td class="lvl-low">3</td>
+              <td class="lvl-low">4</td>
+              <td class="lvl-med">5</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="matrix-x-axis">ระดับผลกระทบ (Impact) ➔</div>
+      </div>
+    </div>
+    <div class="matrix-legend-box">
+      <div class="legend-item crit">
+        <span class="leg-badge">15–25</span>
+        <div class="leg-text"><strong>🔴 วิกฤต (Critical):</strong> ยอมรับไม่ได้โดยเด็ดขาด รายงานบอร์ดใน 24 ชม. แก้ไขใน 15–30 วัน</div>
+      </div>
+      <div class="legend-item high">
+        <span class="leg-badge">8–12</span>
+        <div class="leg-text"><strong>🟠 สูง (High):</strong> ยอมรับไม่ได้ ต้องจัดสรรงบประมาณเร่งด่วน แก้ไขใน 30–60 วัน</div>
+      </div>
+      <div class="legend-item med">
+        <span class="leg-badge">5–6</span>
+        <div class="leg-text"><strong>🟡 ปานกลาง (Medium):</strong> ยอมรับได้แบบมีเงื่อนไข เฝ้าระวัง ทบทวนทุกไตรมาส (60–90 วัน)</div>
+      </div>
+      <div class="legend-item low">
+        <span class="leg-badge">1–4</span>
+        <div class="leg-text"><strong>🟢 ต่ำ (Low):</strong> ยอมรับได้ บริหารจัดการด้วยกระบวนการปกติ ทบทวนปีละ 1 ครั้ง</div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 5.5:</strong> ตารางเมทริกซ์ความเสี่ยง 5&times;5 และข้อกำหนดในการปฏิบัติการตามช่วงคะแนนความรุนแรง
+  </div>
+</div>
+<h4 class="content-heading" id="sec-เกณฑ์การแบ่งระดับความเสี่ยงและการปฏิบัติการ-risk-action-levels-253">เกณฑ์การแบ่งระดับความเสี่ยงและการปฏิบัติการ (Risk Action Levels):</h4>
+<div class="table-wrapper"><table class="data-table">
+<thead><tr><th>ช่วงคะแนน</th><th>ระดับความเสี่ยง (Risk Level)</th><th>สัญลักษณ์สี</th><th>ข้อกำหนดในการปฏิบัติการและกรอบเวลาในการควบคุม</th></tr></thead><tbody>
+<tr><td><strong>15 – 25</strong></td><td><strong>วิกฤต / สูงมาก (Extreme / Critical)</strong></td><td>🔴 แดง</td><td><strong>ยอมรับไม่ได้โดยเด็ดขาด (Unacceptable):</strong> ต้องหยุดการทำงานหรือดำเนินมาตรการควบคุมทันที รายงานต่อ Steering Committee และอธิการบดีทราบภายใน 24 ชั่วโมง และต้องมีแผนลดความเสี่ยงเสร็จสิ้นภายใน 15–30 วัน</td></tr>
+<tr><td><strong>8 – 12</strong></td><td><strong>สูง (High)</strong></td><td>🟠 ส้ม</td><td><strong>ไม่สามารถยอมรับได้ (Unacceptable):</strong> ต้องจัดสรรงบประมาณและทรัพยากรเร่งด่วนเพื่อติดตั้งมาตรการควบคุมให้อยู่ในความดูแลของ CISO กำหนดกรอบเวลาแก้ไขภายใน 30–60 วัน</td></tr>
+<tr><td><strong>5 – 6</strong></td><td><strong>ปานกลาง (Medium)</strong></td><td>🟡 เหลือง</td><td><strong>ยอมรับได้แบบมีเงื่อนไข (Conditionally Acceptable):</strong> อนุญาตให้ดำเนินงานต่อได้ภายใต้มาตรการเฝ้าระวัง มีแผนปรับปรุงในรอบงบประมาณปกติ และทบทวนสถานะทุกไตรมาส (กรอบเวลา: 60–90 วัน)</td></tr>
+<tr><td><strong>1 – 4</strong></td><td><strong>ต่ำ (Low)</strong></td><td>🟢 เขียว</td><td><strong>ยอมรับได้ (Acceptable):</strong> จัดการด้วยขั้นตอนการทำงานปกติ (Routine Operations) ไม่ต้องลงทุนเพิ่ม ทบทวนสถานะปีละ 1 ครั้ง</td></tr>
+</tbody></table></div>
+<hr class="content-divider">
+<h3 class="content-heading" id="sec-1-7-วงจร-4-ลำดับขั้นของความเสี่ยง-the-4-stages-of-risk-lifecycle-264">1.7 วงจร 4 ลำดับขั้นของความเสี่ยง (The 4 Stages of Risk Lifecycle)</h3>
+<p class="content-para">ความเสี่ยงไม่ใช่สิ่งที่มีค่าคงที่ แต่มีการเปลี่ยนแปลงตลอดเวลาตามวงจรชีวิตของระบบ Lead Implementer และ Lead Auditor ต้องแยกแยะ <strong>4 ลำดับขั้นของความเสี่ยง</strong> ดังแผนผังต่อไปนี้:</p>
+
+<div class="figure-box" id="figure-5-6">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 5.6</div>
+    <div class="figure-title">The 4 Stages of Risk Lifecycle (วงจร 4 ลำดับขั้นของความเสี่ยง: Inherent, Current, Target, Residual)</div>
+  </div>
+  <div class="lifecycle-stages-grid">
+    <div class="stage-card s1">
+      <div class="st-num">ขั้นที่ 1</div>
+      <div class="st-title">Inherent Risk</div>
+      <div class="st-sub">ความเสี่ยงดิบแต่กำเนิด</div>
+      <div class="st-badge red">คะแนน 20–25 (วิกฤต)</div>
+      <div class="st-desc">ประเมินโดยสมมติว่าไม่มีระบบป้องกันใด ๆ เลย เพื่อให้เห็นขนาดภัยคุกคามที่แท้จริง</div>
+    </div>
+    <div class="stage-arrow">➔</div>
+    <div class="stage-card s2">
+      <div class="st-num">ขั้นที่ 2</div>
+      <div class="st-title">Current Risk</div>
+      <div class="st-sub">ความเสี่ยงปัจจุบัน</div>
+      <div class="st-badge orange">คะแนน 12–16 (สูง)</div>
+      <div class="st-desc">ประเมินภายใต้มาตรการควบคุมเดิมที่มีอยู่ในปัจจุบัน (ยังเกินเกณฑ์ที่บอร์ดยอมรับได้)</div>
+    </div>
+    <div class="stage-arrow">➔</div>
+    <div class="stage-card s3">
+      <div class="st-num">ขั้นที่ 3</div>
+      <div class="st-title">Target Risk</div>
+      <div class="st-sub">ความเสี่ยงเป้าหมาย</div>
+      <div class="st-badge yellow">คะแนน &le; 6 (ปานกลาง)</div>
+      <div class="st-desc">เพดานความเสี่ยงที่คณะกรรมการ (Steering Committee) กำหนดไว้เป็นเป้าหมายใน RTP</div>
+    </div>
+    <div class="stage-arrow">➔</div>
+    <div class="stage-card s4">
+      <div class="st-num">ขั้นที่ 4</div>
+      <div class="st-title">Residual Risk</div>
+      <div class="st-sub">ความเสี่ยงคงเหลือจริง</div>
+      <div class="st-badge green">คะแนน 3–4 (ต่ำ ผ่านเกณฑ์)</div>
+      <div class="st-desc">ความเสี่ยงที่หลงเหลืออยู่หลังติดตั้งมาตรการควบคุมใหม่ตามแผน RTP เสร็จสมบูรณ์</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 5.6:</strong> วิวัฒนาการและการประเมินความเสี่ยงทั้ง 4 ลำดับขั้นในวงจรชีวิตการบริหารความเสี่ยงสารสนเทศ
+  </div>
+</div>
+<h4 class="content-heading" id="sec-ตัวอย่างการวิเคราะห์ผ่าน-4-ขั้นตอน-288">ตัวอย่างการวิเคราะห์ผ่าน 4 ขั้นตอน:</h4>
+<ul class="content-list">
+  <li><strong>ขั้นที่ 1: Inherent Risk (ความเสี่ยงดิบ):</strong> ฐานข้อมูลทะเบียนนักศึกษาเปิดให้เข้าถึงผ่านอินเทอร์เน็ต หากสมมติว่าไม่มีไฟร์วอลล์ ไม่มีรหัสผ่าน และไม่มีการเข้ารหัสเลย <code class="math-tex">\rightarrow Likelihood = 5, Impact = 5 \rightarrow Risk = 25</code> (วิกฤตสูงสุด)</li>
+  <li><strong>ขั้นที่ 2: Current Risk (ความเสี่ยงปัจจุบัน):</strong> ในความเป็นจริง มหาวิทยาลัยมีระบบล็อกอินด้วยรหัสผ่านและมีไฟร์วอลล์เดิม แต่ยังไม่มี MFA และเซิร์ฟเวอร์ยังไม่อัปเดต Patch <code class="math-tex">\rightarrow Likelihood = 4, Impact = 4 \rightarrow Risk = 16</code> (ยังคงเป็นระดับวิกฤตและสูงกว่าเกณฑ์ที่ยอมรับได้)</li>
+  <li><strong>ขั้นที่ 3: Target Risk (ความเสี่ยงเป้าหมาย):</strong> คณะกรรมการกำกับดูแล (Steering Committee) มีมติว่าความเสี่ยงของระบบทะเบียนต้องลดลงมาอยู่ที่ระดับ <strong>"ปานกลางถึงต่ำ" (คะแนนต้องไม่เกิน 6)</strong></li>
+  <li><strong>ขั้นที่ 4: Residual Risk (ความเสี่ยงคงเหลือ):</strong> หลังจากฝ่ายไอทีดำเนินการตามแผน Risk Treatment Plan โดยการบังคับใช้ MFA, ทำ Network Segmentation, และอัปเดต Patch ทั้งหมด ทำให้โอกาสเกิดลดลงเหลือ 1 และผลกระทบถูกจำกัดวงเหลือ 4 <code class="math-tex">\rightarrow Residual Risk = 1 \times 4 = 4</code> (ระดับต่ำ บรรลุตามเป้าหมาย Target Risk สำเร็จ)</li>
+</ul>
+<hr class="content-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-2-ยุทธศาสตร์การบำบัดความเสี่ยงและมุมมองผู้ตรวจ-risk-treatment-audit-296">ส่วนที่ 2: ยุทธศาสตร์การบำบัดความเสี่ยงและมุมมองผู้ตรวจ (Risk Treatment & Audit)</h2>
+<h3 class="content-heading" id="sec-2-1-การขีดเส้นแบ่งความเสี่ยง-risk-appetite-และ-risk-tolerance-298">2.1 การขีดเส้นแบ่งความเสี่ยง: Risk Appetite และ Risk Tolerance</h3>
+<p class="content-para">องค์กรไม่สามารถปฏิเสธความเสี่ยงได้ทั้งหมด หากต้องการให้บริการดิจิทัลแก่นักศึกษา องค์กรจำเป็นต้องเปิดรับความเสี่ยงบางประการ ผู้บริหารระดับสูงจึงต้องเป็นผู้กำหนดขอบเขตความเสี่ยงที่ยอมรับได้:</p>
+
+<div class="figure-box" id="figure-5-7">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 5.7</div>
+    <div class="figure-title">Risk Appetite vs Risk Tolerance Governance Thresholds (เส้นแบ่งระดับความเสี่ยงที่ยอมรับได้)</div>
+  </div>
+  <div class="threshold-diagram">
+    <div class="zone-bar crit-zone">
+      <div class="zone-name">🔴 EXTREME ZONE (คะแนน 15 – 25)</div>
+      <div class="zone-rule">ห้ามยอมรับโดยเด็ดขาด ต้องระงับบริการหรือดำเนินมาตรการแก้ไขทันที</div>
+    </div>
+    <div class="line-marker tolerance-marker">
+      <span class="marker-tag">▲ RISK TOLERANCE THRESHOLD</span>
+      <span class="marker-desc">เพดานสูงสุดที่บอร์ดอนุญาตให้เบี่ยงเบนได้ชั่วคราวในระยะสั้น (ไม่เกิน 30 วัน)</span>
+    </div>
+    <div class="zone-bar high-zone">
+      <div class="zone-name">🟠 HIGH ZONE (คะแนน 8 – 12)</div>
+      <div class="zone-rule">ไม่สามารถยอมรับได้ ต้องจัดทำแผนบำบัดความเสี่ยงเร่งด่วน (RTP)</div>
+    </div>
+    <div class="line-marker appetite-marker">
+      <span class="marker-tag">▲ RISK APPETITE THRESHOLD (คะแนน &le; 6)</span>
+      <span class="marker-desc">ระดับความเสี่ยงที่องค์กร "ยินดีที่จะเปิดรับ" เพื่อให้บรรลุพันธกิจหลัก</span>
+    </div>
+    <div class="zone-bar med-zone">
+      <div class="zone-name">🟡 MEDIUM ZONE (คะแนน 5 – 6)</div>
+      <div class="zone-rule">ยอมรับได้แบบมีเงื่อนไขและเฝ้าระวัง ทบทวนทุกไตรมาส</div>
+    </div>
+    <div class="zone-bar low-zone">
+      <div class="zone-name">🟢 LOW ZONE (คะแนน 1 – 4)</div>
+      <div class="zone-rule">ยอมรับได้ตามปกติ ดำเนินการด้วยขั้นตอนการทำงานประจำวัน</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 5.7:</strong> โครงสร้างเส้นแบ่งระดับความเสี่ยงที่ยอมรับได้ (Risk Appetite) และความคลาดเคลื่อนที่ทนรับได้ (Risk Tolerance) ตามหลักธรรมาภิบาล
+  </div>
+</div>
+<ul class="content-list">
+  <li><strong>Risk Appetite (ระดับความเสี่ยงที่ยอมรับได้):</strong> ปริมาณและระดับความเสี่ยงในภาพรวมที่องค์กร <strong>"ยินดีที่จะเปิดรับ"</strong> เพื่อให้บรรลุเป้าหมายทางยุทธศาสตร์ ตัวอย่างข้อความแถลงนโยบาย (Risk Appetite Statement):  </li>
+<p class="content-para">> <em>"มหาวิทยาลัยดิจิทัลสมมติ มีความยินยอมรับความเสี่ยงด้านความพร้อมใช้งาน (Availability) ของระบบเครือข่ายไร้สายในพื้นที่ส่วนกลางได้ที่ระดับปานกลาง แต่มี <strong>Zero Tolerance (ไม่ยินยอมรับความเสี่ยงใด ๆ เกินระดับต่ำ)</strong> ต่อความเสี่ยงที่นำไปสู่การรั่วไหลของข้อมูลส่วนบุคคลตาม PDPA หรือการทุจริตในระบบการเงิน"</em></p>
+  <li><strong>Risk Tolerance (ความคลาดเคลื่อนที่ทนรับได้):</strong> ขีดจำกัดสูงสุดของการเบี่ยงเบนจาก Risk Appetite ที่องค์กรยังพอจะทนรับได้ในระยะสั้นก่อนที่จะเกิดความเสียหายรุนแรง</li>
+</ul>
+<hr class="content-divider">
+<h3 class="content-heading" id="sec-2-2-ยุทธศาสตร์การบำบัดความเสี่ยง-4-ประการ-the-4-ts-of-risk-treatment-321">2.2 ยุทธศาสตร์การบำบัดความเสี่ยง 4 ประการ (The 4 Ts of Risk Treatment)</h3>
+
+<div class="interactive-widget-card" id="widget-5-3">
+  <div class="widget-badge">WIDGET 5.3: STRATEGY ENGINE</div>
+  <h4 class="widget-title">เครื่องมือจำลองการตัดสินใจยุทธศาสตร์ 4 Ts (The 4 Ts Strategy Engine)</h4>
+  <p class="widget-subtitle">พิจารณาสถานการณ์ท้าทายทั้ง 4 ด้านล่าง แล้วเลือกยุทธศาสตร์ที่ถูกต้องตามหลัก ISO 27005 และข้อกฎหมาย</p>
+
+  <div class="strategy-selector-tabs">
+    <button type="button" class="btn-strat-tab active" onclick="selectStratCase(1)">สถานการณ์ที่ 1: เซิร์ฟเวอร์เก่า EOL</button>
+    <button type="button" class="btn-strat-tab" onclick="selectStratCase(2)">สถานการณ์ที่ 2: อาจารย์ขอเปิด Port 3306</button>
+    <button type="button" class="btn-strat-tab" onclick="selectStratCase(3)">สถานการณ์ที่ 3: ระบบอีเมลสแปม & DDoS</button>
+    <button type="button" class="btn-strat-tab" onclick="selectStratCase(4)">สถานการณ์ที่ 4: Vendor AnyDesk เข้าระบบการเงิน</button>
+  </div>
+
+  <div class="strategy-case-box" id="strat-case-content">
+    <!-- Populated by JS -->
+  </div>
+</div>
+<p class="content-para">เมื่อประเมินพบว่า Current Risk สูงกว่า Risk Appetite องค์กรต้องเลือกใช้ยุทธศาสตร์การจัดการความเสี่ยงตามหลักสากล 4 Ts:</p>
+
+<div class="figure-box" id="figure-5-8">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 5.8</div>
+    <div class="figure-title">The 4 Ts Risk Treatment Framework (ยุทธศาสตร์การบำบัดความเสี่ยง 4 ประการ)</div>
+  </div>
+  <div class="four-t-grid">
+    <div class="t-card treat">
+      <div class="t-icon">🛠️</div>
+      <div class="t-title">1. Treat / Reduce (ลดความเสี่ยง)</div>
+      <div class="t-action"><strong>วิธีปฏิบัติ:</strong> ติดตั้งมาตรการทางเทคนิค นโยบาย ฝึกอบรม MFA, EDR, Network Segmentation</div>
+      <div class="t-context">ใช้บ่อยที่สุดกว่า 80% ของความเสี่ยงทั้งหมด รวมถึงการทำ Compensating Controls</div>
+    </div>
+    <div class="t-card terminate">
+      <div class="t-icon">🚫</div>
+      <div class="t-title">2. Terminate / Avoid (หลีกเลี่ยง)</div>
+      <div class="t-action"><strong>วิธีปฏิบัติ:</strong> ยกเลิกกิจกรรมเสี่ยง ปิดพอร์ต 3306 ห้ามเปิดตรงออกเน็ต, ปลดระวางระบบ EOL</div>
+      <div class="t-context">ใช้เมื่อความเสี่ยงสูงเกินไปและไม่คุ้มค่าที่จะดำเนินกิจกรรมนั้นต่อไป</div>
+    </div>
+    <div class="t-card transfer">
+      <div class="t-icon">🤝</div>
+      <div class="t-title">3. Transfer / Share (โอนย้าย)</div>
+      <div class="t-action"><strong>วิธีปฏิบัติ:</strong> ทำประกันภัยไซเบอร์, ทำสัญญา Cloud SLA 99.9%, จ้าง MSSP ดูแล 24/7</div>
+      <div class="t-context">โอนย้ายได้เฉพาะ "ภาระทางการเงิน" ไม่สามารถโอนย้าย "ความรับผิดชอบตามกฎหมาย (Accountability)" ได้</div>
+    </div>
+    <div class="t-card tolerate">
+      <div class="t-icon">⚖️</div>
+      <div class="t-title">4. Tolerate / Accept (ยอมรับ)</div>
+      <div class="t-action"><strong>วิธีปฏิบัติ:</strong> คงสภาพความเสี่ยงไว้เมื่อคะแนนต่ำ หรือต้นทุนแก้ไขแพงกว่าความเสียหาย</div>
+      <div class="t-context">ต้องมี Formal Sign-off จากบอร์ด/Risk Owner, มี Sunset Clause และห้ามขัดต่อกฎหมายเด็ดขาด</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 5.8:</strong> ยุทธศาสตร์สากล 4 Ts ในการคัดเลือกแนวทางบำบัดความเสี่ยงสารสนเทศตามมาตรฐาน ISO/IEC 27005
+  </div>
+</div>
+<h4 class="content-heading" id="sec-1-ลดความเสี่ยง-treat-reduce-339">1. ลดความเสี่ยง (Treat / Reduce):</h4>
+<ul class="content-list">
+  <li>เป็นยุทธศาสตร์หลักที่ใช้บ่อยที่สุด (กว่า 80% ของความเสี่ยง) โดยการนำมาตรการควบคุมความปลอดภัย (Controls) จากมาตรฐานสากล เช่น <strong>ISO/IEC 27002:2022</strong> หรือ <strong>NIST SP 800-53 Rev. 5</strong> มาติดตั้ง เพื่อลดโอกาสเกิด (Likelihood) หรือลดผลกระทบ (Impact)</li>
+  <li><em>การใช้มาตรการควบคุมชดเชย (Compensating Controls):</em> ในกรณีที่ไม่สามารถแก้ปัญหาที่ต้นตอได้ (เช่น มีระบบเก่าที่อัปเดตซอฟต์แวร์ไม่ได้) Lead Implementer ต้องออกแบบมาตรการชดเชย เช่น การนำระบบนั้นไปไว้ใน Virtual LAN ที่ตัดขาดจากอินเทอร์เน็ต (Network Isolation) และเปิดให้เข้าถึงผ่านเครื่อง Jump Host ที่มี MFA เท่านั้น</li>
+</ul>
+<h4 class="content-heading" id="sec-2-หลีกเลี่ยงความเสี่ยง-terminate-avoid-343">2. หลีกเลี่ยงความเสี่ยง (Terminate / Avoid):</h4>
+<ul class="content-list">
+  <li>การตัดสินใจ <strong>ยกเลิกโครงการ กิจกรรม หรือกระบวนการที่เป็นต้นกำเนิดของความเสี่ยงนั้นอย่างสิ้นเชิง</strong></li>
+  <li><em>ตัวอย่าง:</em> อาจารย์ท่านหนึ่งเสนอให้เปิดพอร์ตฐานข้อมูล MySQL (Port 3306) ออกสู่อินเทอร์เน็ตโดยตรงเพื่อให้นักศึกษาทำงานวิจัยจากที่บ้านได้ <code class="math-tex">\rightarrow</code> Lead Implementer พิจารณาแล้วพบว่ามีความเสี่ยงสูงมากที่จะถูก Brute Force จึงเลือกยุทธศาสตร์ <strong>Avoid</strong> โดยการปฏิเสธไม่เปิดพอร์ต 3306 ออกสู่อินเทอร์เน็ต แต่ให้นักศึกษาเชื่อมต่อผ่าน VPN ของมหาวิทยาลัยแทน</li>
+</ul>
+<h4 class="content-heading" id="sec-3-โอนย้ายหรือแบ่งปันความเสี่ยง-transfer-share-347">3. โอนย้ายหรือแบ่งปันความเสี่ยง (Transfer / Share):</h4>
+<ul class="content-list">
+  <li>การส่งต่อภาระผลกระทบทางการเงินไปยังบุคคลภายนอก ผ่าน 2 กลไกหลัก:</li>
+  <li><strong>การทำประกันภัยไซเบอร์ (Cyber Insurance):</strong> เพื่อชดเชยค่าเสียหาย ค่าปรับทางกฎหมาย และค่าใช้จ่ายในการกู้คืนระบบ</li>
+  <li><strong>การทำสัญญากับผู้ให้บริการภายนอก (Third-Party Cloud SLA):</strong> การย้ายระบบอีเมลไปใช้งานบน Microsoft 365 หรือ Google Workspace โดยมีสัญญา SLA 99.9% พร้อมบทปรับทางการเงินหากระบบล่ม</li>
+  <li>> <strong>ข้อควรระวังทางกฎหมายและวิชาชีพ:</strong> การโอนย้ายความเสี่ยงเป็นการโอนย้าย <strong>"ภาระทางการเงิน (Financial Liability)"</strong> เท่านั้น <strong>องค์กรไม่สามารถโอนย้าย "ความรับผิดชอบตามกฎหมาย (Accountability)" และ "ชื่อเสียง" ไปให้ผู้อื่นได้</strong> หากข้อมูลนักศึกษารั่วไหล มหาวิทยาลัยยังคงเป็นผู้ควบคุมข้อมูลส่วนบุคคล (Data Controller) ที่ต้องรับผิดตาม PDPA และ พ.ร.บ.ไซเบอร์ อยู่ดี</li>
+</ul>
+<h4 class="content-heading" id="sec-4-ยอมรับความเสี่ยง-tolerate-accept-353">4. ยอมรับความเสี่ยง (Tolerate / Accept):</h4>
+<ul class="content-list">
+  <li>การตัดสินใจที่จะคงสภาพความเสี่ยงนั้นไว้โดยไม่ดำเนินมาตรการเพิ่มเติม มักเกิดขึ้นใน 2 สภาวการณ์:</li>
+  <li>ความเสี่ยงนั้นมีคะแนนต่ำกว่าเกณฑ์ Risk Appetite อยู่แล้ว (Low Risk)</li>
+  <li>ต้นทุนในการแก้ไขสูงกว่ามูลค่าความเสียหายที่อาจเกิดขึ้นอย่างมีนัยสำคัญ (Cost-Benefit Analysis ไม่คุ้มค่า)</li>
+  <li><strong>กฎเหล็กของการยอมรับความเสี่ยง (Rules of Risk Acceptance):</strong></li>
+  <li><strong>ต้องมีผู้มีอำนาจลงนามอนุมัติ (Formal Sign-off):</strong> ห้ามผู้ดูแลระบบไอทียอมรับความเสี่ยงเองโดยพลการ ผู้ที่ลงนามต้องเป็น <strong>Risk Owner ในระดับผู้บริหารสายงาน หรือ Steering Committee</strong> เท่านั้น</li>
+  <li><strong>ต้องมีอายุจำกัด (Sunset Clause):</strong> การยอมรับความเสี่ยงต้องมีกำหนดเวลาหมดอายุ (เช่น อนุมัติให้ยอมรับความเสี่ยงได้ไม่เกิน 6 เดือน) เพื่อบังคับให้มีการทบทวนซ้ำ</li>
+  <li><strong>ห้ามยอมรับความเสี่ยงที่ขัดต่อกฎหมายเด็ดขาด:</strong> องค์กรไม่สามารถอนุมัติยอมรับความเสี่ยงว่าจะ "ไม่เก็บ Log ตาม พ.ร.บ.คอมพิวเตอร์" หรือ "ไม่แจ้งเหตุข้อมูลรั่วไหลตาม PDPA" ได้ เพราะถือเป็นการกระทำที่ผิดกฎหมายโดยเจตนา</li>
+</ul>
+<hr class="content-divider">
+<h3 class="content-heading" id="sec-2-3-การจัดทำแผนจัดการความเสี่ยง-risk-treatment-plan-rtp-364">2.3 การจัดทำแผนจัดการความเสี่ยง (Risk Treatment Plan: RTP)</h3>
+<p class="content-para">ตามข้อกำหนด ISO/IEC 27001 ข้อ 6.1.3 องค์กรต้องจัดทำเอกสาร <strong>Risk Treatment Plan (RTP)</strong> ซึ่งประกอบด้วย 6 เสาหลักสำคัญ:</p>
+
+<div class="figure-box" id="figure-5-9">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 5.9</div>
+    <div class="figure-title">The 6 Pillars of Risk Treatment Plan (เสาหลักของแผนจัดการความเสี่ยง RTP)</div>
+  </div>
+  <div class="rtp-pillars-grid">
+    <div class="pillar-card"><div class="p-num">1</div><div class="p-title">มาตรการควบคุมที่เลือกใช้</div><div class="p-desc">ระบุเทคโนโลยี นโยบาย และขั้นตอนปฏิบัติที่เลือกจาก ISO 27002 หรือ NIST CSF</div></div>
+    <div class="pillar-card"><div class="p-num">2</div><div class="p-title">ผู้รับผิดชอบหลัก</div><div class="p-desc">ระบุ Risk Owner และ Control Owner ที่มีชื่อ-ตำแหน่งชัดเจน (ห้ามระบุเป็นชื่อแผนก)</div></div>
+    <div class="pillar-card"><div class="p-num">3</div><div class="p-title">งบประมาณและทรัพยากร</div><div class="p-desc">ยอดเงินงบประมาณที่ได้รับอนุมัติ และจำนวนคนทำงานที่ต้องใช้จริง</div></div>
+    <div class="pillar-card"><div class="p-num">4</div><div class="p-title">กรอบเวลาส่งมอบ</div><div class="p-desc">วันเริ่มต้น กำหนดการตรวจรับ และ Milestones แต่ละระยะ</div></div>
+    <div class="pillar-card"><div class="p-num">5</div><div class="p-title">ตัวชี้วัดความสำเร็จ (KPI/KRI)</div><div class="p-desc">เป้าหมายเชิงตัวเลข เช่น 100% บัญชี Admin ต้องเปิดใช้ MFA ภายใน 30 วัน</div></div>
+    <div class="pillar-card"><div class="p-num">6</div><div class="p-title">หลักฐานเพื่อรับการตรวจ</div><div class="p-desc">Artifacts ที่ผู้ตรวจจะขอดู: ภาพถ่ายหน้าจอคอนฟิก, รายงาน VA Scan, สัญญาจัดซื้อ</div></div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 5.9:</strong> เสาหลัก 6 ประการในเอกสารแผนปฏิบัติการจัดการความเสี่ยง (RTP) ตามข้อกำหนด ISO/IEC 27001 ข้อ 6.1.3
+  </div>
+</div>
+<hr class="content-divider">
+<h3 class="content-heading" id="sec-2-4-มุมมองและการตรวจสอบของ-lead-auditor-auditing-the-risk-assessment-process-383">2.4 มุมมองและการตรวจสอบของ Lead Auditor (Auditing the Risk Assessment Process)</h3>
+<p class="content-para">เมื่อ Lead Auditor เข้าตรวจประเมินระบบ สิ่งที่ผู้ตรวจสอบสนใจไม่ใช่การเห็นรายงานที่ "คะแนนความเสี่ยงต่ำทุกข้อ" แต่คือการพิสูจน์ว่า <strong>กระบวนการประเมินความเสี่ยงมีความเป็นภววิสัย สมเหตุสมผล และสะท้อนความเสี่ยงที่แท้จริงหรือไม่</strong></p>
+<h4 class="content-heading" id="sec-2-4-1-กระดาษทำการตรวจสอบกระบวนการประเมินความเสี่ยง-audit-working-paper-risk-assessment-audit-387">2.4.1 กระดาษทำการตรวจสอบกระบวนการประเมินความเสี่ยง (Audit Working Paper - Risk Assessment Audit):</h4>
+
+<div class="figure-box" id="figure-5-10">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 5.10</div>
+    <div class="figure-title">Lead Auditor Working Paper for Risk Process (กระดาษทำการตรวจสอบกระบวนการประเมินความเสี่ยง)</div>
+  </div>
+  <div class="working-paper-card">
+    <div class="wp-meta-grid">
+      <div><strong>Audit Client:</strong> มหาวิทยาลัยดิจิทัลสมมติ</div>
+      <div><strong>Audit Area:</strong> Cyber Risk Management Process</div>
+      <div><strong>Criteria:</strong> ISO/IEC 27001:2022 Cl. 6.1 / ประกาศ กกม. 2564</div>
+      <div><strong>Auditor:</strong> Lead Auditor ประจำทีมตรวจสอบ</div>
+    </div>
+    <div class="wp-body">
+      <div class="wp-step">
+        <div class="wp-step-num">1</div>
+        <div class="wp-step-content">
+          <strong>Consistency Test (ตรวจความสม่ำเสมอของเกณฑ์):</strong> มีเกณฑ์ประเมินความเสี่ยงเป็นลายลักษณ์อักษรที่ผ่านการอนุมัติหรือไม่ &rarr; <em>ผ่าน: มีเอกสาร Risk Methodology v2.0</em>
+        </div>
+      </div>
+      <div class="wp-step">
+        <div class="wp-step-num">2</div>
+        <div class="wp-step-content">
+          <strong>Completeness Test (ตรวจความครบถ้วน):</strong> นำรายงานสแกนช่องโหว่ (VA Report) มาสอบยันกับ Risk Register &rarr; <em>พบข้อค้นพบ: พบช่องโหว่ Critical (Log4j) แต่ไม่ได้บันทึกลงทะเบียนความเสี่ยง</em>
+        </div>
+      </div>
+      <div class="wp-step">
+        <div class="wp-step-num">3</div>
+        <div class="wp-step-content">
+          <strong>Anti-Gaming Test (ตรวจการกดคะแนนเลี่ยงงาน):</strong> ตรวจสอบว่ามีการจงใจลดคะแนน Impact/Likelihood เพื่อเลี่ยงการทำ RTP หรือไม่ &rarr; <em>พบความพยายามประเมินคะแนนเซิร์ฟเวอร์การเงินต่ำกว่าข้อเท็จจริง</em>
+        </div>
+      </div>
+      <div class="wp-step">
+        <div class="wp-step-num">4</div>
+        <div class="wp-step-content">
+          <strong>Risk Acceptance Governance Test (ตรวจการยอมรับความเสี่ยง):</strong> ตรวจสอบรายการ "Accept" ว่ามีลายมือชื่ออนุมัติจาก Steering Committee และมี Sunset Clause หรือไม่ &rarr; <em>ออกใบข้อค้นพบ Major NCR รหัส NCR-2024-RISK-01</em>
+        </div>
+      </div>
+      <div class="wp-step">
+        <div class="wp-step-num">5</div>
+        <div class="wp-step-content">
+          <strong>RTP Execution Test (ตรวจความคืบหน้าจริง):</strong> ตรวจสอบว่ามาตรการใน RTP ติดตั้งเสร็จตามกรอบเวลาจริงหรือไม่ &rarr; <em>ตรวจสอบหลักฐาน Log และ Purchase Order</em>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 5.10:</strong> โครงสร้างกระดาษทำการตรวจสอบ (Audit Working Paper) 5 ขั้นตอนหลักในการตรวจกระบวนการประเมินความเสี่ยง
+  </div>
+</div>
+<h4 class="content-heading" id="sec-2-4-2-ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง-sample-non-conformity-report-ncr-423">2.4.2 ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง (Sample Non-Conformity Report: NCR):</h4>
+<div class="callout danger"><div class="callout-title">⚠️ ใบรายงานข้อบกพร่องการตรวจประเมินจริง (Sample NCR Report)</div><p><strong>ใบรายงานข้อบกพร่องการตรวจประเมิน (Non-Conformity Report: NCR)</strong>
+
+<strong>รหัสข้อค้นพบ:</strong> NCR-2024-RISK-01  
+<strong>ระดับความรุนแรง:</strong> <strong>Major Non-conformity (ข้อบกพร่องขั้นรุนแรง)</strong>  
+<strong>ข้อกำหนดอ้างอิง:</strong> ISO/IEC 27001:2022 ข้อกำหนด 6.1.3 (Information security risk treatment) และ ประกาศ กกม. 2564 หมวด 3  
+
+<strong>1. สภาพข้อเท็จจริงที่ตรวจพบ (Condition):</strong>  
+จากการสุ่มตรวจทะเบียนความเสี่ยง (Risk Register) รหัส RSK-05 (ความเสี่ยงการเข้าถึงระบบการเงินของ Vendor จากภายนอก) พบว่ามีการบันทึกสถานะการจัดการความเสี่ยงเป็น <strong>"Accept Risk (ยอมรับความเสี่ยง)"</strong> โดยให้คงการเชื่อมต่อผ่านซอฟต์แวร์ AnyDesk โดยไม่มี MFA ต่อไป แต่จากการตรวจสอบเอกสารหลักฐาน <strong>ไม่พบแบบฟอร์มการขออนุมัติยอมรับความเสี่ยงที่ลงนามโดยผู้อำนวยการกองคลัง (Risk Owner) หรือคณะกรรมการ Steering Committee</strong> มีเพียงบันทึกข้อความภายในของหัวหน้างานระบบสารสนเทศเท่านั้น  
+
+<strong>2. เกณฑ์การตรวจที่นำมาเปรียบเทียบ (Criteria):</strong>  
+คู่มือระเบียบวิธีประเมินความเสี่ยงของมหาวิทยาลัยข้อ 4.3 ระบุว่า <em>"ความเสี่ยงระดับสูง (High) และวิกฤต (Extreme) จะได้รับการยอมรับได้ก็ต่อเมื่อได้รับความเห็นชอบเป็นลายลักษณ์อักษรจากคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ (Steering Committee) เท่านั้น"</em>  
+
+<strong>3. สาเหตุที่แท้จริง (Root Cause):</strong>  
+ขาดกลไกการสอบทานด้านธรรมาภิบาล (Governance Check) ฝ่ายไอทีดำเนินการตัดสินใจฝ่ายเดียวโดยไม่ส่งเรื่องเข้าสู่วาระการประชุมของคณะกรรมการ  
+
+<strong>4. ผลกระทบ (Effect):</strong>  
+มหาวิทยาลัยเปิดรับความเสี่ยงวิกฤตต่อระบบการเงินโดยที่ผู้บริหารระดับสูงไม่รับทราบ ซึ่งอาจนำไปสู่ความเสียหายทางการเงินและบทกำหนดโทษต่อผู้บริหารตาม พ.ร.บ.ไซเบอร์ 2562 มาตรา 77  
+
+<strong>5. ข้อเสนอแนะในการแก้ไข (Recommendation):</strong>  
+ให้นำรายการ RSK-05 เสนอต่อคณะกรรมการ Steering Committee เพื่อพิจารณาอนุมัติหรือสั่งการจัดทำมาตรการชดเชยเร่งด่วน พร้อมทั้งจัดทำทะเบียนบันทึกการยอมรับความเสี่ยง (Risk Acceptance Log) รวมศูนย์</p></div>
+<hr class="content-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-3-กรณีศึกษาเชิงประยุกต์-ทะเบียนความเสี่ยง-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-448">ส่วนที่ 3: กรณีศึกษาเชิงประยุกต์ ทะเบียนความเสี่ยง "มหาวิทยาลัยดิจิทัลสมมติ" (Core Case Study)</h2>
+<p class="content-para">เพื่อให้นักศึกษาฝึกทักษะการประเมินความเสี่ยงเสมือนทำงานจริง ในส่วนนี้คือการจัดทำ <strong>ทะเบียนความเสี่ยง (Risk Register)</strong> ฉบับสมบูรณ์สำหรับกรณีศึกษาแกนกลาง <strong>“มหาวิทยาลัยดิจิทัลสมมติ”</strong> จำนวน 10 รายการความเสี่ยงหลัก ครอบคลุมทุกมิติโครงสร้างพื้นฐานสำคัญ:</p>
+
+<div class="figure-box" id="figure-5-11">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 5.11</div>
+    <div class="figure-title">Digital University Threat Topology & Asset Exposure Map (ผังโครงสร้างความเสี่ยงมหาวิทยาลัยดิจิทัลสมมติ)</div>
+  </div>
+  <div class="topology-threat-map">
+    <div class="topo-block external">
+      <div class="block-title">🌐 External & Untrusted Zones</div>
+      <div class="block-items">
+        <div class="item-tag">นักศึกษา / BYOD (25,000 อุปกรณ์)</div>
+        <div class="item-tag">Dormitory Wi-Fi (Flat Network)</div>
+        <div class="item-tag">อินเทอร์เน็ตสาธารณะ & แฮกเกอร์ภายนอก</div>
+      </div>
+    </div>
+    <div class="topo-divider-firewall">
+      <span>🔥 Perimeter Firewall (Rule Set เดิม)</span>
+    </div>
+    <div class="topo-block datacenter">
+      <div class="block-title">🏢 Core Data Center & Critical Assets</div>
+      <div class="block-sub-grid">
+        <div class="crit-node"><strong>RSK-01:</strong> Active Directory / Central IdP (ขาด MFA)</div>
+        <div class="crit-node"><strong>RSK-02:</strong> REG System Database (เสี่ยง Ransomware)</div>
+        <div class="crit-node"><strong>RSK-03:</strong> Core Switch VLAN (ไม่มี Segmentation)</div>
+        <div class="crit-node"><strong>RSK-05:</strong> ERP Payment Gateway (AnyDesk Vendor)</div>
+        <div class="crit-node"><strong>RSK-06:</strong> PDPA Storage (ข้อมูล Plaintext)</div>
+        <div class="crit-node"><strong>RSK-09:</strong> Legacy Server (Win2008 EOL)</div>
+      </div>
+    </div>
+    <div class="topo-divider-cloud">
+      <span>☁️ Cloud & Third-Party Perimeter (AWS REST API)</span>
+    </div>
+    <div class="topo-block cloud-zone">
+      <div class="block-title">☁️ Cloud AWS VPC & Third-Party Ecosystem</div>
+      <div class="block-items">
+        <div class="item-tag">RSK-04: AWS S3 & Security Group (Misconfiguration)</div>
+        <div class="item-tag">RSK-07: Web Registration Portal (DDoS Risk)</div>
+        <div class="item-tag">ธนาคารพาณิชย์ & Payment Gateway ภายนอก</div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 5.11:</strong> แผนผังสถาปัตยกรรมเทคโนโลยีสารสนเทศและจุดรวมความเสี่ยง 10 รายการของมหาวิทยาลัยดิจิทัลสมมติ
+  </div>
+</div>
+<h3 class="content-heading" id="sec-ตาราง-risk-register-10-รายการความเสี่ยงด้านไซเบอร์ของมหาวิทยาลัยดิจิทัลสมมติ-470">ตาราง Risk Register 10 รายการความเสี่ยงด้านไซเบอร์ของมหาวิทยาลัยดิจิทัลสมมติ:</h3>
+
+<div class="interactive-widget-card" id="widget-5-4">
+  <div class="widget-badge">WIDGET 5.4: RISK REGISTER BROWSER</div>
+  <h4 class="widget-title">ทะเบียนความเสี่ยงฉบับจำลอง (Digital University Risk Register Explorer)</h4>
+  <p class="widget-subtitle">ค้นหาและกรองรายการความเสี่ยงทั้ง 10 รายการของมหาวิทยาลัยดิจิทัลสมมติ พร้อมเปรียบเทียบ Inherent Risk กับ Residual Risk</p>
+  
+  <div class="filter-controls-bar">
+    <div class="filter-group">
+      <label for="filter-level">กรองตามระดับ Inherent Risk:</label>
+      <select id="filter-level" onchange="renderRiskTable()">
+        <option value="all">ทั้งหมด (10 รายการ)</option>
+        <option value="extreme">🔴 Extreme (วิกฤต)</option>
+        <option value="high">🟠 High (สูง)</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="filter-strategy">กรองตามยุทธศาสตร์ (4 Ts):</label>
+      <select id="filter-strategy" onchange="renderRiskTable()">
+        <option value="all">ทั้งหมด (4 Ts)</option>
+        <option value="Reduce">Reduce (ลดความเสี่ยง)</option>
+        <option value="Avoid">Avoid (หลีกเลี่ยง)</option>
+        <option value="Transfer">Transfer (โอนย้าย)</option>
+      </select>
+    </div>
+    <div class="filter-group search">
+      <label for="filter-search">ค้นหาคำสำคัญ:</label>
+      <input type="text" id="filter-search" placeholder="พิมพ์ชื่อสินทรัพย์ หรือภัยคุกคาม..." oninput="renderRiskTable()">
+    </div>
+  </div>
+
+  <div class="risk-table-responsive">
+    <table class="data-table-enhanced" id="tbl-risk-register">
+      <thead>
+        <tr>
+          <th>รหัส</th>
+          <th>สินทรัพย์ & ภัยคุกคาม</th>
+          <th>Inherent Risk</th>
+          <th>ยุทธศาสตร์</th>
+          <th>มาตรการควบคุมที่เสนอ (Proposed Controls)</th>
+          <th>Residual Risk</th>
+          <th>Risk Owner</th>
+        </tr>
+      </thead>
+      <tbody id="risk-table-body">
+        <!-- Rendered by JS -->
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="table-wrapper"><table class="data-table">
+<thead><tr><th>รหัส</th><th>สินทรัพย์ (Asset)</th><th>ภัยคุกคาม (Threat)</th><th>ช่องโหว่ (Vulnerability)</th><th>มาตรการเดิม (Existing Control)</th><th>Inherent Risk<br>(L x I = R)</th><th>ยุทธศาสตร์<br>(4 Ts)</th><th>มาตรการควบคุมที่เสนอ (Proposed Controls)</th><th>Residual Risk<br>(L x I = R)</th><th>Risk Owner</th><th>กำหนดเสร็จ</th></tr></thead><tbody>
+<tr><td><strong>RSK-01</strong></td><td><strong>ระบบยืนยันตัวตน (Active Directory / Central IdP)</strong></td><td>ผู้ไม่หวังดีใช้ Credential Stuffing หรือ Brute Force ขโมยรหัสผ่านผู้ดูแลระบบ</td><td>ไม่ได้บังคับใช้ Multi-Factor Authentication (MFA) สำหรับการล็อกอิน Admin</td><td>นโยบายรหัสผ่าน 8 ตัวอักษร เปลี่ยนทุก 90 วัน</td><td><strong>4 x 5 = 20</strong><br>🔴 Extreme</td><td><strong>Reduce</strong></td><td>1. บังคับใช้ MFA แบบ FIDO2/Authenticator App ทุกบัญชี Admin<br>2. ตั้งค่า Account Lockout เมื่อใส่รหัสผิด 5 ครั้ง</td><td><strong>1 x 5 = 5</strong><br>🟡 Medium</td><td>ผู้อำนวยการสำนักไอที</td><td>30 พ.ย. 67</td></tr>
+<tr><td><strong>RSK-02</strong></td><td><strong>ระบบบริการการศึกษาและทะเบียน (REG System)</strong></td><td>Ransomware โจมตีและเข้ารหัสไฟล์ฐานข้อมูลนักศึกษา</td><td>เซิร์ฟเวอร์แชร์สิทธิ์แบบ Write ทุกคน, ระบบสำรองข้อมูลต่อตรงอยู่บนวงแลนเดียวกัน</td><td>ติดตั้ง Antivirus แบบดั้งเดิม (Signature-based) บน VM</td><td><strong>4 x 5 = 20</strong><br>🔴 Extreme</td><td><strong>Reduce</strong></td><td>1. ติดตั้ง Next-Gen EDR ที่มีพฤติกรรมดักจับ Ransomware<br>2. ทำ Immutable Backup แบบ Offline (WORM Storage)</td><td><strong>2 x 4 = 8</strong><br>🟠 High</td><td>ผู้อำนวยการกองบริการการศึกษา</td><td>15 ธ.ค. 67</td></tr>
+<tr><td><strong>RSK-03</strong></td><td><strong>เครือข่ายศูนย์ข้อมูล (Core Switch & Data Center VLAN)</strong></td><td>ผู้โจมตีเจาะระบบ Wi-Fi หอพักแล้ว Lateral Movement เข้าสู่ Server Zone</td><td>ไม่มีการทำ Network Segmentation แยกขาดระหว่าง User VLAN กับ Server VLAN</td><td>มี Perimeter Firewall กั้นระหว่างอินเทอร์เน็ตกับเครือข่ายภายใน</td><td><strong>4 x 4 = 16</strong><br>🔴 Extreme</td><td><strong>Reduce</strong></td><td>1. กำหนด VLAN แยกเด็ดขาด และติดตั้ง Internal Firewall ควบคุมการข้าม Zone<br>2. ปิดพอร์ตขาเข้า Server อนุญาตเฉพาะ HTTPS 443</td><td><strong>2 x 3 = 6</strong><br>🟡 Medium</td><td>หัวหน้าฝ่ายโครงสร้างพื้นฐาน</td><td>31 ม.ค. 68</td></tr>
+<tr><td><strong>RSK-04</strong></td><td><strong>ระบบ Mobile Application บน Cloud (AWS VPC)</strong></td><td>ฐานข้อมูล Cloud ถูกเปิดเผยสู่สาธารณะ (Data Leak) จาก Misconfiguration</td><td>ทีมพัฒนาขาดความเชี่ยวชาญด้าน Cloud Security ปล่อยให้ S3 Bucket หรือ Security Group เป็น Any (0.0.0.0/0)</td><td>ตรวจสอบการตั้งค่าด้วยสายตา (Manual Review) ก่อน Deploy</td><td><strong>3 x 5 = 15</strong><br>🔴 Extreme</td><td><strong>Reduce</strong></td><td>1. ติดตั้งเครื่องมือ Cloud Security Posture Management (CSPM)<br>2. บังคับใช้ Infrastructure as Code (IaC) Scan บน CI/CD Pipeline</td><td><strong>1 x 4 = 4</strong><br>🟢 Low</td><td>หัวหน้าทีมพัฒนาระบบ</td><td>15 ก.พ. 68</td></tr>
+<tr><td><strong>RSK-05</strong></td><td><strong>ระบบการเงินและชำระเงิน (ERP Payment Gateway)</strong></td><td>ซัพพลายเออร์ผู้ดูแลระบบภายนอก (Vendor) ถูกเจาะ แล้วถูกใช้เป็นสะพานเชื่อมเข้าสู่ระบบ</td><td>ผู้รับจ้างเข้าถึงระบบผ่าน AnyDesk/TeamViewer โดยไม่มีการยืนยันตัวตนรวมศูนย์และไม่มี Log</td><td>มีสัญญาจ้างและข้อตกลงรักษาความลับ (NDA)</td><td><strong>4 x 5 = 20</strong><br>🔴 Extreme</td><td><strong>Reduce</strong></td><td>1. บังคับใช้ระบบ Privileged Access Management (PAM) และ Clientless VPN<br>2. บันทึก Session วิดีโอและ Log การทำงานของ Vendor 100%</td><td><strong>2 x 4 = 8</strong><br>🟠 High</td><td>ผู้อำนวยการกองคลัง</td><td>28 ก.พ. 68</td></tr>
+<tr><td><strong>RSK-06</strong></td><td><strong>ฐานข้อมูลข้อมูลส่วนบุคคล (PDPA Storage)</strong></td><td>ข้อมูลบัตรประชาชนและข้อมูลสุขภาพนักศึกษารั่วไหลสู่ Dark Web</td><td>ข้อมูลในฐานข้อมูลจัดเก็บเป็นข้อความธรรมดา (Plaintext) ไม่ได้เข้ารหัส</td><td>กำหนดสิทธิ์เข้าถึงตามบทบาท (Role-based Access Control: RBAC)</td><td><strong>3 x 5 = 15</strong><br>🔴 Extreme</td><td><strong>Reduce</strong></td><td>1. เข้ารหัสข้อมูลสำคัญด้วย AES-256 (Encryption at Rest & in Transit)<br>2. ติดตั้งระบบ Data Loss Prevention (DLP) ตรวจจับการส่งออกข้อมูล</td><td><strong>1 x 4 = 4</strong><br>🟢 Low</td><td>เจ้าหน้าที่คุ้มครองข้อมูลส่วนบุคคล (DPO)</td><td>15 มี.ค. 68</td></tr>
+<tr><td><strong>RSK-07</strong></td><td><strong>บริการเว็บเซิร์ฟเวอร์ลงทะเบียน (Web Registration Portal)</strong></td><td>การถูกโจมตีแบบ Distributed Denial of Service (DDoS) ในวันเปิดลงทะเบียน</td><td>แบนด์วิดท์อินเทอร์เน็ตมีจำกัด และไม่มีระบบ Anti-DDoS Protection</td><td>มีเครื่อง Web Application Firewall (WAF) รุ่นเก่า</td><td><strong>4 x 4 = 16</strong><br>🔴 Extreme</td><td><strong>Transfer</strong></td><td>เช่าใช้บริการ Cloudflare / AWS CloudFront Anti-DDoS พร้อมทำสัญญา SLA ป้องกันการล่ม</td><td><strong>2 x 3 = 6</strong><br>🟡 Medium</td><td>ผู้อำนวยการกองบริการการศึกษา</td><td>15 พ.ย. 67</td></tr>
+<tr><td><strong>RSK-08</strong></td><td><strong>บุคลากรและเจ้าหน้าที่การเงิน (Human Factor)</strong></td><td>เจ้าหน้าที่การเงินตกเป็นเหยื่อ Phishing Email โอนเงินผิดบัญชี (BEC Scam)</td><td>บุคลากรขาดการฝึกอบรมความตระหนักรู้ด้านไซเบอร์และเทคนิคหลอกลวงสมัยใหม่</td><td>ส่งอีเมลเตือนภัยปีละ 1 ครั้ง</td><td><strong>4 x 4 = 16</strong><br>🔴 Extreme</td><td><strong>Reduce</strong></td><td>1. จัดอบรมภาคบังคับและทดสอบส่ง Phishing Simulation ประจำไตรมาส<br>2. เพิ่มกระบวนการตรวจสอบ Call-back Verification ทางโทรศัพท์ก่อนโอนเงิน</td><td><strong>2 x 3 = 6</strong><br>🟡 Medium</td><td>ผู้อำนวยการกองการเจ้าหน้าที่ (HR)</td><td>31 ธ.ค. 67</td></tr>
+<tr><td><strong>RSK-09</strong></td><td><strong>ระบบเซิร์ฟเวอร์เก่า (Legacy Student Evaluation Server)</strong></td><td>ผู้โจมตีเจาะผ่านช่องโหว่ซอฟต์แวร์ที่เลิกสนับสนุน (End-of-Life: Windows Server 2008)</td><td>ระบบปฏิบัติการไม่มี Security Patch ใหม่จากผู้ผลิต และแอปพลิเคชันแก้ไขโค้ดไม่ได้</td><td>ติดตั้งซอฟต์แวร์ Antivirus รุ่นเก่า</td><td><strong>4 x 4 = 16</strong><br>🔴 Extreme</td><td><strong>Avoid</strong></td><td>1. ปลดระวาง (Decommission) ระบบเก่า และย้ายข้อมูลมายัง Web App ตัวใหม่<br>2. หากยังปิดไม่ได้ ให้กักกันไว้ใน Isolated VLAN ที่ห้ามออกเน็ตเด็ดขาด</td><td><strong>1 x 3 = 3</strong><br>🟢 Low</td><td>ผู้อำนวยการสำนักไอที</td><td>15 ม.ค. 68</td></tr>
+<tr><td><strong>RSK-10</strong></td><td><strong>ห้องศูนย์ข้อมูลหลัก (Data Center Facility)</strong></td><td>น้ำท่วมห้องเซิร์ฟเวอร์เนื่องจากท่อระบายน้ำอาคารแตก หรือแอร์รั่วซึม</td><td>ห้อง Data Center ตั้งอยู่ชั้นล่าง และไม่มีเซนเซอร์ตรวจจับน้ำรั่วซึม (Water Leak Sensor)</td><td>มีการเดินตรวจห้องเซิร์ฟเวอร์วันละ 1 ครั้งในเวลาราชการ</td><td><strong>2 x 5 = 10</strong><br>🟠 High</td><td><strong>Reduce</strong></td><td>1. ติดตั้งระบบ Water Leak Detection พร้อมแจ้งเตือนผ่าน SMS/Line Alert<br>2. ยกพื้น Raised Floor สูง 40 ซม. และจัดทำทางเบี่ยงท่อน้ำ</td><td><strong>1 x 4 = 4</strong><br>🟢 Low</td><td>ผู้อำนวยการกองอาคารสถานที่</td><td>31 ม.ค. 68</td></tr>
+</tbody></table></div>
+<hr class="content-divider">
+<h2 class="content-heading" id="sec-กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน-active-learning-simulation-487">กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน (Active Learning Simulation)</h2>
+<h3 class="content-heading" id="sec-กิจกรรม-the-risk-acceptance-battle-การประลองยุทธศาสตร์การยอมรับความเสี่ยง-489">กิจกรรม: "The Risk Acceptance Battle" (การประลองยุทธศาสตร์การยอมรับความเสี่ยง)</h3>
+<ul class="content-list">
+  <li><strong>ระยะเวลา:</strong> 15–20 นาที</li>
+  <li><strong>สถานการณ์สมมติ:</strong> อีก 2 สัปดาห์จะถึงวันเปิดภาคเรียนใหม่ กองบริการการศึกษาต้องการเปิดใช้งานระบบ <strong>"Mobile Grade Verification App"</strong> ให้นักศึกษาตรวจสอบผลการเรียน แต่ทีมพัฒนาไอทีแจ้งว่าระบบยังไม่ได้ติดตั้ง MFA และมีช่องโหว่ SQL Injection ระดับ Medium หลงเหลืออยู่</li>
+  <li><strong>การแบ่งกลุ่มบทบาทในห้องเรียน:</strong></li>
+  <li><strong>กลุ่มผู้อำนวยการฝ่ายทะเบียน (Process Owner):</strong> ยืนยันว่าต้องเปิดใช้งานระบบให้ทันตามกำหนด เพราะนักศึกษา 25,000 คนกำลังรอผลการเรียนเพื่อสมัครทุนการศึกษา เสนอให้ฝ่ายไอทีกด <strong>Accept Risk</strong> ไปก่อน</li>
+  <li><strong>กลุ่มหัวหน้าฝ่ายพัฒนาระบบไอที (IT Developer):</strong> เสนอให้เปิดใช้งานไปก่อนแล้วค่อยตามอัปเดต Patch ในเดือนถัดไป โดยอ้างว่าระบบอยู่บน Cloud ของมหาวิทยาลัย มี Firewall กั้นอยู่แล้ว</li>
+  <li><strong>กลุ่ม CISO / Lead Implementer:</strong> คัดค้านการเปิดใช้งานทันที เนื่องจากเสี่ยงต่อข้อมูลรั่วไหลผิด PDPA เสนอให้ใช้ <strong>Compensating Control</strong> เช่น เปิดให้ดูเกรดได้เฉพาะผ่านเครือข่ายภายในมหาวิทยาลัย หรือทำ Virtual Patching บน WAF</li>
+  <li><strong>กลุ่ม Lead Auditor (ผู้สังเกตการณ์และผู้ประเมิน):</strong> ทำหน้าที่ตั้งคำถามซักค้านว่า <em>"หากเกิดข้อมูลรั่วไหลขึ้นมา ใครจะเป็นผู้ลงนามรับผิดชอบความเสียหายทางกฎหมาย? และมีเอกสารวิเคราะห์ผลกระทบรองรับหรือไม่?"</em></li>
+  <li><strong>ประเด็นอภิปรายสรุป:</strong> นักศึกษาจะได้เรียนรู้ว่าการตัดสินใจด้านความเสี่ยงไซเบอร์ไม่ใช่เรื่องของไอทีเพียงลำพัง แต่คือการหาจุดสมดุลระหว่าง <strong>Business Need (ความจำเป็นทางธุรกิจ)</strong> กับ <strong>Legal & Security Liability (ความรับผิดชอบทางกฎหมายและความปลอดภัย)</strong></li>
+</ul>
+<hr class="content-divider">
+<h2 class="content-heading" id="sec-มุมมองวิชาชีพประจำบท-professional-perspectives-501">มุมมองวิชาชีพประจำบท (Professional Perspectives)</h2>
+
+<div class="figure-box" id="figure-5-12">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 5.12</div>
+    <div class="figure-title">Cross-Professional Perspectives Dialogue (บทสนทนาเปรียบเทียบมุมมอง Implementer vs Auditor)</div>
+  </div>
+  <div class="dialogue-container">
+    <div class="dialogue-bubble implementer">
+      <div class="dialogue-avatar">🛠️</div>
+      <div class="dialogue-content">
+        <div class="dialogue-author">Lead Implementer (CISO มหาวิทยาลัย)</div>
+        <p>"เราไม่มีงบประมาณพอที่จะซื้อ Firewall รุ่นใหม่ราคา 3 ล้านบาทในปีนี้ ดังนั้นผมจึงจำเป็นต้องเลือก Accept Risk ในข้อ RSK-03 ไว้ก่อน แต่เราได้ติดตั้งมาตรการชดเชย (Compensating Controls) ด้วยการทำ ACL ปิดพอร์ต และตั้งค่าแจ้งเตือนชั่วคราวแทนครับ"</p>
+      </div>
+    </div>
+    <div class="dialogue-bubble auditor">
+      <div class="dialogue-avatar">📋</div>
+      <div class="dialogue-content">
+        <div class="dialogue-author">Lead Auditor (ผู้ตรวจประเมินอิสระ)</div>
+        <p>"ผมเข้าใจข้อจำกัดด้านงบประมาณเป็นอย่างดีครับ แต่ตามหลัก ISO 27001 ข้อ 6.1.3 การยอมรับความเสี่ยงระดับวิกฤตจะต้องมีเอกสารลงนามอนุมัติเป็นลายลักษณ์อักษรจากบอร์ด และสำหรับ Compensating Control ที่ท่านอ้าง ผมจะขอสุ่มตรวจ Configuration จริงและทดสอบเจาะระบบเพื่อพิสูจน์ว่าสามารถสกัดกั้นการโจมตีได้จริงครับ"</p>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 5.12:</strong> การแลกเปลี่ยนมุมมองเชิงวิชาชีพเรื่องการยอมรับความเสี่ยงและมาตรการควบคุมชดเชย
+  </div>
+</div>
+<h3 class="content-heading" id="sec-สรุปข้อคิดสำคัญสำหรับผู้ประกอบวิชาชีพ-520">สรุปข้อคิดสำคัญสำหรับผู้ประกอบวิชาชีพ:</h3>
+<ol class="content-list">
+  <li><strong>อย่ากลัวที่จะแสดงความเสี่ยงที่แท้จริง:</strong> องค์กรหลายแห่งพยายามซ่อนความเสี่ยงสูง เพราะกลัวถูกผู้บริหารหรือผู้ตรวจตำหนิ ในความเป็นจริง <strong>การปกปิดความเสี่ยงคือความเสี่ยงที่ร้ายแรงที่สุด</strong> การแสดงความเสี่ยงสูงพร้อมแผนการจัดการที่ชัดเจนคือสัญญาณของความเป็นมืออาชีพ</li>
+  <li><strong>ความเสี่ยงเป็นเรื่องของธุรกิจ ไม่ใช่แค่ไอที:</strong> ภาษาที่ใช้ในการอธิบายความเสี่ยงใน Risk Register ต้องเป็นภาษาที่ผู้บริหารเข้าใจได้ เช่น อย่าเขียนแค่ <em>"CVE-2023-34362 บน MOVEit"</em> แต่ต้องเขียนว่า <em>"ช่องโหว่บนระบบโอนย้ายไฟล์ที่อาจทำให้ข้อมูลผลการเรียนนักศึกษา 25,000 คนรั่วไหลสู่สาธารณะ นำไปสู่โทษปรับตาม PDPA สูงสุด 5 ล้านบาท"</em></li>
+  <li><strong>Compensating Controls มีความสำคัญอย่างยิ่ง:</strong> ในโลกความเป็นจริง องค์กรไม่สามารถแก้ปัญหาด้วยวิธีที่สมบูรณ์แบบได้เสมอไป (เช่น ระบบเก่าอัปเดตไม่ได้) Lead Implementer ต้องมีทักษะในการออกแบบ "มาตรการควบคุมชดเชย" เช่น การทำ Network Isolation, Virtual Patching หรือการจำกัดสิทธิ์ขั้นสูงสุด เพื่อลดความเสี่ยงให้อยู่ในระดับที่ยอมรับได้</li>
+</ol>
+<hr class="content-divider">
+<h2 class="content-heading" id="sec-แบบฝึกหัดและการบ้านประจำบทที่-5-527">แบบฝึกหัดและการบ้านประจำบทที่ 5</h2>
+
+<div class="interactive-widget-card" id="widget-5-5">
+  <div class="widget-badge">WIDGET 5.5: KNOWLEDGE MASTERY QUIZ</div>
+  <h4 class="widget-title">แบบทดสอบวัดความรอบรู้ประจำบทที่ 5 (Chapter 5 Mastery Quiz)</h4>
+  <p class="widget-subtitle">ทดสอบความเข้าใจเชิงลึกเกี่ยวกับระเบียบวิธีประเมินความเสี่ยง การคำนวณเชิงปริมาณ ยุทธศาสตร์ 4 Ts และมุมมองผู้ตรวจประเมิน</p>
+  
+  <div class="quiz-container-box">
+    <div class="quiz-meta-bar">
+      <span class="quiz-step-indicator" id="quiz-step-indicator">ข้อ 1 จาก 5</span>
+      <span class="quiz-score-badge" id="quiz-live-score">คะแนน: 0 / 5</span>
+    </div>
+
+    <div class="quiz-card-body" id="quiz-card-body">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="quiz-controls-row">
+      <button type="button" class="btn-quiz-nav" id="btn-quiz-prev" onclick="changeQuizQuestion(-1)" disabled>&larr; ข้อย้อนหลัง</button>
+      <button type="button" class="btn-quiz-check" id="btn-quiz-submit" onclick="submitQuizAnswer()">ตรวจคำตอบ</button>
+      <button type="button" class="btn-quiz-nav" id="btn-quiz-next" onclick="changeQuizQuestion(1)">ข้อถัดไป &rarr;</button>
+    </div>
+    <div class="quiz-explanation-box" id="quiz-explanation" style="display:none;"></div>
+  </div>
+</div>
+<p class="content-para">เพื่อเป็นส่วนหนึ่งของการจัดทำแฟ้มสะสมงาน <strong>Cybersecurity Audit Portfolio</strong> ให้นักศึกษาจัดทำเอกสารการประเมินและบริหารความเสี่ยงสำหรับ <strong>“มหาวิทยาลัยดิจิทัลสมมติ”</strong> (หรือหน่วยงานที่ได้รับอนุมัติ) โดยมีรายละเอียดดังนี้:</p>
+<h3 class="content-heading" id="sec-ชิ้นงานที่ต้องส่งมอบ-แฟ้มทะเบียนความเสี่ยงและแผนจัดการความเสี่ยง-risk-register-rtp-531">ชิ้นงานที่ต้องส่งมอบ: แฟ้มทะเบียนความเสี่ยงและแผนจัดการความเสี่ยง (Risk Register & RTP)</h3>
+<p class="content-para">ให้นักศึกษาจัดทำตารางทะเบียนความเสี่ยง <strong>ไม่น้อยกว่า 10 รายการ</strong> โดยต้องครอบคลุมประเภทความเสี่ยงตามที่กำหนดให้ครบถ้วน:</p>
+<ol class="content-list">
+  <li><strong>ความเสี่ยงด้านสิทธิการเข้าถึง (Access Control / Privilege Escalation)</strong></li>
+  <li><strong>ความเสี่ยงด้านมัลแวร์และแรนซัมแวร์ (Malware / Ransomware)</strong></li>
+  <li><strong>ความเสี่ยงด้านเครือข่ายและการแบ่งโซน (Network Segmentation / Perimeter)</strong></li>
+  <li><strong>ความเสี่ยงด้านระบบคลาวด์และการตั้งค่าผิดพลาด (Cloud Misconfiguration / Shadow IT)</strong></li>
+  <li><strong>ความเสี่ยงด้านห่วงโซ่อุปทานและผู้รับจ้างภายนอก (Third-party Supply Chain Vendor)</strong></li>
+  <li><strong>ความเสี่ยงด้านการคุ้มครองข้อมูลส่วนบุคคล (Personal Data Breach / PDPA Violation)</strong></li>
+  <li><strong>ความเสี่ยงด้านความต่อเนื่องของบริการ (Business Continuity / Availability / DDoS)</strong></li>
+  <li><strong>ความเสี่ยงด้านบุคลากรและวิศวกรรมสังคม (Human Factor / Phishing / Social Engineering)</strong></li>
+  <li><strong>ความเสี่ยงด้านระบบเก่าและช่องโหว่ซอฟต์แวร์ (Legacy System / Unpatched Vulnerability)</strong></li>
+  <li><strong>ความเสี่ยงด้านกายภาพและสิ่งแวดล้อมศูนย์ข้อมูล (Physical & Environmental)</strong></li>
+</ol>
+<h3 class="content-heading" id="sec-ข้อกำหนดในแต่ละรายการความเสี่ยง-545">ข้อกำหนดในแต่ละรายการความเสี่ยง:</h3>
+<ul class="content-list">
+  <li>ต้องระบุ Asset, Threat, Vulnerability และ Existing Control อย่างชัดเจน</li>
+  <li>คำนวณค่า <strong>Inherent Risk</strong> (Likelihood x Impact) พร้อมระบุระดับสี</li>
+  <li>ระบุยุทธศาสตร์การจัดการ (Avoid, Reduce, Transfer, Accept)</li>
+  <li>ระบุมาตรการควบคุมที่เสนอ (Proposed Controls) พร้อมคำนวณค่า <strong>Residual Risk</strong> ที่คาดว่าจะลดลงได้</li>
+  <li>ระบุ Risk Owner, งบประมาณโดยประมาณ, กำหนดเวลาแล้วเสร็จ, ตัวชี้วัด (KPIs) และหลักฐานเชิงประจักษ์ (Audit Evidence) ที่ผู้ตรวจจะขอตรวจสอบ</li>
+</ul>
+<hr class="content-divider">
+<h2 class="content-heading" id="sec-สรุปบทที่-5-554">สรุปบทที่ 5</h2>
+<p class="content-para">การประเมินและบริหารความเสี่ยงด้านความมั่นคงปลอดภัยไซเบอร์เป็นสะพานเชื่อมระหว่าง <strong>ยุทธศาสตร์การบริหารองค์กร</strong> กับ <strong>การปฏิบัติการทางเทคนิค</strong> องค์กรไม่สามารถลงทุนเพื่อป้องกันภัยคุกคามทุกอย่างได้ แต่ต้องตัดสินใจอย่างชาญฉลาดบนพื้นฐานของข้อมูลและความเสี่ยงที่แท้จริง</p>
+<p class="content-para">กระบวนการเริ่มต้นจากการจำแนกองค์ประกอบความเสี่ยงทั้ง 6 ด้าน วิเคราะห์ผลกระทบอย่างรอบด้าน 9 มิติ และแปลงเป็นระดับคะแนนบน <strong>Risk Matrix 5x5</strong> ที่โปร่งใสและตรวจสอบได้ การเข้าใจความแตกต่างระหว่าง <strong>Inherent Risk</strong>, <strong>Current Risk</strong> และ <strong>Residual Risk</strong> ช่วยให้ Lead Implementer สามารถวางแผนการใช้ทรัพยากรและคัดเลือกมาตรการควบคุมตามยุทธศาสตร์ <strong>4 Ts (Avoid, Reduce, Transfer, Accept)</strong> ได้อย่างเหมาะสม โดยมุ่งเป้าหมายให้ความเสี่ยงคงเหลือลดลงมาอยู่ภายใต้กรอบ <strong>Risk Appetite</strong> ที่ผู้บริหารระดับสูงให้ความเห็นชอบ</p>
+<p class="content-para">ในขณะเดียวกัน มุมมองของ Lead Auditor จะทำหน้าที่เป็นกลไกตรวจสอบถ่วงดุล เพื่อให้มั่นใจว่าการประเมินความเสี่ยงไม่ได้เป็นเพียง "เอกสารแต่งตัวเลข" หรือ "การกดคะแนนเพื่อเอาตัวรอด" แต่เป็นระบบการกำกับดูแลที่มีการติดตามอย่างต่อเนื่อง มีความรับผิดชอบที่โปร่งใสผ่าน Risk Owner และพร้อมรับมือกับภัยคุกคามไซเบอร์ที่เปลี่ยนแปลงไปตลอดเวลาอย่างแท้จริง</p>
+<hr class="content-divider">
+<h2 class="content-heading" id="sec-เอกสารอ้างอิงและมาตรฐานสากล-564">เอกสารอ้างอิงและมาตรฐานสากล</h2>
+<ol class="content-list">
+  <li><strong>International Organization for Standardization (ISO).</strong> (2022). <em>ISO/IEC 27001:2022 Information security, cybersecurity and privacy protection — Information security management systems — Requirements</em> (Clauses 6.1, 8.2, 8.3). Geneva: ISO.</li>
+  <li><strong>International Organization for Standardization (ISO).</strong> (2022). <em>ISO/IEC 27005:2022 Information security, cybersecurity and privacy protection — Guidance on managing information security risks</em>. Geneva: ISO.</li>
+  <li><strong>International Organization for Standardization (ISO).</strong> (2018). <em>ISO 31000:2018 Risk management — Guidelines</em>. Geneva: ISO.</li>
+  <li><strong>National Institute of Standards and Technology (NIST).</strong> (2012). <em>Guide for Conducting Risk Assessments</em> (NIST Special Publication 800-30 Revision 1). U.S. Department of Commerce.</li>
+  <li><strong>National Institute of Standards and Technology (NIST).</strong> (2018). <em>Risk Management Framework for Information Systems and Organizations: A System Life Cycle Approach for Security and Privacy</em> (NIST SP 800-37 Rev. 2). U.S. Department of Commerce.</li>
+  <li><strong>National Institute of Standards and Technology (NIST).</strong> (2024). <em>The NIST Cybersecurity Framework (CSF) 2.0</em> (NIST Special Publication 1300). U.S. Department of Commerce.</li>
+  <li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+  <li><strong>ประกาศคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2564.</strong> ราชกิจจานุเบกษา เล่ม 138 ตอนพิเศษ 245 ง วันที่ 7 ตุลาคม 2564.</li>
+  <li><strong>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+  <li><strong>Freund, J., & Jones, J.</strong> (2014). <em>Measuring and Managing Information Risk: A FAIR Approach</em>. Waltham, MA: Butterworth-Heinemann.</li>
+</ol>
+
+        <div class="chapter-nav-grid">
+          <a href="ch-4.html" class="chapter-nav-card prev" title="กลับไปศึกษาบทที่ 4">
+            <span class="nav-sub">← บทก่อนหน้า</span>
+            <span class="nav-title">บทที่ 4: การทำความเข้าใจบริบทองค์กร ขอบเขตการตรวจ และธรรมาภิบาล</span>
+          </a>
+          <a href="ch-6.html" class="chapter-nav-card next" title="ไปศึกษาบทที่ 6">
+            <span class="nav-sub">บทถัดไป →</span>
+            <span class="nav-title">บทที่ 6: การบริหารสินทรัพย์และการจำแนกประเภทข้อมูล</span>
+          </a>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <p>NECS1312 การตรวจสอบความมั่นคงปลอดภัยของระบบและเครือข่าย — เนื้อหาเพื่อการศึกษาอิง ISO/IEC 27001, ISO/IEC 27005, NIST SP 800-30 และ พ.ร.บ.ไซเบอร์ พ.ศ. 2562</p>
+  </footer>
+
+  <script>
+
+    // 1. READING PROGRESS & NAVIGATION
+    const progressBar = document.getElementById("progress-bar");
+    window.addEventListener("scroll", () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      if (progressBar) progressBar.style.width = scrolled + "%";
+    });
+
+    // TOC Toggle & Backdrop
+    const sidebar = document.getElementById("sidebar-toc");
+    const btnToggle = document.getElementById("btn-toggle-toc");
+    const btnClose = document.getElementById("btn-close-toc");
+    const backdrop = document.getElementById("toc-backdrop");
+
+    function toggleSidebar() {
+      if (window.innerWidth <= 992) {
+        sidebar.classList.toggle("active");
+        backdrop.classList.toggle("active");
+      } else {
+        sidebar.classList.toggle("hidden");
+      }
+    }
+
+    function closeSidebarMobile() {
+      sidebar.classList.remove("active");
+      backdrop.classList.remove("active");
+    }
+
+    if (btnToggle) btnToggle.addEventListener("click", toggleSidebar);
+    if (btnClose) btnClose.addEventListener("click", () => {
+      if (window.innerWidth <= 992) closeSidebarMobile();
+      else sidebar.classList.add("hidden");
+    });
+    if (backdrop) backdrop.addEventListener("click", closeSidebarMobile);
+
+    document.querySelectorAll(".toc-link").forEach(link => {
+      link.addEventListener("click", () => {
+        if (window.innerWidth <= 992) closeSidebarMobile();
+      });
+    });
+
+    // Keyboard shortcut Ctrl+B / Cmd+B
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        toggleSidebar();
+      }
+    });
+
+    // 2. THEME & FONT SIZE MANAGEMENT
+    const themeButtons = {
+      light: document.getElementById("btn-theme-light"),
+      sepia: document.getElementById("btn-theme-sepia"),
+      dark: document.getElementById("btn-theme-dark")
+    };
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("necs1312-theme", theme);
+      Object.keys(themeButtons).forEach(t => {
+        if (themeButtons[t]) {
+          themeButtons[t].classList.toggle("active", t === theme);
+        }
+      });
+    }
+
+    if (themeButtons.light) themeButtons.light.addEventListener("click", () => setTheme("light"));
+    if (themeButtons.sepia) themeButtons.sepia.addEventListener("click", () => setTheme("sepia"));
+    if (themeButtons.dark) themeButtons.dark.addEventListener("click", () => setTheme("dark"));
+
+    const savedTheme = localStorage.getItem("necs1312-theme") || "light";
+    setTheme(savedTheme);
+
+    // Font scaling
+    let currentFontScale = parseFloat(localStorage.getItem("necs1312-fontscale")) || 1.0;
+    function applyFontScale(scale) {
+      currentFontScale = Math.min(Math.max(scale, 0.85), 1.3);
+      document.documentElement.style.setProperty("--font-scale", currentFontScale);
+      localStorage.setItem("necs1312-fontscale", currentFontScale);
+    }
+    applyFontScale(currentFontScale);
+
+    document.getElementById("btn-font-dec").addEventListener("click", () => applyFontScale(currentFontScale - 0.05));
+    document.getElementById("btn-font-reset").addEventListener("click", () => applyFontScale(1.0));
+    document.getElementById("btn-font-inc").addEventListener("click", () => applyFontScale(currentFontScale + 0.05));
+
+    // 3. WIDGET 5.1: QUANTITATIVE RISK CALCULATOR
+    const CALC_PRESETS = {
+      ransomware: { av: 8000000, ef: 60, aro: 0.5, cost: 500000, alepost: 200000 },
+      ddos: { av: 5000000, ef: 30, aro: 1.0, cost: 300000, alepost: 0 },
+      bec: { av: 8000000, ef: 25, aro: 0.25, cost: 150000, alepost: 100000 }
+    };
+
+    function loadCalcPreset(key) {
+      const p = CALC_PRESETS[key];
+      if (!p) return;
+      document.querySelectorAll(".btn-preset").forEach(b => b.classList.remove("active"));
+      event.target.classList.add("active");
+
+      document.getElementById("inp-av").value = p.av;
+      document.getElementById("inp-ef").value = p.ef;
+      document.getElementById("val-ef").textContent = p.ef + "%";
+      document.getElementById("inp-aro").value = p.aro;
+      document.getElementById("inp-cost").value = p.cost;
+      document.getElementById("inp-alepost").value = p.alepost;
+
+      calculateRisk();
+    }
+
+    function updateEfVal(val) {
+      document.getElementById("val-ef").textContent = val + "%";
+    }
+
+    function calculateRisk() {
+      const av = parseFloat(document.getElementById("inp-av").value) || 0;
+      const efPercent = parseFloat(document.getElementById("inp-ef").value) || 0;
+      const ef = efPercent / 100;
+      const aro = parseFloat(document.getElementById("inp-aro").value) || 0;
+      const cost = parseFloat(document.getElementById("inp-cost").value) || 0;
+      const alePost = parseFloat(document.getElementById("inp-alepost").value) || 0;
+
+      const sle = av * ef;
+      const alePrior = sle * aro;
+      const savings = (alePrior - alePost) - cost;
+      const rosi = cost > 0 ? (( (alePrior - alePost) - cost ) / cost) * 100 : 0;
+
+      document.getElementById("res-sle").textContent = sle.toLocaleString("th-TH") + " บาท / ครั้ง";
+      document.getElementById("res-aleprior").textContent = alePrior.toLocaleString("th-TH") + " บาท / ปี";
+      document.getElementById("res-savings").textContent = savings.toLocaleString("th-TH") + " บาท / ปี";
+      document.getElementById("res-rosi").textContent = rosi.toFixed(1) + "%";
+
+      const verdictEl = document.getElementById("res-verdict");
+      if (rosi > 100) {
+        verdictEl.textContent = "✅ คุ้มค่าอย่างยิ่งต่อการลงทุน (High Return on Security Investment)";
+        verdictEl.style.color = "var(--emerald)";
+      } else if (rosi > 0) {
+        verdictEl.textContent = "⚖️ คุ้มค่าในระดับปานกลาง (Positive Benefit)";
+        verdictEl.style.color = "var(--cyan)";
+      } else {
+        verdictEl.textContent = "⚠️ ไม่คุ้มค่าเชิงตัวเงิน (ต้นทุนมาตรการสูงกว่าผลประโยชน์ที่ลดความเสี่ยงได้)";
+        verdictEl.style.color = "var(--rose)";
+      }
+    }
+
+    // 4. WIDGET 5.2: MATRIX 5X5 INTERACTIVE EXPLORER
+    const MATRIX_DETAILS = {
+      "5-5": { score: 25, lvl: "🔴 Extreme", class: "lvl-crit", action: "ห้ามยอมรับโดยเด็ดขาด ระงับบริการ รายงานบอร์ดใน 24 ชม. แก้ไขใน 15 วัน", ex: "ระบบ REG หรือ ERP ถูกเจาะสมบูรณ์ ข้อมูลรั่วไหลสู่สาธารณะ", ev: "มติบอร์ดสั่งการฉุกเฉิน, Incident Report, บันทึกการเยียวยาผู้เสียหาย" },
+      "5-4": { score: 20, lvl: "🔴 Extreme", class: "lvl-crit", action: "ห้ามยอมรับโดยเด็ดขาด รายงาน Steering Committee ทันที แก้ไขใน 15–30 วัน", ex: "RSK-01 (Active Directory ขาด MFA) หรือ RSK-02 (Ransomware REG)", ev: "รายงานผลสแกนช่องโหว่, แผนจัดซื้อ EDR/MFA, บันทึกประชุมเร่งด่วน" },
+      "5-3": { score: 15, lvl: "🔴 Extreme", class: "lvl-crit", action: "ยอมรับไม่ได้ ต้องมีมาตรการลดความเสี่ยงเร่งด่วนใน 30 วัน", ex: "RSK-06 (PDPA Plaintext Storage) เสี่ยงถูกปรับสูงสุด 5 ล้าน", ev: "นโยบายเข้ารหัสข้อมูล AES-256, ทะเบียนบันทึกกิจกรรมประมวลผล (ROPA)" },
+      "4-4": { score: 16, lvl: "🔴 Extreme", class: "lvl-crit", action: "ยอมรับไม่ได้ ต้องมีแผน RTP และงบประมาณรองรับใน 30 วัน", ex: "RSK-03 (Wi-Fi หอพัก Flat Network ทะลุเข้า Core Server)", ev: "ผังแยก VLAN สถาปัตยกรรม, Firewall Access Control List (ACL)" },
+      "3-5": { score: 15, lvl: "🔴 Extreme", class: "lvl-crit", action: "ยอมรับไม่ได้ ต้องติดตั้งระบบป้องกันและจำกัดวงความเสียหาย", ex: "RSK-04 (AWS Cloud Misconfiguration เปิด 0.0.0.0/0)", ev: "รายงานตรวจประเมิน CSPM, สัญญาว่าจ้างทีมตรวจสอบความปลอดภัย Cloud" },
+      "4-3": { score: 12, lvl: "🟠 High", class: "lvl-high", action: "ไม่สามารถยอมรับได้ ต้องกำหนดงบประมาณแก้ไขใน 30–60 วัน", ex: "ระบบเว็บรับสมัครนักศึกษาไม่มี Web Application Firewall (WAF)", ev: "ใบเสนอราคา WAF, แผนปรับปรุงซอฟต์แวร์ประจำปี" },
+      "4-2": { score: 8, lvl: "🟠 High", class: "lvl-high", action: "ไม่สามารถยอมรับได้ อยู่ในความดูแลของ CISO แก้ไขใน 60 วัน", ex: "RSK-05 หลังติดตั้ง PAM ลดสิทธิ์ Vendor AnyDesk ลงมา", ev: "Session Log การเข้าถึงระบบของ Vendor, ทะเบียนสิทธิ์เข้าถึง" },
+      "3-3": { score: 9, lvl: "🟠 High", class: "lvl-high", action: "ไม่สามารถยอมรับได้ ต้องมีแผนควบคุมและเฝ้าระวังต่อเนื่อง", ex: "พนักงานยังไม่มีความตระหนักรู้เรื่อง Phishing อีเมล", ev: "สถิติการทดสอบ Phishing Simulation, บัญชีรายชื่อผู้ผ่านการอบรม" },
+      "3-2": { score: 6, lvl: "🟡 Medium", class: "lvl-med", action: "ยอมรับได้แบบมีเงื่อนไข อนุญาตให้ดำเนินงานต่อได้ภายใต้การเฝ้าระวัง ทบทวนทุกไตรมาส", ex: "RSK-07 (DDoS Protection Cloudflare) หลังติดตั้ง", ev: "สัญญาบริการ SLA, รายงานผลการสกัดกั้นทราฟฟิก DDoS" },
+      "2-3": { score: 6, lvl: "🟡 Medium", class: "lvl-med", action: "ยอมรับได้แบบมีเงื่อนไข เฝ้าระวัง ทบทวนทุก 90 วัน", ex: "ระบบสำรองข้อมูลอยู่ในห้องแยกอาคาร แต่ยังไม่ได้ทดสอบกู้คืน", ev: "ตารางซ้อมกู้คืนข้อมูล (Disaster Recovery Drill Report)" },
+      "2-2": { score: 4, lvl: "🟢 Low", class: "lvl-low", action: "ยอมรับได้ จัดการด้วยขั้นตอนการทำงานปกติ ทบทวนปีละ 1 ครั้ง", ex: "RSK-06 (PDPA) หลังเข้ารหัส AES-256 และทำ DLP เสร็จสมบูรณ์", ev: "รายงานผลการทดสอบการถอดรหัส, ใบล็อคอุปกรณ์จัดเก็บ" },
+      "1-5": { score: 5, lvl: "🟡 Medium", class: "lvl-med", action: "ยอมรับได้แบบมีเงื่อนไข เกิดขึ้นยากมากแต่ผลกระทบรุนแรง ต้องมีแผนฉุกเฉิน", ex: "อัคคีภัยหรือน้ำท่วมห้องศูนย์ข้อมูล Data Center", ev: "ระบบดับเพลิงอัตโนมัติ FM-200, กรมธรรม์ประกันภัยอาคาร" },
+      "1-1": { score: 1, lvl: "🟢 Low", class: "lvl-low", action: "ยอมรับได้ ไม่ต้องลงทุนเพิ่ม ควบคุมด้วยขั้นตอนการทำงานปกติ", ex: "เครื่องพิมพ์ในสำนักงานถูกดึงสายแลนออกชั่วคราว", ev: "บันทึกการซ่อมบำรุงตามรอบ" }
+    };
+
+    function initMatrixBoard() {
+      const board = document.getElementById("int-matrix-board");
+      if (!board) return;
+      board.innerHTML = "";
+
+      for (let L = 5; L >= 1; L--) {
+        for (let I = 1; I <= 5; I++) {
+          const score = L * I;
+          let lvlClass = "lvl-low";
+          if (score >= 15) lvlClass = "lvl-crit";
+          else if (score >= 8) lvlClass = "lvl-high";
+          else if (score >= 5) lvlClass = "lvl-med";
+
+          const cell = document.createElement("div");
+          cell.className = "int-cell " + lvlClass;
+          cell.textContent = score;
+          cell.dataset.l = L;
+          cell.dataset.i = I;
+          cell.title = "โอกาสเกิด " + L + " x ผลกระทบ " + I + " = " + score;
+
+          cell.addEventListener("click", () => {
+            document.querySelectorAll(".int-cell").forEach(c => c.classList.remove("selected"));
+            cell.classList.add("selected");
+            showMatrixDetail(L, I, score, lvlClass);
+          });
+
+          board.appendChild(cell);
+        }
+      }
+    }
+
+    function showMatrixDetail(L, I, score, lvlClass) {
+      const key = L + "-" + I;
+      const data = MATRIX_DETAILS[key] || {
+        score: score,
+        lvl: score >= 15 ? "🔴 Extreme" : score >= 8 ? "🟠 High" : score >= 5 ? "🟡 Medium" : "🟢 Low",
+        class: lvlClass,
+        action: score >= 15 ? "ยอมรับไม่ได้ รายงานบอร์ดทันที" : score >= 8 ? "ไม่สามารถยอมรับได้ แก้ไขใน 30–60 วัน" : "ยอมรับได้ตามเกณฑ์ปกติ",
+        ex: "สถานการณ์จำลองตามพิกัด L=" + L + ", I=" + I,
+        ev: "รายงานการประเมินความเสี่ยงและแผน RTP"
+      };
+
+      document.getElementById("dt-score").textContent = "คะแนน: " + data.score;
+      const lvlTag = document.getElementById("dt-level");
+      lvlTag.textContent = data.lvl;
+      lvlTag.className = "detail-level-tag " + data.class;
+
+      document.getElementById("dt-coord").textContent = "โอกาสเกิด (Likelihood) = " + L + ", ผลกระทบ (Impact) = " + I;
+      document.getElementById("dt-action").textContent = data.action;
+      document.getElementById("dt-example").textContent = data.ex;
+      document.getElementById("dt-evidence").textContent = data.ev;
+    }
+
+    // 5. WIDGET 5.3: STRATEGY 4 Ts ENGINE
+    const STRAT_CASES = {
+      1: {
+        title: "เซิร์ฟเวอร์แบบประเมินผลนักศึกษารุ่นเก่า (Legacy Windows 2008 EOL)",
+        desc: "เซิร์ฟเวอร์ระบบประเมินการสอนใช้งาน Windows Server 2008 ที่ผู้ผลิตเลิกสนับสนุน (End-of-Life) ไม่สามารถอัปเดต Security Patch ได้อีกต่อไป และตัวแอปพลิเคชันแก้ไขโค้ดไม่ได้ ทีมไอทีเสนอยุทธศาสตร์ 4 Ts ในการจัดการ:",
+        choices: [
+          { key: "treat", label: "Treat / Reduce", desc: "ซื้อแอนติไวรัสราคาแพงมาติดตั้งเพิ่มบนเครื่องเก่า" },
+          { key: "avoid", label: "Terminate / Avoid (ถูกต้อง)", desc: "ปลดระวางระบบเก่า (Decommission) และย้ายข้อมูลมายังระบบใหม่ หรือกักกันไว้ใน Isolated VLAN ห้ามต่อเน็ตเด็ดขาด" },
+          { key: "transfer", label: "Transfer / Share", desc: "ซื้อประกันภัยไซเบอร์สำหรับเซิร์ฟเวอร์เก่าเครื่องนี้" },
+          { key: "tolerate", label: "Tolerate / Accept", desc: "ให้หัวหน้างานไอทีลงนามยอมรับความเสี่ยงเปิดใช้งานต่อไป" }
+        ],
+        correct: "avoid",
+        feedback: {
+          correct: "✅ ถูกต้องยอดเยี่ยม! สำหรับระบบ End-of-Life (EOL) ที่มีช่องโหว่รุนแรงและอุดไม่ได้ ทางเลือกที่ถูกต้องตามหลักวิศวกรรมคือ 'Terminate/Avoid' โดยการปลดระวางระบบเก่า หรือตัดขาดออกจากเครือข่ายภายนอกโดยเด็ดขาด",
+          incorrect: "❌ ยังไม่ถูกต้อง การติดตั้งแอนติไวรัสหรือการซื้อประกันภัยไม่สามารถป้องกันช่องโหว่ระบบปฏิบัติการระดับ Kernel ได้ และการลงนามยอมรับความเสี่ยงของหัวหน้าไอทีถือเป็น Major NCR"
+        }
+      },
+      2: {
+        title: "อาจารย์ขอเปิดพอร์ตฐานข้อมูล MySQL (Port 3306) ตรงสู่อินเทอร์เน็ต",
+        desc: "อาจารย์คณะวิทยาการสารสนเทศต้องการให้นักศึกษาในแล็บเชื่อมต่อฐานข้อมูลจากที่บ้าน จึงทำเรื่องขอให้ฝ่ายเครือข่ายเปิด Inbound Port 3306 ออกสู่อินเทอร์เน็ตโดยตรง:",
+        choices: [
+          { key: "treat", label: "Treat / Reduce (ถูกต้อง)", desc: "ปฏิเสธการเปิดพอร์ตตรง แต่ให้เชื่อมต่อผ่าน VPN มหาวิทยาลัยที่มี MFA หรือใช้ Jump Host" },
+          { key: "avoid", label: "Terminate / Avoid", desc: "สั่งห้ามนักศึกษาทำโครงงานวิจัยนี้โดยเด็ดขาด" },
+          { key: "transfer", label: "Transfer / Share", desc: "โอนย้ายฐานข้อมูลไปไว้บน Cloud ฟรีโดยไม่ตั้งรหัสผ่าน" },
+          { key: "tolerate", label: "Tolerate / Accept", desc: "เปิดพอร์ต 3306 ให้ตามคำขอโดยให้อาจารย์เซ็นรับผิดชอบเอง" }
+        ],
+        correct: "treat",
+        feedback: {
+          correct: "✅ ถูกต้อง! การใช้ Compensating Control (VPN with MFA) ช่วยให้นักศึกษาทำงานวิจัยได้โดยไม่ต้องเปิดพอร์ต 3306 ท้าทายแฮกเกอร์ตรง ๆ ทางอินเทอร์เน็ต",
+          incorrect: "❌ ยังไม่ถูกต้อง การเปิดพอร์ตฐานข้อมูลตรงสู่อินเทอร์เน็ตจะถูกบอทเจาะด้วย Brute Force ภายในไม่กี่นาที และการให้อาจารย์เซ็นรับผิดชอบขัดต่อกฎหมายและธรรมาภิบาล"
+        }
+      },
+      3: {
+        title: "ระบบอีเมลมหาวิทยาลัยถูกยิง DDoS และส่งสแปมจำนวนมหาศาล",
+        desc: "มหาวิทยาลัยมีเซิร์ฟเวอร์เมลแบบ On-premise เดิม ซึ่งถูกบ็อตเน็ตยิงถล่มจนแบนด์วิดท์เต็ม และเจ้าหน้าที่ดูแลไม่ทัน ส่งผลให้อาจารย์และนักศึกษาไม่ได้รับอีเมลสำคัญ:",
+        choices: [
+          { key: "treat", label: "Treat / Reduce", desc: "ซื้อเซิร์ฟเวอร์ On-premise เพิ่มอีก 5 เครื่อง" },
+          { key: "avoid", label: "Terminate / Avoid", desc: "ยกเลิกการใช้อีเมลในมหาวิทยาลัย เปลี่ยนไปใช้กระดาษแทน" },
+          { key: "transfer", label: "Transfer / Share (ถูกต้อง)", desc: "ย้ายระบบไปใช้งาน Cloud Email (Google Workspace / Microsoft 365) พร้อมสัญญา SLA 99.9%" },
+          { key: "tolerate", label: "Tolerate / Accept", desc: "ยอมรับสภาพให้อีเมลล่มเป็นระยะ" }
+        ],
+        correct: "transfer",
+        feedback: {
+          correct: "✅ ถูกต้อง! การย้ายระบบไปยังผู้ให้บริการคลาวด์ที่มีความเชี่ยวชาญพร้อมสัญญา SLA คือตัวอย่างคลาสสิกของยุทธศาสตร์ 'Transfer / Share' ซึ่งช่วยผลักภาระโครงสร้างพื้นฐานและการป้องกัน DDoS ออกไปภายนอก",
+          incorrect: "❌ ยังไม่ถูกต้อง การซื้อเซิร์ฟเวอร์ On-premise เพิ่มสิ้นเปลืองงบประมาณและแก้ปัญหา DDoS ท่อตันไม่ได้ ทางเลือกที่เหมาะสมคือ Cloud Email SLA"
+        }
+      },
+      4: {
+        title: "ซัพพลายเออร์ (Vendor) ใช้ AnyDesk รีโมตเข้าเซิร์ฟเวอร์การเงิน ERP โดยไม่มี MFA",
+        desc: "บริษัทผู้รับเหมาดูแลระบบ ERP ร้องขอให้เปิด AnyDesk ไว้ตลอดเวลาเพื่อแก้ปัญหาฉุกเฉินได้ทันที แต่ไม่มีการเก็บบันทึก Log และไม่มี MFA:",
+        choices: [
+          { key: "treat", label: "Treat / Reduce (ถูกต้อง)", desc: "บังคับใช้ Privileged Access Management (PAM) มี MFA บันทึกวิดีโอ Session และปิด AnyDesk" },
+          { key: "avoid", label: "Terminate / Avoid", desc: "ยกเลิกสัญญากับ Vendor ทันทีและไม่ใช้ระบบการเงินอีกต่อไป" },
+          { key: "transfer", label: "Transfer / Share", desc: "ให้ Vendor ทำประกันภัยไซเบอร์ของตนเอง" },
+          { key: "tolerate", label: "Tolerate / Accept", desc: "ยอมรับความเสี่ยงต่อไปโดยไม่ทำอะไรเพราะเกรงใจผู้รับจ้าง" }
+        ],
+        correct: "treat",
+        feedback: {
+          correct: "✅ ถูกต้อง! การติดตั้ง PAM, Clientless VPN และการบังคับ MFA คือมาตรการควบคุม (Treat) ที่สกัดกั้นช่องโหว่ Supply Chain ตามกรณีศึกษา Target 2013 และข้อกำหนด ISO 27001",
+          incorrect: "❌ ยังไม่ถูกต้อง การปล่อยให้ใช้ AnyDesk โดยไม่มีการควบคุมถือเป็น Major Non-conformity ที่นำไปสู่การรั่วไหลทางการเงินอย่างรุนแรง"
+        }
+      }
+    };
+
+    function selectStratCase(caseNum) {
+      document.querySelectorAll(".btn-strat-tab").forEach((b, idx) => {
+        b.classList.toggle("active", idx + 1 === caseNum);
+      });
+
+      const c = STRAT_CASES[caseNum];
+      const box = document.getElementById("strat-case-content");
+      let html = '<div class="case-scenario-desc"><strong>' + c.title + '</strong><br>' + c.desc + '</div>';
+      html += '<div class="strat-choices-grid">';
+      c.choices.forEach(ch => {
+        html += '<button type="button" class="btn-strat-choice" onclick="checkStratChoice(' + caseNum + ', \'' + ch.key + '\')">';
+        html += '<span>🔘</span><div><strong>' + ch.label + '</strong><div style="font-size:0.75rem; color:var(--text-muted);">' + ch.desc + '</div></div></button>';
+      });
+      html += '</div><div id="strat-feedback-' + caseNum + '"></div>';
+      box.innerHTML = html;
+    }
+
+    function checkStratChoice(caseNum, key) {
+      const c = STRAT_CASES[caseNum];
+      const fbBox = document.getElementById("strat-feedback-" + caseNum);
+      const isCorrect = key === c.correct;
+
+      fbBox.className = "case-verdict-box " + (isCorrect ? "correct" : "incorrect");
+      fbBox.innerHTML = isCorrect ? c.feedback.correct : c.feedback.incorrect;
+    }
+
+    // 6. WIDGET 5.4: RISK REGISTER EXPLORER DATA & LOGIC
+    const RISK_ITEMS = [
+      { id: "RSK-01", asset: "Active Directory / Central IdP", threat: "Brute Force / Credential Stuffing แย่งสิทธิ์ Admin", inhL: 4, inhI: 5, inhR: 20, inhLvl: "extreme", strat: "Reduce", ctrl: "บังคับใช้ FIDO2/MFA ทุกบัญชี Admin + Account Lockout 5 ครั้ง", resL: 1, resI: 5, resR: 5, resLvl: "med", owner: "ผอ.สำนักไอที" },
+      { id: "RSK-02", asset: "ระบบบริการการศึกษาและทะเบียน (REG)", threat: "Ransomware โจมตีและเข้ารหัสฐานข้อมูลนักศึกษา", inhL: 4, inhI: 5, inhR: 20, inhLvl: "extreme", strat: "Reduce", ctrl: "ติดตั้ง Next-Gen EDR ดักจับ Ransomware + Immutable Offline Backup", resL: 2, resI: 4, resR: 8, resLvl: "high", owner: "ผอ.กองบริการการศึกษา" },
+      { id: "RSK-03", asset: "เครือข่าย Core Switch & Data Center VLAN", threat: "เจาะ Wi-Fi หอพักแล้ว Lateral Movement สู่ Server", inhL: 4, inhI: 4, inhR: 16, inhLvl: "extreme", strat: "Reduce", ctrl: "แบ่ง VLAN ตัดขาดเด็ดขาด + ติดตั้ง Internal Firewall กั้น Zone", resL: 2, resI: 3, resR: 6, resLvl: "med", owner: "หน.ฝ่ายโครงสร้างพื้นฐาน" },
+      { id: "RSK-04", asset: "Mobile App ฐานข้อมูล Cloud (AWS VPC)", threat: "Cloud Data Leak จากการตั้งค่า Security Group เป็น 0.0.0.0/0", inhL: 3, inhI: 5, inhR: 15, inhLvl: "extreme", strat: "Reduce", ctrl: "ติดตั้ง CSPM ตรวจจับ Misconfiguration + CI/CD IaC Scan", resL: 1, resI: 4, resR: 4, resLvl: "low", owner: "หน.ทีมพัฒนาระบบ" },
+      { id: "RSK-05", asset: "ระบบการเงินและชำระเงิน (ERP Gateway)", threat: "Vendor ถูกเจาะผ่าน AnyDesk ไร้ MFA เป็นสะพานเข้าสู่ระบบ", inhL: 4, inhI: 5, inhR: 20, inhLvl: "extreme", strat: "Reduce", ctrl: "บังคับใช้ PAM + Clientless VPN พร้อมบันทึก Video Session Log 100%", resL: 2, resI: 4, resR: 8, resLvl: "high", owner: "ผอ.กองคลัง" },
+      { id: "RSK-06", asset: "ฐานข้อมูลข้อมูลส่วนบุคคล (PDPA Storage)", threat: "ข้อมูลบัตรประชาชน/ประวัติสุขภาพหลุดสู่ Dark Web", inhL: 3, inhI: 5, inhR: 15, inhLvl: "extreme", strat: "Reduce", ctrl: "เข้ารหัส AES-256 (At Rest & In Transit) + Data Loss Prevention (DLP)", resL: 1, resI: 4, resR: 4, resLvl: "low", owner: "เจ้าหน้าที่คุ้มครองข้อมูล (DPO)" },
+      { id: "RSK-07", asset: "เว็บเซิร์ฟเวอร์ลงทะเบียน (Web Portal)", threat: "การโจมตีแบบ DDoS ในวันเปิดลงทะเบียนเรียน", inhL: 4, inhI: 4, inhR: 16, inhLvl: "extreme", strat: "Transfer", ctrl: "เช่าใช้บริการ Cloudflare / AWS CloudFront Anti-DDoS พร้อม SLA", resL: 2, resI: 3, resR: 6, resLvl: "med", owner: "ผอ.กองบริการการศึกษา" },
+      { id: "RSK-08", asset: "บุคลากรและเจ้าหน้าที่การเงิน (Human)", threat: "หลงกล Phishing Email โอนเงินผิดบัญชี (BEC Scam)", inhL: 4, inhI: 4, inhR: 16, inhLvl: "extreme", strat: "Reduce", ctrl: "จัดอบรม Phishing Simulation ประจำไตรมาส + ขั้นตอน Call-back ยืนยัน", resL: 2, resI: 3, resR: 6, resLvl: "med", owner: "ผอ.กองการเจ้าหน้าที่" },
+      { id: "RSK-09", asset: "ระบบประเมินผลเก่า (Legacy Server)", threat: "เจาะผ่านช่องโหว่ Windows Server 2008 EOL", inhL: 4, inhI: 4, inhR: 16, inhLvl: "extreme", strat: "Avoid", ctrl: "Decommission ปลดระวางระบบ หรือกักกันใน Isolated VLAN ห้ามออกเน็ต", resL: 1, resI: 3, resR: 3, resLvl: "low", owner: "ผอ.สำนักไอที" },
+      { id: "RSK-10", asset: "ห้องศูนย์ข้อมูลหลัก (Data Center)", threat: "น้ำรั่วซึมจากท่อแตกหรือแอร์ ทำให้อุปกรณ์ไฟฟ้าเสียหาย", inhL: 2, inhI: 5, inhR: 10, inhLvl: "high", strat: "Reduce", ctrl: "ติดตั้งระบบ Water Leak Detection แจ้งเตือน SMS + ยก Raised Floor 40 ซม.", resL: 1, resI: 4, resR: 4, resLvl: "low", owner: "ผอ.กองอาคารสถานที่" }
+    ];
+
+    function renderRiskTable() {
+      const lvlFilter = document.getElementById("filter-level").value;
+      const stratFilter = document.getElementById("filter-strategy").value;
+      const search = document.getElementById("filter-search").value.toLowerCase();
+
+      const tbody = document.getElementById("risk-table-body");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      const filtered = RISK_ITEMS.filter(item => {
+        if (lvlFilter !== "all" && item.inhLvl !== lvlFilter) return false;
+        if (stratFilter !== "all" && item.strat !== stratFilter) return false;
+        if (search) {
+          const text = (item.id + " " + item.asset + " " + item.threat + " " + item.ctrl + " " + item.owner).toLowerCase();
+          if (!text.includes(search)) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--text-dim);">ไม่พบรายการความเสี่ยงที่ตรงกับเงื่อนไขการค้นหา</td></tr>';
+        return;
+      }
+
+      filtered.forEach(item => {
+        const tr = document.createElement("tr");
+        let html = '<td><strong>' + item.id + '</strong></td>';
+        html += '<td><strong>' + item.asset + '</strong><div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">' + item.threat + '</div></td>';
+        html += '<td><span class="risk-score-pill ' + (item.inhLvl === 'extreme' ? 'ext' : 'hi') + '">' + item.inhL + ' &times; ' + item.inhI + ' = ' + item.inhR + '</span></td>';
+        html += '<td><span style="font-weight:600; color:var(--cyan);">' + item.strat + '</span></td>';
+        html += '<td><div style="font-size:0.8rem; line-height:1.35;">' + item.ctrl + '</div></td>';
+        html += '<td><span class="risk-score-pill ' + (item.resLvl === 'low' ? 'low' : item.resLvl === 'med' ? 'med' : 'hi') + '">' + item.resL + ' &times; ' + item.resI + ' = ' + item.resR + '</span></td>';
+        html += '<td style="white-space:nowrap; font-size:0.78rem;">' + item.owner + '</td>';
+        tr.innerHTML = html;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // 7. WIDGET 5.5: CHAPTER 5 MASTERY QUIZ
+    const QUIZ_QUESTIONS = [
+      {
+        q: "1. ตามมาตรฐานสากล ISO/IEC 27001 และ ISO 31000 เหตุใดแนวคิด 'Zero Risk (ความเสี่ยงเป็นศูนย์)' จึงเป็นเพียงภาพลวงตาในโลกไซเบอร์?",
+        opts: [
+          "เพราะผู้ดูแลระบบไอทียังขาดความเชี่ยวชาญในการติดตั้งไฟร์วอลล์",
+          "เพราะงบประมาณและเวลาขององค์กรมีจำกัด ในขณะที่มีช่องโหว่ใหม่เกิดขึ้นตลอดเวลา และความปลอดภัยที่ตึงเกินไปจะทำลายประสิทธิภาพการทำงาน",
+          "เพราะกฎหมาย พ.ร.บ.ไซเบอร์ 2562 ห้ามไม่ให้องค์กรตั้งเป้าหมายความเสี่ยงเป็นศูนย์",
+          "เพราะอุปกรณ์ EDR และ SIEM ยังไม่รองรับการทำงานบนระบบคลาวด์"
+        ],
+        ans: 1,
+        exp: "ถูกต้อง! ความจริง 3 ประการคือ: (1) มีช่องโหว่ใหม่เกิดขึ้นกว่า 25,000 รายการต่อปี (2) ทรัพยากรองค์กรมีจำกัด และ (3) ความปลอดภัยที่ตึงเกินไปจะผลักดันให้พนักงานหันไปใช้ Shadow IT จนเกิดความเสี่ยงสูงกว่าเดิม"
+      },
+      {
+        q: "2. หากฐานข้อมูลนักศึกษามีมูลค่าสินทรัพย์ AV = 8,000,000 บาท มี Exposure Factor EF = 50% และคาดการณ์ว่าจะถูกพยายามโจมตีเฉลี่ย 1 ครั้งในรอบ 2 ปี (ARO = 0.5) มูลค่าความเสียหายคาดการณ์เฉลี่ยต่อปี (ALE) คือเท่าใด?",
+        opts: [
+          "ALE = 4,000,000 บาทต่อปี",
+          "ALE = 2,000,000 บาทต่อปี",
+          "ALE = 1,000,000 บาทต่อปี",
+          "ALE = 500,000 บาทต่อปี"
+        ],
+        ans: 1,
+        exp: "ถูกต้อง! คำนวณ SLE = AV x EF = 8,000,000 x 0.50 = 4,000,000 บาท จากนั้นคำนวณ ALE = SLE x ARO = 4,000,000 x 0.5 = 2,000,000 บาทต่อปี"
+      },
+      {
+        q: "3. ข้อใดอธิบายความแตกต่างระหว่าง Inherent Risk, Target Risk และ Residual Risk ได้อย่างถูกต้องที่สุด?",
+        opts: [
+          "Inherent คือความเสี่ยงหลังติดตั้ง EDR, Target คือความเสี่ยงที่เกิดจากภัยธรรมชาติ, Residual คือความเสี่ยงที่ไม่มีวันหมดไป",
+          "Inherent คือความเสี่ยงดิบที่ยังไม่มีมาตรการป้องกันเลย, Target คือเพดานความเสี่ยงที่บอร์ดตั้งเป้าไว้, Residual คือความเสี่ยงคงเหลือจริงหลังปฏิบัติตามแผน RTP",
+          "Inherent คือความเสี่ยงของฝ่ายไอที, Target คือความเสี่ยงของฝ่ายกฎหมาย, Residual คือความเสี่ยงของ Lead Auditor",
+          "ทั้งสามคำมีความหมายเหมือนกัน สามารถใช้แทนกันได้ในการจัดทำเอกสาร ISO 27001"
+        ],
+        ans: 1,
+        exp: "ถูกต้อง! Inherent Risk = ความเสี่ยงดิบที่ไม่มีระบบป้องกัน, Target Risk = เป้าหมายที่บอร์ดกำหนดตาม Risk Appetite, และ Residual Risk = ความเสี่ยงคงเหลือจริงหลังติดตั้งมาตรการควบคุมตาม RTP"
+      },
+      {
+        q: "4. กฎเหล็กในการเลือกยุทธศาสตร์ 'ยอมรับความเสี่ยง (Risk Acceptance)' ข้อใดถูกต้องและสอดคล้องกับเกณฑ์ของ Lead Auditor?",
+        opts: [
+          "ผู้ดูแลระบบไอทีสามารถกดเลือก Accept Risk ได้เองหากเห็นว่างานยุ่งเกินไป",
+          "สามารถอนุมัติยอมรับความเสี่ยงที่จะไม่เก็บ Log ตาม พ.ร.บ.คอมพิวเตอร์ ได้หากบอร์ดเห็นชอบ",
+          "ต้องมีผู้บริหารระดับสูง/Risk Owner ลงนามอนุมัติเป็นลายลักษณ์อักษร, ต้องมีกำหนดเวลาหมดอายุ (Sunset Clause) และห้ามยอมรับความเสี่ยงที่ขัดต่อกฎหมายเด็ดขาด",
+          "การยอมรับความเสี่ยงกระทำได้เฉพาะความเสี่ยงระดับสีแดงวิกฤตเท่านั้น"
+        ],
+        ans: 2,
+        exp: "ถูกต้อง! กฎเหล็ก 3 ข้อคือ: (1) Formal Sign-off จากผู้มีอำนาจ (2) Sunset Clause มีอายุจำกัดเพื่อบังคับทบทวน และ (3) ห้ามยอมรับความเสี่ยงที่ผิดกฎหมายเด็ดขาด"
+      },
+      {
+        q: "5. ในการตรวจสอบกระบวนการประเมินความเสี่ยง การทดสอบ 'Anti-Gaming Test' ของ Lead Auditor มีวัตถุประสงค์เพื่ออะไร?",
+        opts: [
+          "เพื่อตรวจสอบว่าพนักงานแอบเล่นเกมในเวลาทำงานหรือไม่",
+          "เพื่อตรวจสอบว่ามีการจงใจกดคะแนน Impact หรือ Likelihood ให้ต่ำกว่าความเป็นจริง เพื่อหลีกเลี่ยงการจัดทำแผน RTP หรือไม่",
+          "เพื่อตรวจสอบความเร็วในการเชื่อมต่ออินเทอร์เน็ตของหอพักนักศึกษา",
+          "เพื่อตรวจสอบว่าระบบ EDR สามารถบล็อกเกมออนไลน์ได้กี่ประเภท"
+        ],
+        ans: 1,
+        exp: "ถูกต้อง! Anti-Gaming Test คือการตรวจสอบว่าเจ้าของระบบ (Control Owner) มีการจงใจกดตัวเลขคะแนนความเสี่ยงลงมาให้อยู่ในโซนสีเขียวหรือสีเหลืองเพื่อเลี่ยงการของบประมาณหรือเลี่ยงการทำแผน RTP หรือไม่ ซึ่งถือเป็นข้อค้นพบบกพร่องร้ายแรง"
+      }
+    ];
+
+    let currentQuizIndex = 0;
+    let quizUserAnswers = {};
+    let quizSubmitted = {};
+
+    function renderQuizCard() {
+      const q = QUIZ_QUESTIONS[currentQuizIndex];
+      const card = document.getElementById("quiz-card-body");
+      document.getElementById("quiz-step-indicator").textContent = "ข้อ " + (currentQuizIndex + 1) + " จาก " + QUIZ_QUESTIONS.length;
+
+      document.getElementById("btn-quiz-prev").disabled = currentQuizIndex === 0;
+      document.getElementById("btn-quiz-next").disabled = currentQuizIndex === QUIZ_QUESTIONS.length - 1;
+
+      const isSub = quizSubmitted[currentQuizIndex];
+      const userAns = quizUserAnswers[currentQuizIndex];
+
+      let html = '<div class="quiz-question-title">' + q.q + '</div><div class="quiz-options-list">';
+      q.opts.forEach((opt, idx) => {
+        html += '<label class="quiz-opt-item ' + (userAns === idx ? 'selected' : '') + '">';
+        html += '<input type="radio" name="quiz_opt" value="' + idx + '" ' + (userAns === idx ? 'checked' : '') + ' ' + (isSub ? 'disabled' : '') + ' onchange="selectQuizOption(' + idx + ')">';
+        html += '<span>' + opt + '</span></label>';
+      });
+      html += '</div>';
+      card.innerHTML = html;
+
+      const expBox = document.getElementById("quiz-explanation");
+      if (isSub) {
+        expBox.style.display = "block";
+        const isCorrect = userAns === q.ans;
+        expBox.className = "quiz-explanation-box " + (isCorrect ? "correct" : "incorrect");
+        expBox.innerHTML = (isCorrect ? "<strong>คำตอบถูกต้อง!</strong> " : "<strong>ยังไม่ถูกต้อง!</strong> ") + q.exp;
+      } else {
+        expBox.style.display = "none";
+      }
+
+      updateQuizScore();
+    }
+
+    function selectQuizOption(idx) {
+      quizUserAnswers[currentQuizIndex] = idx;
+      renderQuizCard();
+    }
+
+    function submitQuizAnswer() {
+      if (quizUserAnswers[currentQuizIndex] === undefined) {
+        alert("กรุณาเลือกคำตอบก่อนกดตรวจ");
+        return;
+      }
+      quizSubmitted[currentQuizIndex] = true;
+      renderQuizCard();
+    }
+
+    function changeQuizQuestion(delta) {
+      currentQuizIndex += delta;
+      renderQuizCard();
+    }
+
+    function updateQuizScore() {
+      let score = 0;
+      Object.keys(quizSubmitted).forEach(idx => {
+        if (quizUserAnswers[idx] === QUIZ_QUESTIONS[idx].ans) score++;
+      });
+      document.getElementById("quiz-live-score").textContent = "คะแนน: " + score + " / " + QUIZ_QUESTIONS.length;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      calculateRisk();
+      initMatrixBoard();
+      showMatrixDetail(4, 5, 20, "lvl-crit");
+      selectStratCase(1);
+      renderRiskTable();
+      renderQuizCard();
+    });
+
+  </script>
+</body>
+</html>

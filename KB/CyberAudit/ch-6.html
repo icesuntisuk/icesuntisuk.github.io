@@ -1,0 +1,2605 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 6: การบริหารสินทรัพย์และการจำแนกประเภทข้อมูล (Asset Management & Data Classification) | NECS1312</title>
+  <meta name="description" content="บทที่ 6: การบริหารสินทรัพย์และการจำแนกประเภทข้อมูล — ทะเบียนสินทรัพย์ 11 ฟิลด์, BIA (MTD, RTO, RPO, SPOF), การจัดระดับชั้นข้อมูล 4 ระดับ, วงจรชีวิตข้อมูล 8 ขั้นตอน, NIST SP 800-88 Rev. 1, DFD Level 1, กระดาษทำการตรวจ และ NCR">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-body: 'Sarabun', sans-serif;
+      --font-display: 'Chakra Petch', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #f1f5f9;
+      --bg-input: #ffffff;
+      --border-color: #e2e8f0;
+      --border-accent: #cbd5e1;
+
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-glow: rgba(2, 132, 199, 0.15);
+
+      --cyan: #0891b2;
+      --cyan-light: #ecfeff;
+      --emerald: #059669;
+      --emerald-light: #ecfdf5;
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --rose: #e11d48;
+      --rose-light: #fff1f2;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+
+      --font-scale: 1;
+      --line-height: 1.75;
+      --toc-width: 320px;
+      --content-max-w: 920px;
+    }
+
+    [data-theme="sepia"] {
+      --bg-base: #fbf7ee;
+      --bg-surface: #f4ede0;
+      --bg-card: #eae0d0;
+      --bg-input: #fdfaf4;
+      --border-color: #ded1be;
+      --border-accent: #ccbba5;
+      --text-main: #382d21;
+      --text-muted: #6e5e4e;
+      --text-dim: #9b8a78;
+      --primary: #965318;
+      --primary-hover: #7b4211;
+      --primary-glow: rgba(150, 83, 24, 0.15);
+      --cyan: #0d7685;
+      --cyan-light: #e6f7f9;
+      --emerald: #1e7e4e;
+      --emerald-light: #e4f5ec;
+      --amber: #b45309;
+      --amber-light: #fef3c7;
+      --rose: #b91c1c;
+      --rose-light: #fee2e2;
+    }
+
+    [data-theme="dark"] {
+      --bg-base: #0b0f19;
+      --bg-surface: #111827;
+      --bg-card: #1f2937;
+      --bg-input: #1e293b;
+      --border-color: #374151;
+      --border-accent: #4b5563;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --primary: #38bdf8;
+      --primary-hover: #7dd3fc;
+      --primary-glow: rgba(56, 189, 248, 0.2);
+      --cyan: #22d3ee;
+      --cyan-light: rgba(34, 211, 238, 0.1);
+      --emerald: #34d399;
+      --emerald-light: rgba(52, 211, 153, 0.1);
+      --amber: #fbbf24;
+      --amber-light: rgba(251, 191, 36, 0.1);
+      --rose: #fb7185;
+      --rose-light: rgba(251, 113, 133, 0.1);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: calc(16px * var(--font-scale)); }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: var(--line-height);
+      transition: background-color 0.2s ease, color 0.2s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP PROGRESS BAR */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--cyan));
+      z-index: 1000;
+      width: 0%;
+      transition: width 0.1s ease;
+    }
+
+    /* NAVBAR */
+    .top-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1.2rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .navbar-left { display: flex; align-items: center; gap: 0.8rem; }
+    .btn-icon {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.15s;
+    }
+    .btn-icon:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .badge-course {
+      font-family: var(--font-code);
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .nav-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 400px;
+    }
+    .navbar-right { display: flex; align-items: center; gap: 0.5rem; }
+    .theme-group, .font-group { display: flex; gap: 2px; background: var(--bg-card); padding: 2px; border-radius: 6px; border: 1px solid var(--border-color); }
+    .btn-toggle {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: var(--font-display);
+      transition: all 0.15s;
+    }
+    .btn-toggle.active, .btn-toggle:hover {
+      background: var(--bg-surface);
+      color: var(--primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* MAIN LAYOUT */
+    .app-container {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      max-width: 1540px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* SIDEBAR TOC */
+    .sidebar-toc {
+      width: var(--toc-width);
+      position: sticky;
+      top: 48px;
+      height: calc(100vh - 48px);
+      overflow-y: auto;
+      border-right: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      padding: 1.2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      flex-shrink: 0;
+      transition: transform 0.25s ease;
+    }
+    .toc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .toc-title {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+    }
+    .toc-nav { display: flex; flex-direction: column; gap: 2px; }
+    .toc-link {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      padding: 0.35rem 0.5rem;
+      border-radius: 4px;
+      line-height: 1.4;
+      transition: all 0.15s;
+    }
+    .toc-link:hover {
+      background: var(--bg-card);
+      color: var(--primary);
+    }
+    .toc-link.active {
+      background: var(--primary-glow);
+      color: var(--primary);
+      font-weight: 600;
+      border-left: 3px solid var(--primary);
+    }
+    .toc-bullet { font-size: 0.9rem; line-height: 1; color: var(--text-dim); }
+    .toc-level-1 { font-weight: 600; color: var(--text-main); margin-top: 0.4rem; }
+    .toc-level-2 { font-weight: 500; padding-left: 0.8rem; }
+    .toc-level-3 { padding-left: 1.4rem; font-size: 0.78rem; color: var(--text-muted); }
+
+    /* CONTENT AREA */
+    .content-main {
+      flex: 1;
+      max-width: var(--content-max-w);
+      margin: 0 auto;
+      padding: 2.5rem 2rem 5rem 2rem;
+    }
+
+    /* TYPOGRAPHY */
+    .content-heading {
+      font-family: var(--font-display);
+      color: var(--text-main);
+      line-height: 1.35;
+      margin-top: 2.2rem;
+      margin-bottom: 1rem;
+      scroll-margin-top: 70px;
+    }
+    h1.content-heading {
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.8rem;
+      margin-top: 0;
+    }
+    h2.content-heading {
+      font-size: 1.5rem;
+      font-weight: 700;
+      border-left: 4px solid var(--primary);
+      padding-left: 0.8rem;
+      margin-top: 2.8rem;
+    }
+    h3.content-heading { font-size: 1.2rem; font-weight: 600; }
+    h4.content-heading { font-size: 1.05rem; font-weight: 600; }
+    h5.content-heading { font-size: 0.95rem; font-weight: 600; }
+
+    .content-p {
+      margin-bottom: 1.1rem;
+      font-size: 1rem;
+      text-align: justify;
+    }
+    .content-list {
+      margin-left: 1.5rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .content-list li { padding-left: 0.3rem; }
+    .content-blockquote {
+      border-left: 4px solid var(--primary);
+      background: var(--bg-card);
+      padding: 1rem 1.2rem;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 1.4rem;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border-color);
+      margin: 3rem 0;
+    }
+
+    code {
+      font-family: var(--font-code);
+      background: var(--bg-card);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      border: 1px solid var(--border-color);
+    }
+    .math-tex {
+      background: var(--primary-glow);
+      color: var(--primary);
+      font-weight: 600;
+      padding: 0.15rem 0.4rem;
+    }
+    .code-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin-bottom: 1.4rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .code-block code {
+      background: transparent;
+      border: none;
+      padding: 0;
+      font-size: 0.85rem;
+      display: block;
+      line-height: 1.5;
+    }
+
+    /* TABLES */
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 1.8rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      box-shadow: var(--shadow-sm);
+    }
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+    .content-table th {
+      background: var(--bg-card);
+      padding: 0.75rem 0.9rem;
+      font-weight: 600;
+      font-family: var(--font-display);
+      border-bottom: 2px solid var(--border-color);
+      color: var(--text-main);
+    }
+    .content-table td {
+      padding: 0.65rem 0.9rem;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .content-table tr:last-child td { border-bottom: none; }
+    .content-table tr:hover { background-color: var(--primary-glow); }
+
+    /* FIGURE BOXES */
+    .figure-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.4rem;
+      margin: 2.2rem 0;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+    .figure-header {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.6rem;
+    }
+    .figure-tag {
+      font-family: var(--font-code);
+      background: var(--primary);
+      color: #ffffff;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .figure-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-main);
+    }
+    .figure-caption {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      border-top: 1px dashed var(--border-color);
+      margin-top: 1.2rem;
+      padding-top: 0.6rem;
+      font-style: italic;
+    }
+
+    /* FIGURE 6.1: TAXONOMY GRID */
+    .taxonomy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .tax-category-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .tax-category-card.data-serv { border-top: 4px solid var(--primary); }
+    .tax-category-card.tech-infra { border-top: 4px solid var(--cyan); }
+    .tax-category-card.people-phys { border-top: 4px solid var(--emerald); }
+    .tax-cat-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+    }
+    .tax-cat-header h4 { font-family: var(--font-display); font-size: 0.95rem; }
+    .tax-items-list { display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.85rem; }
+
+    /* FIGURE 6.2: DISCOVERY GRID */
+    .discovery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .discovery-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .disc-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
+    .disc-badge { font-family: var(--font-code); font-size: 0.7rem; color: var(--primary); font-weight: 700; margin-bottom: 0.4rem; }
+    .discovery-card h5 { font-family: var(--font-display); margin-bottom: 0.5rem; }
+    .discovery-card p { font-size: 0.82rem; color: var(--text-muted); text-align: left; }
+
+    /* FIGURE 6.3: SCHEMA LAYOUT */
+    .schema-layout {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    .schema-col {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .schema-header {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 0.4rem;
+    }
+    .schema-item { font-size: 0.82rem; }
+
+    /* FIGURE 6.4: OWNER VS CUSTODIAN */
+    .owner-custodian-grid {
+      display: flex;
+      align-items: stretch;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .oc-card {
+      flex: 1;
+      min-width: 280px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+    .oc-card.owner { border-top: 4px solid var(--primary); }
+    .oc-card.custodian { border-top: 4px solid var(--emerald); }
+    .oc-badge { font-size: 0.75rem; font-weight: 700; font-family: var(--font-display); color: var(--text-muted); margin-bottom: 0.4rem; }
+    .oc-rule { font-size: 0.82rem; font-style: italic; color: var(--primary); margin-bottom: 0.8rem; }
+    .oc-duties { margin-left: 1.2rem; font-size: 0.84rem; display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.8rem; }
+    .oc-pdpa-tag { background: var(--bg-surface); padding: 0.4rem 0.6rem; border-radius: 4px; font-size: 0.78rem; border: 1px solid var(--border-color); }
+    .oc-vs-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      color: var(--text-dim);
+      font-size: 1.2rem;
+    }
+
+    /* FIGURE 6.5: WORKFLOW FLEX */
+    .workflow-steps-flex {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 0.4rem;
+      overflow-x: auto;
+      padding: 0.5rem 0;
+    }
+    .wf-step {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.8rem 0.6rem;
+      min-width: 120px;
+      text-align: center;
+      flex: 1;
+    }
+    .wf-num {
+      width: 22px;
+      height: 22px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin: 0 auto 0.4rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .wf-title { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; margin-bottom: 0.2rem; }
+    .wf-desc { font-size: 0.72rem; color: var(--text-muted); }
+    .wf-arrow { display: flex; align-items: center; color: var(--primary); font-weight: 700; }
+
+    /* FIGURE 6.6: TIMELINE VISUAL */
+    .timeline-visual {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.4rem;
+      margin-bottom: 1.2rem;
+    }
+    .tv-disaster-marker {
+      border-left: 2px dashed var(--rose);
+      padding-left: 0.5rem;
+      margin-bottom: 1rem;
+      color: var(--rose);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .tv-spans { display: flex; flex-direction: column; gap: 0.6rem; }
+    .tv-rpo-span { background: var(--amber-light); border-left: 4px solid var(--amber); padding: 0.5rem 0.8rem; border-radius: 4px; font-size: 0.82rem; }
+    .tv-rto-span { background: var(--cyan-light); border-left: 4px solid var(--cyan); padding: 0.5rem 0.8rem; border-radius: 4px; font-size: 0.82rem; }
+    .tv-mtd-span { background: var(--rose-light); border-left: 4px solid var(--rose); padding: 0.5rem 0.8rem; border-radius: 4px; font-size: 0.82rem; }
+    .tv-golden-rule { margin-top: 1rem; font-size: 0.85rem; background: var(--bg-surface); padding: 0.6rem 0.8rem; border-radius: 4px; border: 1px solid var(--border-color); }
+    .spof-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.6rem; }
+    .spof-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.8rem; font-size: 0.78rem; }
+    .spof-card h6 { font-family: var(--font-display); font-size: 0.82rem; margin: 0.3rem 0; }
+
+    /* FIGURE 6.7: PYRAMID */
+    .pyramid-wrapper { display: flex; flex-direction: column; gap: 0.6rem; }
+    .pyramid-level {
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .p-badge { font-family: var(--font-code); font-weight: 700; font-size: 0.8rem; }
+    .p-content { font-size: 0.84rem; line-height: 1.5; }
+    .p-restricted { background: var(--rose-light); border-color: var(--rose); }
+    .p-confidential { background: var(--amber-light); border-color: var(--amber); }
+    .p-internal { background: var(--cyan-light); border-color: var(--cyan); }
+    .p-public { background: var(--emerald-light); border-color: var(--emerald); }
+
+    /* FIGURE 6.8: LIFECYCLE & STATES */
+    .states-box { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.8rem; margin-bottom: 1.2rem; }
+    .state-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.8rem; font-size: 0.8rem; }
+    .state-tag { font-family: var(--font-code); font-weight: 700; color: var(--primary); margin-bottom: 0.3rem; }
+    .lifecycle-track {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.2rem;
+      overflow-x: auto;
+      background: var(--bg-card);
+      padding: 1rem 0.6rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    .lc-node {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.5rem 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-align: center;
+      min-width: 90px;
+    }
+    .lc-arrow { color: var(--primary); font-weight: 700; font-size: 0.85rem; }
+
+    /* FIGURE 6.9: SANITIZATION GRID */
+    .sanitization-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+    .san-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; }
+    .san-card.clear { border-top: 4px solid var(--cyan); }
+    .san-card.purge { border-top: 4px solid var(--amber); }
+    .san-card.destroy { border-top: 4px solid var(--rose); }
+    .san-header { margin-bottom: 0.6rem; }
+    .san-level { font-family: var(--font-code); font-size: 0.7rem; font-weight: 700; color: var(--text-muted); }
+    .san-method { font-size: 0.82rem; font-weight: 600; color: var(--primary); margin-bottom: 0.6rem; }
+    .san-details { margin-left: 1.1rem; font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.3rem; }
+
+    /* FIGURE 6.10: DFD ARCHITECTURE */
+    .dfd-architecture { display: flex; flex-direction: column; gap: 1rem; background: var(--bg-card); padding: 1.4rem; border-radius: 8px; border: 1px solid var(--border-color); }
+    .dfd-zone-container { border: 1px dashed var(--border-accent); border-radius: 6px; padding: 0.8rem; background: var(--bg-surface); position: relative; }
+    .dfd-boundary-tag { font-family: var(--font-code); font-size: 0.7rem; font-weight: 700; color: var(--rose); margin-bottom: 0.6rem; }
+    .dfd-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.6rem 0.8rem; display: inline-block; font-size: 0.82rem; }
+    .dfd-flow { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--primary); margin: 0.4rem 0; }
+    .dfd-flow-vertical { text-align: center; font-size: 0.78rem; color: var(--primary); margin: 0.4rem 0; }
+    .dfd-middle-row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+    .dfd-flow-h { font-size: 0.75rem; color: var(--primary); text-align: center; }
+
+    /* WORKING PAPER & NCR */
+    .working-paper-sample { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; font-size: 0.85rem; }
+    .wp-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.6rem; margin-bottom: 0.8rem; font-size: 0.82rem; }
+    .wp-tests-list { display: flex; flex-direction: column; gap: 0.8rem; }
+    .wp-test-title { font-weight: 700; color: var(--primary); margin-bottom: 0.2rem; }
+    .wp-test-body { font-size: 0.82rem; line-height: 1.5; padding-left: 0.6rem; border-left: 2px solid var(--border-accent); }
+
+    .ncr-compare-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+    .ncr-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.84rem; }
+    .ncr-card.major { border-top: 4px solid var(--rose); }
+    .ncr-card.minor { border-top: 4px solid var(--amber); }
+    .ncr-badge.major { color: var(--rose); font-weight: 700; font-family: var(--font-display); }
+    .ncr-badge.minor { color: var(--amber); font-weight: 700; font-family: var(--font-display); }
+    .ncr-code { font-family: var(--font-code); font-weight: 600; }
+
+    /* INTERACTIVE WIDGET STYLES */
+    .interactive-card {
+      background: var(--bg-surface);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2.5rem 0;
+      box-shadow: var(--shadow-lg);
+    }
+    .card-badge {
+      font-family: var(--font-code);
+      background: var(--primary-glow);
+      color: var(--primary);
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.4rem;
+    }
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.4rem;
+    }
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+    }
+
+    /* WIDGET 6.1 BIA */
+    .bia-controls { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.2rem; }
+    .preset-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .preset-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover { background: var(--primary-glow); border-color: var(--primary); }
+    .preset-btn.alert { border-color: var(--rose); color: var(--rose); }
+    .slider-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; background: var(--bg-card); padding: 1rem; border-radius: 8px; }
+    .slider-item { display: flex; flex-direction: column; gap: 0.4rem; }
+    .slider-item label { font-size: 0.82rem; font-weight: 600; }
+    .slider-item input[type="range"] { width: 100%; accent-color: var(--primary); }
+    .bia-display-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+
+    /* WIDGET 6.2 ASSET EXPLORER */
+    .asset-explorer-toolbar { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.2rem; }
+    .search-input-box input {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-input);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+    }
+    .filter-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .filter-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn.active, .filter-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .asset-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      max-height: 520px;
+      overflow-y: auto;
+      padding-right: 0.4rem;
+    }
+    .ast-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      transition: transform 0.15s;
+    }
+    .ast-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .ast-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3rem; }
+    .ast-id { font-family: var(--font-code); font-weight: 700; color: var(--primary); }
+    .ast-tier { font-size: 0.72rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 600; }
+    .tier-1-badge { background: var(--rose-light); color: var(--rose); }
+    .tier-2-badge { background: var(--amber-light); color: var(--amber); }
+    .tier-3-badge { background: var(--cyan-light); color: var(--cyan); }
+    .tier-4-badge { background: var(--bg-surface); color: var(--text-muted); }
+    .ast-name { font-weight: 700; font-size: 0.9rem; }
+
+    /* WIDGET 6.3 DATA SIM */
+    .sim-progress-bar { height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; margin-bottom: 1.2rem; }
+    .sim-fill { height: 100%; background: var(--primary); transition: width 0.3s ease; }
+    .data-sim-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+    .sim-q-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .sim-q-desc { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .sim-btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.6rem; margin-bottom: 1rem; }
+    .sim-choice-btn {
+      padding: 0.6rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      font-family: var(--font-display);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sim-choice-btn:hover { background: var(--primary-glow); border-color: var(--primary); }
+    .sim-feedback { padding: 0.9rem; border-radius: 6px; font-size: 0.84rem; line-height: 1.5; margin-top: 0.8rem; }
+    .sim-feedback.correct { background: var(--emerald-light); border: 1px solid var(--emerald); color: var(--emerald); }
+    .sim-feedback.wrong { background: var(--rose-light); border: 1px solid var(--rose); color: var(--rose); }
+
+    /* WIDGET 6.4 SAN WIZARD */
+    .san-wizard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; }
+    .wizard-selector { display: flex; flex-direction: column; gap: 0.4rem; background: var(--bg-card); padding: 1.2rem; border-radius: 8px; }
+    .wizard-selector select { padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main); font-family: var(--font-body); }
+    .wizard-result { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; font-size: 0.85rem; }
+
+    /* WIDGET 6.5 AUDIT CHECKLIST */
+    .audit-checklist-tool { display: flex; flex-direction: column; gap: 0.8rem; }
+    .chk-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: 0.84rem;
+    }
+    .chk-text { flex: 1; }
+    .chk-control { display: flex; gap: 0.4rem; }
+    .btn-chk {
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      cursor: pointer;
+      font-size: 0.78rem;
+    }
+    .btn-chk.pass.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .btn-chk.fail.active { background: var(--rose); color: #fff; border-color: var(--rose); }
+    .chk-summary-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+
+    /* CALLOUT DOC SAMPLE */
+    .doc-sample {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+      margin: 1.6rem 0;
+    }
+    .callout-title { font-family: var(--font-display); font-weight: 700; margin-bottom: 0.6rem; color: var(--primary); }
+    .cod-sample-code code { background: transparent; border: none; font-size: 0.8rem; }
+
+    /* PROFESSIONAL PERSPECTIVE */
+    .perspective-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.4rem;
+      margin: 2rem 0;
+      box-shadow: var(--shadow-sm);
+    }
+    .persp-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem; }
+    .persp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+    .persp-side { background: var(--bg-card); border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.85rem; }
+    .persp-side.imp { border-top: 4px solid var(--primary); }
+    .persp-side.aud { border-top: 4px solid var(--cyan); }
+    .persp-badge { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--primary); }
+
+    /* CHAPTER FOOTER & NAVIGATION */
+    .chapter-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .btn-nav-chapter {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+    .btn-nav-chapter:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* BACKDROP FOR MOBILE */
+    .toc-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 850;
+    }
+
+    @media (max-width: 992px) {
+      .sidebar-toc {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 950;
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-lg);
+      }
+      .sidebar-toc.open { transform: translateX(0); }
+      .toc-backdrop.open { display: block; }
+      .content-main { padding: 1.5rem 1rem; }
+      .nav-title { max-width: 200px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Reading Progress Bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-navbar">
+    <div class="navbar-left">
+      <button class="btn-icon" id="btn-toggle-toc" title="เปิด/ปิด สารบัญ (Table of Contents)">
+        <span>☰</span> สารบัญ
+      </button>
+      <span class="badge-course">NECS1312 // CH-6</span>
+      <span class="nav-title">บทที่ 6: การบริหารสินทรัพย์และการจำแนกประเภทข้อมูล</span>
+    </div>
+
+    <div class="navbar-right">
+      <div class="font-group">
+        <button class="btn-toggle" id="btn-font-dec" title="ลดขนาดตัวอักษร">A-</button>
+        <button class="btn-toggle" id="btn-font-reset" title="รีเซ็ตขนาดตัวอักษร">A</button>
+        <button class="btn-toggle" id="btn-font-inc" title="เพิ่มขนาดตัวอักษร">A+</button>
+      </div>
+
+      <div class="theme-group">
+        <button class="btn-toggle active" id="btn-theme-light" title="ธีมสว่าง">Light</button>
+        <button class="btn-toggle" id="btn-theme-sepia" title="ธีมซีเปีย">Sepia</button>
+        <button class="btn-toggle" id="btn-theme-dark" title="ธีมมืด">Dark</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="toc-backdrop" id="toc-backdrop"></div>
+
+  <div class="app-container">
+    <!-- Collapsible Sidebar TOC -->
+    <aside class="sidebar-toc" id="sidebar-toc">
+      <div class="toc-header">
+        <span class="toc-title">📑 สารบัญประจำบทที่ 6</span>
+        <button class="btn-icon" id="btn-close-toc" title="ปิดแถบข้าง" style="padding:0.2rem 0.4rem; font-size:0.75rem;">✕</button>
+      </div>
+      <nav class="toc-nav" id="toc-nav"><a href="#sec-บทที่-6-การบริหารสินทรัพย์และการจำแนกประเภทข้อมูล-asset-management-and-data-classification-1" class="toc-link toc-level-1" data-target="sec-บทที่-6-การบริหารสินทรัพย์และการจำแนกประเภทข้อมูล-asset-management-and-data-classification-1"><span class="toc-bullet">›</span> <span class="toc-text">บทที่ 6 การบริหารสินทรัพย์และการจำแนกประเภทข้อมูล (Asset Management and Data Classification)</span></a><a href="#sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-9" class="toc-link toc-level-2" data-target="sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-9"><span class="toc-bullet">›</span> <span class="toc-text">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</span></a><a href="#sec-ส่วนที่-1-การบริหารสินทรัพย์และความสำคัญต่อธุรกิจ-asset-management-business-criticality-21" class="toc-link toc-level-2" data-target="sec-ส่วนที่-1-การบริหารสินทรัพย์และความสำคัญต่อธุรกิจ-asset-management-business-criticality-21"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 1: การบริหารสินทรัพย์และความสำคัญต่อธุรกิจ (Asset Management &amp; Business Criticality)</span></a><a href="#sec-1-1-ปรัชญาและอนุกรมวิธานของสินทรัพย์-asset-taxonomy-23" class="toc-link toc-level-3" data-target="sec-1-1-ปรัชญาและอนุกรมวิธานของสินทรัพย์-asset-taxonomy-23"><span class="toc-bullet">›</span> <span class="toc-text">1.1 ปรัชญาและอนุกรมวิธานของสินทรัพย์ (Asset Taxonomy)</span></a><a href="#sec-1-2-ข้อมูลขั้นต่ำในทะเบียนสินทรัพย์-asset-register-minimum-requirements-66" class="toc-link toc-level-3" data-target="sec-1-2-ข้อมูลขั้นต่ำในทะเบียนสินทรัพย์-asset-register-minimum-requirements-66"><span class="toc-bullet">›</span> <span class="toc-text">1.2 ข้อมูลขั้นต่ำในทะเบียนสินทรัพย์ (Asset Register Minimum Requirements)</span></a><a href="#sec-1-3-ความเป็นเจ้าของสินทรัพย์-บทบาทของ-asset-owner-vs-asset-custodian-97" class="toc-link toc-level-3" data-target="sec-1-3-ความเป็นเจ้าของสินทรัพย์-บทบาทของ-asset-owner-vs-asset-custodian-97"><span class="toc-bullet">›</span> <span class="toc-text">1.3 ความเป็นเจ้าของสินทรัพย์: บทบาทของ Asset Owner vs Asset Custodian</span></a><a href="#sec-1-4-การประเมินความสำคัญต่อธุรกิจ-business-criticality-metrics-139" class="toc-link toc-level-3" data-target="sec-1-4-การประเมินความสำคัญต่อธุรกิจ-business-criticality-metrics-139"><span class="toc-bullet">›</span> <span class="toc-text">1.4 การประเมินความสำคัญต่อธุรกิจ (Business Criticality &amp; Metrics)</span></a><a href="#sec-ส่วนที่-2-การจำแนกประเภทข้อมูล-วงจรชีวิต-และกฎเกณฑ์การจัดการ-data-classification-lifecycle-181" class="toc-link toc-level-2" data-target="sec-ส่วนที่-2-การจำแนกประเภทข้อมูล-วงจรชีวิต-และกฎเกณฑ์การจัดการ-data-classification-lifecycle-181"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 2: การจำแนกประเภทข้อมูล วงจรชีวิต และกฎเกณฑ์การจัดการ (Data Classification &amp; Lifecycle)</span></a><a href="#sec-2-1-หลักการจำแนกประเภทข้อมูล-4-ระดับ-the-4-tier-data-classification-framework-183" class="toc-link toc-level-3" data-target="sec-2-1-หลักการจำแนกประเภทข้อมูล-4-ระดับ-the-4-tier-data-classification-framework-183"><span class="toc-bullet">›</span> <span class="toc-text">2.1 หลักการจำแนกประเภทข้อมูล 4 ระดับ (The 4-Tier Data Classification Framework)</span></a><a href="#sec-2-2-วงจรชีวิตข้อมูล-8-ขั้นตอนและ-3-สภาวะของข้อมูล-data-lifecycle-data-states-231" class="toc-link toc-level-3" data-target="sec-2-2-วงจรชีวิตข้อมูล-8-ขั้นตอนและ-3-สภาวะของข้อมูล-data-lifecycle-data-states-231"><span class="toc-bullet">›</span> <span class="toc-text">2.2 วงจรชีวิตข้อมูล 8 ขั้นตอนและ 3 สภาวะของข้อมูล (Data Lifecycle &amp; Data States)</span></a><a href="#sec-2-3-กฎเกณฑ์การจัดการข้อมูลตามระดับชั้นความลับ-data-handling-rules-matrix-259" class="toc-link toc-level-3" data-target="sec-2-3-กฎเกณฑ์การจัดการข้อมูลตามระดับชั้นความลับ-data-handling-rules-matrix-259"><span class="toc-bullet">›</span> <span class="toc-text">2.3 กฎเกณฑ์การจัดการข้อมูลตามระดับชั้นความลับ (Data Handling Rules Matrix)</span></a><a href="#sec-2-4-การทำลายข้อมูลอย่างปลอดภัยตามมาตรฐาน-nist-sp-800-88-rev-1-279" class="toc-link toc-level-3" data-target="sec-2-4-การทำลายข้อมูลอย่างปลอดภัยตามมาตรฐาน-nist-sp-800-88-rev-1-279"><span class="toc-bullet">›</span> <span class="toc-text">2.4 การทำลายข้อมูลอย่างปลอดภัยตามมาตรฐาน NIST SP 800-88 Rev. 1</span></a><a href="#sec-ส่วนที่-3-กรณีศึกษาเชิงประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-337" class="toc-link toc-level-2" data-target="sec-ส่วนที่-3-กรณีศึกษาเชิงประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-337"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 3: กรณีศึกษาเชิงประยุกต์ &quot;มหาวิทยาลัยดิจิทัลสมมติ&quot; (Core Case Study)</span></a><a href="#sec-3-1-ทะเบียนสินทรัพย์สารสนเทศ-20-รายการหลัก-asset-register-339" class="toc-link toc-level-3" data-target="sec-3-1-ทะเบียนสินทรัพย์สารสนเทศ-20-รายการหลัก-asset-register-339"><span class="toc-bullet">›</span> <span class="toc-text">3.1 ทะเบียนสินทรัพย์สารสนเทศ 20 รายการหลัก (Asset Register)</span></a><a href="#sec-3-2-เมทริกซ์จำแนกประเภทข้อมูล-10-ชุดสำคัญ-data-classification-matrix-368" class="toc-link toc-level-3" data-target="sec-3-2-เมทริกซ์จำแนกประเภทข้อมูล-10-ชุดสำคัญ-data-classification-matrix-368"><span class="toc-bullet">›</span> <span class="toc-text">3.2 เมทริกซ์จำแนกประเภทข้อมูล 10 ชุดสำคัญ (Data Classification Matrix)</span></a><a href="#sec-3-3-แผนภาพกระแสข้อมูล-data-flow-diagram-dfd-level-1-ระบบบริการการศึกษา-385" class="toc-link toc-level-3" data-target="sec-3-3-แผนภาพกระแสข้อมูล-data-flow-diagram-dfd-level-1-ระบบบริการการศึกษา-385"><span class="toc-bullet">›</span> <span class="toc-text">3.3 แผนภาพกระแสข้อมูล (Data Flow Diagram - DFD Level 1: ระบบบริการการศึกษา)</span></a><a href="#sec-ส่วนที่-4-มุมมองและการตรวจสอบของ-lead-auditor-audit-of-asset-data-management-439" class="toc-link toc-level-2" data-target="sec-ส่วนที่-4-มุมมองและการตรวจสอบของ-lead-auditor-audit-of-asset-data-management-439"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 4: มุมมองและการตรวจสอบของ Lead Auditor (Audit of Asset &amp; Data Management)</span></a><a href="#sec-4-1-แผนการตรวจสอบและระเบียบวิธีตรวจสอบ-audit-program-audit-procedures-441" class="toc-link toc-level-3" data-target="sec-4-1-แผนการตรวจสอบและระเบียบวิธีตรวจสอบ-audit-program-audit-procedures-441"><span class="toc-bullet">›</span> <span class="toc-text">4.1 แผนการตรวจสอบและระเบียบวิธีตรวจสอบ (Audit Program &amp; Audit Procedures)</span></a><a href="#sec-4-2-กระดาษทำการตรวจสอบสินทรัพย์และข้อมูล-audit-working-paper-asset-data-audit-452" class="toc-link toc-level-3" data-target="sec-4-2-กระดาษทำการตรวจสอบสินทรัพย์และข้อมูล-audit-working-paper-asset-data-audit-452"><span class="toc-bullet">›</span> <span class="toc-text">4.2 กระดาษทำการตรวจสอบสินทรัพย์และข้อมูล (Audit Working Paper: Asset &amp; Data Audit)</span></a><a href="#sec-4-3-ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง-sample-non-conformity-report-ncr-499" class="toc-link toc-level-3" data-target="sec-4-3-ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง-sample-non-conformity-report-ncr-499"><span class="toc-bullet">›</span> <span class="toc-text">4.3 ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง (Sample Non-Conformity Report: NCR)</span></a><a href="#sec-4-4-lead-auditor-checklist-สำหรับการตรวจประเมิน-asset-data-security-550" class="toc-link toc-level-3" data-target="sec-4-4-lead-auditor-checklist-สำหรับการตรวจประเมิน-asset-data-security-550"><span class="toc-bullet">›</span> <span class="toc-text">4.4 Lead Auditor Checklist สำหรับการตรวจประเมิน Asset &amp; Data Security</span></a><a href="#sec-กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน-active-learning-simulation-567" class="toc-link toc-level-2" data-target="sec-กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน-active-learning-simulation-567"><span class="toc-bullet">›</span> <span class="toc-text">กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน (Active Learning Simulation)</span></a><a href="#sec-กิจกรรม-the-shadow-it-research-data-leak-dilemma-ข้อพิพาทเซิร์ฟเวอร์เถื่อนและข้อมูลวิจัยรั่วไหล-569" class="toc-link toc-level-3" data-target="sec-กิจกรรม-the-shadow-it-research-data-leak-dilemma-ข้อพิพาทเซิร์ฟเวอร์เถื่อนและข้อมูลวิจัยรั่วไหล-569"><span class="toc-bullet">›</span> <span class="toc-text">กิจกรรม: &quot;The Shadow IT &amp; Research Data Leak Dilemma&quot; (ข้อพิพาทเซิร์ฟเวอร์เถื่อนและข้อมูลวิจัยรั่วไหล)</span></a><a href="#sec-มุมมองวิชาชีพประจำบท-professional-perspectives-586" class="toc-link toc-level-2" data-target="sec-มุมมองวิชาชีพประจำบท-professional-perspectives-586"><span class="toc-bullet">›</span> <span class="toc-text">มุมมองวิชาชีพประจำบท (Professional Perspectives)</span></a><a href="#sec-แบบฝึกหัดและการบ้านประจำบทที่-6-611" class="toc-link toc-level-2" data-target="sec-แบบฝึกหัดและการบ้านประจำบทที่-6-611"><span class="toc-bullet">›</span> <span class="toc-text">แบบฝึกหัดและการบ้านประจำบทที่ 6</span></a><a href="#sec-คำถามทบทวนท้ายบท-review-questions-answers-628" class="toc-link toc-level-2" data-target="sec-คำถามทบทวนท้ายบท-review-questions-answers-628"><span class="toc-bullet">›</span> <span class="toc-text">คำถามทบทวนท้ายบท (Review Questions &amp; Answers)</span></a><a href="#sec-สรุปบทที่-6-653" class="toc-link toc-level-2" data-target="sec-สรุปบทที่-6-653"><span class="toc-bullet">›</span> <span class="toc-text">สรุปบทที่ 6</span></a><a href="#sec-เอกสารอ้างอิงและมาตรฐานสากล-663" class="toc-link toc-level-2" data-target="sec-เอกสารอ้างอิงและมาตรฐานสากล-663"><span class="toc-bullet">›</span> <span class="toc-text">เอกสารอ้างอิงและมาตรฐานสากล</span></a></nav>
+    </aside>
+
+    <!-- Main Content Reader -->
+    <main class="content-main" id="content-main">
+      <h1 class="content-heading" id="sec-บทที่-6-การบริหารสินทรัพย์และการจำแนกประเภทข้อมูล-asset-management-and-data-classification-1">บทที่ 6 การบริหารสินทรัพย์และการจำแนกประเภทข้อมูล (Asset Management and Data Classification)</h1>
+<p class="content-p">การรักษาความมั่นคงปลอดภัยไซเบอร์ไม่สามารถเกิดขึ้นได้เลยหากองค์กรไม่ทราบว่า <strong>"ตนเองครอบครองอะไรอยู่บ้าง มีความสำคัญระดับใด และอยู่ที่ไหน"</strong> หนึ่งในสุภาษิตคลาสสิกของวิชาชีพความมั่นคงปลอดภัยไซเบอร์คือ <em>"คุณไม่สามารถปกป้องสิ่งที่คุณไม่รู้ว่ามีอยู่ได้ (You cannot protect what you don't know you have)"</em> ดังนั้น การบริหารจัดการสินทรัพย์ (Asset Management) และการจำแนกประเภทข้อมูล (Data Classification) จึงเป็นรากฐานที่สำคัญที่สุดประการหนึ่งในการจัดทำระบบความมั่นคงปลอดภัยสารสนเทศ (ISO/IEC 27001:2022 Annex A.5.9–A.5.14) และเป็นจุดเริ่มต้นของเกณฑ์การควบคุมตาม CIS Controls v8 (Control 1: Inventory and Control of Enterprise Assets และ Control 2: Inventory and Control of Software Assets) รวมถึง NIST Cybersecurity Framework 2.0 ในฟังก์ชัน Identify (ID.AM)</p>
+<p class="content-p">ในบทนี้ นักศึกษาจะได้เรียนรู้ทั้งในบทบาทของ <strong>ผู้จัดทำระบบ (Lead Implementer)</strong> ในการสำรวจ จำแนกประเภท ตีมูลค่าความสำคัญ (Criticality: MTD, RTO, RPO, SPOF) กำหนดสิทธิ์และความรับผิดชอบของความเป็นเจ้าของ (Asset Owner vs Custodian) กำหนดกฎเกณฑ์การจัดการข้อมูลตามระดับชั้นความลับ (Data Handling Rules) และการควบคุมวงจรชีวิตของข้อมูลตั้งแต่การสร้างจนถึงการทำลายอย่างปลอดภัย (Secure Disposal ตาม NIST SP 800-88 Rev. 1) ตลอดจนบทบาทของ <strong>ผู้ตรวจสอบ (Lead Auditor)</strong> ในการตรวจสอบความถูกต้อง ความครบถ้วนของบัญชีสินทรัพย์ การตรวจจับสินทรัพย์เถื่อน (Shadow IT) และการตรวจสอบหลักฐานเชิงประจักษ์ตลอดวงจรชีวิตข้อมูล</p>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-9">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</h2>
+<p class="content-p">เมื่อสิ้นสุดการเรียนรู้ในบทนี้ นักศึกษาสามารถ:</p>
+<ol class="content-list ordered">
+<li><strong>จำแนกประเภทสินทรัพย์และจัดทำบัญชีสินทรัพย์สารสนเทศได้อย่างสมบูรณ์ (CLO4):</strong> ระบุและจำแนกสินทรัพย์ทั้ง 9 ประเภท (Information, Hardware, Software, Network, Cloud, Personnel, Facility, Service, Third-Party) และจัดทำทะเบียนสินทรัพย์ (Asset Register) ครอบคลุม 11 ฟิลด์ข้อมูลมาตรฐานตามแนวทาง ISO/IEC 27001 ได้อย่างถูกต้อง</li>
+<li><strong>ประเมินระดับความสำคัญของสินทรัพย์ต่อธุรกิจและวิเคราะห์ความเสี่ยงจุดล้มเหลวเดี่ยวได้ (CLO4):</strong> ประเมิน Business Criticality คำนวณและกำหนดค่า Maximum Tolerable Downtime (MTD), Recovery Time Objective (RTO), Recovery Point Objective (RPO) และชี้ชัดจุดล้มเหลวเดี่ยว (Single Point of Failure: SPOF) ในระบบสารสนเทศได้</li>
+<li><strong>จำแนกประเภทข้อมูลและกำหนดกฎเกณฑ์การจัดการตามระดับความลับได้ (CLO4):</strong> กำหนดเกณฑ์และจัดระดับชั้นข้อมูล 4 ระดับ (Public, Internal, Confidential, Restricted) พร้อมทั้งจัดทำเมทริกซ์กฎเกณฑ์การจัดการข้อมูล (Data Handling Matrix) ครอบคลุมการติดป้ายกำกับ การควบคุมสิทธิ์ การเข้ารหัส และการส่งผ่านข้อมูลได้อย่างปลอดภัย</li>
+<li><strong>ตรวจสอบและบริหารจัดการวงจรชีวิตข้อมูล 8 ขั้นตอนได้อย่างปลอดภัย (CLO4, CLO6):</strong> อธิบายและวางมาตรการควบคุมวงจรชีวิตข้อมูลตั้งแต่ Creation, Collection, Storage, Use, Transmission, Sharing, Archiving จนถึง Disposal ตามมาตรฐาน NIST SP 800-88 Rev. 1 (Clear, Purge, Destroy) ได้อย่างถูกต้อง</li>
+<li><strong>ตรวจสอบความสอดคล้องของการบริหารสินทรัพย์และข้อมูลในมุมมอง Lead Auditor ได้ (CLO2, CLO5, CLO7):</strong> ออกแบบกระดาษทำการตรวจสอบ (Audit Working Paper) ดำเนินการสุ่มตรวจความถูกต้องของระดับชั้นข้อมูล สิทธิ์การเข้าถึง การเข้ารหัส และใบรับรองการทำลายข้อมูล (Certificate of Destruction) พร้อมออกใบรายงานข้อบกพร่อง (Non-Conformity Report: NCR) ได้</li>
+</ol>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-1-การบริหารสินทรัพย์และความสำคัญต่อธุรกิจ-asset-management-business-criticality-21">ส่วนที่ 1: การบริหารสินทรัพย์และความสำคัญต่อธุรกิจ (Asset Management & Business Criticality)</h2>
+<h3 class="content-heading" id="sec-1-1-ปรัชญาและอนุกรมวิธานของสินทรัพย์-asset-taxonomy-23">1.1 ปรัชญาและอนุกรมวิธานของสินทรัพย์ (Asset Taxonomy)</h3>
+
+<div class="figure-box" id="figure-6-2">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 6.2</div>
+    <div class="figure-title">4 ยุทธศาสตร์การค้นหาและตรวจจับสินทรัพย์ (Asset Discovery Strategies & Shadow IT Detection)</div>
+  </div>
+  <div class="discovery-grid">
+    <div class="discovery-card">
+      <div class="disc-icon">📡</div>
+      <div class="disc-badge">1. ACTIVE SCANNING</div>
+      <h5>การสแกนเครือข่ายเชิงรุก</h5>
+      <p>ส่งแพ็กเก็ตสำรวจ Subnet เป็นประจำ (Nmap, Nessus) ตรวจหา IP Address พอร์ตที่เปิด และระบบปฏิบัติการ เหมาะสำหรับอุปกรณ์ On-premise</p>
+    </div>
+    <div class="discovery-card">
+      <div class="disc-icon">👁️</div>
+      <div class="disc-badge">2. PASSIVE MONITORING</div>
+      <h5>การดักฟังสัญญาณเครือข่าย</h5>
+      <p>ดักจับทราฟฟิกผ่าน SPAN/TAP Port หรือวิเคราะห์ NetFlow/IPFIX ตรวจจับอุปกรณ์แปลกปลอมที่สื่อสารได้โดยไม่รบกวนระบบ</p>
+    </div>
+    <div class="discovery-card">
+      <div class="disc-icon">☁️</div>
+      <div class="disc-badge">3. CLOUD DISCOVERY (CSPM)</div>
+      <h5>การตรวจจับบนคลาวด์อัตโนมัติ</h5>
+      <p>เชื่อมต่อ API เข้ากับ AWS, Azure, GCP ดึงรายชื่อ VM, S3 Buckets, Security Groups ทันทีที่มีการเปิดใช้งาน ป้องกัน Shadow Cloud</p>
+    </div>
+    <div class="discovery-card">
+      <div class="disc-icon">💻</div>
+      <div class="disc-badge">4. AGENT-BASED INVENTORY</div>
+      <h5>การใช้โปรแกรมประจำเครื่อง</h5>
+      <p>ติดตั้ง Endpoint Management / EDR Agent บนเครื่องลูกข่าย รายงานสเปกฮาร์ดแวร์และรายชื่อซอฟต์แวร์ทั้งหมดส่งกลับสู่ศูนย์กลาง</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 6.2:</strong> 4 วิธีการบูรณาการค้นหาสินทรัพย์เพื่อขจัดจุดบอด Shadow IT และรักษาสถานะ Asset Register ให้เป็นปัจจุบัน
+  </div>
+</div>
+
+<p class="content-p">ในระบบบริหารจัดการความมั่นคงปลอดภัยสารสนเทศ (ISMS) ตาม ISO/IEC 27001 <strong>"สินทรัพย์ (Asset)"</strong> หมายถึง <em>สิ่งใดก็ตามที่มีคุณค่าต่อองค์กร (Anything that has value to the organization)</em> และส่งผลกระทบต่อภารกิจหากสูญหาย ถูกดัดแปลง หรือถูกเปิดเผย องค์กรไม่สามารถปกป้องระบบได้หากขาดบัญชีรายการสินทรัพย์ที่เป็นปัจจุบัน</p>
+
+<div class="figure-box" id="figure-6-1">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 6.1</div>
+    <div class="figure-title">อนุกรมวิธานสินทรัพย์สารสนเทศ 9 ประเภท (The 9 Information Asset Taxonomy)</div>
+  </div>
+  <div class="taxonomy-grid">
+    <div class="tax-category-card data-serv">
+      <div class="tax-cat-header">
+        <span class="tax-cat-icon">💾</span>
+        <h4>หมวดข้อมูลและบริการ (Data & Services)</h4>
+      </div>
+      <div class="tax-items-list">
+        <div class="tax-item">
+          <strong>1. Information Asset:</strong> ฐานข้อมูลประวัตินักศึกษา, ข้อมูลเกรด, ซอร์สโค้ด, สัญญาจ้าง, เอกสารข้อสอบ
+        </div>
+        <div class="tax-item">
+          <strong>2. Service:</strong> บริการลงทะเบียนเรียน (REG), อีเมลมหาวิทยาลัย, Single Sign-On (IdP), Web Portal
+        </div>
+        <div class="tax-item">
+          <strong>3. Cloud Resource:</strong> AWS EC2, S3 Buckets, Azure VMs, Serverless (Lambda), Kubernetes Clusters
+        </div>
+      </div>
+    </div>
+
+    <div class="tax-category-card tech-infra">
+      <div class="tax-cat-header">
+        <span class="tax-cat-icon">🖥️</span>
+        <h4>หมวดโครงสร้างพื้นฐานเทคนิค (Technical Infrastructure)</h4>
+      </div>
+      <div class="tax-items-list">
+        <div class="tax-item">
+          <strong>4. Hardware Asset:</strong> Rack Servers, SAN/NAS Storage, Workstations, Laptops, Mobile Devices
+        </div>
+        <div class="tax-item">
+          <strong>5. Software Asset:</strong> Windows Server, Linux, Oracle DB, PostgreSQL, ERP System, EDR, SIEM
+        </div>
+        <div class="tax-item">
+          <strong>6. Network Device:</strong> Core Switches, Next-Gen Firewalls, Load Balancers, VPN Gateways, Wireless APs
+        </div>
+      </div>
+    </div>
+
+    <div class="tax-category-card people-phys">
+      <div class="tax-cat-header">
+        <span class="tax-cat-icon">👥</span>
+        <h4>หมวดบุคคลและสถานที่ (People, Facility & 3rd Party)</h4>
+      </div>
+      <div class="tax-items-list">
+        <div class="tax-item">
+          <strong>7. Personnel:</strong> DBA, Network Architect, Software Developers, Security Admin, เจ้าหน้าที่การเงิน
+        </div>
+        <div class="tax-item">
+          <strong>8. Facility:</strong> Data Center หลัก, Disaster Recovery Site (DR Site), ห้องชุมสาย MDF/IDF, ห้องเครื่องไฟ UPS
+        </div>
+        <div class="tax-item">
+          <strong>9. Third-Party Service:</strong> Payment Gateway (ธนาคาร), Cloud SaaS (M365), ผู้รับจ้างดูแลระบบ (MSSP)
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 6.1:</strong> อนุกรมวิธานสินทรัพย์ 9 ประเภทหลักตามแนวทาง ISO/IEC 27001:2022 และ CIS Controls v8 แบ่งเป็น 3 เสาหลัก
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-การจำแนกประเภทสินทรัพย์-9-ประเภทหลัก-43">การจำแนกประเภทสินทรัพย์ 9 ประเภทหลัก:</h4>
+<ol class="content-list ordered">
+<li><strong>Information Asset (สินทรัพย์ข้อมูล):</strong> ข้อมูลทั้งในรูปแบบดิจิทัลและเอกสารกายภาพ เช่น ฐานข้อมูลประวัตินักศึกษา, ข้อมูลเกรดเฉลี่ย, ซอร์สโค้ดของแอปพลิเคชัน, แผนธุรกิจ, สัญญาจ้าง, และเอกสารข้อสอบ</li>
+<li><strong>Hardware Asset (สินทรัพย์ฮาร์ดแวร์):</strong> อุปกรณ์คอมพิวเตอร์และอุปกรณ์ประมวลผลที่จับต้องได้ เช่น เครื่องเซิร์ฟเวอร์ (Rack Servers, Blade Servers), อุปกรณ์จัดเก็บข้อมูล (SAN/NAS Storage), คอมพิวเตอร์ลูกข่าย (Workstations), แล็ปท็อป และสมาร์ตโฟนขององค์กร</li>
+<li><strong>Software Asset (สินทรัพย์ซอฟต์แวร์):</strong> โปรแกรมคอมพิวเตอร์ทุกระดับ เช่น ระบบปฏิบัติการ (Windows Server, Red Hat Enterprise Linux), ระบบจัดการฐานข้อมูล (Oracle DB, PostgreSQL, MS SQL), ซอฟต์แวร์ประยุกต์ (ERP, REG System), และซอฟต์แวร์เครื่องมือรักษาความปลอดภัย (EDR, Vulnerability Scanner)</li>
+<li><strong>Network Device (อุปกรณ์ระบบเครือข่าย):</strong> อุปกรณ์ที่ทำหน้าที่เชื่อมต่อและควบคุมเส้นทางข้อมูล เช่น Core Switches, Distribution Switches, Access Switches, Next-Gen Firewalls, Load Balancers, VPN Gateways, และ Wireless Access Points</li>
+<li><strong>Cloud Resource (ทรัพยากรบนคลาวด์):</strong> สินทรัพย์เสมือนที่เช่าใช้งานบนระบบคลาวด์สาธารณะหรือไฮบริด เช่น AWS EC2 Instances, S3 Buckets, Azure Virtual Machines, Serverless Functions (AWS Lambda), Container Registries, และ Kubernetes Clusters</li>
+<li><strong>Personnel (สินทรัพย์บุคลากร):</strong> บุคคลผู้มีความรู้ ความเชี่ยวชาญ และสิทธิ์เข้าถึงระบบสำคัญ เช่น ผู้ดูแลระบบฐานข้อมูล (DBA), สถาปนิกเครือข่าย, นักพัฒนาซอฟต์แวร์, ผู้ดูแลระบบความปลอดภัย (Security Admin), และเจ้าหน้าที่ฝ่ายการเงิน</li>
+<li><strong>Facility (อาคารและสถานที่ตั้งทางกายภาพ):</strong> พื้นที่ทางกายภาพที่จัดเก็บหรือรองรับระบบสารสนเทศ เช่น ห้องศูนย์ข้อมูลหลัก (Main Data Center), ศูนย์ข้อมูลสำรอง (Disaster Recovery Site: DR Site), ห้องชุมสายสื่อสาร (MDF/IDF Rooms), และห้องจ่ายกระแสไฟฟ้าสำรอง (UPS & Generator Rooms)</li>
+<li><strong>Service (บริการสารสนเทศ):</strong> บริการดิจิทัลที่ส่งมอบแก่ผู้ใช้งาน เช่น บริการระบบทะเบียนนักศึกษาออนไลน์, บริการอีเมลมหาวิทยาลัย, บริการ Single Sign-On (SSO / IAM), และบริการเว็บพอร์ทัล</li>
+<li><strong>Third-Party Service (บริการจากบุคคลภายนอกและห่วงโซ่อุปทาน):</strong> บริการจากคู่ค้าภายนอก เช่น ผู้ให้บริการชำระเงิน (Payment Gateway), ผู้ให้บริการคลาวด์ (Microsoft 365, AWS, Google Cloud), และผู้รับจ้างดูแลรักษาระบบจากภายนอก (Outsourced Managed Security Service Providers: MSSP)</li>
+</ol>
+<h4 class="content-heading" id="sec-ยุทธศาสตร์การค้นหาและตรวจจับสินทรัพย์-asset-discovery-strategies-55">ยุทธศาสตร์การค้นหาและตรวจจับสินทรัพย์ (Asset Discovery Strategies):</h4>
+<p class="content-p">ปัญหาใหญ่ที่สุดขององค์กรในปัจจุบันคือ <strong>Shadow IT</strong> (สินทรัพย์หรือบริการที่พนักงานนำมาติดตั้งใช้งานโดยฝ่ายไอทีไม่รับรู้) Lead Implementer ต้องวางระบบค้นหาสินทรัพย์อัตโนมัติด้วย 4 กลยุทธ์:</p>
+<ol class="content-list ordered">
+<li><strong>Active Scanning:</strong> การส่งแพ็กเก็ตสแกนเครือข่ายเป็นประจำ (เช่น การใช้ Nmap หรือ Nessus สแกน Subnet ภายใน) เพื่อค้นหา IP Address, เปิดพอร์ตใดบ้าง, และรันระบบปฏิบัติการใด</li>
+<li><strong>Passive Network Monitoring:</strong> การดักจับ Traffic ที่วิ่งผ่าน Core Switch (SPAN Port / TAP) หรือการวิเคราะห์ NetFlow/IPFIX เพื่อตรวจจับอุปกรณ์แปลกปลอมที่สื่อสารในเครือข่ายโดยไม่ต้องส่งสัญญาณไปรบกวน</li>
+<li><strong>Cloud Asset Discovery (CSPM):</strong> การเชื่อมต่อ Cloud Security Posture Management ผ่าน API เข้ากับ AWS, Azure, GCP เพื่อดึงรายชื่อ Virtual Machines, S3 Buckets, และ Security Groups โดยอัตโนมัติแบบ Real-time</li>
+<li><strong>Agent-Based Discovery:</strong> การติดตั้ง Agent ของระบบจัดการอุปกรณ์ (เช่น Endpoint Management / EDR) บนเครื่องลูกข่าย เพื่อรายงานรายชื่อฮาร์ดแวร์และซอฟต์แวร์ที่ติดตั้งในเครื่องส่งกลับมายังศูนย์กลาง</li>
+</ol>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-1-2-ข้อมูลขั้นต่ำในทะเบียนสินทรัพย์-asset-register-minimum-requirements-66">1.2 ข้อมูลขั้นต่ำในทะเบียนสินทรัพย์ (Asset Register Minimum Requirements)</h3>
+<p class="content-p">ทะเบียนสินทรัพย์ (Asset Register / Asset Inventory) มิใช่เพียงตารางรายการครุภัณฑ์ของฝ่ายพัสดุ แต่เป็น <strong>"ทะเบียนความมั่นคงปลอดภัย"</strong> ที่ต้องบรรจุข้อมูลทางเทคนิคและการกำกับดูแลครบถ้วนอย่างน้อย <strong>11 ฟิลด์ข้อมูลมาตรฐาน</strong>:</p>
+
+<div class="figure-box" id="figure-6-3">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 6.3</div>
+    <div class="figure-title">11 ฟิลด์ข้อมูลมาตรฐานในทะเบียนสินทรัพย์ (Asset Register Core Schema)</div>
+  </div>
+  <div class="schema-layout">
+    <div class="schema-col">
+      <div class="schema-header tech-id">🔹 ข้อมูลระบุตัวตนและหน้าที่</div>
+      <div class="schema-item"><strong>1. Asset ID:</strong> รหัสเฉพาะที่ไม่ซ้ำ เช่น <code>AST-01</code>, <code>SRV-REG-001</code></div>
+      <div class="schema-item"><strong>2. Asset Name:</strong> ชื่อทางการ เช่น REG Database Server</div>
+      <div class="schema-item"><strong>3. Description:</strong> คำอธิบายการทำงาน ยี่ห้อ รุ่น สเปก</div>
+      <div class="schema-item"><strong>6. Location:</strong> ที่ตั้งทางกายภาพ (Rack/ห้อง) หรือ Cloud Region</div>
+    </div>
+    <div class="schema-col">
+      <div class="schema-header gov-id">🔸 ข้อมูลธรรมาภิบาลและการกำกับ</div>
+      <div class="schema-item"><strong>4. Asset Owner:</strong> ผู้บริหารสายงานธุรกิจ (มีอำนาจตัดสินใจ)</div>
+      <div class="schema-item"><strong>5. Asset Custodian:</strong> ผู้ดูแลเชิงเทคนิค (System Admin/DBA)</div>
+      <div class="schema-item"><strong>9. Data Processed:</strong> ประเภทและระดับชั้นความลับของข้อมูล</div>
+      <div class="schema-item"><strong>10. Support Status:</strong> สถานะ Warranty, EOL (End-of-Life)</div>
+    </div>
+    <div class="schema-col">
+      <div class="schema-header risk-id">🔻 ข้อมูลความเสี่ยงและความต่อเนื่อง</div>
+      <div class="schema-item"><strong>7. Dependency:</strong> ระบบที่พึ่งพา หรือระบบที่ให้บริการ</div>
+      <div class="schema-item"><strong>8. Criticality:</strong> ระดับความสำคัญ (Tier 1 ถึง Tier 4)</div>
+      <div class="schema-item"><strong>11. Backup Req.:</strong> เป้าหมาย RPO / RTO และความถี่ในการสำรองข้อมูล</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 6.3:</strong> 11 องค์ประกอบข้อมูลจำเป็นสำหรับทะเบียนสินทรัพย์ด้านความมั่นคงปลอดภัยตามมาตรฐาน ISO/IEC 27001
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-การเชื่อมโยงกับ-cmdb-และ-itil-v4-88">การเชื่อมโยงกับ CMDB และ ITIL v4:</h4>
+<p class="content-p">ในองค์กรขนาดใหญ่ ข้อมูลในทะเบียนสินทรัพย์จะถูกบูรณาการเข้ากับ <strong>Configuration Management Database (CMDB)</strong> ตามกรอบ ITIL v4 ซึ่งบันทึกรายการเป็น <strong>Configuration Items (CI)</strong> และเชื่อมโยงความสัมพันธ์ (Relationship Mapping) ระหว่างฮาร์ดแวร์ ซอฟต์แวร์ ฐานข้อมูล และบริการธุรกิจ เพื่อให้สามารถประเมินผลกระทบ (Change Impact Analysis) เมื่อมีการเปลี่ยนแปลงหรือเกิดเหตุขัดข้องได้อย่างแม่นยำ</p>
+<h4 class="content-heading" id="sec-การติดป้ายกำกับสินทรัพย์-asset-tagging-91">การติดป้ายกำกับสินทรัพย์ (Asset Tagging):</h4>
+<ul class="content-list ">
+<li><strong>Physical Tagging:</strong> การติดแผ่นป้ายบาร์โค้ด (Barcode), คิวอาร์โค้ด (QR Code) หรือชิป RFID ที่ตัวเครื่องเซิร์ฟเวอร์และอุปกรณ์เครือข่าย เพื่อให้ตรวจสอบการเคลื่อนย้ายและตรวจนับได้ง่าย</li>
+<li><strong>Logical Tagging:</strong> การกำหนด Metadata Tag บนระบบคลาวด์ เช่น บน AWS/Azure ต้องระบุแท็ก <code>Owner: Registrar_Office</code>, <code>Environment: Production</code>, <code>DataClassification: Confidential</code>, <code>CostCenter: EDU-01</code> เพื่อควบคุมสิทธิ์และการคิดต้นทุน</li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-1-3-ความเป็นเจ้าของสินทรัพย์-บทบาทของ-asset-owner-vs-asset-custodian-97">1.3 ความเป็นเจ้าของสินทรัพย์: บทบาทของ Asset Owner vs Asset Custodian</h3>
+<p class="content-p">หนึ่งในข้อผิดพลาดร้ายแรงขององค์กรคือความเข้าใจผิดว่า <strong>"ฝ่ายไอทีเป็นเจ้าของทุกอย่างในระบบคอมพิวเตอร์"</strong> ในหลักการกำกับดูแลสากล ต้องแบ่งแยกหน้าที่ระหว่าง <strong>Asset Owner</strong> และ <strong>Asset Custodian</strong> อย่างเด็ดขาด:</p>
+
+<div class="figure-box" id="figure-6-4">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 6.4</div>
+    <div class="figure-title">การแบ่งแยกอำนาจและหน้าที่: Asset Owner vs Asset Custodian</div>
+  </div>
+  <div class="owner-custodian-grid">
+    <div class="oc-card owner">
+      <div class="oc-badge">👔 ฝ่ายบริหารธุรกิจ</div>
+      <h4>Asset Owner (เจ้าของสินทรัพย์)</h4>
+      <div class="oc-rule">"มีอำนาจตัดสินใจสูงสุดและรับผิดชอบความเสียหาย"</div>
+      <ul class="oc-duties">
+        <li>เป็นผู้บริหารระดับสายงาน (เช่น ผอ.สำนักทะเบียน, ผอ.กองคลัง)</li>
+        <li>กำหนดระดับชั้นความลับของข้อมูล (Data Classification)</li>
+        <li>อนุมัติสิทธิ์ว่าใครสามารถเข้าถึงข้อมูลได้บ้าง (Access Authorization)</li>
+        <li>กำหนดเกณฑ์ระยะเวลาจัดเก็บและเงื่อนไขการสำรองข้อมูล (Retention & RPO)</li>
+        <li>อนุมัติการทำลายข้อมูลหรือปลดระวางอุปกรณ์ (Disposal Approval)</li>
+      </ul>
+      <div class="oc-pdpa-tag">เทียบเคียง PDPA: <strong>Data Controller (ผู้ควบคุมข้อมูลส่วนบุคคล)</strong></div>
+    </div>
+
+    <div class="oc-vs-badge">VS</div>
+
+    <div class="oc-card custodian">
+      <div class="oc-badge">🛠️ ฝ่ายปฏิบัติการเทคนิค</div>
+      <h4>Asset Custodian (ผู้ดูแลรักษาเชิงเทคนิค)</h4>
+      <div class="oc-rule">"ผู้ลงมือปฏิบัติการตามคำสั่งและดูแลความพร้อมใช้งาน"</div>
+      <ul class="oc-duties">
+        <li>เป็นผู้เชี่ยวชาญไอที (เช่น Lead DBA, System Admin, Network Eng.)</li>
+        <li>ตั้งค่าสิทธิ์ Access Control และ Firewall ตามที่ Owner อนุมัติ</li>
+        <li>บำรุงรักษาฮาร์ดแวร์ อัปเดต OS และแพตช์ความปลอดภัย</li>
+        <li>ลงมือสำรองข้อมูล (Backup) และทดสอบการกู้คืนระบบตาม RTO/RPO</li>
+        <li>ลงมือทำลายข้อมูลและสื่อบันทึกอย่างปลอดภัยตามมาตรฐาน NIST 800-88</li>
+      </ul>
+      <div class="oc-pdpa-tag">เทียบเคียง PDPA: <strong>Data Processor (ผู้ประมวลผลข้อมูลส่วนบุคคล)</strong></div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 6.4:</strong> การแบ่งแยกอำนาจหน้าที่ (Segregation of Duties) ป้องกันความขัดแย้งทางผลประโยชน์และสร้างความรับผิดชอบที่โปร่งใส
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-เปรียบเทียบข้ามมาตรฐาน-iso-27001-vs-กฎหมายคุ้มครองข้อมูลส่วนบุคคล-pdpa-116">เปรียบเทียบข้ามมาตรฐาน: ISO 27001 vs กฎหมายคุ้มครองข้อมูลส่วนบุคคล (PDPA):</h4>
+<ul class="content-list ">
+<li><strong>Asset Owner (ISO 27001)</strong> <code class="math-tex">\approx</code> <strong>Data Controller (ผู้ควบคุมข้อมูลส่วนบุคคล ตาม PDPA):</strong> มีอำนาจตัดสินใจเกี่ยวกับการเก็บรวบรวม ใช้ หรือเปิดเผยข้อมูล และเป็นผู้รับผิดชอบตามกฎหมาย</li>
+<li><strong>Asset Custodian (ISO 27001)</strong> <code class="math-tex">\approx</code> <strong>Data Processor (ผู้ประมวลผลข้อมูลส่วนบุคคล ตาม PDPA):</strong> ดำเนินการประมวลผล จัดเก็บ หรือดูแลรักษาตามคำสั่งหรือในนามของผู้ควบคุมข้อมูลส่วนบุคคล</li>
+</ul>
+<h4 class="content-heading" id="sec-วงจรการทบทวนและการปลดระวางสินทรัพย์-decommissioning-workflow-120">วงจรการทบทวนและการปลดระวางสินทรัพย์ (Decommissioning Workflow):</h4>
+<p class="content-p">กระบวนการปลดระวางสินทรัพย์สารสนเทศต้องดำเนินการผ่าน 6 ขั้นตอนอย่างเป็นระบบ:</p>
+
+<div class="figure-box" id="figure-6-5">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 6.5</div>
+    <div class="figure-title">วงจรการทบทวนและการปลดระวางสินทรัพย์ 6 ขั้นตอน (Decommissioning Workflow)</div>
+  </div>
+  <div class="workflow-steps-flex">
+    <div class="wf-step">
+      <div class="wf-num">1</div>
+      <div class="wf-title">ร้องขอปลดระวาง</div>
+      <div class="wf-desc">Owner ยื่นคำร้องเมื่อหมดสัญญา ชำรุด หรือตกรุ่น EOL</div>
+    </div>
+    <div class="wf-arrow">➔</div>
+    <div class="wf-step">
+      <div class="wf-num">2</div>
+      <div class="wf-title">วิเคราะห์ผลกระทบ</div>
+      <div class="wf-desc">ตรวจ Dependency และผู้ใช้งานที่ยังค้างอยู่ในระบบ</div>
+    </div>
+    <div class="wf-arrow">➔</div>
+    <div class="wf-step">
+      <div class="wf-num">3</div>
+      <div class="wf-title">สำรองและย้ายข้อมูล</div>
+      <div class="wf-desc">สำรองข้อมูลทั้งหมดและย้ายเข้า Archive Storage ตามกฎหมาย</div>
+    </div>
+    <div class="wf-arrow">➔</div>
+    <div class="wf-step">
+      <div class="wf-num">4</div>
+      <div class="wf-title">อนุมัติการทำลาย</div>
+      <div class="wf-desc">Asset Owner ลงนามอนุมัติให้ทำลายข้อมูลและปลดอุปกรณ์</div>
+    </div>
+    <div class="wf-arrow">➔</div>
+    <div class="wf-step">
+      <div class="wf-num">5</div>
+      <div class="wf-title">ทำลายและเพิกถอน</div>
+      <div class="wf-desc">Sanitization ตาม NIST 800-88 เพิกถอนสิทธิ์ ถอน SSL</div>
+    </div>
+    <div class="wf-arrow">➔</div>
+    <div class="wf-step">
+      <div class="wf-num">6</div>
+      <div class="wf-title">อัปเดตทะเบียน</div>
+      <div class="wf-desc">เปลี่ยนสถานะเป็น Disposed และแนบใบรับรอง CoD</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 6.5:</strong> กระบวนการ 6 ขั้นตอนในการปลดระวางสินทรัพย์เพื่อป้องกันข้อมูลรั่วไหลและการคงอยู่ของสินทรัพย์ผี (Ghost Assets)
+  </div>
+</div>
+
+<ol class="content-list ordered">
+<li><strong>Request:</strong> เจ้าของสินทรัพย์ยื่นคำร้องขอปลดระวางสินทรัพย์เนื่องจากหมดสัญญาเช่า ชำรุด หรือตกรุ่น (EOL)</li>
+<li><strong>Impact & Dependency Analysis:</strong> วิเคราะห์ว่ามีระบบอื่นพึ่งพาสินทรัพย์นี้อยู่หรือไม่ มีผู้ใช้งานค้างอยู่ในระบบหรือไม่</li>
+<li><strong>Data Backup & Archiving:</strong> สำรองข้อมูลทั้งหมดและย้ายข้อมูลเก่าที่ต้องเก็บตามกฎหมายไปยังที่เก็บข้อมูลถาวร (Archive Storage)</li>
+<li><strong>Approval:</strong> เจ้าของสินทรัพย์ (Asset Owner) ลงนามอนุมัติให้ดำเนินการทำลายข้อมูลและปลดอุปกรณ์ออกจากระบบ</li>
+<li><strong>Sanitization & Revocation:</strong> ทำลายข้อมูลตามมาตรฐาน NIST SP 800-88 ปลดสิทธิ์บัญชีผู้ใช้ เพิกถอนใบรับรองดิจิทัล (SSL Certificate) และถอดอุปกรณ์ออกจากเครือข่าย</li>
+<li><strong>Register Update:</strong> บันทึกสถานะของสินทรัพย์ใน Asset Register เป็น "Decommissioned / Disposed" พร้อมแนบใบรับรอง Certificate of Destruction</li>
+</ol>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-1-4-การประเมินความสำคัญต่อธุรกิจ-business-criticality-metrics-139">1.4 การประเมินความสำคัญต่อธุรกิจ (Business Criticality & Metrics)</h3>
+
+<div class="interactive-card" id="widget-6-1">
+  <div class="card-badge">INTERACTIVE WIDGET 6.1</div>
+  <div class="card-title">⏱️ โปรแกรมคำนวณและประเมินดัชนีชี้วัดความต่อเนื่องทางธุรกิจ (BIA Metrics Calculator)</div>
+  <p class="card-desc">ทดสอบความสมเหตุสมผลของค่า <strong>MTD, RTO, RPO</strong> ตามกฎเหล็กวิศวกรรมความปลอดภัย <code>RTO &lt; MTD</code> เลือกโหลดสถานการณ์จำลองหรือป้อนตัวเลขเพื่อวิเคราะห์ผลกระทบ</p>
+
+  <div class="bia-controls">
+    <div class="preset-buttons">
+      <button class="preset-btn" onclick="loadBiaPreset('reg')">กรณีที่ 1: ระบบทะเบียน REG (Mission-Critical)</button>
+      <button class="preset-btn" onclick="loadBiaPreset('erp')">กรณีที่ 2: ระบบการเงิน ERP (Business-Critical)</button>
+      <button class="preset-btn" onclick="loadBiaPreset('web')">กรณีที่ 3: เว็บประชาสัมพันธ์ (Important)</button>
+      <button class="preset-btn alert" onclick="loadBiaPreset('flawed')">กรณีที่ 4: การตั้งค่าที่ผิดพลาด (Fatal Overrun)</button>
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-item">
+        <label>MTD (ระยะเวลาล่มสูงสุดที่ธุรกิจทนได้): <span id="val-mtd">12</span> ชม.</label>
+        <input type="range" id="input-mtd" min="1" max="48" value="12" oninput="updateBiaCalc()">
+      </div>
+      <div class="slider-item">
+        <label>RTO (เป้าหมายเวลากู้คืนระบบ): <span id="val-rto">4</span> ชม.</label>
+        <input type="range" id="input-rto" min="1" max="48" value="4" oninput="updateBiaCalc()">
+      </div>
+      <div class="slider-item">
+        <label>RPO (ระยะเวลาข้อมูลสูญหายสูงสุดที่ยอมรับได้): <span id="val-rpo">1</span> ชม.</label>
+        <input type="range" id="input-rpo" min="0.25" max="24" step="0.25" value="1" oninput="updateBiaCalc()">
+      </div>
+    </div>
+  </div>
+
+  <div class="bia-display-box" id="bia-display-box">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<p class="content-p">เมื่อเกิดเหตุภัยคุกคามหรือระบบล่ม องค์กรไม่สามารถกู้คืนทุกระบบพร้อมกันได้ จึงต้องมีการประเมินความสำคัญของสินทรัพย์ต่อการดำเนินงาน (Business Impact Analysis: BIA) โดยกำหนดตัวชี้วัดความต่อเนื่องทางธุรกิจ 4 ประการ:</p>
+
+<div class="figure-box" id="figure-6-6">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 6.6</div>
+    <div class="figure-title">เส้นเวลาความต่อเนื่องทางธุรกิจ: MTD, RTO, RPO และการวิเคราะห์ SPOF</div>
+  </div>
+  <div class="timeline-visual">
+    <div class="tv-bar-container">
+      <div class="tv-disaster-marker">
+        <div class="marker-flag">💥 จุดเกิดภัยพิบัติ / ระบบล่ม</div>
+        <div class="marker-line"></div>
+      </div>
+      <div class="tv-spans">
+        <div class="tv-rpo-span">
+          <div class="span-label">◀── RPO (ข้อมูลสูญหายสูงสุดที่ยอมรับได้) ──▶</div>
+          <div class="span-sub">จุด Backup ล่าสุด ถึง เวลาล่ม</div>
+        </div>
+        <div class="tv-rto-span">
+          <div class="span-label">◀────── RTO (เป้าหมายเวลากู้ระบบ) ──────▶</div>
+          <div class="span-sub">ระบบต้องกลับมาเปิดบริการได้</div>
+        </div>
+        <div class="tv-mtd-span">
+          <div class="span-label">◀───────────── MTD (เวลาล่มสูงสุดที่ธุรกิจทนได้) ─────────────▶</div>
+          <div class="span-sub">หากเกินเวลานี้ = องค์กรเสียหายกู้คืนไม่ได้ / ล้มละลาย</div>
+        </div>
+      </div>
+    </div>
+    <div class="tv-golden-rule">
+      <strong>กฎเหล็กทางวิศวกรรมความต่อเนื่อง:</strong> <code>RTO &lt; MTD</code> เสมอ! และ <code>RPO</code> กำหนดความถี่ของการสำรองข้อมูล
+    </div>
+  </div>
+
+  <div class="spof-grid">
+    <div class="spof-card">
+      <span class="spof-icon">⚡</span>
+      <h6>Hardware SPOF</h6>
+      <p>มี Power Supply ตัวเดียว ➔ <strong>แก้:</strong> 2x Redundant PSU คนละเฟส</p>
+    </div>
+    <div class="spof-card">
+      <span class="spof-icon">🌐</span>
+      <h6>Network SPOF</h6>
+      <p>เน็ตจาก ISP เจ้าเดียว ➔ <strong>แก้:</strong> Dual Leased Line ต่าง ISP (BGP)</p>
+    </div>
+    <div class="spof-card">
+      <span class="spof-icon">💾</span>
+      <h6>Storage SPOF</h6>
+      <p>ฮาร์ดดิสก์ลูกเดียว ➔ <strong>แก้:</strong> RAID 6 / 10 + Dual Controller</p>
+    </div>
+    <div class="spof-card">
+      <span class="spof-icon">🏢</span>
+      <h6>Facility SPOF</h6>
+      <p>Data Center จุดเดียว ➔ <strong>แก้:</strong> จัดตั้ง DR Site ห่าง 30-50 กม.</p>
+    </div>
+    <div class="spof-card">
+      <span class="spof-icon">👤</span>
+      <h6>Human SPOF</h6>
+      <p>DBA รู้รหัสเพียงคนเดียว ➔ <strong>แก้:</strong> Runbook, Dual Control, Succession Plan</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 6.6:</strong> การเชื่อมโยงดัชนีชี้วัด BIA (Business Impact Analysis) และ 5 มิติของการขจัดจุดล้มเหลวเดี่ยว (SPOF)
+  </div>
+</div>
+
+<ol class="content-list ordered">
+<li><strong>Maximum Tolerable Downtime (MTD):</strong> ระยะเวลาหยุดทำงานสูงสุดที่องค์กร <strong>"สามารถทนรับได้"</strong> ก่อนที่ธุรกิจหรือพันธกิจจะได้รับความเสียหายอย่างกู้คืนไม่ได้ (Unacceptable Damage) หากระบบหยุดทำงานนานเกิน MTD องค์กรอาจถูกเพิกถอนใบอนุญาต สูญเสียสถานะทางธุรกิจ หรือล้มละลาย</li>
+<li><strong>Recovery Time Objective (RTO):</strong> ระยะเวลาเป้าหมายที่กำหนดให้ <strong>"ระบบต้องถูกกู้คืนจนสามารถกลับมาเปิดให้บริการได้ตามปกติ"</strong> </li>
+</ol>
+<p class="content-p">   $<code class="math-tex">\text{เงื่อนไขสำคัญทางวิศวกรรม:} \quad \mathbf{RTO < MTD} \quad \text{เสมอ}</code>$</p>
+<ol class="content-list ordered">
+<li><strong>Recovery Point Objective (RPO):</strong> จุดเวลาเป้าหมายของการสูญเสียข้อมูลสูงสุดที่ยอมรับได้ หรือ <strong>"ปริมาณข้อมูลที่ยอมให้สูญหายได้ในรูปของระยะเวลา"</strong> เช่น หากกำหนด RPO = 1 ชั่วโมง หมายความว่าเมื่อระบบล่ม ข้อมูลที่สร้างขึ้นในชั่วโมงที่ผ่านมาอาจสูญหายได้ แต่องค์กรต้องมีระบบสำรองข้อมูลที่ทำให้สูญหายไม่เกิน 1 ชั่วโมง (ต้องสำรองข้อมูลทุก 1 ชั่วโมง หรือทำ Real-time Database Replication)</li>
+<li><strong>Single Point of Failure (SPOF):</strong> องค์ประกอบ ฮาร์ดแวร์ ซอฟต์แวร์ เส้นทางเครือข่าย หรือบุคลากรใด ๆ ที่ <strong>หากชิ้นส่วนนี้หยุดทำงานเพียงชิ้นเดียว จะทำให้ระบบทั้งหมดล่มสลายลงทันที</strong></li>
+</ol>
+<h4 class="content-heading" id="sec-มิติของ-single-point-of-failure-spof-และแนวทางแก้ไข-163">มิติของ Single Point of Failure (SPOF) และแนวทางแก้ไข:</h4>
+<ul class="content-list ">
+<li><strong>Hardware SPOF:</strong> เซิร์ฟเวอร์มี Power Supply เพียงตัวเดียว <code class="math-tex">\rightarrow</code> แก้ด้วย Redundant Power Supply (2x PSU) เสียบไฟคนละเฟส</li>
+<li><strong>Network SPOF:</strong> มีลิงก์อินเทอร์เน็ตจาก ISP เพียงเจ้าเดียว <code class="math-tex">\rightarrow</code> แก้ด้วย Dual Multihomed ISP (เช่น ต่อทั้ง NT และ True) ผ่านโปรโตคอล BGP</li>
+<li><strong>Storage SPOF:</strong> ใช้ฮาร์ดดิสก์ลูกเดียวไม่มีสำรอง <code class="math-tex">\rightarrow</code> แก้ด้วย RAID 6 / RAID 10 และ Dual Storage Controller</li>
+<li><strong>Location/Facility SPOF:</strong> ศูนย์ข้อมูลตั้งอยู่ในพื้นที่น้ำท่วมถึงเพียงแห่งเดียว <code class="math-tex">\rightarrow</code> แก้ด้วยการจัดตั้งศูนย์ข้อมูลสำรอง (DR Site) ห่างออกไปอย่างน้อย 30-50 กิโลเมตร</li>
+<li><strong>Human SPOF (Key Person Dependency):</strong> มีผู้ดูแลระบบฐานข้อมูลเพียงคนเดียวที่รู้รหัสผ่าน Master Password และรู้วิธีกู้ระบบ <code class="math-tex">\rightarrow</code> แก้ด้วยการจัดทำคู่มือ Runbook, แบ่งสิทธิ์ตามหลัก Dual Control, และจัดทำแผนสืบทอดตำแหน่ง (Succession Planning)</li>
+</ul>
+<h4 class="content-heading" id="sec-การจัดระดับความสำคัญของสินทรัพย์-asset-criticality-tiers-170">การจัดระดับความสำคัญของสินทรัพย์ (Asset Criticality Tiers):</h4>
+<div class="table-container"><table class="content-table"><thead><tr><th>ระดับความสำคัญ</th><th>คำนิยามและผลกระทบต่อภารกิจ</th><th>เกณฑ์ RTO / RPO</th><th>ตัวอย่างระบบในมหาวิทยาลัย</th></tr></thead><tbody><tr><td><strong>Tier 1 (Mission-Critical)</strong></td><td>ระบบหัวใจหลัก หากล่มจะกระทบต่อภารกิจทันทีและสร้างความเสียหายร้ายแรงต่อชื่อเสียง/การเงิน/ชีวิต</td><td>RTO < 2 ชั่วโมง<br>RPO < 15 นาที</td><td>• ระบบ Active Directory / Central IdP<br>• ระบบลงทะเบียนเรียน (REG System)<br>• Core Firewall และ Gateway</td></tr><tr><td><strong>Tier 2 (Business-Critical)</strong></td><td>ระบบสำคัญ หากล่มจะกระทบต่อการปฏิบัติงานหลัก แต่มีกระบวนการทำงานทดแทนชั่วคราวได้</td><td>RTO < 8 ชั่วโมง<br>RPO < 4 ชั่วโมง</td><td>• ระบบการเงินและบัญชี (ERP)<br>• ระบบบริหารจัดการการเรียนการสอน (LMS)<br>• ระบบออกใบเสร็จรับเงิน</td></tr><tr><td><strong>Tier 3 (Important)</strong></td><td>ระบบสนับสนุนการทำงาน หากล่มจะทำให้เกิดความไม่สะดวก แต่ไม่กระทบต่อพันธกิจหลัก</td><td>RTO < 24 ชั่วโมง<br>RPO < 24 ชั่วโมง</td><td>• เว็บไซต์ประชาสัมพันธ์มหาวิทยาลัย<br>• ระบบสืบค้นห้องสมุด<br>• ระบบประเมินอาจารย์ผู้สอน</td></tr><tr><td><strong>Tier 4 (Non-Critical)</strong></td><td>ระบบทั่วไปที่หยุดทำงานได้เป็นเวลาหลายวันโดยไม่กระทบต่อผู้ใช้งานส่วนใหญ่</td><td>RTO < 72 ชั่วโมง<br>RPO < 7 วัน</td><td>• ระบบจองห้องประชุมภายใน<br>• เว็บไซต์ชมรมนักศึกษา<br>• ระบบทดสอบการพัฒนา (Dev/Test Environment)</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-2-การจำแนกประเภทข้อมูล-วงจรชีวิต-และกฎเกณฑ์การจัดการ-data-classification-lifecycle-181">ส่วนที่ 2: การจำแนกประเภทข้อมูล วงจรชีวิต และกฎเกณฑ์การจัดการ (Data Classification & Lifecycle)</h2>
+<h3 class="content-heading" id="sec-2-1-หลักการจำแนกประเภทข้อมูล-4-ระดับ-the-4-tier-data-classification-framework-183">2.1 หลักการจำแนกประเภทข้อมูล 4 ระดับ (The 4-Tier Data Classification Framework)</h3>
+<p class="content-p">ข้อมูลคือสินทรัพย์ที่มีค่าและเปราะบางที่สุดขององค์กร การจำแนกประเภทข้อมูลตามระดับความลับและความอ่อนไหว (Data Classification) ช่วยให้องค์กรสามารถจัดสรรทรัพยากรในการป้องกันข้อมูลได้อย่างเหมาะสมตามความจำเป็น โดยไม่สิ้นเปลืองงบประมาณไปกับการป้องกันข้อมูลทั่วไปอย่างเกินขนาด</p>
+
+<div class="figure-box" id="figure-6-7">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 6.7</div>
+    <div class="figure-title">พีระมิดระดับชั้นความลับของข้อมูล 4 ระดับ (The 4-Tier Data Classification Framework)</div>
+  </div>
+  <div class="pyramid-wrapper">
+    <div class="pyramid-level p-restricted">
+      <div class="p-badge">🔴 RESTRICTED (ลับที่สุด)</div>
+      <div class="p-content">
+        <strong>กระทบความอยู่รอด/โทษทางอาญา:</strong> รหัส Master Key, Private Key, ข้อสอบล่วงหน้า, ข้อมูลสุขภาพอ่อนไหว PDPA ม.26<br>
+        <em>การควบคุม:</em> เข้ารหัส HSM, เข้าถึงเฉพาะบุคคลที่มีสิทธิ์ตรง (Explicit Whitelist), MFA, ห้ามใช้ USB
+      </div>
+    </div>
+    <div class="pyramid-level p-confidential">
+      <div class="p-badge">🟠 CONFIDENTIAL (ความลับ)</div>
+      <div class="p-content">
+        <strong>กระทบชื่อเสียง/การเงิน/PDPA:</strong> ทะเบียนประวัตินักศึกษา, บัญชีเงินเดือน, เกรดเฉลี่ย, บันทึก Log จราจรคอมพิวเตอร์<br>
+        <em>การควบคุม:</em> RBAC ตามหน้าที่ (Need-to-Know), เข้ารหัส AES-256 At Rest, TLS 1.3 In Transit, บังคับใช้ DLP
+      </div>
+    </div>
+    <div class="pyramid-level p-internal">
+      <div class="p-badge">🟡 INTERNAL (ใช้งานภายใน)</div>
+      <div class="p-content">
+        <strong>ใช้ในงานปกติของบุคลากร:</strong> คู่มือ SOP ภายใน, ผังเครือข่าย, รายงานการประชุม, นโยบายมหาวิทยาลัย<br>
+        <em>การควบคุม:</em> บัญชีผู้ใช้มหาวิทยาลัย, ห้ามแชร์ออกสู่ภายนอก, ป้องกันระดับพื้นฐาน
+      </div>
+    </div>
+    <div class="pyramid-level p-public">
+      <div class="p-badge">🟢 PUBLIC (ข้อมูลสาธารณะ)</div>
+      <div class="p-content">
+        <strong>เปิดเผยได้โดยไม่มีผลเสีย:</strong> ข่าวประชาสัมพันธ์, โครงสร้างหลักสูตร, ปฏิทินการศึกษา, ค่าเทอมตามประกาศ<br>
+        <em>การควบคุม:</em> ควบคุมความถูกต้องสมบูรณ์ (Integrity) ป้องกันการถูก Deface เว็บไซต์
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 6.7:</strong> สถาปัตยกรรมระดับชั้นความลับ 4 ระดับตามมาตรฐาน ISO/IEC 27001 Annex A.5.12 และความสอดคล้องกับ พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA)
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-เปรียบเทียบมาตรฐานการจำแนกประเภทข้อมูล-205">เปรียบเทียบมาตรฐานการจำแนกประเภทข้อมูล:</h4>
+<div class="table-container"><table class="content-table"><thead><tr><th>มาตรฐานสากล / องค์กร</th><th>ระดับชั้นสูงสุด</th><th>ระดับชั้นสูง</th><th>ระดับชั้นปานกลาง</th><th>ระดับชั้นทั่วไป</th></tr></thead><tbody><tr><td><strong>มาตรฐานสากล (ISO 27001 / Commercial)</strong></td><td><strong>Restricted</strong> (ลับที่สุด)</td><td><strong>Confidential</strong> (ความลับ)</td><td><strong>Internal</strong> (ใช้ภายใน)</td><td><strong>Public</strong> (สาธารณะ)</td></tr><tr><td><strong>รัฐบาลสหรัฐฯ (US DoD / NIST)</strong></td><td><strong>Top Secret</strong></td><td><strong>Secret</strong></td><td><strong>Confidential</strong></td><td><strong>Unclassified</strong></td></tr><tr><td><strong>ระเบียบสำนักนายกฯ ไทย พ.ศ. 2552</strong></td><td><strong>ลับที่สุด</strong> (Top Secret)</td><td><strong>ลับมาก</strong> (Secret)</td><td><strong>ลับ</strong> (Confidential)</td><td><strong>เปิดเผยได้</strong></td></tr><tr><td><strong>พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA)</strong></td><td>Sensitive Personal Data (ม.26)</td><td>General Personal Data (ม.6)</td><td>ข้อมูลระบุตัวตนไม่ได้ (Anonymized)</td><td>ข้อมูลเปิดเผยต่อสาธารณะ</td></tr></tbody></table></div>
+<h4 class="content-heading" id="sec-นิยามและเกณฑ์การพิจารณาในแต่ละระดับชั้น-214">นิยามและเกณฑ์การพิจารณาในแต่ละระดับชั้น:</h4>
+<ol class="content-list ordered">
+<li><strong>Restricted / Highly Confidential (ข้อมูลลับที่สุด / ข้อมูลจำกัดสิทธิ์สูงสุด):</strong></li>
+</ol>
+<ul class="content-list ">
+<li><em>คำนิยาม:</em> ข้อมูลที่มีความอ่อนไหวขั้นสูงสุด ซึ่งหากถูกเปิดเผย ถูกดัดแปลง หรือสูญหาย จะก่อให้เกิดความเสียหายขั้นหายนะต่อองค์กร เสี่ยงต่อการถูกดำเนินคดีอาญา หรือทำให้องค์กรหยุดชะงักอย่างรุนแรง</li>
+<li><em>ตัวอย่าง:</em> รหัสผ่าน Master Key, Private Key ของ SSL/TLS Certificate, ข้อมูลไฟล์ข้อสอบระดับชาติก่อนวันสอบ, ซอร์สโค้ดของระบบหลัก, ข้อมูลสุขภาพอ่อนไหว (Sensitive Personal Data ตาม PDPA ม.26 เช่น ประวัติโรคประจำตัว ผลตรวจเลือด พันธุกรรม)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>Confidential (ข้อมูลความลับ):</strong></li>
+</ol>
+<ul class="content-list ">
+<li><em>คำนิยาม:</em> ข้อมูลสำคัญที่ไม่ใช่ข้อมูลสาธารณะ ซึ่งหากรั่วไหลจะสร้างความเสียหายต่อชื่อเสียง การเงิน หรือเป็นการละเมิดกฎหมายคุ้มครองข้อมูลส่วนบุคคล</li>
+<li><em>ตัวอย่าง:</em> ข้อมูลส่วนบุคคลของนักศึกษาและบุคลากร (ชื่อ, เลขบัตรประชาชน, เบอร์โทรศัพท์, ผลการเรียน), ข้อมูลรายละเอียดบัญชีธนาคารและเงินเดือน, รายงานข้อบกพร่องการตรวจสอบความปลอดภัยภายใน</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>Internal / Official Use Only (ข้อมูลใช้งานภายในองค์กร):</strong></li>
+</ol>
+<ul class="content-list ">
+<li><em>คำนิยาม:</em> ข้อมูลที่ใช้สำหรับการปฏิบัติงานตามปกติของบุคลากรภายในองค์กร ไม่ได้เป็นความลับร้ายแรง แต่ไม่อนุญาตให้เปิดเผยแก่บุคคลภายนอกโดยไม่ได้รับอนุญาต</li>
+<li><em>ตัวอย่าง:</em> คู่มือขั้นตอนการปฏิบัติงานภายใน (SOPs), ผังโครงสร้างเครือข่ายภายใน (Network Topology), นโยบายการบริหารงานภายใน, รายงานการประชุมประจำสัปดาห์</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>Public (ข้อมูลสาธารณะ):</strong></li>
+</ol>
+<ul class="content-list ">
+<li><em>คำนิยาม:</em> ข้อมูลที่ได้รับอนุมัติให้เผยแพร่สู่บุคคลภายนอกและสาธารณชนได้อย่างเปิดเผย การเปิดเผยข้อมูลนี้ไม่ส่งผลเสียต่อชื่อเสียงหรือความมั่นคงปลอดภัยขององค์กร</li>
+<li><em>ตัวอย่าง:</em> ข่าวประชาสัมพันธ์ของมหาวิทยาลัย, คู่มือหลักสูตรการศึกษา, ปฏิทินการศึกษา, ข้อมูลค่าธรรมเนียมการศึกษาที่ประกาศอย่างเป็นทางการ</li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-2-วงจรชีวิตข้อมูล-8-ขั้นตอนและ-3-สภาวะของข้อมูล-data-lifecycle-data-states-231">2.2 วงจรชีวิตข้อมูล 8 ขั้นตอนและ 3 สภาวะของข้อมูล (Data Lifecycle & Data States)</h3>
+<p class="content-p">ข้อมูลไม่ใช่สิ่งที่มีอยู่หยุดนิ่ง แต่เคลื่อนย้ายและเปลี่ยนสภาพตลอดเวลา Lead Implementer ต้องออกแบบมาตรการควบคุมความปลอดภัยให้ครอบคลุม <strong>3 สภาวะของข้อมูล (The Three States of Data)</strong>:</p>
+<ol class="content-list ordered">
+<li><strong>Data at Rest (ข้อมูลขณะจัดเก็บ):</strong> ข้อมูลที่ถูกบันทึกลงในสื่อจัดเก็บข้อมูล เช่น Database, Hard Disk, SAN, S3 Bucket <code class="math-tex">\rightarrow</code> ป้องกันด้วยการควบคุมการเข้าถึงและการเข้ารหัส (AES-256, BitLocker, Transparent Data Encryption)</li>
+<li><strong>Data in Transit / Motion (ข้อมูลขณะเคลื่อนย้าย):</strong> ข้อมูลที่กำลังเดินทางผ่านเครือข่าย ทั้ง LAN, WAN, และ Internet <code class="math-tex">\rightarrow</code> ป้องกันด้วยโปรโตคอลการสื่อสารที่ปลอดภัย (TLS 1.3, IPsec, SFTP)</li>
+<li><strong>Data in Use (ข้อมูลขณะกำลังประมวลผล):</strong> ข้อมูลที่ถูกโหลดขึ้นหน่วยความจำหลัก (RAM, CPU Cache, Registers) เพื่อประมวลผล <code class="math-tex">\rightarrow</code> ป้องกันด้วยการจัดการหน่วยความจำปลอดภัย, Least Privilege และเทคโนโลยี <strong>Confidential Computing</strong> (Hardware-based Enclaves เช่น Intel SGX, AMD SEV)</li>
+</ol>
+<h4 class="content-heading" id="sec-วงจรชีวิตข้อมูล-8-ขั้นตอน-the-8-phase-data-lifecycle-239">วงจรชีวิตข้อมูล 8 ขั้นตอน (The 8-Phase Data Lifecycle):</h4>
+
+<div class="figure-box" id="figure-6-8">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 6.8</div>
+    <div class="figure-title">วงจรชีวิตข้อมูล 8 ขั้นตอนและ 3 สภาวะของข้อมูล (Data Lifecycle & Data States)</div>
+  </div>
+  <div class="states-box">
+    <div class="state-card">
+      <div class="state-tag">💾 STATE 1: DATA AT REST</div>
+      <div class="state-desc">ข้อมูลขณะจัดเก็บใน Storage, Database, SSD ➔ <strong>การป้องกัน:</strong> AES-256, BitLocker, TDE, RBAC</div>
+    </div>
+    <div class="state-card">
+      <div class="state-tag">🌐 STATE 2: DATA IN TRANSIT</div>
+      <div class="state-desc">ข้อมูลขณะเดินทางผ่านเครือข่าย LAN/Internet ➔ <strong>การป้องกัน:</strong> TLS 1.3, SFTP, IPsec VPN, mTLS</div>
+    </div>
+    <div class="state-card">
+      <div class="state-tag">⚡ STATE 3: DATA IN USE</div>
+      <div class="state-desc">ข้อมูลขณะประมวลผลบน RAM, CPU Cache ➔ <strong>การป้องกัน:</strong> Least Privilege, Confidential Computing (SGX)</div>
+    </div>
+  </div>
+
+  <div class="lifecycle-track">
+    <div class="lc-node">1. Creation<br><small>สร้างข้อมูล</small></div>
+    <div class="lc-arrow">➔</div>
+    <div class="lc-node">2. Collection<br><small>รับข้อมูลเข้า</small></div>
+    <div class="lc-arrow">➔</div>
+    <div class="lc-node">3. Storage<br><small>จัดเก็บบันทึก</small></div>
+    <div class="lc-arrow">➔</div>
+    <div class="lc-node">4. Use<br><small>นำไปประมวลผล</small></div>
+    <div class="lc-arrow">➔</div>
+    <div class="lc-node">5. Transmission<br><small>ส่งผ่านเครือข่าย</small></div>
+    <div class="lc-arrow">➔</div>
+    <div class="lc-node">6. Sharing<br><small>แบ่งปันบุคคลภายนอก</small></div>
+    <div class="lc-arrow">➔</div>
+    <div class="lc-node">7. Archiving<br><small>จัดเก็บถาวร WORM</small></div>
+    <div class="lc-arrow">➔</div>
+    <div class="lc-node">8. Disposal<br><small>ทำลายตาม 800-88</small></div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 6.8:</strong> วงจรชีวิตข้อมูลทั้ง 8 ระยะเชื่อมโยงกับ 3 สภาวะทางเทคนิคเพื่อให้มั่นใจว่าข้อมูลได้รับการปกป้องตลอดอายุขัย
+  </div>
+</div>
+
+<ol class="content-list ordered">
+<li><strong>Creation (การสร้างข้อมูล):</strong> การริเริ่มสร้างข้อมูลขึ้นใหม่ เช่น อาจารย์ร่างข้อสอบใหม่, เจ้าหน้าที่เขียนรายงานสรุปการเงิน (ต้องเริ่มกำหนดระดับชั้นข้อมูลตั้งแต่ขั้นตอนสร้าง)</li>
+<li><strong>Collection (การรวบรวมข้อมูล):</strong> การรับข้อมูลเข้ามาจากภายนอก เช่น นักศึกษากรอกข้อมูลประวัติและอัปโหลดสำเนาบัตรประชาชนผ่านระบบรับสมัคร (ต้องมีมาตรการแจ้ง Privacy Notice และจัดเก็บเฉพาะข้อมูลที่จำเป็นตามหลัก Data Minimization)</li>
+<li><strong>Storage (การจัดเก็บข้อมูล):</strong> การบันทึกข้อมูลลงในสื่อบันทึก เช่น SAN Storage, Database, Cloud Storage (ต้องควบคุม Access Control, เข้ารหัส Encryption at Rest, และแยกเครือข่าย Network Segmentation)</li>
+<li><strong>Use / Process (การนำข้อมูลไปใช้และประมวลผล):</strong> การเปิดอ่าน ดัดแปลง คำนวณผลเกรด หรือประมวลผลคำสั่งซื้อ (ต้องควบคุม Least Privilege, Role-based Access Control และบันทึก Audit Logs)</li>
+<li><strong>Transmission (การส่งผ่านข้อมูล):</strong> การถ่ายโอนข้อมูลผ่านเครือข่าย ทั้งภายในองค์กรและออกสู่อินเทอร์เน็ต (ต้องบังคับใช้ Encryption in Transit เช่น HTTPS/TLS 1.3, SFTP, IPsec VPN)</li>
+<li><strong>Sharing (การแบ่งปันข้อมูลกับบุคคลภายนอก):</strong> การส่งข้อมูลข้ามองค์กร เช่น ส่งข้อมูลการชำระเงินไปยังธนาคาร, ส่งประวัตินักศึกษาไปกระทรวง อว. (ต้องมีสัญญา Data Sharing Agreement / Data Processing Agreement: DPA และทำ Data Masking/Pseudonymization)</li>
+<li><strong>Archiving (การจัดเก็บรักษาถาวร):</strong> การย้ายข้อมูลเก่าที่เลิกใช้งานแล้วไปเก็บไว้ในที่เก็บข้อมูลสำรองระยะยาวเพื่อวัตถุประสงค์ทางกฎหมาย (Retention Period) เช่น สำรองข้อมูลเกรดย้อนหลัง 10 ปี (ต้องเป็นระบบ Immutable Storage / WORM: Write Once, Read Many ที่ป้องกันการแก้ไข)</li>
+<li><strong>Disposal / Destruction (การทำลายข้อมูล):</strong> การทำลายข้อมูลอย่างถาวรเมื่อพ้นกำหนดระยะเวลาการจัดเก็บ เพื่อป้องกันข้อมูลรั่วไหลตามมาตรฐาน NIST SP 800-88 Rev. 1</li>
+</ol>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-3-กฎเกณฑ์การจัดการข้อมูลตามระดับชั้นความลับ-data-handling-rules-matrix-259">2.3 กฎเกณฑ์การจัดการข้อมูลตามระดับชั้นความลับ (Data Handling Rules Matrix)</h3>
+
+<div class="interactive-card" id="widget-6-3">
+  <div class="card-badge">INTERACTIVE WIDGET 6.3</div>
+  <div class="card-title">🏷️ แบบทดสอบจำแนกประเภทข้อมูลและกฎการจัดการ (Data Classification Simulator)</div>
+  <p class="card-desc">สวมบทบาทเป็น Data Protection Officer (DPO) ตัดสินระดับชั้นความลับสำหรับ 8 ชุดข้อมูลสำคัญ พร้อมตรวจสอบกฎเกณฑ์การจัดการ (Encryption / DLP / Transmission)</p>
+
+  <div class="sim-progress-bar">
+    <div class="sim-fill" id="sim-fill" style="width: 12.5%;"></div>
+  </div>
+
+  <div class="data-sim-container" id="data-sim-container">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<p class="content-p">ตารางมาตรฐานที่กำหนดแนวทางปฏิบัติที่เป็นรูปธรรมสำหรับข้อมูลในแต่ละระดับชั้นความลับ:</p>
+<div class="table-container"><table class="content-table"><thead><tr><th>หัวข้อการควบคุม</th><th>🟢 Public (สาธารณะ)</th><th>🟡 Internal (ใช้งานภายใน)</th><th>🟠 Confidential (ความลับ)</th><th>🔴 Restricted (ลับที่สุด)</th></tr></thead><tbody><tr><td><strong>การติดป้ายกำกับ (Labeling)</strong></td><td>ไม่จำเป็นต้องติดป้าย</td><td>ระบุ <em>"Internal Use Only"</em> ที่หัว/ท้ายกระดาษ</td><td>ระบุ Watermark <em>"CONFIDENTIAL"</em> บนเอกสาร และแท็ก Metadata ในไฟล์</td><td>ระบุ <em>"RESTRICTED - DO NOT COPY"</em> พร้อมเลข Serial กำกับรายฉบับ</td></tr><tr><td><strong>การควบคุมการเข้าถึง (Access Control)</strong></td><td>ทุกคนเข้าถึงได้ (Anonymous)</td><td>บุคลากรและนักศึกษาที่มีบัญชีของมหาวิทยาลัย</td><td>เฉพาะผู้ที่มีหน้าที่เกี่ยวข้องโดยตรง (Need-to-Know) ผ่าน RBAC</td><td>ต้องได้รับการอนุมัติเป็นลายลักษณ์อักษรจาก Asset Owner + บังคับใช้ MFA</td></tr><tr><td><strong>การเข้ารหัสเมื่อจัดเก็บ (At Rest)</strong></td><td>ไม่บังคับ</td><td>เข้ารหัสระดับอุปกรณ์ (BitLocker / FileVault)</td><td>เข้ารหัสระดับฐานข้อมูลและไฟล์ (AES-256)</td><td>เข้ารหัสแบบ Hardware Security Module (HSM) / Dedicated KMS Key</td></tr><tr><td><strong>การส่งผ่านข้อมูล (In Transit)</strong></td><td>HTTP / HTTPS ทั่วไป</td><td>HTTPS / TLS 1.2 ขึ้นไป</td><td>บังคับใช้ TLS 1.3 หรือ SFTP เข้ารหัสไฟล์ก่อนส่ง</td><td>บังคับใช้ End-to-End Encryption + Secure Dedicated Channel ห้ามส่งผ่านอีเมล</td></tr><tr><td><strong>การใช้อุปกรณ์พกพา (USB / BYOD)</strong></td><td>อนุญาต</td><td>อนุญาตเฉพาะอุปกรณ์ที่ลงทะเบียน MDM</td><td>ไม่อนุญาตให้คัดลอกลง Flash Drive หากไม่เข้ารหัส</td><td><strong>ห้ามคัดลอกลงอุปกรณ์พกพาโดยเด็ดขาด (Block USB Port ผ่าน DLP)</strong></td></tr><tr><td><strong>ระยะเวลาจัดเก็บ (Retention)</strong></td><td>ตามความเหมาะสมของการประชาสัมพันธ์</td><td>ตามอายุโครงการ หรือ 1–3 ปี</td><td>ตามที่กฎหมายกำหนด (เช่น ข้อมูลบัญชี 5–10 ปี, Log 90 วัน)</td><td>เก็บเท่าที่จำเป็น เมื่อหมดหน้าที่ต้องทำลายทันที</td></tr><tr><td><strong>วิธีกำจัด/ทำลาย (Disposal)</strong></td><td>ทิ้งถังขยะรีไซเคิลปกติ / ลบไฟล์ตามปกติ</td><td>ฉีกทำลายด้วยเครื่องทำลายเอกสาร / ลบไฟล์ปกติ</td><td>ลบข้อมูลแบบ Secure Erase (DoD 5220.22-M) / เผาทำลายเอกสาร</td><td><strong>ทำลายทางกายภาพ (Degaussing / Disintegration Shredding) ตาม NIST 800-88</strong></td></tr></tbody></table></div>
+<h4 class="content-heading" id="sec-การบังคับใช้กฎเกณฑ์ด้วยเทคโนโลยี-273">การบังคับใช้กฎเกณฑ์ด้วยเทคโนโลยี:</h4>
+<ul class="content-list ">
+<li><strong>Data Loss Prevention (DLP):</strong> ระบบตรวจจับข้อมูลรั่วไหลที่ติดตั้งบนเครื่องปลายทาง (Endpoint DLP) และเครือข่าย (Network DLP) เพื่อดักจับและบล็อกการอัปโหลดหรือคัดลอกไฟล์ที่มีข้อมูลบัตรประชาชนหรือเลขบัตรเครดิตออกนอกองค์กร</li>
+<li><strong>Data Classification Tooling (เช่น Microsoft Purview / Titus):</strong> เครื่องมือที่ช่วยให้ผู้ใช้งานคลิกเลือกป้ายกำกับ (Sensitivity Labels) บนโปรแกรม MS Word, Excel, Email ซึ่งระบบจะทำการเข้ารหัสไฟล์และแทรก Visual Watermark ให้อัตโนมัติ</li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-4-การทำลายข้อมูลอย่างปลอดภัยตามมาตรฐาน-nist-sp-800-88-rev-1-279">2.4 การทำลายข้อมูลอย่างปลอดภัยตามมาตรฐาน NIST SP 800-88 Rev. 1</h3>
+
+<div class="interactive-card" id="widget-6-4">
+  <div class="card-badge">INTERACTIVE WIDGET 6.4</div>
+  <div class="card-title">♻️ ระบบช่วยตัดสินใจทำลายสื่อบันทึกข้อมูล (NIST SP 800-88 Decision Guide)</div>
+  <p class="card-desc">เลือกประเภทสื่อบันทึกข้อมูล ระดับความลับ และเป้าหมายการใช้งาน เพื่อรับคำแนะนำวิธีการทำลายที่ถูกต้องตามมาตรฐานสากล</p>
+
+  <div class="san-wizard-grid">
+    <div class="wizard-selector">
+      <label>1. ประเภทสื่อบันทึกข้อมูล (Media Type):</label>
+      <select id="wiz-media" onchange="runSanWizard()">
+        <option value="hdd">Magnetic Hard Disk (จานแม่เหล็ก HDD / SAS / SATA)</option>
+        <option value="ssd">Solid-State Drive (SSD / NVMe Flash / USB Thumb Drive)</option>
+        <option value="cloud">Cloud Virtual Disk (AWS EBS / Azure VHD)</option>
+        <option value="paper">เอกสารกายภาพ (กระดาษข้อสอบ / เอกสารการเงิน)</option>
+      </select>
+
+      <label style="margin-top:14px;">2. ระดับชั้นความลับของข้อมูลเดิม (Data Classification):</label>
+      <select id="wiz-class" onchange="runSanWizard()">
+        <option value="restricted">Restricted (ข้อมูลลับที่สุด / ข้อมูลสุขภาพอ่อนไหว PDPA ม.26)</option>
+        <option value="confidential">Confidential (ข้อมูลส่วนบุคคลนักศึกษา / ข้อมูลการเงิน)</option>
+        <option value="internal">Internal (ข้อมูลใช้งานภายใน / เอกสารทั่วไป)</option>
+        <option value="public">Public (ข้อมูลสาธารณะ)</option>
+      </select>
+
+      <label style="margin-top:14px;">3. เป้าหมายหลังการปลดระวาง (Disposition Target):</label>
+      <select id="wiz-target" onchange="runSanWizard()">
+        <option value="destroy">ปลดระวางถาวร / ทิ้งเป็นขยะอิเล็กทรอนิกส์ (Decommission / Scrap)</option>
+        <option value="donate">บริจาค / ส่งคืนผู้ให้เช่าภายนอก (Reuse Outside Organization)</option>
+        <option value="reuse">นำกลับมาใช้ใหม่ภายในฝ่ายไอทีมหาวิทยาลัย (Reuse Inside)</option>
+      </select>
+    </div>
+
+    <div class="wizard-result" id="wizard-result">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</div>
+
+<p class="content-p">หนึ่งในข้อผิดพลาดที่พบบ่อยที่สุดขององค์กรคือการ "ลบไฟล์ลงถังขยะ (Recycle Bin)" หรือ "สั่ง Format ฮาร์ดดิสก์แบบรวดเร็ว (Quick Format)" แล้วนำฮาร์ดดิสก์ไปบริจาคหรือทิ้งขยะ ซึ่งข้อมูลยังคงสามารถกู้คืนกลับมาได้อย่างง่ายดาย</p>
+<p class="content-p">มาตรฐานสากล <strong>NIST SP 800-88 Rev. 1 (Guidelines for Media Sanitization)</strong> กำหนดวิธีการทำลายข้อมูลไว้ 3 ระดับ:</p>
+
+<div class="figure-box" id="figure-6-9">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 6.9</div>
+    <div class="figure-title">3 ระดับการทำลายสื่อบันทึกข้อมูลตามมาตรฐาน NIST SP 800-88 Rev. 1</div>
+  </div>
+  <div class="sanitization-grid">
+    <div class="san-card clear">
+      <div class="san-header">
+        <span class="san-level">ระดับ 1</span>
+        <h4>CLEAR (การล้างข้อมูล)</h4>
+      </div>
+      <div class="san-method">การเขียนทับข้อมูลเชิงตรรกะ (Overwriting)</div>
+      <ul class="san-details">
+        <li>เขียนทับด้วยเลขศูนย์ (Zeroes) หรือสุ่มบิตด้วยซอฟต์แวร์</li>
+        <li>ป้องกันการกู้คืนด้วยโปรแกรมกู้ไฟล์ทั่วไป</li>
+        <li><strong>ผลลัพธ์:</strong> สื่อบันทึกยังนำกลับมาใช้ใหม่ภายในองค์กรได้</li>
+        <li><strong>ข้อจำกัด:</strong> กู้คืนได้ด้วยเครื่องมือ Lab ระดับสูง และใช้กับ SSD ไม่สมบูรณ์</li>
+      </ul>
+    </div>
+
+    <div class="san-card purge">
+      <div class="san-header">
+        <span class="san-level">ระดับ 2</span>
+        <h4>PURGE (การขจัดข้อมูล)</h4>
+      </div>
+      <div class="san-method">คำสั่งเฟิร์มแวร์ระดับลึก / ลบล้างสนามแม่เหล็ก</div>
+      <ul class="san-details">
+        <li><strong>HDD:</strong> ใช้เครื่องลบล้างสนามแม่เหล็ก Degaussing 15,000 Gauss</li>
+        <li><strong>SSD:</strong> คำสั่ง Cryptographic Erase / Secure Erase ล้างคีย์และทุกบล็อก</li>
+        <li>ป้องกันการกู้ข้อมูลในห้องปฏิบัติการระดับสูง (Lab Techniques)</li>
+        <li><strong>ผลลัพธ์:</strong> HDD จานแม่เหล็กจะเสียถาวร ส่วน SSD อาจนำกลับมาใช้ใหม่ได้</li>
+      </ul>
+    </div>
+
+    <div class="san-card destroy">
+      <div class="san-header">
+        <span class="san-level">ระดับ 3</span>
+        <h4>DESTROY (การทำลายสิ้นซาก)</h4>
+      </div>
+      <div class="san-method">การทำลายทางกายภาพจนแหลกสลาย</div>
+      <ul class="san-details">
+        <li>การบดละเอียด (Shredding / Disintegration) ขนาดชิ้นส่วน &lt; 2mm</li>
+        <li>การเผาหลอมละลาย (Incineration) ในเตาหลอมอุณหภูมิสูง</li>
+        <li>ป้องกันการกู้ข้อมูล 100% ไร้ทางกู้คืนได้ทุกกรณี</li>
+        <li><strong>ผลลัพธ์:</strong> สื่อบันทึกถูกทำลายสิ้นซาก ต้องออกใบรับรอง CoD เสมอ</li>
+      </ul>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 6.9:</strong> เปรียบเทียบ 3 ระดับการทำลายข้อมูลตาม NIST SP 800-88 Rev. 1 และข้อควรระวังเรื่อง SSD Wear Leveling
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-ความแตกต่างระหว่าง-magnetic-hdd-กับ-flash-ssd-304">ความแตกต่างระหว่าง Magnetic HDD กับ Flash SSD:</h4>
+<ul class="content-list ">
+<li><strong>Magnetic Hard Disk (จานแม่เหล็ก):</strong> สามารถใช้วิธี <strong>Clear</strong> โดยการเขียนทับ (Overwriting ด้วยเลข 0 หรือสุ่มบิต) หรือใช้วิธี <strong>Purge</strong> ด้วยการใช้เครื่องลบล้างสนามแม่เหล็กกำลังสูง (<strong>Degausser</strong>) ซึ่งจะทำลายทั้งข้อมูลและทำลาย Servomark ของฮาร์ดดิสก์จนใช้ซ้ำไม่ได้</li>
+<li><strong>Solid-State Drives (SSD / NVMe Flash):</strong> เทคโนโลยี SSD มีระบบ <strong>Wear Leveling</strong> และ <strong>Over-Provisioning</strong> ซึ่งซ่อนบล็อกหน่วยความจำบางส่วนไว้ ทำให้การเขียนทับ (Overwriting) ไม่สามารถลบข้อมูลในเซลล์แฟลชได้ครบ 100% วิธี Sanitization ที่ถูกต้องสำหรับ SSD คือ:</li>
+</ul>
+<ol class="content-list ordered">
+<li>การใช้คำสั่งเฟิร์มแวร์ <strong>ATA Secure Erase / NVMe Format Cryptographic Erase</strong></li>
+<li>การทำลายทางกายภาพด้วยการบดละเอียด (<strong>Disintegration / Shredding</strong>) ให้ชิ้นส่วนมีขนาดเล็กกว่า 2 มิลลิเมตร (ตามมาตรฐานความมั่นคงปลอดภัยขั้นสูง)</li>
+</ol>
+
+<div class="callout doc-sample">
+  <div class="callout-title">📜 ตัวอย่างเอกสารจริง: ใบรับรองการทำลายสื่อบันทึกข้อมูล (Certificate of Media Destruction)</div>
+  <pre class="cod-sample-code"><code>┌────────────────────────────────────────────────────────────────────────┐
+│        ตัวอย่างเอกสาร: CERTIFICATE OF MEDIA DESTRUCTION (ตัวอย่างจริง) │
+├────────────────────────────────────────────────────────────────────────┤
+│ Certificate No:   COD-2024-0891                                       │
+│ Date of Disposal: 15 ตุลาคม 2567                                      │
+│ Organization:     มหาวิทยาลัยดิจิทัลสมมติ (สำนักไอที)                  │
+│ Disposal Vendor:  บริษัท กรีนเทค อี-เวสต์ โซลูชั่นส์ จำกัด (ใบอนุญาต รง.4)│
+├────────────────────────────────────────────────────────────────────────┤
+│ รายการสื่อบันทึกข้อมูลที่ทำลาย:                                        │
+│ 1. SAS HDD 2.5&quot; 1.2TB | Serial: 6PR3K9LZ | Model: AL14SEB120N (Server 01)│
+│ 2. SAS HDD 2.5&quot; 1.2TB | Serial: 6PR3K9MA | Model: AL14SEB120N (Server 01)│
+│ 3. NVMe SSD M.2 1TB   | Serial: S4EVNF0M10293 | Model: 980PRO (DB Node) │
+├────────────────────────────────────────────────────────────────────────┤
+│ วิธีการทำลาย (Sanitization Method):                                    │
+│ [X] Degaussing (สนามแม่เหล็ก 15,000 Gauss) สำหรับ SAS HDD              │
+│ [X] Physical Shredding (บดละเอียดขนาด 2mm) สำหรับ SSD                  │
+│ มาตรฐานอ้างอิง: NIST SP 800-88 Rev. 1 (Method: DESTROY)                │
+├────────────────────────────────────────────────────────────────────────┤
+│ พยานผู้รับรองการทำลาย:                                                 │
+│ ผู้แทนมหาวิทยาลัย: ................................. (นายพิเชษฐ์ รักษาดี - DBA)│
+│ ผู้แทนผู้ทำลาย:   ................................. (นายสมชาย ขยันทำ - Vendor)│
+└────────────────────────────────────────────────────────────────────────┘</code></pre>
+</div>
+        
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-3-กรณีศึกษาเชิงประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-337">ส่วนที่ 3: กรณีศึกษาเชิงประยุกต์ "มหาวิทยาลัยดิจิทัลสมมติ" (Core Case Study)</h2>
+<h3 class="content-heading" id="sec-3-1-ทะเบียนสินทรัพย์สารสนเทศ-20-รายการหลัก-asset-register-339">3.1 ทะเบียนสินทรัพย์สารสนเทศ 20 รายการหลัก (Asset Register)</h3>
+
+<div class="interactive-card" id="widget-6-2">
+  <div class="card-badge">INTERACTIVE WIDGET 6.2</div>
+  <div class="card-title">🔍 ระบบสืบค้นและสำรวจทะเบียนสินทรัพย์ (Asset Register Explorer)</div>
+  <p class="card-desc">สืบค้น คัดกรอง และตรวจสอบ 20 รายการสินทรัพย์หลักของมหาวิทยาลัยดิจิทัลสมมติ ตามระดับความสำคัญ (Tier 1-4) หรือตามประเภทสินทรัพย์</p>
+
+  <div class="asset-explorer-toolbar">
+    <div class="search-input-box">
+      <input type="text" id="asset-search" placeholder="พิมพ์ชื่อสินทรัพย์, Owner, Custodian, ระบบพึ่งพา..." oninput="filterAssets()">
+    </div>
+    <div class="filter-badges">
+      <button class="filter-btn active" data-filter="all" onclick="setAssetFilter('all')">ทั้งหมด (20)</button>
+      <button class="filter-btn tier-1" data-filter="Tier 1" onclick="setAssetFilter('Tier 1')">Tier 1 (7)</button>
+      <button class="filter-btn tier-2" data-filter="Tier 2" onclick="setAssetFilter('Tier 2')">Tier 2 (4)</button>
+      <button class="filter-btn tier-3" data-filter="Tier 3" onclick="setAssetFilter('Tier 3')">Tier 3 (4)</button>
+      <button class="filter-btn tier-4" data-filter="Tier 4" onclick="setAssetFilter('Tier 4')">Tier 4 (2)</button>
+      <button class="filter-btn restricted" data-filter="Restricted" onclick="setAssetFilter('Restricted')">🔴 Restricted</button>
+    </div>
+  </div>
+
+  <div class="asset-cards-grid" id="asset-cards-grid">
+    <!-- Injected by JS -->
+  </div>
+</div>
+
+<p class="content-p">ตารางทะเบียนสินทรัพย์ 20 รายการ ครอบคลุม 9 ประเภทสินทรัพย์ของมหาวิทยาลัยดิจิทัลสมมติ:</p>
+<div class="table-container"><table class="content-table"><thead><tr><th>Asset ID</th><th>Asset Name</th><th>ประเภท</th><th>Asset Owner</th><th>Asset Custodian</th><th>สถานที่ตั้ง / Cloud</th><th>Dependency</th><th>Criticality</th><th>ระดับชั้นข้อมูล</th><th>Support Status</th><th>นโยบายการสำรองข้อมูล</th></tr></thead><tbody><tr><td><strong>AST-01</strong></td><td><strong>REG Database Server</strong></td><td>Hardware (Server)</td><td>ผอ.สำนักไอที</td><td>System Admin Team</td><td>Data Center Rack A1</td><td>SAN Storage, UPS</td><td><strong>Tier 1</strong></td><td>Restricted</td><td>Active (Warranty ถึงปี 2569)</td><td>Backup รายวัน (RTO 2 ชม., RPO 15 นาที)</td></tr><tr><td><strong>AST-02</strong></td><td><strong>Oracle Database Enterprise</strong></td><td>Software (DBMS)</td><td>ผอ.กองบริการการศึกษา</td><td>Lead DBA</td><td>ติดตั้งบน AST-01</td><td>REG Web App</td><td><strong>Tier 1</strong></td><td>Confidential</td><td>Active (Patch ล่าสุด)</td><td>Archive Log ต่อเนื่อง + Snapshot รายวัน</td></tr><tr><td><strong>AST-03</strong></td><td><strong>Student Master Data</strong></td><td>Information Asset</td><td>ผอ.กองบริการการศึกษา</td><td>Lead DBA</td><td>อยู่ใน AST-02</td><td>REG System, ERP</td><td><strong>Tier 1</strong></td><td>Confidential</td><td>Active</td><td>เข้ารหัส TDE (AES-256) สำรองข้าม Site</td></tr><tr><td><strong>AST-04</strong></td><td><strong>Central Active Directory (IdP)</strong></td><td>Service & Software</td><td>ผอ.สำนักไอที</td><td>Identity Admin</td><td>DC-01 (VM) & Azure AD</td><td>ทุกระบบในมหาวิทยาลัย</td><td><strong>Tier 1</strong></td><td>Restricted</td><td>Active (Windows Server 2022)</td><td>System State Backup รายวัน + Cloud Sync</td></tr><tr><td><strong>AST-05</strong></td><td><strong>Core Datacenter Firewall</strong></td><td>Network Device</td><td>ผอ.สำนักไอที</td><td>Network Security Eng.</td><td>Data Center Rack A3</td><td>ISP Leased Lines</td><td><strong>Tier 1</strong></td><td>Restricted</td><td>Active (HA Cluster Pair)</td><td>Backup Configuration อัตโนมัติทุกวัน</td></tr><tr><td><strong>AST-06</strong></td><td><strong>Financial ERP Application</strong></td><td>Software (App)</td><td>ผอ.กองคลัง</td><td>ERP Developer Team</td><td>DC Rack A2 (VM-04)</td><td>ERP Database</td><td><strong>Tier 2</strong></td><td>Confidential</td><td>Active</td><td>VM Snapshot รายวัน</td></tr><tr><td><strong>AST-07</strong></td><td><strong>General Ledger & Payroll DB</strong></td><td>Information Asset</td><td>ผอ.กองคลัง</td><td>Lead DBA</td><td>อยู่ใน VM-05</td><td>ERP Application</td><td><strong>Tier 2</strong></td><td>Restricted</td><td>Active</td><td>Full Backup รายวัน + Backup Offsite</td></tr><tr><td><strong>AST-08</strong></td><td><strong>AWS VPC Mobile API Gateway</strong></td><td>Cloud Resource</td><td>ผอ.สำนักไอที</td><td>Cloud DevOps Eng.</td><td>AWS ap-southeast-1</td><td>AWS RDS, REG DB</td><td><strong>Tier 2</strong></td><td>Confidential</td><td>Cloud Managed Service</td><td>Infrastructure as Code (Terraform)</td></tr><tr><td><strong>AST-09</strong></td><td><strong>Main Data Center Facility</strong></td><td>Facility</td><td>ผอ.กองอาคารสถานที่</td><td>Facilities Manager</td><td>อาคารบรรณสาร ชั้น 3</td><td>การไฟฟ้านครหลวง</td><td><strong>Tier 1</strong></td><td>Internal</td><td>บำรุงรักษา Generator ทุกเดือน</td><td>มี UPS สำรอง 30 นาที + Generator 48 ชม.</td></tr><tr><td><strong>AST-10</strong></td><td><strong>Campus Wi-Fi Core Controller</strong></td><td>Network Device</td><td>ผอ.สำนักไอที</td><td>Network Admin</td><td>Data Center Rack B2</td><td>Core Switch</td><td><strong>Tier 3</strong></td><td>Internal</td><td>Active</td><td>Backup Configuration ทุกสัปดาห์</td></tr><tr><td><strong>AST-11</strong></td><td><strong>Dormitory Wi-Fi Access Points</strong></td><td>Hardware (Network)</td><td>ผอ.สำนักไอที</td><td>Network Tech Support</td><td>หอพักนักศึกษา 1–6</td><td>Core Controller</td><td><strong>Tier 4</strong></td><td>Public</td><td>Active (500 APs)</td><td>Configuration จัดการจาก Controller รวมศูนย์</td></tr><tr><td><strong>AST-12</strong></td><td><strong>Exam Bank Database (คลังข้อสอบ)</strong></td><td>Information Asset</td><td>รองอธิการบดีฝ่ายวิชาการ</td><td>ฝ่ายวัดผลการศึกษา</td><td>Dedicated Encrypted Server</td><td>ระบบจัดสอบออนไลน์</td><td><strong>Tier 1</strong></td><td><strong>Restricted</strong></td><td>Active (Air-gapped Network)</td><td>Offline Encrypted Backup (WORM Storage)</td></tr><tr><td><strong>AST-13</strong></td><td><strong>Microsoft 365 Email Service</strong></td><td>Third-Party SaaS</td><td>ผอ.สำนักไอที</td><td>Mail Admin / MS Cloud</td><td>Microsoft Cloud</td><td>Internet, Central IdP</td><td><strong>Tier 2</strong></td><td>Confidential</td><td>Cloud SaaS (SLA 99.9%)</td><td>Cloud Retention Policy 1 ปี</td></tr><tr><td><strong>AST-14</strong></td><td><strong>Payment Gateway API</strong></td><td>Third-Party Service</td><td>ผอ.กองคลัง</td><td>FinTech Integration Eng.</td><td>ธนาคารกรุงไทย</td><td>REG System, ERP</td><td><strong>Tier 1</strong></td><td>Confidential</td><td>Vendor API Agreement</td><td>Log ธุรกรรมเก็บไว้ 5 ปีตามกฎหมายบัญชี</td></tr><tr><td><strong>AST-15</strong></td><td><strong>Lead Database Administrator</strong></td><td>Personnel</td><td>ผอ.สำนักไอที</td><td>ตนเอง</td><td>สำนักไอที ชั้น 2</td><td>ทุกฐานข้อมูลสำคัญ</td><td><strong>Tier 1</strong></td><td>Restricted</td><td>บุคลากรประจำ</td><td>มีแผนสืบทอดตำแหน่ง (Succession Plan)</td></tr><tr><td><strong>AST-16</strong></td><td><strong>University Public Website</strong></td><td>Service & Software</td><td>ผอ.กองประชาสัมพันธ์</td><td>Webmaster Team</td><td>Cloudflare / On-premise</td><td>Web Server VM</td><td><strong>Tier 3</strong></td><td>Public</td><td>Active (WordPress Hardened)</td><td>Backup โค้ดบน Git + ฐานข้อมูลรายสัปดาห์</td></tr><tr><td><strong>AST-17</strong></td><td><strong>SAN Storage Matrix (NetApp)</strong></td><td>Hardware (Storage)</td><td>ผอ.สำนักไอที</td><td>Storage Admin</td><td>Data Center Rack A2</td><td>Fiber Channel Switch</td><td><strong>Tier 1</strong></td><td>Confidential</td><td>Active (Dual Controller)</td><td>RAID 6 + SnapMirror ข้ามวิทยาเขต</td></tr><tr><td><strong>AST-18</strong></td><td><strong>CCTV Video Footage Server</strong></td><td>Hardware & Info</td><td>ผอ.กองอาคารสถานที่</td><td>Security Guard Chief</td><td>อาคารรักษาความปลอดภัย</td><td>IP Cameras 300 ตัว</td><td><strong>Tier 3</strong></td><td>Internal</td><td>Active (NVR Storage)</td><td>เก็บภาพย้อนหลัง 30 วัน แล้วเขียนทับอัตโนมัติ</td></tr><tr><td><strong>AST-19</strong></td><td><strong>SSL/TLS Wildcard Certificate</strong></td><td>Information Asset</td><td>ผอ.สำนักไอที</td><td>Security Admin</td><td>บันทึกใน HSM Key Vault</td><td>Web & API Gateways</td><td><strong>Tier 1</strong></td><td><strong>Restricted</strong></td><td>หมดอายุ 31 ธ.ค. 2568</td><td>สำรอง Private Key ใน Safe Box รหัสสองชั้น</td></tr><tr><td><strong>AST-20</strong></td><td><strong>Legacy Alumni Server (Win2008)</strong></td><td>Hardware & Soft</td><td>นายกสมาคมศิษย์เก่า</td><td>External Volunteer</td><td>Server Room อาคารศิษย์เก่า</td><td>Standalone Router</td><td><strong>Tier 4</strong></td><td>Confidential</td><td><strong>End-of-Life (EOL)</strong></td><td>สำรองข้อมูลลง External Harddisk ปีละครั้ง</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-3-2-เมทริกซ์จำแนกประเภทข้อมูล-10-ชุดสำคัญ-data-classification-matrix-368">3.2 เมทริกซ์จำแนกประเภทข้อมูล 10 ชุดสำคัญ (Data Classification Matrix)</h3>
+<div class="table-container"><table class="content-table"><thead><tr><th>รหัสข้อมูล</th><th>ชุดข้อมูล (Data Asset)</th><th>คำอธิบายรายละเอียดข้อมูล</th><th>เจ้าของข้อมูล (Owner)</th><th>ระดับชั้นข้อมูล</th><th>ข้อกำหนดกฎหมาย</th><th>การเข้ารหัส (Encryption)</th><th>สิทธิ์การเข้าถึง (Access Control)</th></tr></thead><tbody><tr><td><strong>DAT-01</strong></td><td><strong>ทะเบียนประวัตินักศึกษา (Student Profile)</strong></td><td>ชื่อ, บัตรประชาชน, ที่อยู่, เบอร์โทร, วันเกิด</td><td>กองบริการการศึกษา</td><td><strong>Confidential</strong></td><td>PDPA ม.35, 37</td><td>AES-256 (At Rest & In Transit)</td><td>เจ้าหน้าที่ทะเบียน และนักศึกษาดูของตนเอง</td></tr><tr><td><strong>DAT-02</strong></td><td><strong>ผลการเรียนและเกรดเฉลี่ย (Transcripts)</strong></td><td>ประวัติวิชาเรียน, คะแนนสอบ, GPA, สถานะจบ</td><td>กองบริการการศึกษา</td><td><strong>Confidential</strong></td><td>PDPA, พ.ร.บ.มหาวิทยาลัย</td><td>เข้ารหัสฐานข้อมูล + Audit Log การแก้</td><td>เจ้าหน้าที่วัดผล, คณะกรรมการตรวจสอบ</td></tr><tr><td><strong>DAT-03</strong></td><td><strong>ข้อสอบประมวลความรู้ล่วงหน้า (Exams)</strong></td><td>ข้อสอบปลายภาคที่ยังไม่ได้สอบ</td><td>รองอธิการฯ ฝ่ายวิชาการ</td><td><strong>Restricted</strong></td><td>ระเบียบมหาวิทยาลัย, ความลับทางการค้า</td><td>เข้ารหัสด้วยคีย์เฉพาะ + Watermark</td><td>อาจารย์ผู้สอนผู้แต่งข้อสอบเพียงผู้เดียว</td></tr><tr><td><strong>DAT-04</strong></td><td><strong>บัญชีเงินเดือนและภาษีบุคลากร (Payroll)</strong></td><td>เลขบัญชีธนาคาร, เงินเดือน, เลขประจำตัวผู้เสียภาษี</td><td>กองคลัง</td><td><strong>Confidential</strong></td><td>PDPA, กฎหมายภาษีอากร</td><td>เข้ารหัสระดับคอลัมน์ (Column Encryption)</td><td>เจ้าหน้าที่การเงินเฉพาะสายงาน</td></tr><tr><td><strong>DAT-05</strong></td><td><strong>Master Private Key ของระบบ IdP</strong></td><td>คีย์สำหรับถอดรหัสและลงนาม Token SAML/OAuth</td><td>CISO / สำนักไอที</td><td><strong>Restricted</strong></td><td>พ.ร.บ.ธุรกรรมอิเล็กทรอนิกส์</td><td>จัดเก็บใน Hardware Security Module (HSM)</td><td>เข้าถึงผ่านพิธีการ M-of-N Key Ceremony</td></tr><tr><td><strong>DAT-06</strong></td><td><strong>บันทึกจราจรคอมพิวเตอร์ (Network & Auth Logs)</strong></td><td>บันทึกการล็อกอิน, IP Address, URL การใช้งาน</td><td>ผอ.สำนักไอที</td><td><strong>Confidential</strong></td><td>พ.ร.บ.คอมพิวเตอร์ ม.26 (เก็บ 90 วัน)</td><td>เข้ารหัสบน Centralized Log + WORM Storage</td><td>Security Analyst และพนักงานเจ้าหน้าที่ตามกฎหมาย</td></tr><tr><td><strong>DAT-07</strong></td><td><strong>คู่มือขั้นตอนการปฏิบัติงานไอที (IT SOPs)</strong></td><td>ขั้นตอนการคอนฟิกเซิร์ฟเวอร์, ผังเครือข่าย</td><td>ผอ.สำนักไอที</td><td><strong>Internal</strong></td><td>ข้อกำหนด ISO 27001</td><td>ไม่จำเป็นต้องเข้ารหัส แต่ต้องจำกัดสิทธิ์</td><td>บุคลากรฝ่ายไอทีและเจ้าหน้าที่มหาวิทยาลัย</td></tr><tr><td><strong>DAT-08</strong></td><td><strong>เอกสารหลักสูตรและระเบียบการศึกษา</strong></td><td>โครงสร้างหลักสูตร, แผนการเรียน, คำอธิบายวิชา</td><td>ฝ่ายวิชาการ</td><td><strong>Public</strong></td><td>ข้อมูลสาธารณะ</td><td>ไม่ต้องเข้ารหัส</td><td>เปิดเผยแก่สาธารณะบนเว็บไซต์</td></tr><tr><td><strong>DAT-09</strong></td><td><strong>ข้อมูลผลตรวจสุขภาพนักศึกษาแพทย์</strong></td><td>ประวัติวัคซีน, ผลตรวจเลือด, ประวัติโรคประจำตัว</td><td>คณะแพทยศาสตร์</td><td><strong>Restricted</strong></td><td>PDPA ม.26 (ข้อมูลอ่อนไหว)</td><td>เข้ารหัสขั้นสูงสุด + Pseudonymization</td><td>แพทย์ผู้ตรวจและนักศึกษาเจ้าของข้อมูล</td></tr><tr><td><strong>DAT-10</strong></td><td><strong>รายงานข้อบกพร่องการเจาะระบบ (Pentest Report)</strong></td><td>รายการช่องโหว่วิกฤตและเทคนิคการเจาะระบบ</td><td>CISO</td><td><strong>Restricted</strong></td><td>พ.ร.บ.ไซเบอร์ 2562</td><td>เข้ารหัสไฟล์ด้วย PGP/GPG ก่อนส่ง</td><td>CISO, Lead Auditor, และอธิการบดี</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-3-3-แผนภาพกระแสข้อมูล-data-flow-diagram-dfd-level-1-ระบบบริการการศึกษา-385">3.3 แผนภาพกระแสข้อมูล (Data Flow Diagram - DFD Level 1: ระบบบริการการศึกษา)</h3>
+<p class="content-p">การเข้าใจวงจรชีวิตข้อมูลต้องถ่ายทอดออกมาเป็นแผนภาพกระแสข้อมูล เพื่อให้เห็นจุดที่ข้อมูลถูกสร้าง จัดเก็บ ส่งผ่าน และข้ามขอบเขตความปลอดภัย (Trust Boundary):</p>
+
+<div class="figure-box" id="figure-6-10">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 6.10</div>
+    <div class="figure-title">แผนภาพกระแสข้อมูลและขอบเขตความปลอดภัย (Data Flow Diagram - DFD Level 1 & Trust Boundaries)</div>
+  </div>
+  <div class="dfd-architecture">
+    <div class="dfd-zone-container">
+      <div class="dfd-boundary-tag">TRUST BOUNDARY 1: INTERNET (PUBLIC)</div>
+      <div class="dfd-box user-box">
+        <span class="dfd-icon">🎓</span>
+        <strong>นักศึกษา / บุคลากร (User)</strong>
+        <div class="dfd-sub">กรอกประวัติ / ลงทะเบียน / ดูผลเกรด</div>
+      </div>
+      <div class="dfd-flow">
+        <div class="dfd-flow-label">Flow 1: HTTPS / TLS 1.3 (HSTS)</div>
+        <div class="dfd-arrow">──────────────▶</div>
+      </div>
+      <div class="dfd-box waf-box">
+        <span class="dfd-icon">🛡️</span>
+        <strong>Reverse Proxy / WAF</strong>
+        <div class="dfd-sub">VLAN 100: Web Tier (DMZ)</div>
+      </div>
+    </div>
+
+    <div class="dfd-zone-container">
+      <div class="dfd-boundary-tag">TRUST BOUNDARY 2: DMZ TO APP TIER</div>
+      <div class="dfd-flow-vertical">
+        <div class="dfd-flow-label">Flow 2: Re-encrypted TLS 1.3</div>
+        <div class="dfd-arrow-v">▼</div>
+      </div>
+      <div class="dfd-middle-row">
+        <div class="dfd-box bank-box">
+          <span class="dfd-icon">🏦</span>
+          <strong>ธนาคารรับชำระเงิน (Bank)</strong>
+          <div class="dfd-sub">Payment Gateway API</div>
+        </div>
+        <div class="dfd-flow-h">
+          <div class="dfd-flow-label">Flow 4: REST API (mTLS)</div>
+          <div class="dfd-arrow-h">◀─────────────▶</div>
+        </div>
+        <div class="dfd-box app-box">
+          <span class="dfd-icon">⚙️</span>
+          <strong>REG Web Application</strong>
+          <div class="dfd-sub">VLAN 110: App Tier</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dfd-zone-container">
+      <div class="dfd-boundary-tag">TRUST BOUNDARY 3: APP TO SECURE DATABASE</div>
+      <div class="dfd-flow-vertical">
+        <div class="dfd-flow-label">Flow 3: Encrypted SQL (Native Network Enc.)</div>
+        <div class="dfd-arrow-v">▼</div>
+      </div>
+      <div class="dfd-box db-box">
+        <span class="dfd-icon">🗄️</span>
+        <strong>Oracle Database Server (AST-01/02)</strong>
+        <div class="dfd-sub">VLAN 120: DB Tier | Student Master Data (TDE AES-256)</div>
+      </div>
+      <div class="dfd-flow-vertical">
+        <div class="dfd-flow-label">Flow 5: Daily Backup (Offline Fiber / Isolated)</div>
+        <div class="dfd-arrow-v">▼</div>
+      </div>
+      <div class="dfd-box backup-box">
+        <span class="dfd-icon">🔒</span>
+        <strong>Immutable Backup Storage (WORM)</strong>
+        <div class="dfd-sub">VLAN 130: Isolated Network (ป้องกัน Ransomware)</div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 6.10:</strong> Data Flow Diagram (DFD Level 1) แสดงเส้นทางข้อมูล จุดตรวจจับภัยคุกคาม และ 3 ขอบเขตความไว้วางใจ (Trust Boundaries)
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-พจนานุกรมกระแสข้อมูล-data-dictionary-threat-surface-analysis-430">พจนานุกรมกระแสข้อมูล (Data Dictionary & Threat Surface Analysis):</h4>
+<ol class="content-list ordered">
+<li><strong>Flow 1 (User to WAF):</strong> ข้อมูลประวัตินักศึกษาและรหัสผ่านล็อกอิน วิ่งผ่านเครือข่ายอินเทอร์เน็ตสาธารณะ <code class="math-tex">\rightarrow</code> <strong>ภัยคุกคาม:</strong> Man-in-the-Middle (MitM) ดักจับรหัสผ่าน <code class="math-tex">\rightarrow</code> <strong>มาตรการควบคุม:</strong> บังคับใช้ TLS 1.3, Strict-Transport-Security (HSTS), และตรวจจับ Web Attacks ผ่าน WAF</li>
+<li><strong>Flow 2 (WAF to App Server):</strong> ข้อมูลที่ผ่านการกรองแล้วส่งต่อไปยัง Web Application Server ในเครือข่าย DMZ <code class="math-tex">\rightarrow</code> <strong>มาตรการควบคุม:</strong> Re-encrypt ด้วย TLS ภายใน และแยก VLAN ชัดเจน</li>
+<li><strong>Flow 3 (App Server to Database):</strong> คำสั่ง SQL คิวรีและบันทึกข้อมูลผลการเรียน <code class="math-tex">\rightarrow</code> <strong>ภัยคุกคาม:</strong> SQL Injection หรือการดักจับ Connection ภายใน <code class="math-tex">\rightarrow</code> <strong>มาตรการควบคุม:</strong> Parameterized Query, เข้ารหัส Native Network Encryption (Oracle NNE) และจำกัดสิทธิ์ฐานข้อมูลผ่าน Least Privilege</li>
+<li><strong>Flow 4 (App Server to Payment Gateway):</strong> ข้อมูลยอดเงินค่าลงทะเบียนและ Transaction Token ข้ามไปยังระบบธนาคาร <code class="math-tex">\rightarrow</code> <strong>มาตรการควบคุม:</strong> REST API ผ่าน HTTPS ที่ลงนามด้วย API Secret Key และ Mutual TLS (mTLS)</li>
+<li><strong>Flow 5 (Database to Backup Storage):</strong> ข้อมูล Snapshot สำรองรายวัน <code class="math-tex">\rightarrow</code> <strong>ภัยคุกคาม:</strong> แรนซัมแวร์เจาะเข้ามาเข้ารหัสไฟล์สำรอง <code class="math-tex">\rightarrow</code> <strong>มาตรการควบคุม:</strong> สำรองข้อมูลแบบ Immutable WORM Storage ที่แยกบัญชีการดูแล (Air-gapped / Isolated VLAN)</li>
+</ol>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-4-มุมมองและการตรวจสอบของ-lead-auditor-audit-of-asset-data-management-439">ส่วนที่ 4: มุมมองและการตรวจสอบของ Lead Auditor (Audit of Asset & Data Management)</h2>
+<h3 class="content-heading" id="sec-4-1-แผนการตรวจสอบและระเบียบวิธีตรวจสอบ-audit-program-audit-procedures-441">4.1 แผนการตรวจสอบและระเบียบวิธีตรวจสอบ (Audit Program & Audit Procedures)</h3>
+<p class="content-p">ในการตรวจประเมินระบบบริหารสินทรัพย์และการจำแนกประเภทข้อมูลตามมาตรฐาน ISO/IEC 27001:2022 (Controls A.5.9 ถึง A.5.14 และ A.8.10) Lead Auditor จะไม่เพียงแค่นั่งอ่านเอกสารนโยบาย แต่จะใช้ระเบียบวิธีตรวจสอบ 4 ประการตาม ISO 19011:</p>
+<ol class="content-list ordered">
+<li><strong>Document Review:</strong> ตรวจสอบนโยบายการบริหารสินทรัพย์ นโยบายการจำแนกข้อมูล และขั้นตอนปฏิบัติงาน (SOP) ว่าได้รับการอนุมัติจากผู้บริหารและมีการทบทวนประจำปีหรือไม่</li>
+<li><strong>Technical Verification:</strong> ใช้เครื่องมือทางเทคนิค (เช่น Network Port Scanner, Configuration Audit Tools) เพื่อสแกนตรวจสอบความสอดคล้องระหว่างระบบจริงกับทะเบียนสินทรัพย์</li>
+<li><strong>Sampling Inspection:</strong> การสุ่มตรวจรายการสินทรัพย์และไฟล์ข้อมูลในระบบจัดเก็บไฟล์ (File Servers / Cloud Storage) ว่ามีการติดป้ายกำกับและจำกัดสิทธิ์ตามเกณฑ์หรือไม่</li>
+<li><strong>Physical Observation & Evidence Interview:</strong> การลงพื้นที่ตรวจสอบ Data Center ดูการติดป้าย Tag ที่เครื่องเซิร์ฟเวอร์ และการขอตรวจสอบเอกสารใบรับรองการทำลายข้อมูล (Certificate of Destruction)</li>
+</ol>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-4-2-กระดาษทำการตรวจสอบสินทรัพย์และข้อมูล-audit-working-paper-asset-data-audit-452">4.2 กระดาษทำการตรวจสอบสินทรัพย์และข้อมูล (Audit Working Paper: Asset & Data Audit)</h3>
+
+<div class="figure-box" id="figure-6-11">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 6.11</div>
+    <div class="figure-title">กระดาษทำการตรวจสอบสินทรัพย์และข้อมูล (Sample Audit Working Paper)</div>
+  </div>
+  <div class="working-paper-sample">
+    <div class="wp-meta">
+      <div><strong>Audit Client:</strong> มหาวิทยาลัยดิจิทัลสมมติ</div>
+      <div><strong>Audit Scope:</strong> ISO/IEC 27001:2022 Controls A.5.9–A.5.14, A.8.10</div>
+      <div><strong>Auditor:</strong> Lead Auditor ประจำทีม</div>
+      <div><strong>Date:</strong> 10 ตุลาคม 2567</div>
+    </div>
+    <div class="wp-tests-list">
+      <div class="wp-test-item">
+        <div class="wp-test-title">1. การตรวจสอบความครบถ้วนของทะเบียนสินทรัพย์ (Asset Completeness Test)</div>
+        <div class="wp-test-body">
+          • สแกน Subnet เซิร์ฟเวอร์ (10.0.1.0/24) ด้วย Nmap พอร์ต 22, 80, 443, 3389, 8080<br>
+          • <strong>ข้อค้นพบ:</strong> พบเครื่อง IP <code>10.0.1.88</code> เปิดพอร์ต 8080 (Tomcat) และ SSH แต่ไม่มีใน Asset Register<br>
+          • สัมภาษณ์พบว่าเป็นเซิร์ฟเวอร์ทดสอบที่นักพัฒนาลืมปิด ➔ บันทึกเป็น <strong>Minor Non-conformity (Shadow IT)</strong>
+        </div>
+      </div>
+      <div class="wp-test-item">
+        <div class="wp-test-title">2. การตรวจสอบการจำแนกข้อมูลตามความเป็นจริง (Data Classification Test)</div>
+        <div class="wp-test-body">
+          • สุ่มตรวจ Network Share บน NAS (<code>\\dc01\share\</code>)<br>
+          • <strong>ข้อค้นพบ:</strong> พบไฟล์ <code>Student_Citizen_ID_2023.xlsx</code> มีเลขบัตร ปชช. 12,000 รายการ ในโฟลเดอร์ Everyone Read<br>
+          • ละเมิด Data Handling Rules ➔ ข้อมูลระดับ Confidential ถูกปล่อยให้เข้าถึงได้แบบไม่มีสิทธิ์
+        </div>
+      </div>
+      <div class="wp-test-item">
+        <div class="wp-test-title">3. การตรวจสอบการเข้ารหัสข้อมูล (Encryption Verification Test)</div>
+        <div class="wp-test-body">
+          • คิวรีคำสั่ง SQL บน Oracle DB: <code>SELECT tablespace_name, encrypted FROM dba_tablespaces;</code><br>
+          • <strong>ผลการตรวจ:</strong> Tablespace <code>USERS_TBS</code> มีสถานะ <code>ENCRYPTED = YES</code> (AES-256) ➔ ผ่านเกณฑ์
+        </div>
+      </div>
+      <div class="wp-test-item">
+        <div class="wp-test-title">4. การตรวจสอบการทำลายสื่อบันทึกข้อมูล (Media Sanitization Audit)</div>
+        <div class="wp-test-body">
+          • ขอดูหลักฐานการปลดระวางฮาร์ดดิสก์ 12 ลูก และใบ Certificate of Destruction (CoD)<br>
+          • <strong>ข้อค้นพบ:</strong> นำฮาร์ดดิสก์ไปให้ร้านรับซื้อของเก่าภายนอกโดยไม่มีการลบล้างข้อมูล ➔ <strong>Major Non-conformity</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 6.11:</strong> ตัวอย่างกระดาษทำการตรวจสอบของ Lead Auditor ที่บันทึกหลักฐานเชิงประจักษ์ (Audit Evidence) ทั้ง 4 ขั้นตอน
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-4-3-ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง-sample-non-conformity-report-ncr-499">4.3 ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง (Sample Non-Conformity Report: NCR)</h3>
+
+<div class="figure-box" id="figure-6-12">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 6.12</div>
+    <div class="figure-title">ตัวอย่างใบรายงานข้อบกพร่องการตรวจประเมิน (NCR: Major vs Minor)</div>
+  </div>
+  <div class="ncr-compare-grid">
+    <div class="ncr-card major">
+      <div class="ncr-badge major">🚨 MAJOR NON-CONFORMITY</div>
+      <div class="ncr-code">รหัส: NCR-2024-ASSET-01</div>
+      <div class="ncr-item"><strong>ข้อกำหนด:</strong> ISO 27001 Controls A.5.14, A.8.10 &amp; PDPA ม.37 (1)</div>
+      <div class="ncr-item"><strong>ข้อเท็จจริง:</strong> ฮาร์ดดิสก์ SAS 12 ลูกที่เก็บข้อมูลนักศึกษา 50,000 คน ถูกจำหน่ายให้ร้านของเก่าโดยไม่มีการ Sanitization และไม่มีใบรับรอง Certificate of Destruction</div>
+      <div class="ncr-item"><strong>ผลกระทบ:</strong> เสี่ยงข้อมูลรั่วไหลสู่ Dark Web โทษปรับ PDPA สูงสุด 5 ล้านบาท</div>
+      <div class="ncr-item"><strong>การแก้ไข:</strong> อายัดฮาร์ดดิสก์ที่เหลือทันที บดทำลายด่วน และออกขั้นตอน Decommissioning SOP บังคับ CoD ทุกครั้ง</div>
+    </div>
+
+    <div class="ncr-card minor">
+      <div class="ncr-badge minor">⚠️ MINOR NON-CONFORMITY</div>
+      <div class="ncr-code">รหัส: NCR-2024-ASSET-02</div>
+      <div class="ncr-item"><strong>ข้อกำหนด:</strong> ISO 27001 Controls A.5.9, A.5.12</div>
+      <div class="ncr-item"><strong>ข้อเท็จจริง:</strong> เซิร์ฟเวอร์ IP 10.0.1.88 ให้บริการระบบประเมินอาจารย์เปิดมา 4 เดือน ไม่ปรากฏใน Asset Register และไม่ระบุ Asset Owner</div>
+      <div class="ncr-item"><strong>ผลกระทบ:</strong> ขาดการควบคุมแพตช์ ไม่มีการสำรองข้อมูลตามเกณฑ์ เสี่ยงกลายเป็นช่องทางโจมตี</div>
+      <div class="ncr-item"><strong>การแก้ไข:</strong> ลงทะเบียนเข้าสู่ Asset Register ทันที และผูกกระบวนการ Change Management บังคับลงทะเบียนก่อน Go-live</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 6.12:</strong> การเปรียบเทียบใบข้อบกพร่องขั้นรุนแรง (Major Non-conformity) กับขั้นรอง (Minor Non-conformity) ในมิติการบริหารสินทรัพย์
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-ตัวอย่างที่-1-major-non-conformity-ข้อบกพร่องขั้นรุนแรง-501">ตัวอย่างที่ 1: Major Non-Conformity (ข้อบกพร่องขั้นรุนแรง)</h4>
+<blockquote class="content-blockquote"><strong>ใบรายงานข้อบกพร่องการตรวจประเมิน (Non-Conformity Report: NCR)</strong>  <br><strong>รหัสข้อค้นพบ:</strong> NCR-2024-ASSET-01  <br><strong>ระดับความรุนแรง:</strong> <strong>Major Non-conformity (ข้อบกพร่องขั้นรุนแรง)</strong>  <br><strong>ข้อกำหนดอ้างอิง:</strong> ISO/IEC 27001:2022 Control A.5.14 (Information transfer), Control A.8.10 (Information deletion), และ พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 มาตรา 37 (1)  <br><br><strong>1. สภาพข้อเท็จจริงที่ตรวจพบ (Condition):</strong>  <br>จากการสุ่มตรวจสอบการจัดการสื่อบันทึกข้อมูลที่ปลดระวางในรอบ 1 ปีที่ผ่านมา พบว่าฮาร์ดดิสก์แบบ SAS จำนวน 12 ลูก ซึ่งถอดออกจากเซิร์ฟเวอร์ฐานข้อมูลทะเบียนเก่า (ระบบที่จัดเก็บข้อมูลผลการเรียนและสำเนาบัตรประชาชนของนักศึกษากว่า 50,000 ระเบียน) ถูกนำไปเก็บไว้ในตู้เก็บของที่ไม่มีกุญแจล็อกในห้องแม่บ้าน และมี 4 ลูกถูกจำหน่ายให้ร้านรับซื้อของเก่าภายนอก <strong>โดยไม่มีการลบล้างข้อมูลตามมาตรฐาน (Sanitization) และไม่มีใบรับรองการทำลายข้อมูล (Certificate of Destruction)</strong>  <br><br><strong>2. เกณฑ์การตรวจที่นำมาเปรียบเทียบ (Criteria):</strong>  <br>นโยบายความมั่นคงปลอดภัยสารสนเทศของมหาวิทยาลัยหมวดการบริหารสินทรัพย์ ข้อ 6.4 ระบุว่า <em>"สื่อบันทึกข้อมูลที่มีข้อมูลระดับ Confidential ขึ้นไป จะต้องได้รับการทำลายข้อมูลด้วยวิธีการ Degaussing หรือบดทำลายทางกายภาพตามมาตรฐาน NIST SP 800-88 และต้องมีใบรับรองการทำลายข้อมูลลงนามโดยคณะกรรมการ"</em>  <br><br><strong>3. สาเหตุที่แท้จริง (Root Cause):</strong>  <br>ขาดขั้นตอนการปฏิบัติงานที่เป็นลายลักษณ์อักษร (SOP) ในการปลดระวางอุปกรณ์ และฝ่ายไอทีขาดงบประมาณในการว่าจ้างบริษัททำลายขยะอิเล็กทรอนิกส์ที่ได้มาตรฐาน จึงส่งมอบให้อาคารสถานที่จัดการตามวิธีพัสดุปกติ  <br><br><strong>4. ผลกระทบ (Effect):</strong>  <br>มีความเสี่ยงขั้นวิกฤตที่ข้อมูลส่วนบุคคลของนักศึกษา 50,000 คนจะถูกกู้คืนและนำไปเผยแพร่บน Dark Web นำไปสู่การถูกปรับตาม PDPA สูงสุด 5 ล้านบาท และมหาวิทยาลัยเสื่อมเสียชื่อเสียงอย่างร้ายแรง  <br><br><strong>5. ข้อเสนอแนะในการแก้ไข (Recommendation):</strong>  <br>1. อายัดฮาร์ดดิสก์ที่เหลืออยู่ทั้งหมดทันที และดำเนินการบดทำลาย (Physical Shredding) โดยเร่งด่วน  <br>2. ออกแบบขั้นตอนปฏิบัติการปลดระวางสินทรัพย์ (Decommissioning SOP) และกำหนดให้ต้องมี Certificate of Destruction ทุกครั้งที่มีการทิ้งหรือจำหน่ายฮาร์ดแวร์</blockquote>
+<hr class="section-divider">
+<h4 class="content-heading" id="sec-ตัวอย่างที่-2-minor-non-conformity-ข้อบกพร่องขั้นรอง-526">ตัวอย่างที่ 2: Minor Non-Conformity (ข้อบกพร่องขั้นรอง)</h4>
+<blockquote class="content-blockquote"><strong>ใบรายงานข้อบกพร่องการตรวจประเมิน (Non-Conformity Report: NCR)</strong>  <br><strong>รหัสข้อค้นพบ:</strong> NCR-2024-ASSET-02  <br><strong>ระดับความรุนแรง:</strong> <strong>Minor Non-conformity (ข้อบกพร่องขั้นรอง)</strong>  <br><strong>ข้อกำหนดอ้างอิง:</strong> ISO/IEC 27001:2022 Control A.5.9 (Inventory of information and other associated assets) และ Control A.5.12 (Classification of information)  <br><br><strong>1. สภาพข้อเท็จจริงที่ตรวจพบ (Condition):</strong>  <br>จากการสุ่มตรวจสอบเซิร์ฟเวอร์บนระบบเครือข่ายของสำนักไอที พบเซิร์ฟเวอร์หมายเลข IP 10.0.1.88 ให้บริการ Web Service สำหรับระบบประเมินอาจารย์ผู้สอน ซึ่งเริ่มเปิดใช้งานมาแล้วเป็นเวลา 4 เดือน แต่เซิร์ฟเวอร์ดังกล่าว <strong>ไม่ปรากฏรายชื่ออยู่ในทะเบียนสินทรัพย์ (Asset Register)</strong> และไม่มีการระบุผู้เป็นเจ้าของสินทรัพย์ (Asset Owner)  <br><br><strong>2. เกณฑ์การตรวจที่นำมาเปรียบเทียบ (Criteria):</strong>  <br>ข้อกำหนด ISO/IEC 27001:2022 Control A.5.9 ระบุว่า <em>"องค์กรต้องจัดทำและบำรุงรักษาทะเบียนสินทรัพย์สารสนเทศและสินทรัพย์อื่นที่เกี่ยวข้องให้เป็นปัจจุบัน"</em>  <br><br><strong>3. สาเหตุที่แท้จริง (Root Cause):</strong>  <br>ฝ่ายพัฒนาระบบไม่ได้แจ้งประสานงานกับทีมผู้ดูแลระบบเครือข่ายเมื่อทำการติดตั้งเซิร์ฟเวอร์ใหม่ ขาดการเชื่อมโยงกระบวนการ Change Management เข้ากับการอัปเดตทะเบียนสินทรัพย์  <br><br><strong>4. ผลกระทบ (Effect):</strong>  <br>ขาดการควบคุมแพตช์ความปลอดภัย ขาดการสำรองข้อมูลตามมาตรฐาน และไม่มีการประเมินความเสี่ยงประจำปีสำหรับเซิร์ฟเวอร์นี้  <br><br><strong>5. ข้อเสนอแนะในการแก้ไข (Recommendation):</strong>  <br>ให้ลงทะเบียนเซิร์ฟเวอร์ดังกล่าวเข้าสู่ Asset Register ทันที พร้อมทั้งปรับปรุงกระบวนการ Release Management ให้กำหนดเป็นเงื่อนไขบังคับว่า ต้องลงทะเบียนสินทรัพย์ก่อนเปิดให้บริการระบบบน Production เสมอ</blockquote>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-4-4-lead-auditor-checklist-สำหรับการตรวจประเมิน-asset-data-security-550">4.4 Lead Auditor Checklist สำหรับการตรวจประเมิน Asset & Data Security</h3>
+
+<div class="interactive-card" id="widget-6-5">
+  <div class="card-badge">INTERACTIVE WIDGET 6.5</div>
+  <div class="card-title">📋 เครื่องมือตรวจประเมิน Lead Auditor Checklist &amp; NCR Evaluator</div>
+  <p class="card-desc">สวมบทบาทเป็น Lead Auditor ตรวจสอบ 10 ข้อกำหนดสำคัญตาม ISO/IEC 27001 (A.5.9–A.5.14, A.8.10) ระบบจะประเมินคะแนนความสอดคล้องและวิเคราะห์ข้อบกพร่องที่ต้องออกใบ NCR</p>
+
+  <div class="audit-checklist-tool" id="audit-checklist-tool">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<div class="table-container"><table class="content-table"><thead><tr><th>ลำดับ</th><th>รายการตรวจประเมิน (Audit Checklist Item)</th><th>มาตรฐานอ้างอิง</th><th>วิธีการตรวจสอบ</th><th>ผลการตรวจ</th></tr></thead><tbody><tr><td>1</td><td>มีการจัดทำและทบทวนทะเบียนสินทรัพย์ (Asset Register) ครอบคลุม 11 ฟิลด์ข้อมูลอย่างน้อยปีละ 1 ครั้งหรือไม่?</td><td>A.5.9</td><td>ขอดูเอกสารทะเบียนสินทรัพย์ และบันทึกการประชุมทบทวนล่าสุด</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>2</td><td>สินทรัพย์ทุกรายการมีผู้รับผิดชอบชัดเจนในบทบาท Asset Owner และ Custodian หรือไม่?</td><td>A.5.9</td><td>ตรวจสอบฟิลด์ Owner/Custodian ในทะเบียน และสัมภาษณ์ตัวแทน</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>3</td><td>มีการระบุกฎเกณฑ์การใช้งานสินทรัพย์ที่เป็นที่ยอมรับ (Acceptable Use Policy: AUP) และพนักงานลงนามรับทราบหรือไม่?</td><td>A.5.10</td><td>ขอดูเอกสารนโยบาย AUP และใบลงนามของพนักงานใหม่</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>4</td><td>มีกระบวนการส่งคืนสินทรัพย์เมื่อพนักงานลาออกหรือเปลี่ยนหน้าที่อย่างครบถ้วนหรือไม่?</td><td>A.5.11</td><td>สุ่มตรวจ Checklist การลาออกของพนักงาน 5 รายการล่าสุด</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>5</td><td>มีการกำหนดระดับชั้นความลับของข้อมูล (Classification Schema) เป็น 4 ระดับอย่างชัดเจนหรือไม่?</td><td>A.5.12</td><td>ตรวจดูเอกสารนโยบาย Data Classification Policy</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>6</td><td>เอกสารและไฟล์ข้อมูลความลับมีการติดป้ายกำกับ (Labeling / Watermark) ตามเกณฑ์หรือไม่?</td><td>A.5.13</td><td>สุ่มตรวจเอกสารรายงานการเงินและไฟล์ใน Network Share</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>7</td><td>การถ่ายโอนข้อมูลความลับภายนอกมีการเข้ารหัส TLS 1.3 หรือ SFTP หรือไม่?</td><td>A.5.14</td><td>ตรวจสอบ Network Traffic และการตั้งค่า API Gateway</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>8</td><td>มีการควบคุมการใช้อุปกรณ์พกพา (USB / BYOD) ผ่านระบบ DLP หรือไม่?</td><td>A.7.10, A.8.1</td><td>ทดสอบเสียบ Flash Drive ที่ไม่เข้ารหัสบนเครื่องทำงาน</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>9</td><td>มีการลบข้อมูลตามระยะเวลาจัดเก็บ (Retention Period) และสิทธิของผู้ใช้ตาม PDPA หรือไม่?</td><td>A.8.10</td><td>ตรวจสอบ Script อัตโนมัติในการ Purge ข้อมูลที่หมดอายุ</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>10</td><td>การทำลายสื่อบันทึกข้อมูลมีใบรับรองการทำลาย (Certificate of Destruction) ครบถ้วนหรือไม่?</td><td>A.8.10</td><td>ขอดูใบรับรอง CoD สำหรับฮาร์ดดิสก์และอุปกรณ์ที่ปลดระวางล่าสุด</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน-active-learning-simulation-567">กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน (Active Learning Simulation)</h2>
+<h3 class="content-heading" id="sec-กิจกรรม-the-shadow-it-research-data-leak-dilemma-ข้อพิพาทเซิร์ฟเวอร์เถื่อนและข้อมูลวิจัยรั่วไหล-569">กิจกรรม: "The Shadow IT & Research Data Leak Dilemma" (ข้อพิพาทเซิร์ฟเวอร์เถื่อนและข้อมูลวิจัยรั่วไหล)</h3>
+<ul class="content-list ">
+<li><strong>ระยะเวลา:</strong> 15–20 นาที</li>
+<li><strong>สถานการณ์สมมติ:</strong> คณะแพทยศาสตร์ของมหาวิทยาลัยได้รับทุนวิจัยพัฒนาระบบ AI วินิจฉัยโรคมะเร็ง ทีมวิจัยของอาจารย์แพทย์ต้องการความรวดเร็วในการประมวลผล จึงได้จัดซื้อเครื่อง Server GPU มูลค่า 800,000 บาทมาติดตั้งใต้โต๊ะทำงานในห้องแล็บ โดยไม่ได้แจ้งสำนักไอที (Shadow IT) และได้ทำการดาวน์โหลดประวัติการรักษาและผลตรวจ DNA ของผู้ป่วย 5,000 ราย มาเก็บไว้บนเซิร์ฟเวอร์นี้โดยไม่ได้เข้ารหัส ต่อมาพบว่าเซิร์ฟเวอร์ดังกล่าวถูกเชื่อมต่ออินเทอร์เน็ตผ่านเราเตอร์ 5G ส่วนตัวเพื่อให้อาจารย์ล็อกอินจากที่บ้านได้</li>
+<li><strong>การแบ่งกลุ่มบทบาทในห้องเรียน (5 กลุ่ม):</strong></li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>กลุ่มหัวหน้าทีมวิจัย/อาจารย์แพทย์:</strong> อ้างความก้าวหน้าทางวิชาการและกำหนดส่งงานวิจัยระดับโลก อ้างว่าการรอขออนุญาตฝ่ายไอทีต้องใช้เวลานานถึง 6 เดือน ซึ่งจะทำให้งานวิจัยล้มเหลว</li>
+<li><strong>กลุ่มผู้อำนวยการสำนักไอที (Custodian):</strong> ต้องการตัดสัญญาณเครือข่ายและยึดเครื่องเซิร์ฟเวอร์ทันที เนื่องจากละเมิดนโยบายความมั่นคงปลอดภัยและเสี่ยงต่อการถูกแฮก</li>
+<li><strong>กลุ่มเจ้าหน้าที่คุ้มครองข้อมูลส่วนบุคคล (DPO / Legal):</strong> กังวลเรื่องการละเมิด PDPA มาตรา 26 (ข้อมูลสุขภาพอ่อนไหว) ซึ่งมีโทษทางอาญาและโทษปรับสูงสุด 5 ล้านบาท</li>
+<li><strong>กลุ่ม CISO (Lead Implementer):</strong> ต้องเป็นคนกลางในการหาทางออกด้วย <strong>Compensating Controls</strong> (เช่น ย้ายเครื่องเข้าห้อง Data Center จัดการทำ Data Pseudonymization และบังคับใช้ MFA) เพื่อให้งานวิจัยเดินหน้าต่อได้โดยไม่ผิดกฎหมาย</li>
+<li><strong>กลุ่ม Lead Auditor (ผู้สังเกตการณ์):</strong> ทำหน้าที่ซักค้านว่า <em>"มีหลักฐานความยินยอม (Consent) จากผู้ป่วยหรือไม่? และทำไมระบบตรวจจับของไอทีจึงปล่อยให้มี Shadow IT อยู่นานถึง 4 เดือน?"</em></li>
+</ol>
+<h4 class="content-heading" id="sec-รูบริกการประเมินผลกิจกรรม-simulation-evaluation-rubric-579">รูบริกการประเมินผลกิจกรรม (Simulation Evaluation Rubric):</h4>
+<ul class="content-list ">
+<li><strong>ความถูกต้องตามมาตรฐานและกฎหมาย (40%):</strong> อ้างอิงข้อกำหนด ISO 27001 และ PDPA มาตรา 26 ได้ถูกต้อง</li>
+<li><strong>การให้เหตุผลและการเจรจาต่อรอง (30%):</strong> สามารถนำเสนอทางออกเชิงเทคนิคที่สมดุลระหว่างความปลอดภัยและความคล่องตัวทางธุรกิจ (Security vs Business Agility)</li>
+<li><strong>การมีส่วนร่วมและการทำงานเป็นทีม (30%):</strong> สมาชิกในกลุ่มมีบทบาทร่วมในการตอบคำถามและซักค้านอย่างสร้างสรรค์</li>
+</ul>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-มุมมองวิชาชีพประจำบท-professional-perspectives-586">มุมมองวิชาชีพประจำบท (Professional Perspectives)</h2>
+
+<div class="perspective-box">
+  <div class="persp-title">💬 บทสนทนาข้ามสายวิชาชีพ (Professional Dialogue)</div>
+  <div class="persp-grid">
+    <div class="persp-side imp">
+      <div class="persp-badge">Lead Implementer (ผู้จัดทำระบบ)</div>
+      <p>"เราทำ Asset Register เสร็จเรียบร้อย มีรายการครบ 500 ชิ้น และจัดระดับชั้นข้อมูลไว้ในเอกสารนโยบายแล้วครับ"</p>
+      <p>"เรามีนโยบายให้ลบข้อมูลเมื่อเลิกใช้ และมีเจ้าหน้าที่ดูแลตามขั้นตอนครับ"</p>
+      <p>"เรากำหนดให้ทุกเครื่องใช้ BitLocker และห้ามใช้ Flash Drive ที่ไม่เข้ารหัส"</p>
+    </div>
+    <div class="persp-side aud">
+      <div class="persp-badge">Lead Auditor (ผู้ตรวจสอบ)</div>
+      <p>"บัญชีสินทรัพย์ของคุณตรงกับความเป็นจริงแค่ไหน? ผมจะสแกน Network ค้นหา Shadow IT และสุ่มตรวจไฟล์แชร์ดูว่ามีข้อมูลลับหลุดไปวางผิดที่หรือไม่"</p>
+      <p>"ขอดูใบ Certificate of Destruction จากบริษัทกำจัดขยะหน่อยครับ ถ้าไม่มี ผมถือว่าหลักฐานไม่เพียงพอ"</p>
+      <p>"ผมขอดูบันทึกการสุ่มตรวจและรายงานการตั้งค่า Endpoint DLP ว่ามีการบล็อกการโอนย้ายข้อมูลได้จริงในเชิงเทคนิค"</p>
+    </div>
+  </div>
+</div>
+        
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-แบบฝึกหัดและการบ้านประจำบทที่-6-611">แบบฝึกหัดและการบ้านประจำบทที่ 6</h2>
+<p class="content-p">เพื่อเป็นส่วนหนึ่งของการจัดทำแฟ้มสะสมงาน <strong>Cybersecurity Audit Portfolio</strong> ให้นักศึกษาจัดทำเอกสารการบริหารสินทรัพย์และการจำแนกข้อมูลสำหรับ <strong>“มหาวิทยาลัยดิจิทัลสมมติ”</strong> (หรือหน่วยงานที่ได้รับอนุมัติ) ประกอบด้วย 4 ชิ้นงานสำคัญ:</p>
+<ol class="content-list ordered">
+<li><strong>ทะเบียนสินทรัพย์สารสนเทศ (Asset Register) ไม่น้อยกว่า 20 รายการ:</strong></li>
+</ol>
+<ul class="content-list ">
+<li>ครอบคลุมประเภทสินทรัพย์อย่างน้อย 6 หมวด (Hardware, Software, Information, Network, Cloud, Facility)</li>
+<li>ระบุข้อมูลครบถ้วนทั้ง 11 ฟิลด์ (Asset ID, Name, Description, Owner, Custodian, Location, Dependency, Criticality Tier, Data Classification, Support Status, Backup Requirement)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>เมทริกซ์การจำแนกประเภทข้อมูล (Data Classification Matrix) ไม่น้อยกว่า 10 ชุดข้อมูล:</strong></li>
+</ol>
+<ul class="content-list ">
+<li>ครอบคลุมทั้ง 4 ระดับชั้น (Public, Internal, Confidential, Restricted)</li>
+<li>ระบุเจ้าของข้อมูล ฐานกฎหมาย (PDPA/Cyber Act) รูปแบบการเข้ารหัส และสิทธิ์การเข้าถึง</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>แผนภาพกระแสข้อมูล (Data Flow Diagram - DFD) สำหรับระบบสำคัญ 1 ระบบ:</strong></li>
+</ol>
+<ul class="content-list ">
+<li>จัดทำผัง DFD Level 1 สำหรับระบบลงทะเบียน หรือระบบการเงิน ที่แสดงการเคลื่อนที่ของข้อมูล Trust Boundaries และมาตรการรักษาความปลอดภัยในแต่ละจุดเชื่อมต่อ</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>ข้อกำหนดกฎเกณฑ์การจัดการข้อมูล (Data Handling Policy Summary):</strong></li>
+</ol>
+<ul class="content-list ">
+<li>สรุปข้อกำหนดการจัดการข้อมูลในแต่ละระดับชั้น ครอบคลุม Labeling, Access Control, Encryption, Transmission, Retention และ Disposal</li>
+</ul>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-คำถามทบทวนท้ายบท-review-questions-answers-628">คำถามทบทวนท้ายบท (Review Questions & Answers)</h2>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างที่สำคัญที่สุดระหว่างบทบาทของ Asset Owner และ Asset Custodian พร้อมยกตัวอย่าง</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> <strong>Asset Owner</strong> คือผู้บริหารระดับสายงานธุรกิจผู้มีอำนาจตัดสินใจ มีหน้าที่กำหนดระดับชั้นความลับของข้อมูล อนุมัติสิทธิ์การเข้าถึง และอนุมัติการทำลายข้อมูล (เช่น ผอ.กองบริการการศึกษา) ส่วน <strong>Asset Custodian</strong> คือผู้ดูแลรักษาเชิงเทคนิค (ฝ่ายไอที) มีหน้าที่ปฏิบัติตามคำสั่งของ Owner เช่น ติดตั้งระบบ ปรับแต่งสิทธิ์การเข้าถึง สำรองข้อมูล และลงมือทำลายข้อมูลอย่างปลอดภัย (เช่น Lead DBA หรือ System Admin)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> หากระบบลงทะเบียนเรียนมีค่า MTD = 12 ชั่วโมง และผู้บริหารกำหนดให้ตั้งค่า RTO = 16 ชั่วโมง การตั้งค่านี้ถูกต้องตามหลักความต่อเนื่องทางธุรกิจหรือไม่ เพราะเหตุใด?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> <strong>ไม่ถูกต้องอย่างยิ่ง</strong> เนื่องจากตามหลักการ BIA ค่า RTO ต้องน้อยกว่า MTD เสมอ (<code class="math-tex">RTO < MTD</code>) หาก RTO (เวลาที่คาดว่าจะกู้ระบบได้) เท่ากับ 16 ชั่วโมง แต่ MTD (เวลาสูงสุดที่องค์กรทนรับได้) เท่ากับ 12 ชั่วโมง หมายความว่าองค์กรจะต้องทนระบบล่มนานเกินกว่าขีดจำกัดที่ยอมรับได้ไปถึง 4 ชั่วโมง ซึ่งจะทำให้เกิดความเสียหายขั้นหายนะต่อพันธกิจขององค์กร</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> จงอธิบายความหมายของ Single Point of Failure (SPOF) และยกตัวอย่าง Human SPOF ในฝ่ายไอที</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> SPOF คือองค์ประกอบใด ๆ ในระบบที่หากหยุดทำงานเพียงจุดเดียว จะทำให้ระบบทั้งหมดล้มเหลวทันที ตัวอย่าง <strong>Human SPOF</strong> คือ การที่มี Database Administrator เพียงคนเดียวที่รู้ Master Password ของฐานข้อมูลหลัก และรู้วิธีการกู้คืนระบบ หากบุคคลนี้ประสบอุบัติเหตุ ลาออกกะทันหัน หรือไม่สามารถติดต่อได้ องค์กรจะไม่สามารถกู้คืนระบบได้เลย</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> ข้อมูลผลการตรวจเลือดและประวัติโรคประจำตัวของนักศึกษา จัดอยู่ในระดับชั้นข้อมูลใดตามเกณฑ์ 4 ระดับ และมีฐานกฎหมายใดรองรับ?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> จัดอยู่ในระดับ <strong>Restricted (ข้อมูลลับที่สุด / ข้อมูลจำกัดสิทธิ์สูงสุด)</strong> เนื่องจากเป็น <strong>ข้อมูลส่วนบุคคลอ่อนไหว (Sensitive Personal Data)</strong> ตามมาตรา 26 แห่ง พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) ซึ่งหากรั่วไหลจะกระทบต่อสิทธิเสรีภาพและสร้างความเสียหายร้ายแรงต่อเจ้าของข้อมูล มีโทษทางอาญาและโทษปรับสูงสุดตามกฎหมาย</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> เหตุใดการสั่ง Quick Format หรือการเขียนทับข้อมูลธรรมดา (Overwriting) บน Flash SSD จึงไม่สามารถทำลายข้อมูลได้อย่างปลอดภัย 100%?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> เนื่องจากไดรฟ์ SSD มีคอนโทรลเลอร์ที่ควบคุมการทำงานของเทคโนโลยี <strong>Wear Leveling</strong> และ <strong>Over-Provisioning</strong> ซึ่งคอยกระจายการเขียนข้อมูลเพื่อยืดอายุเซลล์แฟลช และมีพื้นที่บล็อกสำรองที่ซ่อนอยู่จากระบบปฏิบัติการ ทำให้การเขียนทับเชิงตรรกะไม่สามารถเข้าถึงเซลล์ข้อมูลที่ถูกเก็บซ่อนไว้ได้ การทำลายที่ปลอดภัยสำหรับ SSD จึงต้องใช้คำสั่งเฟิร์มแวร์ Cryptographic Erase หรือการบดทำลายทางกายภาพ (Shredding) ให้ชิ้นส่วนเล็กกว่า 2 มม.</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> ตามมาตรฐาน NIST SP 800-88 Rev. 1 ระดับการทำลายข้อมูล "Purge" แตกต่างจาก "Clear" อย่างไร?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> <strong>Clear</strong> คือการลบล้างเชิงตรรกะด้วยการเขียนทับข้อมูล (Overwrite) ด้วยเครื่องมือซอฟต์แวร์ทั่วไป ซึ่งสามารถป้องกันการกู้ข้อมูลด้วยเครื่องมือกู้ข้อมูลพื้นฐานได้ และสื่อบันทึกยังนำกลับมาใช้ใหม่ได้ ส่วน <strong>Purge</strong> คือการล้างข้อมูลระดับลึก เช่น การใช้คำสั่ง Secure Cryptographic Erase ของไดรฟ์ หรือการใช้เครื่อง Degaussing ลบล้างสนามแม่เหล็ก ซึ่งสามารถป้องกันการกู้ข้อมูลในห้องปฏิบัติการนิติวิทยาศาสตร์ระดับสูง (Advanced Laboratory Techniques) ได้อย่างสิ้นเชิง</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> จงระบุ 3 สภาวะของข้อมูล (The Three States of Data) พร้อมระบุมาตรการควบคุมความปลอดภัยหลักของแต่ละสภาวะ</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> (1) <strong>Data at Rest:</strong> ควบคุมด้วย Access Control และการเข้ารหัส Storage/Database (AES-256) (2) <strong>Data in Transit:</strong> ควบคุมด้วยโปรโตคอลเครือข่ายความปลอดภัยสูง (TLS 1.3, SFTP, IPsec) (3) <strong>Data in Use:</strong> ควบคุมด้วยการจำกัดสิทธิ์ Least Privilege ใน RAM และเทคโนโลยี Confidential Computing (Hardware Enclaves)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> ในมุมมองของ Lead Auditor การสแกนพอร์ตเครือข่ายแล้วพบ IP Address เปิดให้บริการอยู่แต่ไม่มีชื่อใน Asset Register มีนัยสำคัญอย่างไร?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> จัดเป็นข้อค้นพบประเภท <strong>Shadow IT</strong> หรือความไม่สมบูรณ์ของทะเบียนสินทรัพย์ ซึ่งสะท้อนว่าระบบควบคุมการเปลี่ยนแปลง (Change Management) ล้มเหลว อุปกรณ์ดังกล่าวอาจไม่ได้รับการอัปเดตแพตช์ความปลอดภัย ไม่ได้รับการสำรองข้อมูล และอาจกลายเป็นช่องทางให้แฮกเกอร์ใช้เจาะเข้าสู่เครือข่ายภายในได้ จัดเป็นข้อบกพร่อง (Non-conformity) ต่อนิยามการควบคุมตาม ISO 27001 Control A.5.9</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> ใบรับรอง Certificate of Destruction (CoD) ต้องประกอบด้วยข้อมูลสำคัญอะไรบ้างเพื่อใช้เป็นหลักฐานยืนยันต่อ Lead Auditor?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> ต้องระบุ: (1) หมายเลขใบรับรองและวันที่ทำลาย (2) รายละเอียดสื่อบันทึก เช่น ยี่ห้อ รุ่น และ Serial Number ทุกชิ้น (3) ชื่อหน่วยงานเจ้าของสินทรัพย์ (4) ชื่อบริษัทผู้รับจ้างทำลาย (5) วิธีการทำลายที่ใช้ตามมาตรฐาน NIST 800-88 (Clear/Purge/Destroy) (6) ลายมือชื่อของพยานผู้แทนองค์กรและผู้แทนผู้ทำลาย</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> ข้อมูลจราจรทางคอมพิวเตอร์ (Log Files) ต้องจัดเก็บรักษาไว้อย่างน้อยกี่วันตามกฎหมายไทย และจัดอยู่ในระดับชั้นความลับใด?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> ต้องจัดเก็บรักษาไว้ <strong>ไม่น้อยกว่า 90 วัน</strong> (และพนักงานเจ้าหน้าที่อาจสั่งให้ขยายเวลาได้ถึง 2 ปีในกรณีจำเป็น) ตามมาตรา 26 แห่ง พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2550 และที่แก้ไขเพิ่มเติม และจัดอยู่ในระดับ <strong>Confidential</strong> เนื่องจากมีข้อมูล IP Address บันทึกการเชื่อมต่อ และประวัติการเข้าใช้งานของบุคคล ซึ่งต้องควบคุมการเข้าถึงอย่างเคร่งครัด</li>
+</ul>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-สรุปบทที่-6-653">สรุปบทที่ 6</h2>
+<p class="content-p">การบริหารจัดการสินทรัพย์และการจำแนกประเภทข้อมูลเป็นหัวใจและจุดเริ่มต้นของระบบความมั่นคงปลอดภัยไซเบอร์ หากปราศจากการรู้เท่าทันสินทรัพย์ที่มีอยู่ องค์กรจะไม่สามารถจัดสรรงบประมาณ ประเมินความเสี่ยง หรือกำหนดมาตรการควบคุมได้อย่างถูกต้อง</p>
+<p class="content-p">Lead Implementer ต้องทำหน้าที่ในการวางระบบ <strong>Asset Register</strong> ที่สะท้อนความเป็นจริง แบ่งแยกบทบาทระหว่าง <strong>Asset Owner</strong> (ผู้มีอำนาจตัดสินใจทางธุรกิจ) และ <strong>Asset Custodian</strong> (ผู้ดูแลรักษาเชิงเทคนิค) ประเมินความสำคัญต่อภารกิจผ่านดัชนีชี้วัด <strong>MTD, RTO, RPO</strong> และกำจัดจุดล้มเหลวเดี่ยว <strong>(SPOF)</strong> ในขณะเดียวกัน ต้องกำหนดระดับชั้นความลับของข้อมูล 4 ระดับ วางกฎเกณฑ์ <strong>Data Handling Rules</strong> ที่รัดกุม และควบคุม <strong>วงจรชีวิตข้อมูลทั้ง 8 ขั้นตอน</strong> ตั้งแต่การสร้างจนถึงการทำลายสื่อบันทึกข้อมูลอย่างปลอดภัยตามมาตรฐาน <strong>NIST SP 800-88 Rev. 1</strong></p>
+<p class="content-p">ในมุมมองของ Lead Auditor การตรวจสอบสินทรัพย์มิใช่การนั่งตรวจเอกสารบนโต๊ะทำงาน แต่คือการนำเครื่องมือทางเทคนิคมาสอบยัน (Cross-verify) กับความเป็นจริงเพื่อตรวจจับ <strong>Shadow IT</strong> การสุ่มตรวจสิทธิ์การเข้าถึงข้อมูลความลับ และการตรวจหาใบรับรองการทำลายข้อมูลเพื่อป้องกันการรั่วไหลของข้อมูลในอนาคต</p>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-เอกสารอ้างอิงและมาตรฐานสากล-663">เอกสารอ้างอิงและมาตรฐานสากล</h2>
+<ol class="content-list ordered">
+<li><strong>International Organization for Standardization (ISO).</strong> (2022). <em>ISO/IEC 27001:2022 Information security, cybersecurity and privacy protection — Information security management systems — Requirements</em> (Annex A Controls A.5.9, A.5.10, A.5.11, A.5.12, A.5.13, A.5.14, A.8.10). Geneva: ISO.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2022). <em>ISO/IEC 27002:2022 Information security, cybersecurity and privacy protection — Information security controls</em>. Geneva: ISO.</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2014). <em>Guidelines for Media Sanitization</em> (NIST Special Publication 800-88 Revision 1). U.S. Department of Commerce.</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2024). <em>The NIST Cybersecurity Framework (CSF) 2.0</em> (Identify Function: Asset Management ID.AM). U.S. Department of Commerce.</li>
+<li><strong>Center for Internet Security (CIS).</strong> (2021). <em>CIS Critical Security Controls Version 8</em> (Control 1: Inventory and Control of Enterprise Assets, Control 2: Inventory and Control of Software Assets). CIS.</li>
+<li><strong>AXELOS.</strong> (2019). <em>ITIL 4 Foundation: ITIL 4 Edition</em> (Service Asset and Configuration Management). The Stationery Office.</li>
+<li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+<li><strong>ประกาศคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2564.</strong> ราชกิจจานุเบกษา เล่ม 138 ตอนพิเศษ 245 ง วันที่ 7 ตุลาคม 2564.</li>
+<li><strong>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+<li><strong>พระราชบัญญัติว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2550 และที่แก้ไขเพิ่มเติม (ฉบับที่ 2) พ.ศ. 2560.</strong> ราชกิจจานุเบกษา.</li>
+<li><strong>ระเบียบสำนักนายกรัฐมนตรีว่าด้วยการรักษาความปลอดภัยแห่งชาติ พ.ศ. 2552.</strong> ราชกิจจานุเบกษา.</li>
+</ol>
+
+      <!-- Bottom Chapter Navigation -->
+      <footer class="chapter-nav-footer">
+        <a href="ch-5.html" class="btn-nav-chapter">
+          <span>◀</span> บทที่ 5: การประเมินและบริหารความเสี่ยงด้านไซเบอร์
+        </a>
+        <a href="ch-7.html" class="btn-nav-chapter">
+          บทที่ 7: การออกแบบและนำมาตรการควบคุมไปปฏิบัติ <span>▶</span>
+        </a>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // ==========================================
+    // UI CONTROLS & THEME SWITCHER
+    // ==========================================
+    const htmlEl = document.documentElement;
+    const btnLight = document.getElementById('btn-theme-light');
+    const btnSepia = document.getElementById('btn-theme-sepia');
+    const btnDark = document.getElementById('btn-theme-dark');
+    const btnFontDec = document.getElementById('btn-font-dec');
+    const btnFontReset = document.getElementById('btn-font-reset');
+    const btnFontInc = document.getElementById('btn-font-inc');
+    const sidebarToc = document.getElementById('sidebar-toc');
+    const btnToggleToc = document.getElementById('btn-toggle-toc');
+    const btnCloseToc = document.getElementById('btn-close-toc');
+    const tocBackdrop = document.getElementById('toc-backdrop');
+    const progressBar = document.getElementById('progress-bar');
+
+    // Theme Management
+    function setTheme(theme) {
+      htmlEl.setAttribute('data-theme', theme);
+      localStorage.setItem('necs-theme', theme);
+      btnLight.classList.toggle('active', theme === 'light');
+      btnSepia.classList.toggle('active', theme === 'sepia');
+      btnDark.classList.toggle('active', theme === 'dark');
+    }
+    btnLight.addEventListener('click', () => setTheme('light'));
+    btnSepia.addEventListener('click', () => setTheme('sepia'));
+    btnDark.addEventListener('click', () => setTheme('dark'));
+    const savedTheme = localStorage.getItem('necs-theme') || 'light';
+    setTheme(savedTheme);
+
+    // Font Scaling
+    let currentScale = parseFloat(localStorage.getItem('necs-font-scale')) || 1.0;
+    function setFontScale(scale) {
+      currentScale = Math.min(Math.max(scale, 0.85), 1.3);
+      htmlEl.style.setProperty('--font-scale', currentScale);
+      localStorage.setItem('necs-font-scale', currentScale);
+    }
+    btnFontDec.addEventListener('click', () => setFontScale(currentScale - 0.05));
+    btnFontReset.addEventListener('click', () => setFontScale(1.0));
+    btnFontInc.addEventListener('click', () => setFontScale(currentScale + 0.05));
+    setFontScale(currentScale);
+
+    // Sidebar TOC Toggle (Mobile + Desktop)
+    function toggleSidebar() {
+      const isOpen = sidebarToc.classList.toggle('open');
+      tocBackdrop.classList.toggle('open', isOpen);
+    }
+    btnToggleToc.addEventListener('click', toggleSidebar);
+    if (btnCloseToc) btnCloseToc.addEventListener('click', toggleSidebar);
+    tocBackdrop.addEventListener('click', toggleSidebar);
+
+    // Reading Progress & Active Heading Tracker
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      progressBar.style.width = scrolled + '%';
+
+      // Active TOC Link Spy
+      const headings = document.querySelectorAll('.content-heading');
+      let currentHeadingId = '';
+      headings.forEach(h => {
+        const top = h.getBoundingClientRect().top;
+        if (top <= 120) {
+          currentHeadingId = h.id;
+        }
+      });
+      if (currentHeadingId) {
+        document.querySelectorAll('.toc-link').forEach(link => {
+          link.classList.toggle('active', link.getAttribute('data-target') === currentHeadingId);
+        });
+      }
+    });
+
+    // Close TOC on link click (Mobile)
+    document.querySelectorAll('.toc-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 992) {
+          sidebarToc.classList.remove('open');
+          tocBackdrop.classList.remove('open');
+        }
+      });
+    });
+
+    // ==========================================
+    // WIDGET 6.1: BIA METRICS CALCULATOR
+    // ==========================================
+    const biaPresets = {
+      reg: { mtd: 12, rto: 2, rpo: 0.25 },
+      erp: { mtd: 24, rto: 8, rpo: 4 },
+      web: { mtd: 72, rto: 24, rpo: 24 },
+      flawed: { mtd: 8, rto: 14, rpo: 6 }
+    };
+
+    function loadBiaPreset(key) {
+      const p = biaPresets[key];
+      document.getElementById('input-mtd').value = p.mtd;
+      document.getElementById('input-rto').value = p.rto;
+      document.getElementById('input-rpo').value = p.rpo;
+      updateBiaCalc();
+    }
+
+    function updateBiaCalc() {
+      const mtd = parseFloat(document.getElementById('input-mtd').value);
+      const rto = parseFloat(document.getElementById('input-rto').value);
+      const rpo = parseFloat(document.getElementById('input-rpo').value);
+
+      document.getElementById('val-mtd').innerText = mtd;
+      document.getElementById('val-rto').innerText = rto;
+      document.getElementById('val-rpo').innerText = rpo;
+
+      const isValid = rto < mtd;
+      const margin = mtd - rto;
+      const box = document.getElementById('bia-display-box');
+
+      if (isValid) {
+        box.innerHTML = `
+          <div style="color:var(--emerald); font-weight:700; font-size:1.05rem; margin-bottom:0.5rem;">
+            ✅ การกำหนดค่าถูกต้องตามหลักวิศวกรรมความต่อเนื่อง (Valid Configuration: RTO &lt; MTD)
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.6rem; font-size:0.84rem; margin-bottom:0.8rem;">
+            <div style="background:var(--bg-surface); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color);">
+              <strong>Safety Buffer Margin:</strong> <span style="color:var(--emerald); font-weight:700;">+${margin} ชั่วโมง</span><br>
+              <small>ระยะเวลาก่อนที่ธุรกิจจะเสียหายถาวร</small>
+            </div>
+            <div style="background:var(--bg-surface); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color);">
+              <strong>Max Data Loss Window:</strong> <span style="color:var(--amber); font-weight:700;">${rpo} ชั่วโมง</span><br>
+              <small>ความถี่สำรองข้อมูลขั้นต่ำที่ต้องการ</small>
+            </div>
+          </div>
+          <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.5;">
+            <strong>คำแนะนำสำหรับ Lead Implementer:</strong> กำหนดให้ทีมไอทีทดสอบ Disaster Recovery Drill อย่างน้อยปีละ 1 ครั้ง โดยจำลองสถานการณ์กู้คืนให้แล้วเสร็จภายใน ${rto} ชม. เพื่อไม่ให้กินเวลาเข้าไปใน Safety Buffer ${margin} ชม.
+          </p>
+        `;
+      } else {
+        const overrun = rto - mtd;
+        box.innerHTML = `
+          <div style="color:var(--rose); font-weight:700; font-size:1.05rem; margin-bottom:0.5rem;">
+            🚨 ผิดหลักการขั้นรุนแรง! (Violation: RTO &gt;= MTD เกิด Disaster Overrun)
+          </div>
+          <div style="background:var(--rose-light); border:1px solid var(--rose); padding:0.8rem; border-radius:6px; font-size:0.85rem; color:var(--rose); margin-bottom:0.8rem;">
+            <strong>ข้อผิดพลาดวิกฤต:</strong> ระบบคาดว่าจะใช้เวลากู้คืน ${rto} ชม. แต่องค์กรสามารถทนรับความเสียหายได้เพียง ${mtd} ชม. ระบบจะล่มนานเกินขีดจำกัดไปถึง <strong>${overrun} ชั่วโมง</strong> ซึ่งจะทำให้เกิดความเสียหายขั้นหายนะต่อพันธกิจหรือถูกเพิกถอนใบอนุญาต!
+          </div>
+          <p style="font-size:0.82rem; color:var(--text-muted);">
+            <strong>แนวทางแก้ไขของ Lead Auditor:</strong> ต้องออกใบข้อค้นพบ Major NCR ทันที และให้องค์กรเลือกทำอย่างใดอย่างหนึ่ง: (1) ลงทุนระบบ HA/Failover เพื่อลด RTO ให้ต่ำกว่า ${mtd} ชม. หรือ (2) ทบทวนกระบวนการทำงานเพื่อขออนุมัติขยาย MTD จากฝ่ายบริหาร
+          </p>
+        `;
+      }
+    }
+    updateBiaCalc();
+
+    // ==========================================
+    // WIDGET 6.2: ASSET REGISTER EXPLORER
+    // ==========================================
+    const assetData = [
+      { id: 'AST-01', name: 'REG Database Server', type: 'Hardware (Server)', owner: 'ผอ.สำนักไอที', custodian: 'System Admin Team', loc: 'Data Center Rack A1', dep: 'SAN Storage, UPS', tier: 'Tier 1', cls: 'Restricted', sup: 'Active (ถึง 2569)', bkp: 'Daily Backup (RTO 2 ชม., RPO 15 นาที)' },
+      { id: 'AST-02', name: 'Oracle Database Enterprise', type: 'Software (DBMS)', owner: 'ผอ.กองบริการการศึกษา', custodian: 'Lead DBA', loc: 'บน AST-01', dep: 'REG Web App', tier: 'Tier 1', cls: 'Confidential', sup: 'Active (Patch ล่าสุด)', bkp: 'Archive Log + Daily Snapshot' },
+      { id: 'AST-03', name: 'Student Master Data', type: 'Information Asset', owner: 'ผอ.กองบริการการศึกษา', custodian: 'Lead DBA', loc: 'ใน AST-02', dep: 'REG System, ERP', tier: 'Tier 1', cls: 'Confidential', sup: 'Active', bkp: 'TDE AES-256 สำรองข้าม Site' },
+      { id: 'AST-04', name: 'Central Active Directory (IdP)', type: 'Service & Software', owner: 'ผอ.สำนักไอที', custodian: 'Identity Admin', loc: 'DC-01 (VM) & Azure AD', dep: 'ทุกระบบในมหาวิทยาลัย', tier: 'Tier 1', cls: 'Restricted', sup: 'Active (Win2022)', bkp: 'System State + Cloud Sync' },
+      { id: 'AST-05', name: 'Core Datacenter Firewall', type: 'Network Device', owner: 'ผอ.สำนักไอที', custodian: 'Network Security Eng.', loc: 'Data Center Rack A3', dep: 'ISP Leased Lines', tier: 'Tier 1', cls: 'Restricted', sup: 'Active (HA Cluster Pair)', bkp: 'Auto Config Backup ทุกวัน' },
+      { id: 'AST-06', name: 'Financial ERP Application', type: 'Software (App)', owner: 'ผอ.กองคลัง', custodian: 'ERP Developer Team', loc: 'DC Rack A2 (VM-04)', dep: 'ERP Database', tier: 'Tier 2', cls: 'Confidential', sup: 'Active', bkp: 'VM Snapshot รายวัน' },
+      { id: 'AST-07', name: 'General Ledger & Payroll DB', type: 'Information Asset', owner: 'ผอ.กองคลัง', custodian: 'Lead DBA', loc: 'ใน VM-05', dep: 'ERP Application', tier: 'Tier 2', cls: 'Restricted', sup: 'Active', bkp: 'Full Backup รายวัน + Offsite' },
+      { id: 'AST-08', name: 'AWS VPC Mobile API Gateway', type: 'Cloud Resource', owner: 'ผอ.สำนักไอที', custodian: 'Cloud DevOps Eng.', loc: 'AWS ap-southeast-1', dep: 'AWS RDS, REG DB', tier: 'Tier 2', cls: 'Confidential', sup: 'Cloud Managed', bkp: 'IaC (Terraform Git)' },
+      { id: 'AST-09', name: 'Main Data Center Facility', type: 'Facility', owner: 'ผอ.กองอาคารสถานที่', custodian: 'Facilities Manager', loc: 'อาคารบรรณสาร ชั้น 3', dep: 'การไฟฟ้านครหลวง', tier: 'Tier 1', cls: 'Internal', sup: 'Generator Monthly Check', bkp: 'UPS 30 นาที + Gen 48 ชม.' },
+      { id: 'AST-10', name: 'Campus Wi-Fi Core Controller', type: 'Network Device', owner: 'ผอ.สำนักไอที', custodian: 'Network Admin', loc: 'Data Center Rack B2', dep: 'Core Switch', tier: 'Tier 3', cls: 'Internal', sup: 'Active', bkp: 'Weekly Config Backup' },
+      { id: 'AST-11', name: 'Dormitory Wi-Fi Access Points', type: 'Hardware (Network)', owner: 'ผอ.สำนักไอที', custodian: 'Network Tech Support', loc: 'หอพักนักศึกษา 1–6', dep: 'Core Controller', tier: 'Tier 4', cls: 'Public', sup: 'Active (500 APs)', bkp: 'Controller Cloud Managed' },
+      { id: 'AST-12', name: 'Exam Bank Database (คลังข้อสอบ)', type: 'Information Asset', owner: 'รองอธิการบดีฝ่ายวิชาการ', custodian: 'ฝ่ายวัดผลการศึกษา', loc: 'Encrypted Server', dep: 'ระบบจัดสอบออนไลน์', tier: 'Tier 1', cls: 'Restricted', sup: 'Air-gapped Network', bkp: 'Offline Encrypted (WORM)' },
+      { id: 'AST-13', name: 'Microsoft 365 Email Service', type: 'Third-Party SaaS', owner: 'ผอ.สำนักไอที', custodian: 'Mail Admin / MS Cloud', loc: 'Microsoft Cloud', dep: 'Internet, Central IdP', tier: 'Tier 2', cls: 'Confidential', sup: 'SLA 99.9%', bkp: 'Cloud Retention 1 ปี' },
+      { id: 'AST-14', name: 'Payment Gateway API', type: 'Third-Party Service', owner: 'ผอ.กองคลัง', custodian: 'FinTech Integration', loc: 'ธนาคารกรุงไทย', dep: 'REG System, ERP', tier: 'Tier 1', cls: 'Confidential', sup: 'Vendor Agreement', bkp: 'Log เก็บ 5 ปีตามกฎหมาย' },
+      { id: 'AST-15', name: 'Lead Database Administrator', type: 'Personnel', owner: 'ผอ.สำนักไอที', custodian: 'ตนเอง', loc: 'สำนักไอที ชั้น 2', dep: 'ทุกฐานข้อมูลสำคัญ', tier: 'Tier 1', cls: 'Restricted', sup: 'บุคลากรประจำ', bkp: 'แผนสืบทอดตำแหน่ง (Succession)' },
+      { id: 'AST-16', name: 'University Public Website', type: 'Service & Software', owner: 'ผอ.กองประชาสัมพันธ์', custodian: 'Webmaster Team', loc: 'Cloudflare / On-prem', dep: 'Web Server VM', tier: 'Tier 3', cls: 'Public', sup: 'Active (Hardened WP)', bkp: 'Git Repo + Weekly DB' },
+      { id: 'AST-17', name: 'SAN Storage Matrix (NetApp)', type: 'Hardware (Storage)', owner: 'ผอ.สำนักไอที', custodian: 'Storage Admin', loc: 'Data Center Rack A2', dep: 'Fiber Channel Switch', tier: 'Tier 1', cls: 'Confidential', sup: 'Dual Controller', bkp: 'RAID 6 + SnapMirror DR' },
+      { id: 'AST-18', name: 'CCTV Video Footage Server', type: 'Hardware & Info', owner: 'ผอ.กองอาคารสถานที่', custodian: 'Security Guard Chief', loc: 'อาคารรักษาความปลอดภัย', dep: 'IP Cameras 300 ตัว', tier: 'Tier 3', cls: 'Internal', sup: 'Active (NVR Storage)', bkp: 'Loop 30 วันเขียนทับ' },
+      { id: 'AST-19', name: 'SSL/TLS Wildcard Certificate', type: 'Information Asset', owner: 'ผอ.สำนักไอที', custodian: 'Security Admin', loc: 'HSM Key Vault', dep: 'Web & API Gateways', tier: 'Tier 1', cls: 'Restricted', sup: 'หมดอายุ 31 ธ.ค. 2568', bkp: 'Safe Box รหัสสองชั้น' },
+      { id: 'AST-20', name: 'Legacy Alumni Server (Win2008)', type: 'Hardware & Software', owner: 'นายกสมาคมศิษย์เก่า', custodian: 'External Volunteer', loc: 'อาคารศิษย์เก่า', dep: 'Standalone Router', tier: 'Tier 4', cls: 'Confidential', sup: 'End-of-Life (EOL)', bkp: 'External HDD ปีละครั้ง' }
+    ];
+
+    let currentFilter = 'all';
+
+    function setAssetFilter(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-filter') === filter);
+      });
+      filterAssets();
+    }
+
+    function filterAssets() {
+      const q = document.getElementById('asset-search').value.toLowerCase();
+      const grid = document.getElementById('asset-cards-grid');
+
+      const filtered = assetData.filter(a => {
+        const matchFilter = (currentFilter === 'all') ||
+                            (a.tier === currentFilter) ||
+                            (currentFilter === 'Restricted' && a.cls === 'Restricted');
+        const matchText = a.id.toLowerCase().includes(q) ||
+                          a.name.toLowerCase().includes(q) ||
+                          a.type.toLowerCase().includes(q) ||
+                          a.owner.toLowerCase().includes(q) ||
+                          a.custodian.toLowerCase().includes(q) ||
+                          a.dep.toLowerCase().includes(q);
+        return matchFilter && matchText;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; color:var(--text-muted);">ไม่พบรายการสินทรัพย์ที่ตรงกับเงื่อนไข</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(a => {
+        const tierClass = a.tier.toLowerCase().replace(' ', '-') + '-badge';
+        const isRestricted = a.cls === 'Restricted';
+        return `
+          <div class="ast-card">
+            <div class="ast-card-header">
+              <span class="ast-id">${a.id}</span>
+              <span class="ast-tier ${tierClass}">${a.tier}</span>
+            </div>
+            <div class="ast-name">${a.name}</div>
+            <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:0.2rem;">${a.type} | ${a.loc}</div>
+            <div style="font-size:0.78rem;"><strong>Owner:</strong> ${a.owner}</div>
+            <div style="font-size:0.78rem;"><strong>Custodian:</strong> ${a.custodian}</div>
+            <div style="font-size:0.78rem;"><strong>ชั้นข้อมูล:</strong> <span style="font-weight:700; color:${isRestricted ? 'var(--rose)' : 'inherit'};">${a.cls}</span></div>
+            <div style="font-size:0.75rem; color:var(--text-muted); border-top:1px dashed var(--border-color); padding-top:0.3rem; margin-top:0.2rem;">
+              <strong>Backup:</strong> ${a.bkp}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    filterAssets();
+
+    // ==========================================
+    // WIDGET 6.3: DATA CLASSIFICATION SIMULATOR
+    // ==========================================
+    const simQuestions = [
+      {
+        title: "1. รหัสผ่าน Master Key และ Private Key ของระบบ IdP",
+        desc: "กุญแจเข้ารหัสลับสำหรับลงนาม Token การล็อกอินของผู้ใช้งานทั้งมหาวิทยาลัย",
+        correct: "Restricted",
+        why: "เป็นความลับระดับสูงสุด หากหลุดออกไป แฮกเกอร์สามารถปลอมตัวเป็นใครก็ได้ในระบบ ต้องเก็บใน HSM และห้ามมีสำเนาภายนอก"
+      },
+      {
+        title: "2. ฐานข้อมูลทะเบียนประวัตินักศึกษา (เลขบัตร ปชช., ที่อยู่, เบอร์โทร)",
+        desc: "ข้อมูลส่วนบุคคลทั่วไปของนักศึกษา 50,000 คนตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA)",
+        correct: "Confidential",
+        why: "เป็นข้อมูลส่วนบุคคลตาม PDPA ม.6 ที่ต้องคุ้มครองความลับและเข้ารหัส AES-256 เข้าถึงเฉพาะเจ้าหน้าที่ทะเบียนตามหลัก Need-to-Know"
+      },
+      {
+        title: "3. ผลตรวจเลือดและประวัติโรคประจำตัวของนักศึกษาแพทย์",
+        desc: "ข้อมูลเวชระเบียนสุขภาพและการฉีดวัคซีนก่อนขึ้นปฏิบัติงานบนวอร์ดโรงพยาบาล",
+        correct: "Restricted",
+        why: "เป็น 'ข้อมูลส่วนบุคคลอ่อนไหว (Sensitive Personal Data)' ตาม PDPA มาตรา 26 มีโทษอาญาและโทษปรับสูงสุด ต้องจำกัดสิทธิ์ขั้นสูงสุดและเข้ารหัสพิเศษ"
+      },
+      {
+        title: "4. คู่มือขั้นตอนการปฏิบัติงานของฝ่ายไอที (IT SOPs) และผังเครือข่ายภายใน",
+        desc: "เอกสารขั้นตอนการคอนฟิก Firewall และคู่มือการกู้ระบบเซิร์ฟเวอร์",
+        correct: "Internal",
+        why: "เป็นข้อมูลสำหรับใช้งานภายในองค์กร ไม่ใช่ข้อมูลสาธารณะ แต่ไม่ใช่ความลับขั้นวิกฤต ห้ามแชร์สู่ภายนอกโดยไม่ได้รับอนุญาต"
+      },
+      {
+        title: "5. ปฏิทินการศึกษาและโครงสร้างหลักสูตรวิชาเรียน",
+        desc: "ข้อมูลกำหนดการเปิด-ปิดภาคเรียน และรายวิชาที่เปิดสอนสำหรับนักศึกษาและบุคคลทั่วไป",
+        correct: "Public",
+        why: "เป็นข้อมูลสาธารณะที่เผยแพร่บนเว็บไซต์เพื่อประโยชน์ของนักศึกษาและผู้สมัครเรียน ไม่มีความเสี่ยงเรื่องความลับ"
+      },
+      {
+        title: "6. ไฟล์ข้อสอบปลายภาควิชา Cybersecurity Audit ที่ยังไม่ได้จัดสอบ",
+        desc: "เอกสารข้อสอบที่อาจารย์ผู้สอนเพิ่งพิมพ์เสร็จเพื่อเตรียมใช้สอบในสัปดาห์หน้า",
+        correct: "Restricted",
+        why: "เป็นความลับสูงสุด หากรั่วไหลจะทำให้การจัดสอบโมฆะและกระทบต่อชื่อเสียงของสถาบันอย่างรุนแรง ห้ามส่งผ่านอีเมลธรรมดา"
+      },
+      {
+        title: "7. บันทึกจราจรทางคอมพิวเตอร์ (Log Files) การล็อกอินเข้าใช้งานระบบ",
+        desc: "บันทึกประวัติ IP Address, เวลาล็อกอิน และเหตุการณ์ความปลอดภัยย้อนหลัง 90 วัน",
+        correct: "Confidential",
+        why: "ต้องจัดเก็บไม่น้อยกว่า 90 วันตาม พ.ร.บ.คอมพิวเตอร์ ม.26 มีข้อมูลระบุตัวตนการใช้งาน จึงจัดเป็นข้อมูลความลับที่ต้องเข้าถึงผ่าน Least Privilege"
+      },
+      {
+        title: "8. ข่าวประชาสัมพันธ์การจัดสัมมนาวิชาการด้านความมั่นคงปลอดภัย",
+        desc: "โปสเตอร์และบทความเชิญชวนประชาชนและนักศึกษาเข้าร่วมงานสัมมนาฟรี",
+        correct: "Public",
+        why: "ข้อมูลสาธารณะ มุ่งเน้นการกระจายข่าวสารอย่างกว้างขวาง"
+      }
+    ];
+
+    let currentQ = 0;
+    let simScore = 0;
+
+    function renderSimQuestion() {
+      const q = simQuestions[currentQ];
+      const fillPct = ((currentQ + 1) / simQuestions.length) * 100;
+      document.getElementById('sim-fill').style.width = fillPct + '%';
+
+      const container = document.getElementById('data-sim-container');
+      container.innerHTML = `
+        <div class="data-sim-card">
+          <div style="font-size:0.75rem; color:var(--primary); font-family:var(--font-code); font-weight:700; margin-bottom:0.2rem;">
+            คำถามที่ ${currentQ + 1} จาก ${simQuestions.length}
+          </div>
+          <div class="sim-q-title">${q.title}</div>
+          <div class="sim-q-desc">${q.desc}</div>
+
+          <div style="font-size:0.82rem; font-weight:600; margin-bottom:0.6rem;">เลือกระดับชั้นความลับที่ถูกต้อง:</div>
+          <div class="sim-btn-grid">
+            <button class="sim-choice-btn" onclick="checkSimAnswer('Restricted')">🔴 Restricted</button>
+            <button class="sim-choice-btn" onclick="checkSimAnswer('Confidential')">🟠 Confidential</button>
+            <button class="sim-choice-btn" onclick="checkSimAnswer('Internal')">🟡 Internal</button>
+            <button class="sim-choice-btn" onclick="checkSimAnswer('Public')">🟢 Public</button>
+          </div>
+
+          <div id="sim-feedback-box" style="display:none;"></div>
+        </div>
+      `;
+    }
+
+    function checkSimAnswer(choice) {
+      const q = simQuestions[currentQ];
+      const isCorrect = choice === q.correct;
+      if (isCorrect) simScore++;
+
+      const fBox = document.getElementById('sim-feedback-box');
+      fBox.style.display = 'block';
+      fBox.className = 'sim-feedback ' + (isCorrect ? 'correct' : 'wrong');
+      fBox.innerHTML = `
+        <div><strong>${isCorrect ? '🎉 ถูกต้องแม่นยำ!' : '❌ ยังไม่ถูกต้อง (คำตอบที่ถูกต้องคือ: ' + q.correct + ')'}</strong></div>
+        <div style="margin-top:0.3rem;">${q.why}</div>
+        <div style="margin-top:0.8rem; text-align:right;">
+          <button class="btn-icon" style="background:var(--primary); color:#fff; border-color:var(--primary);" onclick="nextSimQuestion()">
+            ${currentQ < simQuestions.length - 1 ? 'ข้อถัดไป ➔' : 'ดูผลสรุปคะแนน 🏁'}
+          </button>
+        </div>
+      `;
+
+      // Disable buttons
+      document.querySelectorAll('.sim-choice-btn').forEach(btn => btn.disabled = true);
+    }
+
+    function nextSimQuestion() {
+      currentQ++;
+      if (currentQ < simQuestions.length) {
+        renderSimQuestion();
+      } else {
+        const container = document.getElementById('data-sim-container');
+        const pct = Math.round((simScore / simQuestions.length) * 100);
+        container.innerHTML = `
+          <div class="data-sim-card" style="text-align:center; padding:2rem;">
+            <div style="font-size:3rem; margin-bottom:0.5rem;">${pct >= 80 ? '🏆' : '📚'}</div>
+            <div class="sim-q-title">สรุปผลการทดสอบ: ได้คะแนน ${simScore} / ${simQuestions.length} (${pct}%)</div>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin:0.8rem 0;">
+              ${pct >= 80 ? 'ยอดเยี่ยมมาก! ท่านมีความเชี่ยวชาญในการจำแนกประเภทข้อมูลตามมาตรฐาน ISO 27001 และ PDPA' : 'ควรทบทวนเกณฑ์การแยกแยะระหว่าง Restricted กับ Confidential โดยเฉพาะข้อมูลอ่อนไหวตาม PDPA ม.26'}
+            </p>
+            <button class="btn-icon" style="background:var(--primary); color:#fff; border-color:var(--primary); margin-top:0.6rem;" onclick="resetSim()">
+              🔄 เริ่มทำแบบทดสอบใหม่อีกครั้ง
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function resetSim() {
+      currentQ = 0;
+      simScore = 0;
+      renderSimQuestion();
+    }
+    renderSimQuestion();
+
+    // ==========================================
+    // WIDGET 6.4: MEDIA SANITIZATION WIZARD
+    // ==========================================
+    function runSanWizard() {
+      const media = document.getElementById('wiz-media').value;
+      const cls = document.getElementById('wiz-class').value;
+      const target = document.getElementById('wiz-target').value;
+      const resultBox = document.getElementById('wizard-result');
+
+      let method = '';
+      let action = '';
+      let warning = '';
+      let codReq = false;
+
+      if (target === 'destroy') {
+        method = 'NIST SP 800-88 Level: DESTROY (การทำลายสิ้นซาก)';
+        codReq = true;
+        if (media === 'hdd') {
+          action = '• นำเข้าเครื่องบดละเอียดฮาร์ดดิสก์ (Physical Shredding) หรือเจาะทำลายจานแม่เหล็ก (Deperforation) ร่วมกับการลบล้างสนามแม่เหล็ก (Degaussing 15,000 Gauss)';
+        } else if (media === 'ssd') {
+          action = '• นำเข้าเครื่องบดละเอียด Disintegration Shredder ให้ชิ้นส่วนแผงวงจรและชิป NAND Flash มีขนาดเล็กกว่า 2 มิลลิเมตร (ห้ามใช้วิธีเจาะรูหรือหักครึ่ง เพราะชิปเมมโมรียังอ่านได้)';
+          warning = '⚠️ ข้อควรระวัง: SSD มี Wear Leveling ห้ามใช้วิธีเขียนทับ (Overwriting) ก่อนทิ้ง ต้องบดละเอียด &lt; 2mm เท่านั้น!';
+        } else if (media === 'paper') {
+          action = '• ใช้เครื่องทำลายเอกสาร Cross-cut Shredder ระดับ DIN 66399 Level P-4 ขึ้นไป หรือการเผาหลอมละลาย';
+        } else if (media === 'cloud') {
+          action = '• Crypto-shredding: สั่งลบ KMS Master Key ที่ใช้เข้ารหัส Storage Volume และสั่ง Terminate/Purge Volume ถาวรผ่าน Cloud Console';
+        }
+      } else if (target === 'donate') {
+        if (cls === 'restricted') {
+          method = 'ไม่อนุญาตให้บริจาคหรือส่งคืน! (STRICT PROHIBITION)';
+          action = '❌ สื่อบันทึกที่เคยบรรจุข้อมูลระดับ Restricted ห้ามนำไปบริจาคหรือส่งออกนอกองค์กรโดยเด็ดขาด ต้องใช้วิธี DESTROY เท่านั้น';
+          codReq = true;
+        } else {
+          method = 'NIST SP 800-88 Level: PURGE (การขจัดข้อมูลระดับลึก)';
+          codReq = true;
+          if (media === 'hdd') {
+            action = '• ใช้เครื่อง Degausser สนามแม่เหล็กกำลังสูง หรือรันคำสั่ง Cryptographic Erase ผ่านโปรแกรมเฉพาะทาง';
+          } else if (media === 'ssd') {
+            action = '• รันคำสั่ง ATA Enhanced Secure Erase หรือ NVMe Format Cryptographic Erase ผ่านเฟิร์มแวร์ของผู้ผลิต';
+            warning = '⚠️ ตรวจสอบว่าเฟิร์มแวร์ของ SSD รองรับ Sanitize Command หากไม่แน่ใจ แนะนำให้ส่งทำลาย (Destroy) แทน';
+          } else if (media === 'cloud') {
+            action = '• สั่ง Cryptographic Erase และเพิกถอน IAM Role พร้อมลบ Snapshot ทั้งหมด';
+          }
+        }
+      } else {
+        // reuse inside
+        if (cls === 'restricted') {
+          method = 'NIST SP 800-88 Level: PURGE';
+          action = '• ต้องทำ Cryptographic Erase หรือ Secure Erase เต็มรูปแบบ และทดสอบสุ่มอ่านข้อมูลเพื่อยืนยันก่อนนำกลับมาใช้ในโซนปลอดภัยเดิม';
+        } else {
+          method = 'NIST SP 800-88 Level: CLEAR (การล้างข้อมูลเชิงตรรกะ)';
+          action = '• เขียนทับข้อมูล (Overwriting) ด้วยเลขศูนย์ 1 รอบ (Single pass zero-overwrite) หรือรัน Full Format เพื่อเตรียมติดตั้ง OS ใหม่';
+        }
+      }
+
+      resultBox.innerHTML = `
+        <div style="font-family:var(--font-display); font-weight:700; color:var(--primary); font-size:1rem; margin-bottom:0.4rem;">
+          ${method}
+        </div>
+        <div style="font-size:0.84rem; line-height:1.5; margin-bottom:0.6rem;">${action}</div>
+        ${warning ? '<div style="background:var(--rose-light); border:1px solid var(--rose); padding:0.5rem; border-radius:4px; font-size:0.8rem; color:var(--rose); margin-bottom:0.6rem;">' + warning + '</div>' : ''}
+        <div style="border-top:1px dashed var(--border-color); padding-top:0.5rem; font-size:0.8rem; color:var(--text-muted);">
+          <strong>ข้อกำหนดใบรับรอง (Certificate of Destruction: CoD):</strong> ${codReq ? '✅ ต้องมีเอกสาร CoD พร้อม Serial Number และลายเซ็นพยานเพื่อแสดงต่อ Auditor' : 'ℹ️ บันทึกการลบล้างข้อมูลในระบบ Asset Management Internal Log'}
+        </div>
+      `;
+    }
+    runSanWizard();
+
+    // ==========================================
+    // WIDGET 6.5: AUDIT CHECKLIST EVALUATOR
+    // ==========================================
+    const checklistItems = [
+      { id: 1, text: "มีการจัดทำและทบทวนทะเบียนสินทรัพย์ (Asset Register) ครอบคลุม 11 ฟิลด์ข้อมูลอย่างน้อยปีละ 1 ครั้ง", std: "A.5.9", type: "major" },
+      { id: 2, text: "สินทรัพย์ทุกรายการมีผู้รับผิดชอบชัดเจนในบทบาท Asset Owner และ Custodian", std: "A.5.9", type: "minor" },
+      { id: 3, text: "มีนโยบายการใช้งานสินทรัพย์ที่ยอมรับได้ (AUP) และพนักงานลงนามรับทราบ", std: "A.5.10", type: "minor" },
+      { id: 4, text: "มีกระบวนการส่งคืนสินทรัพย์เมื่อพนักงานลาออกหรือเปลี่ยนหน้าที่อย่างครบถ้วน", std: "A.5.11", type: "minor" },
+      { id: 5, text: "มีการกำหนดระดับชั้นความลับของข้อมูล 4 ระดับอย่างเป็นลายลักษณ์อักษร", std: "A.5.12", type: "major" },
+      { id: 6, text: "เอกสารและไฟล์ข้อมูลความลับมีการติดป้ายกำกับ (Labeling / Watermark) ตามเกณฑ์", std: "A.5.13", type: "minor" },
+      { id: 7, text: "การถ่ายโอนข้อมูลความลับภายนอกมีการเข้ารหัส TLS 1.3 หรือ SFTP เสมอ", std: "A.5.14", type: "major" },
+      { id: 8, text: "มีการควบคุมการใช้อุปกรณ์พกพา (USB / Flash Drive) ผ่านระบบ Endpoint DLP", std: "A.7.10", type: "minor" },
+      { id: 9, text: "มีการลบข้อมูลตามระยะเวลาจัดเก็บ (Retention Period) และตามสิทธิ PDPA", std: "A.8.10", type: "minor" },
+      { id: 10, text: "การทำลายสื่อบันทึกข้อมูลมีใบรับรองการทำลาย (Certificate of Destruction) ครบถ้วน", std: "A.8.10", type: "major" }
+    ];
+
+    const auditState = {};
+    checklistItems.forEach(i => auditState[i.id] = true); // default pass
+
+    function renderAuditChecklist() {
+      const container = document.getElementById('audit-checklist-tool');
+      let html = checklistItems.map(item => {
+        const isPass = auditState[item.id];
+        return `
+          <div class="chk-item">
+            <div class="chk-text">
+              <span style="font-family:var(--font-code); color:var(--primary); font-weight:700;">[${item.std}]</span>
+              ${item.text}
+              <span style="font-size:0.7rem; color:${item.type === 'major' ? 'var(--rose)' : 'var(--amber)'}; font-weight:600; margin-left:0.4rem;">
+                (${item.type.toUpperCase()})
+              </span>
+            </div>
+            <div class="chk-control">
+              <button class="btn-chk pass ${isPass ? 'active' : ''}" onclick="setChkState(${item.id}, true)">ผ่าน</button>
+              <button class="btn-chk fail ${!isPass ? 'active' : ''}" onclick="setChkState(${item.id}, false)">ไม่ผ่าน</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Summary
+      let passCount = 0;
+      let majorFails = 0;
+      let minorFails = 0;
+
+      checklistItems.forEach(item => {
+        if (auditState[item.id]) passCount++;
+        else {
+          if (item.type === 'major') majorFails++;
+          else minorFails++;
+        }
+      });
+
+      const scorePct = Math.round((passCount / checklistItems.length) * 100);
+      let verdict = '';
+      if (majorFails === 0 && minorFails === 0) {
+        verdict = '<span style="color:var(--emerald); font-weight:700;">ผ่านเกณฑ์การรับรองสมบูรณ์แบบ 100% (Ready for Certification)</span>';
+      } else if (majorFails > 0) {
+        verdict = `<span style="color:var(--rose); font-weight:700;">ไม่ผ่านการรับรอง! พบ Major Non-conformity ${majorFails} ข้อ (ต้องแก้ไขก่อนขอตรวจซ้ำ)</span>`;
+      } else {
+        verdict = `<span style="color:var(--amber); font-weight:700;">ผ่านเกณฑ์แบบมีเงื่อนไข พบ Minor Non-conformity ${minorFails} ข้อ (ส่งแผน CAPA ภายใน 90 วัน)</span>`;
+      }
+
+      html += `
+        <div class="chk-summary-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.4rem;">
+            <div style="font-family:var(--font-display); font-weight:700;">ผลการประเมิน Audit Score: ${scorePct}% (ผ่าน ${passCount}/${checklistItems.length} ข้อ)</div>
+            <div>${verdict}</div>
+          </div>
+          <div style="font-size:0.78rem; color:var(--text-muted);">
+            หมายเหตุ: การพบข้อบกพร่องประเภท Major แม้เพียงข้อเดียว (เช่น การทิ้งฮาร์ดดิสก์โดยไม่มี CoD หรือขาดการจำแนกข้อมูล) จะส่งผลให้ระบบไม่ได้รับการรับรอง ISO/IEC 27001 ทันที
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    function setChkState(id, state) {
+      auditState[id] = state;
+      renderAuditChecklist();
+    }
+    renderAuditChecklist();
+  </script>
+</body>
+</html>

@@ -1,0 +1,2404 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 7: การออกแบบและนำมาตรการควบคุมไปปฏิบัติ (Security Control Design and Implementation) | NECS1312</title>
+  <meta name="description" content="บทที่ 7: การออกแบบและนำมาตรการควบคุมไปปฏิบัติ — อนุกรมวิธานมาตรการควบคุม, เมทริกซ์ 3x6, Control Specification 8 ข้อ, IAM, Patch & Vulnerability, Hardening, Network Segmentation, กฎสำรองข้อมูล 3-2-1-1-0, Risk-Control Matrix 12 มาตรการ, ToD vs ToE, และ NCR">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-body: 'Sarabun', sans-serif;
+      --font-display: 'Chakra Petch', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #f1f5f9;
+      --bg-input: #ffffff;
+      --border-color: #e2e8f0;
+      --border-accent: #cbd5e1;
+
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-glow: rgba(2, 132, 199, 0.15);
+
+      --cyan: #0891b2;
+      --cyan-light: #ecfeff;
+      --emerald: #059669;
+      --emerald-light: #ecfdf5;
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --rose: #e11d48;
+      --rose-light: #fff1f2;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+
+      --font-scale: 1;
+      --line-height: 1.75;
+      --toc-width: 320px;
+      --content-max-w: 920px;
+    }
+
+    [data-theme="sepia"] {
+      --bg-base: #fbf7ee;
+      --bg-surface: #f4ede0;
+      --bg-card: #eae0d0;
+      --bg-input: #fdfaf4;
+      --border-color: #ded1be;
+      --border-accent: #ccbba5;
+      --text-main: #382d21;
+      --text-muted: #6e5e4e;
+      --text-dim: #9b8a78;
+      --primary: #965318;
+      --primary-hover: #7b4211;
+      --primary-glow: rgba(150, 83, 24, 0.15);
+      --cyan: #0d7685;
+      --cyan-light: #e6f7f9;
+      --emerald: #1e7e4e;
+      --emerald-light: #e4f5ec;
+      --amber: #b45309;
+      --amber-light: #fef3c7;
+      --rose: #b91c1c;
+      --rose-light: #fee2e2;
+    }
+
+    [data-theme="dark"] {
+      --bg-base: #0b0f19;
+      --bg-surface: #111827;
+      --bg-card: #1f2937;
+      --bg-input: #1e293b;
+      --border-color: #374151;
+      --border-accent: #4b5563;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --primary: #38bdf8;
+      --primary-hover: #7dd3fc;
+      --primary-glow: rgba(56, 189, 248, 0.2);
+      --cyan: #22d3ee;
+      --cyan-light: rgba(34, 211, 238, 0.1);
+      --emerald: #34d399;
+      --emerald-light: rgba(52, 211, 153, 0.1);
+      --amber: #fbbf24;
+      --amber-light: rgba(251, 191, 36, 0.1);
+      --rose: #fb7185;
+      --rose-light: rgba(251, 113, 133, 0.1);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: calc(16px * var(--font-scale)); }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: var(--line-height);
+      transition: background-color 0.2s ease, color 0.2s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--cyan));
+      z-index: 1000;
+      width: 0%;
+      transition: width 0.1s ease;
+    }
+
+    .top-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1.2rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .navbar-left { display: flex; align-items: center; gap: 0.8rem; }
+    .btn-icon {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.15s;
+    }
+    .btn-icon:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .badge-course {
+      font-family: var(--font-code);
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .nav-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 420px;
+    }
+    .navbar-right { display: flex; align-items: center; gap: 0.5rem; }
+    .theme-group, .font-group { display: flex; gap: 2px; background: var(--bg-card); padding: 2px; border-radius: 6px; border: 1px solid var(--border-color); }
+    .btn-toggle {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: var(--font-display);
+      transition: all 0.15s;
+    }
+    .btn-toggle.active, .btn-toggle:hover {
+      background: var(--bg-surface);
+      color: var(--primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .app-container {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      max-width: 1540px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .sidebar-toc {
+      width: var(--toc-width);
+      position: sticky;
+      top: 48px;
+      height: calc(100vh - 48px);
+      overflow-y: auto;
+      border-right: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      padding: 1.2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      flex-shrink: 0;
+      transition: transform 0.25s ease;
+    }
+    .toc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .toc-title {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+    }
+    .toc-nav { display: flex; flex-direction: column; gap: 2px; }
+    .toc-link {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      padding: 0.35rem 0.5rem;
+      border-radius: 4px;
+      line-height: 1.4;
+      transition: all 0.15s;
+    }
+    .toc-link:hover {
+      background: var(--bg-card);
+      color: var(--primary);
+    }
+    .toc-link.active {
+      background: var(--primary-glow);
+      color: var(--primary);
+      font-weight: 600;
+      border-left: 3px solid var(--primary);
+    }
+    .toc-bullet { font-size: 0.9rem; line-height: 1; color: var(--text-dim); }
+    .toc-level-1 { font-weight: 600; color: var(--text-main); margin-top: 0.4rem; }
+    .toc-level-2 { font-weight: 500; padding-left: 0.8rem; }
+    .toc-level-3 { padding-left: 1.4rem; font-size: 0.78rem; color: var(--text-muted); }
+
+    .content-main {
+      flex: 1;
+      max-width: var(--content-max-w);
+      margin: 0 auto;
+      padding: 2.5rem 2rem 5rem 2rem;
+    }
+
+    .content-heading {
+      font-family: var(--font-display);
+      color: var(--text-main);
+      line-height: 1.35;
+      margin-top: 2.2rem;
+      margin-bottom: 1rem;
+      scroll-margin-top: 70px;
+    }
+    h1.content-heading {
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.8rem;
+      margin-top: 0;
+    }
+    h2.content-heading {
+      font-size: 1.5rem;
+      font-weight: 700;
+      border-left: 4px solid var(--primary);
+      padding-left: 0.8rem;
+      margin-top: 2.8rem;
+    }
+    h3.content-heading { font-size: 1.2rem; font-weight: 600; }
+    h4.content-heading { font-size: 1.05rem; font-weight: 600; }
+    h5.content-heading { font-size: 0.95rem; font-weight: 600; }
+
+    .content-p {
+      margin-bottom: 1.1rem;
+      font-size: 1rem;
+      text-align: justify;
+    }
+    .content-list {
+      margin-left: 1.5rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .content-list li { padding-left: 0.3rem; }
+    .content-blockquote {
+      border-left: 4px solid var(--primary);
+      background: var(--bg-card);
+      padding: 1rem 1.2rem;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 1.4rem;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border-color);
+      margin: 3rem 0;
+    }
+
+    code {
+      font-family: var(--font-code);
+      background: var(--bg-card);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      border: 1px solid var(--border-color);
+    }
+    .math-tex {
+      background: var(--primary-glow);
+      color: var(--primary);
+      font-weight: 600;
+      padding: 0.15rem 0.4rem;
+    }
+    .code-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin-bottom: 1.4rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .code-block code {
+      background: transparent;
+      border: none;
+      padding: 0;
+      font-size: 0.85rem;
+      display: block;
+      line-height: 1.5;
+    }
+
+    /* TABLES */
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 1.8rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      box-shadow: var(--shadow-sm);
+    }
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+    .content-table th {
+      background: var(--bg-card);
+      padding: 0.75rem 0.9rem;
+      font-weight: 600;
+      font-family: var(--font-display);
+      border-bottom: 2px solid var(--border-color);
+      color: var(--text-main);
+    }
+    .content-table td {
+      padding: 0.65rem 0.9rem;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .content-table tr:last-child td { border-bottom: none; }
+    .content-table tr:hover { background-color: var(--primary-glow); }
+
+    /* FIGURE BOXES */
+    .figure-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.4rem;
+      margin: 2.2rem 0;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+    .figure-header {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.6rem;
+    }
+    .figure-tag {
+      font-family: var(--font-code);
+      background: var(--primary);
+      color: #ffffff;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .figure-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-main);
+    }
+    .figure-caption {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      border-top: 1px dashed var(--border-color);
+      margin-top: 1.2rem;
+      padding-top: 0.6rem;
+      font-style: italic;
+    }
+
+    /* FIGURE 7.1: PHILOSOPHY */
+    .philosophy-flow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .phil-box {
+      flex: 1;
+      min-width: 220px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .phil-box.risk-source { border-top: 4px solid var(--rose); }
+    .phil-box.control-engine { border-top: 4px solid var(--primary); }
+    .phil-box.residual-state { border-top: 4px solid var(--emerald); }
+    .phil-icon { font-size: 2rem; margin-bottom: 0.4rem; }
+    .phil-title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .phil-sub { font-size: 0.78rem; font-weight: 600; color: var(--primary); margin-bottom: 0.4rem; }
+    .phil-desc { font-size: 0.82rem; color: var(--text-muted); }
+    .phil-list { font-size: 0.8rem; text-align: left; margin-left: 1.2rem; }
+    .phil-arrow { text-align: center; font-size: 0.75rem; color: var(--primary); font-weight: 600; }
+    .phil-arrow-sym { font-size: 1.1rem; }
+
+    /* FIGURE 7.2: TIMELINE */
+    .timeline-taxonomy-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .tt-phase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.8rem;
+    }
+    .tt-phase-title {
+      grid-column: 1 / -1;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.3rem;
+    }
+    .tt-card-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.8rem;
+      font-size: 0.82rem;
+    }
+    .tt-card-item.deterrent { border-left: 4px solid var(--amber); }
+    .tt-card-item.preventive { border-left: 4px solid var(--primary); }
+    .tt-card-item.compensating { border-left: 4px solid var(--cyan); }
+    .tt-card-item.detective { border-left: 4px solid var(--rose); }
+    .tt-card-item.corrective { border-left: 4px solid var(--emerald); }
+    .tt-card-item.recovery { border-left: 4px solid #8b5cf6; }
+    .tt-tag { font-family: var(--font-code); font-weight: 700; font-size: 0.75rem; margin-bottom: 0.3rem; }
+    .tt-incident-divider {
+      text-align: center;
+      margin: 0.4rem 0;
+    }
+    .tt-incident-badge {
+      display: inline-block;
+      background: var(--rose-light);
+      color: var(--rose);
+      border: 1px dashed var(--rose);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    /* FIGURE 7.3: CROSS MATRIX */
+    .cross-matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .cm-col {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .cm-col.admin { border-top: 4px solid var(--primary); }
+    .cm-col.tech { border-top: 4px solid var(--cyan); }
+    .cm-col.physical { border-top: 4px solid var(--emerald); }
+    .cm-header {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.7rem 0.9rem;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .cm-body { padding: 0.8rem; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.82rem; }
+    .cm-item { line-height: 1.4; }
+
+    /* FIGURE 7.4: ANATOMY 8 */
+    .anatomy-grid-8 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.8rem;
+    }
+    .anat-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.8rem;
+      font-size: 0.82rem;
+      position: relative;
+    }
+    .anat-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-right: 0.4rem;
+    }
+
+    /* FIGURE 7.5: OPERATION MODES */
+    .operation-modes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .op-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.84rem;
+    }
+    .op-card.manual { border-top: 4px solid var(--amber); }
+    .op-card.automated { border-top: 4px solid var(--primary); }
+    .op-card.itdm { border-top: 4px solid var(--emerald); }
+    .op-badge { font-family: var(--font-code); font-size: 0.72rem; font-weight: 700; color: var(--primary); }
+    .op-card h4 { font-family: var(--font-display); font-size: 0.95rem; }
+    .op-risk { background: var(--bg-surface); padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color); font-size: 0.78rem; color: var(--text-muted); }
+
+    /* FIGURE 7.6: IAM PILLARS */
+    .iam-pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.8rem;
+    }
+    .iam-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem;
+      font-size: 0.8rem;
+    }
+    .iam-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+    .iam-card h5 { font-family: var(--font-display); font-size: 0.88rem; margin-bottom: 0.4rem; }
+
+    /* FIGURE 7.7: VULN LIFECYCLE */
+    .vuln-lifecycle-flow {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 0.4rem;
+      overflow-x: auto;
+      padding: 0.5rem 0;
+    }
+    .vl-step {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.8rem 0.6rem;
+      min-width: 130px;
+      text-align: center;
+      flex: 1;
+    }
+    .vl-num {
+      width: 22px;
+      height: 22px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin: 0 auto 0.4rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .vl-title { font-family: var(--font-display); font-weight: 700; font-size: 0.82rem; margin-bottom: 0.2rem; }
+    .vl-desc { font-size: 0.72rem; color: var(--text-muted); }
+    .vl-arrow { display: flex; align-items: center; color: var(--primary); font-weight: 700; }
+
+    /* FIGURE 7.8: NET ARCH */
+    .net-arch-diagram {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: var(--bg-card);
+      padding: 1.2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    .net-zone {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.8rem 1rem;
+    }
+    .nz-badge { font-family: var(--font-code); font-weight: 700; font-size: 0.75rem; color: var(--primary); margin-bottom: 0.2rem; }
+    .nz-content { font-size: 0.84rem; }
+    .net-arrow-v { text-align: center; font-size: 0.75rem; color: var(--primary); font-weight: 600; padding: 0.2rem 0; }
+
+    /* FIGURE 7.9: 3-2-1-1-0 */
+    .rule-321-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.8rem;
+    }
+    .r321-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 0.8rem;
+      font-size: 0.8rem;
+      text-align: center;
+    }
+    .r321-num {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 0.2rem;
+    }
+    .r321-card.alert { border-color: var(--rose); background: var(--rose-light); }
+    .r321-card.alert .r321-num { color: var(--rose); }
+    .r321-card.test { border-color: var(--emerald); background: var(--emerald-light); }
+    .r321-card.test .r321-num { color: var(--emerald); }
+
+    /* FIGURE 7.10: ToD vs ToE */
+    .tod-toe-compare {
+      display: flex;
+      align-items: stretch;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .ttc-card {
+      flex: 1;
+      min-width: 280px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+    .ttc-card.tod { border-top: 4px solid var(--primary); }
+    .ttc-card.toe { border-top: 4px solid var(--emerald); }
+    .ttc-badge { font-family: var(--font-code); font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.3rem; }
+    .ttc-card h4 { font-family: var(--font-display); font-size: 1.05rem; margin-bottom: 0.4rem; }
+    .ttc-q { font-style: italic; color: var(--primary); font-size: 0.85rem; margin-bottom: 0.8rem; }
+    .ttc-list { margin-left: 1.2rem; font-size: 0.82rem; display: flex; flex-direction: column; gap: 0.4rem; }
+    .ttc-vs { display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; color: var(--text-dim); font-size: 1.2rem; }
+
+    /* WORKING PAPER & NCR */
+    .working-paper-sample { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; font-size: 0.85rem; }
+    .wp-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.6rem; margin-bottom: 0.8rem; font-size: 0.82rem; }
+    .wp-tests-list { display: flex; flex-direction: column; gap: 0.8rem; }
+    .wp-test-title { font-weight: 700; color: var(--primary); margin-bottom: 0.2rem; }
+    .wp-test-body { font-size: 0.82rem; line-height: 1.5; padding-left: 0.6rem; border-left: 2px solid var(--border-accent); }
+
+    .ncr-compare-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+    .ncr-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.84rem; }
+    .ncr-card.major { border-top: 4px solid var(--rose); }
+    .ncr-card.minor { border-top: 4px solid var(--amber); }
+    .ncr-badge.major { color: var(--rose); font-weight: 700; font-family: var(--font-display); }
+    .ncr-badge.minor { color: var(--amber); font-weight: 700; font-family: var(--font-display); }
+    .ncr-code { font-family: var(--font-code); font-weight: 600; }
+
+    /* INTERACTIVE WIDGET STYLES */
+    .interactive-card {
+      background: var(--bg-surface);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2.5rem 0;
+      box-shadow: var(--shadow-lg);
+    }
+    .card-badge {
+      font-family: var(--font-code);
+      background: var(--primary-glow);
+      color: var(--primary);
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.4rem;
+    }
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.4rem;
+    }
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+    }
+
+    /* WIDGET 7.2 PATCH CALC */
+    .patch-calc-controls { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem; }
+    .calc-presets { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .preset-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover { background: var(--primary-glow); border-color: var(--primary); }
+    .calc-sliders-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; background: var(--bg-card); padding: 1rem; border-radius: 8px; }
+    .calc-field { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.82rem; font-weight: 600; }
+    .calc-field input[type="range"] { accent-color: var(--primary); }
+    .calc-field select { padding: 0.4rem; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-surface); color: var(--text-main); font-family: var(--font-body); }
+    .calc-result-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; }
+
+    /* WIDGET 7.3 RCM EXPLORER */
+    .rcm-toolbar { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.2rem; }
+    .search-input-box input {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-input);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+    }
+    .filter-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .filter-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn.active, .filter-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .rcm-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; max-height: 540px; overflow-y: auto; padding-right: 0.4rem; }
+    .rcm-card-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+    }
+    .rcm-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3rem; }
+    .rcm-id { font-family: var(--font-code); font-weight: 700; color: var(--primary); }
+
+    /* WIDGET 7.1 & 7.4 SIM */
+    .sim-progress-bar { height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; margin-bottom: 1.2rem; }
+    .sim-fill { height: 100%; background: var(--primary); transition: width 0.3s ease; }
+    .data-sim-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; }
+    .sim-q-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .sim-q-desc { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .sim-btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.6rem; margin-bottom: 1rem; }
+    .sim-choice-btn {
+      padding: 0.6rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      font-family: var(--font-display);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sim-choice-btn:hover { background: var(--primary-glow); border-color: var(--primary); }
+    .sim-feedback { padding: 0.9rem; border-radius: 6px; font-size: 0.84rem; line-height: 1.5; margin-top: 0.8rem; }
+    .sim-feedback.correct { background: var(--emerald-light); border: 1px solid var(--emerald); color: var(--emerald); }
+    .sim-feedback.wrong { background: var(--rose-light); border: 1px solid var(--rose); color: var(--rose); }
+
+    /* WIDGET 7.5 CHECKLIST */
+    .audit-checklist-tool { display: flex; flex-direction: column; gap: 0.8rem; }
+    .chk-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: 0.84rem;
+    }
+    .chk-text { flex: 1; }
+    .chk-control { display: flex; gap: 0.4rem; }
+    .btn-chk {
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      cursor: pointer;
+      font-size: 0.78rem;
+    }
+    .btn-chk.pass.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .btn-chk.fail.active { background: var(--rose); color: #fff; border-color: var(--rose); }
+    .chk-summary-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+
+    /* PROFESSIONAL PERSPECTIVE */
+    .perspective-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.4rem;
+      margin: 2rem 0;
+      box-shadow: var(--shadow-sm);
+    }
+    .persp-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem; }
+    .persp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+    .persp-side { background: var(--bg-card); border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.85rem; }
+    .persp-side.imp { border-top: 4px solid var(--primary); }
+    .persp-side.aud { border-top: 4px solid var(--cyan); }
+    .persp-badge { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--primary); }
+
+    .chapter-nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .btn-nav-chapter {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+    .btn-nav-chapter:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+    }
+
+    .toc-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 850;
+    }
+
+    @media (max-width: 992px) {
+      .sidebar-toc {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 950;
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-lg);
+      }
+      .sidebar-toc.open { transform: translateX(0); }
+      .toc-backdrop.open { display: block; }
+      .content-main { padding: 1.5rem 1rem; }
+      .nav-title { max-width: 200px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Reading Progress Bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-navbar">
+    <div class="navbar-left">
+      <button class="btn-icon" id="btn-toggle-toc" title="เปิด/ปิด สารบัญ (Table of Contents)">
+        <span>☰</span> สารบัญ
+      </button>
+      <span class="badge-course">NECS1312 // CH-7</span>
+      <span class="nav-title">บทที่ 7: การออกแบบและนำมาตรการควบคุมไปปฏิบัติ</span>
+    </div>
+
+    <div class="navbar-right">
+      <div class="font-group">
+        <button class="btn-toggle" id="btn-font-dec" title="ลดขนาดตัวอักษร">A-</button>
+        <button class="btn-toggle" id="btn-font-reset" title="รีเซ็ตขนาดตัวอักษร">A</button>
+        <button class="btn-toggle" id="btn-font-inc" title="เพิ่มขนาดตัวอักษร">A+</button>
+      </div>
+
+      <div class="theme-group">
+        <button class="btn-toggle active" id="btn-theme-light" title="ธีมสว่าง">Light</button>
+        <button class="btn-toggle" id="btn-theme-sepia" title="ธีมซีเปีย">Sepia</button>
+        <button class="btn-toggle" id="btn-theme-dark" title="ธีมมืด">Dark</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="toc-backdrop" id="toc-backdrop"></div>
+
+  <div class="app-container">
+    <!-- Collapsible Sidebar TOC -->
+    <aside class="sidebar-toc" id="sidebar-toc">
+      <div class="toc-header">
+        <span class="toc-title">📑 สารบัญประจำบทที่ 7</span>
+        <button class="btn-icon" id="btn-close-toc" title="ปิดแถบข้าง" style="padding:0.2rem 0.4rem; font-size:0.75rem;">✕</button>
+      </div>
+      <nav class="toc-nav" id="toc-nav"><a href="#sec-บทที่-7-การออกแบบและนำมาตรการควบคุมไปปฏิบัติ-security-control-design-and-implementation-1" class="toc-link toc-level-1" data-target="sec-บทที่-7-การออกแบบและนำมาตรการควบคุมไปปฏิบัติ-security-control-design-and-implementation-1"><span class="toc-bullet">›</span> <span class="toc-text">บทที่ 7 การออกแบบและนำมาตรการควบคุมไปปฏิบัติ (Security Control Design and Implementation)</span></a><a href="#sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-11" class="toc-link toc-level-2" data-target="sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-11"><span class="toc-bullet">›</span> <span class="toc-text">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</span></a><a href="#sec-ส่วนที่-1-โครงสร้างและอนุกรมวิธานของมาตรการควบคุม-control-framework-structure-23" class="toc-link toc-level-2" data-target="sec-ส่วนที่-1-โครงสร้างและอนุกรมวิธานของมาตรการควบคุม-control-framework-structure-23"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 1: โครงสร้างและอนุกรมวิธานของมาตรการควบคุม (Control Framework &amp; Structure)</span></a><a href="#sec-1-1-นิยามและปรัชญาของมาตรการควบคุม-the-concept-of-security-control-25" class="toc-link toc-level-3" data-target="sec-1-1-นิยามและปรัชญาของมาตรการควบคุม-the-concept-of-security-control-25"><span class="toc-bullet">›</span> <span class="toc-text">1.1 นิยามและปรัชญาของมาตรการควบคุม (The Concept of Security Control)</span></a><a href="#sec-1-2-การจำแนกประเภทตามวัตถุประสงค์-controls-categorized-by-objective-function-50" class="toc-link toc-level-3" data-target="sec-1-2-การจำแนกประเภทตามวัตถุประสงค์-controls-categorized-by-objective-function-50"><span class="toc-bullet">›</span> <span class="toc-text">1.2 การจำแนกประเภทตามวัตถุประสงค์ (Controls Categorized by Objective / Function)</span></a><a href="#sec-1-3-การจำแนกประเภทตามลักษณะและกลไก-controls-by-nature-implementation-method-86" class="toc-link toc-level-3" data-target="sec-1-3-การจำแนกประเภทตามลักษณะและกลไก-controls-by-nature-implementation-method-86"><span class="toc-bullet">›</span> <span class="toc-text">1.3 การจำแนกประเภทตามลักษณะและกลไก (Controls by Nature / Implementation Method)</span></a><a href="#sec-1-4-องค์ประกอบมาตรฐาน-8-ประการของ-control-specification-control-anatomy-119" class="toc-link toc-level-3" data-target="sec-1-4-องค์ประกอบมาตรฐาน-8-ประการของ-control-specification-control-anatomy-119"><span class="toc-bullet">›</span> <span class="toc-text">1.4 องค์ประกอบมาตรฐาน 8 ประการของ Control Specification (Control Anatomy)</span></a><a href="#sec-1-5-การจำแนกเชิงปฏิบัติการ-key-controls-vs-supporting-controls-และ-manual-vs-automated-153" class="toc-link toc-level-3" data-target="sec-1-5-การจำแนกเชิงปฏิบัติการ-key-controls-vs-supporting-controls-และ-manual-vs-automated-153"><span class="toc-bullet">›</span> <span class="toc-text">1.5 การจำแนกเชิงปฏิบัติการ: Key Controls vs Supporting Controls และ Manual vs Automated</span></a><a href="#sec-ส่วนที่-2-การควบคุมสำคัญเชิงลึก-5-ด้าน-critical-security-controls-deep-dive-180" class="toc-link toc-level-2" data-target="sec-ส่วนที่-2-การควบคุมสำคัญเชิงลึก-5-ด้าน-critical-security-controls-deep-dive-180"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 2: การควบคุมสำคัญเชิงลึก 5 ด้าน (Critical Security Controls Deep Dive)</span></a><a href="#sec-2-1-identity-and-access-management-iam-184" class="toc-link toc-level-3" data-target="sec-2-1-identity-and-access-management-iam-184"><span class="toc-bullet">›</span> <span class="toc-text">2.1 Identity and Access Management (IAM)</span></a><a href="#sec-2-2-vulnerability-and-patch-management-218" class="toc-link toc-level-3" data-target="sec-2-2-vulnerability-and-patch-management-218"><span class="toc-bullet">›</span> <span class="toc-text">2.2 Vulnerability and Patch Management</span></a><a href="#sec-2-3-secure-configuration-and-hardening-243" class="toc-link toc-level-3" data-target="sec-2-3-secure-configuration-and-hardening-243"><span class="toc-bullet">›</span> <span class="toc-text">2.3 Secure Configuration and Hardening</span></a><a href="#sec-2-4-network-security-architecture-254" class="toc-link toc-level-3" data-target="sec-2-4-network-security-architecture-254"><span class="toc-bullet">›</span> <span class="toc-text">2.4 Network Security Architecture</span></a><a href="#sec-2-5-backup-and-recovery-architecture-292" class="toc-link toc-level-3" data-target="sec-2-5-backup-and-recovery-architecture-292"><span class="toc-bullet">›</span> <span class="toc-text">2.5 Backup and Recovery Architecture</span></a><a href="#sec-2-6-การประเมินประสิทธิผลของมาตรการควบคุม-design-vs-operating-effectiveness-306" class="toc-link toc-level-3" data-target="sec-2-6-การประเมินประสิทธิผลของมาตรการควบคุม-design-vs-operating-effectiveness-306"><span class="toc-bullet">›</span> <span class="toc-text">2.6 การประเมินประสิทธิผลของมาตรการควบคุม (Design vs Operating Effectiveness)</span></a><a href="#sec-ส่วนที่-3-กรณีศึกษาเชิงประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-330" class="toc-link toc-level-2" data-target="sec-ส่วนที่-3-กรณีศึกษาเชิงประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-330"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 3: กรณีศึกษาเชิงประยุกต์ &quot;มหาวิทยาลัยดิจิทัลสมมติ&quot; (Core Case Study)</span></a><a href="#sec-ตาราง-risk-control-matrix-rcm-12-มาตรการสำคัญ-332" class="toc-link toc-level-3" data-target="sec-ตาราง-risk-control-matrix-rcm-12-มาตรการสำคัญ-332"><span class="toc-bullet">›</span> <span class="toc-text">ตาราง Risk-Control Matrix (RCM) 12 มาตรการสำคัญ</span></a><a href="#sec-ส่วนที่-4-มุมมองและการตรวจสอบของ-lead-auditor-audit-of-control-design-operation-353" class="toc-link toc-level-2" data-target="sec-ส่วนที่-4-มุมมองและการตรวจสอบของ-lead-auditor-audit-of-control-design-operation-353"><span class="toc-bullet">›</span> <span class="toc-text">ส่วนที่ 4: มุมมองและการตรวจสอบของ Lead Auditor (Audit of Control Design &amp; Operation)</span></a><a href="#sec-4-1-แผนการตรวจสอบและแนวทางการทดสอบตามมาตรฐาน-iso-19011-355" class="toc-link toc-level-3" data-target="sec-4-1-แผนการตรวจสอบและแนวทางการทดสอบตามมาตรฐาน-iso-19011-355"><span class="toc-bullet">›</span> <span class="toc-text">4.1 แผนการตรวจสอบและแนวทางการทดสอบตามมาตรฐาน ISO 19011</span></a><a href="#sec-4-2-กระดาษทำการตรวจสอบของ-lead-auditor-audit-working-paper-awp-364" class="toc-link toc-level-3" data-target="sec-4-2-กระดาษทำการตรวจสอบของ-lead-auditor-audit-working-paper-awp-364"><span class="toc-bullet">›</span> <span class="toc-text">4.2 กระดาษทำการตรวจสอบของ Lead Auditor (Audit Working Paper: AWP)</span></a><a href="#sec-4-3-ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง-sample-non-conformity-report-ncr-401" class="toc-link toc-level-3" data-target="sec-4-3-ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง-sample-non-conformity-report-ncr-401"><span class="toc-bullet">›</span> <span class="toc-text">4.3 ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง (Sample Non-Conformity Report: NCR)</span></a><a href="#sec-4-4-lead-auditor-control-audit-checklist-10-ข้อตรวจมาตรฐาน-452" class="toc-link toc-level-3" data-target="sec-4-4-lead-auditor-control-audit-checklist-10-ข้อตรวจมาตรฐาน-452"><span class="toc-bullet">›</span> <span class="toc-text">4.4 Lead Auditor Control Audit Checklist (10 ข้อตรวจมาตรฐาน)</span></a><a href="#sec-กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน-active-learning-simulation-469" class="toc-link toc-level-2" data-target="sec-กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน-active-learning-simulation-469"><span class="toc-bullet">›</span> <span class="toc-text">กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน (Active Learning Simulation)</span></a><a href="#sec-กิจกรรม-the-patch-vs-uptime-crisis-ข้อพิพาทการลงแพตช์ระบบลงทะเบียนในช่วงสอบไล่-471" class="toc-link toc-level-3" data-target="sec-กิจกรรม-the-patch-vs-uptime-crisis-ข้อพิพาทการลงแพตช์ระบบลงทะเบียนในช่วงสอบไล่-471"><span class="toc-bullet">›</span> <span class="toc-text">กิจกรรม: &quot;The Patch vs Uptime Crisis&quot; (ข้อพิพาทการลงแพตช์ระบบลงทะเบียนในช่วงสอบไล่)</span></a><a href="#sec-มุมมองวิชาชีพประจำบท-professional-perspectives-488" class="toc-link toc-level-2" data-target="sec-มุมมองวิชาชีพประจำบท-professional-perspectives-488"><span class="toc-bullet">›</span> <span class="toc-text">มุมมองวิชาชีพประจำบท (Professional Perspectives)</span></a><a href="#sec-แบบฝึกหัดและการบ้านประจำบทที่-7-512" class="toc-link toc-level-2" data-target="sec-แบบฝึกหัดและการบ้านประจำบทที่-7-512"><span class="toc-bullet">›</span> <span class="toc-text">แบบฝึกหัดและการบ้านประจำบทที่ 7</span></a><a href="#sec-คำถามทบทวนท้ายบท-review-questions-answers-527" class="toc-link toc-level-2" data-target="sec-คำถามทบทวนท้ายบท-review-questions-answers-527"><span class="toc-bullet">›</span> <span class="toc-text">คำถามทบทวนท้ายบท (Review Questions &amp; Answers)</span></a><a href="#sec-สรุปบทที่-7-552" class="toc-link toc-level-2" data-target="sec-สรุปบทที่-7-552"><span class="toc-bullet">›</span> <span class="toc-text">สรุปบทที่ 7</span></a><a href="#sec-เอกสารอ้างอิงและมาตรฐานสากล-562" class="toc-link toc-level-2" data-target="sec-เอกสารอ้างอิงและมาตรฐานสากล-562"><span class="toc-bullet">›</span> <span class="toc-text">เอกสารอ้างอิงและมาตรฐานสากล</span></a></nav>
+    </aside>
+
+    <!-- Main Content Reader -->
+    <main class="content-main" id="content-main">
+      <h1 class="content-heading" id="sec-บทที่-7-การออกแบบและนำมาตรการควบคุมไปปฏิบัติ-security-control-design-and-implementation-1">บทที่ 7 การออกแบบและนำมาตรการควบคุมไปปฏิบัติ (Security Control Design and Implementation)</h1>
+<p class="content-p">เมื่อองค์กรได้ระบุบริบท กำหนดขอบเขต ประเมินความเสี่ยงด้านไซเบอร์ สำรวจสินทรัพย์ และจำแนกประเภทข้อมูลเป็นที่เรียบร้อยแล้ว (บทที่ 4–6) คำถามสำคัญในลำดับถัดมาคือ <strong>"องค์กรจะแปลงความเสี่ยงและข้อกำหนดเหล่านั้นให้กลายเป็นการปฏิบัติจริงที่จับต้องได้อย่างไร?"</strong> คำตอบของคำถามนี้คือการออกแบบและนำ <strong>"มาตรการควบคุมความมั่นคงปลอดภัย (Security Controls)"</strong> ไปปฏิบัติอย่างเป็นระบบ</p>
+<p class="content-p">ในระบบบริหารจัดการความมั่นคงปลอดภัยสารสนเทศตามมาตรฐานสากล (ISO/IEC 27001:2022 และ ISO/IEC 27002:2022), กรอบการทำงานของ NIST (NIST SP 800-53 Rev. 5 และ NIST CSF 2.0 ในฟังก์ชัน Protect: PR), ตลอดจนเกณฑ์ความมั่นคงปลอดภัยขั้นต่ำตามประกาศคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ (กกม.) พ.ศ. 2564 แห่ง พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 มาตรการควบคุมมิใช่เพียงแค่การติดตั้งอุปกรณ์ฮาร์ดแวร์หรือการเปิดใช้งานโปรแกรมแอนติไวรัส แต่เป็น <strong>"สถาปัตยกรรมของการกำกับดูแล (Architecture of Safeguards)"</strong> ที่ผสมผสานระหว่างนโยบาย กระบวนการทางธุรกิจ บุคลากร และเทคโนโลยี เพื่อลดความเสี่ยงให้อยู่ในระดับที่องค์กรยอมรับได้ (Risk Appetite)</p>
+<p class="content-p">ในบทนี้ นักศึกษาจะได้เรียนรู้ในบทบาทของ <strong>ผู้จัดทำระบบ (Lead Implementer)</strong> ในการเลือก ออกแบบ และกำหนดรายละเอียดของมาตรการควบคุมผ่านตาราง <strong>Risk-Control Matrix (RCM)</strong> การวิเคราะห์เจาะลึก 5 เสาหลักของการควบคุมสำคัญ (IAM, Vulnerability/Patch Management, Secure Configuration, Network Security, Backup & Recovery) ตลอดจนบทบาทของ <strong>ผู้ตรวจสอบ (Lead Auditor)</strong> ในการแยกแยะและทดสอบ <strong>ประสิทธิผลของการออกแบบ (Design Effectiveness)</strong> เทียบกับ <strong>ประสิทธิผลของการดำเนินงานจริง (Operating Effectiveness)</strong> เพื่อเป็นหลักฐานเชิงประจักษ์ยืนยันความมั่นคงปลอดภัยของระบบสารสนเทศ</p>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ผลลัพธ์การเรียนรู้ของบท-course-learning-outcomes-11">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</h2>
+<p class="content-p">เมื่อสิ้นสุดการเรียนรู้ในบทนี้ นักศึกษาสามารถ:</p>
+<ol class="content-list ordered">
+<li><strong>จำแนกประเภทและอธิบายองค์ประกอบของมาตรการควบคุมความปลอดภัยได้อย่างถูกต้อง (CLO4):</strong> จำแนกมาตรการตามวัตถุประสงค์ (Preventive, Detective, Corrective, Recovery, Deterrent, Compensating) และตามลักษณะ (Administrative, Technical, Physical) พร้อมทั้งระบุ 8 องค์ประกอบมาตรฐานของ Control Specification ได้</li>
+<li><strong>ออกแบบมาตรการควบคุมจากผลการประเมินความเสี่ยงและข้อกำหนดมาตรฐานได้ (CLO4, CLO6):</strong> เชื่อมโยงภัยคุกคามใน Risk Register เข้ากับมาตรการควบคุมตาม ISO/IEC 27002:2022, NIST SP 800-53 และ CIS Controls v8 พร้อมทั้งออกแบบมาตรการควบคุมหลัก (Key Controls) และมาตรการชดเชย (Compensating Controls) ได้อย่างเหมาะสม</li>
+<li><strong>กำหนดสถาปัตยกรรมการควบคุมความมั่นคงปลอดภัยสำคัญ 5 ด้านได้ (CLO4, CLO6):</strong> อธิบายและวางกรอบการควบคุม Identity & Access Management, Vulnerability & Patch Management, Secure Configuration, Network Security และ Backup & Recovery Architecture สำหรับระบบเทคโนโลยีสารสนเทศระดับองค์กรได้</li>
+<li><strong>ประเมินและแยกแยะ Design Effectiveness กับ Operating Effectiveness ได้อย่างเป็นภววิสัย (CLO5, CLO6):</strong> ออกแบบกระบวนการทดสอบ (Test of Design: ToD) และกระบวนการทดสอบการปฏิบัติงานจริง (Test of Operating Effectiveness: ToE) พร้อมทั้งกำหนดเกณฑ์และหลักฐานเชิงประจักษ์ (Audit Evidence) ที่จำเป็นได้</li>
+<li><strong>จัดทำตาราง Risk-Control Matrix (RCM) และเอกสารการตรวจสอบของ Lead Auditor ได้ (CLO3, CLO7):</strong> จัดทำ RCM ฉบับสมบูรณ์สำหรับกรณีศึกษามหาวิทยาลัยดิจิทัลสมมติ พร้อมทั้งออกแบบกระดาษทำการตรวจสอบ (Audit Working Paper) และจัดทำใบรายงานข้อบกพร่อง (Non-Conformity Report: NCR) ในมุมมองของผู้ตรวจสอบได้</li>
+</ol>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-1-โครงสร้างและอนุกรมวิธานของมาตรการควบคุม-control-framework-structure-23">ส่วนที่ 1: โครงสร้างและอนุกรมวิธานของมาตรการควบคุม (Control Framework & Structure)</h2>
+<h3 class="content-heading" id="sec-1-1-นิยามและปรัชญาของมาตรการควบคุม-the-concept-of-security-control-25">1.1 นิยามและปรัชญาของมาตรการควบคุม (The Concept of Security Control)</h3>
+<p class="content-p">ในพจนานุกรมความมั่นคงปลอดภัยสารสนเทศตามมาตรฐาน <strong>ISO/IEC 27000</strong> นิยามคำว่า <strong>"Control (มาตรการควบคุม)"</strong> หมายถึง:</p>
+<blockquote class="content-blockquote"><em>"มาตรการใด ๆ ที่นำมาใช้ในการปรับเปลี่ยนความเสี่ยง (Measure that is modifying risk)"</em> ซึ่งครอบคลุมถึงกระบวนการ นโยบาย อุปกรณ์ แนวทางปฏิบัติ เครื่องมือ หรือโครงสร้างพื้นฐาน</blockquote>
+<p class="content-p">ขณะที่ <strong>NIST SP 800-53 Rev. 5</strong> ให้นิยามว่า:</p>
+<blockquote class="content-blockquote"><em>"กลไกคุ้มครองหรือมาตรการรับมือ (Safeguard or Countermeasure) ที่กำหนดขึ้นสำหรับระบบสารสนเทศและองค์กร เพื่อปกป้องความลับ (Confidentiality) ความถูกต้องสมบูรณ์ (Integrity) และความพร้อมใช้งาน (Availability) ของระบบและข้อมูล"</em></blockquote>
+
+<div class="figure-box" id="figure-7-1">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 7.1</div>
+    <div class="figure-title">ปรัชญาการปรับเปลี่ยนความเสี่ยงด้วยมาตรการควบคุม (Risk-Control Reduction Philosophy)</div>
+  </div>
+  <div class="philosophy-flow">
+    <div class="phil-box risk-source">
+      <div class="phil-icon">⚠️</div>
+      <div class="phil-title">ความเสี่ยงและข้อกำหนด</div>
+      <ul class="phil-list">
+        <li>ความเสี่ยงที่ระบุได้ (Identified Risk)</li>
+        <li>ข้อกำหนดกฎหมาย (PDPA / พ.ร.บ.ไซเบอร์)</li>
+        <li>เป้าหมายและภารกิจทางธุรกิจ</li>
+      </ul>
+    </div>
+    <div class="phil-arrow">
+      <div class="phil-arrow-text">เข้าสู่กระบวนการควบคุม</div>
+      <div class="phil-arrow-sym">────────▶</div>
+    </div>
+    <div class="phil-box control-engine">
+      <div class="phil-icon">🛡️</div>
+      <div class="phil-title">SECURITY CONTROLS</div>
+      <div class="phil-sub">มาตรการควบคุมความมั่นคงปลอดภัย</div>
+      <div class="phil-desc">ผสมผสาน People + Process + Technology อย่างได้สัดส่วนและคุ้มค่าต้นทุน</div>
+    </div>
+    <div class="phil-arrow">
+      <div class="phil-arrow-text">ลดทอนความเสี่ยง</div>
+      <div class="phil-arrow-sym">────────▶</div>
+    </div>
+    <div class="phil-box residual-state">
+      <div class="phil-icon">🎯</div>
+      <div class="phil-title">ความเสี่ยงคงเหลือที่ยอมรับได้</div>
+      <div class="phil-sub">Acceptable Residual Risk</div>
+      <div class="phil-desc">ความเสี่ยงลดลงสู่ระดับ Risk Appetite ที่คณะกรรมการองค์กรยอมรับได้</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 7.1:</strong> ปรัชญาการออกแบบมาตรการควบคุมตาม ISO/IEC 27000 และ NIST SP 800-53: ควบคุมความเสี่ยง ไม่ใช่สร้างอุปสรรคให้ธุรกิจ
+  </div>
+</div>
+
+<p class="content-p">การควบคุมความมั่นคงปลอดภัยไม่ใช่เป้าหมายในตัวเอง (Controls are not the goal; managing risk is the goal) หากองค์กรกำหนดมาตรการควบคุมที่เข้มงวดเกินไปจนผู้ใช้งานไม่สามารถทำงานได้ ผู้ใช้งานจะพยายามหาทางลัด (Workarounds) หรือสร้าง <strong>Shadow IT</strong> ซึ่งกลับกลายเป็นการเพิ่มความเสี่ยงให้องค์กร ในทางกลับกัน หากมาตรการหละหลวมเกินไป ระบบก็จะตกเป็นเป้าหมายของการโจมตี หน้าที่ของ <strong>Lead Implementer</strong> คือการออกแบบมาตรการที่ <strong>"ได้สัดส่วน (Proportionate)"</strong> กับระดับความเสี่ยง และมี <strong>"ประสิทธิผลเชิงต้นทุน (Cost-Effective)"</strong></p>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-1-2-การจำแนกประเภทตามวัตถุประสงค์-controls-categorized-by-objective-function-50">1.2 การจำแนกประเภทตามวัตถุประสงค์ (Controls Categorized by Objective / Function)</h3>
+<p class="content-p">เมื่อพิจารณาตามวงจรเวลาของเหตุการณ์ภัยคุกคาม (Incident Timeline) มาตรการควบคุมสามารถจำแนกออกได้เป็น <strong>6 ประเภทตามวัตถุประสงค์</strong>:</p>
+
+<div class="figure-box" id="figure-7-2">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 7.2</div>
+    <div class="figure-title">การจำแนกประเภทมาตรการควบคุม 6 ประเภทตามช่วงเวลาเหตุการณ์ (Incident Timeline Taxonomy)</div>
+  </div>
+  <div class="timeline-taxonomy-grid">
+    <div class="tt-phase pre">
+      <div class="tt-phase-title">PRE-INCIDENT (ก่อนเกิดเหตุ)</div>
+      <div class="tt-card-item deterrent">
+        <div class="tt-tag">DETERRENT (ป้องปราม)</div>
+        <p>ยับยั้งทางจิตวิทยา: ป้ายเตือนโทษกฎหมาย, Login Banner, ป้ายกล้องวงจรปิด</p>
+      </div>
+      <div class="tt-card-item preventive">
+        <div class="tt-tag">PREVENTIVE (ป้องกัน)</div>
+        <p>สกัดกั้นไม่ให้เกิด: Firewall Block, MFA, Least Privilege, Encryption AES-256</p>
+      </div>
+      <div class="tt-card-item compensating">
+        <div class="tt-tag">COMPENSATING (ชดเชย)</div>
+        <p>มาตรการทางเลือกทดแทน: Virtual Patching บน WAF, Isolated VLAN สำหรับระบบเก่า</p>
+      </div>
+    </div>
+
+    <div class="tt-incident-divider">
+      <div class="tt-incident-badge">⚡ จุดเกิดเหตุการณ์บุกรุก (SECURITY INCIDENT)</div>
+    </div>
+
+    <div class="tt-phase post">
+      <div class="tt-phase-title">INCIDENT & POST-INCIDENT (ขณะเกิดเหตุและหลังเกิดเหตุ)</div>
+      <div class="tt-card-item detective">
+        <div class="tt-tag">DETECTIVE (ตรวจจับ)</div>
+        <p>ค้นหาและแจ้งเตือน: Network IDS, SIEM Correlation Alert, File Integrity Check</p>
+      </div>
+      <div class="tt-card-item corrective">
+        <div class="tt-tag">CORRECTIVE (แก้ไข)</div>
+        <p>ระงับยับยั้งความเสียหาย: EDR Host Isolation, ระงับบัญชีทันที, ปิดกั้น IP อัตโนมัติ</p>
+      </div>
+      <div class="tt-card-item recovery">
+        <div class="tt-tag">RECOVERY (ฟื้นฟู)</div>
+        <p>กอบกู้คืนสู่สภาพปกติ: Database Restore from Backup, DR Site Failover, BCP / DRP</p>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 7.2:</strong> วงจรเวลาของการควบคุมความมั่นคงปลอดภัยไซเบอร์ทั้ง 6 มิติตามแนวทางสากล
+  </div>
+</div>
+
+<ol class="content-list ordered">
+<li><strong>Preventive Controls (มาตรการควบคุมเชิงป้องกัน):</strong></li>
+</ol>
+<ul class="content-list ">
+<li><em>วัตถุประสงค์:</em> สกัดกั้น ปิดกั้น หรือขัดขวางไม่ให้ภัยคุกคามสามารถเกิดขึ้น หรือไม่ให้ผู้โจมตีเข้าถึงจุดอ่อนได้</li>
+<li><em>ตัวอย่าง:</em> การตั้งค่าไฟร์วอลล์บล็อกพอร์ตอันตราย, การบังคับใช้ Multi-Factor Authentication (MFA), การกำหนดสิทธิ์แบบ Least Privilege, การเข้ารหัสข้อมูล (Encryption), ประตูนิรภัยล็อกสองชั้น</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>Detective Controls (มาตรการควบคุมเชิงตรวจจับ):</strong></li>
+</ol>
+<ul class="content-list ">
+<li><em>วัตถุประสงค์:</em> ค้นหา ตรวจจับ และแจ้งเตือนเมื่อมีกิจกรรมที่ผิดปกติ การพยายามบุกรุก หรือการละเมิดนโยบายความปลอดภัยเกิดขึ้น</li>
+<li><em>ตัวอย่าง:</em> ระบบตรวจจับการบุกรุก (Network Intrusion Detection System: NIDS), ระบบตรวจสอบไฟล์ระบบเปลี่ยนแปลง (File Integrity Monitoring: FIM), การตรวจวิเคราะห์ Log ผ่าน SIEM, การเดินตรวจเวรของ รปภ., การตรวจสอบสิทธิ์ประจำรอบ (Access Review)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>Corrective Controls (มาตรการควบคุมเชิงแก้ไข):</strong></li>
+</ol>
+<ul class="content-list ">
+<li><em>วัตถุประสงค์:</em> ระงับ ยับยั้ง และบรรเทาความเสียหายที่กำลังเกิดขึ้นหลังจากการตรวจพบ เพื่อทำให้ภัยคุกคามยุติลง</li>
+<li><em>ตัวอย่าง:</em> การตัดการเชื่อมต่อเครือข่ายของเครื่องที่ติดมัลแวร์โดยอัตโนมัติผ่าน EDR (Host Isolation), การสั่งรันโปรแกรมลบมัลแวร์ (Antivirus Remediation), การระงับบัญชีผู้ใช้ที่ถูกขโมยรหัสผ่านทันที, การสลับการทำงานไปใช้ไฟร์วอลล์สำรอง</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>Recovery Controls (มาตรการควบคุมเชิงฟื้นฟู):</strong></li>
+</ol>
+<ul class="content-list ">
+<li><em>วัตถุประสงค์:</em> กอบกู้ระบบ ข้อมูล และบริการให้กลับคืนสู่สภาวะการทำงานปกติหลังจากเหตุการณ์ความมั่นคงปลอดภัยยุติลง</li>
+<li><em>ตัวอย่าง:</em> การกู้คืนฐานข้อมูลจากระบบสำรองข้อมูล (Database Restore from Backup), การเปิดใช้งานศูนย์ข้อมูลสำรอง (DR Site Failover), แผนบริหารความต่อเนื่องทางธุรกิจ (BCP), แผนกู้คืนระบบจากภัยพิบัติ (DRP)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>Deterrent Controls (มาตรการควบคุมเชิงป้องปราม):</strong></li>
+</ol>
+<ul class="content-list ">
+<li><em>วัตถุประสงค์:</em> ยับยั้งและปรามผู้ไม่ประสงค์ดีทางจิตวิทยา เพื่อให้ตระหนักถึงผลลัพธ์ บทลงโทษ หรือการถูกจับได้</li>
+<li><em>ตัวอย่าง:</em> ป้ายเตือน <em>"พื้นที่หวงห้าม ผู้บุกรุกมีโทษจำคุกตาม พ.ร.บ.คอมพิวเตอร์ฯ"</em>, ข้อความแจ้งเตือน Banner ก่อนล็อกอิน (Login Warning Banner), ป้ายแจ้งเตือนกล้องวงจรปิด CCTV, นโยบายบทลงโทษทางวินัยและอาญา</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>Compensating Controls (มาตรการควบคุมชดเชย):</strong></li>
+</ol>
+<ul class="content-list ">
+<li><em>วัตถุประสงค์:</em> มาตรการทางเลือกที่นำมาใช้ทดแทนเมื่อองค์กรไม่สามารถปฏิบัติตามมาตรการควบคุมหลัก (Primary Control) ได้เนื่องจากข้อจำกัดทางเทคนิค สถาปัตยกรรมเก่า หรือต้นทุนทางธุรกิจ แต่ยังสามารถลดความเสี่ยงให้อยู่ในระดับที่ยอมรับได้เท่าเทียมกัน</li>
+<li><em>ตัวอย่าง:</em> ระบบบริหารจัดการของโรงพยาบาลรันบน Windows Server 2008 ที่ไม่สามารถอัปเดตแพตช์ได้ (ไม่สามารถลง Preventive Patch ได้) <code class="math-tex">\rightarrow</code> <strong>Compensating Control:</strong> แยกเครื่องนี้ไปอยู่ใน Isolated VLAN ที่ไม่มีทางออกอินเทอร์เน็ต และติดตั้ง Web Application Firewall (WAF) หน้าเซิร์ฟเวอร์เพื่อกรอง Exploit เสมือน (Virtual Patching)</li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-1-3-การจำแนกประเภทตามลักษณะและกลไก-controls-by-nature-implementation-method-86">1.3 การจำแนกประเภทตามลักษณะและกลไก (Controls by Nature / Implementation Method)</h3>
+
+<div class="interactive-card" id="widget-7-1">
+  <div class="card-badge">INTERACTIVE WIDGET 7.1</div>
+  <div class="card-title">🧩 โปรแกรมทดสอบจัดหมวดหมู่มาตรการควบคุม 3x6 (Control Matrix Classifier)</div>
+  <p class="card-desc">สวมบทบาทเป็น Security Architect เลือกลักษณะ (Nature: Admin / Tech / Physical) และวัตถุประสงค์ (Objective: Preventive / Detective / Corrective / Recovery / Deterrent / Compensating) สำหรับตัวอย่างมาตรการ</p>
+
+  <div class="sim-progress-bar">
+    <div class="sim-fill" id="w1-fill" style="width: 16.6%;"></div>
+  </div>
+
+  <div id="w1-container">
+    <!-- Injected by JS -->
+  </div>
+</div>
+
+<p class="content-p">เมื่อพิจารณาตามลักษณะของกลไกที่นำมาใช้บังคับใช้ สามารถแบ่งออกเป็น <strong>3 ลักษณะหลัก</strong>:</p>
+
+<div class="figure-box" id="figure-7-3">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 7.3</div>
+    <div class="figure-title">ตารางไขว้เปรียบเทียบข้ามมิติ 3x6 (The 3x6 Security Control Cross-Matrix)</div>
+  </div>
+  <div class="cross-matrix-grid">
+    <div class="cm-col admin">
+      <div class="cm-header">📋 Administrative (การบริหาร)</div>
+      <div class="cm-body">
+        <div class="cm-item"><strong>Preventive:</strong> นโยบายรหัสผ่าน, คัดกรองประวัติพนักงาน</div>
+        <div class="cm-item"><strong>Detective:</strong> Access Review ทุก 6 เดือน, ตรวจสอบภายใน</div>
+        <div class="cm-item"><strong>Corrective:</strong> IR SOP, สั่งพักงานพนักงานที่ฝ่าฝืน</div>
+        <div class="cm-item"><strong>Recovery:</strong> แผนความต่อเนื่องทางธุรกิจ (BCP), กรมธรรม์ประกันภัย</div>
+        <div class="cm-item"><strong>Deterrent:</strong> นโยบายบทลงโทษ, สัญญา NDA</div>
+        <div class="cm-item"><strong>Compensating:</strong> หนังสืออนุมัติข้อยกเว้นความเสี่ยงชั่วคราว</div>
+      </div>
+    </div>
+
+    <div class="cm-col tech">
+      <div class="cm-header">💻 Technical (เชิงเทคนิค)</div>
+      <div class="cm-body">
+        <div class="cm-item"><strong>Preventive:</strong> Next-Gen Firewall, MFA, Storage Encryption</div>
+        <div class="cm-item"><strong>Detective:</strong> Network IDS, SIEM Alerts, สแกนหาช่องโหว่</div>
+        <div class="cm-item"><strong>Corrective:</strong> Host Isolation EDR, บล็อก IP อัตโนมัติ</div>
+        <div class="cm-item"><strong>Recovery:</strong> Automated Snapshot Restore, Cloud Failover</div>
+        <div class="cm-item"><strong>Deterrent:</strong> Login Warning Banner ในระบบ</div>
+        <div class="cm-item"><strong>Compensating:</strong> Virtual Patching WAF หน้าเว็บเซิร์ฟเวอร์เก่า</div>
+      </div>
+    </div>
+
+    <div class="cm-col physical">
+      <div class="cm-header">🏢 Physical (ทางกายภาพ)</div>
+      <div class="cm-body">
+        <div class="cm-item"><strong>Preventive:</strong> ประตูสแกนลายนิ้วมือ Data Center, รั้วนิรภัย</div>
+        <div class="cm-item"><strong>Detective:</strong> กล้องวงจรปิด CCTV, รปภ. เดินตรวจ, ตรวจจับควัน</div>
+        <div class="cm-item"><strong>Corrective:</strong> ถังดับเพลิงมือถือ, สลับเบรกเกอร์ไฟสำรอง</div>
+        <div class="cm-item"><strong>Recovery:</strong> เครื่องกำเนิดไฟฟ้าดีเซล (Generator), อะไหล่สำรอง</div>
+        <div class="cm-item"><strong>Deterrent:</strong> ป้ายเตือนเขตหวงห้าม, ลวดหนาม, กล้อง CCTV เด่น</div>
+        <div class="cm-item"><strong>Compensating:</strong> จัด รปภ. เฝ้าประตู 24 ชม. เมื่อระบบสแกนบัตรเสีย</div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 7.3:</strong> เมทริกซ์ 3x6 ผสมผสาน 3 ลักษณะ (Administrative, Technical, Physical) เข้ากับ 6 วัตถุประสงค์
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-ตารางไขว้เปรียบเทียบข้ามมิติ-the-3x6-control-cross-matrix-105">ตารางไขว้เปรียบเทียบข้ามมิติ (The 3x6 Control Cross-Matrix):</h4>
+<p class="content-p">เพื่อให้นักศึกษาเห็นภาพรวมเชิงวิศวกรรมความปลอดภัย ตารางด้านล่างแสดงตัวอย่างของมาตรการควบคุมที่ตัดกันระหว่าง "ลักษณะ (Nature)" และ "วัตถุประสงค์ (Objective)":</p>
+<div class="table-container"><table class="content-table"><thead><tr><th>วัตถุประสงค์ \ ลักษณะ</th><th>📋 Administrative (การบริหาร)</th><th>💻 Technical (เชิงเทคนิค)</th><th>🏢 Physical (กายภาพ)</th></tr></thead><tbody><tr><td><strong>Preventive (ป้องกัน)</strong></td><td>นโยบายรหัสผ่าน, ระเบียบการคัดกรองประวัติพนักงานก่อนรับเข้าทำงาน</td><td>Next-Gen Firewall, Multi-Factor Authentication, Disk Encryption</td><td>ประตูล็อกไฟฟ้า, เครื่องสแกนลายนิ้วมือเข้าห้อง Data Center</td></tr><tr><td><strong>Detective (ตรวจจับ)</strong></td><td>การสุ่มตรวจสอบบัญชีผู้ใช้ประจำไตรมาส (Access Review), การตรวจประเมินภายใน</td><td>Network IDS, ระบบ SIEM Alert, โปรแกรมสแกนหาช่องโหว่</td><td>กล้องวงจรปิด (CCTV), เจ้าหน้าที่ รปภ. เดินตรวจตรา, เซ็นเซอร์ตรวจจับควันไฟ</td></tr><tr><td><strong>Corrective (แก้ไข)</strong></td><td>ขั้นตอนการตอบสนองเหตุการณ์ (IR SOP), การสั่งพักงานพนักงานที่ทำผิด</td><td>Host Isolation บน EDR, Script ปิดกั้น IP ของแฮกเกอร์อัตโนมัติ</td><td>ถังดับเพลิงมือถือ, ระบบสลับเบรกเกอร์ไฟฟ้าสำรอง</td></tr><tr><td><strong>Recovery (ฟื้นฟู)</strong></td><td>แผนความต่อเนื่องทางธุรกิจ (BCP), แผนกู้คืนระบบ (DRP), สัญญาประกันภัยไซเบอร์</td><td>ระบบ Restore Snapshot ฐานข้อมูล, DR Site Automated Failover</td><td>เครื่องกำเนิดไฟฟ้าดีเซลสำรอง (Generator), อะไหล่ฮาร์ดแวร์สำรอง</td></tr><tr><td><strong>Deterrent (ป้องปราม)</strong></td><td>นโยบายบทลงโทษทางวินัย, การเซ็นสัญญาไม่เปิดเผยข้อมูล (NDA)</td><td>ข้อความ Login Warning Banner แจ้งเตือนสิทธิ์การใช้งาน</td><td>ป้ายเตือนเขตหวงห้าม, รั้วลวดหนาม, กล้องวงจรปิดหลอก</td></tr><tr><td><strong>Compensating (ชดเชย)</strong></td><td>การอนุมัติข้อยกเว้นเป็นลายลักษณ์อักษรชั่วคราวพร้อมการเซ็นรับทราบความเสี่ยง</td><td>การทำ Virtual Patching บน WAF สำหรับเซิร์ฟเวอร์เก่าที่ลงแพตช์ไม่ได้</td><td>การจัดเจ้าหน้าที่ รปภ. เฝ้าหน้าประตูตลอด 24 ชม. กรณีระบบสแกนบัตรเสีย</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-1-4-องค์ประกอบมาตรฐาน-8-ประการของ-control-specification-control-anatomy-119">1.4 องค์ประกอบมาตรฐาน 8 ประการของ Control Specification (Control Anatomy)</h3>
+<p class="content-p">การเขียนมาตรการควบคุมในระดับมืออาชีพ จะต้องไม่เขียนเพียงแค่ประโยคสั้น ๆ เช่น <em>"ต้องสำรองข้อมูล"</em> หรือ <em>"ต้องอัปเดตแพตช์"</em> แต่ต้องจัดทำเอกสารข้อกำหนดมาตรการควบคุม (Control Specification) ที่ครอบคลุม <strong>8 องค์ประกอบมาตรฐาน</strong>:</p>
+
+<div class="figure-box" id="figure-7-4">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 7.4</div>
+    <div class="figure-title">8 องค์ประกอบมาตรฐานของ Control Specification (Control Anatomy)</div>
+  </div>
+  <div class="anatomy-grid-8">
+    <div class="anat-item"><span class="anat-num">1</span><strong>Control ID & Name:</strong> รหัสและชื่อ เช่น CTL-IAM-01 (PAM)</div>
+    <div class="anat-item"><span class="anat-num">2</span><strong>Control Objective:</strong> วัตถุประสงค์ในการลดความเสี่ยงเฉพาะด้าน</div>
+    <div class="anat-item"><span class="anat-num">3</span><strong>Control Activity:</strong> รายละเอียดกิจกรรม ขั้นตอน ใครทำอะไร ที่ไหน อย่างไร</div>
+    <div class="anat-item"><span class="anat-num">4</span><strong>Control Owner:</strong> ตำแหน่งผู้รับผิดชอบกำกับดูแลและบังคับใช้</div>
+    <div class="anat-item"><span class="anat-num">5</span><strong>Frequency:</strong> ความถี่ (ต่อเนื่อง, รายวัน, รายเดือน, หรือตามเหตุการณ์)</div>
+    <div class="anat-item"><span class="anat-num">6</span><strong>Inputs & Outputs:</strong> ข้อมูลนำเข้าและผลลัพธ์ที่ได้รับจากการควบคุม</div>
+    <div class="anat-item"><span class="anat-num">7</span><strong>Audit Evidence:</strong> หลักฐานเชิงประจักษ์ (Log, ลายเซ็นอนุมัติ, Scan Report)</div>
+    <div class="anat-item"><span class="anat-num">8</span><strong>KPI / KRI:</strong> ตัวชี้วัดประสิทธิผลและตัวชี้วัดความเสี่ยงสำคัญ</div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 7.4:</strong> โครงสร้างมาตรฐาน 8 ข้อของเอกสารกำหนดรายละเอียดมาตรการควบคุมความมั่นคงปลอดภัยระดับมืออาชีพ
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-1-5-การจำแนกเชิงปฏิบัติการ-key-controls-vs-supporting-controls-และ-manual-vs-automated-153">1.5 การจำแนกเชิงปฏิบัติการ: Key Controls vs Supporting Controls และ Manual vs Automated</h3>
+<h4 class="content-heading" id="sec-1-key-controls-มาตรการควบคุมหลัก-vs-supporting-controls-มาตรการควบคุมสนับสนุน-155">1. Key Controls (มาตรการควบคุมหลัก) vs Supporting Controls (มาตรการควบคุมสนับสนุน):</h4>
+<ul class="content-list ">
+<li><strong>Key Control:</strong> มาตรการที่ถูกออกแบบมาเพื่อป้องกัน ตรวจจับ หรือลดความเสี่ยงที่สำคัญอย่างมีนัยสำคัญโดยตรง หาก Key Control ล้มเหลว ความเสี่ยงจะเกิดขึ้นสู่องค์กรทันทีโดยไม่มีปราการอื่นป้องกัน (เช่น การบังคับใช้ MFA ในการล็อกอินจากภายนอกเข้าสู่ระบบ Cloud)</li>
+<li><strong>Supporting Control:</strong> มาตรการที่ทำหน้าที่สนับสนุนให้ Key Control สามารถทำงานได้อย่างมีประสิทธิภาพและต่อเนื่อง (เช่น การอบรมพนักงานเกี่ยวกับวิธีการใช้งาน MFA หรือการกำหนดนโยบาย MFA ในเอกสารขององค์กร)</li>
+</ul>
+<h4 class="content-heading" id="sec-2-manual-control-vs-automated-control-vs-itdm-159">2. Manual Control vs Automated Control vs ITDM:</h4>
+
+<div class="figure-box" id="figure-7-5">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 7.5</div>
+    <div class="figure-title">รูปแบบการทำงานของมาตรการ: Manual vs Automated vs IT-Dependent (ITDM)</div>
+  </div>
+  <div class="operation-modes-grid">
+    <div class="op-card manual">
+      <div class="op-badge">MANUAL CONTROL</div>
+      <h4>มนุษย์ดำเนินการด้วยตนเอง 100%</h4>
+      <p>เช่น หัวหน้างานตรวจเอกสารและเซ็นอนุมัติด้วยปากกา, เจ้าหน้าที่ รปภ. บันทึกสมุดเข้าออก</p>
+      <div class="op-risk"><strong>ความเสี่ยง:</strong> Human Error, ความล่าช้า, ทำไม่สม่ำเสมอเมื่อคนเปลี่ยน</div>
+    </div>
+    <div class="op-card automated">
+      <div class="op-badge">AUTOMATED CONTROL</div>
+      <h4>ระบบโปรแกรมทำงานอัตโนมัติ 100%</h4>
+      <p>เช่น Firewall บล็อกพอร์ตอัตโนมัติ, ระบบบังคับล็อกเอาต์เมื่อไม่ใช้งาน 15 นาที, ระบบเข้ารหัสอัตโนมัติ</p>
+      <div class="op-risk"><strong>ความเสี่ยง:</strong> Logic และ Bug ในโค้ด, การปรับแต่ง Configuration ที่ผิดพลาด</div>
+    </div>
+    <div class="op-card itdm">
+      <div class="op-badge">IT-DEPENDENT MANUAL (ITDM)</div>
+      <h4>มนุษย์ทำงานร่วมกับรายงานไอที</h4>
+      <p>เช่น ระบบดึงรายงานบัญชีผู้ใช้ค้างส่งอีเมลให้อาจารย์ตรวจสอบ แล้วอาจารย์คลิกยืนยันการตัดสิทธิ์</p>
+      <div class="op-risk"><strong>ความเสี่ยง:</strong> ต้องสอบทานทั้งความถูกต้องของโปรแกรมที่ดึงรายงานและความรอบคอบของมนุษย์</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 7.5:</strong> 3 รูปแบบการทำงานของการควบคุมที่มีผลต่อกลยุทธ์การตรวจสอบของ Lead Auditor
+  </div>
+</div>
+
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-2-การควบคุมสำคัญเชิงลึก-5-ด้าน-critical-security-controls-deep-dive-180">ส่วนที่ 2: การควบคุมสำคัญเชิงลึก 5 ด้าน (Critical Security Controls Deep Dive)</h2>
+<p class="content-p">เพื่อให้ระบบมีความมั่นคงปลอดภัยตามเกณฑ์มาตรฐานสากลและกฎหมายไทย Lead Implementer ต้องเชี่ยวชาญการออกแบบสถาปัตยกรรมควบคุมสำคัญ 5 ด้าน:</p>
+<h3 class="content-heading" id="sec-2-1-identity-and-access-management-iam-184">2.1 Identity and Access Management (IAM)</h3>
+<p class="content-p">ระบบบริหารจัดการตัวตนและสิทธิ์การเข้าถึงเป็นปราการด่านแรกของแนวคิด Zero Trust Architecture ประกอบด้วย 5 เสาหลัก:</p>
+
+<div class="figure-box" id="figure-7-6">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 7.6</div>
+    <div class="figure-title">5 เสาหลักของสถาปัตยกรรม Identity and Access Management (IAM Pillars & JML)</div>
+  </div>
+  <div class="iam-pillars-grid">
+    <div class="iam-card jml">
+      <div class="iam-icon">🔄</div>
+      <h5>1. วงจรบัญชี JML Process</h5>
+      <p><strong>Joiner:</strong> สร้างบัญชีตาม RBAC<br>
+      <strong>Mover:</strong> ถอนสิทธิ์เดิมก่อนให้สิทธิ์ใหม่ (กัน Privilege Creep)<br>
+      <strong>Leaver:</strong> ตัดสิทธิ์ภายใน 2 ชม. ทันทีเมื่อพ้นสภาพ</p>
+    </div>
+    <div class="iam-card pam">
+      <div class="iam-icon">🔑</div>
+      <h5>2. จัดการสิทธิ์สูง (PAM)</h5>
+      <p>เก็บบัญชี Root/Admin ใน Vault บังคับใช้ Just-In-Time (JIT) Privilege และบันทึก Session Video ขณะคอนฟิก</p>
+    </div>
+    <div class="iam-card mfa">
+      <div class="iam-icon">📱</div>
+      <h5>3. ยืนยันตัวตนสองชั้น (MFA)</h5>
+      <p>Password (สิ่งที่รู้) + Authenticator App / FIDO2 (สิ่งที่มี) สำหรับการเข้าถึงจากภายนอกและระบบสำคัญ</p>
+    </div>
+    <div class="iam-card review">
+      <div class="iam-icon">📋</div>
+      <h5>4. ทบทวนสิทธิ์ (Access Review)</h5>
+      <p>ส่งรายงานสิทธิ์ให้ Data Owner ลงนามรับรองทุก 6 เดือน สิทธิ์ที่ไม่มีผู้รับรองจะถูกระงับอัตโนมัติ</p>
+    </div>
+    <div class="iam-card sod">
+      <div class="iam-icon">⚖️</div>
+      <h5>5. แบ่งแยกหน้าที่ (SoD)</h5>
+      <p>ผู้สร้างรายการต้องไม่ใช่ผู้อนุมัติ นักพัฒนา (Developer) ต้องไม่มีสิทธิ์เข้าถึงฐานข้อมูล Production โดยตรง</p>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 7.6:</strong> สถาปัตยกรรม Identity and Access Management ตามแนวคิด Zero Trust Architecture
+  </div>
+</div>
+
+<ul class="content-list ">
+<li><strong>Joiner-Mover-Leaver (JML) Process:</strong></li>
+<li><em>Joiner:</em> การสร้างบัญชีผู้ใช้ใหม่ต้องอ้างอิงจากบทบาทหน้าที่ (Role-Based Access Control: RBAC) และได้รับการอนุมัติจากหัวหน้างาน</li>
+<li><em>Mover:</em> เมื่อพนักงานย้ายแผนก (เช่น จากฝ่ายทะเบียนไปฝ่ายการเงิน) <strong>ต้องเพิกถอนสิทธิ์เดิมทั้งหมดก่อน</strong> แล้วจึงมอบสิทธิ์ใหม่ เพื่อป้องกันปัญหา <strong>สิทธิ์สะสม (Privilege Creep)</strong></li>
+<li><em>Leaver:</em> เมื่อพนักงานลาออกหรือพ้นสภาพ ต้องระงับบัญชี (Disable Account) ภายในระยะเวลาที่กำหนด (เช่น ภายใน 2 ชั่วโมงหรือทันทีในวันสุดท้ายของการทำงาน) และเพิกถอนการเข้าถึงอาคารทันที</li>
+<li><strong>Privileged Access Management (PAM):</strong> บัญชีผู้ดูแลระบบ (Domain Admin, Root, DBA) ต้องไม่นำมาใช้ท่องเว็บหรือเปิดอ่านอีเมลทั่วไป ต้องผ่านการจัดเก็บใน Credential Vault, บังคับใช้หลักการ Just-In-Time (JIT) Privilege และบันทึกวิดีโอ Session การทำงานทุกครั้ง</li>
+<li><strong>Segregation of Duties (SoD):</strong> การแบ่งแยกหน้าที่ไม่ให้บุคคลใดบุคคลหนึ่งสามารถดำเนินกิจกรรมสำคัญตั้งแต่ต้นจนจบได้โดยลำพัง เช่น นักพัฒนาโปรแกรม (Developer) ต้องไม่มีสิทธิ์เข้าถึง Production Database เพื่ออัปเดตข้อมูลหรือปรับโครงสร้างตารางโดยตรง</li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-2-vulnerability-and-patch-management-218">2.2 Vulnerability and Patch Management</h3>
+
+<div class="interactive-card" id="widget-7-2">
+  <div class="card-badge">INTERACTIVE WIDGET 7.2</div>
+  <div class="card-title">⚡ เครื่องมือคำนวณลำดับความเร่งด่วนในการลงแพตช์ (Patch SLA Calculator)</div>
+  <p class="card-desc">วิเคราะห์ความเร่งด่วนของช่องโหว่โดยผสมผสาน <strong>CVSS Score</strong>, <strong>EPSS Probability</strong> และสถานะ <strong>CISA KEV Catalog</strong> เพื่อคำนวณ Remediation SLA และมาตรการชดเชย</p>
+
+  <div class="patch-calc-controls">
+    <div class="calc-presets">
+      <button class="preset-btn" onclick="loadPatchPreset('zero_day')">เคส 1: Zero-Day ใน CISA KEV (Critical)</button>
+      <button class="preset-btn" onclick="loadPatchPreset('high_epss')">เคส 2: CVSS 7.8 แต่ EPSS สูงมาก</button>
+      <button class="preset-btn" onclick="loadPatchPreset('low_exploit')">เคส 3: CVSS 9.8 แต่ไม่มี Exploits</button>
+      <button class="preset-btn" onclick="loadPatchPreset('medium')">เคส 4: Medium Bug ทั่วไป</button>
+    </div>
+
+    <div class="calc-sliders-grid">
+      <div class="calc-field">
+        <label>คะแนนความรุนแรง CVSS (0.0 - 10.0): <span id="lbl-cvss">9.8</span></label>
+        <input type="range" id="input-cvss" min="0" max="10" step="0.1" value="9.8" oninput="updatePatchCalc()">
+      </div>
+      <div class="calc-field">
+        <label>โอกาสการถูกโจมตี EPSS (%): <span id="lbl-epss">85%</span></label>
+        <input type="range" id="input-epss" min="1" max="100" value="85" oninput="updatePatchCalc()">
+      </div>
+      <div class="calc-field">
+        <label>มีใน CISA Known Exploited (KEV) หรือไม่:</label>
+        <select id="input-kev" onchange="updatePatchCalc()">
+          <option value="yes">YES - มีรายงานถูกแฮกแล้วจริงในโลก</option>
+          <option value="no">NO - ยังไม่พบรายงานการเจาะระบบในวงกว้าง</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="calc-result-box" id="calc-result-box">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<p class="content-p">การบริหารจัดการช่องโหว่และการอัปเดตแพตช์ความมั่นคงปลอดภัยตามวงจรชีวิต 5 ขั้นตอน:</p>
+
+<div class="figure-box" id="figure-7-7">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 7.7</div>
+    <div class="figure-title">วงจรการบริหารช่องโหว่และจัดลำดับความสำคัญ (Vulnerability Management Lifecycle)</div>
+  </div>
+  <div class="vuln-lifecycle-flow">
+    <div class="vl-step">
+      <div class="vl-num">1</div>
+      <div class="vl-title">สำรวจสินทรัพย์</div>
+      <div class="vl-desc">ครอบคลุม On-premise, Cloud และ Network 100%</div>
+    </div>
+    <div class="vl-arrow">➔</div>
+    <div class="vl-step">
+      <div class="vl-num">2</div>
+      <div class="vl-title">สแกนหาช่องโหว่</div>
+      <div class="vl-desc">สแกนทั้งแบบ Authenticated และ Unauthenticated ทุกเดือน</div>
+    </div>
+    <div class="vl-arrow">➔</div>
+    <div class="vl-step">
+      <div class="vl-num">3</div>
+      <div class="vl-title">จัดลำดับความสำคัญ</div>
+      <div class="vl-desc">วิเคราะห์ CVSS + EPSS + CISA KEV Catalog</div>
+    </div>
+    <div class="vl-arrow">➔</div>
+    <div class="vl-step">
+      <div class="vl-num">4</div>
+      <div class="vl-title">ทดสอบและลงแพตช์</div>
+      <div class="vl-desc">ทดสอบบน Staging ก่อน Rollout สู่ Production</div>
+    </div>
+    <div class="vl-arrow">➔</div>
+    <div class="vl-step">
+      <div class="vl-num">5</div>
+      <div class="vl-title">จัดการข้อยกเว้น</div>
+      <div class="vl-desc">ลงแพตช์ไม่ได้ ➔ ขออนุมัติ CISO + Compensating WAF</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 7.7:</strong> วงจรการจัดการช่องโหว่และการจัดลำดับความสำคัญตามระดับความเสี่ยงที่แท้จริง
+  </div>
+</div>
+
+<ol class="content-list ordered">
+<li><strong>Asset Coverage:</strong> ขอบเขตการค้นหาช่องโหว่ต้องครอบคลุมสินทรัพย์ 100% ทั้ง On-premise, Cloud, และ Network Devices</li>
+<li><strong>Vulnerability Scanning:</strong> การสแกนช่องโหว่ทั้งแบบ Authenticated (ล็อกอินเข้าไปตรวจลึกถึง Patch ภายใน) และ Unauthenticated (สแกนจากภายนอก) เป็นประจำอย่างน้อยเดือนละ 1 ครั้ง</li>
+<li><strong>Risk Prioritization:</strong> การจัดลำดับความเร่งด่วนในการลงแพตช์โดยไม่พึ่งพาเพียงคะแนน <strong>CVSS (Common Vulnerability Scoring System)</strong> เท่านั้น แต่ต้องพิจารณา <strong>EPSS (Exploit Prediction Scoring System)</strong> และรายการช่องโหว่ที่มีโค้ดเจาะระบบแล้วจริงตาม <strong>CISA Known Exploited Vulnerabilities (KEV) Catalog</strong>:</li>
+</ol>
+<ul class="content-list ">
+<li><em>Critical / Zero-Day (CVSS <code class="math-tex">\ge</code> 9.0 หรืออยู่ใน CISA KEV):</em> ต้องแก้ไขภายใน 24–48 ชั่วโมง</li>
+<li><em>High (CVSS 7.0–8.9):</em> ต้องแก้ไขภายใน 7–14 วัน</li>
+<li><em>Medium (CVSS 4.0–6.9):</em> ต้องแก้ไขภายใน 30 วัน</li>
+<li><em>Low (CVSS &lt; 4.0):</em> แก้ไขตามรอบการบำรุงรักษาปกติ (Maintenance Window)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>Patch Testing & Staging:</strong> ก่อนลงแพตช์บนระบบจริง (Production) จะต้องทดสอบบนสภาพแวดล้อมจำลอง (Staging / UAT) เสมอ เพื่อป้องกันระบบล่มจากความไม่เข้ากันของซอฟต์แวร์</li>
+<li><strong>Exception Management:</strong> หากระบบงานเก่าไม่สามารถลงแพตช์ได้เนื่องจากแอปพลิเคชันจะหยุดทำงาน ต้องจัดทำ <strong>Security Exception Request</strong> ระบุเหตุผลทางธุรกิจ ระยะเวลาขอยกเว้น และออกแบบ <strong>Compensating Controls</strong> (เช่น Virtual Patching บน WAF หรือย้ายเข้า Isolated VLAN) พร้อมได้รับอนุมัติจาก CISO</li>
+</ol>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-3-secure-configuration-and-hardening-243">2.3 Secure Configuration and Hardening</h3>
+<p class="content-p">ระบบปฏิบัติการและซอฟต์แวร์ที่ติดตั้งมาแต่แรก (Default Installation) มักเปิดพอร์ตที่ไม่จำเป็นและใช้รหัสผ่านเริ่มต้น ซึ่งเป็นช่องทางหลักของการถูกโจมตี</p>
+<ul class="content-list ">
+<li><strong>Configuration Baselines:</strong> การกำหนดมาตรฐานการปรับแต่งความปลอดภัยอ้างอิงจากเกณฑ์มาตรฐานสากล เช่น <strong>Center for Internet Security (CIS Benchmarks)</strong> หรือ <strong>DISA Security Technical Implementation Guides (STIGs)</strong></li>
+<li><em>ตัวอย่าง Hardening Checklist:</em> ปิด Service ที่ไม่ใช้งาน (เช่น Telnet, SMBv1), ปิดบัญชี Guest, ปิดฟังก์ชัน Directory Browsing บน Web Server, บังคับใช้ TLS 1.3 ปิดการใช้งาน SSLv3/TLS 1.0/1.1</li>
+<li><strong>Change Control & Change Advisory Board (CAB):</strong> การเปลี่ยนแปลงค่าคอนฟิกูเรชันในระบบ Production ต้องยื่นคำขอ Request for Change (RFC), ผ่านการวิเคราะห์ผลกระทบ, ผ่านการอนุมัติจากคณะกรรมการ CAB และต้องมี <strong>Backout / Rollback Plan</strong> ทุกครั้ง</li>
+<li><strong>Configuration Drift Detection:</strong> การใช้เครื่องมือตรวจสอบอัตโนมัติ (เช่น Ansible, Puppet, หรือ CSPM บนคลาวด์) เพื่อตรวจจับว่ามีการแอบแก้ไขคอนฟิกูเรชันโดยพลการจนเบี่ยงเบนไปจาก Baseline หรือไม่</li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-4-network-security-architecture-254">2.4 Network Security Architecture</h3>
+<p class="content-p">การออกแบบสถาปัตยกรรมเครือข่ายความปลอดภัยเพื่อป้องกันการเคลื่อนที่ในแนวระนาบของผู้โจมตี (Lateral Movement):</p>
+
+<div class="figure-box" id="figure-7-8">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 7.8</div>
+    <div class="figure-title">สถาปัตยกรรมเครือข่ายความปลอดภัยและการแบ่งโซน (Defense-in-Depth & Micro-segmentation)</div>
+  </div>
+  <div class="net-arch-diagram">
+    <div class="net-zone ext">
+      <div class="nz-badge">INTERNET / UNTRUSTED</div>
+      <div class="nz-content">ผู้ใช้งานภายนอก / แฮกเกอร์ / Public Users</div>
+    </div>
+    <div class="net-arrow-v">▼ External Next-Gen Firewall (DPI & IPS)</div>
+    <div class="net-zone dmz">
+      <div class="nz-badge">DMZ (VLAN 10)</div>
+      <div class="nz-content">Web Servers / Reverse Proxy / WAF / External Portal</div>
+    </div>
+    <div class="net-arrow-v">▼ Internal Firewall (Micro-segmentation: ห้าม DMZ ต่อตรงสู่ DB)</div>
+    <div class="net-zone app">
+      <div class="nz-badge">APP TIER (VLAN 20)</div>
+      <div class="nz-content">REG Web Application, ERP Middleware</div>
+    </div>
+    <div class="net-arrow-v">▼ Secure Internal Boundary (TCP 1521 Only with NNE)</div>
+    <div class="net-zone db">
+      <div class="nz-badge">DB TIER (VLAN 30) - RESTRICTED</div>
+      <div class="nz-content">Oracle DB (AST-01/02), Student Master Data (TDE AES-256)</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 7.8:</strong> สถาปัตยกรรมการแบ่งแยกโซนเครือข่ายป้องกันการเคลื่อนที่ในแนวระนาบ (Lateral Movement)
+  </div>
+</div>
+
+<ol class="content-list ordered">
+<li><strong>Network Segmentation & Micro-segmentation:</strong> การแบ่งแยกโซนเครือข่ายด้วย VLAN และ Firewalls ออกเป็น External, DMZ, Application, Database, และ Management Network โดยห้ามไม่ให้ DMZ สื่อสารตรงไปยัง Database โดยเด็ดขาด</li>
+<li><strong>Next-Generation Firewall (NGFW):</strong> การควบคุมทราฟฟิกระดับ Layer 7 (Application-Aware), ตรวจจับมัลแวร์ในระดับแพ็กเก็ต (Deep Packet Inspection: DPI), และการทบทวนกฎไฟร์วอลล์ (Rule Review) สม่ำเสมอเพื่อกำจัดกฎกว้างเกินไป (Any-Any Rules)</li>
+<li><strong>Secure Remote Access:</strong> ห้ามเปิดพอร์ต Remote Desktop (RDP 3389) หรือ SSH (22) ออกสู่อินเทอร์เน็ตสาธารณะตรง ๆ ผู้ใช้งานภายนอกต้องเชื่อมต่อผ่าน <strong>VPN พร้อมบังคับใช้ MFA</strong> หรือเทคโนโลยี <strong>Zero Trust Network Access (ZTNA)</strong></li>
+<li><strong>Wireless Security:</strong> บังคับใช้มาตรฐานการเข้ารหัส <strong>WPA3-Enterprise</strong> ร่วมกับโปรโตคอล <strong>802.1X EAP-TLS</strong> (ใช้ใบรับรองดิจิทัลหรือรหัสผ่านรายบุคคลผ่าน RADIUS Server) และมีระบบตรวจจับสัญญาณ Access Point แปลกปลอม (Rogue AP Detection)</li>
+</ol>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-5-backup-and-recovery-architecture-292">2.5 Backup and Recovery Architecture</h3>
+
+<div class="figure-box" id="figure-7-9">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 7.9</div>
+    <div class="figure-title">กฎการสำรองข้อมูล 3-2-1-1-0 Rule และการทดสอบกู้คืนข้อมูล (Backup & Restore Assurance)</div>
+  </div>
+  <div class="rule-321-grid">
+    <div class="r321-card"><span class="r321-num">3</span><strong>สำเนาข้อมูล 3 ชุด:</strong> 1 ข้อมูลหลัก Production + 2 ข้อมูลสำรอง</div>
+    <div class="r321-card"><span class="r321-num">2</span><strong>สื่อบันทึก 2 ประเภท:</strong> Disk Storage + Cloud Object / Tape</div>
+    <div class="r321-card"><span class="r321-num">1</span><strong>สำเนาภายนอก 1 ชุด:</strong> เก็บไว้คนละสถานที่ (Offsite Location / Cloud)</div>
+    <div class="r321-card alert"><span class="r321-num">1</span><strong>Immutable / Offline 1 ชุด:</strong> WORM Storage / Air-gapped ป้องกันแรนซัมแวร์</div>
+    <div class="r321-card test"><span class="r321-num">0</span><strong>ข้อผิดพลาดเป็นศูนย์:</strong> ทดสอบ Restore ใน Sandbox สม่ำเสมอ (Zero Errors)</div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 7.9:</strong> กฎเหล็ก 3-2-1-1-0 เพื่อการปกป้องข้อมูลสำรองจากการถูกทำลายหรือเข้ารหัสโดยมัลแวร์เรียกค่าไถ่
+  </div>
+</div>
+
+<p class="content-p">การสำรองข้อมูลเป็นปราการด่านสุดท้ายในการรับมือกับภัยคุกคามแรนซัมแวร์ (Ransomware) และภัยพิบัติทางธรรมชาติ:</p>
+<ul class="content-list ">
+<li><strong>กฎการสำรองข้อมูล 3-2-1-1-0 Rule:</strong></li>
+<li><strong>3</strong> สำเนาข้อมูล (1 ข้อมูลหลัก + 2 ข้อมูลสำรอง)</li>
+<li><strong>2</strong> สื่อบันทึกที่แตกต่างกัน (เช่น Disk Storage + Cloud/Tape)</li>
+<li><strong>1</strong> สำเนาถูกเก็บไว้ภายนอกองค์กร (Offsite Location / Cloud)</li>
+<li><strong>1</strong> สำเนาต้องเป็นแบบ <strong>Offline / Air-gapped หรือ Immutable Storage</strong> (WORM: Write Once Read Many ป้องกันการลบหรือเข้ารหัสซ้ำโดยแฮกเกอร์)</li>
+<li><strong>0</strong> ข้อผิดพลาดจากการทดสอบการกู้คืนข้อมูล (Zero errors during recovery verification)</li>
+<li><strong>Restore Testing (การทดสอบกู้คืนข้อมูล):</strong> การมีไฟล์สำรองไม่ได้การันตีว่าข้อมูลจะกู้คืนได้จริง องค์กรต้องจัดให้มีการทดสอบกู้คืนข้อมูล (Restore Drill) อย่างน้อย <strong>ปีละ 2 ครั้ง หรือรายไตรมาส</strong> โดยกู้ขึ้นมาในสภาพแวดล้อม Sandbox และตรวจสอบความสมบูรณ์ของฐานข้อมูล (Data Consistency Check)</li>
+</ul>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-2-6-การประเมินประสิทธิผลของมาตรการควบคุม-design-vs-operating-effectiveness-306">2.6 การประเมินประสิทธิผลของมาตรการควบคุม (Design vs Operating Effectiveness)</h3>
+
+<div class="interactive-card" id="widget-7-4">
+  <div class="card-badge">INTERACTIVE WIDGET 7.4</div>
+  <div class="card-title">⚖️ โปรแกรมวิเคราะห์และแยกแยะประสิทธิผล (Design vs Operating Effectiveness Diagnostic)</div>
+  <p class="card-desc">สวมบทบาทเป็น Lead Auditor วินิจฉัย 4 สถานการณ์จริงในสถาบันการศึกษา แล้วตัดสินว่าเกิดความล้มเหลวที่จุดใด: <strong>Design Failure (การออกแบบผิด)</strong> หรือ <strong>Operating Failure (การปฏิบัติจริงล้มเหลว)</strong></p>
+
+  <div id="w4-container">
+    <!-- Injected by JS -->
+  </div>
+</div>
+
+<p class="content-p">หนึ่งในหัวใจสำคัญที่สุดของวิชาการตรวจสอบความมั่นคงปลอดภัยไซเบอร์ คือการแยกแยะระหว่าง <strong>ประสิทธิผลของการออกแบบ</strong> กับ <strong>ประสิทธิผลของการดำเนินงานจริง</strong>:</p>
+
+<div class="figure-box" id="figure-7-10">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 7.10</div>
+    <div class="figure-title">การแยกแยะประสิทธิผลของมาตรการ: Test of Design (ToD) vs Test of Operating Effectiveness (ToE)</div>
+  </div>
+  <div class="tod-toe-compare">
+    <div class="ttc-card tod">
+      <div class="ttc-badge">TEST OF DESIGN (ToD)</div>
+      <h4>ประสิทธิผลของการออกแบบ</h4>
+      <p class="ttc-q">"หากทำตามที่เขียนไว้ จะลดความเสี่ยงได้จริงหรือไม่?"</p>
+      <ul class="ttc-list">
+        <li>ตรวจสอบเอกสารนโยบาย, SOP, ผังระบบ Architecture</li>
+        <li>ดูความสมเหตุสมผลของ Logic ทางทฤษฎี</li>
+        <li><strong>ความล้มเหลว (Design Gap):</strong> เช่น ตั้งเวลา Backup ทุกอาทิตย์ แต่ธุรกิจต้องการ RPO 2 ชั่วโมง (ออกแบบผิดตั้งแต่แรก)</li>
+      </ul>
+    </div>
+
+    <div class="ttc-vs">VS</div>
+
+    <div class="ttc-card toe">
+      <div class="ttc-badge">TEST OF OPERATING EFFECTIVENESS (ToE)</div>
+      <h4>ประสิทธิผลของการดำเนินงานจริง</h4>
+      <p class="ttc-q">"ในโลกความเป็นจริง ได้ทำจริง สม่ำเสมอ และต่อเนื่องหรือไม่?"</p>
+      <ul class="ttc-list">
+        <li>สุ่มตรวจ Log ย้อนหลังตลอด 1 ปี, ขอดูใบลายเซ็นอนุมัติ</li>
+        <li>สังเกตการณ์หน้างานและทดสอบระบบซ้ำ (Re-performance)</li>
+        <li><strong>ความล้มเหลว (Compliance Gap):</strong> ออกแบบให้ตรวจสิทธิ์ทุก 3 เดือน แต่นักศึกษา/เจ้าหน้าที่ไม่เคยทำเลยตลอด 6 เดือน</li>
+      </ul>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 7.10:</strong> หัวใจของการตรวจประเมินตาม ISO 19011: การแยกแยะระหว่างการออกแบบที่ถูกต้องกับการปฏิบัติงานจริงที่มีหลักฐาน
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-กรณีศึกษาเปรียบเทียบความล้มเหลว-324">กรณีศึกษาเปรียบเทียบความล้มเหลว:</h4>
+<ol class="content-list ordered">
+<li><strong>Design Failure (การออกแบบล้มเหลว):</strong> องค์กรมีนโยบายสำรองข้อมูลทุกคืนวันอาทิตย์ (Backup weekly) แต่องค์กรมีข้อกำหนดทางธุรกิจว่า RPO ต้องเท่ากับ 2 ชั่วโมง <code class="math-tex">\rightarrow</code> แม้ระบบจะสำรองข้อมูลได้ครบ 100% ทุกคืนวันอาทิตย์ตามที่ออกแบบไว้ แต่ถ้าเซิร์ฟเวอร์ล่มวันศุกร์ ข้อมูลจะหายไปถึง 5 วัน ซึ่งละเมิดเป้าหมายธุรกิจ แสดงว่า <strong>มาตรการล้มเหลวตั้งแต่ขั้นตอนการออกแบบ (Design Ineffective)</strong></li>
+<li><strong>Operating Failure (การดำเนินงานจริงล้มเหลว):</strong> องค์กรออกแบบระบบยอดเยี่ยม กำหนดให้มีการทบทวนสิทธิ์ผู้ใช้งานทุก 3 เดือนโดยส่งแบบฟอร์มให้หัวหน้างานเซ็นอนุมัติ (Design Effective) แต่เมื่อ Lead Auditor สุ่มตรวจย้อนหลัง 1 ปี พบว่าในไตรมาสที่ 2 และ 3 ไม่มีการส่งแบบฟอร์มเลยเนื่องจากเจ้าหน้าที่ลาป่วย แสดงว่า <strong>มาตรการล้มเหลวในขั้นตอนการดำเนินงานจริง (Operating Ineffective)</strong></li>
+</ol>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-3-กรณีศึกษาเชิงประยุกต์-มหาวิทยาลัยดิจิทัลสมมติ-core-case-study-330">ส่วนที่ 3: กรณีศึกษาเชิงประยุกต์ "มหาวิทยาลัยดิจิทัลสมมติ" (Core Case Study)</h2>
+<h3 class="content-heading" id="sec-ตาราง-risk-control-matrix-rcm-12-มาตรการสำคัญ-332">ตาราง Risk-Control Matrix (RCM) 12 มาตรการสำคัญ</h3>
+
+<div class="interactive-card" id="widget-7-3">
+  <div class="card-badge">INTERACTIVE WIDGET 7.3</div>
+  <div class="card-title">🔍 ระบบสืบค้นและสำรวจ Risk-Control Matrix (RCM Explorer)</div>
+  <p class="card-desc">สืบค้น คัดกรอง และดูรายละเอียดเชิงลึกของ 12 มาตรการควบคุมหลัก (CTL-01 ถึง CTL-12) สำหรับมหาวิทยาลัยดิจิทัลสมมติ พร้อมดูขั้นตอน Test of Design (ToD) และ Test of Operating Effectiveness (ToE)</p>
+
+  <div class="rcm-toolbar">
+    <div class="search-input-box">
+      <input type="text" id="rcm-search" placeholder="พิมพ์ชื่อมาตรการ, Owner, ความเสี่ยง, หลักฐาน..." oninput="filterRcm()">
+    </div>
+    <div class="filter-badges">
+      <button class="filter-btn active" data-filter="all" onclick="setRcmFilter('all')">ทั้งหมด (12)</button>
+      <button class="filter-btn" data-filter="IAM" onclick="setRcmFilter('IAM')">🔑 IAM</button>
+      <button class="filter-btn" data-filter="Vulnerability" onclick="setRcmFilter('Vulnerability')">🛡️ Patch &amp; Hardening</button>
+      <button class="filter-btn" data-filter="Network" onclick="setRcmFilter('Network')">🌐 Network Security</button>
+      <button class="filter-btn" data-filter="Backup" onclick="setRcmFilter('Backup')">💾 Backup &amp; Recovery</button>
+    </div>
+  </div>
+
+  <div class="rcm-cards-grid" id="rcm-cards-grid">
+    <!-- Injected by JS -->
+  </div>
+</div>
+
+<p class="content-p">ตาราง Risk-Control Matrix ฉบับสมบูรณ์ 12 มาตรการหลัก สำหรับควบคุมความเสี่ยงในระบบสารสนเทศของ <strong>มหาวิทยาลัยดิจิทัลสมมติ</strong>:</p>
+<div class="table-container"><table class="content-table"><thead><tr><th>รหัสมาตรการ</th><th>ความเสี่ยงที่เกี่ยวข้อง (Risk Description)</th><th>วัตถุประสงค์การควบคุม (Control Objective)</th><th>กิจกรรมการควบคุมเชิงปฏิบัติ (Control Activity)</th><th>ผู้รับผิดชอบ (Control Owner)</th><th>ความถี่ (Frequency)</th><th>หลักฐานเชิงประจักษ์ (Audit Evidence)</th><th>ดัชนีชี้วัด (KPI / KRI)</th><th>วิธีตรวจ Design Effectiveness (ToD)</th><th>วิธีตรวจ Operating Effectiveness (ToE)</th></tr></thead><tbody><tr><td><strong>CTL-01</strong></td><td>พนักงานที่ลาออกยังเข้าถึงระบบฐานข้อมูลนักศึกษา (REG DB) ได้</td><td>บัญชีผู้ใช้ต้องถูกระงับสิทธิ์ทันทีเมื่อพ้นสภาพการทำงาน</td><td>ฝ่ายบุคคลส่งรายชื่อพนักงานลาออกให้ไอทีผ่านระบบอัตโนมัติ เพื่อ Disable บัญชีใน Active Directory ภายใน 2 ชั่วโมง</td><td>Identity Admin / สำนักไอที</td><td>เมื่อเกิดเหตุการณ์ (Event-driven)</td><td>บันทึก Log การ Disable บัญชีใน AD และอีเมลแจ้งจากฝ่ายบุคคล</td><td>บัญชีถูกปิดภายในเวลา < 2 ชม. 100%</td><td>ตรวจสอบระเบียบ JML SOP ว่ามีข้อกำหนดปิดสิทธิ์ภายใน 2 ชม. หรือไม่</td><td>สุ่มตรวจรายชื่อพนักงานที่ลาออก 10 คนล่าสุด เปรียบเทียบวันเวลาที่ลาออกกับ Log การ Disable</td></tr><tr><td><strong>CTL-02</strong></td><td>ผู้ดูแลระบบถูกขโมยรหัสผ่านเข้าถึงเครื่องแม่ข่ายสำคัญ (Domain Controller / DB)</td><td>ป้องกันการแอบอ้างสิทธิ์ผู้ดูแลระบบขั้นสูง</td><td>บังคับใช้ระบบ Privileged Access Management (PAM) หมุนเวียนรหัสผ่านอัตโนมัติ และบันทึก Session การทำงาน</td><td>Security Admin / CISO</td><td>ต่อเนื่อง (Continuous)</td><td>บันทึก Session Video และ Log การขอ Password Check-out บน PAM</td><td>0 บัญชีผู้ดูแลระบบที่ล็อกอินตรงโดยไม่ผ่าน PAM</td><td>ตรวจสอบ Architecture ผังเครือข่ายว่ามีการปิดกั้น Direct RDP/SSH หรือไม่</td><td>สุ่มตรวจ Session การล็อกอินเข้า Domain Controller ว่ามีบันทึกบน PAM ครบถ้วนหรือไม่</td></tr><tr><td><strong>CTL-03</strong></td><td>ผู้ใช้งานภายนอกถูกดักจับรหัสผ่านหรือถูก Phishing เข้าถึงระบบลงทะเบียน</td><td>บัญชีผู้ใช้งานต้องได้รับการยืนยันตัวตนมากกว่าหนึ่งปัจจัย</td><td>บังคับใช้ Multi-Factor Authentication (MFA) ผ่าน Microsoft Authenticator สำหรับอาจารย์และเจ้าหน้าที่</td><td>System Admin / สำนักไอที</td><td>ต่อเนื่อง (ทุกครั้งที่ล็อกอิน)</td><td>Azure AD Sign-in Logs ที่แสดงสถานะ MFA Success</td><td>อัตราการเปิดใช้งาน MFA ครบ 100% ของบุคลากร</td><td>ตรวจทบทวน Conditional Access Policy บน Azure AD ว่าบังคับใช้ MFA ทุกคนหรือไม่</td><td>ทดสอบล็อกอินด้วยบัญชีทดสอบจาก IP ภายนอก ตรวจสอบว่าระบบดีดหน้าจอขอ MFA หรือไม่</td></tr><tr><td><strong>CTL-04</strong></td><td>สิทธิ์ของเจ้าหน้าที่สะสมเกินความจำเป็นจากการย้ายแผนก (Privilege Creep)</td><td>สิทธิ์การเข้าถึงข้อมูลความลับต้องเป็นไปตามหน้าที่ปัจจุบัน</td><td>จัดทำรายงานสรุปสิทธิ์ส่งให้หัวหน้าส่วนงานตรวจสอบและลงนามรับรองสิทธิ์ (User Access Certification)</td><td>Data Owner / สำนักทะเบียน</td><td>ทุก 6 เดือน (Semi-annual)</td><td>แบบฟอร์ม User Access Review ที่มีลายมือชื่ออนุมัติของหัวหน้างาน</td><td>100% ของสิทธิ์ที่ไม่เกี่ยวข้องถูกเพิกถอนภายใน 3 วัน</td><td>ตรวจสอบนโยบาย Access Control Policy ว่ากำหนดรอบการทบทวนทุก 6 เดือนหรือไม่</td><td>ตรวจสอบใบสรุปผลการทบทวนสิทธิ์รอบล่าสุด 2 รอบ และตรวจเช็กว่าสิทธิ์ที่ถูกปฏิเสธถูกลบจริงหรือไม่</td></tr><tr><td><strong>CTL-05</strong></td><td>เซิร์ฟเวอร์เว็บแอปพลิเคชันถูกเจาะผ่านช่องโหว่ซอฟต์แวร์ที่ยังไม่ได้อัปเดต</td><td>ปิดช่องโหว่ด้านความมั่นคงปลอดภัยบนระบบ Production</td><td>สแกนช่องโหว่ด้วย Nessus ทุกสัปดาห์ และลงแพตช์ความปลอดภัยระดับ Critical ภายใน 7 วันหลังผ่านการทดสอบ Staging</td><td>Vulnerability Management Team</td><td>รายสัปดาห์ (สแกน) / รายเดือน (แพตช์)</td><td>Vulnerability Scan Reports, เอกสารบันทึกผลการทดสอบบน Staging, Change RFC</td><td>0 ช่องโหว่ระดับ Critical ที่ค้างเกิน 7 วัน</td><td>ตรวจสอบ Patch Management Policy เรื่องกรอบเวลา SLA ในการอัปเดตตามระดับ CVSS</td><td>สุ่มตรวจประวัติการลงแพตช์ของ 5 เซิร์ฟเวอร์หลัก เปรียบเทียบวันที่แพตช์ออกกับวันที่ติดตั้งจริง</td></tr><tr><td><strong>CTL-06</strong></td><td>เซิร์ฟเวอร์ติดตั้งด้วยคอนฟิกูเรชันเริ่มต้นที่มีช่องโหว่ (Default Insecure Settings)</td><td>ระบบปฏิบัติการต้องถูกปรับแต่งความปลอดภัยตามมาตรฐานสากล</td><td>กำหนดและตรวจสอบ Server Hardening Baseline ตามเกณฑ์ CIS Benchmarks Level 1 ก่อนนำเครื่องขึ้น Production</td><td>System Admin Team</td><td>เมื่อติดตั้งระบบใหม่ / ตรวจสอบทุกเดือน</td><td>Hardening Checklist ที่ลงนามตรวจรับ และรายงาน Compliance จากเครื่องมือ Drift Detection</td><td>คะแนนความสอดคล้องกับ CIS Benchmark <code class="math-tex">\ge</code> 90%</td><td>ตรวจสอบเอกสาร Hardening Baseline ของ Windows/Linux ว่าสอดคล้องกับ CIS Benchmark หรือไม่</td><td>สุ่มรันสคริปต์ตรวจสอบการตั้งค่าความปลอดภัยบนเครื่อง Production จริง 3 เครื่อง</td></tr><tr><td><strong>CTL-07</strong></td><td>ผู้โจมตีเจาะทะลุจากเว็บเซิร์ฟเวอร์ใน DMZ เข้าถึงฐานข้อมูลนักศึกษาในเครือข่ายภายใน</td><td>สกัดกั้นการเคลื่อนที่ในแนวระนาบของผู้โจมตี (Lateral Movement)</td><td>กำหนด Network Segmentation ผ่าน Next-Gen Firewall อนุญาตเฉพาะพอร์ตฐานข้อมูล (TCP 1521) จาก App Server เท่านั้น</td><td>Network Security Eng.</td><td>ต่อเนื่อง (Continuous)</td><td>Firewall Rule Base Configuration และบันทึก Traffic Deny Logs</td><td>0 ทราฟฟิกตรงจาก Web DMZ สู่ Internal Database Zone</td><td>ตรวจสอบแผนผัง Network Architecture และ Firewall Policy Rulebase ว่ามี Any-Any หรือไม่</td><td>ทดสอบส่งแพ็กเก็ตจาก DMZ ไปยัง IP ฐานข้อมูลพอร์ตอื่น ๆ (เช่น 22, 445, 80) ต้องถูก Drop ทันที</td></tr><tr><td><strong>CTL-08</strong></td><td>ข้อมูลนักศึกษาและข้อมูลการเงินรั่วไหลจากการส่งผ่านเครือข่ายอินเทอร์เน็ต</td><td>ป้องกันการดักจับข้อมูลระหว่างการสื่อสาร (Sniffing / MitM)</td><td>บังคับใช้โปรโตคอล TLS 1.3 บน Web Server และเปิดใช้ Strict-Transport-Security (HSTS)</td><td>Webmaster / App Admin</td><td>ต่อเนื่อง (Continuous)</td><td>SSL Labs Report (เกรด A+), Web Server Configuration (nginx.conf)</td><td>100% ของเว็บแอปพลิเคชันหลักได้คะแนน SSL Labs เกรด A ขึ้นไป</td><td>ตรวจสอบ Web Security Standard ว่าระบุการห้ามใช้ TLS 1.0, 1.1 และบังคับใช้ TLS 1.3 หรือไม่</td><td>ใช้เครื่องมือ <code>testssl.sh</code> หรือ Qualys SSL Labs สแกนโดเมนมหาวิทยาลัย เพื่อตรวจเช็ก Cipher Suite</td></tr><tr><td><strong>CTL-09</strong></td><td>แรนซัมแวร์เข้ารหัสทำลายข้อมูลสำรองของระบบลงทะเบียนและระบบการเงิน</td><td>ปกป้องข้อมูลสำรองให้สามารถกู้คืนได้แม้ระบบหลักถูกทำลาย</td><td>สำรองข้อมูลตามกฎ 3-2-1 โดยมีสำเนาหนึ่งชุดเก็บไว้บน Immutable Cloud Storage (S3 Object Lock แบบ WORM)</td><td>Lead DBA / Backup Admin</td><td>รายวัน (Daily Backup)</td><td>Backup Job Execution Logs, AWS S3 Object Lock Retention Status</td><td>อัตราความสำเร็จของ Backup Jobs <code class="math-tex">\ge</code> 99.9%</td><td>ตรวจสอบสถาปัตยกรรมการสำรองข้อมูลว่ามีการตั้งค่า WORM Storage และแยก Account หรือไม่</td><td>ทดสอบสั่งลบไฟล์สำรองบน S3 ผ่านบัญชีแอดมินทั่วไป ตรวจสอบว่าระบบปฏิเสธการลบ (Access Denied)</td></tr><tr><td><strong>CTL-10</strong></td><td>ระบบกู้คืนไม่ได้จริงเมื่อเกิดภัยพิบัติเนื่องจากไฟล์สำรองเสียหาย</td><td>มั่นใจได้ว่าข้อมูลสำรองสามารถนำมาใช้งานได้ตามเป้าหมาย RTO/RPO</td><td>ดำเนินการทดสอบกู้คืนฐานข้อมูลเต็มรูปแบบ (Full Restore Drill) ใน Sandbox Environment ทุก 6 เดือน</td><td>Lead DBA / Facilities Team</td><td>ทุก 6 เดือน (Semi-annual)</td><td>รายงานผลการทดสอบกู้คืนข้อมูล (Restore Test Report) พร้อมบันทึกเวลาที่ใช้จริง</td><td>เวลาในการกู้คืนจริง <code class="math-tex">\le</code> RTO ที่กำหนด (2 ชั่วโมง)</td><td>ตรวจสอบแผนกู้คืนระบบ (Disaster Recovery Plan: DRP) ว่ามีขั้นตอน Restore ชัดเจนหรือไม่</td><td>ตรวจสอบบันทึกผลการซ้อมกู้คืนระบบรอบล่าสุด ตรวจสอบเวลาที่ใช้จริง และผลการตรวจ Consistency</td></tr><tr><td><strong>CTL-11</strong></td><td>ข้อมูลความลับของนักศึกษาถูกคัดลอกลง Flash Drive นำออกนอกมหาวิทยาลัย</td><td>ควบคุมการรั่วไหลของข้อมูลผ่านอุปกรณ์จัดเก็บข้อมูลพกพา</td><td>ติดตั้ง Endpoint DLP บนเครื่องคอมพิวเตอร์เจ้าหน้าที่ทะเบียนและบล็อกการใช้งาน USB Mass Storage</td><td>Security Admin Team</td><td>ต่อเนื่อง (Continuous)</td><td>Endpoint DLP Policy Deployment Logs และ Event Block Logs</td><td>0 เหตุการณ์ข้อมูลความลับรั่วไหลผ่านพอร์ต USB</td><td>ตรวจสอบนโยบาย Acceptable Use Policy และ DLP Policy เรื่องข้อห้ามใช้อุปกรณ์พกพา</td><td>ทดสอบเสียบ Flash Drive บนเครื่องคอมพิวเตอร์ของเจ้าหน้าที่ทะเบียน ตรวจสอบว่าถูกบล็อกหรือไม่</td></tr><tr><td><strong>CTL-12</strong></td><td>เหตุการณ์บุกรุกไม่ได้รับการตรวจพบและแจ้งเตือนอย่างทันท่วงที</td><td>ตรวจจับพฤติกรรมผิดปกติและการโจมตีไซเบอร์แบบ Real-time</td><td>รวมศูนย์ส่ง Log จาก Firewall, AD, Server ไปยังระบบ SIEM และมี SOC เฝ้าระวังตลอด 24x7</td><td>SOC Lead / CISO</td><td>ต่อเนื่อง (24x7x365)</td><td>SIEM Correlation Rules Configuration, Incident Ticket Logs</td><td>เวลาเฉลี่ยในการตรวจพบ (Mean Time to Detect: MTTD) <code class="math-tex">\le</code> 15 นาที</td><td>ตรวจสอบขอบเขตการส่ง Log (Log Ingestion Scope) ว่าครอบคลุมระบบ Tier 1 ครบถ้วนหรือไม่</td><td>จำลองการสร้าง Traffic ผิดปกติ (เช่น Brute Force Login 20 ครั้ง) แล้วตรวจสอบว่าเกิด Alert บน SIEM หรือไม่</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-ส่วนที่-4-มุมมองและการตรวจสอบของ-lead-auditor-audit-of-control-design-operation-353">ส่วนที่ 4: มุมมองและการตรวจสอบของ Lead Auditor (Audit of Control Design & Operation)</h2>
+<h3 class="content-heading" id="sec-4-1-แผนการตรวจสอบและแนวทางการทดสอบตามมาตรฐาน-iso-19011-355">4.1 แผนการตรวจสอบและแนวทางการทดสอบตามมาตรฐาน ISO 19011</h3>
+<p class="content-p">Lead Auditor มีหน้าที่เก็บรวบรวมหลักฐานเชิงประจักษ์อย่างเป็นกลางเพื่อประเมินความสอดคล้องตามเกณฑ์มาตรฐาน โดยแบ่งกระบวนการทดสอบออกเป็น 2 ขั้นตอน:</p>
+<ol class="content-list ordered">
+<li><strong>Test of Design (ToD - การทดสอบการออกแบบ):</strong> ตรวจสอบว่ามีนโยบาย ขั้นตอนปฏิบัติ (SOP) และการกำหนดสถาปัตยกรรมไว้อย่างชัดเจนและเหมาะสมทางทฤษฎีหรือไม่ โดยใช้เทคนิคการตรวจทานเอกสาร (Inquiry & Inspection of Documentation)</li>
+<li><strong>Test of Operating Effectiveness (ToE - การทดสอบการดำเนินงานจริง):</strong> ตรวจสอบว่ามาตรการนั้นถูกปฏิบัติตามจริงอย่างสม่ำเสมอตลอดช่วงเวลาการตรวจสอบ (Audit Period) หรือไม่ โดยใช้เทคนิคการสุ่มตัวอย่าง (Sample Testing), การสังเกตการณ์ (Observation), และการทดสอบซ้ำ (Re-performance)</li>
+</ol>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-4-2-กระดาษทำการตรวจสอบของ-lead-auditor-audit-working-paper-awp-364">4.2 กระดาษทำการตรวจสอบของ Lead Auditor (Audit Working Paper: AWP)</h3>
+
+<div class="figure-box" id="figure-7-11">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 7.11</div>
+    <div class="figure-title">ตัวอย่างกระดาษทำการตรวจสอบมาตรการควบคุม (Sample Audit Working Paper)</div>
+  </div>
+  <div class="working-paper-sample">
+    <div class="wp-meta">
+      <div><strong>Audit Client:</strong> มหาวิทยาลัยดิจิทัลสมมติ</div>
+      <div><strong>Audit Scope:</strong> ISO/IEC 27001:2022 Controls A.5.15, A.8.8, A.8.13</div>
+      <div><strong>Auditor:</strong> Lead Auditor ประจำทีม</div>
+      <div><strong>Period:</strong> 1 ตุลาคม 2566 – 30 กันยายน 2567</div>
+    </div>
+    <div class="wp-tests-list">
+      <div class="wp-test-item">
+        <div class="wp-test-title">1. การทดสอบมาตรการ JML และการเพิกถอนสิทธิ์ (Control CTL-01):</div>
+        <div class="wp-test-body">
+          • สุ่มตรวจพนักงานลาออก 5 รายการเทียบกับบันทึก AD Log<br>
+          • <strong>ข้อค้นพบ:</strong> พนักงานสัญญาจ้าง (EMP-018) ลาออก 30 มิ.ย. 67 แต่บัญชียังมีสถานะ Active บน GitLab และ VPN แถมล็อกอินเข้ามาดาวน์โหลดโค้ดเมื่อ 10 ก.ค. 67 ➔ <strong>Major Non-conformity</strong>
+        </div>
+      </div>
+      <div class="wp-test-item">
+        <div class="wp-test-title">2. การทดสอบการทดสอบกู้คืนข้อมูลสำรอง (Control CTL-10):</div>
+        <div class="wp-test-body">
+          • ขอดูรายงาน Restore Drill บน Sandbox ในรอบ 12 เดือน<br>
+          • <strong>ข้อค้นพบ:</strong> Lead DBA ยอมรับว่าดูเฉพาะ Dashboard สีเขียว ไม่เคยซ้อม Restore จริงมานาน 18 เดือน ➔ <strong>Minor Non-conformity</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 7.11:</strong> ตัวอย่างบันทึกหลักฐานเชิงประจักษ์ (Audit Evidence) บนกระดาษทำการของ Lead Auditor
+  </div>
+</div>
+
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-4-3-ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง-sample-non-conformity-report-ncr-401">4.3 ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง (Sample Non-Conformity Report: NCR)</h3>
+
+<div class="figure-box" id="figure-7-12">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 7.12</div>
+    <div class="figure-title">ตัวอย่างใบรายงานข้อบกพร่องการตรวจประเมิน (NCR: Major vs Minor)</div>
+  </div>
+  <div class="ncr-compare-grid">
+    <div class="ncr-card major">
+      <div class="ncr-badge major">🚨 MAJOR NON-CONFORMITY</div>
+      <div class="ncr-code">รหัส: NCR-2024-CTL-01</div>
+      <div class="ncr-item"><strong>ข้อกำหนด:</strong> ISO 27001 Controls A.5.18, A.6.5 &amp; PDPA ม.37 (1)</div>
+      <div class="ncr-item"><strong>ข้อเท็จจริง:</strong> พนักงานชั่วคราวลาออกไปแล้ว 10 วันแต่บัญชียังไม่ถูกปิด และยังใช้ VPN เข้ามาดาวน์โหลดซอร์สโค้ดจากภายนอก</div>
+      <div class="ncr-item"><strong>ผลกระทบ:</strong> ข้อมูลความลับและทรัพย์สินทางปัญญารั่วไหลสู่บุคคลภายนอก</div>
+      <div class="ncr-item"><strong>การแก้ไข:</strong> ปิดสิทธิ์ทันที ตรวจสอบความเสียหาย และเชื่อมระบบตัดสิทธิ์อัตโนมัติ</div>
+    </div>
+
+    <div class="ncr-card minor">
+      <div class="ncr-badge minor">⚠️ MINOR NON-CONFORMITY</div>
+      <div class="ncr-code">รหัส: NCR-2024-CTL-02</div>
+      <div class="ncr-item"><strong>ข้อกำหนด:</strong> ISO 27001 Control A.8.13 (Information backup)</div>
+      <div class="ncr-item"><strong>ข้อเท็จจริง:</strong> มีการสำรองข้อมูลอัตโนมัติทุกวัน แต่ไม่มีบันทึกการทดสอบกู้คืนข้อมูล (Restore Testing) ในรอบ 18 เดือน</div>
+      <div class="ncr-item"><strong>ผลกระทบ:</strong> ขาดหลักประกันเชิงประจักษ์ว่าข้อมูลจะกู้คืนได้จริงเมื่อเกิดเหตุฉุกเฉิน</div>
+      <div class="ncr-item"><strong>การแก้ไข:</strong> จัดสรรพื้นที่ Sandbox และทำการซ้อมกู้คืนระบบพร้อมรายงานใน 30 วัน</div>
+    </div>
+  </div>
+  <div class="figure-caption">
+    <strong>แผนภาพที่ 7.12:</strong> การเปรียบเทียบข้อบกพร่องขั้นรุนแรง (Major Non-conformity) กับขั้นรอง (Minor Non-conformity)
+  </div>
+</div>
+
+<h4 class="content-heading" id="sec-ตัวอย่างที่-1-major-non-conformity-ข้อบกพร่องขั้นรุนแรง-403">ตัวอย่างที่ 1: Major Non-Conformity (ข้อบกพร่องขั้นรุนแรง)</h4>
+<blockquote class="content-blockquote"><strong>ใบรายงานข้อบกพร่องการตรวจประเมิน (Non-Conformity Report: NCR)</strong>  <br><strong>รหัสข้อค้นพบ:</strong> NCR-2024-CTL-01  <br><strong>ระดับความรุนแรง:</strong> <strong>Major Non-conformity (ข้อบกพร่องขั้นรุนแรง)</strong>  <br><strong>ข้อกำหนดอ้างอิง:</strong> ISO/IEC 27001:2022 Control A.5.18 (Access rights), Control A.6.5 (Responsibilities after termination or change of employment), และ พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 มาตรา 37 (1)  <br><br><strong>1. สภาพข้อเท็จจริงที่ตรวจพบ (Condition):</strong>  <br>จากการสุ่มตรวจสอบบัญชีผู้ใช้งานของพนักงานที่พ้นสภาพการทำงานในรอบ 1 ปีที่ผ่านมา จำนวน 5 รายการ พบว่าบัญชีของผู้รับจ้างพัฒนาระบบชั่วคราว (นาย ก. ลาออกเมื่อวันที่ 30 มิถุนายน 2567) <strong>ยังไม่ได้รับการระงับสิทธิ์การใช้งาน (Disable)</strong> บนระบบ Source Code Repository (GitLab) และระบบ SSL-VPN ของมหาวิทยาลัย ยิ่งไปกว่านั้น จากการตรวจสอบบันทึกการเข้าใช้งาน (Authentication Logs) พบว่าบัญชีดังกล่าวยังมีการเชื่อมต่อผ่าน VPN จาก IP ภายนอกเข้ามาดาวน์โหลดซอร์สโค้ดของระบบบริการการศึกษาเมื่อวันที่ 10 กรกฎาคม 2567 (หลังลาออก 10 วัน)  <br><br><strong>2. เกณฑ์การตรวจที่นำมาเปรียบเทียบ (Criteria):</strong>  <br>นโยบายความมั่นคงปลอดภัยสารสนเทศของมหาวิทยาลัยหมวดการบริหารจัดการตัวตน ข้อ 4.2 ระบุว่า <em>"สิทธิ์การเข้าถึงระบบสารสนเทศทั้งหมดของพนักงานหรือผู้รับจ้างจะต้องถูกเพิกถอนทันทีในวันสิ้นสุดสัญญาจ้างหรือไม่เกิน 2 ชั่วโมงหลังได้รับแจ้งจากฝ่ายทรัพยากรบุคคล"</em>  <br><br><strong>3. สาเหตุที่แท้จริง (Root Cause):</strong>  <br>ขาดกระบวนการส่งต่อข้อมูลแบบอัตโนมัติระหว่างฝ่ายทรัพยากรบุคคลและฝ่ายไอทีสำหรับกลุ่มลูกจ้างชั่วคราว/ผู้รับจ้างภายนอก โดยฝ่ายบุคคลทำหนังสือแจ้งเฉพาะพนักงานประจำ ทำให้เกิดช่องว่างในการตัดสิทธิ์  <br><br><strong>4. ผลกระทบ (Effect):</strong>  <br>บุคคลภายนอกสามารถเข้าถึงทรัพย์สินทางปัญญา ซอร์สโค้ด และข้อมูลความลับของมหาวิทยาลัยโดยไม่ได้รับอนุญาต เสี่ยงต่อการนำโค้ดไปแสวงหาประโยชน์หรือค้นหาช่องโหว่เพื่อโจมตีระบบ  <br><br><strong>5. ข้อเสนอแนะในการแก้ไข (Recommendation):</strong>  <br>1. ทำการ Disable บัญชีดังกล่าวและเพิกถอนสิทธิ์การเข้าถึงทั้งหมดทันที พร้อมตรวจสอบความเสียหายของข้อมูลที่ถูกดาวน์โหลด  <br>2. บูรณาการระบบทะเบียนลูกจ้างชั่วคราวเข้ากับระบบ Identity Management (IdM) เพื่อให้เกิดการตัดสิทธิ์อัตโนมัติเมื่อถึงวันสิ้นสุดสัญญาจ้าง</blockquote>
+<hr class="section-divider">
+<h4 class="content-heading" id="sec-ตัวอย่างที่-2-minor-non-conformity-ข้อบกพร่องขั้นรอง-428">ตัวอย่างที่ 2: Minor Non-Conformity (ข้อบกพร่องขั้นรอง)</h4>
+<blockquote class="content-blockquote"><strong>ใบรายงานข้อบกพร่องการตรวจประเมิน (Non-Conformity Report: NCR)</strong>  <br><strong>รหัสข้อค้นพบ:</strong> NCR-2024-CTL-02  <br><strong>ระดับความรุนแรง:</strong> <strong>Minor Non-conformity (ข้อบกพร่องขั้นรอง)</strong>  <br><strong>ข้อกำหนดอ้างอิง:</strong> ISO/IEC 27001:2022 Control A.8.13 (Information backup)  <br><br><strong>1. สภาพข้อเท็จจริงที่ตรวจพบ (Condition):</strong>  <br>มหาวิทยาลัยมีระบบสำรองข้อมูลฐานข้อมูลนักศึกษา (Oracle Database) แบบอัตโนมัติทุกวัน แต่จากการตรวจสอบหลักฐานการดำเนินงาน ไม่พบบันทึกรายงานผลการทดสอบกู้คืนข้อมูล (Restore Testing) ในสภาพแวดล้อมจำลองตลอดระยะเวลา 18 เดือนที่ผ่านมา  <br><br><strong>2. เกณฑ์การตรวจที่นำมาเปรียบเทียบ (Criteria):</strong>  <br>นโยบายการสำรองและกู้คืนข้อมูล ข้อ 5.3 ระบุว่า <em>"ฝ่ายไอทีต้องดำเนินการทดสอบกู้คืนข้อมูลสำรองของระบบ Tier 1 อย่างน้อยปีละ 1 ครั้ง และจัดทำบันทึกผลการทดสอบรายงานต่อคณะกรรมการไอที"</em>  <br><br><strong>3. สาเหตุที่แท้จริง (Root Cause):</strong>  <br>ทีมผู้ดูแลระบบขาดสภาพแวดล้อม Sandbox สำหรับการทดสอบ และให้ความสำคัญเฉพาะงานแก้ไขปัญหาระบบประจำวันจนละเลยการปฏิบัติตามแผนการทดสอบ  <br><br><strong>4. ผลกระทบ (Effect):</strong>  <br>องค์กรไม่มีหลักประกันเชิงประจักษ์ว่าไฟล์สำรองข้อมูลที่จัดเก็บไว้จะสามารถนำมากู้คืนได้จริงโดยไม่มีข้อผิดพลาดเมื่อเกิดภัยพิบัติหรือการโจมตีจากแรนซัมแวร์  <br><br><strong>5. ข้อเสนอแนะในการแก้ไข (Recommendation):</strong>  <br>จัดสรรพื้นที่ Sandbox ชั่วคราว และดำเนินการฝึกซ้อมกู้คืนข้อมูลเต็มรูปแบบ (Full Restore Drill) พร้อมจัดทำรายงานบันทึกผลภายใน 30 วัน</blockquote>
+<hr class="section-divider">
+<h3 class="content-heading" id="sec-4-4-lead-auditor-control-audit-checklist-10-ข้อตรวจมาตรฐาน-452">4.4 Lead Auditor Control Audit Checklist (10 ข้อตรวจมาตรฐาน)</h3>
+
+<div class="interactive-card" id="widget-7-5">
+  <div class="card-badge">INTERACTIVE WIDGET 7.5</div>
+  <div class="card-title">📋 เครื่องมือตรวจประเมิน Lead Auditor Control Checklist &amp; NCR Evaluator</div>
+  <p class="card-desc">จำลองการสุ่มตรวจ 10 ข้อกำหนดควบคุมความปลอดภัยตาม ISO 27001 (A.5.15, A.8.2, A.8.8, A.8.13 ฯลฯ) ประเมินคะแนน Audit Score และสรุปประเด็นเสี่ยงที่ต้องออกใบ Major/Minor NCR</p>
+
+  <div class="audit-checklist-tool" id="audit-checklist-tool-7">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<div class="table-container"><table class="content-table"><thead><tr><th>ลำดับ</th><th>รายการตรวจประเมิน (Audit Checklist Item)</th><th>มาตรฐานอ้างอิง</th><th>วิธีการตรวจสอบ</th><th>ผลการตรวจ</th></tr></thead><tbody><tr><td>1</td><td>มีการระงับสิทธิ์บัญชีผู้ใช้ทันทีเมื่อพนักงานพ้นสภาพการทำงานหรือไม่?</td><td>A.5.18, A.6.5</td><td>สุ่มตรวจรายชื่อพนักงานลาออก 5 รายการเทียบกับ AD Log</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>2</td><td>บัญชีผู้ดูแลระบบระดับสูง (Privileged Accounts) มีการใช้งานผ่านระบบ PAM และบันทึก Session หรือไม่?</td><td>A.8.2</td><td>ตรวจสอบ PAM Architecture และขอดู Session Logs</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>3</td><td>มีการบังคับใช้ Multi-Factor Authentication (MFA) สำหรับการเข้าถึงจากเครือข่ายภายนอกทั้งหมดหรือไม่?</td><td>A.5.17, A.8.5</td><td>ตรวจสอบการตั้งค่า Conditional Access บนระบบ Identity Provider</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>4</td><td>มีการทบทวนสิทธิ์การเข้าถึงข้อมูลความลับอย่างน้อยปีละ 1 ครั้ง (Access Review) หรือไม่?</td><td>A.5.18</td><td>ขอดูแบบฟอร์มการรับรองสิทธิ์ที่ลงนามโดย Data Owner</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>5</td><td>มีการสแกนหาช่องโหว่ความปลอดภัยเป็นประจำ และมีการลงแพตช์ตามกรอบเวลาความเสี่ยงหรือไม่?</td><td>A.8.8</td><td>ตรวจรายงาน Vulnerability Scan และประวัติการลงแพตช์ 3 เดือนล่าสุด</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>6</td><td>เซิร์ฟเวอร์และอุปกรณ์เครือข่ายได้รับการ Hardening ตามมาตรฐาน CIS Benchmark หรือไม่?</td><td>A.8.9</td><td>สุ่มรันสคริปต์ตรวจสอบ Configuration เทียบกับ Baseline</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>7</td><td>เครือข่ายมีการแบ่งแยกโซน (Segmentation) และไม่มีกฎไฟร์วอลล์แบบ Any-Any ค้างอยู่หรือไม่?</td><td>A.8.20, A.8.22</td><td>ตรวจสอบ Firewall Rulebase และผัง Network Architecture</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>8</td><td>การส่งผ่านข้อมูลความลับภายนอกมีการบังคับใช้โปรโตคอล TLS 1.3 หรือไม่?</td><td>A.8.24</td><td>ใช้เครื่องมือสแกน SSL/TLS ตรวจสอบ Web Services ภายนอก</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>9</td><td>ข้อมูลสำรองมีการจัดเก็บแบบ Immutable หรือ Offline อย่างน้อย 1 สำเนาหรือไม่?</td><td>A.8.13</td><td>ตรวจสอบการตั้งค่า S3 Object Lock / WORM Storage</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr><tr><td>10</td><td>มีการทดสอบกู้คืนข้อมูลสำรอง (Restore Testing) และมีเอกสารรายงานผลเป็นลายลักษณ์อักษรหรือไม่?</td><td>A.8.13</td><td>ขอดูรายงาน Restore Drill Report รอบล่าสุด</td><td>[ ] ผ่าน [ ] ไม่ผ่าน</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน-active-learning-simulation-469">กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน (Active Learning Simulation)</h2>
+<h3 class="content-heading" id="sec-กิจกรรม-the-patch-vs-uptime-crisis-ข้อพิพาทการลงแพตช์ระบบลงทะเบียนในช่วงสอบไล่-471">กิจกรรม: "The Patch vs Uptime Crisis" (ข้อพิพาทการลงแพตช์ระบบลงทะเบียนในช่วงสอบไล่)</h3>
+<ul class="content-list ">
+<li><strong>ระยะเวลา:</strong> 15–20 นาที</li>
+<li><strong>สถานการณ์สมมติ:</strong> เช้าวันจันทร์สัปดาห์สอบไล่ของมหาวิทยาลัย ศูนย์ประสานการรักษาความมั่นคงปลอดภัยระบบคอมพิวเตอร์แห่งชาติ (ThaiCERT / สกมช.) ได้ออกประกาศแจ้งเตือนช่องโหว่วิกฤตระดับ Zero-Day (CVSS 9.8) ในระบบซอฟต์แวร์เว็บเซิร์ฟเวอร์ที่ระบบลงทะเบียนเรียนและสอบออนไลน์ของมหาวิทยาลัยใช้งานอยู่ โดยมีรายงานว่าแฮกเกอร์กำลังใช้ช่องโหว่นี้เจาะระบบสถาบันการศึกษาเพื่อปล่อยแรนซัมแวร์ ทางผู้ผลิตซอฟต์แวร์ได้ปล่อยแพตช์ฉุกเฉินออกมาแล้ว แต่การลงแพตช์จำเป็นต้องรีสตาร์ตเซิร์ฟเวอร์และหยุดให้บริการระบบเป็นเวลา 45 นาที ในขณะที่นักศึกษา 15,000 คนกำลังเตรียมสอบออนไลน์ในอีก 2 ชั่วโมงข้างหน้า</li>
+<li><strong>การแบ่งกลุ่มบทบาทในห้องเรียน (5 กลุ่ม):</strong></li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>กลุ่มคณบดีฝ่ายวิชาการ (Asset Owner):</strong> ยืนกรานว่า <strong>"ห้ามปิดระบบเด็ดขาด"</strong> เพราะการเลื่อนสอบจะทำให้นักศึกษาเดือดร้อน ผู้ปกครองร้องเรียน และระบบสอบระดับชาติได้รับความเสียหาย</li>
+<li><strong>กลุ่มผู้ดูแลระบบและฝ่ายปฏิบัติการ (DevOps / SysAdmin):</strong> ไม่ต้องการลงแพตช์ฉุกเฉินทันที เพราะยังไม่ได้ทดสอบบน Staging เกรงว่าแพตช์จะทำให้ระบบพังจนสอบไม่ได้ยาวทั้งวัน เสนอให้รอสอบเสร็จในอีก 5 วันข้างหน้า</li>
+<li><strong>กลุ่มทีมความมั่นคงปลอดภัย (SOC / SecOps):</strong> ต้องการลงแพตช์ทันที เพราะหากระบบถูกแรนซัมแวร์เข้ารหัส ข้อมูลเกรดและข้อสอบจะถูกทำลายทั้งหมด และความเสียหายจะกู่ไม่กลับ</li>
+<li><strong>กลุ่ม CISO (Lead Implementer):</strong> ต้องเป็นผู้นำเสนอ <strong>Compensating Controls (มาตรการชดเชย)</strong> เช่น การเปิดใช้งาน Virtual Patching บน Web Application Firewall (WAF) ชั่วคราว และเพิ่มระดับการเฝ้าระวังบน SIEM แบบ 24 ชั่วโมง เพื่อให้ระบบเปิดสอบต่อไปได้โดยไม่ถูกแฮก</li>
+<li><strong>กลุ่ม Lead Auditor (ผู้สังเกตการณ์):</strong> ทำหน้าที่ซักค้านว่า <em>"หากเลือกไม่ลงแพตช์ ใครจะเป็นผู้ลงนามรับทราบความเสี่ยง (Risk Acceptance) อย่างเป็นทางการ? และหาก WAF กรองไม่ผ่าน องค์กรมีแผนรองรับอย่างไร?"</em></li>
+</ol>
+<h4 class="content-heading" id="sec-รูบริกการประเมินผลกิจกรรม-simulation-evaluation-rubric-481">รูบริกการประเมินผลกิจกรรม (Simulation Evaluation Rubric):</h4>
+<ul class="content-list ">
+<li><strong>การประยุกต์ใช้ความรู้ด้าน Controls (40%):</strong> สามารถนำเสนอแนวคิด Compensating Controls และ Defense-in-Depth ได้อย่างถูกต้อง</li>
+<li><strong>การให้เหตุผลและการบริหารความเสี่ยงทางธุรกิจ (30%):</strong> เข้าใจความสมดุลระหว่าง Business Availability และ Security Risk</li>
+<li><strong>การสื่อสารและการทำงานเป็นทีม (30%):</strong> แสดงบทบาทของตนเองได้อย่างสมจริงและรับฟังมุมมองของฝ่ายอื่น</li>
+</ul>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-มุมมองวิชาชีพประจำบท-professional-perspectives-488">มุมมองวิชาชีพประจำบท (Professional Perspectives)</h2>
+
+<div class="perspective-box">
+  <div class="persp-title">💬 บทสนทนาข้ามสายวิชาชีพ (Professional Dialogue)</div>
+  <div class="persp-grid">
+    <div class="persp-side imp">
+      <div class="persp-badge">Lead Implementer (ผู้จัดทำระบบ)</div>
+      <p>"เราเขียนนโยบายควบคุมสิทธิ์ไว้อย่างสมบูรณ์แบบ กำหนดให้ปิดสิทธิ์ทันที และมีคู่มือการทำงานครบถ้วนครับ"</p>
+      <p>"เรามีระบบ Backup อัตโนมัติทุกคืน หน้าจอ Dashboard ขึ้นสีเขียว 100%"</p>
+      <p>"เซิร์ฟเวอร์นี้เก่ามาก ลงแพตช์ไม่ได้ เราเลยยกเว้นการลงแพตช์ไว้ครับ"</p>
+    </div>
+    <div class="persp-side aud">
+      <div class="persp-badge">Lead Auditor (ผู้ตรวจสอบ)</div>
+      <p>"นโยบายของคุณเขียนไว้ดีมากครับ แต่ผมขอดูหลักฐาน Log ย้อนหลัง 1 ปีหน่อย ว่าปิดบัญชีได้ภายใน 2 ชั่วโมงจริงไหม"</p>
+      <p>"ระบบ Backup ทำงานสมบูรณ์ครับ แต่คุณเคยทดสอบ Restore ข้อมูลขึ้นมาจริง ๆ หรือยัง? ขอดูบันทึกการซ้อมหน่อยครับ"</p>
+      <p>"ถ้าลงแพตช์ไม่ได้ คุณมีเอกสารขออนุมัติข้อยกเว้นและ Compensating Control ที่ผ่านการลงนามของ CISO หรือไม่ครับ"</p>
+    </div>
+  </div>
+</div>
+        
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-แบบฝึกหัดและการบ้านประจำบทที่-7-512">แบบฝึกหัดและการบ้านประจำบทที่ 7</h2>
+<p class="content-p">เพื่อเป็นส่วนหนึ่งของการจัดทำแฟ้มสะสมงาน <strong>Cybersecurity Audit Portfolio</strong> ให้นักศึกษาจัดทำเอกสาร <strong>Risk-Control Matrix (RCM)</strong> สำหรับ <strong>“มหาวิทยาลัยดิจิทัลสมมติ”</strong> (หรือหน่วยงานที่ได้รับอนุมัติ) โดยมีข้อกำหนดดังนี้:</p>
+<ol class="content-list ordered">
+<li><strong>จัดทำตาราง Risk-Control Matrix (RCM) ไม่น้อยกว่า 12 มาตรการ:</strong></li>
+</ol>
+<ul class="content-list ">
+<li>ครอบคลุมประเภทมาตรการทั้งด้าน Preventive, Detective, Corrective และ Recovery</li>
+<li>ครอบคลุมลักษณะมาตรการทั้งด้าน Administrative, Technical และ Physical</li>
+<li>ครอบคลุม 5 เสาหลักการควบคุม (IAM, Vulnerability/Patch, Secure Config, Network, Backup)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>ระบุข้อมูลครบถ้วนทั้ง 9 คอลัมน์มาตรฐาน:</strong></li>
+</ol>
+<ul class="content-list ">
+<li>(1) Risk Description (2) Control Objective (3) Control Activity (4) Control Owner (5) Frequency (6) Audit Evidence (7) KPI/KRI (8) วิธีตรวจ Design Effectiveness (ToD) (9) วิธีตรวจ Operating Effectiveness (ToE)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>จัดทำตัวอย่างกระดาษทำการตรวจสอบ (Sample Audit Working Paper) 1 เรื่อง:</strong></li>
+</ol>
+<ul class="content-list ">
+<li>เลือก 1 มาตรการใน RCM มาเขียนขั้นตอนการตรวจสอบ ผลการสุ่มตรวจหลักฐาน และข้อสรุปของผู้ตรวจสอบ</li>
+</ul>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-คำถามทบทวนท้ายบท-review-questions-answers-527">คำถามทบทวนท้ายบท (Review Questions & Answers)</h2>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง Preventive Control กับ Detective Control พร้อมยกตัวอย่าง</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> <strong>Preventive Control</strong> คือมาตรการเชิงป้องกันที่มุ่งสกัดกั้นหรือขัดขวางไม่ให้เหตุการณ์ความไม่ปลอดภัยเกิดขึ้น เช่น ไฟร์วอลล์บล็อกพอร์ตอันตราย หรือการใช้รหัสผ่านสองปัจจัย (MFA) ส่วน <strong>Detective Control</strong> คือมาตรการเชิงตรวจจับที่มุ่งค้นหา แจ้งเตือน หรือระบุพฤติกรรมผิดปกติขณะที่เกิดขึ้นหรือหลังเกิดเหตุ เช่น ระบบตรวจจับการบุกรุก (IDS) หรือระบบวิเคราะห์ Log ผ่าน SIEM</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> ในสถานการณ์ใดที่องค์กรจำเป็นต้องนำ Compensating Control มาใช้งาน จงยกตัวอย่างรูปธรรม</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> นำมาใช้เมื่อองค์กรไม่สามารถปฏิบัติตามมาตรการควบคุมหลักได้เนื่องจากข้อจำกัดทางเทคนิค สถาปัตยกรรมเก่า หรือต้นทุนทางธุรกิจที่สูงเกินไป ตัวอย่างเช่น ระบบจัดเก็บเวชระเบียนของโรงพยาบาลรันบนซอฟต์แวร์เก่าที่ไม่สามารถอัปเดตแพตช์ความปลอดภัยได้ (ไม่สามารถใช้ Preventive Patch) ทางองค์กรจึงใช้ <strong>Compensating Control</strong> ด้วยการตัดขาดระบบนี้ออกจากอินเทอร์เน็ต ย้ายไปอยู่ใน Isolated VLAN และติดตั้ง Web Application Firewall (WAF) ดักหน้าเพื่อทำ Virtual Patching</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง Design Effectiveness กับ Operating Effectiveness</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> <strong>Design Effectiveness</strong> คือการประเมินว่า "หากมาตรการควบคุมทำงานตามที่ออกแบบไว้ในนโยบายหรือสถาปัตยกรรม จะสามารถป้องกันหรือลดความเสี่ยงนั้นได้จริงหรือไม่" ส่วน <strong>Operating Effectiveness</strong> คือการประเมินว่า "ในทางปฏิบัติจริง มาตรการดังกล่าวถูกนำไปปฏิบัติอย่างถูกต้อง สม่ำเสมอ และมีประสิทธิผลตลอดช่วงเวลาการตรวจสอบหรือไม่"</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> หากองค์กรมีนโยบายให้ระงับสิทธิ์พนักงานลาออกภายใน 2 ชั่วโมง แต่จากการตรวจสอบพบว่าผู้ดูแลระบบลืมปิดสิทธิ์พนักงานไป 1 รายเป็นเวลา 10 วัน จัดเป็นความล้มเหลวประเภทใด?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> จัดเป็น <strong>Operating Ineffectiveness (ความล้มเหลวด้านประสิทธิผลการดำเนินงานจริง)</strong> เนื่องจากนโยบายและขั้นตอนการออกแบบระบุไว้อย่างถูกต้องแล้ว (Design Effective) แต่ผู้ปฏิบัติงานเกิดข้อผิดพลาดในการดำเนินงานจริง (Human Error / Operational Failure)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> จงอธิบายกฎการสำรองข้อมูลแบบ 3-2-1-1-0 Rule โดยสังเขป</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> (3) มีสำเนาข้อมูล 3 ชุด (2) จัดเก็บบนสื่อบันทึกต่างกัน 2 ประเภท (1) มี 1 สำเนาอยู่นอกสถานที่ (Offsite) (1) มีอย่างน้อย 1 สำเนาเป็นแบบ Offline, Air-gapped หรือ Immutable WORM Storage เพื่อกันแรนซัมแวร์ และ (0) ต้องมีข้อผิดพลาดเป็นศูนย์จากการทดสอบกู้คืนข้อมูล (Zero errors in restore testing)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> ปัญหา "Privilege Creep" ในระบบ Identity and Access Management คืออะไร และมีมาตรการใดป้องกัน?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> คือปรากฏการณ์ที่พนักงานมีสิทธิ์การเข้าถึงระบบสะสมเพิ่มขึ้นเรื่อย ๆ เมื่อมีการย้ายแผนกหรือเปลี่ยนหน้าที่การทำงาน โดยสิทธิ์เดิมไม่เคยถูกลบออก ป้องกันได้ด้วย: (1) การบังคับใช้กระบวนการ Mover Process อย่างเคร่งครัด (ลบสิทธิ์เดิมก่อนให้สิทธิ์ใหม่) และ (2) การจัดให้มีการทบทวนสิทธิ์การเข้าถึงประจำรอบ (Periodic User Access Review)</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> เหตุใดการดูเพียงคะแนน CVSS จึงไม่เพียงพอต่อการจัดลำดับความสำคัญในการลงแพตช์ (Patch Prioritization)?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> เพราะคะแนน CVSS สะท้อนเพียงความรุนแรงทางเทคนิคตามทฤษฎี แต่ไม่ได้สะท้อนว่าช่องโหว่นั้นกำลังถูกแฮกเกอร์โจมตีจริงในโลกภายนอกหรือไม่ องค์กรจึงต้องพิจารณาคะแนน <strong>EPSS (Exploit Prediction Scoring System)</strong> และรายการใน <strong>CISA Known Exploited Vulnerabilities (KEV) Catalog</strong> ควบคู่กันเพื่อจัดลำดับความเร่งด่วนในการลงแพตช์ช่องโหว่ที่มีการโจมตีจริงก่อน</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> การ Hardening เซิร์ฟเวอร์ตาม CIS Benchmarks มีความสำคัญอย่างไรต่อการรักษาความมั่นคงปลอดภัย?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> มีความสำคัญในการลดพื้นที่การโจมตี (Attack Surface) ของระบบ โดยการปิดบริการ (Services) พอร์ต และโปรโตคอลที่ไม่จำเป็น เปลี่ยนแปลงค่าเริ่มต้นที่หละหลวม ลบบัญชีเริ่มต้น และบังคับใช้นโยบายความปลอดภัยที่เข้มงวดตามมาตรฐานสากล</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> เหตุใด Lead Auditor จึงต้องขอดูหลักฐาน "Restore Test Report" นอกเหนือจาก "Backup Job Logs"?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> เพราะบันทึก Backup Job Logs แสดงเพียงว่ากระบวนการคัดลอกไฟล์เสร็จสิ้น แต่ไม่ได้เป็นหลักประกันว่าไฟล์สำรองนั้นสามารถนำมากู้คืนเป็นฐานข้อมูลที่ใช้งานได้จริง (อาจเกิดปัญหาไฟล์เสียหาย ไฟล์ไม่สมบูรณ์ หรือฐานข้อมูลไม่เข้ากัน) Restore Test Report จึงเป็นหลักฐานเชิงประจักษ์เดียวที่ยืนยันประสิทธิผลของการกู้คืนข้อมูล</li>
+</ul>
+<ol class="content-list ordered">
+<li><strong>คำถาม:</strong> ในตาราง Risk-Control Matrix (RCM) เหตุใดจึงต้องระบุทั้ง "Control Owner" และ "Audit Evidence"?</li>
+</ol>
+<ul class="content-list ">
+<li><strong>แนวคำตอบ:</strong> ต้องระบุ <strong>Control Owner</strong> เพื่อให้มีความรับผิดชอบที่ชัดเจน (Accountability) ว่าใครเป็นผู้ดูแลให้มาตรการทำงาน และต้องระบุ <strong>Audit Evidence</strong> เพื่อกำหนดล่วงหน้าว่าในการตรวจสอบ จะต้องใช้หลักฐานเชิงประจักษ์ชิ้นใด (เช่น Log File, แบบฟอร์มลงนาม) ในการพิสูจน์การปฏิบัติงานจริงอย่างเป็นภววิสัย</li>
+</ul>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-สรุปบทที่-7-552">สรุปบทที่ 7</h2>
+<p class="content-p">การออกแบบและนำมาตรการควบคุมความมั่นคงปลอดภัยไปปฏิบัติ (Security Control Design and Implementation) เป็นกระบวนการเปลี่ยนผ่านจาก "ความเสี่ยงบนกระดาษ" สู่ "แนวปฏิบัติและกลไกป้องกันในโลกความเป็นจริง"</p>
+<p class="content-p">Lead Implementer ต้องเข้าใจอนุกรมวิธานของมาตรการควบคุมอย่างถ่องแท้ ทั้งตามวัตถุประสงค์ (Preventive, Detective, Corrective, Recovery, Deterrent, Compensating) และตามลักษณะ (Administrative, Technical, Physical) สามารถออกแบบ Control Specification ที่มี 8 องค์ประกอบครบถ้วน และวางสถาปัตยกรรมการควบคุมหลัก 5 ด้าน (IAM, Vulnerability/Patch, Secure Configuration, Network Security, Backup & Recovery) ได้อย่างรัดกุม</p>
+<p class="content-p">ในขณะเดียวกัน Lead Auditor ต้องมีความสามารถในการแยกแยะและทดสอบประสิทธิผลทั้ง 2 มิติ คือ <strong>Design Effectiveness (การออกแบบถูกต้องตามทฤษฎี)</strong> และ <strong>Operating Effectiveness (การดำเนินงานจริงสม่ำเสมอและมีหลักฐาน)</strong> ผ่านการรวบรวมหลักฐานเชิงประจักษ์ การจัดทำกระดาษทำการ (Audit Working Paper) และการออกใบรายงานข้อบกพร่อง (NCR) เพื่อขับเคลื่อนให้ระบบความมั่นคงปลอดภัยขององค์กรได้รับการปรับปรุงอย่างต่อเนื่องตามวงจร PDCA</p>
+<hr class="section-divider">
+<h2 class="content-heading" id="sec-เอกสารอ้างอิงและมาตรฐานสากล-562">เอกสารอ้างอิงและมาตรฐานสากล</h2>
+<ol class="content-list ordered">
+<li><strong>International Organization for Standardization (ISO).</strong> (2022). <em>ISO/IEC 27001:2022 Information security, cybersecurity and privacy protection — Information security management systems — Requirements</em>. Geneva: ISO.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2022). <em>ISO/IEC 27002:2022 Information security, cybersecurity and privacy protection — Information security controls</em>. Geneva: ISO.</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2020). <em>Security and Privacy Controls for Information Systems and Organizations</em> (NIST Special Publication 800-53 Revision 5). U.S. Department of Commerce.</li>
+<li><strong>National Institute of Standards and Technology (NIST).</strong> (2024). <em>The NIST Cybersecurity Framework (CSF) 2.0</em> (Protect Function: PR). U.S. Department of Commerce.</li>
+<li><strong>Center for Internet Security (CIS).</strong> (2021). <em>CIS Critical Security Controls Version 8</em>. CIS.</li>
+<li><strong>Center for Internet Security (CIS).</strong> (2023). <em>CIS Benchmarks for Operating Systems and Cloud Providers</em>. CIS.</li>
+<li><strong>International Organization for Standardization (ISO).</strong> (2018). <em>ISO 19011:2018 Guidelines for auditing management systems</em>. Geneva: ISO.</li>
+<li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+<li><strong>ประกาศคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2564.</strong> ราชกิจจานุเบกษา เล่ม 138 ตอนพิเศษ 245 ง วันที่ 7 ตุลาคม 2564.</li>
+<li><strong>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+<li><strong>Cybersecurity and Infrastructure Security Agency (CISA).</strong> (2024). <em>Known Exploited Vulnerabilities (KEV) Catalog</em>. U.S. Department of Homeland Security.</li>
+</ol>
+
+      <!-- Bottom Chapter Navigation -->
+      <footer class="chapter-nav-footer">
+        <a href="ch-6.html" class="btn-nav-chapter">
+          <span>◀</span> บทที่ 6: การบริหารสินทรัพย์และการจำแนกประเภทข้อมูล
+        </a>
+        <a href="ch-8.html" class="btn-nav-chapter">
+          บทที่ 8: การบริหารโปรแกรมตรวจและการวางแผนการตรวจ <span>▶</span>
+        </a>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // ==========================================
+    // UI CONTROLS & THEME SWITCHER
+    // ==========================================
+    const htmlEl = document.documentElement;
+    const btnLight = document.getElementById('btn-theme-light');
+    const btnSepia = document.getElementById('btn-theme-sepia');
+    const btnDark = document.getElementById('btn-theme-dark');
+    const btnFontDec = document.getElementById('btn-font-dec');
+    const btnFontReset = document.getElementById('btn-font-reset');
+    const btnFontInc = document.getElementById('btn-font-inc');
+    const sidebarToc = document.getElementById('sidebar-toc');
+    const btnToggleToc = document.getElementById('btn-toggle-toc');
+    const btnCloseToc = document.getElementById('btn-close-toc');
+    const tocBackdrop = document.getElementById('toc-backdrop');
+    const progressBar = document.getElementById('progress-bar');
+
+    function setTheme(theme) {
+      htmlEl.setAttribute('data-theme', theme);
+      localStorage.setItem('necs-theme', theme);
+      btnLight.classList.toggle('active', theme === 'light');
+      btnSepia.classList.toggle('active', theme === 'sepia');
+      btnDark.classList.toggle('active', theme === 'dark');
+    }
+    btnLight.addEventListener('click', () => setTheme('light'));
+    btnSepia.addEventListener('click', () => setTheme('sepia'));
+    btnDark.addEventListener('click', () => setTheme('dark'));
+    const savedTheme = localStorage.getItem('necs-theme') || 'light';
+    setTheme(savedTheme);
+
+    let currentScale = parseFloat(localStorage.getItem('necs-font-scale')) || 1.0;
+    function setFontScale(scale) {
+      currentScale = Math.min(Math.max(scale, 0.85), 1.3);
+      htmlEl.style.setProperty('--font-scale', currentScale);
+      localStorage.setItem('necs-font-scale', currentScale);
+    }
+    btnFontDec.addEventListener('click', () => setFontScale(currentScale - 0.05));
+    btnFontReset.addEventListener('click', () => setFontScale(1.0));
+    btnFontInc.addEventListener('click', () => setFontScale(currentScale + 0.05));
+    setFontScale(currentScale);
+
+    function toggleSidebar() {
+      const isOpen = sidebarToc.classList.toggle('open');
+      tocBackdrop.classList.toggle('open', isOpen);
+    }
+    btnToggleToc.addEventListener('click', toggleSidebar);
+    if (btnCloseToc) btnCloseToc.addEventListener('click', toggleSidebar);
+    tocBackdrop.addEventListener('click', toggleSidebar);
+
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      progressBar.style.width = scrolled + '%';
+
+      const headings = document.querySelectorAll('.content-heading');
+      let currentHeadingId = '';
+      headings.forEach(h => {
+        const top = h.getBoundingClientRect().top;
+        if (top <= 120) {
+          currentHeadingId = h.id;
+        }
+      });
+      if (currentHeadingId) {
+        document.querySelectorAll('.toc-link').forEach(link => {
+          link.classList.toggle('active', link.getAttribute('data-target') === currentHeadingId);
+        });
+      }
+    });
+
+    document.querySelectorAll('.toc-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 992) {
+          sidebarToc.classList.remove('open');
+          tocBackdrop.classList.remove('open');
+        }
+      });
+    });
+
+    // ==========================================
+    // WIDGET 7.1: 3x6 CONTROL MATRIX CLASSIFIER
+    // ==========================================
+    const w1Questions = [
+      {
+        title: "1. การบังคับใช้ Multi-Factor Authentication (MFA) ในการล็อกอิน",
+        desc: "ผู้ใช้งานต้องกรอกรหัสผ่านพร้อมรหัส OTP หรือแตะ Authenticator App ก่อนเข้าสู่ระบบ Cloud",
+        correctNature: "Technical",
+        correctObjective: "Preventive",
+        why: "เป็นกลไกทางเทคนิคระดับซอฟต์แวร์ (Technical) ที่มีวัตถุประสงค์เพื่อสกัดกั้นไม่ให้ผู้ไม่มีสิทธิ์เข้าถึงระบบได้ตั้งแต่ก่อนเกิดเหตุ (Preventive)"
+      },
+      {
+        title: "2. การสุ่มตรวจสอบสิทธิ์บัญชีผู้ใช้ประจำไตรมาส (User Access Review)",
+        desc: "ฝ่ายบุคคลและหัวหน้างานตรวจสอบรายชื่อพนักงานและเซ็นรับรองว่ายังมีสิทธิ์ทำงานอยู่จริง",
+        correctNature: "Administrative",
+        correctObjective: "Detective",
+        why: "เป็นการดำเนินการเชิงบริหารและกระบวนการคน (Administrative) มุ่งค้นหาและตรวจจับสิทธิ์ตกค้างหรือสิทธิ์สะสม (Detective)"
+      },
+      {
+        title: "3. การทำ Virtual Patching บน WAF สำหรับเซิร์ฟเวอร์เก่าที่ลงแพตช์ไม่ได้",
+        desc: "เปิดใช้ฟิลเตอร์บน Web Application Firewall ดักจับคำสั่ง Exploit แทนการอัปเดตระบบปฏิบัติการ",
+        correctNature: "Technical",
+        correctObjective: "Compensating",
+        why: "เป็นการใช้เครื่องมือเทคนิค (Technical) มาทำหน้าที่ชดเชยเมื่อไม่สามารถลง Primary Patch ได้ (Compensating)"
+      },
+      {
+        title: "4. การตัดการเชื่อมต่อเครือข่ายของเครื่องที่ติดมัลแวร์โดยอัตโนมัติ (Host Isolation)",
+        desc: "ระบบ EDR บนเครื่องปลายทางตัดสัญญาณ Network ทันทีที่ตรวจพบมัลแวร์พยายามเข้ารหัสไฟล์",
+        correctNature: "Technical",
+        correctObjective: "Corrective",
+        why: "เป็นกลไกเทคนิค (Technical) ที่มุ่งระงับ ยับยั้ง และบรรเทาความเสียหายขณะเกิดเหตุ (Corrective)"
+      },
+      {
+        title: "5. ป้ายเตือน 'พื้นที่หวงห้าม ผู้บุกรุกมีโทษจำคุกตาม พ.ร.บ.คอมพิวเตอร์ฯ'",
+        desc: "ติดตั้งป้ายเตือนขนาดใหญ่หน้าประตูศูนย์ข้อมูลและแสดง Banner ก่อนล็อกอินเข้าระบบ",
+        correctNature: "Physical",
+        correctObjective: "Deterrent",
+        why: "เป็นอุปกรณ์ทางกายภาพและจิตวิทยา (Physical / Admin) ที่มุ่งยับยั้งป้องปรามไม่ให้คนคิดกระทำผิด (Deterrent)"
+      },
+      {
+        title: "6. การกู้คืนฐานข้อมูลจากระบบสำรองข้อมูล Immutable Storage เมื่อถูกแรนซัมแวร์",
+        desc: "ดึงข้อมูล Snapshot ที่ถูกล็อกแบบ WORM กลับมาติดตั้งใหม่บนเซิร์ฟเวอร์สำรอง",
+        correctNature: "Technical",
+        correctObjective: "Recovery",
+        why: "เป็นกระบวนการเทคนิค (Technical) เพื่อกอบกู้ระบบและข้อมูลให้ฟื้นคืนสู่สภาวะปกติ (Recovery)"
+      }
+    ];
+
+    let w1Index = 0;
+    let w1Score = 0;
+
+    function renderW1Question() {
+      const q = w1Questions[w1Index];
+      const fillPct = ((w1Index + 1) / w1Questions.length) * 100;
+      document.getElementById('w1-fill').style.width = fillPct + '%';
+
+      const container = document.getElementById('w1-container');
+      container.innerHTML = `
+        <div class="data-sim-card">
+          <div style="font-size:0.75rem; color:var(--primary); font-family:var(--font-code); font-weight:700; margin-bottom:0.2rem;">
+            สถานการณ์ที่ ${w1Index + 1} จาก ${w1Questions.length}
+          </div>
+          <div class="sim-q-title">${q.title}</div>
+          <div class="sim-q-desc">${q.desc}</div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1rem;">
+            <div>
+              <label style="font-size:0.82rem; font-weight:700; display:block; margin-bottom:0.3rem;">1. เลือกลักษณะ (Nature):</label>
+              <select id="sel-nature" style="width:100%; padding:0.5rem; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-surface); color:var(--text-main);">
+                <option value="Administrative">📋 Administrative (การบริหาร)</option>
+                <option value="Technical">💻 Technical (เชิงเทคนิค)</option>
+                <option value="Physical">🏢 Physical (ทางกายภาพ)</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.82rem; font-weight:700; display:block; margin-bottom:0.3rem;">2. เลือกวัตถุประสงค์ (Objective):</label>
+              <select id="sel-obj" style="width:100%; padding:0.5rem; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-surface); color:var(--text-main);">
+                <option value="Preventive">🛡️ Preventive (ป้องกัน)</option>
+                <option value="Detective">👁️ Detective (ตรวจจับ)</option>
+                <option value="Corrective">🔧 Corrective (แก้ไข)</option>
+                <option value="Recovery">♻️ Recovery (ฟื้นฟู)</option>
+                <option value="Deterrent">⚠️ Deterrent (ป้องปราม)</option>
+                <option value="Compensating">🔄 Compensating (ชดเชย)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="text-align:right;">
+            <button class="btn-icon" style="background:var(--primary); color:#fff; border-color:var(--primary);" onclick="checkW1Answer()">
+              ตรวจคำตอบ ✔
+            </button>
+          </div>
+
+          <div id="w1-feedback-box" style="display:none;"></div>
+        </div>
+      `;
+    }
+
+    function checkW1Answer() {
+      const q = w1Questions[w1Index];
+      const userNat = document.getElementById('sel-nature').value;
+      const userObj = document.getElementById('sel-obj').value;
+
+      const isNatCorrect = userNat === q.correctNature;
+      const isObjCorrect = userObj === q.correctObjective;
+      const isFullyCorrect = isNatCorrect && isObjCorrect;
+
+      if (isFullyCorrect) w1Score++;
+
+      const fBox = document.getElementById('w1-feedback-box');
+      fBox.style.display = 'block';
+      fBox.className = 'sim-feedback ' + (isFullyCorrect ? 'correct' : 'wrong');
+      fBox.innerHTML = `
+        <div><strong>${isFullyCorrect ? '🎉 ถูกต้องสมบูรณ์ทั้งสองมิติ!' : '❌ ยังไม่ถูกต้องสมบูรณ์'}</strong></div>
+        <div style="margin-top:0.3rem;">
+          คำตอบที่ถูกต้องคือ: <strong>${q.correctNature}</strong> และ <strong>${q.correctObjective}</strong><br>
+          <em>เหตุผล:</em> ${q.why}
+        </div>
+        <div style="margin-top:0.8rem; text-align:right;">
+          <button class="btn-icon" style="background:var(--primary); color:#fff; border-color:var(--primary);" onclick="nextW1Question()">
+            ${w1Index < w1Questions.length - 1 ? 'ข้อถัดไป ➔' : 'ดูคะแนนสรุป 🏁'}
+          </button>
+        </div>
+      `;
+    }
+
+    function nextW1Question() {
+      w1Index++;
+      if (w1Index < w1Questions.length) {
+        renderW1Question();
+      } else {
+        const container = document.getElementById('w1-container');
+        const pct = Math.round((w1Score / w1Questions.length) * 100);
+        container.innerHTML = `
+          <div class="data-sim-card" style="text-align:center; padding:2rem;">
+            <div style="font-size:3rem; margin-bottom:0.5rem;">${pct >= 80 ? '🏆' : '📚'}</div>
+            <div class="sim-q-title">สรุปผลการทดสอบ: ได้คะแนน ${w1Score} / ${w1Questions.length} (${pct}%)</div>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin:0.8rem 0;">
+              ${pct >= 80 ? 'ยอดเยี่ยมมาก! ท่านเข้าใจความสัมพันธ์ของเมทริกซ์ 3x6 อย่างแม่นยำ' : 'ควรทบทวนวัตถุประสงค์ของมาตรการชดเชย (Compensating) และมาตรการแก้ไข (Corrective)'}
+            </p>
+            <button class="btn-icon" style="background:var(--primary); color:#fff; border-color:var(--primary); margin-top:0.6rem;" onclick="resetW1()">
+              🔄 ทำแบบทดสอบอีกครั้ง
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function resetW1() {
+      w1Index = 0;
+      w1Score = 0;
+      renderW1Question();
+    }
+    renderW1Question();
+
+    // ==========================================
+    // WIDGET 7.2: PATCH SLA CALCULATOR
+    // ==========================================
+    const patchPresets = {
+      zero_day: { cvss: 9.8, epss: 92, kev: 'yes' },
+      high_epss: { cvss: 7.8, epss: 78, kev: 'yes' },
+      low_exploit: { cvss: 9.8, epss: 4, kev: 'no' },
+      medium: { cvss: 5.3, epss: 12, kev: 'no' }
+    };
+
+    function loadPatchPreset(key) {
+      const p = patchPresets[key];
+      document.getElementById('input-cvss').value = p.cvss;
+      document.getElementById('input-epss').value = p.epss;
+      document.getElementById('input-kev').value = p.kev;
+      updatePatchCalc();
+    }
+
+    function updatePatchCalc() {
+      const cvss = parseFloat(document.getElementById('input-cvss').value);
+      const epss = parseFloat(document.getElementById('input-epss').value);
+      const kev = document.getElementById('input-kev').value;
+
+      document.getElementById('lbl-cvss').innerText = cvss.toFixed(1);
+      document.getElementById('lbl-epss').innerText = epss + '%';
+
+      let sla = '';
+      let slaHours = '';
+      let priorityClass = '';
+      let riskLevel = '';
+      let recommendation = '';
+
+      if (kev === 'yes' || (cvss >= 9.0 && epss >= 50)) {
+        riskLevel = '🚨 CRITICAL ACTIVE THREAT (ภัยคุกคามกำลังโจมตีจริง)';
+        sla = 'ภายใน 24 – 48 ชั่วโมง (ฉุกเฉิน)';
+        priorityClass = 'color:var(--rose); font-weight:700;';
+        recommendation = 'ต้องลงแพตช์ทันที หากติดปัญหา Uptime ต้องเปิด Virtual Patching บน WAF / IPS ภายใน 2 ชั่วโมง และเฝ้าระวังผ่าน SIEM ตลอด 24x7';
+      } else if (cvss >= 7.0 || epss >= 60) {
+        riskLevel = '⚠️ HIGH RISK (ความเสี่ยงสูง)';
+        sla = 'ภายใน 7 – 14 วัน';
+        priorityClass = 'color:var(--amber); font-weight:700;';
+        recommendation = 'ทดสอบแพตช์บน Staging Environment ภายใน 3 วัน และ Rollout สู่ Production ใน Maintenance Window รอบถัดไป';
+      } else if (cvss >= 4.0) {
+        riskLevel = 'ℹ️ MEDIUM RISK (ความเสี่ยงปานกลาง)';
+        sla = 'ภายใน 30 วัน';
+        priorityClass = 'color:var(--cyan); font-weight:700;';
+        recommendation = 'ลงแพตช์ตามรอบบำรุงรักษาประจำเดือนปกติหลังผ่านการทดสอบ';
+      } else {
+        riskLevel = '🟢 LOW RISK (ความเสี่ยงต่ำ)';
+        sla = 'ตามรอบประจำไตรมาส (Quarterly)';
+        priorityClass = 'color:var(--emerald); font-weight:700;';
+        recommendation = 'รวบรวมลงพร้อมกับการอัปเกรดระบบประจำรอบ';
+      }
+
+      const resBox = document.getElementById('calc-result-box');
+      resBox.innerHTML = `
+        <div style="font-family:var(--font-display); font-size:1.1rem; margin-bottom:0.4rem; ${priorityClass}">
+          ${riskLevel}
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0.6rem; font-size:0.84rem; margin-bottom:0.8rem;">
+          <div style="background:var(--bg-surface); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color);">
+            <strong>Remediation SLA:</strong> <span style="font-weight:700; color:var(--primary);">${sla}</span>
+          </div>
+          <div style="background:var(--bg-surface); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color);">
+            <strong>CISA KEV Status:</strong> ${kev === 'yes' ? '<span style="color:var(--rose); font-weight:700;">อยู่ในบัญชี KEV (ถูกโจมตีจริง)</span>' : 'ไม่อยู่ใน KEV'}
+          </div>
+        </div>
+        <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.5;">
+          <strong>คำแนะนำเชิงวิศวกรรมสำหรับ CISO:</strong> ${recommendation}
+        </p>
+      `;
+    }
+    updatePatchCalc();
+
+    // ==========================================
+    // WIDGET 7.3: RCM EXPLORER
+    // ==========================================
+    const rcmData = [
+      { id: 'CTL-01', pillar: 'IAM', risk: 'พนักงานลาออกยังเข้าถึงระบบ REG DB ได้', obj: 'ระงับสิทธิ์ทันทีเมื่อพ้นสภาพ', act: 'HR ส่งรายชื่อตัดสิทธิ์ AD ภายใน 2 ชม.', owner: 'Identity Admin', freq: 'Event-driven', evidence: 'AD Disable Logs & HR Email', tod: 'ตรวจ JML SOP เรื่องเกณฑ์ 2 ชม.', toe: 'สุ่มตรวจ 10 คนลาออกเทียบกับวันเวลา Disable' },
+      { id: 'CTL-02', pillar: 'IAM', risk: 'Admin ถูกขโมยรหัสผ่านเข้าเซิร์ฟเวอร์หลัก', obj: 'ป้องกันการแอบอ้างสิทธิ์ Admin สูงสุด', act: 'ใช้ PAM Vault หมุนเวียนรหัสผ่าน + อัดวิดีโอ Session', owner: 'Security Admin', freq: 'Continuous', evidence: 'PAM Session Video Logs', tod: 'ตรวจผังเครือข่ายบล็อก Direct RDP/SSH', toe: 'สุ่มตรวจ Session ล็อกอิน Domain Controller บน PAM' },
+      { id: 'CTL-03', pillar: 'IAM', risk: 'ถูกดักจับรหัสผ่านหรือ Phishing จากภายนอก', obj: 'ยืนยันตัวตนมากกว่าหนึ่งปัจจัย', act: 'บังคับใช้ MFA ผ่าน Microsoft Authenticator', owner: 'System Admin', freq: 'Continuous', evidence: 'Azure AD Sign-in MFA Logs', tod: 'ตรวจ Conditional Access Policy', toe: 'ทดสอบล็อกอินบัญชีทดสอบจากภายนอก ตรวจหน้าจอ MFA' },
+      { id: 'CTL-04', pillar: 'IAM', risk: 'สิทธิ์สะสมเกินจำเป็นจากการย้ายแผนก (Privilege Creep)', obj: 'ให้สิทธิ์ตรงตามหน้าที่งานปัจจุบัน', act: 'User Access Review ส่ง Data Owner เซ็นทุก 6 เดือน', owner: 'Data Owner / ทะเบียน', freq: 'Semi-annual', evidence: 'ใบทบทวนสิทธิ์ที่มีลายเซ็นอนุมัติ', tod: 'ตรวจ Access Policy เรื่องรอบ 6 เดือน', toe: 'ตรวจใบทบทวน 2 รอบล่าสุดและเช็กว่าสิทธิ์ถูกลบจริง' },
+      { id: 'CTL-05', pillar: 'Vulnerability', risk: 'เซิร์ฟเวอร์ถูกเจาะผ่านช่องโหว่ซอฟต์แวร์', obj: 'ปิดช่องโหว่บนระบบ Production', act: 'สแกน Nessus ทุกสัปดาห์ ลงแพตช์ Critical ใน 7 วัน', owner: 'Vuln Team', freq: 'Weekly / Monthly', evidence: 'Nessus Reports & Change RFC', tod: 'ตรวจ Patch Policy เรื่อง SLA ตาม CVSS', toe: 'สุ่มตรวจ 5 เซิร์ฟเวอร์เทียบวันที่แพตช์ออกกับวันติดตั้ง' },
+      { id: 'CTL-06', pillar: 'Vulnerability', risk: 'ติดตั้งคอนฟิกูเรชันเริ่มต้นที่มีช่องโหว่', obj: 'ปรับแต่งความปลอดภัยตามสากล', act: 'Hardening ตาม CIS Benchmark Level 1 ก่อน Go-live', owner: 'System Admin Team', freq: 'New Setup / Monthly', evidence: 'Hardening Checklist & Drift Report', tod: 'ตรวจ Baseline เทียบกับ CIS Benchmark', toe: 'รันสคริปต์ตรวจคอนฟิกบน Production จริง 3 เครื่อง' },
+      { id: 'CTL-07', pillar: 'Network', risk: 'แฮกเกอร์เจาะทะลุจาก DMZ สู่ฐานข้อมูลภายใน', obj: 'สกัดกั้นการเคลื่อนที่แนวระนาบ (Lateral Movement)', act: 'Firewall Segmentation อนุญาตเฉพาะ TCP 1521 จาก App', owner: 'Network Security Eng.', freq: 'Continuous', evidence: 'Firewall Rulebase & Deny Logs', tod: 'ตรวจ Network Topology และ Rulebase', toe: 'ทดสอบส่งแพ็กเก็ตจาก DMZ ไปยัง DB พอร์ตอื่น ต้อง Drop' },
+      { id: 'CTL-08', pillar: 'Network', risk: 'ข้อมูลรั่วไหลจากการดักฟังทราฟฟิกบนอินเทอร์เน็ต', obj: 'ป้องกันการดักจับข้อมูล (MitM)', act: 'บังคับใช้ TLS 1.3 และ Strict-Transport-Security (HSTS)', owner: 'Webmaster / App Admin', freq: 'Continuous', evidence: 'SSL Labs Grade A+ & nginx.conf', tod: 'ตรวจ Web Standard ห้ามใช้ TLS 1.0/1.1', toe: 'ใช้ testssl.sh สแกนโดเมนจริงตรวจ Cipher Suite' },
+      { id: 'CTL-09', pillar: 'Backup', risk: 'แรนซัมแวร์เข้ารหัสทำลายไฟล์สำรอง', obj: 'ปกป้องไฟล์สำรองไม่ให้ถูกแก้ไขหรือลบ', act: 'สำรองข้อมูล 3-2-1 บน Immutable WORM Cloud Storage', owner: 'Lead DBA / Backup Admin', freq: 'Daily', evidence: 'Backup Logs & S3 Object Lock Status', tod: 'ตรวจผัง Backup เรื่อง WORM Storage', toe: 'ทดสอบสั่งลบไฟล์สำรองบน S3 ต้องขึ้น Access Denied' },
+      { id: 'CTL-10', pillar: 'Backup', risk: 'ไฟล์สำรองเสียหายกู้ไม่ได้เมื่อเกิดภัยพิบัติ', obj: 'มั่นใจได้ว่าข้อมูลกู้ได้ตาม RTO/RPO', act: 'ทดสอบกู้คืนเต็มรูปแบบบน Sandbox ทุก 6 เดือน', owner: 'Lead DBA', freq: 'Semi-annual', evidence: 'Restore Test Drill Reports', tod: 'ตรวจแผน DRP เรื่องขั้นตอน Restore', toe: 'ตรวจผลซ้อมกู้คืนรอบล่าสุด ตรวจเวลาที่ใช้และ Consistency' },
+      { id: 'CTL-11', pillar: 'IAM', risk: 'ข้อมูลรั่วไหลผ่าน Flash Drive พกพา', obj: 'ควบคุมการนำข้อมูลออกผ่านอุปกรณ์พกพา', act: 'ติดตั้ง Endpoint DLP บล็อก USB Mass Storage', owner: 'Security Admin', freq: 'Continuous', evidence: 'DLP Policy & Block Event Logs', tod: 'ตรวจ AUP และ DLP Policy ห้ามใช้ USB', toe: 'ทดสอบเสียบ Flash Drive บนเครื่องเจ้าหน้าที่ ต้องถูกบล็อก' },
+      { id: 'CTL-12', pillar: 'Network', risk: 'การบุกรุกไม่ได้รับการตรวจพบอย่างทันท่วงที', obj: 'ตรวจจับพฤติกรรมผิดปกติแบบ Real-time', act: 'ส่ง Log สู่ SIEM และมี SOC เฝ้าระวัง 24x7', owner: 'SOC Lead / CISO', freq: 'Continuous (24x7)', evidence: 'SIEM Correlation Rules & Tickets', tod: 'ตรวจ Log Ingestion ครอบคลุม Tier 1 หรือไม่', toe: 'จำลอง Brute Force 20 ครั้ง ตรวจว่า Alert บน SIEM หรือไม่' }
+    ];
+
+    let currentRcmFilter = 'all';
+
+    function setRcmFilter(f) {
+      currentRcmFilter = f;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-filter') === f);
+      });
+      filterRcm();
+    }
+
+    function filterRcm() {
+      const q = document.getElementById('rcm-search').value.toLowerCase();
+      const grid = document.getElementById('rcm-cards-grid');
+
+      const filtered = rcmData.filter(item => {
+        const matchFilter = (currentRcmFilter === 'all') || (item.pillar === currentRcmFilter);
+        const matchText = item.id.toLowerCase().includes(q) ||
+                          item.risk.toLowerCase().includes(q) ||
+                          item.obj.toLowerCase().includes(q) ||
+                          item.owner.toLowerCase().includes(q) ||
+                          item.act.toLowerCase().includes(q);
+        return matchFilter && matchText;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; color:var(--text-muted);">ไม่พบรายการมาตรการควบคุมที่ตรงกับเงื่อนไข</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(c => `
+        <div class="rcm-card-item">
+          <div class="rcm-card-header">
+            <span class="rcm-id">${c.id}</span>
+            <span style="font-family:var(--font-code); font-size:0.75rem; background:var(--primary-glow); color:var(--primary); padding:0.15rem 0.4rem; border-radius:4px; font-weight:700;">
+              ${c.pillar}
+            </span>
+          </div>
+          <div><strong>ความเสี่ยง:</strong> ${c.risk}</div>
+          <div style="font-size:0.78rem; color:var(--text-muted);"><strong>วัตถุประสงค์:</strong> ${c.obj}</div>
+          <div style="font-size:0.78rem;"><strong>กิจกรรม:</strong> ${c.act}</div>
+          <div style="font-size:0.75rem; color:var(--text-dim);"><strong>Owner:</strong> ${c.owner} | <strong>ความถี่:</strong> ${c.freq}</div>
+          <div style="background:var(--bg-surface); padding:0.5rem; border-radius:4px; border:1px solid var(--border-color); font-size:0.75rem; margin-top:0.3rem;">
+            <div><strong>ToD (ตรวจการออกแบบ):</strong> ${c.tod}</div>
+            <div style="margin-top:0.2rem;"><strong>ToE (ตรวจปฏิบัติจริง):</strong> ${c.toe}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+    filterRcm();
+
+    // ==========================================
+    // WIDGET 7.4: ToD vs ToE DIAGNOSTIC
+    // ==========================================
+    const w4Cases = [
+      {
+        title: "สถานการณ์ที่ 1: การสำรองข้อมูลทุกสัปดาห์เทียบกับ RPO 2 ชั่วโมง",
+        desc: "ฝ่ายไอทีเขียนนโยบายและปฏิบัติตามอย่างเคร่งครัดโดยสำรองข้อมูลทุกคืนวันอาทิตย์ครบ 100% แต่ฝ่ายบริหารกำหนด RPO ไว้ที่ 2 ชั่วโมง หากระบบล่มวันศุกร์ ข้อมูลจะหายไปถึง 5 วัน",
+        correct: "Design",
+        why: "เป็น Design Ineffective (การออกแบบล้มเหลว) เพราะแม้จะปฏิบัติงานจริงได้ครบ 100% ตามที่เขียนไว้ แต่นโยบายที่ออกแบบมาแต่แรกไม่สอดคล้องกับเป้าหมายทางธุรกิจ RPO"
+      },
+      {
+        title: "สถานการณ์ที่ 2: แบบฟอร์มทบทวนสิทธิ์ที่หายไป 2 ไตรมาส",
+        desc: "นโยบายระบุให้ส่งแบบฟอร์ม Access Review ให้หัวหน้าส่วนงานเซ็นรับรองทุก 3 เดือน แต่จากการตรวจพบว่าในไตรมาสที่ 2 และ 3 ไม่มีการส่งแบบฟอร์มเนื่องจากเจ้าหน้าที่ลาคลอด",
+        correct: "Operating",
+        why: "เป็น Operating Ineffective (การดำเนินงานจริงล้มเหลว) เพราะนโยบายและขั้นตอนการออกแบบระบุไว้อย่างถูกต้องแล้ว (Design Effective) แต่การปฏิบัติจริงขาดความสม่ำเสมอ"
+      },
+      {
+        title: "สถานการณ์ที่ 3: แดชบอร์ด Backup สีเขียวแต่ไม่เคยทดสอบกู้คืน",
+        desc: "นโยบายกำหนดให้ทดสอบกู้คืนข้อมูลทุกปี ระบบสำรองข้อมูลขึ้นสถานะ Success ทุกวัน แต่ทีมงานไม่เคยทดสอบกู้คืนข้อมูลขึ้น Sandbox จริงเลยตลอด 18 เดือนที่ผ่านมา",
+        correct: "Operating",
+        why: "เป็น Operating Ineffective เพราะขาดหลักฐานการดำเนินงานจริงตามที่นโยบายกำหนดไว้"
+      },
+      {
+        title: "สถานการณ์ที่ 4: การบล็อกพอร์ตโดยอนุญาต Any-Any ท้าย Rulebase",
+        desc: "ผู้ดูแลระบบเขียนไฟร์วอลล์บล็อกพอร์ตอันตรายไว้ 10 ข้อ แต่บรรทัดสุดท้ายเผลอเปิด Rule 'Permit Any to Any' ไว้ ทำให้ทราฟฟิกที่ไม่ตรงกับ 10 พอร์ตแรกสามารถวิ่งผ่านได้ทั้งหมด",
+        correct: "Design",
+        why: "เป็น Design Ineffective เพราะการออกแบบ Logic ของกฎไฟร์วอลล์มีช่องโหว่ทำให้มาตรการป้องกันไร้ประสิทธิผลตั้งแต่ต้น"
+      }
+    ];
+
+    let w4Index = 0;
+    let w4Score = 0;
+
+    function renderW4Case() {
+      const c = w4Cases[w4Index];
+      const container = document.getElementById('w4-container');
+      container.innerHTML = `
+        <div class="data-sim-card">
+          <div style="font-size:0.75rem; color:var(--primary); font-family:var(--font-code); font-weight:700; margin-bottom:0.2rem;">
+            กรณีศึกษาที่ ${w4Index + 1} จาก ${w4Cases.length}
+          </div>
+          <div class="sim-q-title">${c.title}</div>
+          <div class="sim-q-desc">${c.desc}</div>
+
+          <div style="font-size:0.82rem; font-weight:700; margin-bottom:0.6rem;">ในมุมมองของ Lead Auditor จัดเป็นความล้มเหลวประเภทใด?</div>
+          <div class="sim-btn-grid">
+            <button class="sim-choice-btn" onclick="checkW4Answer('Design')">📐 Design Ineffective (การออกแบบล้มเหลว)</button>
+            <button class="sim-choice-btn" onclick="checkW4Answer('Operating')">⚙️ Operating Ineffective (การปฏิบัติจริงล้มเหลว)</button>
+          </div>
+
+          <div id="w4-feedback-box" style="display:none;"></div>
+        </div>
+      `;
+    }
+
+    function checkW4Answer(choice) {
+      const c = w4Cases[w4Index];
+      const isCorrect = choice === c.correct;
+      if (isCorrect) w4Score++;
+
+      const fBox = document.getElementById('w4-feedback-box');
+      fBox.style.display = 'block';
+      fBox.className = 'sim-feedback ' + (isCorrect ? 'correct' : 'wrong');
+      fBox.innerHTML = `
+        <div><strong>${isCorrect ? '🎉 ถูกต้องแม่นยำ!' : '❌ ยังไม่ถูกต้อง (คำตอบคือ: ' + (c.correct === 'Design' ? 'Design Ineffective' : 'Operating Ineffective') + ')'}</strong></div>
+        <div style="margin-top:0.3rem;">${c.why}</div>
+        <div style="margin-top:0.8rem; text-align:right;">
+          <button class="btn-icon" style="background:var(--primary); color:#fff; border-color:var(--primary);" onclick="nextW4Case()">
+            ${w4Index < w4Cases.length - 1 ? 'ข้อถัดไป ➔' : 'ดูผลประเมิน 🏁'}
+          </button>
+        </div>
+      `;
+      document.querySelectorAll('#w4-container .sim-choice-btn').forEach(btn => btn.disabled = true);
+    }
+
+    function nextW4Case() {
+      w4Index++;
+      if (w4Index < w4Cases.length) {
+        renderW4Case();
+      } else {
+        const container = document.getElementById('w4-container');
+        const pct = Math.round((w4Score / w4Cases.length) * 100);
+        container.innerHTML = `
+          <div class="data-sim-card" style="text-align:center; padding:2rem;">
+            <div style="font-size:3rem; margin-bottom:0.5rem;">${pct >= 75 ? '🎯' : '📖'}</div>
+            <div class="sim-q-title">สรุปผลการวินิจฉัย ToD vs ToE: ได้คะแนน ${w4Score} / ${w4Cases.length} (${pct}%)</div>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin:0.8rem 0;">
+              ${pct >= 75 ? 'ยอดเยี่ยม! ท่านมีสายตาเฉียบคมในการแยกแยะ Design Effectiveness กับ Operating Effectiveness ตามแบบฉบับ Lead Auditor' : 'ทบทวนคำถาม: ถ้าทำตามเอกสารแล้วยังกันไม่ได้ = Design / ถ้าเอกสารเขียนดีแต่ไม่ได้ทำตาม = Operating'}
+            </p>
+            <button class="btn-icon" style="background:var(--primary); color:#fff; border-color:var(--primary); margin-top:0.6rem;" onclick="resetW4()">
+              🔄 ทำแบบทดสอบอีกครั้ง
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function resetW4() {
+      w4Index = 0;
+      w4Score = 0;
+      renderW4Case();
+    }
+    renderW4Case();
+
+    // ==========================================
+    // WIDGET 7.5: AUDIT CHECKLIST EVALUATOR
+    // ==========================================
+    const checklistItems7 = [
+      { id: 1, text: "มีการระงับสิทธิ์บัญชีผู้ใช้ทันทีเมื่อพนักงานพ้นสภาพการทำงาน (JML Leaver)", std: "A.5.18, A.6.5", type: "major" },
+      { id: 2, text: "บัญชีผู้ดูแลระบบระดับสูง (Privileged Accounts) ใช้งานผ่านระบบ PAM และบันทึก Session", std: "A.8.2", type: "major" },
+      { id: 3, text: "มีการบังคับใช้ Multi-Factor Authentication (MFA) สำหรับการเข้าถึงจากภายนอกทั้งหมด", std: "A.5.17, A.8.5", type: "major" },
+      { id: 4, text: "มีการทบทวนสิทธิ์การเข้าถึงข้อมูลความลับอย่างน้อยปีละ 1 ครั้ง (Access Review)", std: "A.5.18", type: "minor" },
+      { id: 5, text: "มีการสแกนหาช่องโหว่ความปลอดภัยเป็นประจำ และลงแพตช์ตามกรอบเวลา SLA", std: "A.8.8", type: "major" },
+      { id: 6, text: "เซิร์ฟเวอร์และอุปกรณ์เครือข่ายได้รับการ Hardening ตามเกณฑ์มาตรฐาน CIS Benchmark", std: "A.8.9", type: "minor" },
+      { id: 7, text: "เครือข่ายมีการแบ่งแยกโซน (Segmentation) และไม่มีกฎไฟร์วอลล์แบบ Any-Any ค้างอยู่", std: "A.8.20, A.8.22", type: "major" },
+      { id: 8, text: "การส่งผ่านข้อมูลความลับภายนอกมีการบังคับใช้โปรโตคอล TLS 1.3 หรือ SFTP", std: "A.8.24", type: "minor" },
+      { id: 9, text: "ข้อมูลสำรองมีการจัดเก็บแบบ Immutable หรือ Offline อย่างน้อย 1 สำเนา (กฎ 3-2-1-1-0)", std: "A.8.13", type: "major" },
+      { id: 10, text: "มีการทดสอบกู้คืนข้อมูลสำรอง (Restore Testing) และมีรายงานผลเป็นลายลักษณ์อักษร", std: "A.8.13", type: "minor" }
+    ];
+
+    const auditState7 = {};
+    checklistItems7.forEach(i => auditState7[i.id] = true);
+
+    function renderAuditChecklist7() {
+      const container = document.getElementById('audit-checklist-tool-7');
+      let html = checklistItems7.map(item => {
+        const isPass = auditState7[item.id];
+        return `
+          <div class="chk-item">
+            <div class="chk-text">
+              <span style="font-family:var(--font-code); color:var(--primary); font-weight:700;">[${item.std}]</span>
+              ${item.text}
+              <span style="font-size:0.7rem; color:${item.type === 'major' ? 'var(--rose)' : 'var(--amber)'}; font-weight:600; margin-left:0.4rem;">
+                (${item.type.toUpperCase()})
+              </span>
+            </div>
+            <div class="chk-control">
+              <button class="btn-chk pass ${isPass ? 'active' : ''}" onclick="setChkState7(${item.id}, true)">ผ่าน</button>
+              <button class="btn-chk fail ${!isPass ? 'active' : ''}" onclick="setChkState7(${item.id}, false)">ไม่ผ่าน</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      let passCount = 0;
+      let majorFails = 0;
+      let minorFails = 0;
+
+      checklistItems7.forEach(item => {
+        if (auditState7[item.id]) passCount++;
+        else {
+          if (item.type === 'major') majorFails++;
+          else minorFails++;
+        }
+      });
+
+      const scorePct = Math.round((passCount / checklistItems7.length) * 100);
+      let verdict = '';
+      if (majorFails === 0 && minorFails === 0) {
+        verdict = '<span style="color:var(--emerald); font-weight:700;">ผ่านเกณฑ์การรับรองสมบูรณ์แบบ 100% (Ready for Certification)</span>';
+      } else if (majorFails > 0) {
+        verdict = `<span style="color:var(--rose); font-weight:700;">ไม่ผ่านการรับรอง! พบ Major Non-conformity ${majorFails} ข้อ (ต้องแก้ไขก่อนตรวจซ้ำ)</span>`;
+      } else {
+        verdict = `<span style="color:var(--amber); font-weight:700;">ผ่านเกณฑ์แบบมีเงื่อนไข พบ Minor Non-conformity ${minorFails} ข้อ (ส่งแผน CAPA ภายใน 90 วัน)</span>`;
+      }
+
+      html += `
+        <div class="chk-summary-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.4rem;">
+            <div style="font-family:var(--font-display); font-weight:700;">ผลการประเมิน Audit Score: ${scorePct}% (ผ่าน ${passCount}/${checklistItems7.length} ข้อ)</div>
+            <div>${verdict}</div>
+          </div>
+          <div style="font-size:0.78rem; color:var(--text-muted);">
+            หมายเหตุ: หากพบข้อบกพร่องประเภท Major (เช่น ลืมตัดสิทธิ์พนักงานลาออก หรือขาดการสำรองข้อมูล Immutable) ใบรับรอง ISO 27001 จะถูกระงับการออกทันที
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    function setChkState7(id, state) {
+      auditState7[id] = state;
+      renderAuditChecklist7();
+    }
+    renderAuditChecklist7();
+  </script>
+</body>
+</html>

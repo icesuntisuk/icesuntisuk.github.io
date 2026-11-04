@@ -1,0 +1,3812 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 4: การทำความเข้าใจบริบทองค์กร ขอบเขตการตรวจ และธรรมาภิบาล | NECS1312</title>
+  <meta name="description" content="คู่มือการเรียนรู้บทที่ 4 บทบาท Lead Implementer การวิเคราะห์บริบท PESTLE/SWOT การกำหนดขอบเขต 6 มิติ RACI Matrix สถาปัตยกรรมเอกสาร 5 ระดับ และ Roadmap ระยะ 6 เดือน">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       CSS VARIABLES & THEME SYSTEM (Readability Focused)
+       ========================================================================== */
+    :root {
+      --font-body: 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', Consolas, Monaco, monospace;
+      --font-size-base: 16px;
+      --line-height-base: 1.85;
+
+      /* Light Theme */
+      --bg-page: #F8FAFC;
+      --bg-surface: #FFFFFF;
+      --bg-sidebar: #F1F5F9;
+      --bg-subtle: #F8FAFC;
+      
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+      --text-light: #94A3B8;
+      
+      --border-color: #E2E8F0;
+      --border-subtle: #F1F5F9;
+
+      --primary: #2563EB;
+      --primary-hover: #1D4ED8;
+      --primary-light: #EFF6FF;
+      --primary-border: #BFDBFE;
+
+      --success: #059669;
+      --success-light: #ECFDF5;
+      --success-border: #A7F3D0;
+
+      --warning: #D97706;
+      --warning-light: #FFFBEB;
+      --warning-border: #FDE68A;
+
+      --danger: #DC2626;
+      --danger-light: #FEF2F2;
+      --danger-border: #FECACA;
+
+      --purple: #7C3AED;
+      --purple-light: #F5F3FF;
+      --purple-border: #DDD6FE;
+
+      --cyan: #0891B2;
+      --cyan-light: #ECFEFF;
+      --cyan-border: #A5F3FC;
+
+      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    /* Sepia Theme */
+    [data-theme="sepia"] {
+      --bg-page: #F4EFE6;
+      --bg-surface: #FCF9F2;
+      --bg-sidebar: #EBE4D5;
+      --bg-subtle: #F7F3EB;
+
+      --text-main: #2C2520;
+      --text-muted: #6E6359;
+      --text-light: #998C80;
+
+      --border-color: #DDD4C4;
+      --border-subtle: #E8E0D2;
+
+      --primary: #965B2B;
+      --primary-hover: #7E4B22;
+      --primary-light: #F6EDE3;
+      --primary-border: #E8D3BF;
+
+      --success: #2E7D32;
+      --success-light: #EDF7ED;
+      --success-border: #C8E6C9;
+
+      --warning: #B45309;
+      --warning-light: #FEF3C7;
+      --warning-border: #FDE68A;
+
+      --danger: #B91C1C;
+      --danger-light: #FEE2E2;
+      --danger-border: #FECACA;
+
+      --purple: #6B21A8;
+      --purple-light: #F3E8FF;
+      --purple-border: #E9D5FF;
+
+      --cyan: #0E7490;
+      --cyan-light: #E0F2FE;
+      --cyan-border: #BAE6FD;
+    }
+
+    /* Soft Dark Theme */
+    [data-theme="dark"] {
+      --bg-page: #0F172A;
+      --bg-surface: #1E293B;
+      --bg-sidebar: #131E34;
+      --bg-subtle: #1E293B;
+
+      --text-main: #F1F5F9;
+      --text-muted: #94A3B8;
+      --text-light: #64748B;
+
+      --border-color: #334155;
+      --border-subtle: #1E293B;
+
+      --primary: #38BDF8;
+      --primary-hover: #0EA5E9;
+      --primary-light: rgba(56, 189, 248, 0.12);
+      --primary-border: rgba(56, 189, 248, 0.3);
+
+      --success: #34D399;
+      --success-light: rgba(52, 211, 153, 0.12);
+      --success-border: rgba(52, 211, 153, 0.3);
+
+      --warning: #FBBF24;
+      --warning-light: rgba(251, 191, 36, 0.12);
+      --warning-border: rgba(251, 191, 36, 0.3);
+
+      --danger: #F87171;
+      --danger-light: rgba(248, 113, 113, 0.12);
+      --danger-border: rgba(248, 113, 113, 0.3);
+
+      --purple: #C084FC;
+      --purple-light: rgba(192, 132, 252, 0.12);
+      --purple-border: rgba(192, 132, 252, 0.3);
+
+      --cyan: #22D3EE;
+      --cyan-light: rgba(34, 211, 238, 0.12);
+      --cyan-border: rgba(34, 211, 238, 0.3);
+    }
+
+    /* Font Size Presets */
+    [data-font-size="large"] {
+      --font-size-base: 18px;
+      --line-height-base: 1.88;
+    }
+    [data-font-size="xlarge"] {
+      --font-size-base: 20px;
+      --line-height-base: 1.92;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: var(--font-size-base);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      line-height: var(--line-height-base);
+      color: var(--text-main);
+      background-color: var(--bg-page);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), #6366F1);
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s ease-out;
+    }
+
+    /* TOP NAVBAR */
+    header.site-header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-toggle-sidebar {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: var(--font-body);
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .btn-toggle-sidebar:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-toggle-sidebar.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .course-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--purple);
+      background: var(--purple-light);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--purple-border);
+      letter-spacing: 0.03em;
+    }
+
+    .header-title-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 500px;
+    }
+
+    .reading-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ctrl-group {
+      display: inline-flex;
+      background: var(--bg-sidebar);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      gap: 2px;
+    }
+
+    .ctrl-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .ctrl-btn:hover {
+      color: var(--text-main);
+    }
+
+    .ctrl-btn.active {
+      background: var(--bg-surface);
+      color: var(--primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* LAYOUT WRAPPER */
+    .app-layout {
+      display: flex;
+      min-height: calc(100vh - 57px);
+      position: relative;
+    }
+
+    /* SIDEBAR TOC */
+    aside.sidebar-toc {
+      width: 320px;
+      flex-shrink: 0;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      height: calc(100vh - 57px);
+      position: sticky;
+      top: 57px;
+      overflow-y: auto;
+      padding: 20px 14px;
+      transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 800;
+    }
+
+    body.sidebar-collapsed aside.sidebar-toc {
+      width: 0 !important;
+      min-width: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      overflow: hidden !important;
+      border-right: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    .toc-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 750;
+      backdrop-filter: blur(2px);
+    }
+
+    .toc-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .toc-headline {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-close-toc {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .btn-close-toc:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: var(--danger-light);
+    }
+
+    .toc-item {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 6px 10px;
+      margin-bottom: 2px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.83rem;
+      line-height: 1.45;
+      transition: all 0.15s ease;
+    }
+
+    .toc-item:hover {
+      background: var(--bg-surface);
+      color: var(--primary);
+    }
+
+    .toc-item.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+      border-left: 3px solid var(--primary);
+    }
+
+    .toc-item.toc-h3 {
+      padding-left: 22px;
+      font-size: 0.78rem;
+    }
+
+    .toc-bullet {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--text-light);
+      flex-shrink: 0;
+    }
+
+    .toc-item.active .toc-bullet {
+      background: var(--primary);
+    }
+
+    /* MAIN CONTENT AREA */
+    main.content-area {
+      flex: 1;
+      min-width: 0;
+      padding: 36px 48px 80px 48px;
+      background-color: var(--bg-page);
+      display: flex;
+      justify-content: center;
+    }
+
+    article.article-body {
+      width: 100%;
+      max-width: 860px;
+    }
+
+    /* TYPOGRAPHY */
+    h1.article-title, h2, h3, h4, .figure-container, .interactive-card {
+      scroll-margin-top: 75px;
+    }
+
+    h1.article-title {
+      font-size: 2.1rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--text-main);
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
+
+    h2 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      line-height: 1.4;
+      color: var(--text-main);
+      margin-top: 44px;
+      margin-bottom: 18px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: var(--text-main);
+      margin-top: 32px;
+      margin-bottom: 14px;
+    }
+
+    h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text-main);
+      margin-top: 24px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin-bottom: 18px;
+      color: var(--text-main);
+    }
+
+    strong {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    hr.section-divider {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 36px 0;
+    }
+
+    /* LISTS */
+    ul.content-list, ol.content-list {
+      margin-bottom: 22px;
+      padding-left: 24px;
+    }
+
+    ul.content-list li, ol.content-list li {
+      margin-bottom: 8px;
+      padding-left: 4px;
+    }
+
+    /* CALLOUT BLOCKS */
+    .callout {
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      margin: 26px 0;
+      border-left: 4px solid;
+      background: var(--bg-surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .callout-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .callout.tip {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .callout.tip .callout-title { color: var(--primary); }
+
+    .callout.note {
+      border-color: var(--purple);
+      background: var(--purple-light);
+    }
+    .callout.note .callout-title { color: var(--purple); }
+
+    .callout.danger {
+      border-color: var(--danger);
+      background: var(--danger-light);
+    }
+    .callout.danger .callout-title { color: var(--danger); }
+
+    .callout.doc-sample {
+      border-color: var(--cyan);
+      background: var(--cyan-light);
+    }
+    .callout.doc-sample .callout-title { color: var(--cyan); }
+
+    blockquote {
+      border-left: 4px solid var(--border-color);
+      padding: 12px 18px;
+      margin: 20px 0;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-style: italic;
+    }
+
+    /* TABLES */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin: 28px 0;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      background: var(--bg-surface);
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+
+    table.data-table th {
+      background: var(--bg-sidebar);
+      padding: 12px 16px;
+      font-weight: 600;
+      color: var(--text-main);
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    table.data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+      color: var(--text-main);
+    }
+
+    table.data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    table.data-table tr:hover td {
+      background: var(--bg-subtle);
+    }
+
+    /* CODE BLOCKS */
+    .code-block {
+      background: #0F172A;
+      color: #E2E8F0;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.83rem;
+      line-height: 1.6;
+      margin: 22px 0;
+      box-shadow: var(--shadow-md);
+    }
+
+    /* FIGURE WRAPPER */
+    .figure-container {
+      margin: 36px 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px 26px;
+      box-shadow: var(--shadow-md);
+      transition: all 0.2s ease;
+    }
+
+    .figure-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .figure-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .figure-title {
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .figure-caption {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+      line-height: 1.55;
+    }
+
+    /* FIGURE 4.1: DUAL ROLES GRID */
+    .dual-roles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 14px;
+    }
+
+    .role-card {
+      border-radius: var(--radius-md);
+      padding: 20px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .role-card.implementer-card {
+      background: linear-gradient(180deg, var(--primary-light), var(--bg-surface));
+      border-color: var(--primary-border);
+    }
+
+    .role-card.auditor-card {
+      background: linear-gradient(180deg, var(--success-light), var(--bg-surface));
+      border-color: var(--success-border);
+    }
+
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.03em;
+    }
+
+    .implementer-badge {
+      background: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .auditor-badge {
+      background: var(--success);
+      color: #FFFFFF;
+    }
+
+    .role-motto {
+      font-size: 0.88rem;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--text-main);
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .role-aspects {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .aspect-item {
+      font-size: 0.84rem;
+    }
+
+    .aspect-label {
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 2px;
+    }
+
+    .aspect-desc {
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    /* FIGURE 4.2: CONTEXT ECOSYSTEM */
+    .context-ecosystem-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .eco-tier {
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      border: 1px solid var(--border-color);
+    }
+
+    .eco-tier.external-tier {
+      background: var(--primary-light);
+      border-color: var(--primary-border);
+    }
+
+    .eco-tier.internal-tier {
+      background: var(--purple-light);
+      border-color: var(--purple-border);
+    }
+
+    .eco-tier.vendor-tier {
+      background: var(--cyan-light);
+      border-color: var(--cyan-border);
+    }
+
+    .tier-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tier-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .tier-dot.ext { background: var(--primary); }
+    .tier-dot.int { background: var(--purple); }
+    .tier-dot.ven { background: var(--cyan); }
+
+    .eco-chips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 10px;
+    }
+
+    .eco-chip {
+      background: var(--bg-surface);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      font-size: 0.83rem;
+      line-height: 1.5;
+    }
+
+    .eco-flow-arrow {
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* FIGURE 4.3: MENDELOW'S MATRIX */
+    .matrix-2x2-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .matrix-axis-y-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--purple);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .matrix-grid-boxes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .matrix-quadrant {
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .matrix-quadrant:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .quad-top-left { background: var(--warning-light); border-color: var(--warning-border); }
+    .quad-top-right { background: var(--danger-light); border-color: var(--danger-border); }
+    .quad-bottom-left { background: var(--bg-subtle); border-color: var(--border-color); }
+    .quad-bottom-right { background: var(--primary-light); border-color: var(--primary-border); }
+
+    .quad-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .quad-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .quad-tag.active {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .quad-action {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .quad-list {
+      list-style: none;
+      font-size: 0.83rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .quad-strategy {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      padding-top: 8px;
+      border-top: 1px dashed var(--border-color);
+      line-height: 1.45;
+    }
+
+    .matrix-axis-x-label {
+      text-align: right;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* FIGURE 4.4: 6 SCOPING DIMENSIONS */
+    .scoping-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
+
+    .scoping-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .scoping-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sc-badge {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 3px 8px;
+      border-radius: 4px;
+      width: fit-content;
+      letter-spacing: 0.03em;
+    }
+
+    .sc-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .sc-desc {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .sc-evidence {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      padding-top: 8px;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    /* FIGURE 4.5: PITFALLS */
+    .pitfalls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .pitfall-card {
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      border-left: 4px solid;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pitfall-card.danger { border-left-color: var(--danger); background: var(--danger-light); }
+    .pitfall-card.warning { border-left-color: var(--warning); background: var(--warning-light); }
+    .pitfall-card.info { border-left-color: var(--purple); background: var(--purple-light); }
+    .pitfall-card.alert { border-left-color: var(--primary); background: var(--primary-light); }
+
+    .pitfall-number {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .pitfall-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .pitfall-case {
+      font-size: 0.83rem;
+      line-height: 1.5;
+      color: var(--text-main);
+    }
+
+    .pitfall-fix {
+      font-size: 0.8rem;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(0, 0, 0, 0.1);
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* FIGURE 4.6: GOVERNANCE TREE */
+    .gov-tree-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .gov-node {
+      width: 100%;
+      max-width: 650px;
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      border: 1px solid var(--border-color);
+      text-align: center;
+      background: var(--bg-surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .gov-node.level-board {
+      background: linear-gradient(135deg, #1E293B, #0F172A);
+      color: #FFFFFF;
+      border: none;
+    }
+    .gov-node.level-board .gov-title { color: #FFFFFF; }
+    .gov-node.level-board .gov-sub { color: #94A3B8; }
+
+    .gov-node.level-steering {
+      background: var(--primary-light);
+      border-color: var(--primary-border);
+    }
+    .gov-node.level-steering .gov-title { color: var(--primary); }
+
+    .gov-split-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: 100%;
+      max-width: 650px;
+    }
+
+    .gov-node.split-left {
+      background: var(--purple-light);
+      border-color: var(--purple-border);
+    }
+    .gov-node.split-right {
+      background: var(--warning-light);
+      border-color: var(--warning-border);
+    }
+
+    .gov-node.split-left.tech {
+      background: var(--cyan-light);
+      border-color: var(--cyan-border);
+    }
+    .gov-node.split-right.data {
+      background: var(--success-light);
+      border-color: var(--success-border);
+    }
+
+    .gov-node.level-csirt {
+      background: var(--danger-light);
+      border-color: var(--danger-border);
+    }
+    .gov-node.level-csirt .gov-title { color: var(--danger); }
+
+    .gov-role-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
+    }
+
+    .gov-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .gov-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+
+    .gov-connector {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      font-weight: bold;
+    }
+
+    .ownership-triangle-box {
+      margin-top: 20px;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      background: var(--bg-subtle);
+      border: 1px dashed var(--border-color);
+    }
+
+    .ot-header {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+
+    .ot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    /* FIGURE 4.7: DOCUMENT PYRAMID */
+    .doc-pyramid-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .pyramid-tier {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      transition: all 0.2s ease;
+    }
+
+    .pyramid-tier:hover {
+      transform: translateX(4px);
+    }
+
+    .tier-badge {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+    }
+
+    .tier-l1 { background: #FEF3C7; border-color: #FDE68A; }
+    .tier-l1 .tier-badge { background: #D97706; color: #FFFFFF; }
+
+    .tier-l2 { background: #E0E7FF; border-color: #C7D2FE; }
+    .tier-l2 .tier-badge { background: #4F46E5; color: #FFFFFF; }
+
+    .tier-l3 { background: #CFFAFE; border-color: #A5F3FC; }
+    .tier-l3 .tier-badge { background: #0891B2; color: #FFFFFF; }
+
+    .tier-l4 { background: #EDE9FE; border-color: #DDD6FE; }
+    .tier-l4 .tier-badge { background: #7C3AED; color: #FFFFFF; }
+
+    .tier-l5 { background: #DCFCE7; border-color: #BBF7D0; }
+    .tier-l5 .tier-badge { background: #16A34A; color: #FFFFFF; }
+
+    .tier-name {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #1E293B;
+    }
+
+    .tier-info {
+      font-size: 0.8rem;
+      color: #475569;
+      margin-top: 2px;
+      line-height: 1.45;
+    }
+
+    /* FIGURE 4.8: LIFECYCLE STEPPER */
+    .lifecycle-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .lc-step {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+
+    .lc-num {
+      font-family: var(--font-mono);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .lc-name {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text-main);
+    }
+
+    .lc-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* FIGURE 4.9: WORKING PAPER */
+    .wp-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      font-size: 0.85rem;
+    }
+
+    .wp-header-table {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--bg-sidebar);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .wp-cell {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .wp-body-content {
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .wp-step-item {
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .wp-step-item:last-child { border-bottom: none; }
+
+    .wp-step-title {
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .wp-step-text {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      margin-bottom: 6px;
+    }
+
+    .wp-step-finding {
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+    .wp-step-finding.pass { background: var(--success-light); color: var(--success); }
+    .wp-step-finding.fail { background: var(--danger-light); color: var(--danger); }
+
+    /* FIGURE 4.10: TOPOLOGY */
+    .topology-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .topo-zone {
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      border: 2px dashed;
+    }
+
+    .topo-zone.untrusted {
+      border-color: #EF4444;
+      background: rgba(239, 68, 68, 0.04);
+    }
+
+    .topo-zone.in-scope {
+      border-color: #10B981;
+      background: rgba(16, 185, 129, 0.04);
+    }
+
+    .zone-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-in-scope {
+      background: #10B981;
+      color: #FFFFFF;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+    }
+
+    .zone-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .topo-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tc-name {
+      font-weight: 700;
+      font-size: 0.86rem;
+      color: var(--text-main);
+    }
+
+    .tc-status {
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      width: fit-content;
+    }
+    .tc-status.excl { background: var(--danger-light); color: var(--danger); }
+    .tc-status.interface { background: var(--primary-light); color: var(--primary); }
+
+    .tc-detail, .tc-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .topo-firewall-bar {
+      background: #1E293B;
+      color: #F8FAFC;
+      text-align: center;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    /* FIGURE 4.11: DIALOGUE */
+    .dialogue-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .dialogue-bubble {
+      display: flex;
+      gap: 16px;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+    }
+
+    .dialogue-bubble.implementer {
+      background: var(--primary-light);
+      border-color: var(--primary-border);
+    }
+
+    .dialogue-bubble.auditor {
+      background: var(--success-light);
+      border-color: var(--success-border);
+    }
+
+    .dia-avatar {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .dia-content {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .dia-name {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .dia-content p {
+      font-size: 0.85rem;
+      line-height: 1.55;
+      margin-bottom: 0;
+    }
+
+    /* INTERACTIVE WIDGET STYLES */
+    .interactive-card {
+      margin: 40px 0;
+      background: var(--bg-surface);
+      border: 2px solid var(--primary-border);
+      border-radius: var(--radius-lg);
+      padding: 26px 28px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 3px 8px;
+      border-radius: 4px;
+      width: fit-content;
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.55;
+    }
+
+    /* WIDGET 4.1 TABS */
+    .stakeholder-selector-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .sh-tab-btn {
+      background: var(--bg-sidebar);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-family: var(--font-body);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .sh-tab-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .sh-tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .stakeholder-display-panel {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sh-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .sh-info-block {
+      background: var(--bg-surface);
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      font-size: 0.83rem;
+    }
+
+    .sh-info-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    /* WIDGET 4.2 SCOPING VALIDATOR */
+    .scoping-case-navigator {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .case-btn {
+      background: var(--bg-sidebar);
+      border: 1px solid var(--border-color);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-family: var(--font-body);
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-main);
+      transition: all 0.15s ease;
+    }
+
+    .case-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .case-btn.active {
+      background: var(--purple);
+      border-color: var(--purple);
+      color: #FFFFFF;
+    }
+
+    .case-content-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .case-verdict-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .btn-verdict {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .btn-verdict.valid {
+      background: var(--success-light);
+      border-color: var(--success-border);
+      color: var(--success);
+    }
+    .btn-verdict.valid:hover {
+      background: var(--success);
+      color: #FFFFFF;
+    }
+
+    .btn-verdict.invalid {
+      background: var(--danger-light);
+      border-color: var(--danger-border);
+      color: var(--danger);
+    }
+    .btn-verdict.invalid:hover {
+      background: var(--danger);
+      color: #FFFFFF;
+    }
+
+    .case-feedback {
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.84rem;
+      line-height: 1.55;
+      display: none;
+    }
+
+    /* WIDGET 4.3 RACI SIMULATOR */
+    .raci-sim-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .raci-step-tag {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--purple);
+      text-transform: uppercase;
+    }
+
+    .raci-options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .raci-opt-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .raci-opt-btn:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .raci-opt-role {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .raci-opt-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .raci-feedback-box {
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    /* WIDGET 4.4 BATTLE SIMULATION */
+    .battle-character-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .char-tab {
+      background: var(--bg-sidebar);
+      border: 1px solid var(--border-color);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .char-tab:hover {
+      background: var(--cyan-light);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .char-tab.active {
+      background: var(--cyan);
+      border-color: var(--cyan);
+      color: #FFFFFF;
+    }
+
+    .character-card-display {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+
+    /* WIDGET 4.5 QUIZ */
+    .quiz-question-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .quiz-q-num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .quiz-q-text {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin: 8px 0 16px 0;
+      line-height: 1.5;
+    }
+
+    .quiz-options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quiz-opt {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.86rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.15s ease;
+      color: var(--text-main);
+    }
+
+    .quiz-opt:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .quiz-opt.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      font-weight: 600;
+    }
+
+    .quiz-opt.correct {
+      border-color: var(--success);
+      background: var(--success-light);
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .quiz-opt.wrong {
+      border-color: var(--danger);
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .quiz-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-quiz-nav {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .btn-quiz-nav:hover:not(:disabled) {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-quiz-nav:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .quiz-progress-text {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .quiz-explanation {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      line-height: 1.5;
+      display: none;
+    }
+
+    /* CHAPTER NAVIGATION GRID */
+    .chapter-nav-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .chapter-nav-card {
+      display: flex;
+      flex-direction: column;
+      padding: 18px 20px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .chapter-nav-card:hover {
+      border-color: var(--purple);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      text-decoration: none;
+    }
+
+    .chapter-nav-card.prev .nav-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .chapter-nav-card.prev .nav-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--purple);
+    }
+
+    .chapter-nav-card.next {
+      text-align: right;
+    }
+
+    .chapter-nav-card.next .nav-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .chapter-nav-card.next .nav-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--purple);
+    }
+
+    /* FOOTER */
+    footer.site-footer {
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      padding: 24px 20px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 992px) {
+      aside.sidebar-toc {
+        position: fixed;
+        left: 0;
+        top: 57px;
+        bottom: 0;
+        width: 300px !important;
+        transform: translateX(-100%);
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 800;
+        box-shadow: var(--shadow-lg);
+      }
+      aside.sidebar-toc.open {
+        transform: translateX(0);
+      }
+      .toc-backdrop.open {
+        display: block;
+      }
+      main.content-area {
+        padding: 24px 20px 60px 20px;
+      }
+      .dual-roles-grid, .matrix-grid-boxes, .pitfalls-grid, .raci-options-grid, .sh-detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-card.next {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <div class="toc-backdrop" id="toc-backdrop"></div>
+
+  <!-- TOP NAVBAR -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-section">
+        <button class="btn-toggle-sidebar active" id="btn-toggle-toc" title="เปิด/ปิดสารบัญ (Ctrl+B)">
+          <span>📑</span>
+          <span>สารบัญ</span>
+        </button>
+        <span class="course-badge">NECS1312 // CH-4</span>
+        <div class="header-title-text">บทที่ 4: การทำความเข้าใจบริบทองค์กร ขอบเขตการตรวจ และธรรมาภิบาล</div>
+      </div>
+
+      <div class="reading-controls">
+        <!-- Font Size Adjuster -->
+        <div class="ctrl-group">
+          <button class="ctrl-btn" id="btn-font-dec" title="ลดขนาดตัวอักษร">A-</button>
+          <button class="ctrl-btn active" id="btn-font-normal" title="ขนาดปกติ">A</button>
+          <button class="ctrl-btn" id="btn-font-inc" title="เพิ่มขนาดตัวอักษร">A+</button>
+        </div>
+
+        <!-- Theme Selector -->
+        <div class="ctrl-group">
+          <button class="ctrl-btn active" id="btn-theme-light" title="ธีมสว่าง (Light)">☀️</button>
+          <button class="ctrl-btn" id="btn-theme-sepia" title="ธีมถนอมสายตา (Sepia)">📖</button>
+          <button class="ctrl-btn" id="btn-theme-dark" title="ธีมมืด (Dark)">🌙</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <!-- COLLAPSIBLE SIDEBAR TOC -->
+    <aside class="sidebar-toc" id="sidebar-toc">
+      <div class="toc-header-row">
+        <span class="toc-headline">📑 สารบัญบทที่ 4</span>
+        <button class="btn-close-toc" id="btn-close-toc" title="ซ่อนสารบัญ">✕ ซ่อน</button>
+      </div>
+      <nav class="toc-nav">
+<a href="#sec-learning-outcomes" class="toc-item toc-h2" data-target="sec-learning-outcomes">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</span>
+  </a>
+<a href="#sec-intro" class="toc-item toc-h2" data-target="sec-intro">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">บทนำประจำบท: จาก "ผู้ประเมิน" สู่ "สถาปนิกผู้สร้างระบบ"</span>
+  </a>
+<a href="#sec-intro-philosophy" class="toc-item toc-h3" data-target="sec-intro-philosophy">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ความแตกต่างทางปรัชญาระหว่าง Lead Auditor กับ Lead Implementer</span>
+  </a>
+<a href="#sec-intro-tech-first" class="toc-item toc-h3" data-target="sec-intro-tech-first">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ความล้มเหลวของการเริ่มต้นแบบ "Tech-First"</span>
+  </a>
+<a href="#sec-part-1-context" class="toc-item toc-h2" data-target="sec-part-1-context">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ส่วนที่ 1: การวิเคราะห์บริบทองค์กรเชิงลึก (Organizational Context Analysis)</span>
+  </a>
+<a href="#sec-1-1-pestle" class="toc-item toc-h3" data-target="sec-1-1-pestle">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">1.1 ปัจจัยภายนอก: PESTLE Analysis สำหรับความมั่นคงปลอดภัยไซเบอร์</span>
+  </a>
+<a href="#sec-1-2-internal" class="toc-item toc-h3" data-target="sec-1-2-internal">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">1.2 ปัจจัยภายใน: การประเมินพันธกิจ วัฒนธรรม และหนี้ทางเทคนิค (Technical Debt)</span>
+  </a>
+<a href="#sec-1-3-swot" class="toc-item toc-h3" data-target="sec-1-3-swot">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">1.3 ตารางวิเคราะห์ Cybersecurity SWOT Matrix</span>
+  </a>
+<a href="#sec-part-2-stakeholders" class="toc-item toc-h2" data-target="sec-part-2-stakeholders">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ส่วนที่ 2: การวิเคราะห์ผู้มีส่วนได้ส่วนเสียและการจัดลำดับความสำคัญ (Stakeholder Analysis)</span>
+  </a>
+<a href="#sec-2-1-mendelow" class="toc-item toc-h3" data-target="sec-2-1-mendelow">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">2.1 เมทริกซ์อำนาจและความสนใจ (Mendelow's Power-Interest Matrix)</span>
+  </a>
+<a href="#sec-2-2-register" class="toc-item toc-h3" data-target="sec-2-2-register">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">2.2 ทะเบียนผู้มีส่วนได้ส่วนเสีย (Stakeholder Register Template)</span>
+  </a>
+<a href="#sec-part-3-scoping" class="toc-item toc-h2" data-target="sec-part-3-scoping">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ส่วนที่ 3: มิติทั้ง 6 ของการกำหนดขอบเขตระบบบริหารจัดการ (The 6 Dimensions of Scoping)</span>
+  </a>
+<a href="#sec-3-1-dimensions" class="toc-item toc-h3" data-target="sec-3-1-dimensions">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">3.1 รายละเอียดของมิติทั้ง 6:</span>
+  </a>
+<a href="#sec-3-2-statement" class="toc-item toc-h3" data-target="sec-3-2-statement">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">3.2 ตัวอย่างเอกสารแถลงขอบเขตฉบับทางการ (Official Scope Statement):</span>
+  </a>
+<a href="#sec-3-3-pitfalls" class="toc-item toc-h3" data-target="sec-3-3-pitfalls">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">3.3 หลุมพรางและข้อผิดพลาดในการกำหนดขอบเขต (4 Scoping Pitfalls)</span>
+  </a>
+<a href="#sec-part-4-governance" class="toc-item toc-h2" data-target="sec-part-4-governance">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ส่วนที่ 4: ธรรมาภิบาล สถาปัตยกรรมเอกสาร และ RACI Matrix (Governance & Documentation)</span>
+  </a>
+<a href="#sec-4-1-structure" class="toc-item toc-h3" data-target="sec-4-1-structure">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">4.1 โครงสร้างการกำกับดูแลด้านความมั่นคงปลอดภัย (Cybersecurity Governance Structure)</span>
+  </a>
+<a href="#sec-4-2-raci" class="toc-item toc-h3" data-target="sec-4-2-raci">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">4.2 การออกแบบเมทริกซ์กำหนดความรับผิดชอบ (RACI Matrix)</span>
+  </a>
+<a href="#sec-4-3-doc-hierarchy" class="toc-item toc-h3" data-target="sec-4-3-doc-hierarchy">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">4.3 ลำดับชั้นของเอกสารด้านความมั่นคงปลอดภัย (Document Hierarchy)</span>
+  </a>
+<a href="#sec-part-5-roadmap" class="toc-item toc-h2" data-target="sec-part-5-roadmap">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ส่วนที่ 5: แผนการนำมาตรการไปปฏิบัติและบทบาท Lead Implementer (Implementation Roadmap)</span>
+  </a>
+<a href="#sec-5-1-lifecycle" class="toc-item toc-h3" data-target="sec-5-1-lifecycle">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">5.1 วงจรการนำระบบไปปฏิบัติ 8 ระยะ (The 8-Phase Implementation Lifecycle)</span>
+  </a>
+<a href="#sec-5-2-roadmap" class="toc-item toc-h3" data-target="sec-5-2-roadmap">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">5.2 การจัดทำ Implementation Roadmap ระยะ 6 เดือน (6-Month Roadmap)</span>
+  </a>
+<a href="#sec-5-3-competencies" class="toc-item toc-h3" data-target="sec-5-3-competencies">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">5.3 สมรรถนะหลัก 5 ประการของ Lead Implementer</span>
+  </a>
+<a href="#sec-part-6-auditor-view" class="toc-item toc-h2" data-target="sec-part-6-auditor-view">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ส่วนที่ 6: มุมมองและการตรวจสอบของ Lead Auditor ในเรื่องบริบทและขอบเขต</span>
+  </a>
+<a href="#sec-6-1-working-paper" class="toc-item toc-h3" data-target="sec-6-1-working-paper">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">6.1 กระดาษทำการตรวจสอบบริบทและขอบเขต (Audit Working Paper - Context & Scope)</span>
+  </a>
+<a href="#sec-6-2-ncr" class="toc-item toc-h3" data-target="sec-6-2-ncr">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">6.2 ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง (Sample Non-Conformity Report: NCR)</span>
+  </a>
+<a href="#sec-part-7-case-study" class="toc-item toc-h2" data-target="sec-part-7-case-study">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">ส่วนที่ 7: กรณีศึกษาเชิงประยุกต์ "มหาวิทยาลัยดิจิทัลสมมติ" (Core Applied Case Study)</span>
+  </a>
+<a href="#sec-7-1-topology" class="toc-item toc-h3" data-target="sec-7-1-topology">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">7.1 ข้อมูลพื้นฐานและสถาปัตยกรรมระบบ</span>
+  </a>
+<a href="#sec-simulation" class="toc-item toc-h2" data-target="sec-simulation">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน (Active Learning Simulation)</span>
+  </a>
+<a href="#sec-scoping-battle" class="toc-item toc-h3" data-target="sec-scoping-battle">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">กิจกรรม: "The Scoping Battle: ข้อพิพาทการตัดเครือข่ายหอพักนักศึกษาออกจากขอบเขต"</span>
+  </a>
+<a href="#sec-perspectives" class="toc-item toc-h2" data-target="sec-perspectives">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">มุมมองวิชาชีพประจำบท (Professional Perspectives)</span>
+  </a>
+<a href="#sec-assignment" class="toc-item toc-h2" data-target="sec-assignment">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">แบบฝึกหัดและการบ้านประจำบทที่ 4</span>
+  </a>
+<a href="#sec-summary" class="toc-item toc-h2" data-target="sec-summary">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">สรุปบทที่ 4</span>
+  </a>
+<a href="#sec-references" class="toc-item toc-h2" data-target="sec-references">
+    <span class="toc-bullet"></span>
+    <span class="toc-text">เอกสารอ้างอิงและมาตรฐานสากล</span>
+  </a>
+      </nav>
+    </aside>
+
+    <!-- ARTICLE BODY -->
+    <main class="content-area">
+      <article class="article-body">
+<h1 class="article-title" id="sec-1">บทที่ 4 บทบาท Lead Implementer และการกำหนดบริบทองค์กร (Lead Implementer Role, Organizational Context, and Scoping)</h1>
+<p>บทนี้มุ่งเน้นการเปลี่ยนผ่านบทบาทจากการทำความเข้าใจข้อกำหนดทางกฎหมายและมาตรฐานในบทที่ 2 และบทที่ 3 เข้าสู่การลงมือปฏิบัติการจริงในฐานะ <strong>ผู้จัดทำระบบ (Lead Implementer)</strong> การจัดทำระบบบริหารจัดการความมั่นคงปลอดภัยไซเบอร์ (Cybersecurity Management System) ไม่สามารถเริ่มต้นด้วยการติดตั้งเทคโนโลยีความปลอดภัยเพียงลำพัง หากแต่ต้องเริ่มต้นจากการทำความเข้าใจตัวตน สภาพแวดล้อม และพันธกิจขององค์กร ผ่านการวิเคราะห์บริบทภายในและภายนอกอย่างเป็นระบบ การจำแนกความคาดหวังของผู้มีส่วนได้ส่วนเสียด้วย Mendelow's Matrix การกำหนดขอบเขตระบบ (Scoping) ครอบคลุม 6 มิติอย่างรัดกุม การจัดวางโครงสร้างการกำกับดูแล (Governance Structure) การกระจายอำนาจหน้าที่ด้วย RACI Matrix และการวางแผนนำระบบไปปฏิบัติการ (Implementation Roadmap) เพื่อสร้างรากฐานที่มั่นคงก่อนเข้าสู่กระบวนการประเมินความเสี่ยงและการตรวจสอบในบทต่อ ๆ ไป</p>
+<hr class="section-divider">
+<h2 id="sec-learning-outcomes">ผลลัพธ์การเรียนรู้ของบท (Course Learning Outcomes)</h2>
+<p>เมื่อสิ้นสุดการเรียนรู้ในบทนี้ นักศึกษาสามารถ:</p>
+<ol class="content-list ordered">
+  <li><strong>วิเคราะห์บริบทภายในและภายนอกขององค์กรได้อย่างเป็นระบบ (CLO4):</strong> ประยุกต์ใช้เครื่องมือ PESTLE Analysis และ SWOT Matrix ในการวิเคราะห์ปัจจัยสภาพแวดล้อม กฎหมาย พันธกิจ สถาปัตยกรรมเทคโนโลยี หนี้ทางเทคนิค (Technical Debt) และการพึ่งพาบุคคลภายนอก ที่ส่งผลต่อความมั่นคงปลอดภัยไซเบอร์ขององค์กรได้อย่างรอบด้าน</li>
+  <li><strong>วิเคราะห์ผู้มีส่วนได้ส่วนเสียและจัดลำดับความสำคัญตาม Mendelow's Matrix ได้ (CLO4):</strong> ระบุกลุ่มผู้มีส่วนได้ส่วนเสียทั้งภายในและภายนอก วิเคราะห์ความคาดหวังและข้อกำหนดทางกฎหมาย/สัญญา พร้อมทั้งจัดทำทะเบียนผู้มีส่วนได้ส่วนเสีย (Stakeholder Register) และแผนการสื่อสารได้อย่างครบถ้วน</li>
+  <li><strong>กำหนดขอบเขตระบบบริหารจัดการความมั่นคงปลอดภัยไซเบอร์ครอบคลุม 6 มิติได้ (CLO4):</strong> กำหนดขอบเขตด้านองค์กร กายภาพ เทคโนโลยี เครือข่าย ข้อมูล และห่วงโซ่อุปทาน จัดทำเอกสารแถลงขอบเขต (Scope Statement) ฉบับทางการ พร้อมทั้งระบุและป้องกัน 4 หลุมพรางอันตรายในการตัดทอนขอบเขต (Scoping Pitfalls) ได้</li>
+  <li><strong>ออกแบบโครงสร้างการกำกับดูแลและกระจายความรับผิดชอบด้วย RACI Matrix ได้ (CLO4):</strong> ออกแบบบทบาทหน้าที่ของคณะกรรมการกำกับดูแล (Steering Committee), CISO, สามเหลี่ยมความเป็นเจ้าของ (Risk Owner, Asset Owner, Control Owner) และทีมตอบสนองเหตุฉุกเฉิน (CSIRT) พร้อมทั้งสร้างตาราง RACI Matrix ตามกฎเหล็ก "1 Accountable ต่องาน" ได้อย่างถูกต้อง</li>
+  <li><strong>ออกแบบสถาปัตยกรรมเอกสาร 5 ระดับและจัดทำ Implementation Roadmap ระยะ 6 เดือนได้ (CLO3, CLO4):</strong> จัดลำดับชั้นของระบบเอกสารความมั่นคงปลอดภัย (Policy, Standard, Procedure, Guideline, Record) และจัดทำแผนแม่บทการนำระบบไปปฏิบัติการระยะ 6 เดือน ที่ระบุกิจกรรม ทรัพยากร กรอบเวลา และตัวชี้วัดความสำเร็จได้อย่างเป็นรูปธรรม</li>
+  <li><strong>ตรวจสอบความสมบูรณ์ของบริบทและขอบเขตในมุมมองของ Lead Auditor ได้ (CLO2, CLO7):</strong> ตรวจสอบเอกสารบริบทและขอบเขตด้วยกระดาษทำการตรวจสอบ (Audit Working Paper) ตรวจจับพฤติกรรมการตัดทอนขอบเขตโดยมิชอบ (Cherry-picking) และจัดทำใบรายงานข้อค้นพบการตรวจ (Non-Conformity Report: NCR) ได้</li>
+</ol>
+<hr class="section-divider">
+<h2 id="sec-intro">บทนำประจำบท: จาก "ผู้ประเมิน" สู่ "สถาปนิกผู้สร้างระบบ"</h2>
+<h3 id="sec-intro-philosophy">ความแตกต่างทางปรัชญาระหว่าง Lead Auditor กับ Lead Implementer</h3>
+<p>ในบทที่ 1 ถึงบทที่ 3 เราได้ศึกษาหลักการตรวจสอบ กรอบกฎหมายตาม พ.ร.บ.ไซเบอร์ 2562 และประมวลแนวทางปฏิบัติของ กกม. ซึ่งส่วนใหญ่มองระบบความมั่นคงปลอดภัยผ่านสายตาของ <strong>ผู้ตรวจสอบ (Auditor)</strong> คือการนำ "ไม้บรรทัด" มาทาบวัดระบบที่มีอยู่แล้วเพื่อค้นหาข้อบกพร่อง แต่คำถามสำคัญคือ: <strong>"ระบบความมั่นคงปลอดภัยเหล่านั้นเกิดขึ้นมาได้อย่างไรตั้งแต่แรก?"</strong></p>
+<p>นี่คือจุดเริ่มต้นของบทบาท <strong>Lead Implementer (ผู้จัดทำระบบความมั่นคงปลอดภัยสารสนเทศ)</strong></p>
+<p>หากเปรียบ Lead Auditor เป็น <em>ผู้ตรวจการอาคาร</em> ที่คอยตรวจสอบว่าอาคารสร้างถูกต้องตามแบบ ปลอดภัย และมีระบบดับเพลิงตามกฎหมายหรือไม่ *<em>Lead Implementer ก็คือ </em>สถาปนิกและวิศวกรผู้ควบคุมงานก่อสร้าง*** ที่ต้องเข้าใจสภาพภูมิประเทศ (บริบทองค์กร) เข้าใจความต้องการของผู้อยู่อาศัย (ผู้มีส่วนได้ส่วนเสีย) ออกแบบโครงสร้างอาคาร (ธรรมาภิบาลและการกำกับดูแล) และวางแผนจัดซื้อจัดจ้างควบคุมงานก่อสร้างทีละขั้นตอน (Implementation Roadmap) จนกระทั่งอาคารแล้วเสร็จและพร้อมรับการตรวจสอบ</p>
+
+<div class="figure-container" id="fig-4-1">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 4.1</div>
+    <div class="figure-title">บทบาทเชิงคู่ขนานในวิชาชีพไซเบอร์: Lead Implementer vs. Lead Auditor</div>
+  </div>
+  <div class="figure-caption">
+    เปรียบเทียบมิติการทำงานเชิงปรัชญาระหว่าง "สถาปนิกผู้สร้างและขับเคลื่อนระบบ" (Implementer) กับ "ผู้ตรวจการอาคารและทวนสอบความสอดคล้อง" (Auditor)
+  </div>
+
+  <div class="dual-roles-grid">
+    <!-- Implementer Card -->
+    <div class="role-card implementer-card">
+      <div class="role-badge implementer-badge">
+        <span class="role-icon">🏗️</span>
+        <span>LEAD IMPLEMENTER (ผู้จัดทำระบบ)</span>
+      </div>
+      <div class="role-motto">"สวมหมวกผู้สร้างและขับเคลื่อน จากความว่างเปล่าสู่ระบบที่ทำงานได้จริง"</div>
+      
+      <div class="role-aspects">
+        <div class="aspect-item">
+          <div class="aspect-label">จุดเริ่มต้น (Starting Point)</div>
+          <div class="aspect-desc">เริ่มต้นจากความเข้าใจบริบทองค์กร สภาพแวดล้อมทางธุรกิจ และความเสี่ยงที่แท้จริง</div>
+        </div>
+        <div class="aspect-item">
+          <div class="aspect-label">ภารกิจหลัก (Core Mission)</div>
+          <div class="aspect-desc">ออกแบบนโยบาย, ติดตั้งเทคโนโลยี, กำหนดขั้นตอนปฏิบัติ (SOP) และฝึกอบรมคน</div>
+        </div>
+        <div class="aspect-item">
+          <div class="aspect-label">การบริหารทรัพยากร (Resources)</div>
+          <div class="aspect-desc">บริหารจัดการงบประมาณ บุคลากร เวลา และผลักดัน Control Owners ให้ทำตามแผน</div>
+        </div>
+        <div class="aspect-item">
+          <div class="aspect-label">เป้าหมายสูงสุด (Ultimate Goal)</div>
+          <div class="aspect-desc">ระบบมีความมั่นคงปลอดภัย ใช้งานได้จริง ควบคุมความเสี่ยงได้ และพร้อมรับการตรวจ</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auditor Card -->
+    <div class="role-card auditor-card">
+      <div class="role-badge auditor-badge">
+        <span class="role-icon">🔍</span>
+        <span>LEAD AUDITOR (ผู้ตรวจสอบ)</span>
+      </div>
+      <div class="role-motto">"สวมหมวกผู้ประเมินและทวนสอบ สุ่มตรวจเพื่อยืนยันประสิทธิผลอย่างเที่ยงธรรม"</div>
+      
+      <div class="role-aspects">
+        <div class="aspect-item">
+          <div class="aspect-label">จุดเริ่มต้น (Starting Point)</div>
+          <div class="aspect-desc">เริ่มต้นจากเกณฑ์การตรวจ (Audit Criteria) และหลักฐานเชิงประจักษ์ (Evidence)</div>
+        </div>
+        <div class="aspect-item">
+          <div class="aspect-label">ภารกิจหลัก (Core Mission)</div>
+          <div class="aspect-desc">สุ่มตรวจ, สัมภาษณ์ผู้ปฏิบัติงาน, ทดสอบมาตรการควบคุม และออกใบข้อบกพร่อง (NCR)</div>
+        </div>
+        <div class="aspect-item">
+          <div class="aspect-label">ความเป็นอิสระ (Independence)</div>
+          <div class="aspect-desc">รักษาความเป็นอิสระและเป็นกลาง ไม่ร่วมออกแบบระบบ เพื่อไม่ให้ตรวจผลงานตัวเอง</div>
+        </div>
+        <div class="aspect-item">
+          <div class="aspect-label">เป้าหมายสูงสุด (Ultimate Goal)</div>
+          <div class="aspect-desc">ให้ความเชื่อมั่นแก่ผู้บริหารและ Regulator ว่าระบบเป็นไปตามมาตรฐานและกฎหมาย</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3 id="sec-intro-tech-first">ความล้มเหลวของการเริ่มต้นแบบ "Tech-First"</h3>
+<p>ข้อผิดพลาดที่พบบ่อยที่สุดขององค์กรเมื่อต้องการสร้างความมั่นคงปลอดภัยไซเบอร์ คือการเริ่มต้นด้วยการ <strong>"ซื้อเทคโนโลยี" (Tech-First Approach)</strong> เช่น การจัดซื้อ Next-Generation Firewall ราคาแพง, ระบบ EDR ขั้นสูง หรือซอฟต์แวร์ SIEM โดยที่ยังไม่ทราบว่า:</p>
+<ul class="content-list">
+  <li>องค์กรกำลังปกป้องอะไร? (ทรัพย์สินสารสนเทศและบริการสำคัญคืออะไร?)</li>
+  <li>กฎหมายใดบ้างที่ผูกพันองค์กรอยู่? (พ.ร.บ.ไซเบอร์, PDPA หรือประกาศของ Regulator?)</li>
+  <li>ใครคือผู้มีอำนาจตัดสินใจยอมรับความเสี่ยง? (Risk Owner คือใคร?)</li>
+  <li>ใครมีหน้าที่เปิดดูการแจ้งเตือนและระงับเหตุเมื่อเกิดภัยคุกคาม? (ขาดขั้นตอนปฏิบัติและ RACI)</li>
+</ul>
+<p>ผลลัพธ์คือ องค์กรต้องสูญเสียงบประมาณมหาศาล แต่ระบบกลับถูกโจมตีสำเร็จ เพราะเจ้าหน้าที่ไม่ทราบหน้าที่ นโยบายไม่มีสภาพบังคับ และอุปกรณ์รักษาความปลอดภัยไม่ได้ถูกตั้งค่าให้สอดคล้องกับความเสี่ยงจริงขององค์กร</p>
+<p>มาตรฐานสากลด้านระบบบริหารจัดการ เช่น <strong>ISO/IEC 27001:2022 (ข้อกำหนดข้อ 4 และ 5)</strong> ตลอดจนกรอบการทำงาน <strong>NIST Cybersecurity Framework 2.0 (ฟังก์ชัน Govern - GV)</strong> จึงกำหนดหลักการสากลตรงกันว่า: <strong>การสร้างระบบความมั่นคงปลอดภัยต้องเริ่มต้นที่ "บริบทองค์กร (Context)" และ "การกำกับดูแล (Governance)" เสมอ</strong></p>
+<hr class="section-divider">
+<h2 id="sec-part-1-context">ส่วนที่ 1: การวิเคราะห์บริบทองค์กรเชิงลึก (Organizational Context Analysis)</h2>
+<p>ข้อกำหนดข้อ 4.1 ของ ISO/IEC 27001:2022 กำหนดให้องค์กรต้องระบุ <strong>"ประเด็นภายนอกและภายใน (External and Internal Issues)"</strong> ที่เกี่ยวข้องกับจุดมุ่งหมายขององค์กร และส่งผลต่อความสามารถในการบรรลุผลสัมฤทธิ์ของระบบบริหารจัดการ</p>
+
+<div class="figure-container" id="fig-4-2">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 4.2</div>
+    <div class="figure-title">ระบบนิเวศบริบทองค์กรเพื่อความมั่นคงปลอดภัยไซเบอร์ (Organizational Context Ecosystem)</div>
+  </div>
+  <div class="figure-caption">
+    โครงสร้างการวิเคราะห์บริบทตาม ISO/IEC 27001 ข้อ 4.1 และ NIST CSF 2.0 (Govern) ครอบคลุม 3 ชั้น: ปัจจัยภายนอก (PESTLE), บริบทภายในองค์กร และการพึ่งพาบุคคลภายนอก
+  </div>
+
+  <div class="context-ecosystem-wrapper">
+    <!-- External Tier -->
+    <div class="eco-tier external-tier">
+      <div class="tier-title"><span class="tier-dot ext"></span> 1. บริบทภายนอกองค์กร (External Context: PESTLE Analysis)</div>
+      <div class="eco-chips-grid">
+        <div class="eco-chip"><strong>Political:</strong> นโยบายรัฐบาลดิจิทัล, ภูมิรัฐศาสตร์ไซเบอร์</div>
+        <div class="eco-chip"><strong>Economic:</strong> งบประมาณจำกัด, เบี้ยประกันภัยไซเบอร์, Downtime Loss</div>
+        <div class="eco-chip"><strong>Social:</strong> วัฒนธรรม Remote/BYOD, Cyber Literacy, สิทธิความเป็นส่วนตัว</div>
+        <div class="eco-chip"><strong>Tech:</strong> ภัยจาก AI/Deepfake, Cloud Migration, ปัญหาซอฟต์แวร์ EOL</div>
+        <div class="eco-chip"><strong>Legal:</strong> พ.ร.บ.ไซเบอร์ 2562, PDPA 2562, พ.ร.บ.คอมพิวเตอร์ฯ</div>
+        <div class="eco-chip"><strong>Env:</strong> ความเสี่ยงน้ำท่วม/ไฟไหม้ Data Center, ระบบทำความเย็น CRAC</div>
+      </div>
+    </div>
+
+    <!-- Arrow Down -->
+    <div class="eco-flow-arrow">⬇ ขับเคลื่อนและกำหนดกรอบ ⬇</div>
+
+    <!-- Internal Tier -->
+    <div class="eco-tier internal-tier">
+      <div class="tier-title"><span class="tier-dot int"></span> 2. บริบทภายในองค์กร (Internal Context & Capabilities)</div>
+      <div class="eco-chips-grid">
+        <div class="eco-chip"><strong>Mission:</strong> บริการลงทะเบียนเรียน, ระบบจ่ายเงินเดือน, ข้อมูลเกรดเฉลี่ย</div>
+        <div class="eco-chip"><strong>Culture:</strong> วัฒนธรรมเปิดกว้าง (Blameless) vs การกลัวถูกลงโทษเมื่อโดนฟิชชิ่ง</div>
+        <div class="eco-chip"><strong>Structure:</strong> สายการบังคับบัญชาของ CISO และความเป็นอิสระในการตัดสินใจ</div>
+        <div class="eco-chip"><strong>Tech Debt:</strong> เซิร์ฟเวอร์เก่าไร้ Patch (Windows 2008 / CentOS 6), Flat Network</div>
+      </div>
+    </div>
+
+    <!-- Arrow Down -->
+    <div class="eco-flow-arrow">⬇ กำหนดมาตรการควบคุมและสัญญา ⬇</div>
+
+    <!-- Third-Party Tier -->
+    <div class="eco-tier vendor-tier">
+      <div class="tier-title"><span class="tier-dot ven"></span> 3. การพึ่งพาบุคคลภายนอกและห่วงโซ่อุปทาน (Third-Party & Supply Chain)</div>
+      <div class="eco-chips-grid">
+        <div class="eco-chip"><strong>Cloud/SaaS:</strong> AWS VPC, Microsoft 365, Google Workspace (Shared Responsibility)</div>
+        <div class="eco-chip"><strong>MSP / Vendors:</strong> ผู้ดูแลระบบ ERP ภายนอก, ผู้รับเหมาบำรุงรักษา Data Center</div>
+        <div class="eco-chip"><strong>Supply Chain:</strong> Payment Gateway ธนาคาร, การเชื่อมต่อ REST API ภายนอก</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3 id="sec-1-1-pestle">1.1 ปัจจัยภายนอก: PESTLE Analysis สำหรับความมั่นคงปลอดภัยไซเบอร์</h3>
+<p>PESTLE Analysis ช่วยให้ Lead Implementer มองเห็นภาพกว้างของสภาพแวดล้อมที่อยู่นอกเหนือการควบคุมโดยตรงขององค์กร ครอบคลุม 6 เสาหลัก:</p>
+<ol class="content-list ordered">
+  <li><strong>Political (การเมืองและนโยบายระดับชาติ):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>นโยบายการผลักดันสู่รัฐบาลดิจิทัล (Digital Government) และการเชื่อมต่อฐานข้อมูลภาครัฐ</li>
+  <li>ความขัดแย้งทางภูมิรัฐศาสตร์ (Geopolitics) และสงครามไซเบอร์ระหว่างประเทศ ที่อาจส่งผลให้เกิดการโจมตีทางไซเบอร์ต่อโครงสร้างพื้นฐานสำคัญ (Critical Information Infrastructure: CII)</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>Economic (เศรษฐกิจและต้นทุน):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>ภาวะเงินเฟ้อ งบประมาณแผ่นดินที่จำกัด และการจัดสรรงบประมาณด้านไอทีที่ต้องแข่งขันกับภารกิจอื่น</li>
+  <li>ต้นทุนค่าเบี้ยประกันภัยไซเบอร์ (Cyber Insurance Premiums) ที่ปรับตัวสูงขึ้นอย่างมาก</li>
+  <li>ผลกระทบทางการเงินหากระบบสำคัญหยุดชะงัก (Business Downtime Loss) เช่น การสูญเสียรายได้ในวันเปิดลงทะเบียนเรียน</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>Social (สังคม วัฒนธรรม และพฤติกรรมผู้ใช้):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>วัฒนธรรมการทำงานแบบไฮบริด (Hybrid / Remote Working) และการนำอุปกรณ์ส่วนตัวมาใช้ทำงาน (BYOD)</li>
+  <li>อัตราการรู้เท่าทันภัยไซเบอร์ (Cyber Literacy) ของพนักงานและนักศึกษา ซึ่งส่งผลต่อความเปราะบางต่อ Social Engineering และ Phishing</li>
+  <li>ความตระหนักรู้ของสังคมในเรื่องสิทธิความเป็นส่วนตัวและการคุ้มครองข้อมูลส่วนบุคคล</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>Technological (เทคโนโลยีและภัยคุกคามอุบัติใหม่):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>การเติบโตของการใช้ Generative AI ในการสร้างมัลแวร์ หรือการสร้าง Deepfake เพื่อหลอกลวงโอนเงิน</li>
+  <li>การย้ายระบบสู่ Cloud Computing (Multi-Cloud / Hybrid Cloud) และความซับซ้อนในการควบคุม</li>
+  <li>ปัญหาช่องโหว่ Zero-Day และการสิ้นสุดการสนับสนุนซอฟต์แวร์รุ่นเก่า (End-of-Life: EOL)</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>Legal & Regulatory (กฎหมาย กฎระเบียบ และการกำกับดูแล):</strong></li>
+</ol>
+<ul class="content-list">
+  <li><strong>พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562:</strong> หน้าที่ในการจัดทำประมวลแนวทางปฏิบัติฯ (ม.44), การแจ้งผู้ประสานงาน (ม.46), การประเมินความเสี่ยงและตรวจประเมินประจำปี (ม.54), และการรายงานเหตุภัยคุกคาม (ม.57)</li>
+  <li><strong>พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA):</strong> มาตรการรักษาความปลอดภัยขั้นต่ำตาม ม.35 และ ม.37 ตลอดจนโทษปรับสูงสุด 5 ล้านบาท</li>
+  <li><strong>พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2550 และที่แก้ไขเพิ่มเติม:</strong> หน้าที่ในการจัดเก็บข้อมูลจราจรคอมพิวเตอร์ (Log) ไม่น้อยกว่า 90 วัน</li>
+  <li>ประกาศและแนวทางปฏิบัติของ สกมช. และกระทรวงเจ้าสังกัด (อว.)</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>Environmental (สิ่งแวดล้อมและภัยพิบัติธรรมชาติ):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>ความเสี่ยงจากน้ำท่วม พายุ ไฟไหม้ และแผ่นดินไหว ซึ่งกระทบต่อความต่อเนื่องในการทำงานของศูนย์ข้อมูลหลัก (Data Center)</li>
+  <li>สภาพอากาศร้อนจัดที่อาจส่งผลกระทบต่อระบบทำความเย็น (CRAC / In-Row Cooling) ในห้องเซิร์ฟเวอร์</li>
+</ul>
+<h3 id="sec-1-2-internal">1.2 ปัจจัยภายใน: การประเมินพันธกิจ วัฒนธรรม และหนี้ทางเทคนิค (Technical Debt)</h3>
+<ol class="content-list ordered">
+  <li><strong>พันธกิจและบริการหลัก (Core Mission & Critical Services):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>บริการใดคือ "หัวใจหลัก" ขององค์กร ที่หากหยุดชะงักเกิน 4 ชั่วโมงแล้วองค์กรจะเกิดวิกฤต? สำหรับมหาวิทยาลัย คือ: ระบบลงทะเบียนเรียน, ระบบสั่งจ่ายเงินเดือน, และระบบฐานข้อมูลเกรดเฉลี่ย</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>วัฒนธรรมองค์กร (Organizational Culture):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>องค์กรมีวัฒนธรรมเปิดกว้างในการรายงานข้อผิดพลาด (Blameless Culture) หรือพนักงานกลัวการลงโทษจนต้องปกปิดเหตุการณ์เมื่อคลิกลิงก์ฟิชชิ่ง?</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>โครงสร้างการรายงาน (Reporting Lines & Governance):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>สายการบังคับบัญชาของ CISO มีความเป็นอิสระหรือไม่? หาก CISO ขึ้นตรงกับผู้อำนวยการฝ่ายไอที มักเกิดความขัดแย้งระหว่าง "ความรวดเร็วในการเปิดระบบ" กับ "ความปลอดภัยของระบบ"</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>สถาปัตยกรรมสารสนเทศและหนี้ทางเทคนิค (Technical Debt):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>องค์กรมีระบบปฏิบัติการเก่าที่ไม่ได้รับการอัปเดต Patch (เช่น Windows Server 2008, CentOS 6) หลงเหลืออยู่กี่ระบบ?</li>
+  <li>ระบบเครือข่ายเป็นแบบแบนราบ (Flat Network) หรือมีการแบ่งโซนความปลอดภัย (Network Segmentation)?</li>
+</ul>
+<h3 id="sec-1-3-swot">1.3 ตารางวิเคราะห์ Cybersecurity SWOT Matrix</h3>
+<div class="table-wrapper"><table class="data-table"><thead><tr><th>ปัจจัย</th><th>จุดแข็ง (Strengths - ภายใน)</th><th>จุดอ่อน (Weaknesses - ภายใน)</th></tr></thead><tbody><tr><td><strong>การบริหารและบุคลากร</strong></td><td>• ผู้บริหารระดับสูง (อธิการบดี) สนับสนุนงบประมาณด้านไซเบอร์<br>• มีการรวมศูนย์ระบบ Identity & Access Management (AD/IdP)</td><td>• ทีมงานไอทีมีเพียง 12 คน และไม่มี Security Analyst เฝ้าระวัง 24x7<br>• ขาดการจัดทำคู่มือขั้นตอนการปฏิบัติงาน (SOP) ที่เป็นลายลักษณ์อักษร</td></tr><tr><td><strong>เทคโนโลยีและระบบ</strong></td><td>• ศูนย์ข้อมูลหลักมีระบบไฟฟ้าสำรอง UPS และเครื่องกำเนิดไฟฟ้ามาตรฐาน<br>• มีการสำรองข้อมูลสำคัญรายวัน</td><td>• ระบบทะเบียนเป็นซอฟต์แวร์ Monolithic เก่าแก่กว่า 10 ปี ขาดเอกสารระบบ<br>• มีเซิร์ฟเวอร์เก่าที่ไม่สามารถอัปเดต Security Patch ได้จำนวน 8 เครื่อง</td></tr><tr><td><strong>ปัจจัย</strong></td><td><strong>โอกาส (Opportunities - ภายนอก)</strong></td><td><strong>อุปสรรค / ภัยคุกคาม (Threats - ภายนอก)</strong></td></tr><tr><td><strong>สภาพแวดล้อมและกฎหมาย</strong></td><td>• นโยบายภาครัฐสนับสนุนงบประมาณย้ายระบบสู่ Government Cloud (GDCC)<br>• มีเครือข่าย Sectoral CERT คอยให้การแจ้งเตือนภัยคุกคามล่วงหน้า</td><td>• การโจมตีด้วย Ransomware มุ่งเป้าสถาบันการศึกษาเพิ่มสูงขึ้นอย่างก้าวกระโดด<br>• กฎหมาย PDPA และ Cyber Act มีโทษปรับรุนแรงและความรับผิดทางอาญา (ม.77)</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h2 id="sec-part-2-stakeholders">ส่วนที่ 2: การวิเคราะห์ผู้มีส่วนได้ส่วนเสียและการจัดลำดับความสำคัญ (Stakeholder Analysis)</h2>
+<p>ตาม ISO/IEC 27001:2022 ข้อกำหนด 4.2 องค์กรต้องระบุผู้มีส่วนได้ส่วนเสียที่เกี่ยวข้อง วิเคราะห์ความต้องการ และตัดสินใจว่าความต้องการใดจะถูกนำมาแปลงเป็นข้อกำหนดของระบบความปลอดภัย</p>
+<h3 id="sec-2-1-mendelow">2.1 เมทริกซ์อำนาจและความสนใจ (Mendelow's Power-Interest Matrix)</h3>
+
+<div class="interactive-card" id="widget-4-1">
+  <div class="card-badge">INTERACTIVE WIDGET 4.1</div>
+  <div class="card-title">🔍 เครื่องมือสำรวจผู้มีส่วนได้ส่วนเสียตาม Mendelow's Matrix (Stakeholder Classifier)</div>
+  <p class="card-desc">คลิกเลือกกลุ่มผู้มีส่วนได้ส่วนเสียในมหาวิทยาลัย เพื่อสำรวจระดับอำนาจ-ความสนใจ กลยุทธ์การสื่อสาร และหลักฐานที่ Lead Auditor ขอดู</p>
+
+  <div class="stakeholder-selector-bar">
+    <button class="sh-tab-btn active" data-sh="sh-regulator">🏛️ สกมช. / สคส. (Regulator)</button>
+    <button class="sh-tab-btn" data-sh="sh-council">🎓 สภามหาวิทยาลัย / อธิการบดี</button>
+    <button class="sh-tab-btn" data-sh="sh-students">👨‍🎓 นักศึกษา / อาจารย์ (Users)</button>
+    <button class="sh-tab-btn" data-sh="sh-vendor">☁️ ผู้ให้บริการ Cloud / Vendor</button>
+    <button class="sh-tab-btn" data-sh="sh-finance">💰 กองคลัง / การเงิน</button>
+  </div>
+
+  <div class="stakeholder-display-panel" id="sh-display-panel">
+    <!-- Populated by JavaScript -->
+  </div>
+</div>
+
+<p>Lead Implementer ต้องจัดกลุ่มผู้มีส่วนได้ส่วนเสียเพื่อวางแผนการบริหารจัดการและการสื่อสารอย่างมีประสิทธิภาพ:</p>
+
+<div class="figure-container" id="fig-4-3">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 4.3</div>
+    <div class="figure-title">เมทริกซ์อำนาจและความสนใจของผู้มีส่วนได้ส่วนเสีย (Mendelow's Power-Interest Matrix)</div>
+  </div>
+  <div class="figure-caption">
+    การจัดกลุ่มผู้มีส่วนได้ส่วนเสีย 4 กลุ่มเพื่อกำหนดกลยุทธ์การสื่อสารและการตอบสนองข้อกำหนดตาม ISO/IEC 27001 ข้อ 4.2
+  </div>
+
+  <div class="matrix-2x2-wrapper">
+    <div class="matrix-axis-y-label">▲ อำนาจและอิทธิพล (POWER / INFLUENCE) สูง</div>
+    
+    <div class="matrix-grid-boxes">
+      <!-- Top Left: Keep Satisfied -->
+      <div class="matrix-quadrant quad-top-left">
+        <div class="quad-header">
+          <span class="quad-tag">อำนาจสูง // ความสนใจต่ำ</span>
+          <div class="quad-action">KEEP SATISFIED (สร้างความพึงพอใจ)</div>
+        </div>
+        <div class="quad-content">
+          <ul class="quad-list">
+            <li><strong>หน่วยงานกำกับดูแล (Regulators):</strong> สกมช. (พ.ร.บ.ไซเบอร์), สคส. (PDPA)</li>
+            <li><strong>ฝ่ายบริหารการเงิน:</strong> กองคลัง, กองแผนงาน, ผู้ตรวจสอบบัญชีแผ่นดิน</li>
+          </ul>
+          <div class="quad-strategy">📌 กลยุทธ์: ส่งรายงานผลการตรวจให้ครบตามกำหนด ปฏิบัติตามกฎหมายเพื่อป้องกันโทษปรับและคดีอาญา</div>
+        </div>
+      </div>
+
+      <!-- Top Right: Manage Closely -->
+      <div class="matrix-quadrant quad-top-right">
+        <div class="quad-header">
+          <span class="quad-tag active">อำนาจสูง // ความสนใจสูง</span>
+          <div class="quad-action">MANAGE CLOSELY (บริหารจัดการอย่างใกล้ชิด)</div>
+        </div>
+        <div class="quad-content">
+          <ul class="quad-list">
+            <li><strong>สภามหาวิทยาลัย / อธิการบดี:</strong> ผู้มีอำนาจอนุมัตินโยบายและงบประมาณสูงสุด</li>
+            <li><strong>คณะกรรมการกำกับดูแลด้านไซเบอร์:</strong> Steering Committee, CISO</li>
+          </ul>
+          <div class="quad-strategy">📌 กลยุทธ์: ประชุมรายไตรมาส รายงานสถานะความเสี่ยง ขอความเห็นชอบใน Risk Appetite และงบประมาณ</div>
+        </div>
+      </div>
+
+      <!-- Bottom Left: Monitor -->
+      <div class="matrix-quadrant quad-bottom-left">
+        <div class="quad-header">
+          <span class="quad-tag">อำนาจต่ำ // ความสนใจต่ำ</span>
+          <div class="quad-action">MONITOR (เฝ้าติดตาม)</div>
+        </div>
+        <div class="quad-content">
+          <ul class="quad-list">
+            <li><strong>ผู้จัดจำหน่ายอุปกรณ์ทั่วไป:</strong> Hardware/Cable Vendors</li>
+            <li><strong>ผู้รับจ้างบริการกายภาพ:</strong> พนักงานทำความสะอาด, รปภ. อาคาร</li>
+          </ul>
+          <div class="quad-strategy">📌 กลยุทธ์: ควบคุมผ่านสัญญาจ้าง (SLA), ข้อตกลงรักษาความลับ (NDA) และการคัดกรองการเข้าออกห้อง Server</div>
+        </div>
+      </div>
+
+      <!-- Bottom Right: Keep Informed -->
+      <div class="matrix-quadrant quad-bottom-right">
+        <div class="quad-header">
+          <span class="quad-tag">อำนาจต่ำ // ความสนใจสูง</span>
+          <div class="quad-action">KEEP INFORMED (แจ้งข้อมูลและสื่อสาร)</div>
+        </div>
+        <div class="quad-content">
+          <ul class="quad-list">
+            <li><strong>ผู้ใช้งานหลัก:</strong> อาจารย์, นักศึกษา (25,000 คน), เจ้าหน้าที่</li>
+            <li><strong>ทีมปฏิบัติการหน้างาน:</strong> เจ้าหน้าที่ Helpdesk, ครูผู้สอน</li>
+          </ul>
+          <div class="quad-strategy">📌 กลยุทธ์: สื่อสารสร้างความตระหนักรู้ (Awareness), ซ้อม Phishing Drill, แจ้งเตือนล่วงหน้าเมื่อปิดปรับปรุงระบบ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="matrix-axis-x-label">ความสนใจและความคาดหวัง (INTEREST) สูง ▶</div>
+  </div>
+</div>
+
+<ol class="content-list ordered">
+  <li><strong>Manage Closely (อำนาจสูง - ความสนใจสูง):</strong> สภามหาวิทยาลัย, อธิการบดี, CISO, และ Steering Committee ต้องสื่อสารอย่างใกล้ชิด รายงานสถานะความเสี่ยง และขออนุมัติทิศทางนโยบาย</li>
+  <li><strong>Keep Satisfied (อำนาจสูง - ความสนใจต่ำ):</strong> หน่วยงานกำกับดูแลตามกฎหมาย (สกมช., สคส., ดีอีเอส) ต้องปฏิบัติตามกฎหมายและส่งรายงานการตรวจสอบให้ครบถ้วนตามกำหนดเวลาเพื่อไม่ให้ถูกลงโทษ</li>
+  <li><strong>Keep Informed (อำนาจต่ำ - ความสนใจสูง):</strong> นักศึกษา อาจารย์ และพนักงานผู้ใช้งานระบบ ต้องสื่อสาร สร้างความตระหนักรู้ อบรมความปลอดภัย และแจ้งเตือนเมื่อระบบมีการปรับปรุงหรือมีเหตุฉุกเฉิน</li>
+  <li><strong>Monitor (อำนาจต่ำ - ความสนใจต่ำ):</strong> ผู้รับจ้างบริการทั่วไป เฝ้าระวังผ่านการทำสัญญาและควบคุมการเข้าออกพื้นที่ทางกายภาพ</li>
+</ol>
+<h3 id="sec-2-2-register">2.2 ทะเบียนผู้มีส่วนได้ส่วนเสีย (Stakeholder Register Template)</h3>
+<div class="table-wrapper"><table class="data-table"><thead><tr><th>รหัส</th><th>กลุ่มผู้มีส่วนได้ส่วนเสีย</th><th>กลุ่มตามเมทริกซ์</th><th>ความต้องการและความคาดหวัง</th><th>ฐานข้อกำหนด (กฎหมาย / ธุรกิจ)</th><th>วิธีการตอบสนองข้อกำหนด</th><th>หลักฐานเชิงประจักษ์ (Audit Evidence)</th></tr></thead><tbody><tr><td><strong>SH-01</strong></td><td>สำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช.)</td><td>Keep Satisfied</td><td>• ได้รับการแจ้งชื่อผู้ประสานงาน<br>• จัดทำประมวลแนวทางปฏิบัติฯ<br>• มีการประเมินความเสี่ยงและตรวจประเมินประจำปี<br>• รายงานเหตุการณ์ภัยคุกคามสำคัญ</td><td>• พ.ร.บ.ไซเบอร์ 2562 ม.44, 46, 54, 57<br>• ประกาศ กกม. 2564</td><td>• แต่งตั้งผู้ประสานงานตาม ม.46<br>• จ้างผู้ตรวจสอบอิสระตรวจประจำปี<br>• ส่งผลสรุปรายงานภายใน 30 วัน</td><td>• หนังสือนำส่งผู้ประสานงาน<br>• สัญญาจ้างผู้ตรวจสอบภายนอก<br>• หนังสือนำส่งรายงานแก่ สกมช.</td></tr><tr><td><strong>SH-02</strong></td><td>สำนักงานคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล (สคส. / PDPC)</td><td>Keep Satisfied</td><td>• มีมาตรการรักษาความปลอดภัยข้อมูลส่วนบุคคลที่เหมาะสม<br>• แจ้งเหตุข้อมูลรั่วไหลภายใน 72 ชม.</td><td>• พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 ม.35, 37</td><td>• เข้ารหัสข้อมูลสำคัญ (Encryption)<br>• มีแผน Incident Response Plan</td><td>• นโยบายคุ้มครองข้อมูลส่วนบุคคล<br>• บันทึกรายการประมวลผล (RoPA)<br>• Incident Response Plan</td></tr><tr><td><strong>SH-03</strong></td><td>สภามหาวิทยาลัย / อธิการบดี</td><td>Manage Closely</td><td>• มหาวิทยาลัยดำเนินงานต่อเนื่อง ไม่เสียชื่อเสียง<br>• งบประมาณคุ้มค่าความเสี่ยง<br>• ผู้บริหารไม่ถูกดำเนินคดีตาม ม.77</td><td>• พระราชบัญญัติมหาวิทยาลัย<br>• พ.ร.บ.ไซเบอร์ ม.77</td><td>• ประชุม Steering Committee ทุกไตรมาส<br>• รายงานสรุปความเสี่ยงต่อสภาฯ</td><td>• รายงานการประชุมสภามหาวิทยาลัย<br>• เอกสาร Risk Appetite Statement</td></tr><tr><td><strong>SH-04</strong></td><td>นักศึกษาและผู้ปกครอง (25,000 คน)</td><td>Keep Informed</td><td>• ระบบลงทะเบียนและชำระเงินไม่ล่ม<br>• ข้อมูลผลการเรียนและบัตรประชาชนปลอดภัย</td><td>• พันธกิจของมหาวิทยาลัย<br>• สัญญาการให้บริการการศึกษา</td><td>• ทำ Load Balancing และ Redundancy<br>• จำกัดสิทธิ์ตาม Role-based Access</td><td>• สถิติ Uptime ระบบทะเบียน (>99.5%)<br>• บันทึก Access Control Matrix</td></tr><tr><td><strong>SH-05</strong></td><td>ผู้ให้บริการระบบคลาวด์และ Software Vendor</td><td>Monitor</td><td>• ได้รับข้อมูลการเชื่อมต่อที่ถูกต้อง<br>• มีมาตรการควบคุมการเข้าถึงระบบจากระยะไกล</td><td>• สัญญาจ้างและข้อตกลง SLA</td><td>• ทำสัญญา NDA<br>• บังคับใช้ MFA สำหรับการรีโมต</td><td>• สัญญาจ้างและ NDA ที่ลงนามแล้ว<br>• Log การเข้าถึงระบบผ่าน MFA</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h2 id="sec-part-3-scoping">ส่วนที่ 3: มิติทั้ง 6 ของการกำหนดขอบเขตระบบบริหารจัดการ (The 6 Dimensions of Scoping)</h2>
+<p>การกำหนดขอบเขต (Scoping) ตามข้อกำหนด 4.3 ของ ISO/IEC 27001 คือ <strong>การขีดเส้นแบ่งเขตแดนอย่างเป็นทางการว่า ระบบ กระบวนการ สินทรัพย์ ข้อมูล และสถานที่ใดบ้างที่อยู่ภายใต้การกำกับดูแลของระบบความปลอดภัย</strong> ขอบเขตที่คลุมเครือจะนำไปสู่ความล้มเหลวของการจัดทำระบบและทำให้การตรวจสอบไร้ทิศทาง</p>
+
+<div class="figure-container" id="fig-4-4">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 4.4</div>
+    <div class="figure-title">มิติทั้ง 6 ของการกำหนดขอบเขตระบบบริหารจัดการ (The 6 Scoping Dimensions)</div>
+  </div>
+  <div class="figure-caption">
+    กรอบการกำหนดขอบเขตแบบรอบด้าน 360 องศา ตามข้อกำหนด ISO/IEC 27001 ข้อ 4.3 ป้องกันไม่ให้เกิดช่องว่างหรือจุดบอดความปลอดภัย
+  </div>
+
+  <div class="scoping-grid">
+    <div class="scoping-card">
+      <div class="sc-badge">1. องค์กร (ORGANIZATION)</div>
+      <div class="sc-title">ขอบเขตด้านหน่วยงานและบุคคล</div>
+      <div class="sc-desc">ระบุสำนัก ฝ่าย และสายงานที่อยู่ใต้ระบบ: สำนักวิทยบริการและไอที, กองบริการการศึกษา (ทะเบียน), กองคลัง</div>
+      <div class="sc-evidence">หลักฐาน: แผนผังองค์กร, คำสั่งมอบหมายงาน</div>
+    </div>
+
+    <div class="scoping-card">
+      <div class="sc-badge">2. กายภาพ (PHYSICAL)</div>
+      <div class="sc-title">ขอบเขตด้านสถานที่และอาคาร</div>
+      <div class="sc-desc">ศูนย์ข้อมูลหลัก (ชั้น 3 อาคารบรรณสาร), ศูนย์ข้อมูลสำรอง DR Site (วิทยาเขตย่อย), ห้องปฏิบัติการ Admin & Helpdesk</div>
+      <div class="sc-evidence">หลักฐาน: ผังอาคาร, บันทึกสแกนลายนิ้วมือเข้าห้อง Server</div>
+    </div>
+
+    <div class="scoping-card">
+      <div class="sc-badge">3. เทคโนโลยี (TECH & APPS)</div>
+      <div class="sc-title">ขอบเขตระบบงานและคอมพิวเตอร์</div>
+      <div class="sc-desc">ระบบทะเบียนนักศึกษา (REG), ระบบบัญชีการเงิน (ERP), ระบบยืนยันตัวตนกลาง (Active Directory / Central IdP)</div>
+      <div class="sc-evidence">หลักฐาน: Software Asset Inventory, รายการ VM 24 เครื่อง</div>
+    </div>
+
+    <div class="scoping-card">
+      <div class="sc-badge">4. เครือข่าย (NETWORK)</div>
+      <div class="sc-title">ขอบเขตโซนเครือข่ายและเกตเวย์</div>
+      <div class="sc-desc">Core Switch & Firewall โซน Data Center: VLAN 100 (Web Tier), VLAN 110 (App Tier), VLAN 120 (DB Tier), Admin VPN</div>
+      <div class="sc-evidence">หลักฐาน: Network Topology Diagram, Firewall Rules</div>
+    </div>
+
+    <div class="scoping-card">
+      <div class="sc-badge">5. ข้อมูล (DATA ASSETS)</div>
+      <div class="sc-title">ขอบเขตข้อมูลสำคัญและวงจรชีวิต</div>
+      <div class="sc-desc">ฐานข้อมูลประวัตินักศึกษา, ข้อมูลเกรดเฉลี่ย, ฐานข้อมูลเงินเดือน, รายการธุรกรรมการชำระเงินค่าเทอม</div>
+      <div class="sc-evidence">หลักฐาน: Data Classification Register, แผนสำรองข้อมูล</div>
+    </div>
+
+    <div class="scoping-card">
+      <div class="sc-badge">6. บุคคลภายนอก (SUPPLY CHAIN)</div>
+      <div class="sc-title">ขอบเขตจุดเชื่อมต่อภายนอก (Interfaces)</div>
+      <div class="sc-desc">REST API เชื่อมต่อ Payment Gateway ธนาคาร, SAML SSO เชื่อม Microsoft Azure AD, VPN รีโมตของ Vendor ดูแลระบบ</div>
+      <div class="sc-evidence">หลักฐาน: API Interface Spec, สัญญาจ้าง SLA/NDA</div>
+    </div>
+  </div>
+</div>
+
+<h3 id="sec-3-1-dimensions">3.1 รายละเอียดของมิติทั้ง 6:</h3>
+<ol class="content-list ordered">
+  <li><strong>ขอบเขตด้านองค์กร (Organizational Boundary):</strong> ระบุหน่วยงาน ฝ่าย หรือส่วนงานที่อยู่ภายใต้ระบบ เช่น "ครอบคลุมสำนักวิทยบริการและเทคโนโลยีสารสนเทศ, กองบริการการศึกษา และกองคลัง"</li>
+  <li><strong>ขอบเขตทางกายภาพ (Physical Boundary):</strong> ระบุสถานที่ตั้งของอาคาร ห้อง หรืออุปกรณ์ เช่น "ห้องศูนย์ข้อมูลหลัก (Data Center) ชั้น 3 อาคารบรรณสาร, ศูนย์สำรอง (DR Site) วิทยาเขตเฉลิมพระเกียรติ, และห้องปฏิบัติการของทีมผู้ดูแลระบบ"</li>
+  <li><strong>ขอบเขตทางเทคโนโลยีและระบบงาน (Technological & Application Boundary):</strong> ระบุรายชื่อระบบคอมพิวเตอร์ แอปพลิเคชัน และระบบปฏิบัติการ เช่น "ระบบบริการการศึกษาและทะเบียน (REG System), ระบบบัญชีการเงิน (ERP), และระบบจัดการสิทธิ์เข้าถึงกลาง (Central Active Directory / IdP)"</li>
+  <li><strong>ขอบเขตทางเครือข่าย (Network Boundary):</strong> ระบุช่วง IP Address, Virtual LAN (VLAN), เครือข่าย DMZ, การเชื่อมต่อ VPN และเครือข่ายคลาวด์เสมือน (AWS VPC / Azure VNet)</li>
+  <li><strong>ขอบเขตด้านข้อมูล (Data Boundary):</strong> ระบุประเภทและวงจรชีวิตของข้อมูลที่ไหลเวียนในระบบ เช่น "ฐานข้อมูลประวัตินักศึกษา, ฐานข้อมูลคะแนนผลการเรียน, ข้อมูลเงินเดือนบุคลากร และบันทึกธุรกรรมการชำระเงิน"</li>
+  <li><strong>ขอบเขตความสัมพันธ์กับบุคคลภายนอก (Third-party & Supply Chain Boundary):</strong> ระบุจุดเชื่อมต่อ (Interfaces) และความเชื่อมโยงกับระบบภายนอก เช่น "API Gateway เชื่อมต่อระบบชำระเงินธนาคารกรุงไทย, การเชื่อมต่อ SSO กับ Microsoft 365, และการเชื่อมต่อรีโมตของผู้รับจ้างบำรุงรักษาระบบ ERP"</li>
+</ol>
+<h3 id="sec-3-2-statement">3.2 ตัวอย่างเอกสารแถลงขอบเขตฉบับทางการ (Official Scope Statement):</h3>
+
+<div class="callout doc-sample">
+  <div class="callout-title">📜 ตัวอย่างเอกสารแถลงขอบเขตฉบับทางการ (Official Scope Statement)</div>
+  <div class="doc-sample-body">
+    <p><strong>เอกสารแถลงขอบเขตระบบบริหารจัดการความมั่นคงปลอดภัยไซเบอร์ (Scope Statement)</strong><br>
+    <strong>ชื่อองค์กร:</strong> มหาวิทยาลัยดิจิทัลสมมติ (Digital University)<br>
+    <strong>เวอร์ชัน:</strong> 1.0 (วันที่มีผลบังคับใช้: 1 พฤศจิกายน 2567)</p>
+    <hr style="margin:10px 0; border:none; border-top:1px dashed var(--border-color);">
+    <p><strong>1. ข้อความแถลงขอบเขตหลัก (Core Scope Statement):</strong><br>
+    <em>"ระบบบริหารจัดการความมั่นคงปลอดภัยไซเบอร์ของมหาวิทยาลัยดิจิทัลสมมติ ครอบคลุมการบริหารจัดการ การปฏิบัติการ การควบคุมความปลอดภัย และการคุ้มครองข้อมูล สำหรับ <strong>ระบบบริการการศึกษาและทะเบียนนักศึกษา (Student Registration System: REG)</strong>, <strong>ระบบบัญชีและการเงิน (Financial ERP System)</strong> และ <strong>ระบบยืนยันตัวตนกลาง (Central Identity Provider: Active Directory / IdP)</strong> ซึ่งดำเนินการโดยสำนักวิทยบริการและเทคโนโลยีสารสนเทศ ร่วมกับกองบริการการศึกษาและกองคลัง"</em></p>
+    <p><strong>2. สถานที่ตั้งทางกายภาพในขอบเขต:</strong></p>
+    <ul>
+      <li>ศูนย์ข้อมูลหลัก (Primary Data Center): ห้อง Data Center ชั้น 3 อาคารบรรณสาร มหาวิทยาลัยดิจิทัลสมมติ</li>
+      <li>ศูนย์ข้อมูลสำรอง (Disaster Recovery Site): ห้อง Server ชั้น 1 อาคารเรียนรวม วิทยาเขตเฉลิมพระเกียรติ</li>
+      <li>พื้นที่สำนักงานปฏิบัติการของทีมผู้ดูแลระบบและฝ่าย Helpdesk ชั้น 2 อาคารบรรณสาร</li>
+    </ul>
+    <p><strong>3. ขอบเขตทางเครือข่ายและระบบสารสนเทศ:</strong></p>
+    <ul>
+      <li>เครือข่าย Core Switch และ Firewall ของโซน Data Center (VLAN 100: Web Tier, VLAN 110: App Tier, VLAN 120: DB Tier)</li>
+      <li>เซิร์ฟเวอร์เสมือน (Virtual Machines) จำนวน 24 เครื่องบนระบบ Nutanix Hyperconverged Infrastructure</li>
+      <li>ระบบคลาวด์ AWS VPC (ap-southeast-1) ที่รองรับระบบ Mobile App API Gateway</li>
+    </ul>
+    <p><strong>4. การเชื่อมต่อและจุดประสานภายนอก (Interfaces &amp; Dependencies):</strong></p>
+    <ul>
+      <li>การเชื่อมต่อผ่าน REST API ระหว่างระบบ REG กับ Payment Gateway ของธนาคารกรุงไทย จำกัด (มหาชน)</li>
+      <li>การเชื่อมต่อผ่านโปรโตคอล SAML 2.0 / OAuth 2.0 ระหว่าง Central IdP กับระบบ Microsoft Azure AD (Entra ID)</li>
+    </ul>
+    <p><strong>5. ข้อยกเว้นที่ไม่อยู่ในขอบเขต (Exclusions) และเหตุผลประกอบ:</strong></p>
+    <ul>
+      <li><em>ระบบเครือข่ายอินเทอร์เน็ตไร้สายสำหรับหอพักนักศึกษา (Dormitory Wi-Fi):</em> ไม่อยู่ในขอบเขตระบบบริหารจัดการนี้ เนื่องจากแยกเครือข่ายเชิงตรรกะผ่าน Firewall คนละชุด ไม่มีการเชื่อมต่อไปยังโซนฐานข้อมูลสำคัญ และได้รับการควบคุมความปลอดภัยผ่านระบบกักกัน (Guest Isolation Network) แยกต่างหาก</li>
+    </ul>
+  </div>
+</div>
+
+<h3 id="sec-3-3-pitfalls">3.3 หลุมพรางและข้อผิดพลาดในการกำหนดขอบเขต (4 Scoping Pitfalls)</h3>
+
+<div class="interactive-card" id="widget-4-2">
+  <div class="card-badge">INTERACTIVE WIDGET 4.2</div>
+  <div class="card-title">🛡️ โปรแกรมตรวจสอบความสมเหตุสมผลของการกำหนดขอบเขต (Scoping Validator)</div>
+  <p class="card-desc">สวมบทบาทเป็น Lead Auditor ตรวจสอบ 4 กรณีการกำหนดขอบเขตในสถาบันการศึกษา แล้วตัดสินว่า "ยอมรับได้ (Valid Scoping)" หรือ "ผิดหลักการ/เกิดหลุมพราง (Cherry-picking Pitfall)"</p>
+
+  <div class="scoping-case-navigator">
+    <button class="case-btn active" data-case="0">กรณีที่ 1: ตัดระบบทะเบียนเก่า</button>
+    <button class="case-btn" data-case="1">กรณีที่ 2: ตัด Wi-Fi หอพัก (Isolate)</button>
+    <button class="case-btn" data-case="2">กรณีที่ 3: ละเลย API ชำระเงิน</button>
+    <button class="case-btn" data-case="3">กรณีที่ 4: คลาวด์ AWS ไม่อยู่ในขอบเขต</button>
+  </div>
+
+  <div class="case-content-box" id="case-content-box">
+    <!-- Populated by JavaScript -->
+  </div>
+</div>
+
+
+<div class="figure-container" id="fig-4-5">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 4.5</div>
+    <div class="figure-title">4 หลุมพรางอันตรายในการกำหนดขอบเขตและวิธีรับมือ (Scoping Pitfalls & Defenses)</div>
+  </div>
+  <div class="figure-caption">
+    ข้อผิดพลาดคลาสสิกที่ Lead Auditor มักตรวจพบและส่งผลให้ออกใบข้อบกพร่องขั้นรุนแรง (Major Non-Conformity: NCR)
+  </div>
+
+  <div class="pitfalls-grid">
+    <div class="pitfall-card danger">
+      <div class="pitfall-number">PITFALL 1</div>
+      <div class="pitfall-name">การตัดทอนขอบเขตหนีความเสี่ยง (Cherry-picking)</div>
+      <p class="pitfall-case"><strong>พฤติกรรม:</strong> จงใจนำเฉพาะ "เว็บประชาสัมพันธ์" มาขอใบรับรอง แต่ตัด "ระบบฐานข้อมูลทะเบียนและคะแนนสอบ" ออกไปเพราะรู้ว่าเซิร์ฟเวอร์เก่าและมีช่องโหว่เยอะ</p>
+      <div class="pitfall-fix"><strong>วิธีแก้:</strong> ต้องใช้เกณฑ์ Risk-based Scoping หากเป็นบริการหลักขององค์กร ห้ามตัดออก แต่ต้องทำ Compensating Controls แทน</div>
+    </div>
+
+    <div class="pitfall-card warning">
+      <div class="pitfall-number">PITFALL 2</div>
+      <div class="pitfall-name">ละเลยจุดเชื่อมต่อภายนอก (Ignoring Interfaces)</div>
+      <p class="pitfall-case"><strong>พฤติกรรม:</strong> ควบคุมเฉพาะเครื่อง Server ในศูนย์ข้อมูล แต่ละเลยระบบท่อส่งข้อมูล API และเครือข่ายของคู่ค้าภายนอก (เช่น กรณี Target 2013 ที่แฮกเกอร์เจาะผ่านบริษัทผู้รับเหมาแอร์)</p>
+      <div class="pitfall-fix"><strong>วิธีแก้:</strong> สำรวจ Data Flow และกำหนด Interface Boundary ทุกเส้น พร้อมบังคับใช้ MFA และ Network Segmentation</div>
+    </div>
+
+    <div class="pitfall-card info">
+      <div class="pitfall-number">PITFALL 3</div>
+      <div class="pitfall-name">จุดบอดบนคลาวด์ (Cloud & Outsourced Blind Spots)</div>
+      <p class="pitfall-case"><strong>พฤติกรรม:</strong> เข้าใจผิดคิดว่าเมื่อนำระบบไปฝากบน AWS/Azure แล้ว ผู้ให้บริการคลาวด์จะรับผิดชอบความปลอดภัยทั้งหมด จึงไม่นำมาเขียนไว้ในขอบเขต</p>
+      <div class="pitfall-fix"><strong>วิธีแก้:</strong> ประยุกต์ใช้ <strong>Shared Responsibility Model</strong> กำหนดขอบเขตส่วนการตั้งค่าระบบ, การจัดการ Identity และสิทธิ์เข้าถึงข้อมูลขององค์กร</div>
+    </div>
+
+    <div class="pitfall-card alert">
+      <div class="pitfall-number">PITFALL 4</div>
+      <div class="pitfall-name">ข้อยกเว้นไม่มีเหตุผลรองรับ (Undocumented Exclusions)</div>
+      <p class="pitfall-case"><strong>พฤติกรรม:</strong> ตัดระบบบางระบบออกจากขอบเขตตามความพอใจ โดยไม่มีบันทึกการประเมินความเสี่ยงและไม่มีลายมือชื่ออนุมัติจากผู้บริหารระดับสูง</p>
+      <div class="pitfall-fix"><strong>วิธีแก้:</strong> ทุกข้อยกเว้น (Exclusions) ต้องมีเหตุผลทางเทคนิคชัดเจน เช่น มี Network Isolation กักกันไว้ และต้องผ่านการอนุมัติจาก Steering Committee</div>
+    </div>
+  </div>
+</div>
+
+<ol class="content-list ordered">
+  <li><strong>การตัดทอนขอบเขตเพื่อหนีความเสี่ยง (Scope Truncation / Cherry-picking):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>ผู้จัดทำระบบเลือกเฉพาะระบบใหม่ที่ปลอดภัยอยู่แล้วเข้ามาในขอบเขต เช่น นำเฉพาะ "เว็บไซต์ประชาสัมพันธ์" มาขอรับรองมาตรฐาน แต่จงใจตัด "ระบบฐานข้อมูลทะเบียนและคะแนนสอบ" ออกไปเพราะทราบว่าระบบเก่ามีช่องโหว่เยอะ ทำให้ระบบหัวใจหลักไร้การคุ้มครอง</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>การละเลยจุดเชื่อมโยงและส่วนประสาน (Ignoring Interfaces & Data Flows):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>กำหนดขอบเขตเฉพาะเครื่องแม่ข่ายฐานข้อมูล แต่ละเลยเครื่องคอมพิวเตอร์ของผู้ดูแลระบบ (Admin Workstations) หรือละเลยเครือข่าย API ที่เปิดให้บุคคลภายนอกเข้ามาเชื่อมต่อ</li>
+  <li><em>กรณีศึกษาจริง (Target Breach 2013):</em> แฮกเกอร์เจาะผ่านบริษัทผู้รับเหมาดูแลระบบปรับอากาศ (HVAC Vendor) แล้วใช้สิทธิ์ของ Vendor เชื่อมต่อข้ามเครือข่ายเข้ามายังระบบการเงิน ขโมยข้อมูลบัตรเครดิตไปกว่า 40 ล้านใบ</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>จุดบอดด้านคลาวด์และบริการภายนอก (Shadow IT & Outsourced Blind Spots):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>เข้าใจผิดคิดว่าระบบที่ไปเช่าใช้งานบน Cloud (AWS, Azure) เป็นความรับผิดชอบของผู้ให้บริการทั้งหมด จึงไม่นำมาเขียนไว้ในขอบเขต ซึ่งขัดแย้งกับหลักการ <strong>Shared Responsibility Model</strong></li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>ข้อยกเว้นที่ไม่ชอบด้วยเหตุผล (Undocumented Exclusions):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>ประกาศว่าระบบขององค์กรผ่านการควบคุม แต่มีระบบย่อยจำนวนมากถูกละเว้นโดยไม่มีการประเมินความเสี่ยงและไม่มีบันทึกขออนุมัติจากผู้บริหารระดับสูง</li>
+</ul>
+<hr class="section-divider">
+<h2 id="sec-part-4-governance">ส่วนที่ 4: ธรรมาภิบาล สถาปัตยกรรมเอกสาร และ RACI Matrix (Governance & Documentation)</h2>
+<h3 id="sec-4-1-structure">4.1 โครงสร้างการกำกับดูแลด้านความมั่นคงปลอดภัย (Cybersecurity Governance Structure)</h3>
+<p>การรักษาความมั่นคงปลอดภัยไซเบอร์เป็นเรื่องของ <strong>การกำกับดูแลกิจการ (Corporate Governance)</strong> ไม่ใช่เพียงภารกิจเชิงเทคนิคของฝ่ายไอที โครงสร้างการกำกับดูแลที่ดีต้องแบ่งแยกอำนาจและหน้าที่ให้ชัดเจนตามแนวคิด Three Lines of Defense:</p>
+
+<div class="figure-container" id="fig-4-6">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 4.6</div>
+    <div class="figure-title">โครงสร้างการกำกับดูแลไซเบอร์และสามเหลี่ยมความเป็นเจ้าของ (Governance & Ownership Triangle)</div>
+  </div>
+  <div class="figure-caption">
+    การจัดสรรอำนาจหน้าที่ตามแนวคิด Corporate Governance และโมเดล Three Lines of Defense
+  </div>
+
+  <div class="gov-tree-wrapper">
+    <!-- Top Level: Council -->
+    <div class="gov-node level-board">
+      <div class="gov-title">สภามหาวิทยาลัย / อธิการบดี (Governing Body)</div>
+      <div class="gov-sub">กำหนดนโยบายสูงสุด • มอบอำนาจ • อนุมัติงบประมาณ • รับผิดชอบทางกฎหมาย (ม.77)</div>
+    </div>
+
+    <div class="gov-connector">▼</div>
+
+    <!-- Steering Committee -->
+    <div class="gov-node level-steering">
+      <div class="gov-title">คณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ (Steering Committee)</div>
+      <div class="gov-sub">อธิการบดี, รองอธิการฯ ไอที, คณบดี, ผอ.สำนักไอที, ผอ.กองคลัง • กำกับทิศทางและทบทวนความเสี่ยงทุกไตรมาส</div>
+    </div>
+
+    <div class="gov-connector">▼</div>
+
+    <!-- Mid Level: CISO vs Risk Owner -->
+    <div class="gov-split-row">
+      <div class="gov-node split-left">
+        <div class="gov-role-tag">CHIEF INFORMATION SECURITY OFFICER</div>
+        <div class="gov-title">CISO / Lead Implementer</div>
+        <div class="gov-sub">ขับเคลื่อนระบบบริหารจัดการ • ยกร่างนโยบายและ SOP • ติดตาม Roadmap • รายงานตรงต่อ Steering Committee</div>
+      </div>
+
+      <div class="gov-node split-right">
+        <div class="gov-role-tag">BUSINESS LEADERSHIP</div>
+        <div class="gov-title">เจ้าของความเสี่ยง (Risk Owner)</div>
+        <div class="gov-sub">ผู้อำนวยการกองคลัง / ผู้อำนวยการทะเบียน • ผู้มีอำนาจตัดสินใจยอมรับความเสี่ยงและมีงบประมาณจัดการ</div>
+      </div>
+    </div>
+
+    <div class="gov-connector">▼</div>
+
+    <!-- Lower Level: Control Owner vs Asset Owner -->
+    <div class="gov-split-row">
+      <div class="gov-node split-left tech">
+        <div class="gov-role-tag">TECHNICAL CONTROLS</div>
+        <div class="gov-title">เจ้าของมาตรการ (Control Owner)</div>
+        <div class="gov-sub">Network Engineer, SysAdmin • ผู้ลงมือปฏิบัติและบำรุงรักษา Firewall, MFA, Backup, Patching</div>
+      </div>
+
+      <div class="gov-node split-right data">
+        <div class="gov-role-tag">INFORMATION CUSTODIAN</div>
+        <div class="gov-title">เจ้าของสินทรัพย์ (Asset Owner)</div>
+        <div class="gov-sub">หัวหน้างานพัฒนาระบบ, Database Admin • ผู้รับผิดชอบความถูกต้องของข้อมูลตลอดวงจรชีวิต</div>
+      </div>
+    </div>
+
+    <div class="gov-connector">▲ (ประสานฉุกเฉิน)</div>
+
+    <!-- CSIRT -->
+    <div class="gov-node level-csirt">
+      <div class="gov-title">ทีมตอบสนองเหตุการณ์ฉุกเฉินทางไซเบอร์ (Incident Response Team / CSIRT)</div>
+      <div class="gov-sub">เฝ้าระวัง 24x7 • สืบสวน Digital Forensics • ปฏิบัติตาม Incident Response Plan • ประสาน สกมช.</div>
+    </div>
+  </div>
+
+  <!-- The Ownership Triangle Callout -->
+  <div class="ownership-triangle-box">
+    <div class="ot-header">📐 สามเหลี่ยมความเป็นเจ้าของในระบบบริหารจัดการ (The Ownership Triangle)</div>
+    <div class="ot-grid">
+      <div class="ot-item">
+        <strong>1. Risk Owner (เจ้าของความเสี่ยง):</strong> ผู้บริหารระดับสายงาน ตอบคำถาม: <em>"ความเสี่ยงนี้องค์กรยอมรับได้ไหม และใครจะจัดสรรงบ?"</em>
+      </div>
+      <div class="ot-item">
+        <strong>2. Asset Owner (เจ้าของสินทรัพย์):</strong> ผู้ครอบครองข้อมูล ตอบคำถาม: <em>"ข้อมูลนี้สำคัญระดับใด ใครมีสิทธิ์เข้าถึง และเก็บได้กี่ปี?"</em>
+      </div>
+      <div class="ot-item">
+        <strong>3. Control Owner (เจ้าของมาตรการ):</strong> ผู้ปฏิบัติการทางเทคนิค ตอบคำถาม: <em>"มาตรการป้องกันนี้ทำงานอยู่จริงไหม ล็อกถูกบันทึกหรือไม่?"</em>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h4 id="sec-19">บทบาทหน้าที่ของสามเหลี่ยมความเป็นเจ้าของ (The Ownership Triangle):</h4>
+<ul class="content-list">
+  <li><strong>เจ้าของความเสี่ยง (Risk Owner):</strong> ผู้บริหารสายงานที่มีอำนาจตัดสินใจและมีงบประมาณในการจัดการความเสี่ยง (เช่น ผู้อำนวยการกองคลัง เป็น Risk Owner ของความเสี่ยงการทุจริตในระบบการเงิน)</li>
+  <li><strong>เจ้าของสินทรัพย์ (Asset Owner):</strong> บุคคลหรือหน่วยงานที่รับผิดชอบข้อมูลหรือระบบสารสนเทศตลอดวงจรชีวิต (เช่น หัวหน้าฝ่ายทะเบียน เป็น Asset Owner ของฐานข้อมูลประวัตินักศึกษา)</li>
+  <li><strong>เจ้าของมาตรการควบคุม (Control Owner):</strong> บุคคลผู้มีหน้าที่ลงมือปฏิบัติและบำรุงรักษามาตรการควบคุมเชิงเทคนิคหรือการบริหารจัดการ (เช่น Network Engineer เป็น Control Owner ของระบบ Firewall)</li>
+</ul>
+<h3 id="sec-4-2-raci">4.2 การออกแบบเมทริกซ์กำหนดความรับผิดชอบ (RACI Matrix)</h3>
+
+<div class="interactive-card" id="widget-4-3">
+  <div class="card-badge">INTERACTIVE WIDGET 4.3</div>
+  <div class="card-title">⚖️ โปรแกรมจำลองการกำหนดความรับผิดชอบ RACI Matrix (Single Accountability Tester)</div>
+  <p class="card-desc">ทดสอบความเข้าใจกฎเหล็ก <strong>"1 Accountable ต่องานเสมอ (Single Point of Accountability)"</strong> เลือกบทบาทที่ถูกต้องสำหรับแต่ละกิจกรรมความมั่นคงปลอดภัย</p>
+
+  <div class="raci-sim-container">
+    <div class="raci-question-header" id="raci-q-header">
+      <span class="raci-step-tag">กิจกรรมที่ 1 จาก 4</span>
+      <h4 id="raci-task-title">การทบทวนสิทธิ์การเข้าถึงข้อมูลระบบการเงินประจำไตรมาส (User Access Review)</h4>
+      <p id="raci-task-desc">ใครควรเป็น <strong>Accountable (A)</strong> ผู้รับผิดชอบผลงานสูงสุดที่ต้องลงนามยืนยันว่าพนักงานยังควรมีสิทธิ์เข้าถึงข้อมูล?</p>
+    </div>
+
+    <div class="raci-options-grid" id="raci-options-grid">
+      <!-- Options injected by JS -->
+    </div>
+
+    <div class="raci-feedback-box" id="raci-feedback-box" style="display:none;"></div>
+  </div>
+</div>
+
+<ul class="content-list">
+  <li><strong>R = Responsible (ผู้ลงมือปฏิบัติ):</strong> ผู้มีหน้าที่ทำงานนั้นให้สำเร็จ (Doer) สามารถมีได้หลายคน</li>
+  <li><strong>A = Accountable (ผู้รับผิดชอบผลงานสูงสุด):</strong> ผู้ที่ต้องตอบคำถามต่อผู้บริหาร หากงานล้มเหลวต้องรับผิดชอบ <strong>กฎเหล็ก: ต้องมีเพียงคนเดียว (Single Point of Accountability) ต่อหนึ่งกิจกรรมเสมอ</strong></li>
+  <li><strong>C = Consulted (ผู้ให้คำปรึกษา):</strong> ผู้เชี่ยวชาญหรือหน่วยงานที่ต้องปรึกษาขอความเห็นก่อนลงมือทำ (สื่อสารสองทาง)</li>
+  <li><strong>I = Informed (ผู้รับแจ้งความคืบหน้า):</strong> ผู้ที่ต้องได้รับรายงานผลเมื่อดำเนินงานเสร็จสิ้น (สื่อสารทางเดียว)</li>
+</ul>
+<h4 id="sec-21">ตาราง RACI Matrix สำหรับกระบวนการความมั่นคงปลอดภัยไซเบอร์:</h4>
+<div class="table-wrapper"><table class="data-table"><thead><tr><th>ลำดับ</th><th>กิจกรรมด้านความมั่นคงปลอดภัย</th><th>Steering Committee</th><th>CISO / Lead Impl.</th><th>IT Operations / SysAdmin</th><th>Process Owner (ทะเบียน/คลัง)</th><th>ฝ่ายกฎหมาย (Legal)</th><th>พนักงานทั่วไป</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>การอนุมัตินโยบายความมั่นคงปลอดภัยระดับองค์กร</td><td><strong>A</strong></td><td>R</td><td>C</td><td>C</td><td>C</td><td>I</td></tr><tr><td><strong>2</strong></td><td>การประเมินความเสี่ยงและจัดทำทะเบียนความเสี่ยง</td><td>I</td><td><strong>A</strong></td><td>R</td><td>R</td><td>C</td><td>-</td></tr><tr><td><strong>3</strong></td><td>การติดตั้ง Patch ความปลอดภัยบน Server</td><td>I</td><td>C</td><td><strong>R / A</strong></td><td>I</td><td>-</td><td>-</td></tr><tr><td><strong>4</strong></td><td>การทบทวนสิทธิ์การเข้าถึงข้อมูลประจำไตรมาส</td><td>I</td><td>C</td><td>R</td><td><strong>A</strong></td><td>-</td><td>-</td></tr><tr><td><strong>5</strong></td><td>การตอบสนองและระงับเหตุการณ์ภัยคุกคามไซเบอร์</td><td>I</td><td><strong>A</strong></td><td>R</td><td>I</td><td>C</td><td>-</td></tr><tr><td><strong>6</strong></td><td>การรายงานเหตุการณ์ต่อ สกมช. ตาม ม.57/58</td><td>I</td><td><strong>A</strong></td><td>C</td><td>I</td><td>R</td><td>-</td></tr><tr><td><strong>7</strong></td><td>การฝึกอบรมสร้างความตระหนักรู้ (Awareness)</td><td>I</td><td><strong>A</strong></td><td>I</td><td>I</td><td>-</td><td><strong>R</strong> (เข้าอบรม)</td></tr><tr><td><strong>8</strong></td><td>การสำรองข้อมูลและการทดสอบกู้คืนระบบ</td><td>I</td><td>C</td><td><strong>R / A</strong></td><td>C</td><td>-</td><td>-</td></tr></tbody></table></div>
+<div class="callout tip"><div class="callout-title">💡 ข้อสังเกตเชิงวิชาชีพ (Professional Insight: Single Point of Accountability)</div><p><strong>ข้อสังเกตเชิงวิชาชีพ:</strong> กิจกรรมที่ 4 <em>การทบทวนสิทธิ์การเข้าถึง (User Access Review)</em> คนที่เป็น <strong>Accountable (A)</strong> คือ <strong>เจ้าของกระบวนการ (Process Owner)</strong> เพราะฝ่ายทะเบียนหรือฝ่ายคลังเท่านั้นที่ทราบว่าพนักงานคนใดย้ายแผนก ลาออก หรือไม่ควรเข้าถึงข้อมูลการเงินอีกต่อไป ฝ่ายไอทีเป็นเพียงผู้ลงมือตัดสิทธิ์ (Responsible) ตามคำสั่งเท่านั้น</p></div>
+<h3 id="sec-4-3-doc-hierarchy">4.3 ลำดับชั้นของเอกสารด้านความมั่นคงปลอดภัย (Document Hierarchy)</h3>
+
+<div class="figure-container" id="fig-4-7">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 4.7</div>
+    <div class="figure-title">สถาปัตยกรรมเอกสารความมั่นคงปลอดภัย 5 ระดับ (Cybersecurity Document Hierarchy)</div>
+  </div>
+  <div class="figure-caption">
+    การจัดลำดับชั้นเอกสารจากเจตนารมณ์ระดับสูงขององค์กร สู่มาตรฐานบังคับ ขั้นตอนปฏิบัติการ และหลักฐานการตรวจสอบเชิงประจักษ์
+  </div>
+
+  <div class="doc-pyramid-container">
+    <div class="pyramid-tier tier-l1">
+      <div class="tier-badge">LEVEL 1</div>
+      <div class="tier-details">
+        <div class="tier-name">POLICIES (นโยบาย) — <em>What & Why</em></div>
+        <div class="tier-info">กำหนดเจตนารมณ์และทิศทางระดับสูง มีผลผูกพันทุกคนในองค์กร • อนุมัติโดย: สภามหาวิทยาลัย / อธิการบดี (ทบทวนทุก 1 ปี)</div>
+      </div>
+    </div>
+
+    <div class="pyramid-tier tier-l2">
+      <div class="tier-badge">LEVEL 2</div>
+      <div class="tier-details">
+        <div class="tier-name">STANDARDS (มาตรฐาน) — <em>Mandatory Baselines</em></div>
+        <div class="tier-info">ข้อกำหนดเชิงเทคนิคขั้นต่ำที่มีสภาพบังคับ (Password Complexity, Encryption, Server Baseline) • อนุมัติโดย: CISO / คณะกรรมการกำกับดูแล</div>
+      </div>
+    </div>
+
+    <div class="pyramid-tier tier-l3">
+      <div class="tier-badge">LEVEL 3</div>
+      <div class="tier-details">
+        <div class="tier-name">PROCEDURES / SOPs (ขั้นตอนการปฏิบัติงาน) — <em>Who, When & How</em></div>
+        <div class="tier-info">ขั้นตอนการทำงานทีละสเต็ป (User Provisioning SOP, Incident Response SOP, Backup SOP) • อนุมัติโดย: ผู้บริหารฝ่าย / หัวหน้าส่วนงาน</div>
+      </div>
+    </div>
+
+    <div class="pyramid-tier tier-l4">
+      <div class="tier-badge">LEVEL 4</div>
+      <div class="tier-details">
+        <div class="tier-name">GUIDELINES & WORK INSTRUCTIONS (แนวปฏิบัติและคู่มือเทคนิค) — <em>How-To</em></div>
+        <div class="tier-info">คำแนะนำและเทคนิคการตั้งค่า ไม่ได้บังคับเข้มงวด ยืดหยุ่นตามบริบท (Secure Coding, Linux Hardening) • อนุมัติโดย: หัวหน้าทีมเทคนิค</div>
+      </div>
+    </div>
+
+    <div class="pyramid-tier tier-l5">
+      <div class="tier-badge">LEVEL 5</div>
+      <div class="tier-details">
+        <div class="tier-name">RECORDS & FORMS (แบบฟอร์มและบันทึกการทำงาน) — <em>Audit Evidence</em></div>
+        <div class="tier-info"><strong>"หลักฐานเชิงประจักษ์"</strong> ที่พิสูจน์ว่ามีการทำจริง (แบบฟอร์มขอสิทธิ์, รายงาน Vulnerability Scan, Log Files) • จัดเก็บตามเกณฑ์กฎหมาย</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="table-wrapper"><table class="data-table"><thead><tr><th>ระดับ</th><th>ประเภทเอกสาร</th><th>คำนิยามและวัตถุประสงค์</th><th>ผู้มีอำนาจอนุมัติ</th><th>ตัวอย่างเอกสาร</th><th>ความถี่ในการทบทวน</th></tr></thead><tbody><tr><td><strong>Level 1</strong></td><td><strong>Policy (นโยบาย)</strong></td><td>กำหนดเจตนารมณ์ ทิศทาง และหลักการระดับสูงขององค์กร มีผลผูกพันทุกคน ตอบคำถามว่า <em>"องค์กรต้องการอะไรและทำไม"</em></td><td>คณะกรรมการบริหาร / อธิการบดี</td><td>• นโยบายความมั่นคงปลอดภัยสารสนเทศ<br>• นโยบายการควบคุมการเข้าถึงระบบ<br>• นโยบายการใช้งานทรัพย์สินไอทีที่ยอมรับได้ (AUP)</td><td>ทุก 1 ปี หรือเมื่อมีเหตุการณ์เปลี่ยนแปลงสำคัญ</td></tr><tr><td><strong>Level 2</strong></td><td><strong>Standard (มาตรฐาน)</strong></td><td>ข้อกำหนดเชิงเทคนิคขั้นต่ำที่มีสภาพบังคับ เพื่อให้นโยบายเกิดผลจริง ตอบคำถามว่า <em>"เกณฑ์ขั้นต่ำที่ยอมรับได้คืออะไร"</em></td><td>CISO / คณะกรรมการกำกับดูแล</td><td>• มาตรฐานความซับซ้อนของรหัสผ่าน<br>• มาตรฐานการเข้ารหัสข้อมูล (Encryption Standard)<br>• มาตรฐานการตั้งค่าความปลอดภัยระบบแม่ข่าย (Baseline)</td><td>ทุก 1–2 ปี หรือเมื่อเทคโนโลยีเปลี่ยน</td></tr><tr><td><strong>Level 3</strong></td><td><strong>Procedure / SOP (ขั้นตอนปฏิบัติ)</strong></td><td>คำอธิบายขั้นตอนการทำงานทีละขั้น (Step-by-step) ที่มีจุดเริ่มต้นและจุดสิ้นสุดชัดเจน ตอบคำถามว่า <em>"ใคร ทำอะไร ที่ไหน อย่างไร เมื่อใด"</em></td><td>ผู้บริหารฝ่าย / หัวหน้าส่วนงาน</td><td>• ขั้นตอนการบริหารจัดการบัญชีผู้ใช้งาน (User Provisioning SOP)<br>• ขั้นตอนการรับมือเหตุการณ์ความปลอดภัย (IR SOP)<br>• ขั้นตอนการสำรองและกู้คืนข้อมูล (Backup SOP)</td><td>ทุก 1 ปี</td></tr><tr><td><strong>Level 4</strong></td><td><strong>Guideline / Work Instruction (แนวทาง/คู่มือ)</strong></td><td>คำแนะนำ วิธีการตั้งค่า หรือตัวอย่างวิธีทำ (How-to) ไม่ได้บังคับเข้มงวด ยืดหยุ่นตามบริบท ตอบคำถามว่า <em>"มีข้อแนะนำหรือเทคนิคอย่างไร"</em></td><td>หัวหน้าทีมเทคนิค / System Architect</td><td>• แนวทางการเขียนโค้ดปลอดภัย (Secure Coding Guide)<br>• คู่มือการติดตั้งและตั้งค่า Linux Hardening<br>• แนวทางการทำงานทางไกลอย่างปลอดภัย (WFH Guide)</td><td>ปรับปรุงได้ต่อเนื่องตามเทคโนโลยี</td></tr><tr><td><strong>Level 5</strong></td><td><strong>Form & Record (แบบฟอร์มและบันทึก)</strong></td><td>เอกสารเปล่าสำหรับกรอก (Form) และเอกสารที่ผ่านการกรอก/บันทึกการทำงานแล้ว (Record) เป็น <strong>หลักฐานการตรวจ (Audit Evidence)</strong></td><td>ผู้ปฏิบัติงาน / ระบบคอมพิวเตอร์</td><td>• บันทึกการขอสิทธิ์เข้าถึงระบบที่ได้รับอนุมัติ<br>• รายงานผลการสแกนช่องโหว่ประจำเดือน<br>• ไฟล์ System Log และ Firewall Log</td><td>จัดเก็บตามระยะเวลาที่กฎหมายกำหนด (เช่น พ.ร.บ.คอมฯ 90 วัน)</td></tr></tbody></table></div>
+<hr class="section-divider">
+<h2 id="sec-part-5-roadmap">ส่วนที่ 5: แผนการนำมาตรการไปปฏิบัติและบทบาท Lead Implementer (Implementation Roadmap)</h2>
+<h3 id="sec-5-1-lifecycle">5.1 วงจรการนำระบบไปปฏิบัติ 8 ระยะ (The 8-Phase Implementation Lifecycle)</h3>
+
+<div class="figure-container" id="fig-4-8">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 4.8</div>
+    <div class="figure-title">วงจรการนำระบบบริหารจัดการไปปฏิบัติ 8 ระยะ (8-Phase Implementation Lifecycle)</div>
+  </div>
+  <div class="figure-caption">
+    กระบวนการทำงานอย่างเป็นระบบของ Lead Implementer ตั้งแต่เริ่มต้นโครงการจนถึงการรับรองและการตรวจสอบภายนอก
+  </div>
+
+  <div class="lifecycle-grid">
+    <div class="lc-step">
+      <div class="lc-num">01</div>
+      <div class="lc-name">Initiation & Context</div>
+      <div class="lc-desc">แต่งตั้ง Steering Committee, วิเคราะห์ PESTLE/SWOT, วิเคราะห์ Stakeholder และร่าง Scope Statement</div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-num">02</div>
+      <div class="lc-name">Gap Assessment</div>
+      <div class="lc-desc">เทียบเคียงมาตรฐาน กกม. 2564 หรือ ISO 27001 กับสภาพจริง (As-Is vs To-Be) ค้นหารายการที่ขาด</div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-num">03</div>
+      <div class="lc-name">Risk Assessment</div>
+      <div class="lc-desc">สำรวจสินทรัพย์ ประเมินภัยคุกคาม ช่องโหว่ โอกาสเกิด ผลกระทบ และจัดทำ Risk Treatment Plan (RTP)</div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-num">04</div>
+      <div class="lc-name">Roadmap & Budget</div>
+      <div class="lc-desc">แปลงมาตรการใน RTP เป็นโครงการย่อย จัดลำดับความสำคัญ จัดสรรทรัพยากร และขออนุมัติงบประมาณ</div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-num">05</div>
+      <div class="lc-name">Design & Policies</div>
+      <div class="lc-desc">ยกร่างนโยบาย มาตรฐาน และ SOP ร่วมกับ Control Owners เพื่อสร้างระบบเอกสารลายลักษณ์อักษร</div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-num">06</div>
+      <div class="lc-name">Operationalization</div>
+      <div class="lc-desc">ปรับตั้งค่าระบบ (MFA, Log Server), ปฏิบัติตาม SOP, ฝึกอบรมบุคลากร และจัดทำ Phishing Simulation</div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-num">07</div>
+      <div class="lc-name">Internal Audit</div>
+      <div class="lc-desc">ให้ทีมผู้ตรวจสอบภายในเข้าสุ่มตรวจค้นหาข้อบกพร่อง (NCR) และดำเนินการแก้ไข (Corrective Actions)</div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-num">08</div>
+      <div class="lc-name">Management Review</div>
+      <div class="lc-desc">ประชุมบอร์ดรายงานผลสัมฤทธิ์ ขออนุมัติปรับปรุง และพร้อมรับการตรวจประเมินจากภายนอก/สกมช.</div>
+    </div>
+  </div>
+</div>
+
+<ol class="content-list ordered">
+  <li><strong>Phase 1: เริ่มต้นโครงการและวิเคราะห์บริบท (Initiation & Context):</strong> จัดตั้งทีมงาน ขอความเห็นชอบจากผู้บริหารระดับสูง กำหนดนโยบายเริ่มต้น วิเคราะห์บริบท PESTLE/SWOT วิเคราะห์ผู้มีส่วนได้ส่วนเสีย และร่าง Scope Statement</li>
+  <li><strong>Phase 2: การประเมินช่องว่างเริ่มต้น (Baseline Gap Assessment):</strong> นำเกณฑ์มาตรฐาน (ประกาศ กกม. 2564 หรือ ISO 27001) มาทาบวัดกับสภาพปัจจุบันขององค์กร (As-Is vs To-Be) เพื่อค้นหาว่าขาดมาตรการใด</li>
+  <li><strong>Phase 3: การประเมินความเสี่ยงอย่างเป็นทางการ (Risk Assessment):</strong> สำรวจสินทรัพย์ ประเมินภัยคุกคาม ช่องโหว่ โอกาสเกิด และผลกระทบ เพื่อจัดทำแผนจัดการความเสี่ยง (Risk Treatment Plan: RTP)</li>
+  <li><strong>Phase 4: การวางแผนแม่บทและงบประมาณ (Roadmap & Budget Planning):</strong> แปลงมาตรการจัดการความเสี่ยงเป็นโครงการย่อย จัดลำดับความสำคัญ จัดสรรทรัพยากร และนำเสนอขออนุมัติงบประมาณ</li>
+  <li><strong>Phase 5: การจัดทำระบบเอกสารและมาตรการควบคุม (Design & Documentation):</strong> ยกร่างนโยบาย มาตรฐาน และ SOP ร่วมกับ Control Owners เพื่อสร้างกฎเกณฑ์ที่เป็นลายลักษณ์อักษร</li>
+  <li><strong>Phase 6: การนำไปปฏิบัติและการสร้างความตระหนักรู้ (Operationalization & Training):</strong> ปรับตั้งค่าระบบเทคโนโลยี เริ่มปฏิบัติตาม SOP อบรมพนักงานทุกคน และจัดกิจกรรมทดสอบ Phishing Simulation</li>
+  <li><strong>Phase 7: การตรวจสอบภายในและการประเมินความพร้อม (Internal Audit & Readiness Review):</strong> ให้ทีม Internal Auditor เข้าตรวจสอบระบบเพื่อค้นหาข้อบกพร่อง (Non-conformities) และดำเนินการแก้ไข (Corrective Actions)</li>
+  <li><strong>Phase 8: การทบทวนโดยฝ่ายบริหารและการตรวจประเมินภายนอก (Management Review & External Audit):</strong> ประชุม Steering Committee เพื่อรายงานผลสัมฤทธิ์ ขออนุมัติปรับปรุงระบบ และพร้อมรับการตรวจสอบจาก Regulator หรือผู้ตรวจประเมินภายนอก</li>
+</ol>
+<h3 id="sec-5-2-roadmap">5.2 การจัดทำ Implementation Roadmap ระยะ 6 เดือน (6-Month Roadmap)</h3>
+<div class="table-wrapper"><table class="data-table"><thead><tr><th>กิจกรรมหลัก (Milestones)</th><th>เดือนที่ 1</th><th>เดือนที่ 2</th><th>เดือนที่ 3</th><th>เดือนที่ 4</th><th>เดือนที่ 5</th><th>เดือนที่ 6</th><th>ผู้รับผิดชอบหลัก</th><th>ผลลัพธ์ที่ส่งมอบ (Deliverables)</th></tr></thead><tbody><tr><td><strong>1. กำหนดบริบท ขอบเขต และธรรมาภิบาล</strong><br>- แต่งตั้ง Steering Committee และ CISO<br>- วิเคราะห์บริบท PESTLE/SWOT<br>- จัดทำ Scope Statement และ Stakeholder Register</td><td>■■■■</td><td></td><td></td><td></td><td></td><td></td><td>CISO / ผู้บริหาร</td><td>• คำสั่งแต่งตั้งคณะกรรมการ<br>• เอกสาร Scope Statement<br>• ทะเบียนผู้มีส่วนได้ส่วนเสีย</td></tr><tr><td><strong>2. การประเมินช่องว่าง (Gap Assessment)</strong><br>- เทียบเคียงกับประกาศ กกม. 2564<br>- สรุปรายการช่องว่างและคะแนนความพร้อม</td><td></td><td>■■■■</td><td></td><td></td><td></td><td></td><td>Lead Implementer</td><td>• รายงาน Gap Assessment Report<br>• แผนจัดสรรงบประมาณ</td></tr><tr><td><strong>3. การประเมินความเสี่ยงและแผนจัดการ</strong><br>- สำรวจสินทรัพย์สารสนเทศ (Asset Inventory)<br>- ประเมินความเสี่ยง (Risk Assessment)<br>- จัดทำ Risk Treatment Plan (RTP)</td><td></td><td>■■■■</td><td>■■■■</td><td></td><td></td><td></td><td>Risk Owner / CISO</td><td>• ทะเบียนสินทรัพย์สารสนเทศ<br>• ทะเบียนความเสี่ยง (Risk Register)<br>• แผน Risk Treatment Plan</td></tr><tr><td><strong>4. พัฒนาระบบเอกสาร (Policies & SOPs)</strong><br>- ร่างนโยบายความมั่นคงปลอดภัย 10 ฉบับ<br>- จัดทำ SOP การปฏิบัติงานไอที<br>- อนุมัติเอกสารโดย Steering Committee</td><td></td><td></td><td>■■■■</td><td>■■■■</td><td></td><td></td><td>Lead Implementer / Control Owners</td><td>• ชุดนโยบายความมั่นคงปลอดภัย<br>• คู่มือ SOP ประจำระบบงาน<br>• ตาราง RACI Matrix ที่ลงนาม</td></tr><tr><td><strong>5. นำมาตรการเทคนิคไปปฏิบัติ (Tech Controls)</strong><br>- บังคับใช้ MFA สำหรับระบบสำคัญ<br>- ติดตั้งระบบ Centralized Log Server<br>- จัดตั้งทีมเฝ้าระวังภัยคุกคาม (SOC)</td><td></td><td></td><td></td><td>■■■■</td><td>■■■■</td><td></td><td>IT Operations / SysAdmin</td><td>• Configuration Audit Log<br>• ระบบ Centralized Log<br>• สัญญาบริการ SOC / CERT</td></tr><tr><td><strong>6. ฝึกอบรมและสร้างความตระหนักรู้</strong><br>- อบรมผู้ดูแลระบบ (Technical Training)<br>- อบรมพนักงานทั่วไป (Security Awareness)<br>- ทดสอบ Phishing Simulation</td><td></td><td></td><td></td><td></td><td>■■■■</td><td>■■■■</td><td>HR / CISO</td><td>• บันทึกการเข้าอบรมและคะแนนสอบ<br>• รายงานผล Phishing Drill</td></tr><tr><td><strong>7. การตรวจสอบภายในและการทบทวน</strong><br>- ดำเนินการ Internal Audit<br>- แก้ไขข้อค้นพบ (Corrective Action)<br>- ประชุม Management Review</td><td></td><td></td><td></td><td></td><td></td><td>■■■■</td><td>Internal Auditor / CISO</td><td>• รายงาน Internal Audit Report<br>• แผนแก้ไขข้อค้นพบ (CAP)<br>• รายงานการประชุมทบทวน</td></tr></tbody></table></div>
+<h3 id="sec-5-3-competencies">5.3 สมรรถนะหลัก 5 ประการของ Lead Implementer</h3>
+<ol class="content-list ordered">
+  <li><strong>ผู้ประสานงานข้ามสายงาน (Cross-functional Orchestrator):</strong> ความมั่นคงปลอดภัยไม่ใช่เรื่องไอทีล้วน ๆ Lead Implementer ต้องสื่อสารกับฝ่ายบุคคล ฝ่ายกฎหมาย ฝ่ายจัดซื้อ และผู้บริหารระดับสูงได้ด้วยภาษาธุรกิจ</li>
+  <li><strong>ผู้ควบคุมระบบเอกสารและการเปลี่ยนแปลง (Document & Change Controller):</strong> ควบคุมการจัดทำเอกสารให้ได้มาตรฐาน มีการลงนามอนุมัติ มีเลขเวอร์ชันที่ถูกต้อง และสื่อสารให้ผู้ปฏิบัติงานเข้าถึงเอกสารฉบับล่าสุดเสมอ</li>
+  <li><strong>ผู้บริหารโครงการและผลักดันงาน (Project Manager & Delivery Driver):</strong> สามารถบริหารเวลา ทรัพยากร และติดตามความคืบหน้าของ Control Owners ให้เป็นไปตาม Roadmap</li>
+  <li><strong>ผู้สร้างแรงจูงใจและวัฒนธรรม (Culture & Awareness Champion):</strong> ปรับเปลี่ยนพฤติกรรมของบุคลากรในองค์กรจากการมองความปลอดภัยเป็น "ภาระ" ให้กลายเป็น "หน้าที่และความรับผิดชอบร่วมกัน"</li>
+  <li><strong>ผู้เตรียมความพร้อมรับการตรวจ (Audit Readiness Champion):</strong> รู้ล่วงหน้าว่าผู้ตรวจสอบจะขอดูหลักฐานใด และจัดเก็บหลักฐาน (Audit Artifacts) ไว้อย่างเป็นระบบตั้งแต่ต้นโครงการ</li>
+</ol>
+<hr class="section-divider">
+<h2 id="sec-part-6-auditor-view">ส่วนที่ 6: มุมมองและการตรวจสอบของ Lead Auditor ในเรื่องบริบทและขอบเขต</h2>
+<h3 id="sec-6-1-working-paper">6.1 กระดาษทำการตรวจสอบบริบทและขอบเขต (Audit Working Paper - Context & Scope)</h3>
+
+<div class="figure-container" id="fig-4-9">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 4.9</div>
+    <div class="figure-title">กระดาษทำการตรวจสอบบริบทและขอบเขต (Audit Working Paper: Context &amp; Scope)</div>
+  </div>
+  <div class="figure-caption">
+    ตัวอย่างเอกสารกระดาษทำการจริงของ Lead Auditor ในการตรวจสอบความสอดคล้องตาม ISO/IEC 27001 Clause 4 และประกาศ กกม. 2564
+  </div>
+
+  <div class="wp-card">
+    <div class="wp-header-table">
+      <div class="wp-cell"><strong>Client:</strong> มหาวิทยาลัยดิจิทัลสมมติ</div>
+      <div class="wp-cell"><strong>WP Ref:</strong> WP-2024-CL4-01</div>
+      <div class="wp-cell"><strong>Audit Area:</strong> Clause 4 Context, Stakeholders, Scope</div>
+      <div class="wp-cell"><strong>Criteria:</strong> ISO/IEC 27001 Cl. 4.1-4.4, กกม. 2564</div>
+    </div>
+
+    <div class="wp-body-content">
+      <div class="wp-step-item">
+        <div class="wp-step-title">1. การตรวจสอบเอกสารบริบทองค์กร (Context Test - Cl. 4.1)</div>
+        <div class="wp-step-text"><strong>วิธีทดสอบ:</strong> ขอและตรวจสอบเอกสารวิเคราะห์ PESTLE และ SWOT Matrix ฉบับล่าสุด</div>
+        <div class="wp-step-finding pass">✔ <strong>ผลการตรวจ:</strong> พบเอกสารวิเคราะห์ครบ 6 เสาหลัก แต่มีข้อสังเกตเรื่องการไม่ได้ประเมินหนี้ทางเทคนิคของเซิร์ฟเวอร์เก่า 8 เครื่องไว้ในตารางความเสี่ยง</div>
+      </div>
+
+      <div class="wp-step-item">
+        <div class="wp-step-title">2. การตรวจสอบการปฏิบัติตามกฎหมายของผู้มีส่วนได้ส่วนเสีย (Stakeholder Test - Cl. 4.2)</div>
+        <div class="wp-step-text"><strong>วิธีทดสอบ:</strong> ตรวจสอบหนังสือนำส่งแต่งตั้งผู้ประสานงานตาม พ.ร.บ.ไซเบอร์ ม.46 ต่อ สกมช.</div>
+        <div class="wp-step-finding pass">✔ <strong>ผลการตรวจ:</strong> ตรวจพบหนังสือราชการเลขที่ ศธ 0512/2566 ลงวันที่ 15 มี.ค. 2566 แจ้งชื่อผู้ประสานงานต่อ สกมช. ถูกต้องตามกฎหมาย</div>
+      </div>
+
+      <div class="wp-step-item">
+        <div class="wp-step-title">3. การตรวจสอบความสมบูรณ์ของขอบเขตและ Interfaces (Scoping Test - Cl. 4.3)</div>
+        <div class="wp-step-text"><strong>วิธีทดสอบ:</strong> สุ่มตรวจสอบผังเครือข่าย Network Topology เปรียบเทียบกับเอกสาร Scope Statement</div>
+        <div class="wp-step-finding fail">❌ <strong>ผลการตรวจ:</strong> ตรวจพบว่าองค์กรตัด "ระบบฐานข้อมูลทะเบียนนักศึกษา (REG Database)" ออกจากขอบเขต โดยอ้างว่าเป็นระบบเก่า แต่ระบบยังคงตั้งอยู่ในห้อง Data Center เดียวกันและเชื่อมต่อกับ Core Switch ชุดเดิม (ออกใบ NCR-2024-SCOPE-01)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3 id="sec-6-2-ncr">6.2 ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง (Sample Non-Conformity Report: NCR)</h3>
+
+<div class="callout danger">
+  <div class="callout-title">⚠️ ตัวอย่างใบข้อค้นพบการตรวจประเมินจริง (Sample Non-Conformity Report: NCR)</div>
+  <div class="doc-sample-body">
+    <p><strong>ใบรายงานข้อบกพร่องการตรวจประเมิน (Non-Conformity Report: NCR)</strong><br>
+    <strong>รหัสข้อค้นพบ:</strong> NCR-2024-SCOPE-01<br>
+    <strong>ระดับความรุนแรง:</strong> <strong class="badge red">Major Non-conformity (ข้อบกพร่องขั้นรุนแรง)</strong><br>
+    <strong>ข้อกำหนดอ้างอิง:</strong> ISO/IEC 27001:2022 ข้อกำหนด 4.3 (Determining the scope of the information security management system)</p>
+    <hr style="margin:10px 0; border:none; border-top:1px dashed var(--border-color);">
+    <p><strong>1. สภาพข้อเท็จจริงที่ตรวจพบ (Condition):</strong><br>
+    จากการตรวจสอบเอกสารแถลงขอบเขต (Scope Statement เวอร์ชัน 1.0) พบว่าองค์กรระบุขอบเขตครอบคลุมเฉพาะ <em>"ระบบเว็บพอร์ทัลประชาสัมพันธ์และระบบอีเมล"</em> โดยจงใจตัด <em>"ระบบฐานข้อมูลประวัตินักศึกษาและผลการเรียน (REG Database)"</em> ออกจากขอบเขตระบบบริหารจัดการ ทั้งที่ระบบดังกล่าวตั้งอยู่บนเครือข่าย Core Switch ชุดเดียวกัน และมีการเชื่อมต่อข้อมูลระหว่างกันอย่างต่อเนื่อง</p>
+    <p><strong>2. เกณฑ์การตรวจที่นำมาเปรียบเทียบ (Criteria):</strong><br>
+    ISO/IEC 27001:2022 ข้อ 4.3 ระบุว่า <em>"องค์กรต้องพิจารณาจุดเชื่อมต่อและการพึ่งพากันระหว่างกิจกรรมที่ดำเนินการโดยองค์กร และกิจกรรมที่ดำเนินการโดยองค์กรอื่น"</em> และประกาศ กกม. 2564 กำหนดให้หน่วยงานโครงสร้างพื้นฐานต้องคุ้มครองระบบบริการสำคัญ</p>
+    <p><strong>3. สาเหตุที่แท้จริง (Root Cause):</strong><br>
+    ผู้จัดทำระบบต้องการหลีกเลี่ยงการถูกตรวจพบช่องโหว่บนระบบฐานข้อมูลเก่า จึงทำการตัดทอนขอบเขต (Scope Truncation / Cherry-picking) เพื่อให้สามารถผ่านการรับรองมาตรฐานได้โดยง่าย</p>
+    <p><strong>4. ผลกระทบ (Effect):</strong><br>
+    ระบบสารสนเทศหัวใจหลักของมหาวิทยาลัยซึ่งเก็บข้อมูลส่วนบุคคลของนักศึกษา 25,000 คน ไม่ได้รับการควบคุมความมั่นคงปลอดภัยตามมาตรฐาน ส่งผลให้มีความเสี่ยงสูงอย่างยิ่งต่อการถูกโจมตีด้วย Ransomware และข้อมูลรั่วไหล</p>
+    <p><strong>5. ข้อเสนอแนะในการแก้ไข (Recommendation):</strong><br>
+    ให้องค์กรทบทวนและแก้ไขเอกสาร Scope Statement โดยนำระบบบริการการศึกษาและฐานข้อมูลทะเบียนเข้ามารวมในขอบเขต พร้อมทั้งจัดทำแผนชดเชยความเสี่ยง (Compensating Controls) สำหรับระบบเก่าตามกระบวนการบริหารความเสี่ยงอย่างเป็นทางการ</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+<h2 id="sec-part-7-case-study">ส่วนที่ 7: กรณีศึกษาเชิงประยุกต์ "มหาวิทยาลัยดิจิทัลสมมติ" (Core Applied Case Study)</h2>
+<p>เพื่อให้นักศึกษาเห็นภาพการประยุกต์ใช้ทฤษฎีในสถานการณ์จริง เราจะนำกรณีศึกษาแกนกลางของวิชา <strong>“มหาวิทยาลัยดิจิทัลสมมติ” (Digital University)</strong> มาทำการวิเคราะห์บริบท กำหนดขอบเขต วางโครงสร้างธรรมาภิบาล และจัดทำแผนปฏิบัติการจริง</p>
+<h3 id="sec-7-1-topology">7.1 ข้อมูลพื้นฐานและสถาปัตยกรรมระบบ</h3>
+<ul class="content-list">
+  <li><strong>สถานะองค์กร:</strong> สถาบันอุดมศึกษาในกำกับของรัฐ มีนักศึกษา 25,000 คน บุคลากร 3,000 คน</li>
+  <li><strong>ระบบสารสนเทศหลัก:</strong></li>
+</ul>
+<ol class="content-list ordered">
+  <li>ระบบบริการการศึกษาและทะเบียน (REG System): เก็บข้อมูลประวัตินักศึกษา ผลการเรียน และโครงสร้างหลักสูตร (On-premise VM)</li>
+  <li>ระบบการเงินและพัสดุ (ERP System): จัดการงบประมาณ การเบิกจ่ายเงินเดือน และการรับชำระค่าธรรมเนียมการศึกษา</li>
+  <li>ระบบบริหารจัดการตัวตนกลาง (Central IdP / Active Directory): ฐานข้อมูลบัญชีผู้ใช้สำหรับเข้าถึงระบบทั้งหมด</li>
+  <li>เครือข่ายศูนย์ข้อมูล (Data Center): ติดตั้งไฟร์วอลล์และสวิตช์หลักของมหาวิทยาลัย</li>
+  <li>ระบบเครือข่ายไร้สาย (Campus & Dormitory Wi-Fi): ให้บริการอินเทอร์เน็ตแก่นักศึกษาและอาจารย์</li>
+</ol>
+
+<div class="figure-container" id="fig-4-10">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 4.10</div>
+    <div class="figure-title">ผังโครงสร้างสถาปัตยกรรมและเส้นแบ่งขอบเขต มหาวิทยาลัยดิจิทัลสมมติ</div>
+  </div>
+  <div class="figure-caption">
+    แสดงการแบ่งโซนเครือข่าย (Network Segmentation) เส้นแบ่งขอบเขตระบบบริหารจัดการ (ISMS Scope) และการกักกันเครือข่ายหอพัก (Isolation)
+  </div>
+
+  <div class="topology-wrapper">
+    <!-- Outside / Untrusted Zone -->
+    <div class="topo-zone untrusted">
+      <div class="zone-title">UNTRUSTED ZONE (เครือข่ายภายนอก / ทั่วไป)</div>
+      <div class="zone-grid">
+        <div class="topo-card dorm">
+          <div class="tc-name">📶 เครือข่าย Wi-Fi หอพักนักศึกษา (Dormitory Wi-Fi)</div>
+          <div class="tc-status excl">อยู่นอกขอบเขต (Exclusion: Quarantined VLAN)</div>
+          <div class="tc-detail">นักศึกษา 25,000 คน • แยกท่ออินเทอร์เน็ตตรง • มี Firewall กั้นไม่ให้เข้าโซน Data Center</div>
+        </div>
+        <div class="topo-card external">
+          <div class="tc-name">🌐 บริการภายนอก & ธนาคาร (Third-Party Services)</div>
+          <div class="tc-status interface">จุดเชื่อมต่อภายนอก (Interfaces Boundary)</div>
+          <div class="tc-detail">Payment Gateway ธนาคารกรุงไทย • Microsoft Entra ID (Azure AD SSO)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firewall Barrier -->
+    <div class="topo-firewall-bar">
+      <span>🛡️ NEXT-GENERATION CORE FIREWALL (Access Control &amp; Network Segmentation) 🛡️</span>
+    </div>
+
+    <!-- Inside / In-Scope Zone -->
+    <div class="topo-zone in-scope">
+      <div class="zone-title"><span class="badge-in-scope">IN-SCOPE BOUNDARY</span> ศูนย์ข้อมูลหลัก มหาวิทยาลัยดิจิทัลสมมติ (Data Center Zone)</div>
+      <div class="zone-grid">
+        <div class="topo-card vm">
+          <div class="tc-name">💻 Web Tier (VLAN 100)</div>
+          <div class="tc-desc">Web Portal ลงทะเบียนเรียน, เว็บไซต์ชำระเงิน, Reverse Proxy</div>
+        </div>
+        <div class="topo-card vm">
+          <div class="tc-name">⚙️ App Tier (VLAN 110)</div>
+          <div class="tc-desc">Application Server ระบบ REG, ระบบ ERP การเงินและพัสดุ</div>
+        </div>
+        <div class="topo-card vm">
+          <div class="tc-name">🗄️ Database Tier (VLAN 120)</div>
+          <div class="tc-desc">ฐานข้อมูลประวัตินักศึกษา, ข้อมูลเกรดเฉลี่ย, บัญชีเงินเดือน (จำกัดสิทธิ์เข้มงวด)</div>
+        </div>
+        <div class="topo-card vm">
+          <div class="tc-name">🔑 Identity &amp; Logs (VLAN 130)</div>
+          <div class="tc-desc">Active Directory Central IdP, Centralized Syslog Server (เกณฑ์ 90 วัน)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+<h2 id="sec-simulation">กิจกรรมเชิงประยุกต์และบทบาทสมมติในชั้นเรียน (Active Learning Simulation)</h2>
+<h3 id="sec-scoping-battle">กิจกรรม: "The Scoping Battle: ข้อพิพาทการตัดเครือข่ายหอพักนักศึกษาออกจากขอบเขต"</h3>
+
+<div class="interactive-card" id="widget-4-4">
+  <div class="card-badge">INTERACTIVE WIDGET 4.4</div>
+  <div class="card-title">⚔️ สถานการณ์จำลองบทบาทสมมติ: "The Scoping Battle: ข้อพิพาทเครือข่ายหอพัก"</div>
+  <p class="card-desc">คลิกเลือกตัวละครทั้ง 5 ฝ่ายในการประชุมกำหนดขอบเขต เพื่อฟังเหตุผล ข้อกังวล และมติร่วมตามหลัก Risk-Based Scoping</p>
+
+  <div class="battle-character-tabs">
+    <button class="char-tab active" data-char="ciso">🧑‍💼 CISO / Lead Implementer</button>
+    <button class="char-tab" data-char="itdir">👨‍💻 ผอ. สำนักไอที</button>
+    <button class="char-tab" data-char="student">🎓 ตัวแทนนักศึกษา</button>
+    <button class="char-tab" data-char="finance">💼 ผอ. กองคลัง</button>
+    <button class="char-tab" data-char="auditor">🧐 Lead Auditor</button>
+  </div>
+
+  <div class="character-card-display" id="char-display-box">
+    <!-- Populated by JavaScript -->
+  </div>
+</div>
+
+<ul class="content-list">
+  <li><strong>ระยะเวลา:</strong> 15–20 นาที</li>
+  <li><strong>สถานการณ์สมมติ:</strong> มหาวิทยาลัยดิจิทัลสมมติกำลังเตรียมตัวขอรับรองมาตรฐาน ISO/IEC 27001 และเตรียมส่งรายงานการตรวจประเมินต่อ สกมช. ตาม พ.ร.บ.ไซเบอร์ ม.54 ในการประชุมกำหนดขอบเขต เกิดข้อถกเถียงอย่างรุนแรงระหว่าง 5 ฝ่าย:</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>ผู้อำนวยการสำนักไอที:</strong> เสนอให้นำ <em>"เครือข่าย Wi-Fi หอพักนักศึกษา"</em> เข้ามารวมในขอบเขตด้วย เพื่อให้มหาวิทยาลัยได้รับป้ายประกาศว่า "ปลอดภัยทั้งระบบ"</li>
+  <li><strong>ตัวแทนองค์การนักศึกษา:</strong> กังวลว่าหากนำหอพักเข้าระบบ จะถูกดักฟังข้อมูล ถูกบล็อกการเล่นเกม หรือถูกลิดรอนความเป็นส่วนตัว</li>
+  <li><strong>ผู้อำนวยการกองคลัง / ฝ่ายการเงิน:</strong> กังวลเรื่องงบประมาณ หากต้องซื้ออุปกรณ์รักษาความปลอดภัยมาติดตั้งครอบคลุมอุปกรณ์ของนักศึกษา 25,000 เครื่อง จะใช้งบประมาณมหาศาลเกินจำเป็น</li>
+  <li><strong>CISO / Lead Implementer:</strong> เสนอให้ <strong>"ตัดเครือข่ายหอพักออก (Exclusion)"</strong> และใช้มาตรการทางเทคนิคคือการทำ <strong>Network Segmentation & Isolation</strong> กักกันทราฟฟิกหอพักออกจากโซน Data Center เพื่อให้ขอบเขตโฟกัสเฉพาะบริการหลัก</li>
+  <li><strong>Lead Auditor (ผู้สังเกตการณ์):</strong> ทำหน้าที่ซักถาม CISO ว่า <em>"หากตัดหอพักออก คุณมีหลักฐานเชิงประจักษ์อะไรมาพิสูจน์ว่านักศึกษาในหอพักจะไม่สามารถเจาะข้าม VLAN มายังเซิร์ฟเวอร์ทะเบียนได้?"</em></li>
+</ol>
+<ul class="content-list">
+  <li><strong>ผลลัพธ์การเรียนรู้:</strong> นักศึกษาจะได้เข้าใจว่าการกำหนดขอบเขตไม่ได้ขึ้นอยู่กับความต้องการฝ่ายใดฝ่ายหนึ่ง แต่ต้องยึดหลัก <strong>Risk-Based Scoping</strong> และความสามารถในการควบคุมอย่างแท้จริง</li>
+</ul>
+<hr class="section-divider">
+<h2 id="sec-perspectives">มุมมองวิชาชีพประจำบท (Professional Perspectives)</h2>
+
+<div class="figure-container" id="fig-4-11">
+  <div class="figure-header">
+    <div class="figure-tag">FIGURE 4.11</div>
+    <div class="figure-title">บทสนทนาข้ามสายวิชาชีพ: ข้อคิดการทำงานจริงระหว่าง Implementer กับ Auditor</div>
+  </div>
+  <div class="figure-caption">
+    สะท้อนมุมมองที่แตกต่างแต่เกื้อหนุนกัน เพื่อยกระดับความมั่นคงปลอดภัยขององค์กรอย่างยั่งยืน
+  </div>
+
+  <div class="dialogue-container">
+    <div class="dialogue-bubble implementer">
+      <div class="dia-avatar">🏗️</div>
+      <div class="dia-content">
+        <div class="dia-name">Lead Implementer (ผู้จัดทำระบบ)</div>
+        <p>"การกำหนดบริบทและขอบเขตต้องอยู่บนพื้นฐานของความเป็นจริง ทรัพยากรที่มี และสถาปัตยกรรมระบบที่จัดการได้จริง ไม่ใช่การเขียนเอกสารเพ้อฝันให้ดูดีบนหน้ากระดาษ และตาราง RACI Matrix ของผมช่วยให้ทุกคนรู้หน้าที่ ไม่เกิดการเกี่ยงงานเมื่อเกิดเหตุฉุกเฉิน"</p>
+      </div>
+    </div>
+
+    <div class="dialogue-bubble auditor">
+      <div class="dia-avatar">🔍</div>
+      <div class="dia-content">
+        <div class="dia-name">Lead Auditor (ผู้ตรวจสอบ)</div>
+        <p>"หน้าที่ของผมคือการตรวจสอบว่าขอบเขตที่คุณขีดไม่ได้จงใจตัดระบบเสี่ยงสูงออกไปเพื่อหนีการตรวจ (Cherry-picking) และผมจะสุ่มสัมภาษณ์ Control Owners ในตาราง RACI เพื่อดูว่าพวกเขารู้ตัวไหมว่าตนเองมีหน้าที่รับผิดชอบตามเอกสาร หรือแค่เซ็นชื่อรับทราบไปตามพิธี"</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+<h2 id="sec-assignment">แบบฝึกหัดและการบ้านประจำบทที่ 4</h2>
+<p>เพื่อบูรณาการความรู้ในบทนี้เข้าสู่การจัดทำแฟ้มสะสมงาน <strong>Cybersecurity Audit Portfolio</strong> ให้นักศึกษาจัดทำชุดเอกสารโครงการตามกรณีศึกษา <strong>"มหาวิทยาลัยดิจิทัลสมมติ"</strong> หรือองค์กรสมมติที่ได้รับอนุมัติ โดยมีเอกสาร 5 ชิ้นดังนี้:</p>
+<ol class="content-list ordered">
+  <li><strong>เอกสารวิเคราะห์บริบทองค์กร (Organizational Context Analysis):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>จัดทำ PESTLE Analysis ครอบคลุมทั้ง 6 มิติ มิติละอย่างน้อย 2 ประเด็น</li>
+  <li>จัดทำ Cybersecurity SWOT Matrix ที่ระบุ S, W, O, T อย่างละอย่างน้อย 3 ประเด็น</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>ทะเบียนผู้มีส่วนได้ส่วนเสีย (Stakeholder Register):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>ระบุผู้มีส่วนได้ส่วนเสียอย่างน้อย 6 กลุ่ม (ทั้งภายในและภายนอก)</li>
+  <li>จัดกลุ่มตาม Mendelow's Power-Interest Matrix พร้อมระบุข้อกำหนดทางกฎหมายและหลักฐานการตรวจ</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>เอกสารแถลงขอบเขตระบบบริหารจัดการ (Scope Statement):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>จัดทำเอกสาร Scope Statement ฉบับทางการที่ครอบคลุม 6 มิติ (องค์กร, กายภาพ, เทคโนโลยี, เครือข่าย, ข้อมูล, บุคคลภายนอก)</li>
+  <li>ระบุข้อยกเว้น (Exclusions) อย่างน้อย 1 ระบบ พร้อมชี้แจงเหตุผลความจำเป็นและมาตรการชดเชยความเสี่ยง</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>เมทริกซ์กำหนดความรับผิดชอบ (RACI Matrix):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>จัดทำตาราง RACI Matrix สำหรับกิจกรรมความมั่นคงปลอดภัยอย่างน้อย 8 กิจกรรม โดยระบุบทบาทหน้าที่ให้สอดคล้องกับกฎทอง "1 Accountable ต่องาน"</li>
+</ul>
+<ol class="content-list ordered">
+  <li><strong>แผนการนำระบบไปปฏิบัติการระยะ 6 เดือน (Implementation Roadmap):</strong></li>
+</ol>
+<ul class="content-list">
+  <li>จัดทำแผนงาน Gantt Chart หรือตาราง Roadmap รายเดือน (Month 1 ถึง Month 6) ที่ระบุกิจกรรมหลัก 7 หมวด พร้อมผู้รับผิดชอบและผลลัพธ์ที่ส่งมอบ (Deliverables)</li>
+</ul>
+<hr class="section-divider">
+<h2 id="sec-summary">สรุปบทที่ 4</h2>
+
+<div class="interactive-card" id="widget-4-5">
+  <div class="card-badge">INTERACTIVE WIDGET 4.5</div>
+  <div class="card-title">📝 แบบทดสอบวัดความรอบรู้ประจำบทที่ 4 (Chapter 4 Knowledge Mastery Quiz)</div>
+  <p class="card-desc">ทดสอบความเข้าใจแก่นความรู้เรื่อง Lead Implementer, PESTLE, Scoping 6 มิติ, RACI Matrix และ Document Hierarchy (5 ข้อ)</p>
+
+  <div id="quiz-container">
+    <div class="quiz-question-box" id="quiz-box">
+      <!-- Dynamic Quiz Question -->
+    </div>
+    <div class="quiz-controls">
+      <button class="btn-quiz-nav" id="btn-quiz-prev" disabled>◀ ข้อก่อนหน้า</button>
+      <span class="quiz-progress-text" id="quiz-progress-indicator">ข้อ 1 / 5</span>
+      <button class="btn-quiz-nav" id="btn-quiz-next">ข้อถัดไป ▶</button>
+    </div>
+    <div class="quiz-score-summary" id="quiz-score-summary" style="display:none;"></div>
+  </div>
+</div>
+
+<p>การจัดทำระบบบริหารจัดการความมั่นคงปลอดภัยไซเบอร์มิใช่เพียงโครงการทางเทคนิค แต่เป็นกระบวนการเปลี่ยนแปลงเชิงกลยุทธ์ขององค์กร Lead Implementer ทำหน้าที่เป็นสถาปนิกผู้วางรากฐานระบบ โดยเริ่มต้นจากการทำความเข้าใจ <strong>บริบทองค์กร (Context)</strong> ผ่านการวิเคราะห์ปัจจัยสภาพแวดล้อม PESTLE และ SWOT การทำความเข้าใจความคาดหวังของ <strong>ผู้มีส่วนได้ส่วนเสีย (Stakeholders)</strong> ผ่าน Mendelow's Matrix และการขีดเส้นแบ่ง <strong>ขอบเขตระบบ (Scope)</strong> อย่างรอบคอบครอบคลุมทั้ง 6 มิติ เพื่อไม่ให้เกิดช่องโหว่และจุดบอดจากการตัดทอนขอบเขต</p>
+<p>การขับเคลื่อนระบบอย่างยั่งยืนต้องอาศัย <strong>โครงสร้างการกำกับดูแล (Governance)</strong> ที่แบ่งแยกอำนาจหน้าที่ชัดเจน การกระจายความรับผิดชอบผ่าน <strong>RACI Matrix</strong> ที่ยึดหลัก Single Point of Accountability และการสร้าง <strong>สถาปัตยกรรมเอกสาร 5 ระดับ</strong> ที่เชื่อมโยงนโยบายระดับสูงลงสู่หลักฐานการปฏิบัติงานจริง และท้ายที่สุด การแปลงกลยุทธ์สู่การปฏิบัติจริงผ่าน <strong>Implementation Roadmap ระยะ 6 เดือน</strong> จะช่วยให้องค์กรสามารถควบคุมความเสี่ยงได้อย่างเป็นรูปธรรม มีความพร้อมรับมือภัยคุกคาม และพร้อมรับการตรวจสอบจาก Lead Auditor อย่างมั่นใจ</p>
+<hr class="section-divider">
+<h2 id="sec-references">เอกสารอ้างอิงและมาตรฐานสากล</h2>
+<ol class="content-list ordered">
+  <li><strong>International Organization for Standardization (ISO).</strong> (2022). <em>ISO/IEC 27001:2022 Information security, cybersecurity and privacy protection — Information security management systems — Requirements</em> (Clauses 4, 5, 6). Geneva: ISO.</li>
+  <li><strong>International Organization for Standardization (ISO).</strong> (2022). <em>ISO/IEC 27002:2022 Information security, cybersecurity and privacy protection — Information security controls</em>. Geneva: ISO.</li>
+  <li><strong>National Institute of Standards and Technology (NIST).</strong> (2024). <em>The NIST Cybersecurity Framework (CSF) 2.0</em> (NIST Special Publication 1300). U.S. Department of Commerce.</li>
+  <li><strong>National Institute of Standards and Technology (NIST).</strong> (2020). <em>Security and Privacy Controls for Information Systems and Organizations</em> (NIST SP 800-53 Rev. 5). U.S. Department of Commerce.</li>
+  <li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+  <li><strong>ประกาศคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2564.</strong> ราชกิจจานุเบกษา เล่ม 138 ตอนพิเศษ 245 ง วันที่ 7 ตุลาคม 2564.</li>
+  <li><strong>พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก วันที่ 27 พฤษภาคม 2562.</li>
+  <li><strong>ISACA.</strong> (2019). <em>COBIT 2019 Framework: Governance and Management Objectives</em>. Schaumburg, IL: ISACA.</li>
+</ol>
+        <!-- Chapter Navigation Bar -->
+        <div class="chapter-nav-grid">
+          <a href="ch-3.html" class="chapter-nav-card prev" title="กลับไปศึกษาบทที่ 3">
+            <span class="nav-sub">← บทก่อนหน้า</span>
+            <span class="nav-title">บทที่ 3: ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์</span>
+          </a>
+          <a href="ch-5.html" class="chapter-nav-card next" style="opacity: 0.7; cursor: default;" title="บทถัดไป (กำลังพัฒนา)">
+            <span class="nav-sub">บทถัดไป →</span>
+            <span class="nav-title">บทที่ 5: การประเมินและการบริหารความเสี่ยงด้านความมั่นคงปลอดภัยไซเบอร์</span>
+          </a>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <p>NECS1312 การตรวจสอบความมั่นคงปลอดภัยของระบบและเครือข่าย — เนื้อหาเพื่อการศึกษาอิง พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 และประกาศลำดับรอง</p>
+    <p style="margin-top:6px; font-size:0.8rem; color:var(--text-light);">อ้างอิง: พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 • ISO/IEC 27001:2022 (Clauses 4, 5, 6) • NIST CSF 2.0 (Govern) • ประกาศ กกม. (ฉบับที่ 1/2564)</p>
+  </footer>
+
+  <!-- INTERACTIVE WIDGET SCRIPTS -->
+  <script>
+    // ========================================================================
+    // 1. READING PROGRESS & NAVIGATION
+    // ========================================================================
+    const progressBar = document.getElementById("progress-bar");
+    window.addEventListener("scroll", () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      if (progressBar) progressBar.style.width = scrolled + "%";
+    });
+
+    // Sidebar Controls
+    const tocBtn = document.getElementById("btn-toggle-toc");
+    const closeTocBtn = document.getElementById("btn-close-toc");
+    const sidebar = document.getElementById("sidebar-toc");
+    const backdrop = document.getElementById("toc-backdrop");
+
+    function isMobile() { return window.innerWidth <= 992; }
+
+    function toggleSidebar() {
+      if (isMobile()) {
+        const isOpen = sidebar.classList.toggle("open");
+        if (backdrop) backdrop.classList.toggle("open", isOpen);
+        if (tocBtn) tocBtn.classList.toggle("active", isOpen);
+      } else {
+        const isCollapsed = document.body.classList.toggle("sidebar-collapsed");
+        localStorage.setItem("audit_ch4_sidebar_collapsed", isCollapsed ? "true" : "false");
+        if (tocBtn) tocBtn.classList.toggle("active", !isCollapsed);
+      }
+    }
+
+    function closeSidebar() {
+      if (isMobile()) {
+        sidebar.classList.remove("open");
+        if (backdrop) backdrop.classList.remove("open");
+        if (tocBtn) tocBtn.classList.remove("active");
+      } else {
+        document.body.classList.add("sidebar-collapsed");
+        localStorage.setItem("audit_ch4_sidebar_collapsed", "true");
+        if (tocBtn) tocBtn.classList.remove("active");
+      }
+    }
+
+    if (tocBtn) tocBtn.addEventListener("click", toggleSidebar);
+    if (closeTocBtn) closeTocBtn.addEventListener("click", closeSidebar);
+    if (backdrop) backdrop.addEventListener("click", closeSidebar);
+
+    // Keyboard shortcut (Ctrl+B)
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        toggleSidebar();
+      }
+    });
+
+    // Auto-close on mobile when link clicked
+    document.querySelectorAll(".toc-item").forEach(link => {
+      link.addEventListener("click", () => {
+        if (isMobile()) closeSidebar();
+      });
+    });
+
+    // Initial sidebar state
+    if (!isMobile() && localStorage.getItem("audit_ch4_sidebar_collapsed") === "true") {
+      document.body.classList.add("sidebar-collapsed");
+      if (tocBtn) tocBtn.classList.remove("active");
+    } else if (tocBtn) {
+      tocBtn.classList.add("active");
+    }
+
+    // Theme Switcher
+    const btnLight = document.getElementById("btn-theme-light");
+    const btnSepia = document.getElementById("btn-theme-sepia");
+    const btnDark = document.getElementById("btn-theme-dark");
+
+    function setTheme(theme) {
+      if (theme === "light") {
+        document.documentElement.removeAttribute("data-theme");
+      } else {
+        document.documentElement.setAttribute("data-theme", theme);
+      }
+      [btnLight, btnSepia, btnDark].forEach(b => b.classList.remove("active"));
+      if (theme === "light") btnLight.classList.add("active");
+      if (theme === "sepia") btnSepia.classList.add("active");
+      if (theme === "dark") btnDark.classList.add("active");
+      localStorage.setItem("audit_ch4_theme", theme);
+    }
+
+    btnLight.addEventListener("click", () => setTheme("light"));
+    btnSepia.addEventListener("click", () => setTheme("sepia"));
+    btnDark.addEventListener("click", () => setTheme("dark"));
+
+    const savedTheme = localStorage.getItem("audit_ch4_theme");
+    if (savedTheme) setTheme(savedTheme);
+
+    // Font Sizing
+    const btnFontDec = document.getElementById("btn-font-dec");
+    const btnFontNorm = document.getElementById("btn-font-normal");
+    const btnFontInc = document.getElementById("btn-font-inc");
+
+    function setFontSize(size) {
+      if (size === "normal") {
+        document.documentElement.removeAttribute("data-font-size");
+      } else {
+        document.documentElement.setAttribute("data-font-size", size);
+      }
+      [btnFontDec, btnFontNorm, btnFontInc].forEach(b => b.classList.remove("active"));
+      if (size === "normal") btnFontNorm.classList.add("active");
+      if (size === "large") btnFontInc.classList.add("active");
+      localStorage.setItem("audit_ch4_fontsize", size);
+    }
+
+    btnFontDec.addEventListener("click", () => setFontSize("normal"));
+    btnFontNorm.addEventListener("click", () => setFontSize("normal"));
+    btnFontInc.addEventListener("click", () => setFontSize("large"));
+
+    const savedFontSize = localStorage.getItem("audit_ch4_fontsize");
+    if (savedFontSize) setFontSize(savedFontSize);
+
+    // TOC ScrollSpy
+    const tocLinks = document.querySelectorAll(".toc-item");
+    const sections = Array.from(tocLinks).map(link => {
+      const id = link.getAttribute("data-target");
+      return document.getElementById(id);
+    }).filter(Boolean);
+
+    window.addEventListener("scroll", () => {
+      let currentSectionId = "";
+      const scrollPos = window.scrollY + 120;
+      sections.forEach(sec => {
+        if (sec.offsetTop <= scrollPos) {
+          currentSectionId = sec.id;
+        }
+      });
+
+      tocLinks.forEach(link => {
+        if (link.getAttribute("data-target") === currentSectionId) {
+          link.classList.add("active");
+        } else {
+          link.classList.remove("active");
+        }
+      });
+    });
+
+    // ========================================================================
+    // 2. WIDGET 4.1 DATA & CONTROLLER: STAKEHOLDER MENDELOW EXPLORER
+    // ========================================================================
+    const STAKEHOLDER_DATA = {
+      "sh-regulator": {
+        name: "สำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช.)",
+        category: "Keep Satisfied (อำนาจสูง // ความสนใจต่ำ)",
+        badgeColor: "warning",
+        expectations: "ได้รับการแจ้งชื่อผู้ประสานงานตาม ม.46, จัดทำประมวลแนวทางปฏิบัติฯ ตาม ม.44, จัดให้มีการตรวจประเมินความเสี่ยงและตรวจรับรองประจำปีตาม ม.54, และรายงานเหตุภัยคุกคามตาม ม.57/58",
+        legalGrounds: "พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 (มาตรา 44, 46, 54, 57) และประกาศ กกม. 2564",
+        engagement: "ปฏิบัติตามกฎหมายอย่างเคร่งครัด จ้างผู้ตรวจสอบภายนอกที่ได้รับอนุมัติดำเนินการตรวจ และส่งมอบรายงานสรุปภายใน 30 วันนับแต่วันที่ตรวจแล้วเสร็จ",
+        auditEvidence: "หนังสือนำส่งแต่งตั้งผู้ประสานงาน, สัญญาจ้างผู้ตรวจสอบภายนอก, หนังสือนำส่งรายงานการตรวจประเมินประจำปีพร้อมตราประทับรับของ สกมช."
+      },
+      "sh-council": {
+        name: "สภามหาวิทยาลัย / อธิการบดี (Governing Body)",
+        category: "Manage Closely (อำนาจสูง // ความสนใจสูง)",
+        badgeColor: "danger",
+        expectations: "มหาวิทยาลัยดำเนินงานต่อเนื่อง ภารกิจการศึกษาไม่สะดุด, ปกป้องชื่อเสียงองค์กร, งบประมาณด้านไอทีถูกใช้อย่างคุ้มค่า, ผู้บริหารไม่ถูกดำเนินคดีอาญาตามมาตรา 77",
+        legalGrounds: "พระราชบัญญัติมหาวิทยาลัย, พระราชบัญญัติไซเบอร์ 2562 (มาตรา 77 เรื่องความรับผิดของกรรมการหรือผู้มีอำนาจ)",
+        engagement: "ประชุมรายงานสถานะความเสี่ยงต่อ Steering Committee ทุกไตรมาส, ขออนุมัติทิศทางนโยบายและ Risk Appetite, รายงานข้อค้นพบจากการตรวจสอบภายใน",
+        auditEvidence: "รายงานการประชุมสภามหาวิทยาลัย, เอกสาร Risk Appetite Statement ที่ลงนามอนุมัติ, คำสั่งแต่งตั้ง CISO และ Steering Committee"
+      },
+      "sh-students": {
+        name: "นักศึกษาและอาจารย์ (25,000 คน / End Users)",
+        category: "Keep Informed (อำนาจต่ำ // ความสนใจสูง)",
+        badgeColor: "primary",
+        expectations: "ระบบลงทะเบียนเรียนและชำระเงินไม่ล่มในวันเปิดเทอม, ผลการเรียนและประวัติส่วนบุคคลไม่รั่วไหล, ความเป็นส่วนตัวไม่ถูกละเมิดจากการตรวจจับทราฟฟิกหอพัก",
+        legalGrounds: "สัญญาการให้บริการการศึกษา, พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA มาตรา 35, 37)",
+        engagement: "จัดทำแคมเปญ Cyber Awareness Training, อบรมรู้เท่าทัน Phishing, ส่งข้อความแจ้งเตือนเมื่อมีการปิดปรับปรุงระบบล่วงหน้า",
+        auditEvidence: "สถิติ Uptime ระบบทะเบียน (>99.5%), รายงานผลการทดสอบ Phishing Simulation ประจำปี, นโยบายความเป็นส่วนตัว (Privacy Notice)"
+      },
+      "sh-vendor": {
+        name: "ผู้ให้บริการคลาวด์และคู่ค้าบำรุงรักษาระบบ (AWS / ERP Vendor)",
+        category: "Monitor (อำนาจต่ำ // ความสนใจต่ำ)",
+        badgeColor: "cyan",
+        expectations: "ได้รับข้อกำหนดการเชื่อมต่อที่ชัดเจน, มีการจ่ายเงินตามงวดงาน, ไม่ถูกละเมิดข้อมูลความลับทางการค้าของซอฟต์แวร์",
+        legalGrounds: "สัญญาจ้างบริการ (Service Contract), ข้อตกลงระดับการให้บริการ (SLA), สัญญาไม่เปิดเผยข้อมูล (NDA)",
+        engagement: "ควบคุมการเข้าถึงระบบจากระยะไกลด้วย MFA และ Bastion Host, กำหนดกรอบ Shared Responsibility Model, ทบทวนสิทธิ์ Vendor เป็นประจำ",
+        auditEvidence: "สัญญาจ้างและข้อตกลง SLA/NDA ที่ลงนามครบถ้วน, Audit Log การเข้าใช้งานระบบผ่าน VPN ของทีม Vendor, รายงานผลการประเมิน Vendor Security"
+      },
+      "sh-finance": {
+        name: "กองคลังและฝ่ายบริหารการเงิน (Finance & Procurement)",
+        category: "Keep Satisfied (อำนาจสูง // ความสนใจต่ำ)",
+        badgeColor: "warning",
+        expectations: "ระบบ ERP บัญชีและการเบิกจ่ายเงินเดือนไม่ถูกโจมตีด้วย Ransomware, เงินรายได้ค่าธรรมเนียมการศึกษาถูกต้อง, งบประมาณด้านไซเบอร์เป็นไปตามระเบียบพัสดุ",
+        legalGrounds: "พ.ร.บ.วินัยการเงินการคลังของรัฐ, ระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างฯ, พ.ร.บ.ไซเบอร์ 2562",
+        engagement: "รายงานสรุปความเสี่ยงทางการเงินจากภัยไซเบอร์ (Financial Loss Exposure), นำเสนอ Business Case ที่แสดงความคุ้มค่าของการลงทุนด้านความปลอดภัย",
+        auditEvidence: "รายงานผลการทดสอบระบบสำรองข้อมูลระบบบัญชี (Restore Test), ทะเบียนการทบทวนสิทธิ์การโอนเงิน (Authorization Matrix), รายงานตรวจบัญชีเงินเดือน"
+      }
+    };
+
+    function renderStakeholder(key) {
+      const data = STAKEHOLDER_DATA[key];
+      if (!data) return;
+      const panel = document.getElementById("sh-display-panel");
+      panel.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <h4 style="color:var(--text-main); font-size:1.05rem;">${data.name}</h4>
+          <span class="sc-badge" style="background:var(--${data.badgeColor}-light); color:var(--${data.badgeColor});">${data.category}</span>
+        </div>
+        <div class="sh-detail-grid">
+          <div class="sh-info-block">
+            <div class="sh-info-label">ความต้องการและความคาดหวัง (Expectations)</div>
+            <div>${data.expectations}</div>
+          </div>
+          <div class="sh-info-block">
+            <div class="sh-info-label">ฐานข้อกำหนดตามกฎหมาย / ธุรกิจ (Requirements)</div>
+            <div>${data.legalGrounds}</div>
+          </div>
+          <div class="sh-info-block">
+            <div class="sh-info-label">กลยุทธ์การสื่อสารและตอบสนอง (Engagement Strategy)</div>
+            <div>${data.engagement}</div>
+          </div>
+          <div class="sh-info-block">
+            <div class="sh-info-label">หลักฐานการตรวจสอบที่ Auditor ขอดู (Audit Evidence)</div>
+            <div>${data.auditEvidence}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    renderStakeholder("sh-regulator");
+
+    document.querySelectorAll(".sh-tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".sh-tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderStakeholder(btn.getAttribute("data-sh"));
+      });
+    });
+
+    // ========================================================================
+    // 3. WIDGET 4.2 DATA & CONTROLLER: SCOPING VALIDATOR
+    // ========================================================================
+    const SCOPING_CASES = [
+      {
+        title: "กรณีที่ 1: การตัดระบบฐานข้อมูลทะเบียนเก่า (Legacy REG DB) ออกจากขอบเขต",
+        desc: "องค์กรพบว่าเครื่องแม่ข่ายฐานข้อมูลทะเบียนนักศึกษาใช้ระบบปฏิบัติการ Windows Server 2008 ที่หมดอายุการสนับสนุน (EOL) และมีช่องโหว่เยอะ CISO จึงเสนอให้ตัดระบบนี้ออกจากขอบเขต ISO 27001 โดยนำเฉพาะเว็บประชาสัมพันธ์มาขอรับรอง เพื่อให้ผ่านการตรวจง่าย",
+        correctVerdict: "invalid",
+        explanation: "❌ <strong>การตัดสินใจนี้ผิดหลักการอย่างยิ่ง (Cherry-picking Pitfall / Major NCR)</strong>: ฐานข้อมูลทะเบียนเป็นบริการหลัก (Critical Mission) ที่เก็บข้อมูลส่วนบุคคลของนักศึกษา 25,000 คน และตั้งอยู่บน Core Switch ชุดเดียวกัน การตัดระบบนี้ออกเพื่อให้ผ่านการตรวจเป็นการหลอกลวงผลการประเมิน Lead Auditor ต้องออกใบข้อบกพร่อง Major Non-Conformity ทันที วิธีแก้ที่ถูกต้องคือต้องนำเข้ารวมในขอบเขตและจัดทำมาตรการชดเชย (Compensating Controls เช่น ติดตั้ง WAF, ตัดการต่อเน็ตตรง, บังคับใช้ Jump Host) ตามกระบวนการบริหารความเสี่ยง"
+      },
+      {
+        title: "กรณีที่ 2: การตัดเครือข่าย Wi-Fi หอพักนักศึกษา (Dormitory Wi-Fi Exclusion)",
+        desc: "CISO เสนอให้ระบุเครือข่าย Wi-Fi หอพักนักศึกษาเป็น 'ข้อยกเว้นนอกขอบเขต (Exclusion)' โดยมีเอกสารชี้แจงว่า เครือข่ายหอพักถูกแยกทางตรรกะผ่าน Firewall เฉพาะ (VLAN Quarantine) มีการทำ Isolation กักกันไม่ให้ทราฟฟิกสามารถวิ่งเข้ามายังศูนย์ข้อมูล Data Center ได้",
+        correctVerdict: "valid",
+        explanation: "✔ <strong>การตัดสินใจนี้ชอบด้วยเหตุผล (Valid & Acceptable Exclusion)</strong>: ตามข้อกำหนด ISO 27001 ข้อ 4.3 องค์กรสามารถกำหนดข้อยกเว้นได้ หากมีเหตุผลทางธุรกิจรองรับ และมีมาตรการทางเทคนิคพิสูจน์ได้ว่าการตัดออกนั้นไม่กระทบต่อความปลอดภัยของบริการสำคัญในขอบเขต โดย CISO มีผัง Network Segmentation และ Firewall Rules เป็นหลักฐานเชิงประจักษ์ยืนยันความปลอดภัย"
+      },
+      {
+        title: "กรณีที่ 3: การละเลย API ชำระเงินระหว่างระบบลงทะเบียนกับธนาคาร",
+        desc: "ผู้จัดทำระบบกำหนดขอบเขตเฉพาะเครื่องเซิร์ฟเวอร์ในศูนย์ข้อมูล แต่ไม่ได้ระบุและไม่ได้ควบคุมเส้นทางเชื่อมต่อ REST API ระหว่างระบบ REG กับ Payment Gateway ของธนาคาร โดยอ้างว่า 'ระบบธนาคารเป็นของบุคคลภายนอก ไม่ใช่คอมพิวเตอร์ของมหาวิทยาลัย'",
+        correctVerdict: "invalid",
+        explanation: "❌ <strong>การตัดสินใจนี้ผิดหลักการ (Ignoring Interfaces Pitfall / Major Finding)</strong>: ISO 27001 ข้อ 4.3 ระบุชัดเจนว่าองค์กรต้องพิจารณาจุดเชื่อมต่อ (Interfaces) และการพึ่งพากันระหว่างระบบของตนกับระบบภายนอก จุดเชื่อมต่อ API เป็นประตูหน้าด่านที่แฮกเกอร์มักใช้โจมตี (คล้ายกรณี Target Breach 2013) หากไม่กำหนดมาตรการควบคุม API Gateway, Token Authentication และ Encryption จะเกิดความเสี่ยงทางการเงินขั้นรุนแรง"
+      },
+      {
+        title: "กรณีที่ 4: การนำระบบ Mobile App API บน AWS เข้ารวมในขอบเขตตาม Shared Responsibility",
+        desc: "องค์กรนำระบบ Mobile App API Gateway ที่เช่าใช้งานบน Amazon Web Services (AWS ap-southeast-1) มาระบุไว้ในขอบเขตระบบบริหารจัดการ โดยระบุชัดเจนว่ามหาวิทยาลัยรับผิดชอบส่วนการตั้งค่า IAM, Security Group, และ Application Code ขณะที่ AWS รับผิดชอบ Physical Security ของศูนย์ข้อมูลคลาวด์",
+        correctVerdict: "valid",
+        explanation: "✔ <strong>การตัดสินใจนี้ถูกต้องตามหลักวิชาชีพสากล (Best Practice Scoping)</strong>: สอดคล้องกับหลักการ <strong>Shared Responsibility Model</strong> ของระบบคลาวด์ การไม่มองข้าม Cloud Assets และนำมากำกับดูแลตามมาตรฐาน ช่วยปิดจุดบอดเรื่อง Shadow IT และทำให้การตรวจสอบมีความสมบูรณ์รอบด้าน"
+      }
+    ];
+
+    function renderScopingCase(index) {
+      const c = SCOPING_CASES[index];
+      const box = document.getElementById("case-content-box");
+      box.innerHTML = `
+        <h4 style="color:var(--text-main); font-size:1rem;">${c.title}</h4>
+        <p style="font-size:0.86rem; color:var(--text-muted); line-height:1.6;">${c.desc}</p>
+        <div class="case-verdict-buttons">
+          <button class="btn-verdict valid" onclick="checkVerdict(${index}, 'valid')">✔ ยอมรับได้ (Valid Scoping)</button>
+          <button class="btn-verdict invalid" onclick="checkVerdict(${index}, 'invalid')">❌ ผิดหลักการ (Scoping Pitfall)</button>
+        </div>
+        <div class="case-feedback" id="case-fb-${index}"></div>
+      `;
+    }
+
+    window.checkVerdict = function(index, userChoice) {
+      const c = SCOPING_CASES[index];
+      const fb = document.getElementById(`case-fb-${index}`);
+      fb.style.display = "block";
+      if (userChoice === c.correctVerdict) {
+        fb.className = "case-feedback " + (c.correctVerdict === "valid" ? "callout tip" : "callout danger");
+        fb.innerHTML = `<div style="font-weight:700; color:var(--success); margin-bottom:4px;">🎯 การตัดสินของคุณถูกต้อง!</div>${c.explanation}`;
+      } else {
+        fb.className = "case-feedback callout warning";
+        fb.innerHTML = `<div style="font-weight:700; color:var(--danger); margin-bottom:4px;">⚠️ การตัดสินยังไม่ถูกต้อง ลองพิจารณาเหตุผลด้านล่าง:</div>${c.explanation}`;
+      }
+    };
+
+    renderScopingCase(0);
+
+    document.querySelectorAll(".case-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".case-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderScopingCase(parseInt(btn.getAttribute("data-case")));
+      });
+    });
+
+    // ========================================================================
+    // 4. WIDGET 4.3 DATA & CONTROLLER: RACI SIMULATOR
+    // ========================================================================
+    const RACI_CHALLENGES = [
+      {
+        num: 1,
+        title: "การทบทวนสิทธิ์การเข้าถึงข้อมูลระบบการเงินประจำไตรมาส (User Access Review)",
+        desc: "ใครควรเป็น <strong>Accountable (A)</strong> ผู้รับผิดชอบสูงสุดที่ต้องตัดสินใจว่าพนักงานคนใดยังควรมีสิทธิ์เข้าถึงข้อมูลการเงิน?",
+        options: [
+          { role: "CISO (ผู้บริหารความมั่นคงปลอดภัย)", sub: "ผู้กำกับดูแลนโยบายภาพรวม", correct: false, note: "CISO ไม่มีอำนาจตัดสินใจว่าพนักงานการเงินคนใดควรมีสิทธิ์โอนเงิน CISO ทำหน้าที่เพียงกำกับว่ามีการทบทวนเกิดขึ้นจริงหรือไม่" },
+          { role: "ผู้อำนวยการกองคลัง (Process / Risk Owner)", sub: "เจ้าของกระบวนการทางธุรกิจ", correct: true, note: "✔ <strong>ถูกต้อง!</strong> ผู้อำนวยการกองคลังเป็นคนเดียวที่ทราบว่าเจ้าหน้าที่คนใดย้ายแผนก ลาออก หรือเปลี่ยนหน้าที่ จึงเป็น Single Point of Accountability ในการยืนยันสิทธิ์" },
+          { role: "System Administrator (ฝ่ายไอที)", sub: "ผู้ดูแลระบบเซิร์ฟเวอร์", correct: false, note: "ฝ่ายไอทีเป็นเพียงผู้ลงมือตัดสิทธิ์ (Responsible - R) ตามคำสั่งของเจ้าของข้อมูล ไม่สามารถเป็นผู้อนุมัติตัดสินใจสิทธิ์เองได้" },
+          { role: "คณะกรรมการสภามหาวิทยาลัย", sub: "ผู้บริหารระดับสูงสุด", correct: false, note: "สภามหาวิทยาลัยเป็นผู้รับทราบรายงานผลภาพรวม (Informed - I) ไม่ลงมาตรวจสอบรายชื่อผู้ใช้งานรายบุคคล" }
+        ]
+      },
+      {
+        num: 2,
+        title: "การติดตั้ง Security Patch ความปลอดภัยบนระบบแม่ข่าย (Server Patching)",
+        desc: "ใครควรเป็น <strong>Accountable (A)</strong> และ <strong>Responsible (R)</strong> ในการลงมือทดสอบและติดตั้ง Patch บนระบบคอมพิวเตอร์แม่ข่าย?",
+        options: [
+          { role: "IT Operations / SysAdmin", sub: "ทีมวิศวกรผู้ดูแลระบบ", correct: true, note: "✔ <strong>ถูกต้อง!</strong> ทีม SysAdmin เป็นทั้งผู้ลงมือติดตั้ง (R) และรับผิดชอบผลการทำงานของระบบแม่ข่าย (A) โดยประสาน CISO เพื่อขอคำปรึกษา (C)" },
+          { role: "ผู้อำนวยการกองบริการการศึกษา (ทะเบียน)", sub: "เจ้าของข้อมูลนักศึกษา", correct: false, note: "ฝ่ายทะเบียนไม่มีทักษะทางเทคนิคในการติดตั้ง Patch บนระบบปฏิบัติการ มีสถานะเป็นผู้รับแจ้งผลกระทบ (Informed - I)" },
+          { role: "CISO / Lead Implementer", sub: "หัวหน้าฝ่ายความมั่นคงปลอดภัย", correct: false, note: "CISO ทำหน้าที่กำหนดเกณฑ์มาตรฐาน (Baseline Standard) และให้คำปรึกษา (Consulted - C) ไม่ได้เป็นผู้ลงมือสั่งรันสคริปต์ Patch เอง" },
+          { role: "ฝ่ายกฎหมาย (Legal)", sub: "ที่ปรึกษากฎหมาย", correct: false, note: "ฝ่ายกฎหมายไม่เกี่ยวข้องกับการติดตั้ง Patch เชิงเทคนิค" }
+        ]
+      },
+      {
+        num: 3,
+        title: "การรายงานเหตุการณ์ภัยคุกคามไซเบอร์ร้ายแรงต่อ สกมช. ตามมาตรา 57/58",
+        desc: "เมื่อเกิดเหตุภัยคุกคามทางไซเบอร์ระดับร้ายแรง ใครคือ <strong>Accountable (A)</strong> ผู้รับผิดชอบสูงสุดในการอนุมัติและรายงานเหตุต่อศูนย์ ThaiCERT / สกมช.?",
+        options: [
+          { role: "เจ้าหน้าที่ Helpdesk รับแจ้งเหตุ", sub: "ผู้รับโทรศัพท์สายแรก", correct: false, note: "Helpdesk ทำหน้าที่รับเรื่องและส่งต่อข้อมูล (R) ไม่มีอำนาจลงนามในรายงานทางการต่อหน่วยงานรัฐ" },
+          { role: "CISO หรือผู้ประสานงานตาม ม.46", sub: "หัวหน้าฝ่ายไซเบอร์ที่ได้รับแต่งตั้ง", correct: true, note: "✔ <strong>ถูกต้อง!</strong> CISO หรือผู้ประสานงานที่ได้รับแต่งตั้งอย่างเป็นทางการตาม ม.46 เป็น Single Point of Accountability ในการตรวจสอบข้อเท็จจริงและรายงานต่อ สกมช." },
+          { role: "ผู้รับเหมาภายนอก (Outsource Vendor)", sub: "ทีมบำรุงรักษาระบบ", correct: false, note: "Vendor ไม่มีสถานะทางกฎหมายในการเป็นตัวแทนมหาวิทยาลัยรายงานต่อ สกมช." },
+          { role: "นักศึกษาผู้ตรวจพบช่องโหว่", sub: "ผู้ค้นพบช่องโหว่", correct: false, note: "นักศึกษาไม่ใช่บุคลากรผู้มีอำนาจหน้าที่ขององค์กร" }
+        ]
+      },
+      {
+        num: 4,
+        title: "การอนุมัตินโยบายความมั่นคงปลอดภัยสารสนเทศระดับองค์กร (Information Security Policy)",
+        desc: "ใครคือ <strong>Accountable (A)</strong> ผู้มีอำนาจสูงสุดในการลงนามบังคับใช้นโยบายความมั่นคงปลอดภัยสารสนเทศของมหาวิทยาลัย?",
+        options: [
+          { role: "CISO / Lead Implementer", sub: "ผู้ยกร่างเอกสารนโยบาย", correct: false, note: "CISO เป็นเพียงผู้ยกร่างและผลักดันนโยบาย (Responsible - R) แต่นโยบายจะไม่มีสภาพบังคับผูกพันทั้งมหาวิทยาลัยหากไม่ได้รับการอนุมัติจากบอร์ดสูงสุด" },
+          { role: "สภามหาวิทยาลัย / อธิการบดี", sub: "Governing Body สูงสุด", correct: true, note: "✔ <strong>ถูกต้อง!</strong> สภามหาวิทยาลัยหรืออธิการบดีเป็นผู้มีอำนาจออกระเบียบข้อบังคับระดับองค์กร จึงเป็น Accountable (A) สูงสุดแต่เพียงผู้เดียว" },
+          { role: "หัวหน้าฝ่ายซ่อมบำรุงไอที", sub: "ผู้จัดการงานซ่อม", correct: false, note: "ไม่มีอำนาจอนุมัตินโยบายระดับองค์กร" },
+          { role: "ผู้ตรวจสอบภายนอก (External Auditor)", sub: "ผู้ตรวจรับรองมาตรฐาน", correct: false, note: "ผู้ตรวจสอบมีหน้าที่ตรวจประเมินความสอดคล้อง ห้ามเข้ามายุ่งเกี่ยวกับการอนุมัตินโยบายขององค์กรเด็ดขาดเพื่อรักษาความเป็นอิสระ" }
+        ]
+      }
+    ];
+
+    let currentRaciIdx = 0;
+
+    function renderRaciChallenge(idx) {
+      const q = RACI_CHALLENGES[idx];
+      document.getElementById("raci-task-title").innerText = q.title;
+      document.getElementById("raci-task-desc").innerHTML = q.desc;
+      const optsBox = document.getElementById("raci-options-grid");
+      const fbBox = document.getElementById("raci-feedback-box");
+      fbBox.style.display = "none";
+
+      optsBox.innerHTML = q.options.map((opt, oIdx) => `
+        <button class="raci-opt-btn" onclick="checkRaci(${idx}, ${oIdx})">
+          <span class="raci-opt-role">${opt.role}</span>
+          <span class="raci-opt-sub">${opt.sub}</span>
+        </button>
+      `).join("");
+    }
+
+    window.checkRaci = function(qIdx, oIdx) {
+      const q = RACI_CHALLENGES[qIdx];
+      const opt = q.options[oIdx];
+      const fbBox = document.getElementById("raci-feedback-box");
+      fbBox.style.display = "block";
+
+      if (opt.correct) {
+        fbBox.className = "raci-feedback-box callout tip";
+        fbBox.innerHTML = `<div>${opt.note}</div>
+          <button class="btn-quiz-nav" style="margin-top:10px; font-weight:600;" onclick="nextRaci()">ข้อถัดไป ▶</button>`;
+      } else {
+        fbBox.className = "raci-feedback-box callout danger";
+        fbBox.innerHTML = `<strong>ยังไม่ถูกต้อง:</strong> ${opt.note}`;
+      }
+    };
+
+    window.nextRaci = function() {
+      currentRaciIdx = (currentRaciIdx + 1) % RACI_CHALLENGES.length;
+      renderRaciChallenge(currentRaciIdx);
+    };
+
+    renderRaciChallenge(0);
+
+    // ========================================================================
+    // 5. WIDGET 4.4 DATA & CONTROLLER: BATTLE SIMULATION
+    // ========================================================================
+    const BATTLE_CHARACTERS = {
+      ciso: {
+        role: "CISO / Lead Implementer (ประธานด้านความมั่นคงปลอดภัย)",
+        stance: "เสนอให้ 'ตัด Wi-Fi หอพักออก (Exclusion)' และทำ Network Segmentation & Quarantine กักกัน",
+        quote: "เป้าหมายของระบบบริหารจัดการคือการคุ้มครอง 'บริการสำคัญและข้อมูลวิกฤต' ไม่ใช่การเอาป้ายชื่อสวยหรูมาเสี่ยง หากเรานำหอพักนักศึกษาที่มีอุปกรณ์ส่วนตัว (BYOD) กว่า 25,000 เครื่องเข้ามารวมในขอบเขต เราจะต้องจัดซื้ออุปกรณ์รักษาความปลอดภัยและต้องมีทีมเฝ้าระวังมหาศาลซึ่งเกินงบประมาณ ทางออกที่ถูกต้องตามหลักวิศวกรรมคือ ตัดหอพักออก และใช้ Firewall กั้นโซนให้เป็น Guest Isolation Network อย่างเด็ดขาด",
+        conclusion: "หลักการ: <strong>Risk-Based Scoping & Compensating Controls</strong>"
+      },
+      itdir: {
+        role: "ผู้อำนวยการสำนักไอที (ผู้รับผิดชอบโครงสร้างพื้นฐาน)",
+        stance: "เสนอให้นำ 'Wi-Fi หอพัก' เข้ารวมในขอบเขตทั้งหมด เพื่อให้ได้ป้ายประกาศว่า 'ปลอดภัยทั้งมหาวิทยาลัย'",
+        quote: "ผมอยากให้มหาวิทยาลัยของเราได้รับการรับรอง ISO 27001 แบบครอบคลุม 100% ทั้งวิทยาเขต เพื่อให้ผู้ปกครองและนักศึกษาเชื่อมั่นว่าเครือข่ายของเราปลอดภัยทุกตารางนิ้ว การตัดหอพักออกอาจทำให้คนภายนอกมองว่าเราทำไม่ครบ",
+        conclusion: "ข้อควรระวัง: <strong>หลุมพราง Over-scoping</strong> ที่สร้างภาระเกินขีดความสามารถในการควบคุม จนทำให้ระบบล้มเหลวในการตรวจประเมินจริง"
+      },
+      student: {
+        role: "ตัวแทนองค์การนักศึกษา (ผู้แทนผู้ใช้งาน)",
+        stance: "กังวลเรื่องการละเมิดความเป็นส่วนตัวและการปิดกั้นการใช้งาน",
+        quote: "หากมหาวิทยาลัยนำหอพักเข้าระบบความปลอดภัยแบบเข้มงวด นักศึกษาจะถูกดักฟังข้อมูล ถูกมอนิเตอร์การเล่นเกม หรือถูกบล็อกพอร์ตหรือไม่? หอพักคือพื้นที่อยู่อาศัยส่วนตัว ไม่ใช่สำนักงานทำงาน เราต้องการความเป็นส่วนตัวและความเร็วอินเทอร์เน็ตที่เสถียร",
+        conclusion: "สิทธิความเป็นส่วนตัว: สอดคล้องกับการแยกเครือข่ายหอพักให้เป็น Guest Network โดยไม่เก็บประวัติข้อมูลส่วนตัวเกินความจำเป็น"
+      },
+      finance: {
+        role: "ผู้อำนวยการกองคลัง (ผู้ดูแลเงินและงบประมาณ)",
+        stance: "กังวลเรื่องงบประมาณบานปลายและคุ้มค่าความเสี่ยง",
+        quote: "งบประมาณไอทีปีนี้ถูกตัดลง 15% หากต้องซื้อ License EDR หรือซอฟต์แวร์ควบคุมความปลอดภัยสำหรับอุปกรณ์นักศึกษา 25,000 เครื่อง เราจะต้องใช้งบประมาณกว่า 20 ล้านบาท ซึ่งกองคลังไม่อนุมัติแน่นอน ขอสนับสนุนข้อเสนอของ CISO ที่เน้นปกป้องระบบการเงินและทะเบียนด้วยการกักกันเครือข่าย",
+        conclusion: "มิติด้านต้นทุน: การจัดสรรงบประมาณตามระดับความเสี่ยงที่แท้จริง (Cost-Effective Security)"
+      },
+      auditor: {
+        role: "Lead Auditor (ผู้สังเกตการณ์การตรวจประเมิน)",
+        stance: "ท้าทายด้วยคำถามเชิงประจักษ์และการทวนสอบทางเทคนิค",
+        quote: "ในมุมมองของผู้ตรวจสอบ การตัดเครือข่ายหอพักออกสามารถทำได้ตาม ISO 27001 ข้อ 4.3 แต่ 'คำพูดลอย ๆ ไม่ใช่หลักฐาน' ผมจะขอดูหลักฐานเชิงประจักษ์ 3 ชิ้น: (1) ผังเครือข่ายที่แสดงจุดแยก VLAN ชัดเจน (2) การตั้งค่า Firewall Access Rules ที่บล็อก Inbound Traffic จากหอพักเข้า Data Center และ (3) ผลการทดสอบ Penetration Testing ที่พิสูจน์ว่าแฮกเกอร์ในหอพักไม่สามารถเจาะทะลุเข้ามายังเซิร์ฟเวอร์ทะเบียนได้",
+        conclusion: "หัวใจการตรวจสอบ: <strong>'Trust, but Verify through Evidence' (เชื่อถือได้เมื่อมีหลักฐานยืนยัน)</strong>"
+      }
+    };
+
+    function renderBattleCharacter(key) {
+      const c = BATTLE_CHARACTERS[key];
+      const box = document.getElementById("char-display-box");
+      box.innerHTML = `
+        <div style="font-weight:700; color:var(--text-main); font-size:1rem; margin-bottom:4px;">${c.role}</div>
+        <div style="font-size:0.82rem; font-weight:600; color:var(--cyan); margin-bottom:12px;">จุดยืน: ${c.stance}</div>
+        <blockquote style="font-size:0.86rem; line-height:1.6; margin:10px 0; background:var(--bg-surface);">${c.quote}</blockquote>
+        <div style="font-size:0.82rem; color:var(--text-muted); margin-top:8px;">${c.conclusion}</div>
+      `;
+    }
+
+    renderBattleCharacter("ciso");
+
+    document.querySelectorAll(".char-tab").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".char-tab").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderBattleCharacter(btn.getAttribute("data-char"));
+      });
+    });
+
+    // ========================================================================
+    // 6. WIDGET 4.5 DATA & CONTROLLER: KNOWLEDGE MASTERY QUIZ
+    // ========================================================================
+    const QUIZ_QUESTIONS = [
+      {
+        q: "ตามมาตรฐาน ISO/IEC 27001:2022 ข้อกำหนดใดระบุหน้าที่ขององค์กรในการทำความเข้าใจ 'ประเด็นภายนอกและภายใน' (External and Internal Issues)?",
+        opts: [
+          "ข้อกำหนด 4.1 (Understanding the organization and its context)",
+          "ข้อกำหนด 4.2 (Understanding the needs and expectations of interested parties)",
+          "ข้อกำหนด 4.3 (Determining the scope of the ISMS)",
+          "ข้อกำหนด 5.1 (Leadership and commitment)"
+        ],
+        answer: 0,
+        explanation: "ข้อกำหนด 4.1 กำหนดให้องค์กรต้องระบุและวิเคราะห์ประเด็นภายนอก (PESTLE) และภายใน (พันธกิจ, วัฒนธรรม, ทรัพยากร, หนี้ทางเทคนิค) ขณะที่ 4.2 คือเรื่อง Stakeholders และ 4.3 คือเรื่อง Scoping"
+      },
+      {
+        q: "ในตาราง Mendelow's Power-Interest Matrix กลุ่ม 'สำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช.)' ควรจัดอยู่ใน Quadrant ใด?",
+        opts: [
+          "Manage Closely (อำนาจสูง - ความสนใจสูง)",
+          "Keep Satisfied (อำนาจสูง - ความสนใจต่ำ)",
+          "Keep Informed (อำนาจต่ำ - ความสนใจสูง)",
+          "Monitor (อำนาจต่ำ - ความสนใจต่ำ)"
+        ],
+        answer: 1,
+        explanation: "หน่วยงานกำกับดูแลตามกฎหมาย (Regulator) จัดอยู่ในกลุ่ม 'Keep Satisfied' (อำนาจสูงมากเพราะสามารถลงโทษและปรับตามกฎหมายได้ แต่ไม่ได้เข้ามาติดตามการทำงานประจำวันขององค์กรตลอดเวลา จึงต้องส่งรายงานให้ครบตามกำหนดเพื่อไม่ให้เกิดปัญหา)"
+      },
+      {
+        q: "ปรากฏการณ์ 'Cherry-picking' หรือการตัดทอนขอบเขตระบบบริหารจัดการ (Scope Truncation) ส่งผลกระทบอย่างไรในมุมมองของ Lead Auditor?",
+        opts: [
+          "ช่วยลดค่าใช้จ่ายในการตรวจสอบและทำให้ได้รับใบรับรองรวดเร็วขึ้น",
+          "ถือเป็นแนวปฏิบัติที่ดีในการเริ่มต้นทำระบบขนาดเล็กก่อนขยายผล",
+          "ถือเป็นข้อบกพร่องขั้นรุนแรง (Major Non-Conformity) เพราะจงใจละเลยระบบเสี่ยงสูงและทำให้บริการสำคัญไร้การคุ้มครอง",
+          "เป็นสิทธิ์โดยชอบธรรมขององค์กร ผู้ตรวจสอบไม่มีอำนาจคัดค้าน"
+        ],
+        answer: 2,
+        explanation: "การทำ Cherry-picking คือการจงใจเลือกเฉพาะระบบที่ปลอดภัยมาขอตรวจ แต่ตัดระบบสำคัญที่มีความเสี่ยงสูงออกไป ส่งผลให้หัวใจหลักขององค์กรไร้การคุ้มครอง Lead Auditor จะออกใบข้อค้นพบขั้นรุนแรง (Major NCR) ทันที"
+      },
+      {
+        q: "ตามกฎเหล็กของ RACI Matrix สำหรับกิจกรรมหนึ่ง ๆ ข้อใดถูกต้องเกี่ยวกับตัวอักษร 'A' (Accountable)?",
+        opts: [
+          "ต้องมีได้หลายคนเพื่อช่วยกันรับผิดชอบเมื่อเกิดเหตุฉุกเฉิน",
+          "ต้องมีเพียงคนเดียวเสมอ (Single Point of Accountability) ต่อหนึ่งกิจกรรม",
+          "ต้องเป็นบุคคลภายนอกหรือผู้ตรวจสอบอิสระเท่านั้น",
+          "เป็นตัวเลือกที่ไม่จำเป็น สามารถละเว้นได้หากมีคนลงมือทำ (R) แล้ว"
+        ],
+        answer: 1,
+        explanation: "กฎทองของ RACI Matrix คือ ต้องมี 'Single Point of Accountability' (A คนเดียวเสมอ) เพื่อป้องกันการเกี่ยงความรับผิดชอบและการไร้เจ้าภาพในการตัดสินใจ"
+      },
+      {
+        q: "ในสถาปัตยกรรมเอกสารความมั่นคงปลอดภัย 5 ระดับ เอกสารประเภทใดถือเป็น 'หลักฐานการตรวจเชิงประจักษ์ (Audit Evidence)'?",
+        opts: [
+          "Level 1: Policy (นโยบาย)",
+          "Level 2: Standard (มาตรฐาน)",
+          "Level 3: Procedure (ขั้นตอนการปฏิบัติงาน)",
+          "Level 5: Record & Form (บันทึกและแบบฟอร์มการทำงานที่บันทึกแล้ว)"
+        ],
+        answer: 3,
+        explanation: "Level 5 (Records & Forms) เช่น บันทึกการขอสิทธิ์ที่ได้รับอนุมัติ, รายงานผลการ Scan, Log Files คือเอกสารที่พิสูจน์ว่ามีการปฏิบัติตามนโยบายจริง ซึ่งเป็นหัวใจสำคัญของหลักฐานการตรวจ"
+      }
+    ];
+
+    let currentQIdx = 0;
+    const userAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
+
+    function renderQuiz() {
+      const qData = QUIZ_QUESTIONS[currentQIdx];
+      const box = document.getElementById("quiz-box");
+      const indicator = document.getElementById("quiz-progress-indicator");
+      indicator.innerText = `ข้อ ${currentQIdx + 1} / ${QUIZ_QUESTIONS.length}`;
+
+      document.getElementById("btn-quiz-prev").disabled = currentQIdx === 0;
+      document.getElementById("btn-quiz-next").innerText = currentQIdx === QUIZ_QUESTIONS.length - 1 ? "ตรวจคำตอบ 🏁" : "ข้อถัดไป ▶";
+
+      let optsHtml = "";
+      qData.opts.forEach((optText, oIdx) => {
+        const isSelected = userAnswers[currentQIdx] === oIdx;
+        optsHtml += `
+          <div class="quiz-opt ${isSelected ? 'selected' : ''}" onclick="selectQuizOption(${oIdx})">
+            <span style="font-weight:700; font-family:var(--font-mono); width:24px;">${String.fromCharCode(65 + oIdx)}.</span>
+            <span>${optText}</span>
+          </div>
+        `;
+      });
+
+      box.innerHTML = `
+        <div class="quiz-q-num">คำถามประจำบทที่ 4 (CLO Mastery)</div>
+        <div class="quiz-q-text">${qData.q}</div>
+        <div class="quiz-options-list">${optsHtml}</div>
+        <div class="quiz-explanation" id="quiz-explanation-box"></div>
+      `;
+
+      // If already answered, show explanation
+      if (userAnswers[currentQIdx] !== null) {
+        showExplanation();
+      }
+    }
+
+    window.selectQuizOption = function(oIdx) {
+      userAnswers[currentQIdx] = oIdx;
+      renderQuiz();
+    };
+
+    function showExplanation() {
+      const qData = QUIZ_QUESTIONS[currentQIdx];
+      const expBox = document.getElementById("quiz-explanation-box");
+      if (!expBox) return;
+      const isCorrect = userAnswers[currentQIdx] === qData.answer;
+
+      expBox.style.display = "block";
+      expBox.className = "quiz-explanation " + (isCorrect ? "callout tip" : "callout danger");
+      expBox.innerHTML = `
+        <strong>${isCorrect ? "✔ ถูกต้อง!" : "❌ ยังไม่ถูกต้อง (คำตอบที่ถูกคือข้อ " + String.fromCharCode(65 + qData.answer) + ")"}</strong>
+        <p style="margin-top:4px; margin-bottom:0;">${qData.explanation}</p>
+      `;
+    }
+
+    document.getElementById("btn-quiz-prev").addEventListener("click", () => {
+      if (currentQIdx > 0) {
+        currentQIdx--;
+        renderQuiz();
+      }
+    });
+
+    document.getElementById("btn-quiz-next").addEventListener("click", () => {
+      if (currentQIdx < QUIZ_QUESTIONS.length - 1) {
+        currentQIdx++;
+        renderQuiz();
+      } else {
+        // Calculate score
+        let score = 0;
+        userAnswers.forEach((ans, idx) => {
+          if (ans === QUIZ_QUESTIONS[idx].answer) score++;
+        });
+        const summary = document.getElementById("quiz-score-summary");
+        summary.style.display = "block";
+        summary.className = "callout " + (score >= 4 ? "tip" : "note");
+        summary.innerHTML = `
+          <h4 style="color:var(--text-main); margin-bottom:6px;">📊 ผลการประเมินความรู้ประจำบทที่ 4</h4>
+          <p>คุณตอบถูกทั้งหมด <strong>${score} จาก ${QUIZ_QUESTIONS.length} ข้อ</strong> (${Math.round(score/QUIZ_QUESTIONS.length*100)}%)</p>
+          <p style="margin-bottom:0; font-size:0.84rem; color:var(--text-muted);">${score === 5 ? "ยอดเยี่ยมมาก! คุณมีความเข้าใจในบทบาท Lead Implementer, การกำหนดบริบท, ขอบเขต และธรรมาภิบาลอย่างสมบูรณ์แบบ" : "สามารถทบทวนเนื้อหาเพิ่มเติมในแต่ละหัวข้อเพื่อเสริมความแม่นยำในการเตรียมตัวสอบและการจัดทำ Portfolio ครับ"}</p>
+        `;
+      }
+    });
+
+    renderQuiz();
+  </script>
+</body>
+</html>
