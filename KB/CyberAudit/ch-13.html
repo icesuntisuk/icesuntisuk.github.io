@@ -1143,31 +1143,29 @@
 </div>
 
 <ol class="content-list">
-<li><strong>บันทึกรายการของกิจกรรมการประมวลผล (Records of Processing Activities: RoPA):</strong></li>
-</ol>
+<li><strong>บันทึกรายการของกิจกรรมการประมวลผล (Records of Processing Activities: RoPA):</strong>
 <ul class="content-list">
 <li><em>จุดที่ต้องตรวจ:</em> มีการจัดทำ Data Inventory หรือ RoPA ตามมาตรา 39 ครบถ้วนหรือไม่ มีการระบุประเภทข้อมูล วัตถุประสงค์ ระยะเวลาจัดเก็บ และผู้รับข้อมูลภายนอกหรือไม่ ข้อมูลใน RoPA ต้องตรงกับข้อมูลจริงในฐานข้อมูล มิใช่จัดทำขึ้นเพียงเพื่อผ่านการตรวจ (Tick-box exercise)</li>
 </ul>
-<ol class="content-list">
-<li><strong>การจำกัดการเข้าถึงและการเข้ารหัส (Access Control & Encryption of PII):</strong></li>
-</ol>
+</li>
+<li><strong>การจำกัดการเข้าถึงและการเข้ารหัส (Access Control & Encryption of PII):</strong>
 <ul class="content-list">
 <li>บัญชีผู้ใช้ที่เข้าถึงข้อมูลส่วนบุคคลต้องยึดหลัก Need-to-know และ Least Privilege</li>
 <li>ข้อมูลส่วนบุคคลที่มีความอ่อนไหว (Sensitive PII เช่น ข้อมูลสุขภาพ, ข้อมูลประวัติอาชญากรรม) ต้องได้รับการเข้ารหัสทั้งในขณะจัดเก็บ (Encryption at Rest: AES-256) และขณะส่งผ่านเครือข่าย (Encryption in Transit: TLS 1.3)</li>
 </ul>
-<ol class="content-list">
-<li><strong>ระยะเวลาการเก็บรักษาและการทำลายอย่างปลอดภัย (Retention & Secure Disposal):</strong></li>
-</ol>
+</li>
+<li><strong>ระยะเวลาการเก็บรักษาและการทำลายอย่างปลอดภัย (Retention & Secure Disposal):</strong>
 <ul class="content-list">
 <li>มีการกำหนดระยะเวลาจัดเก็บ (Retention Period) ที่ชัดเจน เมื่อสิ้นสุดระยะเวลาหรือพ้นวัตถุประสงค์ องค์กรต้องมีกระบวนการลบ ทำลาย หรือทำให้ข้อมูลนั้นไม่สามารถระบุตัวบุคคลได้อีก (Anonymization)</li>
 <li><em>จุดตรวจทางเทคนิค:</em> การทำลายข้อมูลบนสื่อบันทึกต้องปฏิบัติตามมาตรฐานสากล เช่น <strong>NIST SP 800-88 Rev. 1 (Guidelines for Media Sanitization)</strong> เช่น การทำ Overwrite, Degaussing, หรือ Cryptographic Erase สำหรับข้อมูลบนคลาวด์</li>
 </ul>
-<ol class="content-list">
-<li><strong>การโอนข้อมูลส่วนบุคคลไปยังต่างประเทศ (Cross-Border Data Transfer - มาตรา 28 และ 29):</strong></li>
-</ol>
+</li>
+<li><strong>การโอนข้อมูลส่วนบุคคลไปยังต่างประเทศ (Cross-Border Data Transfer - มาตรา 28 และ 29):</strong>
 <ul class="content-list">
 <li>หากองค์กรใช้บริการคลาวด์ที่มีศูนย์ข้อมูล (Data Center) ตั้งอยู่นอกประเทศไทย หรือส่งข้อมูลให้เวนเดอร์ต่างประเทศ ผู้ตรวจสอบต้องตรวจว่าประเทศปลายทางมีมาตรฐานคุ้มครองข้อมูลส่วนบุคคลที่เพียงพอ หรือมีสัญญาข้อกำหนดมาตรฐาน (Standard Contractual Clauses: SCCs) หรือได้รับการยินยอมอย่างถูกต้องตามกฎหมายหรือไม่</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 
           <section class="chapter-section-anchor" id="ส่วนที่-2-การตรวจสอบความมั่นคงปลอดภัยบนระบบคลาวด์และห่วงโซ่อุปทาน-cloud-third-party-audit">
@@ -1291,35 +1289,33 @@
 <h3 class="subsection-heading" id="2-2-แนวทางการตรวจระบบคลาวด์ตามมาตรฐาน-สกมช-ncsa-cloud-security-guideline">2.2 แนวทางการตรวจระบบคลาวด์ตามมาตรฐาน สกมช. (NCSA Cloud Security Guideline)</h3>
 <p class="content-paragraph">สำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช.) ได้เผยแพร่แนวทางปฏิบัติและกรอบมาตรฐานความมั่นคงปลอดภัยสำหรับระบบคลาวด์ โดยผู้ตรวจสอบต้องใช้เป็นเกณฑ์ในการประเมินระบบคลาวด์ของหน่วยงานรัฐและเอกชน:</p>
 <ol class="content-list">
-<li><strong>การควบคุมการเข้าถึงและการจัดการตัวตน (Cloud IAM):</strong></li>
-</ol>
+<li><strong>การควบคุมการเข้าถึงและการจัดการตัวตน (Cloud IAM):</strong>
 <ul class="content-list">
 <li>บัญชี Root Account ของ Cloud Provider ต้องไม่ถูกนำมาใช้งานประจำวัน ต้องตั้งค่ารหัสผ่านที่ซับซ้อน บังคับใช้ Hardware MFA และเก็บรักษากุญแจในที่ปลอดภัย</li>
 <li>การใช้งานต้องผ่านบัญชีรายบุคคลที่มีการกำหนดบทบาทตามหน้าที่ (Role-Based Access Control: RBAC) และมอบสิทธิ์ขั้นต่ำ (Least Privilege)</li>
 </ul>
-<ol class="content-list">
-<li><strong>การเข้ารหัสข้อมูลและการจัดการกุญแจ (Cloud Encryption & KMS):</strong></li>
-</ol>
+</li>
+<li><strong>การเข้ารหัสข้อมูลและการจัดการกุญแจ (Cloud Encryption & KMS):</strong>
 <ul class="content-list">
 <li>ข้อมูลต้องได้รับการเข้ารหัสขณะจัดเก็บ (Encryption at Rest) เป็นค่าเริ่มต้น</li>
 <li>ผู้ตรวจสอบต้องประเมินว่าองค์กรใช้กุญแจเข้ารหัสแบบใด:</li>
 <li><em>Cloud-Managed Keys:</em> CSP เป็นผู้ดูแลกุญแจให้ทั้งหมด (ความปลอดภัยระดับพื้นฐาน)</li>
 <li><em>Customer-Managed Keys (CMK / BYOK):</em> ลูกค้าเป็นผู้ควบคุมวงจรกุญแจ (Key Lifecycle) เองผ่านระบบ Cloud KMS (แนะนำสำหรับระบบสำคัญ)</li>
 </ul>
-<ol class="content-list">
-<li><strong>การบันทึกและตรวจสอบล็อกบนคลาวด์ (Cloud Logging & Auditing):</strong></li>
-</ol>
+</li>
+<li><strong>การบันทึกและตรวจสอบล็อกบนคลาวด์ (Cloud Logging & Auditing):</strong>
 <ul class="content-list">
 <li>ต้องเปิดใช้งานบริการบันทึกกิจกรรมระดับ Management Plane และ Data Plane ตลอดเวลา เช่น <strong>AWS CloudTrail</strong>, <strong>Azure Activity Log</strong>, <strong>GCP Cloud Audit Logs</strong></li>
 <li>ล็อกต้องถูกส่งต่อไปจัดเก็บยัง Central Log Bucket ที่มีการเปิดคุณสมบัติ WORM / Object Lock และส่งต่อเข้าศูนย์ SIEM ภายนอก</li>
 </ul>
-<ol class="content-list">
-<li><strong>ความมั่นคงปลอดภัยของโครงสร้างพื้นฐานเครือข่ายคลาวด์ (Network Security Posture):</strong></li>
-</ol>
+</li>
+<li><strong>ความมั่นคงปลอดภัยของโครงสร้างพื้นฐานเครือข่ายคลาวด์ (Network Security Posture):</strong>
 <ul class="content-list">
 <li>การแบ่งส่วนเครือข่ายเสมือน (VPC / VNet Subnetting)</li>
 <li>ต้องไม่มีการเปิด Security Group หรือ Firewall Rules อนุญาตพอร์ตบริหารจัดการ (RDP Port 3389, SSH Port 22) ตรงสู่เครือข่ายอินเทอร์เน็ตสาธารณะ (<code>0.0.0.0/0</code>) การเข้าถึงต้องทำผ่าน Bastion Host, VPN, หรือ Cloud Identity-Aware Proxy (IAP) เท่านั้น</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 <h3 class="subsection-heading" id="2-3-การบริหารความเสี่ยงผู้ให้บริการภายนอกตลอดวงจรชีวิต-third-party-risk-lifecycle">2.3 การบริหารความเสี่ยงผู้ให้บริการภายนอกตลอดวงจรชีวิต (Third-Party Risk Lifecycle)</h3>
 
@@ -1613,24 +1609,23 @@
 </div>
 
 <ol class="content-list">
-<li><strong>Scope Mismatch (ขอบเขตไม่ตรงกัน):</strong></li>
-</ol>
+<li><strong>Scope Mismatch (ขอบเขตไม่ตรงกัน):</strong>
 <ul class="content-list">
 <li><em>ตัวอย่าง:</em> ผู้ให้บริการคลาวด์อวดอ้างว่าได้รับใบรับรอง ISO 27001 หรือ SOC 2 แต่เมื่อผู้ตรวจสอบอ่านขอบเขต (Scope) กลับพบว่าใบรับรองนั้นครอบคลุมเฉพาะ "บริการ Co-location ในประเทศสิงคโปร์" แต่มิได้ครอบคลุม "บริการ Managed Application ในประเทศไทย" ที่องค์กรกำลังใช้งานอยู่</li>
 </ul>
-<ol class="content-list">
-<li><strong>Timing Gap (ช่องว่างของระยะเวลาการตรวจสอบ):</strong></li>
-</ol>
+</li>
+<li><strong>Timing Gap (ช่องว่างของระยะเวลาการตรวจสอบ):</strong>
 <ul class="content-list">
 <li>หากรายงาน SOC 2 Type II สิ้นสุดระยะเวลาครอบคลุม ณ วันที่ 30 มิถุนายน แต่องค์กรกำลังทำการตรวจสอบประจำปีในเดือนธันวาคม จะเกิดช่องว่าง 6 เดือน ผู้ตรวจสอบต้องขอ <strong>"หนังสือรับรองการไม่มีการเปลี่ยนแปลงที่มีนัยสำคัญ (Bridge Letter หรือ Gap Letter)"</strong> จากผู้บริหารของผู้ให้บริการ</li>
 </ul>
-<ol class="content-list">
-<li><strong>Complementary User Entity Controls (CUECs) — กับดักที่อันตรายที่สุด:</strong></li>
-</ol>
+</li>
+<li><strong>Complementary User Entity Controls (CUECs) — กับดักที่อันตรายที่สุด:</strong>
 <ul class="content-list">
 <li>ในรายงาน SOC 2 ผู้สอบบัญชีอิสระจะระบุเงื่อนไขเสมอว่า: <em>"ระบบของผู้ให้บริการจะมีความปลอดภัยตามรายงานนี้ ก็ต่อเมื่อ <strong>ผู้ใช้บริการ (User Entity / ลูกค้า)</strong> ได้ปฏิบัติตามการควบคุมเสริมที่กำหนดไว้ (CUECs) ด้วย"</em></li>
 <li><em>ตัวอย่าง CUEC:</em> ผู้ให้บริการคลาวด์ระบุว่า ข้อมูลสำรองจะปลอดภัยก็ต่อเมื่อ <strong>ลูกค้าเป็นผู้เปิดใช้งานฟังก์ชัน Multi-Factor Authentication (MFA) และเปิดการเข้ารหัสด้วย Customer Key</strong> หากลูกค้าละเลยไม่ตั้งค่าตาม CUEC ระบบก็ไม่มีความปลอดภัย และผู้ให้บริการไม่ต้องรับผิดชอบ!</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 
           <section class="chapter-section-anchor" id="ส่วนที่-3-กรณีศึกษาเชิงลึก-มหาวิทยาลัยดิจิทัลสมมติ-โครงการย้ายระบบทะเบียนสู่ระบบคลาวด์และการจ้างงาน-outsource">
@@ -1982,65 +1977,57 @@
           </section>
         
 <ol class="content-list">
-<li><strong>คำถาม:</strong> จงอธิบายความหมายของ "Cloud Shared Responsibility Model" และระบุว่าสิ่งใดเป็นความรับผิดชอบของลูกค้า 100% เสมอในทุกรูปแบบบริการ (IaaS, PaaS, SaaS)?</li>
-</ol>
+<li><strong>คำถาม:</strong> จงอธิบายความหมายของ "Cloud Shared Responsibility Model" และระบุว่าสิ่งใดเป็นความรับผิดชอบของลูกค้า 100% เสมอในทุกรูปแบบบริการ (IaaS, PaaS, SaaS)?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> หมายถึงแบบจำลองการแบ่งแยกหน้าที่ความรับผิดชอบด้านความมั่นคงปลอดภัยระหว่างผู้ให้บริการคลาวด์ (CSP) และผู้ใช้บริการ (Customer) โดยสิ่งที่ลูกค้าต้องรับผิดชอบ 100% เสมอในทุกโมเดล คือ <strong>"ข้อมูล (Data Classification & Rights Management)"</strong> และ <strong>"การบริหารจัดการตัวตนและสิทธิ์การเข้าถึง (Identity and Access Management: IAM)"</strong></li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> ในการตรวจสอบผู้ให้บริการคลาวด์ เหตุใดรายงาน AICPA SOC 2 "Type II" จึงมีความน่าเชื่อถือและมีประโยชน์ต่อผู้ตรวจสอบมากกว่ารายงาน "Type I"?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ในการตรวจสอบผู้ให้บริการคลาวด์ เหตุใดรายงาน AICPA SOC 2 "Type II" จึงมีความน่าเชื่อถือและมีประโยชน์ต่อผู้ตรวจสอบมากกว่ารายงาน "Type I"?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> เพราะรายงาน Type I ตรวจสอบเฉพาะความเหมาะสมในการออกแบบการควบคุม (Design Suitability) ณ จุดเวลาใดเวลาหนึ่งเท่านั้น แต่รายงาน <strong>Type II</strong> ตรวจสอบทั้งการออกแบบและ <strong>ประสิทธิผลการทำงานจริงของการควบคุม (Operating Effectiveness)</strong> ตลอดช่วงระยะเวลาหนึ่ง (เช่น 6–12 เดือน) จึงให้ความเชื่อมั่นว่าระบบความปลอดภัยทำงานได้จริงอย่างต่อเนื่อง</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> "Complementary User Entity Controls (CUECs)" ในรายงาน SOC 2 คืออะไร และมีความสำคัญต่อผู้ตรวจสอบอย่างไร?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> "Complementary User Entity Controls (CUECs)" ในรายงาน SOC 2 คืออะไร และมีความสำคัญต่อผู้ตรวจสอบอย่างไร?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> คือเงื่อนไขการควบคุมความมั่นคงปลอดภัยที่ผู้สอบบัญชีอิสระระบุไว้ว่า <strong>"ผู้ใช้บริการ (ลูกค้า) จะต้องนำไปปฏิบัติในฝั่งของตนเอง"</strong> เพื่อให้การควบคุมโดยรวมของผู้ให้บริการคลาวด์บรรลุผลสำเร็จ มีความสำคัญอย่างยิ่งเพราะหากลูกค้าละเลยไม่ปฏิบัติตาม CUEC (เช่น ไม่เปิด MFA, ไม่เข้ารหัสข้อมูล) ระบบจะเกิดช่องโหว่ทันที และผู้ให้บริการคลาวด์จะไม่ต้องรับผิดชอบต่อความเสียหายที่เกิดขึ้น</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 สัญญาการประมวลผลข้อมูล (Data Processing Agreement: DPA) มีความสำคัญทางกฎหมายอย่างไร?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 สัญญาการประมวลผลข้อมูล (Data Processing Agreement: DPA) มีความสำคัญทางกฎหมายอย่างไร?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> เป็นสัญญากำกับความสัมพันธ์ตามมาตรา 40 ระหว่างผู้ควบคุมข้อมูลส่วนบุคคล (Data Controller) และผู้ประมวลผลข้อมูลส่วนบุคคล (Data Processor) เพื่อกำหนดหน้าที่ ขอบเขตวัตถุประสงค์ และมาตรการความมั่นคงปลอดภัยที่ผู้ประมวลผลต้องปฏิบัติตาม เพื่อป้องกันมิให้ผู้ประมวลผลนำข้อมูลไปใช้เพื่อประโยชน์ส่วนตน และคุ้มครองมิให้เกิดเหตุข้อมูลรั่วไหล</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> เหตุใดการที่สัญญาจ้างบริการไอทีระบุว่า "ให้ผู้ให้บริการแจ้งเหตุข้อมูลรั่วไหลตามความเหมาะสม" จึงเป็นข้อบกพร่องร้ายแรงในการตรวจสอบ?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> เหตุใดการที่สัญญาจ้างบริการไอทีระบุว่า "ให้ผู้ให้บริการแจ้งเหตุข้อมูลรั่วไหลตามความเหมาะสม" จึงเป็นข้อบกพร่องร้ายแรงในการตรวจสอบ?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> เพราะขาดความชัดเจนและไม่สอดคล้องกับข้อกำหนดของกฎหมาย PDPA มาตรา 37(4) ซึ่งกำหนดให้ผู้ควบคุมข้อมูลต้องแจ้ง สคส. ภายใน 72 ชั่วโมง หากสัญญาไม่กำหนดกรอบเวลาชัดเจน (เช่น กำหนดให้แจ้งภายใน 12 หรือ 24 ชั่วโมง) คู่ค้าอาจแจ้งล่าช้าหลายวันหรือหลายสัปดาห์ ทำให้องค์กรทำผิดกฎหมายและมีความรับผิดทางแพ่งและอาญา</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> "Right to Audit Clause" ในสัญญาจัดซื้อจัดจ้างเทคโนโลยีมีความสำคัญอย่างไรต่อการตรวจสอบภายใน?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> "Right to Audit Clause" ในสัญญาจัดซื้อจัดจ้างเทคโนโลยีมีความสำคัญอย่างไรต่อการตรวจสอบภายใน?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> เป็นเงื่อนไขทางกฎหมายที่ให้อำนาจแก่องค์กรหรือผู้ตรวจสอบอิสระในการเข้าตรวจสอบระบบ กระบวนการ บันทึกล็อก และสถานที่ปฏิบัติงานของคู่ค้า เพื่อประเมินความสอดคล้องตามมาตรฐานความมั่นคงปลอดภัย หากไม่มีข้อสัญญานี้ คู่ค้ามีสิทธิตามกฎหมายที่จะปฏิเสธไม่ให้ผู้ตรวจสอบเข้าตรวจหรือขอดูหลักฐานใด ๆ</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> หากองค์กรจัดเก็บข้อมูลส่วนบุคคลบน Cloud Storage แต่กำหนดค่าเป็น "Public Read" จะถือเป็นการละเมิดกฎหมายและมาตรฐานใดบ้าง?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> หากองค์กรจัดเก็บข้อมูลส่วนบุคคลบน Cloud Storage แต่กำหนดค่าเป็น "Public Read" จะถือเป็นการละเมิดกฎหมายและมาตรฐานใดบ้าง?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> ละเมิด พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (มาตรา 37 ด้านมาตรการความมั่นคงปลอดภัย), ละเมิดประกาศ สคส. เรื่อง มาตรการรักษาความมั่นคงปลอดภัยฯ พ.ศ. 2565, ขัดต่อแนวทางคลาวด์ สกมช. ข้อ 4.2, และขัดต่อมาตรฐาน ISO/IEC 27001 (Control A.8.24 Use of cryptography และ Control A.5.15 Access control)</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> ในการตรวจสอบการโอนข้อมูลส่วนบุคคลไปต่างประเทศ (Cross-Border Transfer) ผู้ตรวจสอบต้องพิจารณาเกณฑ์ใดตาม PDPA มาตรา 28 และ 29?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ในการตรวจสอบการโอนข้อมูลส่วนบุคคลไปต่างประเทศ (Cross-Border Transfer) ผู้ตรวจสอบต้องพิจารณาเกณฑ์ใดตาม PDPA มาตรา 28 และ 29?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> ต้องตรวจสอบว่า: 1. ประเทศปลายทางมีมาตรฐานคุ้มครองข้อมูลส่วนบุคคลที่เพียงพอตามที่คณะกรรมการฯ ประกาศกำหนดหรือไม่, 2. มีนโยบายการคุ้มครองข้อมูลส่วนบุคคลภายในองค์กรในเครือ (Binding Corporate Rules: BCRs) ที่ได้รับอนุมัติหรือไม่, หรือ 3. มีข้อสัญญามาตรฐาน (Standard Contractual Clauses: SCCs) หรือได้รับการยินยอมอย่างถูกต้องตามข้อยกเว้นของกฎหมายหรือไม่</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> "Bridge Letter (หรือ Gap Letter)" ในการตรวจสอบรายงาน SOC มีบทบาทหน้าที่อย่างไร?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> "Bridge Letter (หรือ Gap Letter)" ในการตรวจสอบรายงาน SOC มีบทบาทหน้าที่อย่างไร?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> เป็นหนังสือรับรองอย่างเป็นทางการที่ออกโดยผู้บริหารของผู้ให้บริการ เพื่อรับรองต่อผู้ตรวจสอบว่าในช่วงระยะเวลาที่รายงาน SOC 2 สิ้นสุดลงจนถึงปัจจุบัน (Gap Period) ระบบการควบคุมภายในของผู้ให้บริการยังคงมีประสิทธิผลตามเดิมและไม่มีการเปลี่ยนแปลงที่มีนัยสำคัญเกิดขึ้น</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> การตรวจสอบการสิ้นสุดสัญญาบริการคลาวด์ (Cloud Offboarding & Termination) มีจุดเน้นสำคัญที่สุดเรื่องใด?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> การตรวจสอบการสิ้นสุดสัญญาบริการคลาวด์ (Cloud Offboarding & Termination) มีจุดเน้นสำคัญที่สุดเรื่องใด?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> จุดเน้นสำคัญที่สุดคือ <strong>"การส่งคืนข้อมูลอย่างสมบูรณ์ (Data Portability & Return)"</strong> และ <strong>"การทำลายข้อมูลอย่างปลอดภัยและตรวจสอบได้ (Certified Data Sanitization/Destruction)"</strong> ทั้งบนเซิร์ฟเวอร์หลักและชุดข้อมูลสำรอง โดยต้องมีหนังสือรับรองการทำลายข้อมูล (Certificate of Destruction) เป็นหลักฐานเชิงประจักษ์</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 
           <section class="chapter-section-anchor" id="สรุปบทที่-13">

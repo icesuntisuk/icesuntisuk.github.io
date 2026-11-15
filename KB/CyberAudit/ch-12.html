@@ -1375,26 +1375,25 @@
 </div>
 
 <ol class="content-list">
-<li><strong>Event (เหตุการณ์ในระบบ):</strong></li>
-</ol>
+<li><strong>Event (เหตุการณ์ในระบบ):</strong>
 <ul class="content-list">
 <li>คือสิ่งใดก็ตามที่เกิดขึ้นและสามารถสังเกตหรือตรวจจับได้ในระบบคอมพิวเตอร์ เครือข่าย หรือแอปพลิเคชัน เช่น การที่ผู้ใช้ล็อกอินสำเร็จ การที่ไฟร์วอลล์อนุญาตให้แพ็กเก็ตผ่าน หรือการที่เครื่องพิมพ์เริ่มพิมพ์เอกสาร</li>
 <li>โดยตัวมันเอง Event ส่วนใหญ่เป็น <strong>"เหตุการณ์ปกติทางธุรกิจ"</strong> และไม่ได้สะท้อนถึงภัยคุกคามแต่อย่างใด</li>
 </ul>
-<ol class="content-list">
-<li><strong>Alert (สัญญาณแจ้งเตือน):</strong></li>
-</ol>
+</li>
+<li><strong>Alert (สัญญาณแจ้งเตือน):</strong>
 <ul class="content-list">
 <li>คือ Event หรือกลุ่มของ Events ที่ตรงกับเงื่อนไข กฎเกณฑ์ (Rule Logic) หรือค่าผิดปกติ (Anomaly) ที่ระบบ SIEM/EDR กำหนดไว้ล่วงหน้า</li>
 <li>Alert เป็นเพียง <strong>"ตัวชี้วัดความน่าสงสัย"</strong> ที่ต้องการให้เจ้าหน้าที่ความมั่นคงปลอดภัย (SOC Analyst Tier 1) เข้าไปตรวจสอบคัดกรอง (Triage) ว่าเป็นภัยคุกคามจริง (True Positive) หรือสัญญาณลวง (False Positive)</li>
 </ul>
-<ol class="content-list">
-<li><strong>Incident (เหตุการณ์ละเมิดความมั่นคงปลอดภัย):</strong></li>
-</ol>
+</li>
+<li><strong>Incident (เหตุการณ์ละเมิดความมั่นคงปลอดภัย):</strong>
 <ul class="content-list">
 <li>ตามนิยามของ NIST SP 800-61 หมายถึง <strong>"เหตุการณ์ที่เกิดขึ้นจริงและส่งผลกระทบในทางลบ (Adverse Event) ต่อความลับ (Confidentiality) ความถูกต้องแท้จริง (Integrity) หรือความพร้อมใช้ (Availability) ของข้อมูลหรือระบบสารสนเทศขององค์กร"</strong></li>
 <li>หรือเป็นเหตุการณ์ที่มีการละเมิดนโยบายความมั่นคงปลอดภัย (Security Policy) นโยบายการใช้งานที่ยอมรับได้ (AUP) หรือระเบียบกฎหมายอย่างชัดเจน เช่น บัญชีผู้ดูแลระบบถูกแฮกจากต่างประเทศ, เครื่องเซิร์ฟเวอร์ฐานข้อมูลถูกติดตั้ง Ransomware, หรือข้อมูลส่วนบุคคลถูกขโมยออกสู่ภายนอก</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 <h3 class="subsection-heading" id="1-2-วงจรชีวิตการตอบสนองต่อเหตุการณ์-incident-response-lifecycle">1.2 วงจรชีวิตการตอบสนองต่อเหตุการณ์ (Incident Response Lifecycle)</h3>
 
@@ -2455,45 +2454,41 @@
         
 <p class="content-paragraph">ให้นักศึกษาแต่ละคนนำสถานการณ์จำลองวิกฤตการณ์ Ransomware ของมหาวิทยาลัยดิจิทัลสมมติไปศึกษาเชิงลึก และจัดทำรายงานผลการวิเคราะห์ในฐานะ <strong>Senior Cyber Auditor</strong> โดยต้องมีชิ้นงานส่ง (Artifacts) ครบทั้ง 6 หัวข้อดังต่อไปนี้:</p>
 <ol class="content-list">
-<li><strong>Incident Chronology & Timeline Reconstruction:</strong></li>
-</ol>
+<li><strong>Incident Chronology & Timeline Reconstruction:</strong>
 <ul class="content-list">
 <li>สรุปเส้นเวลาเหตุการณ์ตั้งแต่จุดเริ่มต้นที่แฮกเกอร์เริ่มแพร่กระจายมัลแวร์ การตรวจพบ การตอบสนองของทีมงาน ไปจนถึงการรั่วไหลของข้อมูล โดยระบุเวลา กิจกรรม และผู้เกี่ยวข้องให้ชัดเจน</li>
 </ul>
-<ol class="content-list">
-<li><strong>Incident Classification & Severity Assessment Matrix:</strong></li>
-</ol>
+</li>
+<li><strong>Incident Classification & Severity Assessment Matrix:</strong>
 <ul class="content-list">
 <li>วิเคราะห์จัดหมวดหมู่เหตุการณ์ตาม Taxonomy (INC-01 ถึง INC-07)</li>
 <li>ประเมินระดับความรุนแรงตามเกณฑ์ 6 มิติ (System Scope, Data Classification, Number of Impacted Users, Downtime, CII Services, Legal/Regulatory Impact) พร้อมให้เหตุผลว่าเหตุใดจึงต้องจัดเป็นระดับ <strong>Critical (P1)</strong></li>
 </ul>
-<ol class="content-list">
-<li><strong>Escalation & Communication Decision Audit:</strong></li>
-</ol>
+</li>
+<li><strong>Escalation & Communication Decision Audit:</strong>
 <ul class="content-list">
 <li>วิเคราะห์จุดล้มเหลวของการยกระดับเหตุการณ์ (Escalation Breakdown) ในสถานการณ์จำลอง</li>
 <li>จัดทำแผนผังขั้นตอนการแจ้งเตือนที่ถูกต้อง (Target Escalation Workflow) ทั้งภายในองค์กร ผู้บริหาร และบุคคลภายนอก</li>
 </ul>
-<ol class="content-list">
-<li><strong>Evidence Preservation & Digital Forensics Analysis:</strong></li>
-</ol>
+</li>
+<li><strong>Evidence Preservation & Digital Forensics Analysis:</strong>
 <ul class="content-list">
 <li>วิเคราะห์ผลกระทบของคำสั่ง Hard Power-Off ต่อกระบวนการนิติวิทยาศาสตร์ดิจิทัล (Digital Forensics)</li>
 <li>เสนอแนะขั้นตอนการเก็บรักษาพยานหลักฐานดิจิทัลที่ถูกต้องตามมาตรฐาน RFC 3227 (Order of Volatility)</li>
 </ul>
-<ol class="content-list">
-<li><strong>Containment, Eradication & Recovery Control Plan:</strong></li>
-</ol>
+</li>
+<li><strong>Containment, Eradication & Recovery Control Plan:</strong>
 <ul class="content-list">
 <li>เสนอแนะมาตรการควบคุมและกู้คืนระบบที่ปลอดภัย โดยระบุขั้นตอนการตรวจสอบ Clean Backup, การตัดการเชื่อมต่อเครือข่าย และการเสริมสร้างความแข็งแกร่ง (Hardening) ก่อนเปิดให้บริการระบบใหม่</li>
 </ul>
-<ol class="content-list">
-<li><strong>Incident Audit Working Paper (WP-12-02) & Remediation Plan:</strong></li>
-</ol>
+</li>
+<li><strong>Incident Audit Working Paper (WP-12-02) & Remediation Plan:</strong>
 <ul class="content-list">
 <li>จัดทำกระดาษทำการตรวจสอบระบุข้อค้นพบ (Findings) อย่างน้อย 3 ข้อ พร้อมระบุ Condition, Criteria, Cause, Effect และ Actionable Recommendations</li>
 <li>กำหนดแผนการปรับปรุงระบบสำรองข้อมูลให้มีคุณสมบัติ Immutable Storage และกรอบเวลาการจัดทำ Tabletop Exercise</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 
           <section class="chapter-section-anchor" id="ส่วนที่-7-คำถามทบทวนท้ายบท-review-questions-detailed-answers">
@@ -2501,65 +2496,57 @@
           </section>
         
 <ol class="content-list">
-<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่างคำว่า "Event", "Alert" และ "Incident" พร้อมยกตัวอย่างเปรียบเทียบในระบบเครือข่าย</li>
-</ol>
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่างคำว่า "Event", "Alert" และ "Incident" พร้อมยกตัวอย่างเปรียบเทียบในระบบเครือข่าย
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> <strong>Event</strong> คือปรากฏการณ์ทางเทคนิคทั่วไปที่สังเกตได้ เช่น ผู้ใช้ล็อกอินผ่านไฟร์วอลล์สำเร็จ (เป็นเรื่องปกติ); <strong>Alert</strong> คือ Event ที่ตรงกับกฎการตรวจจับและส่งสัญญาณเตือน เช่น มีการล็อกอินล้มเหลวติดต่อกัน 10 ครั้งจาก IP ต่างประเทศ (มีความน่าสงสัย ต้องตรวจสอบ); <strong>Incident</strong> คือเหตุการณ์ที่เกิดขึ้นจริงและส่งผลกระทบทางลบต่อ Confidentiality, Integrity หรือ Availability เช่น ผู้โจมตีล็อกอินสำเร็จด้วยบัญชีผู้ดูแลระบบและเริ่มติดตั้งโปรแกรมเข้ารหัสข้อมูล (เป็นภัยคุกคามจริงที่ต้องระงับเหตุทันที)</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> ตามมาตรฐาน NIST SP 800-61 วงจรการตอบสนองต่อเหตุการณ์ประกอบด้วยขั้นตอนใดบ้าง และขั้นตอนใดมีความสำคัญสูงสุดในการป้องกันไม่ให้เกิดเหตุซ้ำ?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ตามมาตรฐาน NIST SP 800-61 วงจรการตอบสนองต่อเหตุการณ์ประกอบด้วยขั้นตอนใดบ้าง และขั้นตอนใดมีความสำคัญสูงสุดในการป้องกันไม่ให้เกิดเหตุซ้ำ?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> ประกอบด้วย 4 ระยะหลัก (6 ขั้นตอน): 1. Preparation, 2. Detection & Analysis, 3. Containment, Eradication & Recovery, 4. Post-Incident Activity (Lessons Learned) โดยขั้นตอน <strong>Post-Incident Activity / Lessons Learned</strong> มีความสำคัญสูงสุดในการป้องกันไม่ให้เกิดเหตุซ้ำ เพราะเป็นการวิเคราะห์หาสาเหตุที่แท้จริง (Root Cause) และนำข้อบกพร่องที่พบมาอุดช่องโหว่และปรับปรุงมาตรการควบคุมในอนาคต</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> ในการรับมือกับ Ransomware เหตุใดคำสั่ง "Hard Power-Off (กดปิดเครื่องทันที)" จึงถือเป็นข้อผิดพลาดร้ายแรงในเชิงนิติวิทยาศาสตร์ดิจิทัล?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ในการรับมือกับ Ransomware เหตุใดคำสั่ง "Hard Power-Off (กดปิดเครื่องทันที)" จึงถือเป็นข้อผิดพลาดร้ายแรงในเชิงนิติวิทยาศาสตร์ดิจิทัล?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> เพราะทำให้ข้อมูลในหน่วยความจำชั่วคราว (RAM / Volatile Memory) สูญหายไปทันที ซึ่งใน RAM มักมีพยานหลักฐานสำคัญอย่างยิ่ง เช่น คีย์ถอดรหัสของมัลแวร์ที่ยังค้างอยู่, บัญชีคำสั่งการเชื่อมต่อเครือข่าย (Active Network Connections), Process รหัสผ่านที่ถูกขโมย และร่องรอยการทำงานของแฮกเกอร์ การกระทำที่ถูกต้องคือการตัดการเชื่อมต่อเครือข่าย (Network Isolation) แต่ยังคงจ่ายไฟไว้เพื่อทำ Memory Dump</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> จงอธิบายความสำคัญของ "Immutable Backup" ในการบริหารจัดการภัยคุกคามประเภท Ransomware</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> จงอธิบายความสำคัญของ "Immutable Backup" ในการบริหารจัดการภัยคุกคามประเภท Ransomware
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> Immutable Backup คือการสำรองข้อมูลในรูปแบบที่ไม่สามารถแก้ไข ดัดแปลง หรือสั่งลบได้ (Write-Once-Read-Many: WORM) ตลอดระยะเวลาที่กำหนด แม้กระทั่งผู้ที่มีสิทธิ์สูงสุดระดับ Domain Admin หรือ Backup Admin ก็ไม่สามารถลบได้ ทำให้มั่นใจได้ว่าเมื่อระบบหลักถูก Ransomware ทำลาย องค์กรจะมีชุดข้อมูลที่สะอาดและสมบูรณ์ 100% สำหรับการกู้คืนระบบโดยไม่ต้องยอมจ่ายเงินค่าไถ่</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) กำหนดกรอบเวลาและหน้าที่ในการแจ้งเหตุละเมิดข้อมูลส่วนบุคคลไว้อย่างไร?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) กำหนดกรอบเวลาและหน้าที่ในการแจ้งเหตุละเมิดข้อมูลส่วนบุคคลไว้อย่างไร?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> กำหนดให้ผู้ควบคุมข้อมูลส่วนบุคคลต้องแจ้งเหตุการละเมิดแก่สำนักงานคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล (สคส.) โดยไม่ชักช้า <strong>ภายใน 72 ชั่วโมง</strong> นับแต่ทราบเหตุเท่าที่จะกระทำได้ เว้นแต่การละเมิดนั้นไม่มีความเสี่ยงต่อสิทธิและเสรีภาพของบุคคล และหากมีความเสี่ยงสูง ต้องแจ้งเจ้าของข้อมูลส่วนบุคคลพร้อมมาตรการเยียวยาโดยไม่ชักช้าด้วย</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> ตาม พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 ภัยคุกคามทางไซเบอร์ระดับใดที่หน่วยงานโครงสร้างพื้นฐานสำคัญ (CII) มีหน้าที่ต้องรายงานต่อ สกมช. โดยพลัน?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ตาม พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562 ภัยคุกคามทางไซเบอร์ระดับใดที่หน่วยงานโครงสร้างพื้นฐานสำคัญ (CII) มีหน้าที่ต้องรายงานต่อ สกมช. โดยพลัน?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> ภัยคุกคามทางไซเบอร์ใน <strong>ระดับร้ายแรง (Critical/Severe Threat)</strong> และ <strong>ระดับวิกฤติ (Crisis Threat)</strong> ที่ส่งผลกระทบต่อความมั่นคงของรัฐ การทำงานของระบบคอมพิวเตอร์ภาครัฐ หรือบริการสาธารณะที่สำคัญ</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> เหตุใดการซักซ้อมแผนแบบ "Tabletop Exercise (TTX)" จึงมีความจำเป็น แม้ว่าองค์กรจะมีทีมวิศวกรความปลอดภัยที่มีทักษะทางเทคนิคสูงอยู่แล้ว?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> เหตุใดการซักซ้อมแผนแบบ "Tabletop Exercise (TTX)" จึงมีความจำเป็น แม้ว่าองค์กรจะมีทีมวิศวกรความปลอดภัยที่มีทักษะทางเทคนิคสูงอยู่แล้ว?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> เพราะการจัดการวิกฤตไซเบอร์ไม่ได้มีเพียงแค่งานเทคนิค แต่เกี่ยวข้องกับการตัดสินใจของผู้บริหาร การสื่อสารกับสื่อมวลชน การปฏิบัติตามกฎหมาย และการจัดการผลกระทบทางธุรกิจ ซึ่งวิศวกรเทคนิคไม่มีอำนาจตัดสินใจ การซ้อม TTX ช่วยให้ผู้บริหาร ฝ่ายกฎหมาย ฝ่าย PR และฝ่ายเทคนิคเข้าใจบทบาทของตนเองและสามารถประสานงานร่วมกันได้อย่างราบรื่นโดยไม่เกิดภาวะสูญญากาศการสั่งการ</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> "Out-of-band Communication" ในระหว่างการตอบสนองต่อเหตุการณ์หมายถึงอะไร และเพราะเหตุใดจึงจำเป็นอย่างยิ่ง?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> "Out-of-band Communication" ในระหว่างการตอบสนองต่อเหตุการณ์หมายถึงอะไร และเพราะเหตุใดจึงจำเป็นอย่างยิ่ง?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> หมายถึงการสื่อสารผ่านช่องทางที่แยกเป็นอิสระจากโครงสร้างพื้นฐานปกติขององค์กร (เช่น การใช้ Signal หรือโทรศัพท์มือถือส่วนตัว แทนที่จะใช้อีเมลหรือ Teams/Slack ภายในบริษัท) จำเป็นอย่างยิ่งเพราะเมื่อระบบภายในถูกเจาะ แฮกเกอร์อาจดักอ่านอีเมลและข้อความแชตของทีมไอที ทำให้ทราบแผนการตอบสนองและสามารถหลบหลีกการสกัดกั้นได้</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> ตัวชี้วัด MTTD (Mean Time to Detect) และ MTTR (Mean Time to Respond) สะท้อนประสิทธิผลของกระบวนการใดตามลำดับ?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ตัวชี้วัด MTTD (Mean Time to Detect) และ MTTR (Mean Time to Respond) สะท้อนประสิทธิผลของกระบวนการใดตามลำดับ?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> MTTD สะท้อนประสิทธิผลของ <strong>กระบวนการตรวจจับและการเฝ้าระวัง (Visibility, SIEM, EDR & Monitoring Effectiveness)</strong> ส่วน MTTR สะท้อนประสิทธิผลของ <strong>กระบวนการควบคุมและระงับเหตุการณ์ (Containment, Playbook Execution & Incident Response Agility)</strong></li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> ในฐานะผู้ตรวจสอบ หากพบว่าฝ่ายบริหารมีนโยบาย "ห้ามบันทึก Incident ลงระบบเพื่อไม่ให้เกิดประวัติเสีย" ผู้ตรวจสอบควรให้ความเห็นอย่างไร?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ในฐานะผู้ตรวจสอบ หากพบว่าฝ่ายบริหารมีนโยบาย "ห้ามบันทึก Incident ลงระบบเพื่อไม่ให้เกิดประวัติเสีย" ผู้ตรวจสอบควรให้ความเห็นอย่างไร?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> ต้องระบุเป็นข้อบกพร่องด้านการควบคุมระดับวิกฤต (Critical Governance Finding) เนื่องจากเป็นการทำลายความโปร่งใส (Transparency) ขัดต่อหลักธรรมาภิบาล ขัดต่อมาตรฐานสากล (ISO 27001 / ITAF) ทำให้องค์กรไม่สามารถเรียนรู้จากข้อผิดพลาดในอดีตได้ และอาจเข้าข่ายการเจตนาปกปิดพยานหลักฐานซึ่งผิดกฎหมาย</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 
           <section class="chapter-section-anchor" id="สรุปบทที่-12">

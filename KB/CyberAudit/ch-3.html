@@ -2608,40 +2608,37 @@
 
 <h4 id="sec-42">รายละเอียดของสถานะทั้ง 5 ระดับ:</h4>
 <ol class="content-list ordered">
-  <li><strong>Fully Implemented (ปฏิบัติตามอย่างสมบูรณ์):</strong></li>
-</ol>
+  <li><strong>Fully Implemented (ปฏิบัติตามอย่างสมบูรณ์):</strong>
 <ul class="content-list">
   <li><strong>คำอธิบาย:</strong> องค์กรมีมาตรการควบคุมที่ผ่านการออกแบบอย่างถูกต้อง (Design Effective) มีเอกสารนโยบาย/SOP รองรับ และมีการปฏิบัติงานจริงอย่างสม่ำเสมอครอบคลุมทุกระบบในขอบเขต (Operating Effective) พร้อมมีหลักฐานยืนยันครบถ้วน</li>
   <li><strong>ผลกระทบ:</strong> สอดคล้องตามเกณฑ์ (Conformity) ไม่พบประเด็นความเสี่ยง</li>
 </ul>
-<ol class="content-list ordered">
-  <li><strong>Partially Implemented (ปฏิบัติตามบางส่วน):</strong></li>
-</ol>
+</li>
+  <li><strong>Partially Implemented (ปฏิบัติตามบางส่วน):</strong>
 <ul class="content-list">
   <li><strong>คำอธิบาย:</strong> องค์กรได้เริ่มดำเนินการตามมาตรการแล้ว แต่ยังไม่ครบถ้วนสมบูรณ์ เช่น มีนโยบายและเริ่มใช้งาน MFA บนเครื่องแม่ข่ายในศูนย์ข้อมูลแล้ว แต่ยังไม่ได้บังคับใช้กับระบบคลาวด์ หรือมีกระบวนการ Patching แต่ดำเนินการเฉพาะระบบปฏิบัติการ Windows โดยละเลยระบบปฏิบัติการ Linux</li>
   <li><strong>ผลกระทบ:</strong> ข้อค้นพบระดับปานกลาง (Minor Nonconformity หรือ Observation) ต้องมีแผนปฏิบัติการแก้ไข (Remediation Plan) เพื่อขยายผลให้ครอบคลุม</li>
 </ul>
-<ol class="content-list ordered">
-  <li><strong>Not Implemented (มิได้ปฏิบัติตาม):</strong></li>
-</ol>
+</li>
+  <li><strong>Not Implemented (มิได้ปฏิบัติตาม):</strong>
 <ul class="content-list">
   <li><strong>คำอธิบาย:</strong> องค์กรไม่มีการดำเนินการใด ๆ ตามข้อกำหนด ทั้งในระดับเอกสารนโยบายและในระดับเทคนิค หรืออาจมีการรับรู้แต่เพิกเฉย ไม่มีการจัดสรรทรัพยากรหรือตั้งค่าระบบใด ๆ เลย</li>
   <li><strong>ผลกระทบ:</strong> ข้อค้นพบระดับร้ายแรง (Major Nonconformity) มีความเสี่ยงสูงที่ระบบจะถูกโจมตี และถือเป็นการไม่ปฏิบัติตามกฎหมาย พ.ร.บ.ไซเบอร์ 2562</li>
 </ul>
-<ol class="content-list ordered">
-  <li><strong>Not Applicable: N/A (ไม่เกี่ยวข้องกับบริบทองค์กร):</strong></li>
-</ol>
+</li>
+  <li><strong>Not Applicable: N/A (ไม่เกี่ยวข้องกับบริบทองค์กร):</strong>
 <ul class="content-list">
   <li><strong>คำอธิบาย:</strong> ข้อกำหนดนั้นไม่เกี่ยวข้องกับการดำเนินงานหรือโครงสร้างเทคโนโลยีขององค์กร เช่น ข้อกำหนดว่าด้วยความปลอดภัยของการพัฒนาซอฟต์แวร์ภายใน (In-house Software Development) ในองค์กรที่จัดซื้อซอฟต์แวร์สำเร็จรูปมาใช้งานทั้งหมด 100%</li>
   <li><strong>เงื่อนไขสำคัญ:</strong> <strong>การระบุ N/A ต้องมีเอกสารชี้แจงเหตุผล (Justification) เสมอ</strong> หากไม่มีเหตุผลรองรับที่ยอมรับได้ ผู้ตรวจสอบจะไม่สามารถให้สถานะ N/A ได้</li>
 </ul>
-<ol class="content-list ordered">
-  <li><strong>Not Assessed (ยังมิได้ประเมิน):</strong></li>
-</ol>
+</li>
+  <li><strong>Not Assessed (ยังมิได้ประเมิน):</strong>
 <ul class="content-list">
   <li><strong>คำอธิบาย:</strong> ข้อกำหนดที่ยังไม่สามารถประเมินได้ในรอบการตรวจปัจจุบัน เนื่องจากข้อจำกัดด้านเวลา การจำกัดขอบเขต (Scope Limitation) หรือระบบเป้าหมายอยู่ระหว่างการปิดปรับปรุงระบบ</li>
   <li><strong>เงื่อนไขสำคัญ:</strong> ต้องระบุเหตุผลและวางแผนการตรวจติดตามในรอบถัดไปอย่างชัดเจนในรายงานผลการตรวจ</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 <h3 id="sec-2-4-maturity">การวัดระดับวุฒิภาวะด้านความมั่นคงปลอดภัย (Cybersecurity Maturity Level)</h3>
 <p>นอกเหนือจากการประเมินแบบ ผ่าน/ไม่ผ่าน (Pass/Fail) กรอบมาตรฐานสมัยใหม่นิยมบูรณาการแบบจำลอง <strong>CMMI (Capability Maturity Model Integration)</strong> เพื่อประเมินว่าการปฏิบัติตามมาตรการนั้นมีความยั่งยืนและพัฒนาการในระดับใด:</p>
@@ -2755,15 +2752,14 @@
 <p>สำหรับผู้ตรวจสอบ (Lead Auditor) การทำหน้าที่ไม่ได้จำกัดอยู่เพียงการเดินถือ Checklist แล้วติ๊กเครื่องหมายถูก แต่ต้องใช้ทักษะการตรวจสอบเชิงสืบสวนและประเมินประสิทธิผล:</p>
 <ol class="content-list ordered">
   <li><strong>หลีกเลี่ยงคำถามนำแบบชี้นำ (Avoid Leading Questions):</strong> แทนที่จะถามว่า <em>"ระบบของคุณมีการเปลี่ยนรหัสผ่านทุก 90 วันใช่ไหมครับ?"</em> ซึ่งผู้ถูกตรวจจะตอบว่า <em>"ใช่"</em> โดยอัตโนมัติ ให้เปลี่ยนเป็นคำถามปลายเปิด เช่น <em>"ช่วยอธิบายกระบวนการบริหารจัดการวงจรชีวิตรหัสผ่านของระบบ และแสดงหน้าจอการตั้งค่าปัจจุบันให้ดูหน่อยครับ"</em></li>
-  <li><strong>ยึดหลักสามเหลี่ยมหลักฐาน (Triangulation of Evidence):</strong> ตรวจสอบความสอดคล้องจาก 3 แหล่งเสมอ:</li>
-</ol>
+  <li><strong>ยึดหลักสามเหลี่ยมหลักฐาน (Triangulation of Evidence):</strong> ตรวจสอบความสอดคล้องจาก 3 แหล่งเสมอ:
 <ul class="content-list">
   <li><strong>คำบอกเล่าจากการสัมภาษณ์ (Interview)</strong></li>
   <li><strong>เอกสารนโยบายและระเบียบปฏิบัติ (Documentation)</strong></li>
   <li><strong>การสังเกตการณ์หรือผลลัพธ์จากระบบจริง (Technical Configuration / Logs)</strong></li>
   <li>หากทั้ง 3 ด้านชี้ไปในทิศทางเดียวกัน จึงสรุปผลด้วยความเชื่อมั่นสูง</li>
 </ul>
-<ol class="content-list ordered">
+</li>
   <li><strong>มุ่งเน้นความเสี่ยง ไม่ใช่มุ่งจับผิด (Risk-focused, Not Fault-finding):</strong> การเขียนข้อค้นพบต้องชี้ให้เห็นถึงความเสี่ยงต่อธุรกิจ (Business Impact) และสาเหตุที่แท้จริง (Root Cause) เพื่อให้ผู้บริหารเข้าใจความสำคัญและสนับสนุนงบประมาณในการปรับปรุงแก้ไข</li>
 </ol>
 <hr class="section-divider">
@@ -2857,8 +2853,7 @@
 <h4 id="sec-assign-req">2. คำชี้แจงและข้อกำหนดของงาน</h4>
 <ol class="content-list ordered">
   <li>ให้นักศึกษาจัดทำตาราง <strong>Cybersecurity Compliance Matrix</strong> จำนวน <strong>ไม่น้อยกว่า 15 รายการควบคุม (Controls)</strong></li>
-  <li>รายการควบคุมทั้ง 15 รายการ ต้องกระจายครอบคลุม <strong>ครบทั้ง 6 ด้านการตรวจสอบ</strong> ตามประมวลแนวทางปฏิบัติฯ ของ กกม. โดยมีสัดส่วนขั้นต่ำดังนี้:</li>
-</ol>
+  <li>รายการควบคุมทั้ง 15 รายการ ต้องกระจายครอบคลุม <strong>ครบทั้ง 6 ด้านการตรวจสอบ</strong> ตามประมวลแนวทางปฏิบัติฯ ของ กกม. โดยมีสัดส่วนขั้นต่ำดังนี้:
 <ul class="content-list">
   <li>ด้านที่ 1 การบริหารจัดการความมั่นคงปลอดภัย (Security Management) อย่างน้อย 2 ข้อ</li>
   <li>ด้านที่ 2 การบริหารความเสี่ยง (Risk Management) อย่างน้อย 2 ข้อ</li>
@@ -2867,7 +2862,7 @@
   <li>ด้านที่ 5 การเฝ้าระวังและตอบสนองเหตุการณ์ (Monitoring & Incident Response) อย่างน้อย 3 ข้อ</li>
   <li>ด้านที่ 6 การกู้คืนระบบและการปฏิบัติตามข้อกำหนด (Recovery & Compliance) อย่างน้อย 2 ข้อ</li>
 </ul>
-<ol class="content-list ordered">
+</li>
   <li>ตาราง Compliance Matrix ต้องประกอบด้วย <strong>9 คอลัมน์มาตรฐาน</strong> ตามโครงสร้างในหัวข้อถัดไป</li>
   <li>ในส่วนของ Assessment Result ให้นักศึกษาสมมติสถานะและข้อค้นพบตามบริบทของ "มหาวิทยาลัยดิจิทัลสมมติ" โดยต้องมีสถานะคละกันทั้ง Fully Implemented, Partially Implemented, และ Not Implemented เพื่อฝึกทักษะการเขียนระบุช่องว่าง (Gap) และข้อเสนอแนะ (Recommendation)</li>
 </ol>
@@ -2893,16 +2888,14 @@
 <h2 id="sec-references">เอกสารอ้างอิง (References)</h2>
 <h3 id="sec-ref-thai">1. กฎหมายและประกาศทางการของประเทศไทย (ราชกิจจานุเบกษา)</h3>
 <ol class="content-list ordered">
-  <li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก. 27 พฤษภาคม 2562.</li>
-</ol>
+  <li><strong>พระราชบัญญัติการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562.</strong> ราชกิจจานุเบกษา เล่ม 136 ตอนที่ 69 ก. 27 พฤษภาคม 2562.
 <p>ต้นฉบับ: <a href="https://www.ratchakitcha.soc.go.th/DATA/PDF/2562/A/069/T_0020.PDF" target="_blank" rel="noopener">ราชกิจจานุเบกษา พ.ร.บ.ไซเบอร์ 2562</a></p>
 <p>สำเนาตรวจทานทางการ: <a href="https://www.dga.or.th/wp-content/uploads/2024/04/25620527_พรบcyber62.pdf" target="_blank" rel="noopener">สำนักงานพัฒนารัฐบาลดิจิทัล (สพร. / DGA)</a></p>
-<ol class="content-list ordered">
-  <li><strong>ประกาศคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2564 (ฉบับที่ 1/2564).</strong> ราชกิจจานุเบกษา เล่ม 138 ตอนพิเศษ 282 ง. 17 พฤศจิกายน 2564.</li>
-</ol>
+</li>
+  <li><strong>ประกาศคณะกรรมการกำกับดูแลด้านความมั่นคงปลอดภัยไซเบอร์ เรื่อง ประมวลแนวทางปฏิบัติและกรอบมาตรฐานด้านการรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2564 (ฉบับที่ 1/2564).</strong> ราชกิจจานุเบกษา เล่ม 138 ตอนพิเศษ 282 ง. 17 พฤศจิกายน 2564.
 <p>ต้นฉบับ: <a href="https://ratchakitcha.soc.go.th/documents/17176753.pdf" target="_blank" rel="noopener">ราชกิจจานุเบกษา ประมวลแนวทางปฏิบัติฯ กกม.</a></p>
 <p><em>(อ้างอิงเป็นเกณฑ์หลักสำหรับ: ข้อกำหนดขั้นต่ำด้านการรักษาความมั่นคงปลอดภัยสำหรับหน่วยงานของรัฐและหน่วยงาน CII, 6 องค์ประกอบของกรอบมาตรฐาน, และ 6 ด้านการตรวจสอบตามตอนที่ 17 และ 21)</em></p>
-<ol class="content-list ordered">
+</li>
   <li><strong>สำนักงานคณะกรรมการการรักษาความมั่นคงปลอดภัยไซเบอร์แห่งชาติ (สกมช.).</strong> ศูนย์รวมกฎหมาย ประกาศ และมาตรฐานด้านไซเบอร์: <a href="https://www.ncsa.or.th/standards/laws" target="_blank" rel="noopener">NCSA Laws and Standards Portal</a></li>
   <li><strong>ศูนย์ประสานการรักษาความมั่นคงปลอดภัยระบบคอมพิวเตอร์แห่งชาติ (สกมช. / ThaiCERT).</strong> ฐานข้อมูลหน่วยงานกำกับดูแลและโครงสร้างพื้นฐานสำคัญทางสารสนเทศ: <a href="https://cert.ncsa.or.th/regulator-sectoral-cert-cii/" target="_blank" rel="noopener">NCSA Regulator and Sectoral CERT Information</a></li>
 </ol>
@@ -2910,14 +2903,12 @@
 <ol class="content-list ordered">
   <li><strong>ISO/IEC 27001:2022.</strong> <em>Information security, cybersecurity and privacy protection — Information security management systems — Requirements.</em> International Organization for Standardization (ISO) & International Electrotechnical Commission (IEC), Geneva, Switzerland.</li>
   <li><strong>ISO/IEC 27002:2022.</strong> <em>Information security, cybersecurity and privacy protection — Information security controls.</em> ISO/IEC, Geneva, Switzerland. <em>(ใช้อ้างอิงการจัดกลุ่มมาตรการควบคุม 4 ธีม: Organizational, People, Physical, Technological)</em></li>
-  <li><strong>ISO 19011:2018.</strong> <em>Guidelines for auditing management systems.</em> International Organization for Standardization, Geneva, Switzerland.</li>
-</ol>
+  <li><strong>ISO 19011:2018.</strong> <em>Guidelines for auditing management systems.</em> International Organization for Standardization, Geneva, Switzerland.
 <p><em>(หมายเหตุ: ปัจจุบัน ISO ได้เผยแพร่ฉบับ ISO 19011:2026 แล้ว ผู้สอนและผู้ปฏิบัติงานควรตรวจสอบเทียบเคียงข้อกำหนดและเลขข้อกับฉบับปัจจุบันที่สถาบันมีสิทธิ์ใช้งาน)</em></p>
-<ol class="content-list ordered">
-  <li><strong>National Institute of Standards and Technology (NIST).</strong> <em>The NIST Cybersecurity Framework (CSF) 2.0.</em> NIST Special Publication (SP) 1300, February 2024. <a href="https://doi.org/10.6028/NIST.SP.1300" target="_blank" rel="noopener">NIST CSF Portal</a></li>
-</ol>
+</li>
+  <li><strong>National Institute of Standards and Technology (NIST).</strong> <em>The NIST Cybersecurity Framework (CSF) 2.0.</em> NIST Special Publication (SP) 1300, February 2024. <a href="https://doi.org/10.6028/NIST.SP.1300" target="_blank" rel="noopener">NIST CSF Portal</a>
 <p><em>(ใช้อ้างอิง 6 ฟังก์ชันหลัก: Govern, Identify, Protect, Detect, Respond, Recover)</em></p>
-<ol class="content-list ordered">
+</li>
   <li><strong>NIST SP 800-53 Rev. 5.</strong> <em>Security and Privacy Controls for Information Systems and Organizations.</em> National Institute of Standards and Technology, September 2020 (includes updates as of Nov 2023). <a href="https://doi.org/10.6028/NIST.SP.800-53r5" target="_blank" rel="noopener">NIST SP 800-53</a></li>
   <li><strong>NIST SP 800-115.</strong> <em>Technical Guide to Information Security Testing and Assessment.</em> National Institute of Standards and Technology, October 2008.</li>
   <li><strong>Center for Internet Security (CIS).</strong> <em>CIS Critical Security Controls for Effective Cyber Defense, Version 8.</em> CIS, 2021.</li>

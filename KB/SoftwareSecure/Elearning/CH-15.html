@@ -678,7 +678,8 @@ def get_crypto_suite(protocol_version):
 <p><strong>เวลาที่ใช้:</strong> 45–60 นาที</p>
 <p><strong>เครื่องมือ:</strong> cyclonedx-npm, OpenSSF Scorecard, Trivy, Node.js</p>
 <p><strong>ขั้นตอน:</strong></p>
-<ol><li>ติดตั้งเครื่องมือที่จำเป็น:</li></ol>
+<ol>
+<li>ติดตั้งเครื่องมือที่จำเป็น:
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code># ติดตั้ง Node.js (ถ้ายังไม่มี)
 node --version
 npm --version
@@ -691,22 +692,26 @@ brew install trivy
 
 # ตรวจสอบการติดตั้ง Trivy
 trivy --version</code></pre>
-<ol><li>สร้างโปรเจกต์ Node.js ตัวอย่าง:</li></ol>
+</li>
+<li>สร้างโปรเจกต์ Node.js ตัวอย่าง:
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code># สร้าง Directory สำหรับ Lab
 mkdir supply-chain-lab &amp;&amp; cd supply-chain-lab
 
 # เริ่มต้น Node.js Project
 npm init -y</code></pre>
-<ol><li>ติดตั้ง Dependencies ที่มี Version เก่า (เพื่อให้พบ CVE):</li></ol>
+</li>
+<li>ติดตั้ง Dependencies ที่มี Version เก่า (เพื่อให้พบ CVE):
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code># ติดตั้ง Express เวอร์ชันเก่าที่มีช่องโหว่
 npm install express@4.17.1 lodash@4.17.20 axios@0.21.0</code></pre>
-<ol><li>สร้าง SBOM ด้วย CycloneDX:</li></ol>
+</li>
+<li>สร้าง SBOM ด้วย CycloneDX:
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code># สร้าง SBOM ในรูปแบบ CycloneDX JSON
 npx @cyclonedx/cyclonedx-npm --output-file sbom.json
 
 # ดูเนื้อหา SBOM
 cat sbom.json | python3 -m json.tool | head -60</code></pre>
-<ol><li>วิเคราะห์ SBOM ด้วย Trivy:</li></ol>
+</li>
+<li>วิเคราะห์ SBOM ด้วย Trivy:
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code># สแกน SBOM เพื่อหา CVE
 trivy sbom sbom.json
 
@@ -715,13 +720,15 @@ trivy sbom --severity CRITICAL,HIGH sbom.json
 
 # ส่งออกผลลัพธ์ในรูปแบบ JSON
 trivy sbom --format json --output sbom-scan-results.json sbom.json</code></pre>
-<ol><li>วิเคราะห์ Dependencies โดยตรง:</li></ol>
+</li>
+<li>วิเคราะห์ Dependencies โดยตรง:
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code># สแกน Filesystem ทั้งหมด
 trivy fs .
 
 # สแกนเฉพาะ Dependencies
 trivy fs --scanners vuln .</code></pre>
-<ol><li>ตรวจสอบ OpenSSF Scorecard ของ Open Source Project จริง (ใช้ Project ที่อาจารย์กำหนด):</li></ol>
+</li>
+<li>ตรวจสอบ OpenSSF Scorecard ของ Open Source Project จริง (ใช้ Project ที่อาจารย์กำหนด):
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code># ติดตั้ง OpenSSF Scorecard (ต้องมี Go)
 # หรือใช้ GitHub Action: https://github.com/ossf/scorecard-action
 
@@ -729,19 +736,25 @@ trivy fs --scanners vuln .</code></pre>
 # ไปที่หน้า GitHub ของ express → ตรวจสอบ Badge Scorecard
 # หรือใช้ CLI (ถ้าติดตั้ง):
 # scorecard --repo=github.com/expressjs/express</code></pre>
-<ol><li>วิเคราะห์ผลลัพธ์และจัดทำรายงาน:</li></ol>
+</li>
+<li>วิเคราะห์ผลลัพธ์และจัดทำรายงาน:
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code># แสดงรายการ Dependencies ทั้งหมด
 npm list --all
 
 # ตรวจสอบ Version ของแต่ละ Package
 npm outdated</code></pre>
+</li>
+</ol>
 <p><strong>สิ่งที่ต้องส่ง:</strong></p>
-<ol><li>ไฟล์ SBOM (<code>sbom.json</code>) ที่สร้างจาก CycloneDX</li>
-<li>ตาราง CVE ที่พบจากการสแกนด้วย Trivy ประกอบด้วย:</li></ol>
+<ol>
+<li>ไฟล์ SBOM (<code>sbom.json</code>) ที่สร้างจาก CycloneDX</li>
+<li>ตาราง CVE ที่พบจากการสแกนด้วย Trivy ประกอบด้วย:
 <div class="table-wrap"><table><thead><tr><th>CVE ID</th><th>Package</th><th>Installed Version</th><th>Fixed Version</th><th>Severity</th></tr></thead><tbody><tr><td>CVE-XXXX-XXXX</td><td>express</td><td>4.17.1</td><td>4.18.0</td><td>HIGH</td></tr>
 <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr></tbody></table></div>
-<ol><li>คะแนน OpenSSF Scorecard ของ Project ที่เลือก</li>
-<li>ข้อเสนอแนะในการปรับปรุง Dependencies ของ Project (ควรอัปเกรด Package ใดบ้าง และเพราะเหตุใด)</li></ol>
+</li>
+<li>คะแนน OpenSSF Scorecard ของ Project ที่เลือก</li>
+<li>ข้อเสนอแนะในการปรับปรุง Dependencies ของ Project (ควรอัปเกรด Package ใดบ้าง และเพราะเหตุใด)</li>
+</ol>
 <p><strong>การล้างข้อมูล:</strong></p>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>cd ..
 rm -rf supply-chain-lab</code></pre>
@@ -963,21 +976,26 @@ codeql database analyze codeql-db \
 <li>มีช่องโหว่ใดที่นักศึกษาคาดไม่ถึงหรือไม่</li>
 <li>มีช่องโหว่ใดที่ CodeQL พบ แต่นักศึกษาไม่พบในการวิเคราะห์ด้วยตนเอง</li></ul>
 <p><strong>สิ่งที่ต้องส่ง:</strong></p>
-<ol><li>โค้ดที่ AI สร้าง (ไฟล์ <code>ai_generated_app.py</code> หรือเทียบเท่า)</li>
+<ol>
+<li>โค้ดที่ AI สร้าง (ไฟล์ <code>ai_generated_app.py</code> หรือเทียบเท่า)</li>
 <li>ตารางวิเคราะห์ช่องโหว่ด้วยตนเอง (ก่อนใช้ CodeQL)</li>
 <li>ผลลัพธ์จาก CodeQL (SARIF หรือ CSV)</li>
-<li>ตารางเปรียบเทียบช่องโหว่ที่พบจากการวิเคราะห์ด้วยตนเอง VS CodeQL:</li></ol>
+<li>ตารางเปรียบเทียบช่องโหว่ที่พบจากการวิเคราะห์ด้วยตนเอง VS CodeQL:
 <div class="table-wrap"><table><thead><tr><th>ช่องโหว่</th><th>พบด้วยตนเอง?</th><th>พบด้วย CodeQL?</th><th>หมายเหตุ</th></tr></thead><tbody><tr><td>SQL Injection</td><td>ใช่</td><td>ใช่</td><td>ตรงกัน</td></tr>
 <tr><td>Hardcoded Secret</td><td>ใช่</td><td>ใช่</td><td>ตรงกัน</td></tr>
 <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr></tbody></table></div>
-<ol><li>สรุปบทเรียนเกี่ยวกับความน่าเชื่อถือของ AI-Generated Code — AI สร้างโค้ดที่ปลอดภัยได้หรือไม่ นักพัฒนาควรปฏิบัติอย่างไรเมื่อใช้ AI ช่วยเขียนโค้ด</li></ol>
+</li>
+<li>สรุปบทเรียนเกี่ยวกับความน่าเชื่อถือของ AI-Generated Code — AI สร้างโค้ดที่ปลอดภัยได้หรือไม่ นักพัฒนาควรปฏิบัติอย่างไรเมื่อใช้ AI ช่วยเขียนโค้ด</li>
+</ol>
 <hr>
 <h2 id="คำถามท้ายบท">คำถามท้ายบท</h2>
-<ol><li>AI ส่งผลต่อความมั่นคงปลอดภัยของซอฟต์แวร์อย่างไรทั้งในฝั่งรุกและฝั่งรับ จงยกตัวอย่างอย่างน้อยด้านละ 2 ตัวอย่าง พร้อมอธิบายผลกระทบของการใช้ Prompt Injection ต่อ LLM-based Applications</li></ol>
-<ol><li>SLSA Framework คืออะไร และมีระดับอะไรบ้าง จงอธิบายแต่ละระดับพร้อมข้อกำหนดสำคัญ และอธิบายว่า SBOM และ Sigstore มีบทบาทอย่างไรในการรักษาความปลอดภัยของ Software Supply Chain</li></ol>
-<ol><li>Zero Trust Architecture แตกต่างจากโมเดลความปลอดภัยแบบดั้งเดิม (Perimeter-based) อย่างไร จงอธิบายหลักการ Never Trust Always Verify และองค์ประกอบหลักของ NIST SP 800-207 พร้อมยกตัวอย่าง Identity-Aware Proxy (IAP)</li></ol>
-<ol><li>PDPA มีผลกระทบต่อการพัฒนาซอฟต์แวร์ในประเทศไทยอย่างไร จงอธิบายข้อกำหนดที่สำคัญ (Consent, Data Subject Rights, Data Security, Breach Notification) และเปรียบเทียบกับ GDPR ในประเด็น Privacy by Design และ DPIA</li></ol>
-<ol><li>Crypto Agility คืออะไร และทำไมองค์กรต้องเตรียมพร้อมด้านนี้ จงอธิบายความเสี่ยงของ Quantum Computing ต่อ Cryptographic Algorithm ในปัจจุบัน (RSA, ECC, AES) และแนวทางการ Migrate ไปใช้ Post-Quantum Cryptography ตามมาตรฐาน NIST</li></ol>
+<ol>
+<li>AI ส่งผลต่อความมั่นคงปลอดภัยของซอฟต์แวร์อย่างไรทั้งในฝั่งรุกและฝั่งรับ จงยกตัวอย่างอย่างน้อยด้านละ 2 ตัวอย่าง พร้อมอธิบายผลกระทบของการใช้ Prompt Injection ต่อ LLM-based Applications</li>
+<li>SLSA Framework คืออะไร และมีระดับอะไรบ้าง จงอธิบายแต่ละระดับพร้อมข้อกำหนดสำคัญ และอธิบายว่า SBOM และ Sigstore มีบทบาทอย่างไรในการรักษาความปลอดภัยของ Software Supply Chain</li>
+<li>Zero Trust Architecture แตกต่างจากโมเดลความปลอดภัยแบบดั้งเดิม (Perimeter-based) อย่างไร จงอธิบายหลักการ Never Trust Always Verify และองค์ประกอบหลักของ NIST SP 800-207 พร้อมยกตัวอย่าง Identity-Aware Proxy (IAP)</li>
+<li>PDPA มีผลกระทบต่อการพัฒนาซอฟต์แวร์ในประเทศไทยอย่างไร จงอธิบายข้อกำหนดที่สำคัญ (Consent, Data Subject Rights, Data Security, Breach Notification) และเปรียบเทียบกับ GDPR ในประเด็น Privacy by Design และ DPIA</li>
+<li>Crypto Agility คืออะไร และทำไมองค์กรต้องเตรียมพร้อมด้านนี้ จงอธิบายความเสี่ยงของ Quantum Computing ต่อ Cryptographic Algorithm ในปัจจุบัน (RSA, ECC, AES) และแนวทางการ Migrate ไปใช้ Post-Quantum Cryptography ตามมาตรฐาน NIST</li>
+</ol>
 <hr>
 <h2 id="สรุปท้ายบท">สรุปท้ายบท</h2>
 <p>แนวโน้มและเทคโนโลยีด้านความปลอดภัยของซอฟต์แวร์ในอนาคตกำลังเปลี่ยนแปลงอย่างรวดเร็ว AI/ML มีผลกระทบทั้งในฝ่ายรุก (AI-Generated Malware, AI-Powered Social Engineering, Deepfakes, Automated Vulnerability Discovery) และฝ่ายรับ (AI/ML ใน SIEM, Automated Threat Detection, AI-Assisted Code Review, AI Security Copilot) นอกจากนี้ระบบ AI เองก็มีความเสี่ยงที่ต้องดูแล เช่น Adversarial Attacks, Prompt Injection, Model Poisoning และ Data Leakage รวมถึงความปลอดภัยของ AI Agents ที่ต้องมี Authentication, Authorization และ Observability</p>

@@ -1370,10 +1370,9 @@
 
 <ol class="content-list ordered">
 <li><strong>Maximum Tolerable Downtime (MTD):</strong> ระยะเวลาหยุดทำงานสูงสุดที่องค์กร <strong>"สามารถทนรับได้"</strong> ก่อนที่ธุรกิจหรือพันธกิจจะได้รับความเสียหายอย่างกู้คืนไม่ได้ (Unacceptable Damage) หากระบบหยุดทำงานนานเกิน MTD องค์กรอาจถูกเพิกถอนใบอนุญาต สูญเสียสถานะทางธุรกิจ หรือล้มละลาย</li>
-<li><strong>Recovery Time Objective (RTO):</strong> ระยะเวลาเป้าหมายที่กำหนดให้ <strong>"ระบบต้องถูกกู้คืนจนสามารถกลับมาเปิดให้บริการได้ตามปกติ"</strong> </li>
-</ol>
+<li><strong>Recovery Time Objective (RTO):</strong> ระยะเวลาเป้าหมายที่กำหนดให้ <strong>"ระบบต้องถูกกู้คืนจนสามารถกลับมาเปิดให้บริการได้ตามปกติ"</strong> 
 <p class="content-p">   $<code class="math-tex">\text{เงื่อนไขสำคัญทางวิศวกรรม:} \quad \mathbf{RTO < MTD} \quad \text{เสมอ}</code>$</p>
-<ol class="content-list ordered">
+</li>
 <li><strong>Recovery Point Objective (RPO):</strong> จุดเวลาเป้าหมายของการสูญเสียข้อมูลสูงสุดที่ยอมรับได้ หรือ <strong>"ปริมาณข้อมูลที่ยอมให้สูญหายได้ในรูปของระยะเวลา"</strong> เช่น หากกำหนด RPO = 1 ชั่วโมง หมายความว่าเมื่อระบบล่ม ข้อมูลที่สร้างขึ้นในชั่วโมงที่ผ่านมาอาจสูญหายได้ แต่องค์กรต้องมีระบบสำรองข้อมูลที่ทำให้สูญหายไม่เกิน 1 ชั่วโมง (ต้องสำรองข้อมูลทุก 1 ชั่วโมง หรือทำ Real-time Database Replication)</li>
 <li><strong>Single Point of Failure (SPOF):</strong> องค์ประกอบ ฮาร์ดแวร์ ซอฟต์แวร์ เส้นทางเครือข่าย หรือบุคลากรใด ๆ ที่ <strong>หากชิ้นส่วนนี้หยุดทำงานเพียงชิ้นเดียว จะทำให้ระบบทั้งหมดล่มสลายลงทันที</strong></li>
 </ol>
@@ -1436,33 +1435,31 @@
 <div class="table-container"><table class="content-table"><thead><tr><th>มาตรฐานสากล / องค์กร</th><th>ระดับชั้นสูงสุด</th><th>ระดับชั้นสูง</th><th>ระดับชั้นปานกลาง</th><th>ระดับชั้นทั่วไป</th></tr></thead><tbody><tr><td><strong>มาตรฐานสากล (ISO 27001 / Commercial)</strong></td><td><strong>Restricted</strong> (ลับที่สุด)</td><td><strong>Confidential</strong> (ความลับ)</td><td><strong>Internal</strong> (ใช้ภายใน)</td><td><strong>Public</strong> (สาธารณะ)</td></tr><tr><td><strong>รัฐบาลสหรัฐฯ (US DoD / NIST)</strong></td><td><strong>Top Secret</strong></td><td><strong>Secret</strong></td><td><strong>Confidential</strong></td><td><strong>Unclassified</strong></td></tr><tr><td><strong>ระเบียบสำนักนายกฯ ไทย พ.ศ. 2552</strong></td><td><strong>ลับที่สุด</strong> (Top Secret)</td><td><strong>ลับมาก</strong> (Secret)</td><td><strong>ลับ</strong> (Confidential)</td><td><strong>เปิดเผยได้</strong></td></tr><tr><td><strong>พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA)</strong></td><td>Sensitive Personal Data (ม.26)</td><td>General Personal Data (ม.6)</td><td>ข้อมูลระบุตัวตนไม่ได้ (Anonymized)</td><td>ข้อมูลเปิดเผยต่อสาธารณะ</td></tr></tbody></table></div>
 <h4 class="content-heading" id="sec-นิยามและเกณฑ์การพิจารณาในแต่ละระดับชั้น-214">นิยามและเกณฑ์การพิจารณาในแต่ละระดับชั้น:</h4>
 <ol class="content-list ordered">
-<li><strong>Restricted / Highly Confidential (ข้อมูลลับที่สุด / ข้อมูลจำกัดสิทธิ์สูงสุด):</strong></li>
-</ol>
+<li><strong>Restricted / Highly Confidential (ข้อมูลลับที่สุด / ข้อมูลจำกัดสิทธิ์สูงสุด):</strong>
 <ul class="content-list ">
 <li><em>คำนิยาม:</em> ข้อมูลที่มีความอ่อนไหวขั้นสูงสุด ซึ่งหากถูกเปิดเผย ถูกดัดแปลง หรือสูญหาย จะก่อให้เกิดความเสียหายขั้นหายนะต่อองค์กร เสี่ยงต่อการถูกดำเนินคดีอาญา หรือทำให้องค์กรหยุดชะงักอย่างรุนแรง</li>
 <li><em>ตัวอย่าง:</em> รหัสผ่าน Master Key, Private Key ของ SSL/TLS Certificate, ข้อมูลไฟล์ข้อสอบระดับชาติก่อนวันสอบ, ซอร์สโค้ดของระบบหลัก, ข้อมูลสุขภาพอ่อนไหว (Sensitive Personal Data ตาม PDPA ม.26 เช่น ประวัติโรคประจำตัว ผลตรวจเลือด พันธุกรรม)</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>Confidential (ข้อมูลความลับ):</strong></li>
-</ol>
+</li>
+<li><strong>Confidential (ข้อมูลความลับ):</strong>
 <ul class="content-list ">
 <li><em>คำนิยาม:</em> ข้อมูลสำคัญที่ไม่ใช่ข้อมูลสาธารณะ ซึ่งหากรั่วไหลจะสร้างความเสียหายต่อชื่อเสียง การเงิน หรือเป็นการละเมิดกฎหมายคุ้มครองข้อมูลส่วนบุคคล</li>
 <li><em>ตัวอย่าง:</em> ข้อมูลส่วนบุคคลของนักศึกษาและบุคลากร (ชื่อ, เลขบัตรประชาชน, เบอร์โทรศัพท์, ผลการเรียน), ข้อมูลรายละเอียดบัญชีธนาคารและเงินเดือน, รายงานข้อบกพร่องการตรวจสอบความปลอดภัยภายใน</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>Internal / Official Use Only (ข้อมูลใช้งานภายในองค์กร):</strong></li>
-</ol>
+</li>
+<li><strong>Internal / Official Use Only (ข้อมูลใช้งานภายในองค์กร):</strong>
 <ul class="content-list ">
 <li><em>คำนิยาม:</em> ข้อมูลที่ใช้สำหรับการปฏิบัติงานตามปกติของบุคลากรภายในองค์กร ไม่ได้เป็นความลับร้ายแรง แต่ไม่อนุญาตให้เปิดเผยแก่บุคคลภายนอกโดยไม่ได้รับอนุญาต</li>
 <li><em>ตัวอย่าง:</em> คู่มือขั้นตอนการปฏิบัติงานภายใน (SOPs), ผังโครงสร้างเครือข่ายภายใน (Network Topology), นโยบายการบริหารงานภายใน, รายงานการประชุมประจำสัปดาห์</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>Public (ข้อมูลสาธารณะ):</strong></li>
-</ol>
+</li>
+<li><strong>Public (ข้อมูลสาธารณะ):</strong>
 <ul class="content-list ">
 <li><em>คำนิยาม:</em> ข้อมูลที่ได้รับอนุมัติให้เผยแพร่สู่บุคคลภายนอกและสาธารณชนได้อย่างเปิดเผย การเปิดเผยข้อมูลนี้ไม่ส่งผลเสียต่อชื่อเสียงหรือความมั่นคงปลอดภัยขององค์กร</li>
 <li><em>ตัวอย่าง:</em> ข่าวประชาสัมพันธ์ของมหาวิทยาลัย, คู่มือหลักสูตรการศึกษา, ปฏิทินการศึกษา, ข้อมูลค่าธรรมเนียมการศึกษาที่ประกาศอย่างเป็นทางการ</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 <h3 class="content-heading" id="sec-2-2-วงจรชีวิตข้อมูล-8-ขั้นตอนและ-3-สภาวะของข้อมูล-data-lifecycle-data-states-231">2.2 วงจรชีวิตข้อมูล 8 ขั้นตอนและ 3 สภาวะของข้อมูล (Data Lifecycle & Data States)</h3>
 <p class="content-p">ข้อมูลไม่ใช่สิ่งที่มีอยู่หยุดนิ่ง แต่เคลื่อนย้ายและเปลี่ยนสภาพตลอดเวลา Lead Implementer ต้องออกแบบมาตรการควบคุมความปลอดภัยให้ครอบคลุม <strong>3 สภาวะของข้อมูล (The Three States of Data)</strong>:</p>
@@ -1961,93 +1958,83 @@
 <h2 class="content-heading" id="sec-แบบฝึกหัดและการบ้านประจำบทที่-6-611">แบบฝึกหัดและการบ้านประจำบทที่ 6</h2>
 <p class="content-p">เพื่อเป็นส่วนหนึ่งของการจัดทำแฟ้มสะสมงาน <strong>Cybersecurity Audit Portfolio</strong> ให้นักศึกษาจัดทำเอกสารการบริหารสินทรัพย์และการจำแนกข้อมูลสำหรับ <strong>“มหาวิทยาลัยดิจิทัลสมมติ”</strong> (หรือหน่วยงานที่ได้รับอนุมัติ) ประกอบด้วย 4 ชิ้นงานสำคัญ:</p>
 <ol class="content-list ordered">
-<li><strong>ทะเบียนสินทรัพย์สารสนเทศ (Asset Register) ไม่น้อยกว่า 20 รายการ:</strong></li>
-</ol>
+<li><strong>ทะเบียนสินทรัพย์สารสนเทศ (Asset Register) ไม่น้อยกว่า 20 รายการ:</strong>
 <ul class="content-list ">
 <li>ครอบคลุมประเภทสินทรัพย์อย่างน้อย 6 หมวด (Hardware, Software, Information, Network, Cloud, Facility)</li>
 <li>ระบุข้อมูลครบถ้วนทั้ง 11 ฟิลด์ (Asset ID, Name, Description, Owner, Custodian, Location, Dependency, Criticality Tier, Data Classification, Support Status, Backup Requirement)</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>เมทริกซ์การจำแนกประเภทข้อมูล (Data Classification Matrix) ไม่น้อยกว่า 10 ชุดข้อมูล:</strong></li>
-</ol>
+</li>
+<li><strong>เมทริกซ์การจำแนกประเภทข้อมูล (Data Classification Matrix) ไม่น้อยกว่า 10 ชุดข้อมูล:</strong>
 <ul class="content-list ">
 <li>ครอบคลุมทั้ง 4 ระดับชั้น (Public, Internal, Confidential, Restricted)</li>
 <li>ระบุเจ้าของข้อมูล ฐานกฎหมาย (PDPA/Cyber Act) รูปแบบการเข้ารหัส และสิทธิ์การเข้าถึง</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>แผนภาพกระแสข้อมูล (Data Flow Diagram - DFD) สำหรับระบบสำคัญ 1 ระบบ:</strong></li>
-</ol>
+</li>
+<li><strong>แผนภาพกระแสข้อมูล (Data Flow Diagram - DFD) สำหรับระบบสำคัญ 1 ระบบ:</strong>
 <ul class="content-list ">
 <li>จัดทำผัง DFD Level 1 สำหรับระบบลงทะเบียน หรือระบบการเงิน ที่แสดงการเคลื่อนที่ของข้อมูล Trust Boundaries และมาตรการรักษาความปลอดภัยในแต่ละจุดเชื่อมต่อ</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>ข้อกำหนดกฎเกณฑ์การจัดการข้อมูล (Data Handling Policy Summary):</strong></li>
-</ol>
+</li>
+<li><strong>ข้อกำหนดกฎเกณฑ์การจัดการข้อมูล (Data Handling Policy Summary):</strong>
 <ul class="content-list ">
 <li>สรุปข้อกำหนดการจัดการข้อมูลในแต่ละระดับชั้น ครอบคลุม Labeling, Access Control, Encryption, Transmission, Retention และ Disposal</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 <h2 class="content-heading" id="sec-คำถามทบทวนท้ายบท-review-questions-answers-628">คำถามทบทวนท้ายบท (Review Questions & Answers)</h2>
 <ol class="content-list ordered">
-<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างที่สำคัญที่สุดระหว่างบทบาทของ Asset Owner และ Asset Custodian พร้อมยกตัวอย่าง</li>
-</ol>
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างที่สำคัญที่สุดระหว่างบทบาทของ Asset Owner และ Asset Custodian พร้อมยกตัวอย่าง
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> <strong>Asset Owner</strong> คือผู้บริหารระดับสายงานธุรกิจผู้มีอำนาจตัดสินใจ มีหน้าที่กำหนดระดับชั้นความลับของข้อมูล อนุมัติสิทธิ์การเข้าถึง และอนุมัติการทำลายข้อมูล (เช่น ผอ.กองบริการการศึกษา) ส่วน <strong>Asset Custodian</strong> คือผู้ดูแลรักษาเชิงเทคนิค (ฝ่ายไอที) มีหน้าที่ปฏิบัติตามคำสั่งของ Owner เช่น ติดตั้งระบบ ปรับแต่งสิทธิ์การเข้าถึง สำรองข้อมูล และลงมือทำลายข้อมูลอย่างปลอดภัย (เช่น Lead DBA หรือ System Admin)</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> หากระบบลงทะเบียนเรียนมีค่า MTD = 12 ชั่วโมง และผู้บริหารกำหนดให้ตั้งค่า RTO = 16 ชั่วโมง การตั้งค่านี้ถูกต้องตามหลักความต่อเนื่องทางธุรกิจหรือไม่ เพราะเหตุใด?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> หากระบบลงทะเบียนเรียนมีค่า MTD = 12 ชั่วโมง และผู้บริหารกำหนดให้ตั้งค่า RTO = 16 ชั่วโมง การตั้งค่านี้ถูกต้องตามหลักความต่อเนื่องทางธุรกิจหรือไม่ เพราะเหตุใด?
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> <strong>ไม่ถูกต้องอย่างยิ่ง</strong> เนื่องจากตามหลักการ BIA ค่า RTO ต้องน้อยกว่า MTD เสมอ (<code class="math-tex">RTO < MTD</code>) หาก RTO (เวลาที่คาดว่าจะกู้ระบบได้) เท่ากับ 16 ชั่วโมง แต่ MTD (เวลาสูงสุดที่องค์กรทนรับได้) เท่ากับ 12 ชั่วโมง หมายความว่าองค์กรจะต้องทนระบบล่มนานเกินกว่าขีดจำกัดที่ยอมรับได้ไปถึง 4 ชั่วโมง ซึ่งจะทำให้เกิดความเสียหายขั้นหายนะต่อพันธกิจขององค์กร</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> จงอธิบายความหมายของ Single Point of Failure (SPOF) และยกตัวอย่าง Human SPOF ในฝ่ายไอที</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> จงอธิบายความหมายของ Single Point of Failure (SPOF) และยกตัวอย่าง Human SPOF ในฝ่ายไอที
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> SPOF คือองค์ประกอบใด ๆ ในระบบที่หากหยุดทำงานเพียงจุดเดียว จะทำให้ระบบทั้งหมดล้มเหลวทันที ตัวอย่าง <strong>Human SPOF</strong> คือ การที่มี Database Administrator เพียงคนเดียวที่รู้ Master Password ของฐานข้อมูลหลัก และรู้วิธีการกู้คืนระบบ หากบุคคลนี้ประสบอุบัติเหตุ ลาออกกะทันหัน หรือไม่สามารถติดต่อได้ องค์กรจะไม่สามารถกู้คืนระบบได้เลย</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> ข้อมูลผลการตรวจเลือดและประวัติโรคประจำตัวของนักศึกษา จัดอยู่ในระดับชั้นข้อมูลใดตามเกณฑ์ 4 ระดับ และมีฐานกฎหมายใดรองรับ?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ข้อมูลผลการตรวจเลือดและประวัติโรคประจำตัวของนักศึกษา จัดอยู่ในระดับชั้นข้อมูลใดตามเกณฑ์ 4 ระดับ และมีฐานกฎหมายใดรองรับ?
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> จัดอยู่ในระดับ <strong>Restricted (ข้อมูลลับที่สุด / ข้อมูลจำกัดสิทธิ์สูงสุด)</strong> เนื่องจากเป็น <strong>ข้อมูลส่วนบุคคลอ่อนไหว (Sensitive Personal Data)</strong> ตามมาตรา 26 แห่ง พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) ซึ่งหากรั่วไหลจะกระทบต่อสิทธิเสรีภาพและสร้างความเสียหายร้ายแรงต่อเจ้าของข้อมูล มีโทษทางอาญาและโทษปรับสูงสุดตามกฎหมาย</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> เหตุใดการสั่ง Quick Format หรือการเขียนทับข้อมูลธรรมดา (Overwriting) บน Flash SSD จึงไม่สามารถทำลายข้อมูลได้อย่างปลอดภัย 100%?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> เหตุใดการสั่ง Quick Format หรือการเขียนทับข้อมูลธรรมดา (Overwriting) บน Flash SSD จึงไม่สามารถทำลายข้อมูลได้อย่างปลอดภัย 100%?
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> เนื่องจากไดรฟ์ SSD มีคอนโทรลเลอร์ที่ควบคุมการทำงานของเทคโนโลยี <strong>Wear Leveling</strong> และ <strong>Over-Provisioning</strong> ซึ่งคอยกระจายการเขียนข้อมูลเพื่อยืดอายุเซลล์แฟลช และมีพื้นที่บล็อกสำรองที่ซ่อนอยู่จากระบบปฏิบัติการ ทำให้การเขียนทับเชิงตรรกะไม่สามารถเข้าถึงเซลล์ข้อมูลที่ถูกเก็บซ่อนไว้ได้ การทำลายที่ปลอดภัยสำหรับ SSD จึงต้องใช้คำสั่งเฟิร์มแวร์ Cryptographic Erase หรือการบดทำลายทางกายภาพ (Shredding) ให้ชิ้นส่วนเล็กกว่า 2 มม.</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> ตามมาตรฐาน NIST SP 800-88 Rev. 1 ระดับการทำลายข้อมูล "Purge" แตกต่างจาก "Clear" อย่างไร?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ตามมาตรฐาน NIST SP 800-88 Rev. 1 ระดับการทำลายข้อมูล "Purge" แตกต่างจาก "Clear" อย่างไร?
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> <strong>Clear</strong> คือการลบล้างเชิงตรรกะด้วยการเขียนทับข้อมูล (Overwrite) ด้วยเครื่องมือซอฟต์แวร์ทั่วไป ซึ่งสามารถป้องกันการกู้ข้อมูลด้วยเครื่องมือกู้ข้อมูลพื้นฐานได้ และสื่อบันทึกยังนำกลับมาใช้ใหม่ได้ ส่วน <strong>Purge</strong> คือการล้างข้อมูลระดับลึก เช่น การใช้คำสั่ง Secure Cryptographic Erase ของไดรฟ์ หรือการใช้เครื่อง Degaussing ลบล้างสนามแม่เหล็ก ซึ่งสามารถป้องกันการกู้ข้อมูลในห้องปฏิบัติการนิติวิทยาศาสตร์ระดับสูง (Advanced Laboratory Techniques) ได้อย่างสิ้นเชิง</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> จงระบุ 3 สภาวะของข้อมูล (The Three States of Data) พร้อมระบุมาตรการควบคุมความปลอดภัยหลักของแต่ละสภาวะ</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> จงระบุ 3 สภาวะของข้อมูล (The Three States of Data) พร้อมระบุมาตรการควบคุมความปลอดภัยหลักของแต่ละสภาวะ
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> (1) <strong>Data at Rest:</strong> ควบคุมด้วย Access Control และการเข้ารหัส Storage/Database (AES-256) (2) <strong>Data in Transit:</strong> ควบคุมด้วยโปรโตคอลเครือข่ายความปลอดภัยสูง (TLS 1.3, SFTP, IPsec) (3) <strong>Data in Use:</strong> ควบคุมด้วยการจำกัดสิทธิ์ Least Privilege ใน RAM และเทคโนโลยี Confidential Computing (Hardware Enclaves)</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> ในมุมมองของ Lead Auditor การสแกนพอร์ตเครือข่ายแล้วพบ IP Address เปิดให้บริการอยู่แต่ไม่มีชื่อใน Asset Register มีนัยสำคัญอย่างไร?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ในมุมมองของ Lead Auditor การสแกนพอร์ตเครือข่ายแล้วพบ IP Address เปิดให้บริการอยู่แต่ไม่มีชื่อใน Asset Register มีนัยสำคัญอย่างไร?
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> จัดเป็นข้อค้นพบประเภท <strong>Shadow IT</strong> หรือความไม่สมบูรณ์ของทะเบียนสินทรัพย์ ซึ่งสะท้อนว่าระบบควบคุมการเปลี่ยนแปลง (Change Management) ล้มเหลว อุปกรณ์ดังกล่าวอาจไม่ได้รับการอัปเดตแพตช์ความปลอดภัย ไม่ได้รับการสำรองข้อมูล และอาจกลายเป็นช่องทางให้แฮกเกอร์ใช้เจาะเข้าสู่เครือข่ายภายในได้ จัดเป็นข้อบกพร่อง (Non-conformity) ต่อนิยามการควบคุมตาม ISO 27001 Control A.5.9</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> ใบรับรอง Certificate of Destruction (CoD) ต้องประกอบด้วยข้อมูลสำคัญอะไรบ้างเพื่อใช้เป็นหลักฐานยืนยันต่อ Lead Auditor?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ใบรับรอง Certificate of Destruction (CoD) ต้องประกอบด้วยข้อมูลสำคัญอะไรบ้างเพื่อใช้เป็นหลักฐานยืนยันต่อ Lead Auditor?
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> ต้องระบุ: (1) หมายเลขใบรับรองและวันที่ทำลาย (2) รายละเอียดสื่อบันทึก เช่น ยี่ห้อ รุ่น และ Serial Number ทุกชิ้น (3) ชื่อหน่วยงานเจ้าของสินทรัพย์ (4) ชื่อบริษัทผู้รับจ้างทำลาย (5) วิธีการทำลายที่ใช้ตามมาตรฐาน NIST 800-88 (Clear/Purge/Destroy) (6) ลายมือชื่อของพยานผู้แทนองค์กรและผู้แทนผู้ทำลาย</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> ข้อมูลจราจรทางคอมพิวเตอร์ (Log Files) ต้องจัดเก็บรักษาไว้อย่างน้อยกี่วันตามกฎหมายไทย และจัดอยู่ในระดับชั้นความลับใด?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ข้อมูลจราจรทางคอมพิวเตอร์ (Log Files) ต้องจัดเก็บรักษาไว้อย่างน้อยกี่วันตามกฎหมายไทย และจัดอยู่ในระดับชั้นความลับใด?
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> ต้องจัดเก็บรักษาไว้ <strong>ไม่น้อยกว่า 90 วัน</strong> (และพนักงานเจ้าหน้าที่อาจสั่งให้ขยายเวลาได้ถึง 2 ปีในกรณีจำเป็น) ตามมาตรา 26 แห่ง พ.ร.บ.ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. 2550 และที่แก้ไขเพิ่มเติม และจัดอยู่ในระดับ <strong>Confidential</strong> เนื่องจากมีข้อมูล IP Address บันทึกการเชื่อมต่อ และประวัติการเข้าใช้งานของบุคคล ซึ่งต้องควบคุมการเข้าถึงอย่างเคร่งครัด</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 <h2 class="content-heading" id="sec-สรุปบทที่-6-653">สรุปบทที่ 6</h2>
 <p class="content-p">การบริหารจัดการสินทรัพย์และการจำแนกประเภทข้อมูลเป็นหัวใจและจุดเริ่มต้นของระบบความมั่นคงปลอดภัยไซเบอร์ หากปราศจากการรู้เท่าทันสินทรัพย์ที่มีอยู่ องค์กรจะไม่สามารถจัดสรรงบประมาณ ประเมินความเสี่ยง หรือกำหนดมาตรการควบคุมได้อย่างถูกต้อง</p>

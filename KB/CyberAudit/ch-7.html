@@ -1093,47 +1093,43 @@
 </div>
 
 <ol class="content-list ordered">
-<li><strong>Preventive Controls (มาตรการควบคุมเชิงป้องกัน):</strong></li>
-</ol>
+<li><strong>Preventive Controls (มาตรการควบคุมเชิงป้องกัน):</strong>
 <ul class="content-list ">
 <li><em>วัตถุประสงค์:</em> สกัดกั้น ปิดกั้น หรือขัดขวางไม่ให้ภัยคุกคามสามารถเกิดขึ้น หรือไม่ให้ผู้โจมตีเข้าถึงจุดอ่อนได้</li>
 <li><em>ตัวอย่าง:</em> การตั้งค่าไฟร์วอลล์บล็อกพอร์ตอันตราย, การบังคับใช้ Multi-Factor Authentication (MFA), การกำหนดสิทธิ์แบบ Least Privilege, การเข้ารหัสข้อมูล (Encryption), ประตูนิรภัยล็อกสองชั้น</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>Detective Controls (มาตรการควบคุมเชิงตรวจจับ):</strong></li>
-</ol>
+</li>
+<li><strong>Detective Controls (มาตรการควบคุมเชิงตรวจจับ):</strong>
 <ul class="content-list ">
 <li><em>วัตถุประสงค์:</em> ค้นหา ตรวจจับ และแจ้งเตือนเมื่อมีกิจกรรมที่ผิดปกติ การพยายามบุกรุก หรือการละเมิดนโยบายความปลอดภัยเกิดขึ้น</li>
 <li><em>ตัวอย่าง:</em> ระบบตรวจจับการบุกรุก (Network Intrusion Detection System: NIDS), ระบบตรวจสอบไฟล์ระบบเปลี่ยนแปลง (File Integrity Monitoring: FIM), การตรวจวิเคราะห์ Log ผ่าน SIEM, การเดินตรวจเวรของ รปภ., การตรวจสอบสิทธิ์ประจำรอบ (Access Review)</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>Corrective Controls (มาตรการควบคุมเชิงแก้ไข):</strong></li>
-</ol>
+</li>
+<li><strong>Corrective Controls (มาตรการควบคุมเชิงแก้ไข):</strong>
 <ul class="content-list ">
 <li><em>วัตถุประสงค์:</em> ระงับ ยับยั้ง และบรรเทาความเสียหายที่กำลังเกิดขึ้นหลังจากการตรวจพบ เพื่อทำให้ภัยคุกคามยุติลง</li>
 <li><em>ตัวอย่าง:</em> การตัดการเชื่อมต่อเครือข่ายของเครื่องที่ติดมัลแวร์โดยอัตโนมัติผ่าน EDR (Host Isolation), การสั่งรันโปรแกรมลบมัลแวร์ (Antivirus Remediation), การระงับบัญชีผู้ใช้ที่ถูกขโมยรหัสผ่านทันที, การสลับการทำงานไปใช้ไฟร์วอลล์สำรอง</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>Recovery Controls (มาตรการควบคุมเชิงฟื้นฟู):</strong></li>
-</ol>
+</li>
+<li><strong>Recovery Controls (มาตรการควบคุมเชิงฟื้นฟู):</strong>
 <ul class="content-list ">
 <li><em>วัตถุประสงค์:</em> กอบกู้ระบบ ข้อมูล และบริการให้กลับคืนสู่สภาวะการทำงานปกติหลังจากเหตุการณ์ความมั่นคงปลอดภัยยุติลง</li>
 <li><em>ตัวอย่าง:</em> การกู้คืนฐานข้อมูลจากระบบสำรองข้อมูล (Database Restore from Backup), การเปิดใช้งานศูนย์ข้อมูลสำรอง (DR Site Failover), แผนบริหารความต่อเนื่องทางธุรกิจ (BCP), แผนกู้คืนระบบจากภัยพิบัติ (DRP)</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>Deterrent Controls (มาตรการควบคุมเชิงป้องปราม):</strong></li>
-</ol>
+</li>
+<li><strong>Deterrent Controls (มาตรการควบคุมเชิงป้องปราม):</strong>
 <ul class="content-list ">
 <li><em>วัตถุประสงค์:</em> ยับยั้งและปรามผู้ไม่ประสงค์ดีทางจิตวิทยา เพื่อให้ตระหนักถึงผลลัพธ์ บทลงโทษ หรือการถูกจับได้</li>
 <li><em>ตัวอย่าง:</em> ป้ายเตือน <em>"พื้นที่หวงห้าม ผู้บุกรุกมีโทษจำคุกตาม พ.ร.บ.คอมพิวเตอร์ฯ"</em>, ข้อความแจ้งเตือน Banner ก่อนล็อกอิน (Login Warning Banner), ป้ายแจ้งเตือนกล้องวงจรปิด CCTV, นโยบายบทลงโทษทางวินัยและอาญา</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>Compensating Controls (มาตรการควบคุมชดเชย):</strong></li>
-</ol>
+</li>
+<li><strong>Compensating Controls (มาตรการควบคุมชดเชย):</strong>
 <ul class="content-list ">
 <li><em>วัตถุประสงค์:</em> มาตรการทางเลือกที่นำมาใช้ทดแทนเมื่อองค์กรไม่สามารถปฏิบัติตามมาตรการควบคุมหลัก (Primary Control) ได้เนื่องจากข้อจำกัดทางเทคนิค สถาปัตยกรรมเก่า หรือต้นทุนทางธุรกิจ แต่ยังสามารถลดความเสี่ยงให้อยู่ในระดับที่ยอมรับได้เท่าเทียมกัน</li>
 <li><em>ตัวอย่าง:</em> ระบบบริหารจัดการของโรงพยาบาลรันบน Windows Server 2008 ที่ไม่สามารถอัปเดตแพตช์ได้ (ไม่สามารถลง Preventive Patch ได้) <code class="math-tex">\rightarrow</code> <strong>Compensating Control:</strong> แยกเครื่องนี้ไปอยู่ใน Isolated VLAN ที่ไม่มีทางออกอินเทอร์เน็ต และติดตั้ง Web Application Firewall (WAF) หน้าเซิร์ฟเวอร์เพื่อกรอง Exploit เสมือน (Virtual Patching)</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 <h3 class="content-heading" id="sec-1-3-การจำแนกประเภทตามลักษณะและกลไก-controls-by-nature-implementation-method-86">1.3 การจำแนกประเภทตามลักษณะและกลไก (Controls by Nature / Implementation Method)</h3>
 
@@ -1405,15 +1401,14 @@
 <ol class="content-list ordered">
 <li><strong>Asset Coverage:</strong> ขอบเขตการค้นหาช่องโหว่ต้องครอบคลุมสินทรัพย์ 100% ทั้ง On-premise, Cloud, และ Network Devices</li>
 <li><strong>Vulnerability Scanning:</strong> การสแกนช่องโหว่ทั้งแบบ Authenticated (ล็อกอินเข้าไปตรวจลึกถึง Patch ภายใน) และ Unauthenticated (สแกนจากภายนอก) เป็นประจำอย่างน้อยเดือนละ 1 ครั้ง</li>
-<li><strong>Risk Prioritization:</strong> การจัดลำดับความเร่งด่วนในการลงแพตช์โดยไม่พึ่งพาเพียงคะแนน <strong>CVSS (Common Vulnerability Scoring System)</strong> เท่านั้น แต่ต้องพิจารณา <strong>EPSS (Exploit Prediction Scoring System)</strong> และรายการช่องโหว่ที่มีโค้ดเจาะระบบแล้วจริงตาม <strong>CISA Known Exploited Vulnerabilities (KEV) Catalog</strong>:</li>
-</ol>
+<li><strong>Risk Prioritization:</strong> การจัดลำดับความเร่งด่วนในการลงแพตช์โดยไม่พึ่งพาเพียงคะแนน <strong>CVSS (Common Vulnerability Scoring System)</strong> เท่านั้น แต่ต้องพิจารณา <strong>EPSS (Exploit Prediction Scoring System)</strong> และรายการช่องโหว่ที่มีโค้ดเจาะระบบแล้วจริงตาม <strong>CISA Known Exploited Vulnerabilities (KEV) Catalog</strong>:
 <ul class="content-list ">
 <li><em>Critical / Zero-Day (CVSS <code class="math-tex">\ge</code> 9.0 หรืออยู่ใน CISA KEV):</em> ต้องแก้ไขภายใน 24–48 ชั่วโมง</li>
 <li><em>High (CVSS 7.0–8.9):</em> ต้องแก้ไขภายใน 7–14 วัน</li>
 <li><em>Medium (CVSS 4.0–6.9):</em> ต้องแก้ไขภายใน 30 วัน</li>
 <li><em>Low (CVSS &lt; 4.0):</em> แก้ไขตามรอบการบำรุงรักษาปกติ (Maintenance Window)</li>
 </ul>
-<ol class="content-list ordered">
+</li>
 <li><strong>Patch Testing & Staging:</strong> ก่อนลงแพตช์บนระบบจริง (Production) จะต้องทดสอบบนสภาพแวดล้อมจำลอง (Staging / UAT) เสมอ เพื่อป้องกันระบบล่มจากความไม่เข้ากันของซอฟต์แวร์</li>
 <li><strong>Exception Management:</strong> หากระบบงานเก่าไม่สามารถลงแพตช์ได้เนื่องจากแอปพลิเคชันจะหยุดทำงาน ต้องจัดทำ <strong>Security Exception Request</strong> ระบุเหตุผลทางธุรกิจ ระยะเวลาขอยกเว้น และออกแบบ <strong>Compensating Controls</strong> (เช่น Virtual Patching บน WAF หรือย้ายเข้า Isolated VLAN) พร้อมได้รับอนุมัติจาก CISO</li>
 </ol>
@@ -1723,87 +1718,78 @@
 <h2 class="content-heading" id="sec-แบบฝึกหัดและการบ้านประจำบทที่-7-512">แบบฝึกหัดและการบ้านประจำบทที่ 7</h2>
 <p class="content-p">เพื่อเป็นส่วนหนึ่งของการจัดทำแฟ้มสะสมงาน <strong>Cybersecurity Audit Portfolio</strong> ให้นักศึกษาจัดทำเอกสาร <strong>Risk-Control Matrix (RCM)</strong> สำหรับ <strong>“มหาวิทยาลัยดิจิทัลสมมติ”</strong> (หรือหน่วยงานที่ได้รับอนุมัติ) โดยมีข้อกำหนดดังนี้:</p>
 <ol class="content-list ordered">
-<li><strong>จัดทำตาราง Risk-Control Matrix (RCM) ไม่น้อยกว่า 12 มาตรการ:</strong></li>
-</ol>
+<li><strong>จัดทำตาราง Risk-Control Matrix (RCM) ไม่น้อยกว่า 12 มาตรการ:</strong>
 <ul class="content-list ">
 <li>ครอบคลุมประเภทมาตรการทั้งด้าน Preventive, Detective, Corrective และ Recovery</li>
 <li>ครอบคลุมลักษณะมาตรการทั้งด้าน Administrative, Technical และ Physical</li>
 <li>ครอบคลุม 5 เสาหลักการควบคุม (IAM, Vulnerability/Patch, Secure Config, Network, Backup)</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>ระบุข้อมูลครบถ้วนทั้ง 9 คอลัมน์มาตรฐาน:</strong></li>
-</ol>
+</li>
+<li><strong>ระบุข้อมูลครบถ้วนทั้ง 9 คอลัมน์มาตรฐาน:</strong>
 <ul class="content-list ">
 <li>(1) Risk Description (2) Control Objective (3) Control Activity (4) Control Owner (5) Frequency (6) Audit Evidence (7) KPI/KRI (8) วิธีตรวจ Design Effectiveness (ToD) (9) วิธีตรวจ Operating Effectiveness (ToE)</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>จัดทำตัวอย่างกระดาษทำการตรวจสอบ (Sample Audit Working Paper) 1 เรื่อง:</strong></li>
-</ol>
+</li>
+<li><strong>จัดทำตัวอย่างกระดาษทำการตรวจสอบ (Sample Audit Working Paper) 1 เรื่อง:</strong>
 <ul class="content-list ">
 <li>เลือก 1 มาตรการใน RCM มาเขียนขั้นตอนการตรวจสอบ ผลการสุ่มตรวจหลักฐาน และข้อสรุปของผู้ตรวจสอบ</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 <h2 class="content-heading" id="sec-คำถามทบทวนท้ายบท-review-questions-answers-527">คำถามทบทวนท้ายบท (Review Questions & Answers)</h2>
 <ol class="content-list ordered">
-<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง Preventive Control กับ Detective Control พร้อมยกตัวอย่าง</li>
-</ol>
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง Preventive Control กับ Detective Control พร้อมยกตัวอย่าง
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> <strong>Preventive Control</strong> คือมาตรการเชิงป้องกันที่มุ่งสกัดกั้นหรือขัดขวางไม่ให้เหตุการณ์ความไม่ปลอดภัยเกิดขึ้น เช่น ไฟร์วอลล์บล็อกพอร์ตอันตราย หรือการใช้รหัสผ่านสองปัจจัย (MFA) ส่วน <strong>Detective Control</strong> คือมาตรการเชิงตรวจจับที่มุ่งค้นหา แจ้งเตือน หรือระบุพฤติกรรมผิดปกติขณะที่เกิดขึ้นหรือหลังเกิดเหตุ เช่น ระบบตรวจจับการบุกรุก (IDS) หรือระบบวิเคราะห์ Log ผ่าน SIEM</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> ในสถานการณ์ใดที่องค์กรจำเป็นต้องนำ Compensating Control มาใช้งาน จงยกตัวอย่างรูปธรรม</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ในสถานการณ์ใดที่องค์กรจำเป็นต้องนำ Compensating Control มาใช้งาน จงยกตัวอย่างรูปธรรม
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> นำมาใช้เมื่อองค์กรไม่สามารถปฏิบัติตามมาตรการควบคุมหลักได้เนื่องจากข้อจำกัดทางเทคนิค สถาปัตยกรรมเก่า หรือต้นทุนทางธุรกิจที่สูงเกินไป ตัวอย่างเช่น ระบบจัดเก็บเวชระเบียนของโรงพยาบาลรันบนซอฟต์แวร์เก่าที่ไม่สามารถอัปเดตแพตช์ความปลอดภัยได้ (ไม่สามารถใช้ Preventive Patch) ทางองค์กรจึงใช้ <strong>Compensating Control</strong> ด้วยการตัดขาดระบบนี้ออกจากอินเทอร์เน็ต ย้ายไปอยู่ใน Isolated VLAN และติดตั้ง Web Application Firewall (WAF) ดักหน้าเพื่อทำ Virtual Patching</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง Design Effectiveness กับ Operating Effectiveness</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง Design Effectiveness กับ Operating Effectiveness
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> <strong>Design Effectiveness</strong> คือการประเมินว่า "หากมาตรการควบคุมทำงานตามที่ออกแบบไว้ในนโยบายหรือสถาปัตยกรรม จะสามารถป้องกันหรือลดความเสี่ยงนั้นได้จริงหรือไม่" ส่วน <strong>Operating Effectiveness</strong> คือการประเมินว่า "ในทางปฏิบัติจริง มาตรการดังกล่าวถูกนำไปปฏิบัติอย่างถูกต้อง สม่ำเสมอ และมีประสิทธิผลตลอดช่วงเวลาการตรวจสอบหรือไม่"</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> หากองค์กรมีนโยบายให้ระงับสิทธิ์พนักงานลาออกภายใน 2 ชั่วโมง แต่จากการตรวจสอบพบว่าผู้ดูแลระบบลืมปิดสิทธิ์พนักงานไป 1 รายเป็นเวลา 10 วัน จัดเป็นความล้มเหลวประเภทใด?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> หากองค์กรมีนโยบายให้ระงับสิทธิ์พนักงานลาออกภายใน 2 ชั่วโมง แต่จากการตรวจสอบพบว่าผู้ดูแลระบบลืมปิดสิทธิ์พนักงานไป 1 รายเป็นเวลา 10 วัน จัดเป็นความล้มเหลวประเภทใด?
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> จัดเป็น <strong>Operating Ineffectiveness (ความล้มเหลวด้านประสิทธิผลการดำเนินงานจริง)</strong> เนื่องจากนโยบายและขั้นตอนการออกแบบระบุไว้อย่างถูกต้องแล้ว (Design Effective) แต่ผู้ปฏิบัติงานเกิดข้อผิดพลาดในการดำเนินงานจริง (Human Error / Operational Failure)</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> จงอธิบายกฎการสำรองข้อมูลแบบ 3-2-1-1-0 Rule โดยสังเขป</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> จงอธิบายกฎการสำรองข้อมูลแบบ 3-2-1-1-0 Rule โดยสังเขป
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> (3) มีสำเนาข้อมูล 3 ชุด (2) จัดเก็บบนสื่อบันทึกต่างกัน 2 ประเภท (1) มี 1 สำเนาอยู่นอกสถานที่ (Offsite) (1) มีอย่างน้อย 1 สำเนาเป็นแบบ Offline, Air-gapped หรือ Immutable WORM Storage เพื่อกันแรนซัมแวร์ และ (0) ต้องมีข้อผิดพลาดเป็นศูนย์จากการทดสอบกู้คืนข้อมูล (Zero errors in restore testing)</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> ปัญหา "Privilege Creep" ในระบบ Identity and Access Management คืออะไร และมีมาตรการใดป้องกัน?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ปัญหา "Privilege Creep" ในระบบ Identity and Access Management คืออะไร และมีมาตรการใดป้องกัน?
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> คือปรากฏการณ์ที่พนักงานมีสิทธิ์การเข้าถึงระบบสะสมเพิ่มขึ้นเรื่อย ๆ เมื่อมีการย้ายแผนกหรือเปลี่ยนหน้าที่การทำงาน โดยสิทธิ์เดิมไม่เคยถูกลบออก ป้องกันได้ด้วย: (1) การบังคับใช้กระบวนการ Mover Process อย่างเคร่งครัด (ลบสิทธิ์เดิมก่อนให้สิทธิ์ใหม่) และ (2) การจัดให้มีการทบทวนสิทธิ์การเข้าถึงประจำรอบ (Periodic User Access Review)</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> เหตุใดการดูเพียงคะแนน CVSS จึงไม่เพียงพอต่อการจัดลำดับความสำคัญในการลงแพตช์ (Patch Prioritization)?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> เหตุใดการดูเพียงคะแนน CVSS จึงไม่เพียงพอต่อการจัดลำดับความสำคัญในการลงแพตช์ (Patch Prioritization)?
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> เพราะคะแนน CVSS สะท้อนเพียงความรุนแรงทางเทคนิคตามทฤษฎี แต่ไม่ได้สะท้อนว่าช่องโหว่นั้นกำลังถูกแฮกเกอร์โจมตีจริงในโลกภายนอกหรือไม่ องค์กรจึงต้องพิจารณาคะแนน <strong>EPSS (Exploit Prediction Scoring System)</strong> และรายการใน <strong>CISA Known Exploited Vulnerabilities (KEV) Catalog</strong> ควบคู่กันเพื่อจัดลำดับความเร่งด่วนในการลงแพตช์ช่องโหว่ที่มีการโจมตีจริงก่อน</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> การ Hardening เซิร์ฟเวอร์ตาม CIS Benchmarks มีความสำคัญอย่างไรต่อการรักษาความมั่นคงปลอดภัย?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> การ Hardening เซิร์ฟเวอร์ตาม CIS Benchmarks มีความสำคัญอย่างไรต่อการรักษาความมั่นคงปลอดภัย?
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> มีความสำคัญในการลดพื้นที่การโจมตี (Attack Surface) ของระบบ โดยการปิดบริการ (Services) พอร์ต และโปรโตคอลที่ไม่จำเป็น เปลี่ยนแปลงค่าเริ่มต้นที่หละหลวม ลบบัญชีเริ่มต้น และบังคับใช้นโยบายความปลอดภัยที่เข้มงวดตามมาตรฐานสากล</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> เหตุใด Lead Auditor จึงต้องขอดูหลักฐาน "Restore Test Report" นอกเหนือจาก "Backup Job Logs"?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> เหตุใด Lead Auditor จึงต้องขอดูหลักฐาน "Restore Test Report" นอกเหนือจาก "Backup Job Logs"?
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> เพราะบันทึก Backup Job Logs แสดงเพียงว่ากระบวนการคัดลอกไฟล์เสร็จสิ้น แต่ไม่ได้เป็นหลักประกันว่าไฟล์สำรองนั้นสามารถนำมากู้คืนเป็นฐานข้อมูลที่ใช้งานได้จริง (อาจเกิดปัญหาไฟล์เสียหาย ไฟล์ไม่สมบูรณ์ หรือฐานข้อมูลไม่เข้ากัน) Restore Test Report จึงเป็นหลักฐานเชิงประจักษ์เดียวที่ยืนยันประสิทธิผลของการกู้คืนข้อมูล</li>
 </ul>
-<ol class="content-list ordered">
-<li><strong>คำถาม:</strong> ในตาราง Risk-Control Matrix (RCM) เหตุใดจึงต้องระบุทั้ง "Control Owner" และ "Audit Evidence"?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ในตาราง Risk-Control Matrix (RCM) เหตุใดจึงต้องระบุทั้ง "Control Owner" และ "Audit Evidence"?
 <ul class="content-list ">
 <li><strong>แนวคำตอบ:</strong> ต้องระบุ <strong>Control Owner</strong> เพื่อให้มีความรับผิดชอบที่ชัดเจน (Accountability) ว่าใครเป็นผู้ดูแลให้มาตรการทำงาน และต้องระบุ <strong>Audit Evidence</strong> เพื่อกำหนดล่วงหน้าว่าในการตรวจสอบ จะต้องใช้หลักฐานเชิงประจักษ์ชิ้นใด (เช่น Log File, แบบฟอร์มลงนาม) ในการพิสูจน์การปฏิบัติงานจริงอย่างเป็นภววิสัย</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 <h2 class="content-heading" id="sec-สรุปบทที่-7-552">สรุปบทที่ 7</h2>
 <p class="content-p">การออกแบบและนำมาตรการควบคุมความมั่นคงปลอดภัยไปปฏิบัติ (Security Control Design and Implementation) เป็นกระบวนการเปลี่ยนผ่านจาก "ความเสี่ยงบนกระดาษ" สู่ "แนวปฏิบัติและกลไกป้องกันในโลกความเป็นจริง"</p>

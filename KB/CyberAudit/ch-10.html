@@ -1199,14 +1199,13 @@
 <li><strong>Dormant / Inactive Accounts (บัญชีที่ไม่ได้ใช้งานเป็นเวลานาน):</strong> บัญชีที่ไม่มีการล็อกอินเกิน 30, 60 หรือ 90 วัน (ตามนโยบาย) ต้องถูกระงับสิทธิ์ (Disable) โดยอัตโนมัติ เพื่อป้องกันการถูกสวมรอย</li>
 <li><strong>Default Accounts (บัญชีเริ่มต้นของระบบ):</strong> บัญชีที่ติดมากับระบบปฏิบัติการ เช่น <code>Guest</code>, <code>Administrator</code> (Windows), หรือ <code>root</code> (Linux) ต้องถูกเปลี่ยนชื่อ (Rename) ปิดการใช้งาน (Disable) หรือห้ามล็อกอินผ่านรีโมตคอนโซลโดยตรง</li>
 <li><strong>Shared / Generic Accounts (บัญชีที่ใช้ร่วมกัน):</strong> บัญชีส่วนกลางที่ไม่มีเจ้าของระบุชัดเจน เช่น <code>admin</code>, <code>operator</code>, <code>temp</code> ถือเป็นข้อบกพร่องร้ายแรงทางวิชาชีพ เนื่องจากขัดต่อหลักการความรับผิดชอบเฉพาะบุคคล (Individual Accountability)</li>
-<li><strong>Service Accounts (บัญชีบริการสำหรับแอปพลิเคชัน):</strong> บัญชีที่สร้างขึ้นเพื่อให้ระบบรัน Service (เช่น <code>svc_oracle</code>, <code>svc_backup</code>) ต้อง:</li>
-</ol>
+<li><strong>Service Accounts (บัญชีบริการสำหรับแอปพลิเคชัน):</strong> บัญชีที่สร้างขึ้นเพื่อให้ระบบรัน Service (เช่น <code>svc_oracle</code>, <code>svc_backup</code>) ต้อง:
 <ul class="content-list">
 <li>ห้ามมีสิทธิ์ล็อกอินแบบ Interactive Shell หรือ Remote Desktop</li>
 <li>ต้องกำหนดสิทธิ์เฉพาะเจาะจงเท่าที่จำเป็นต่อการรันโปรเซสเท่านั้น</li>
 <li>มีการตั้งค่ารหัสผ่านที่ซับซ้อนสูงและไม่มีวันหมดอายุ หรือใช้ Managed Service Accounts (gMSA บน Windows)</li>
 </ul>
-<ol class="content-list">
+</li>
 <li><strong>Privileged Accounts (บัญชีสิทธิ์ระดับสูง):</strong> บัญชีที่มีสิทธิ์ระดับ Local Administrators บน Windows หรือสมาชิกกลุ่ม <code>wheel</code> / <code>sudo</code> บน Linux ต้องมีจำนวนน้อยที่สุดเท่าที่จำเป็น และต้องล็อกอินผ่าน Jump Host หรือ PAM เสมอ</li>
 </ol>
 <hr class="section-divider">
@@ -2248,14 +2247,12 @@
         
 <p class="content-paragraph">เพื่อเป็นส่วนหนึ่งของการจัดทำแฟ้มสะสมงาน <strong>Cybersecurity Audit Portfolio (ชิ้นงานที่ 10)</strong> ให้นักศึกษานำ <strong>ชุดหลักฐานจำลอง 5 ชุด (EV-10-01 ถึง EV-10-05)</strong> จากกรณีศึกษามหาวิทยาลัยดิจิทัลสมมติในบทนี้ ไปวิเคราะห์และจัดทำเอกสาร:</p>
 <ol class="content-list">
-<li><strong>Audit Working Paper ด้านระบบปฏิบัติการและเครือข่าย:</strong></li>
-</ol>
+<li><strong>Audit Working Paper ด้านระบบปฏิบัติการและเครือข่าย:</strong>
 <ul class="content-list">
 <li>จัดทำกระดาษทำการบันทึกขั้นตอนการทดสอบ ผลลัพธ์เชิงประจักษ์ และข้อสรุปผลการตรวจอย่างละเอียด</li>
 </ul>
-<ol class="content-list">
-<li><strong>การจัดทำรายการข้อสังเกตและข้อค้นพบเบื้องต้นอย่างน้อย 5 ประเด็น:</strong></li>
-</ol>
+</li>
+<li><strong>การจัดทำรายการข้อสังเกตและข้อค้นพบเบื้องต้นอย่างน้อย 5 ประเด็น:</strong>
 <ul class="content-list">
 <li>เลือก 5 ประเด็นความเสี่ยงสำคัญจากหลักฐานจำลอง (เช่น EOL OS, Insecure RDP, Any-to-Any, Vendor VPN without MFA, Segmentation Failure)</li>
 <li>เขียนอธิบายให้ครบถ้วนตามโครงสร้าง 4 องค์ประกอบ:</li>
@@ -2265,6 +2262,8 @@
 <li><strong>ผลกระทบที่อาจเกิดขึ้น (Effect)</strong></li>
 <li><em>หมายเหตุ: ต้องเชื่อมโยงกับเกณฑ์ตรวจให้ชัดเจน ห้ามระบุเป็นข้อบกพร่องลอยๆ โดยไม่มี Criteria รองรับ</em></li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 
           <section class="chapter-section-anchor" id="ส่วนที่-8-คำถามทบทวนท้ายบท-review-questions-detailed-answers">
@@ -2272,65 +2271,57 @@
           </section>
         
 <ol class="content-list">
-<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง Service Account และ User Account ทั่วไป พร้อมระบุแนวทางการควบคุมความปลอดภัยของ Service Account</li>
-</ol>
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง Service Account และ User Account ทั่วไป พร้อมระบุแนวทางการควบคุมความปลอดภัยของ Service Account
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> <strong>User Account</strong> เป็นบัญชีของบุคคลสำหรับล็อกอินใช้งานคอมพิวเตอร์ ส่วน <strong>Service Account</strong> เป็นบัญชีที่สร้างขึ้นเพื่อให้แอปพลิเคชันหรือเซอร์วิสของระบบรันเบื้องหลัง การควบคุม Service Account ต้อง: (1) ห้ามมีสิทธิ์ Interactive Shell หรือ RDP (2) กำหนดสิทธิ์เท่าที่จำเป็น (Least Privilege) (3) ใช้รหัสผ่านที่ซับซ้อนสูงและไม่มีการแชร์ให้บุคคลทั่วไป หรือใช้เทคโนโลยี Group Managed Service Accounts (gMSA)</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> เพราะเหตุใดระบบปฏิบัติการที่สิ้นสุดระยะเวลาการสนับสนุน (End-of-Life: EOL) จึงถือเป็นความเสี่ยงระดับวิกฤตในการตรวจสอบ?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> เพราะเหตุใดระบบปฏิบัติการที่สิ้นสุดระยะเวลาการสนับสนุน (End-of-Life: EOL) จึงถือเป็นความเสี่ยงระดับวิกฤตในการตรวจสอบ?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> เพราะผู้ผลิต (Vendor) จะยุติการพัฒนาและแจกจ่ายแพตช์ความมั่นคงปลอดภัยสำหรับระบบนั้นโดยสิ้นเชิง ทำให้เมื่อมีช่องโหว่ใหม่ (Zero-Day Vulnerability) ถูกค้นพบ ระบบจะไม่ได้รับการป้องกันอีกต่อไป ผู้โจมตีสามารถใช้ Exploit โจมตีระบบได้สำเร็จอย่างง่ายดาย</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> หากองค์กรมีความจำเป็นต้องใช้งานเซิร์ฟเวอร์รุ่นเก่าที่ไม่สามารถปะแพตช์ได้ ผู้ตรวจสอบควรแนะนำให้ใช้มาตรการใด?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> หากองค์กรมีความจำเป็นต้องใช้งานเซิร์ฟเวอร์รุ่นเก่าที่ไม่สามารถปะแพตช์ได้ ผู้ตรวจสอบควรแนะนำให้ใช้มาตรการใด?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> แนะนำให้ใช้ <strong>มาตรการชดเชย (Compensating Controls)</strong> ได้แก่: (1) ย้ายเซิร์ฟเวอร์ไปอยู่ใน Isolated VLAN ที่แยกขาดจากเครือข่ายอื่น (2) กำหนดกฎไฟร์วอลล์บล็อกการเข้าถึงจากภายนอกอย่างเด็ดขาด (3) ใช้งาน Virtual Patching บน Web Application Firewall (WAF) หรือ IPS (4) จัดทำเอกสารขออนุมัติยกเว้น (Exception Form) ที่ผู้บริหารลงนามรับทราบความเสี่ยง</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> จงอธิบายความเสี่ยงของการมีกฎแบบ "Any-to-Any" บนไฟร์วอลล์</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> จงอธิบายความเสี่ยงของการมีกฎแบบ "Any-to-Any" บนไฟร์วอลล์
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> กฎ Any-to-Any ที่อนุญาตให้ทราฟฟิกใดๆ วิ่งผ่านได้โดยไม่จำกัด IP และพอร์ต จะทำลายคุณสมบัติการแบ่งโซนเครือข่าย (Segmentation) ทำให้ไฟร์วอลล์ไม่สามารถทำหน้าที่คัดกรองข้อมูลได้ หากเครือข่ายจุดใดจุดหนึ่งถูกเจาะ ผู้โจมตีจะสามารถแพร่กระจายการโจมตี (Lateral Movement) ไปยังทุกระบบทั่วทั้งองค์กรได้อย่างอิสระ</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> เหตุใดการเปิดพอร์ต RDP (TCP 3389) ตรงสู่เครือข่ายอินเทอร์เน็ตจึงเป็นข้อห้ามร้ายแรงในเชิงความมั่นคงปลอดภัย?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> เหตุใดการเปิดพอร์ต RDP (TCP 3389) ตรงสู่เครือข่ายอินเทอร์เน็ตจึงเป็นข้อห้ามร้ายแรงในเชิงความมั่นคงปลอดภัย?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> เพราะ RDP เป็นเป้าหมายหลักในการโจมตีแบบ Brute Force, Credential Stuffing และมักมีช่องโหว่ระดับ Remote Code Execution (เช่น BlueKeep) ซึ่งเป็นช่องทางหลักที่กลุ่มแรนซัมแวร์ (Ransomware) ใช้ในการเจาะทะลวงระบบเพื่อฝังมัลแวร์เรียกค่าไถ่</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> ในการตรวจสอบระบบไร้สาย (Wi-Fi) เหตุใดองค์กรจึงไม่ควรใช้ WPA2-Personal (Pre-Shared Key)?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ในการตรวจสอบระบบไร้สาย (Wi-Fi) เหตุใดองค์กรจึงไม่ควรใช้ WPA2-Personal (Pre-Shared Key)?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> เพราะ WPA2-Personal ใช้รหัสผ่านชุดเดียวกันร่วมกันทั้งองค์กร ทำให้: (1) ไม่สามารถระบุตัวตนผู้ใช้งานรายบุคคลได้ (ขาด Individual Accountability) (2) หากพนักงานลาออกหรือทำรหัสหลุด ทุกคนต้องเปลี่ยนรหัสใหม่ทั้งหมด ซึ่งในทางปฏิบัติทำได้ยาก องค์กรจึงควรใช้ WPA2/WPA3-Enterprise ที่ยืนยันตัวตนแยกตามบัญชีผู้ใช้</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง "Configuration Issue" กับ "Audit Finding"</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> จงอธิบายความแตกต่างระหว่าง "Configuration Issue" กับ "Audit Finding"
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> <strong>Configuration Issue</strong> คือข้อบกพร่องทางเทคนิคในการตั้งค่าระบบที่ไม่ตรงตาม Best Practice ในมุมมองของแอดมิน ส่วน <strong>Audit Finding</strong> คือข้อสรุปเชิงประเมินของผู้ตรวจสอบที่ชี้ชัดว่าสภาพความเป็นจริง (Condition) ขัดแย้งกับเกณฑ์มาตรฐานหรือนโยบาย (Criteria) ที่องค์กรต้องปฏิบัติตาม โดยมีหลักฐานเชิงประจักษ์และระบุผลกระทบต่อความเสี่ยงองค์กรชัดเจน</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> จงระบุ 4 องค์ประกอบสำคัญของ Audit Finding พร้อมยกตัวอย่างสั้นๆ</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> จงระบุ 4 องค์ประกอบสำคัญของ Audit Finding พร้อมยกตัวอย่างสั้นๆ
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> (1) <strong>Condition:</strong> พบกฎไฟร์วอลล์เปิดพอร์ต RDP สู่เน็ต (2) <strong>Criteria:</strong> นโยบายไอทีข้อ 6.1 ห้ามเปิด RDP สู่ภายนอก (3) <strong>Cause:</strong> ขาดการทบทวนกฎประจำปี (4) <strong>Effect:</strong> เสี่ยงต่อการถูกแรนซัมแวร์โจมตี</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> ในการตรวจสอบบัญชีสิทธิ์สูงบน Linux ผู้ตรวจสอบควรตรวจสอบไฟล์ใดเป็นพิเศษ และมองหาจุดเสี่ยงใด?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> ในการตรวจสอบบัญชีสิทธิ์สูงบน Linux ผู้ตรวจสอบควรตรวจสอบไฟล์ใดเป็นพิเศษ และมองหาจุดเสี่ยงใด?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> ควรตรวจสอบไฟล์ <code>/etc/sudoers</code> และ <code>/etc/sudoers.d/</code> โดยมองหาการกำหนดสิทธิ์แบบกว้างเกินไป โดยเฉพาะการใช้คำสั่ง <code>NOPASSWD: ALL</code> ซึ่งทำให้ผู้ใช้สามารถยกระดับเป็น root ได้โดยไม่ต้องใส่รหัสผ่าน ตลอดจนตรวจสอบไฟล์ <code>/etc/passwd</code> เพื่อดูว่ามีบัญชีอื่นนอกจาก root ที่มี UID เป็น 0 หรือไม่</li>
 </ul>
-<ol class="content-list">
-<li><strong>คำถาม:</strong> เหตุใดการตรวจสอบการเข้าถึงผ่าน VPN ของบริษัทภายนอก (Vendor) จึงต้องมีการตั้งค่าให้บัญชี Disabled เป็นค่าเริ่มต้น?</li>
-</ol>
+</li>
+<li><strong>คำถาม:</strong> เหตุใดการตรวจสอบการเข้าถึงผ่าน VPN ของบริษัทภายนอก (Vendor) จึงต้องมีการตั้งค่าให้บัญชี Disabled เป็นค่าเริ่มต้น?
 <ul class="content-list">
 <li><strong>แนวคำตอบ:</strong> เพื่อป้องกันไม่ให้บุคคลภายนอกสามารถล็อกอินเข้าสู่เครือข่ายภายในขององค์กรได้ตลอดเวลาโดยที่องค์กรไม่รู้ตัว บัญชีควรถูกเปิดใช้งานเฉพาะเมื่อมีคำขอปฏิบัติงานที่มีกำหนดเวลาชัดเจน และปิดทันทีเมื่องานเสร็จสิ้น เพื่อจำกัดพื้นที่การโจมตี (Attack Surface)</li>
 </ul>
+</li>
+</ol>
 <hr class="section-divider">
 
           <section class="chapter-section-anchor" id="สรุปบทที่-10">

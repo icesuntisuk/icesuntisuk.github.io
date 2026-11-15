@@ -144,24 +144,31 @@
 <h4 id="14-1-4-ระยะที่-4-post-incident-activity-กิจกรรมหลังเกิดเหตุการณ์">14.1.4 ระยะที่ 4: Post-Incident Activity (กิจกรรมหลังเกิดเหตุการณ์)</h4>
 <p>เมื่อเหตุการณ์ได้รับการควบคุมและระบบกู้คืนแล้ว องค์กรต้องดำเนินการหลังเกิดเหตุการณ์เพื่อป้องกันการเกิดซ้ำและปรับปรุงกระบวนการ</p>
 <p><strong>กิจกรรมหลังเกิดเหตุการณ์:</strong></p>
-<ol><li><strong>Lessons Learned Meeting:</strong></li></ol>
+<ol>
+<li><strong>Lessons Learned Meeting:</strong>
 <ul><li>จัดประชุมผู้เกี่ยวข้องทั้งหมดภายใน 1-2 สัปดาห์หลังเหตุการณ์</li>
 <li>วิเคราะห์ Timeline ของเหตุการณ์ทั้งหมด</li>
 <li>ระบุจุดที่ควรปรับปรุงในกระบวนการ</li></ul>
-<ol><li><strong>Incident Report:</strong></li></ol>
+</li>
+<li><strong>Incident Report:</strong>
 <ul><li>จัดทำรายงานเหตุการณ์อย่างละเอียด</li>
 <li>ครอบคลุม: สาเหตุ, ผลกระทบ, การตอบสนอง, บทเรียนที่ได้รับ, แนวทางป้องกัน</li>
 <li>ระดับรายงาน: Executive Summary (สำหรับผู้บริหาร) และ Technical Report (สำหรับทีมเทคนิค)</li></ul>
-<ol><li><strong>Process Improvement:</strong></li></ol>
+</li>
+<li><strong>Process Improvement:</strong>
 <ul><li>ปรับปรุง IR Plan ตามบทเรียนที่ได้รับ</li>
 <li>ปรับปรุง Detection Rules ใน SIEM</li>
 <li>อัปเดต Playbooks และ Runbooks</li></ul>
-<ol><li><strong>Legal and Compliance Review:</strong></li></ol>
+</li>
+<li><strong>Legal and Compliance Review:</strong>
 <ul><li>ตรวจสอบการปฏิบัติตามข้อกำหนดทางกฎหมาย (PDPA, GDPR, NIST CSF)</li>
 <li>เตรียมเอกสารสำหรับการแจ้งเตือนหน่วยงานกำกับดูแล (ถ้าจำเป็น)</li></ul>
-<ol><li><strong>Evidence Retention:</strong></li></ol>
+</li>
+<li><strong>Evidence Retention:</strong>
 <ul><li>เก็บรักษาหลักฐานตามระยะเวลาที่กฎหมายกำหนด</li>
 <li>ทำลายหลักฐานที่ไม่จำเป็นหลังจากพ้นระยะเวลา</li></ul>
+</li>
+</ol>
 <p><strong>โครงสร้างรายงานหลังเหตุการณ์ (Incident Report):</strong></p>
 <pre class="code-block"><code>หัวข้อรายงาน: [ชื่อเหตุการณ์]
 วันที่เกิดเหตุ: [วัน/เดือน/ปี]
@@ -254,15 +261,18 @@
 <tr><td>การวัดผล</td><td>คุณภาพการตัดสินใจ, การสื่อสาร</td><td>เวลาตอบสนอง, ความถูกต้องทางเทคนิค</td></tr>
 <tr><td>ความถี่</td><td>บ่อย (ทุก 1-3 เดือน)</td><td>น้อย (ทุก 6-12 เดือน)</td></tr></tbody></table></div>
 <p><strong>ขั้นตอนการจัด Tabletop Exercise:</strong></p>
-<ol><li><strong>กำหนดวัตถุประสงค์:</strong> ต้องการทดสอบอะไร — การสื่อสาร? การตัดสินใจ? เครื่องมือ?</li>
+<ol>
+<li><strong>กำหนดวัตถุประสงค์:</strong> ต้องการทดสอบอะไร — การสื่อสาร? การตัดสินใจ? เครื่องมือ?</li>
 <li><strong>ออกแบบ Scenario:</strong> สร้างสถานการณ์สมจริงที่เกี่ยวข้องกับความเสี่ยงขององค์กร</li>
 <li><strong>กำหนดผู้เข้าร่วม:</strong> IR Team, ผู้บริหาร, ตัวแทนจากแผนกต่าง ๆ</li>
-<li><strong>ดำเนินการ Exerciser:</strong></li></ol>
+<li><strong>ดำเนินการ Exerciser:</strong>
 <ul><li>ผู้ดำเนินรายการ (Facilitator) นำเสนอสถานการณ์เป็นระยะ</li>
 <li>ทีม IR ต้องตัดสินใจและอธิบายขั้นตอนที่จะดำเนินการ</li>
 <li>Facilitator อาจเพิ่มข้อมูลใหม่หรือเปลี่ยนสถานการณ์ (Twist)</li></ul>
-<ol><li><strong>เก็บข้อมูลและวัดผล:</strong> จดบันทึกการตัดสินใจ, เวลา, ปัญหาที่พบ</li>
-<li><strong>สรุปผลและปรับปรุง:</strong> จัดทำรายงาน After-Action Review</li></ol>
+</li>
+<li><strong>เก็บข้อมูลและวัดผล:</strong> จดบันทึกการตัดสินใจ, เวลา, ปัญหาที่พบ</li>
+<li><strong>สรุปผลและปรับปรุง:</strong> จัดทำรายงาน After-Action Review</li>
+</ol>
 <p><strong>ตัวอย่าง Scenario สำหรับ Tabletop Exercise:</strong></p>
 <ul><li><strong>Ransomware Attack:</strong> พนักงานได้รับ Email แนบไฟล์แล้วเปิด ต่อมาพบว่าข้อมูลใน Server สำคัญถูกเข้ารหัส</li>
 <li><strong>Data Breach:</strong> ทีม SOC ตรวจพบการส่งข้อมูลปริมาณมากออกนอกเครือข่ายไปยัง IP ในต่างประเทศ</li>
@@ -398,25 +408,31 @@ timesketch_importer.py timeline.csv my-sketch</code></pre>
 <div class="table-wrap"><table><thead><tr><th>แนวทาง</th><th>คำอธิบาย</th><th>เครื่องมือ</th></tr></thead><tbody><tr><td>**Static Analysis**</td><td>วิเคราะห์ Malware โดยไม่ต้องรันโปรแกรม — ดู Metadata, Strings, Code Structure</td><td>VirusTotal, Detect It Easy (DiE), PE Studio, Strings, IDA Pro, Ghidra</td></tr>
 <tr><td>**Dynamic Analysis**</td><td>รัน Malware ใน Sandbox และสังเกตพฤติกรรม</td><td>Cuckoo Sandbox, CAPE Sandbox, Any.Run, Joe Sandbox, Procmon, Wireshark, INetSim</td></tr></tbody></table></div>
 <p><strong>ขั้นตอนการวิเคราะห์ Malware เบื้องต้น (Basic Static Analysis):</strong></p>
-<ol><li><strong>ตรวจสอบไฟล์บน VirusTotal:</strong></li></ol>
+<ol>
+<li><strong>ตรวจสอบไฟล์บน VirusTotal:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # ส่ง Hash ไปตรวจสอบ VirusTotal
    sha256sum suspicious_file.exe
    # นำ Hash ไปค้นหาใน virustotal.com</code></pre>
-<ol><li><strong>ตรวจสอบ Metadata ของไฟล์:</strong></li></ol>
+</li>
+<li><strong>ตรวจสอบ Metadata ของไฟล์:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # ใช้ Detect It Easy (DiE) เพื่อตรวจสอบ Packer
    diec suspicious_file.exe
    
    # ตรวจสอบ Strings ที่น่าสนใจ
    strings suspicious_file.exe | grep -i "http\|https\|api\|url\|\.exe\|\.dll"</code></pre>
-<ol><li><strong>ตรวจสอบส่วนประกอบของ PE File (Windows):</strong></li></ol>
+</li>
+<li><strong>ตรวจสอบส่วนประกอบของ PE File (Windows):</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # ดู Import และ Export Functions
    peview suspicious_file.exe
    
    # ดู Section Headers
    objdump -x suspicious_file.exe</code></pre>
-<ol><li><strong>ตรวจสอบ Network Indicators:</strong></li></ol>
+</li>
+<li><strong>ตรวจสอบ Network Indicators:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # ดู Domain และ IP ที่ Hardcoded
    strings suspicious_file.exe | grep -E "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$"</code></pre>
+</li>
+</ol>
 <p><strong>ข้อควรระวังในการวิเคราะห์ Malware:</strong></p>
 <div class="info-box info"><span class="icon">📌</span><div><p>การวิเคราะห์ Malware ต้องทำในสภาพแวดล้อมที่แยกเด็ดขาด (Air-gapped Sandbox) เท่านั้น ห้ามเชื่อมต่อกับระบบจริงหรือ Network ขององค์กรโดยเด็ดขาด Malware อาจมีกลไกตรวจจับ Sandbox และอาจพยายามแพร่กระจายหรือทำลายระบบหากรู้ตัวว่าถูกวิเคราะห์</p></div></div>
 <h4 id="14-3-5-forensic-readiness">14.3.5 Forensic Readiness</h4>
@@ -642,11 +658,13 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
 <li>Internal File Server (NAS) — เก็บเอกสารภายใน</li>
 <li>Email System (Microsoft 365)</li></ul>
 <p><strong>ขั้นตอน:</strong></p>
-<ol><li><strong>กำหนดนโยบายการจัดการเหตุการณ์ (Incident Response Policy):</strong></li></ol>
+<ol>
+<li><strong>กำหนดนโยบายการจัดการเหตุการณ์ (Incident Response Policy):</strong>
 <ul><li>กำหนดวัตถุประสงค์ของ IRP</li>
 <li>กำหนดขอบเขตของเหตุการณ์ที่ครอบคลุม</li>
 <li>กำหนดหลักการสำคัญ (เช่น การแจ้งลูกค้าภายใน 72 ชม. ตาม PDPA หากเป็น Data Breach ที่มีความเสี่ยงสูง)</li></ul>
-<ol><li><strong>กำหนดบทบาทและหน้าที่ของทีม IR:</strong></li></ol>
+</li>
+<li><strong>กำหนดบทบาทและหน้าที่ของทีม IR:</strong>
 <ul><li>พิจารณาบุคลากรที่มีอยู่ในบริษัทและกำหนดบทบาทให้เหมาะสม</li>
 <li>ระบุบทบาทหลักและบทบาทสำรอง (Backup)</li></ul>
 <div class="table-wrap"><table><thead><tr><th>บทบาท</th><th>ชื่อพนักงาน (สมมติ)</th><th>หน้าที่</th><th>บทบาทสำรอง</th></tr></thead><tbody><tr><td>Incident Manager</td><td>[กำหนดเอง]</td><td>...</td><td>...</td></tr>
@@ -654,24 +672,29 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
 <tr><td>Communications Lead</td><td>[กำหนดเอง]</td><td>...</td><td>...</td></tr>
 <tr><td>Legal/Compliance</td><td>[กำหนดเอง]</td><td>...</td><td>...</td></tr>
 <tr><td>System Admin</td><td>[กำหนดเอง]</td><td>...</td><td>...</td></tr></tbody></table></div>
-<ol><li><strong>สร้าง Communication Plan:</strong></li></ol>
+</li>
+<li><strong>สร้าง Communication Plan:</strong>
 <ul><li>กำหนดช่องทางการสื่อสารระหว่างทีม IR ในระหว่างเกิดเหตุการณ์</li>
 <li>กำหนดช่องทางและขั้นตอนการแจ้งผู้บริหาร</li>
 <li>กำหนดขั้นตอนการแจ้งลูกค้า (ถ้าจำเป็น)</li>
 <li>กำหนดขั้นตอนการแจ้งหน่วยงานกำกับดูแล (PDPA — ภายใน 72 ชม.)</li>
 <li>กำหนดผู้ที่จะเป็นโฆษกขององค์กร (Spokesperson)</li></ul>
-<ol><li><strong>กำหนด Escalation Paths:</strong></li></ol>
+</li>
+<li><strong>กำหนด Escalation Paths:</strong>
 <ul><li>กำหนดเกณฑ์การส่งต่อเหตุการณ์ตามระดับความรุนแรง</li>
 <li>กำหนดเส้นทางการส่งต่อ (จาก Tier 1 → Tier 2 → ผู้บริหาร)</li></ul>
 <div class="table-wrap"><table><thead><tr><th>ระดับ</th><th>เกณฑ์</th><th>ผู้รับผิดชอบ</th><th>ขั้นตอนการส่งต่อ</th></tr></thead><tbody><tr><td>ระดับ 1 — ต่ำ</td><td>การสแกนพอร์ต, Phishing ที่ไม่สำเร็จ</td><td>[กำหนด]</td><td>[กำหนด]</td></tr>
 <tr><td>ระดับ 2 — ปานกลาง</td><td>Malware บนเครื่องพนักงาน, Brute Force</td><td>[กำหนด]</td><td>[กำหนด]</td></tr>
 <tr><td>ระดับ 3 — สูง</td><td>Ransomware, Data Exfiltration</td><td>[กำหนด]</td><td>[กำหนด]</td></tr>
 <tr><td>ระดับ 4 — วิกฤต</td><td>Data Breach ครั้งใหญ่, APT</td><td>[กำหนด]</td><td>[กำหนด]</td></tr></tbody></table></div>
-<ol><li><strong>จัดทำขั้นตอนการรับมือเหตุการณ์เบื้องต้นสำหรับ 3 ประเภทเหตุการณ์:</strong></li></ol>
+</li>
+<li><strong>จัดทำขั้นตอนการรับมือเหตุการณ์เบื้องต้นสำหรับ 3 ประเภทเหตุการณ์:</strong>
 <ul><li>Phishing Email</li>
 <li>Malware บนเครื่องพนักงาน</li>
 <li>Web Application ถูกโจมตี (Defacement หรือ Data Breach)</li></ul>
 <p>   แต่ละขั้นตอนต้องครอบคลุม: Detection → Triage → Containment → Eradication → Recovery → Post-Incident</p>
+</li>
+</ol>
 <p><strong>สิ่งที่ต้องส่ง:</strong></p>
 <ol><li>IRP ฉบับสมบูรณ์ ครอบคลุมองค์ประกอบทั้ง 5 ข้อข้างต้น ในรูปแบบเอกสาร (Markdown, Word หรือ PDF)</li>
 <li>ตารางบทบาทและหน้าที่ของทีม IR</li>
@@ -684,35 +707,44 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
 <p><strong>สถานการณ์จำลอง:</strong></p>
 <div class="info-box info"><span class="icon">📌</span><div><p>วันจันทร์ เวลา 09:30 น. ทีม SOC (หรือพนักงานในบทบาท Tech Lead) ได้รับแจ้งเตือนจาก SIEM ว่ามีการดาวน์โหลดข้อมูลจำนวนมาก (ประมาณ 50 GB) จาก Database Server ไปยัง IP Address ในต่างประเทศ (198.51.100.25) ในช่วงเวลา 03:00–04:00 น. ของคืนที่ผ่านมา การดาวน์โหลดเกิดขึ้นผ่าน VPN Connection ของพนักงานคนหนึ่งที่ลาออกไปเมื่อ 2 สัปดาห์ก่อน — แต่บัญชีของผู้ใช้งานนี้ยังไม่ได้ถูกปิด (ยัง Active อยู่)</p></div></div>
 <p><strong>ขั้นตอน:</strong></p>
-<ol><li><strong>Triage (5 นาที):</strong></li></ol>
+<ol>
+<li><strong>Triage (5 นาที):</strong>
 <ul><li>ฐานะ Tier 1 Analyst นักศึกษาต้องตัดสินใจว่า Alert นี้มีความรุนแรงระดับใด</li>
 <li>Alert นี้เป็น True Positive หรือ False Positive</li>
 <li>ควรส่งต่อไปยัง Tier ใด</li></ul>
-<ol><li><strong>Initial Response (5 นาที):</strong></li></ol>
+</li>
+<li><strong>Initial Response (5 นาที):</strong>
 <ul><li>แจ้งผู้เกี่ยวข้องตาม Communication Plan ที่กำหนดใน Lab 14.1</li>
 <li>ตัดสินใจดำเนินการควบคุมเบื้องต้น (Containment) — ต้องทำอะไรบ้าง?</li>
 <li>ตัวอย่างการตัดสินใจ: Disable VPN Account, Block IP ที่ Firewall, หรืออื่น ๆ</li></ul>
-<ol><li><strong>Investigation (10 นาที):</strong></li></ol>
+</li>
+<li><strong>Investigation (10 นาที):</strong>
 <ul><li>วิเคราะห์ว่าข้อมูลใดบ้างที่อาจถูกรั่วไหล</li>
 <li>ตรวจสอบ Log เพิ่มเติม: มีการเข้าถึง Database Server จากที่ไหนอีกบ้าง</li>
 <li>ตรวจสอบว่าเป็น Insider Threat หรือ External Attack</li>
 <li>ต้องเก็บหลักฐานอะไรบ้าง</li></ul>
-<ol><li><strong>Containment & Eradication (5 นาที):</strong></li></ol>
+</li>
+<li><strong>Containment & Eradication (5 นาที):</strong>
 <ul><li>วางแผนการควบคุมระยะสั้นและระยะยาว</li>
 <li>วางแผนการกำจัดภัยคุกคาม</li>
 <li>พิจารณาว่าต้องปิดระบบ Database Server หรือไม่</li></ul>
-<ol><li><strong>Communication (5 นาที):</strong></li></ol>
+</li>
+<li><strong>Communication (5 นาที):</strong>
 <ul><li>ใครต้องได้รับแจ้งเหตุการณ์นี้บ้าง (ภายใน: ผู้บริหาร, ทีมกฎหมาย, HR / ภายนอก: ลูกค้า, ตำรวจ, PDPA)</li>
 <li>ต้องแจ้งภายในกี่ชั่วโมง</li>
 <li>ข้อความที่ใช้แจ้งต้องมีเนื้อหาอะไรบ้าง</li></ul>
-<ol><li><strong>Post-Incident (5 นาที):</strong></li></ol>
+</li>
+<li><strong>Post-Incident (5 นาที):</strong>
 <ul><li>วางแผน Lessons Learned — บทเรียนจากเหตุการณ์นี้คืออะไร</li>
 <li>กำหนด Action Items เพื่อป้องกันการเกิดซ้ำ (เช่น ปรับปรุงกระบวนการ Offboarding)</li>
 <li>กำหนด Timeline ในการดำเนินการ</li></ul>
-<ol><li><strong>Facilitator อาจเพิ่ม Twist:</strong></li></ol>
+</li>
+<li><strong>Facilitator อาจเพิ่ม Twist:</strong>
 <ul><li>Twist 1: พบว่า บัญชี VPN ที่ถูกใช้เป็นของพนักงานที่ลาออก แต่พนักงานคนนี้ทำงานที่คู่แข่งแล้ว</li>
 <li>Twist 2: ข้อมูลที่รั่วไหลมีข้อมูลบัตรเครดิตของลูกค้า 5,000 รายการ</li>
 <li>Twist 3: ผู้บริหารต้องการไม่ให้แจ้งเหตุการณ์นี้ต่อหน่วยงานกำกับดูแล</li></ul>
+</li>
+</ol>
 <p><strong>สิ่งที่ต้องส่ง:</strong></p>
 <ol><li>บันทึกการตัดสินใจในแต่ละขั้นตอน พร้อมเหตุผลประกอบ</li>
 <li>Timeline ของเหตุการณ์ตามที่ทีมสืบสวนพบ</li>
@@ -811,10 +843,12 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
    Account Name: administrator
    Source Network Address: 203.0.113.50
    Time: 2026-05-10 08:50:00</code></pre>
-<ol><li><strong>บันทึกไฟล์ Log ทั้ง 3 ไฟล์ลงใน Directory สำหรับทำงาน:</strong></li></ol>
+<ol>
+<li><strong>บันทึกไฟล์ Log ทั้ง 3 ไฟล์ลงใน Directory สำหรับทำงาน:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   mkdir -p ~/lab-14.3-logs
    cd ~/lab-14.3-logs</code></pre>
-<ol><li><strong>วิเคราะห์ Apache Access Log:</strong></li></ol>
+</li>
+<li><strong>วิเคราะห์ Apache Access Log:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # หา IP ที่มี Request มากที่สุด
    awk '{print $1}' access.log | sort | uniq -c | sort -rn
    
@@ -829,7 +863,8 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
    
    # หา Brute Force Login Attempt (POST ไปยัง wp-login.php)
    grep "POST /wp-login" access.log | awk '{print $1}' | sort | uniq -c</code></pre>
-<ol><li><strong>วิเคราะห์ Syslog Authentication Log:</strong></li></ol>
+</li>
+<li><strong>วิเคราะห์ Syslog Authentication Log:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # หา Failed Password Attempts
    grep "Failed password" auth.log | awk '{print $(NF-3)}' | sort | uniq -c | sort -rn
    
@@ -841,7 +876,8 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
    
    # สร้าง Timeline ของกิจกรรมที่น่าสงสัย
    grep -E "Failed|Accepted|sudo" auth.log</code></pre>
-<ol><li><strong>วิเคราะห์ Windows Security Event Log:</strong></li></ol>
+</li>
+<li><strong>วิเคราะห์ Windows Security Event Log:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # หา Logon Events
    grep "EventID: 4624\|EventID: 4625" security.log
    
@@ -853,10 +889,13 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
    
    # หา File Share Access
    grep "EventID: 5140" security.log</code></pre>
-<ol><li><strong>สร้าง Timeline และระบุ IoC:</strong></li></ol>
+</li>
+<li><strong>สร้าง Timeline และระบุ IoC:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # รวม Log จากทุกแหล่งและเรียงตามเวลา
    # สร้างไฟล์ Timeline
    # รวบรวม Indicators of Compromise จาก Log</code></pre>
+</li>
+</ol>
 <p><strong>ตัวอย่าง Indicators of Compromise (IoC) ที่ควรระบุได้จาก Log Sample:</strong></p>
 <div class="table-wrap"><table><thead><tr><th>IoC</th><th>ประเภท</th><th>รายละเอียด</th><th>แหล่งที่พบ</th></tr></thead><tbody><tr><td>203.0.113.50</td><td>IP Address</td><td>IP ต้นทางที่น่าสงสัย (Brute Force SSH + WordPress Admin)</td><td>access.log, auth.log</td></tr>
 <tr><td>198.51.100.25</td><td>IP Address</td><td>IP ปลายทางที่สงสัยว่าส่งข้อมูล (Data Exfiltration)</td><td>auth.log</td></tr>
@@ -876,7 +915,8 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
 <p><strong>เวลาที่ใช้:</strong> 30–40 นาที</p>
 <p><strong>เครื่องมือ:</strong> Autopsy, Sleuth Kit, Disk Image ตัวอย่าง (สามารถใช้ NIST Forensic Data Sets หรือสร้าง Disk Image เล็ก ๆ เอง)</p>
 <p><strong>ขั้นตอน:</strong></p>
-<ol><li><strong>ติดตั้งเครื่องมือ:</strong></li></ol>
+<ol>
+<li><strong>ติดตั้งเครื่องมือ:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # ติดตั้ง Sleuth Kit บน macOS
    brew install sleuthkit
    
@@ -890,7 +930,8 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
    # ตรวจสอบการติดตั้ง
    fls -V
    autopsy --version</code></pre>
-<ol><li><strong>เตรียม Disk Image ตัวอย่าง:</strong></li></ol>
+</li>
+<li><strong>เตรียม Disk Image ตัวอย่าง:</strong>
 <p>   สร้าง Disk Image ขนาดเล็กสำหรับฝึกวิเคราะห์:</p>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # สร้าง Disk Image จำลองขนาด 50 MB
    dd if=/dev/zero of=evidence.dd bs=1M count=50
@@ -912,7 +953,8 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
    # หรือใช้คำสั่งเพื่อเพิ่ม filesystem
    # (ในสภาพแวดล้อมจริง ควรใช้ Image ที่มีข้อมูลจริง)</code></pre>
 <div class="info-box info"><span class="icon">📌</span><div><p>**หมายเหตุ:** ในห้องปฏิบัติการจริง ให้ใช้ Disk Image ตัวอย่างที่อาจารย์จัดเตรียมให้ หรือใช้ NIST Forensic Data Sets (https://www.cfreds.nist.gov/) หรือใช้ Image จาก DFIR Training Resources</p></div></div>
-<ol><li><strong>ใช้ Sleuth Kit ในการตรวจสอบ Disk Image:</strong></li></ol>
+</li>
+<li><strong>ใช้ Sleuth Kit ในการตรวจสอบ Disk Image:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # ดูข้อมูลของ Disk Image
    mmls evidence.dd
    
@@ -930,7 +972,8 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
    
    # ดู Timeline ของ File System
    mactime -b bodyfile.txt &gt; timeline.csv</code></pre>
-<ol><li><strong>ใช้ Autopsy GUI สำหรับการวิเคราะห์:</strong></li></ol>
+</li>
+<li><strong>ใช้ Autopsy GUI สำหรับการวิเคราะห์:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # เริ่ม Autopsy (GUI Mode)
    autopsy</code></pre>
 <p>   ใน Autopsy GUI:</p>
@@ -946,7 +989,8 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
 <li><strong>File Type View:</strong> ดูไฟล์แยกตามประเภท</li>
 <li><strong>Keyword Search:</strong> ค้นหาคำสำคัญ (Email, IP Address, Credit Card)</li>
 <li><strong>Hash Database:</strong> เปรียบเทียบกับ Known Malware Hashes</li></ul>
-<ol><li><strong>ค้นหาหลักฐานด้วยเทคนิคพื้นฐาน:</strong></li></ol>
+</li>
+<li><strong>ค้นหาหลักฐานด้วยเทคนิคพื้นฐาน:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # ค้นหา Strings ใน Disk Image
    strings evidence.dd | grep -i "password\|secret\|token\|admin"
    
@@ -961,7 +1005,8 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
    
    # คำนวณ Hash
    sha256sum evidence.dd</code></pre>
-<ol><li><strong>สร้าง Body File สำหรับ Timeline Analysis:</strong></li></ol>
+</li>
+<li><strong>สร้าง Body File สำหรับ Timeline Analysis:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # สร้าง Body File จาก Disk Image
    fls -f ext4 -m / -r evidence.dd &gt; bodyfile.txt
    
@@ -970,7 +1015,8 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
    
    # ดู Timeline
    less timeline.csv</code></pre>
-<ol><li><strong>บันทึก Chain of Custody:</strong></li></ol>
+</li>
+<li><strong>บันทึก Chain of Custody:</strong>
 <div style="font-size:.7rem;color:#94a3b8;padding:.25rem .5rem;background:#0f172a;border-radius:4px 4px 0 0;margin-bottom:0">bash</div><pre class="code-block"><code>   # คำนวณ Hash ก่อนทำการวิเคราะห์
    sha256sum evidence.dd &gt; evidence.dd.sha256
    
@@ -983,6 +1029,8 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
    echo "Analyst: [ชื่อนักศึกษา]" &gt;&gt; chain_of_custody.txt
    echo "Evidence: evidence.dd" &gt;&gt; chain_of_custody.txt
    echo "SHA-256: $(cat evidence.dd.sha256)" &gt;&gt; chain_of_custody.txt</code></pre>
+</li>
+</ol>
 <p><strong>สิ่งที่ต้องส่ง:</strong></p>
 <ol><li>ภาพ Screenshot ของ Autopsy Interface ที่แสดงการวิเคราะห์ Disk Image</li>
 <li>รายการ Command ที่ใช้ใน Sleuth Kit พร้อม Output ที่ได้</li>
@@ -991,11 +1039,13 @@ False Positive Rate = (จำนวน False Positive Alert) / (จำนวน 
 <li>Chain of Custody Form ที่สมบูรณ์สำหรับหลักฐาน evidence.dd</li></ol>
 <hr>
 <h2 id="คำถามท้ายบท">คำถามท้ายบท</h2>
-<ol><li>NIST SP 800-61 แบ่ง Incident Response Lifecycle ออกเป็นกี่ระยะ อะไรบ้าง จงอธิบายแต่ละระยะพร้อมยกตัวอย่างกิจกรรมที่ต้องทำในแต่ละระยะ</li></ol>
-<ol><li>Tabletop Exercise คืออะไร และแตกต่างจากการซ้อมจริง (Live Exercise) อย่างไร จงยกตัวอย่าง Scenario ที่เหมาะสมสำหรับ Tabletop Exercise ในองค์กรพัฒนาซอฟต์แวร์</li></ol>
-<ol><li>Chain of Custody มีความสำคัญอย่างไรในการเก็บหลักฐานดิจิทัล จงอธิบายองค์ประกอบสำคัญของ Chain of Custody Form และผลกระทบหาก Chain of Custody ไม่สมบูรณ์</li></ol>
-<ol><li>SIEM และ SOAR แตกต่างกันอย่างไร จงเปรียบเทียบหน้าที่การทำงาน ประเภทของเอาท์พุต และความสัมพันธ์ระหว่าง SIEM และ SOAR ในการดำเนินงานของ SOC</li></ol>
-<ol><li>MTTR และ MTTD คืออะไร และใช้ในการวัดประสิทธิภาพ SOC อย่างไร จงอธิบายความหมาย วิธีการคำนวณ ค่าเป้าหมายที่เหมาะสม และแนวทางในการปรับปรุง Metrics ทั้งสอง</li></ol>
+<ol>
+<li>NIST SP 800-61 แบ่ง Incident Response Lifecycle ออกเป็นกี่ระยะ อะไรบ้าง จงอธิบายแต่ละระยะพร้อมยกตัวอย่างกิจกรรมที่ต้องทำในแต่ละระยะ</li>
+<li>Tabletop Exercise คืออะไร และแตกต่างจากการซ้อมจริง (Live Exercise) อย่างไร จงยกตัวอย่าง Scenario ที่เหมาะสมสำหรับ Tabletop Exercise ในองค์กรพัฒนาซอฟต์แวร์</li>
+<li>Chain of Custody มีความสำคัญอย่างไรในการเก็บหลักฐานดิจิทัล จงอธิบายองค์ประกอบสำคัญของ Chain of Custody Form และผลกระทบหาก Chain of Custody ไม่สมบูรณ์</li>
+<li>SIEM และ SOAR แตกต่างกันอย่างไร จงเปรียบเทียบหน้าที่การทำงาน ประเภทของเอาท์พุต และความสัมพันธ์ระหว่าง SIEM และ SOAR ในการดำเนินงานของ SOC</li>
+<li>MTTR และ MTTD คืออะไร และใช้ในการวัดประสิทธิภาพ SOC อย่างไร จงอธิบายความหมาย วิธีการคำนวณ ค่าเป้าหมายที่เหมาะสม และแนวทางในการปรับปรุง Metrics ทั้งสอง</li>
+</ol>
 <hr>
 <h2 id="สรุปท้ายบท">สรุปท้ายบท</h2>
 <p>Incident Response และ Security Operations เป็นกระบวนการที่จำเป็นในการรักษาความปลอดภัยขององค์กรในยุคที่ภัยคุกคามทางไซเบอร์มีความซับซ้อนและเกิดขึ้นอย่างต่อเนื่อง NIST SP 800-61 แบ่งวงจรการจัดการเหตุการณ์ออกเป็น 4 ระยะ ได้แก่ Preparation, Detection & Analysis, Containment/Eradication/Recovery และ Post-Incident Activity แต่ละระยะมีกิจกรรมและเครื่องมือที่แตกต่างกัน ตั้งแต่การเตรียมความพร้อม การตรวจจับและวิเคราะห์เหตุการณ์ การควบคุมและกำจัดภัยคุกคาม ไปจนถึงการนำบทเรียนที่ได้รับไปปรับปรุงกระบวนการ</p>

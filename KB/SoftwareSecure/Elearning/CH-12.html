@@ -783,53 +783,36 @@ server {
 
 <ol>
   <li>เปิดเบราว์เซอร์ไปที่ <code>https://www.ssllabs.com/ssltest/</code></li>
-</ol>
-
-<ol>
   <li>ป้อนชื่อโดเมนที่อาจารย์กำหนด (หรือใช้ <code>https://www.ssllabs.com/ssltest/analyze.html?d=example.com</code>)</li>
-</ol>
-
-<ol>
   <li>รอให้การทดสอบเสร็จสมบูรณ์ (ประมาณ 2-5 นาที)</li>
-</ol>
-
-<ol>
-  <li>ตรวจสอบผลการทดสอบในหมวดหมู่ต่อไปนี้:</li>
-</ol>
+  <li>ตรวจสอบผลการทดสอบในหมวดหมู่ต่อไปนี้:
 <p>   - <strong>Overall Rating:</strong> คะแนน A, A+, B, C, D, F</p>
 <p>   - <strong>Certificate:</strong> ตรวจสอบ Certificate Chain, ความถูกต้องของ Certificate</p>
 <p>   - <strong>Protocol Support:</strong> TLS 1.3, TLS 1.2, TLS 1.1, TLS 1.0</p>
 <p>   - <strong>Cipher Suites:</strong> ตรวจสอบ Cipher ที่รองรับและลำดับความสำคัญ</p>
 <p>   - <strong>Key Exchange:</strong> ประเภทของ Key Exchange (ECDHE, DHE, RSA)</p>
 <p>   - <strong>HSTS:</strong> มีการตั้งค่า HSTS หรือไม่</p>
-
-<ol>
-  <li>ติดตั้ง testssl.sh บนเครื่องของนักศึกษา:</li>
-</ol>
+</li>
+  <li>ติดตั้ง testssl.sh บนเครื่องของนักศึกษา:
 <p>   ```bash</p>
 <p>   # macOS หรือ Linux</p>
 <p>   git clone --depth 1 https://github.com/testssl/testssl.sh.git</p>
 <p>   cd testssl.sh</p>
 <p>   ```</p>
-
-<ol>
-  <li>รัน testssl.sh กับเว็บไซต์ตัวอย่าง:</li>
-</ol>
+</li>
+  <li>รัน testssl.sh กับเว็บไซต์ตัวอย่าง:
 <p>   ```bash</p>
 <p>   ./testssl.sh https://example.com</p>
 <p>   ```</p>
-
-<ol>
+</li>
   <li>เปรียบเทียบผลลัพธ์ระหว่าง SSL Labs และ testssl.sh</li>
-</ol>
-
-<ol>
-  <li>วิเคราะห์สิ่งที่ควรปรับปรุง:</li>
-</ol>
+  <li>วิเคราะห์สิ่งที่ควรปรับปรุง:
 <p>   - TLS เวอร์ชันที่ต่ำกว่า 1.2 ควรปิด</p>
 <p>   - Cipher Suite ที่ไม่ปลอดภัยควรลบออก</p>
 <p>   - ควรเพิ่ม HSTS Header</p>
 <p>   - ควรเปิด OCSP Stapling</p>
+</li>
+</ol>
 
 <p><strong>สิ่งที่ต้องส่ง:</strong></p>
 
@@ -853,16 +836,13 @@ server {
 <p><strong>ขั้นตอน:</strong></p>
 
 <ol>
-  <li>รัน Web Application ที่มีช่องโหว่ด้วย Docker:</li>
-</ol>
+  <li>รัน Web Application ที่มีช่องโหว่ด้วย Docker:
 <p>   ```bash</p>
 <p>   # รัน DVWA (Damn Vulnerable Web Application)</p>
 <p>   docker run --rm -d -p 8080:80 vulnerables/web-dvwa</p>
 <p>   ```</p>
-
-<ol>
-  <li>รัน ModSecurity WAF ด้วย OWASP CRS:</li>
-</ol>
+</li>
+  <li>รัน ModSecurity WAF ด้วย OWASP CRS:
 <p>   ```bash</p>
 <p>   docker run --rm -d -p 8081:80 \</p>
 <p>     -e PARANOIA=1 \</p>
@@ -871,40 +851,34 @@ server {
 <p>     --name modsec \</p>
 <p>     coreruleset/modsecurity:latest</p>
 <p>   ```</p>
-
-<ol>
-  <li>ทดสอบการโจมตี SQL Injection โดยไม่ผ่าน WAF (directly ไปที่ DVWA):</li>
-</ol>
+</li>
+  <li>ทดสอบการโจมตี SQL Injection โดยไม่ผ่าน WAF (directly ไปที่ DVWA):
 <p>   ```bash</p>
 <p>   # ทดสอบ SQL Injection ที่ DVWA โดยตรง (พอร์ต 8080)</p>
 <p>   curl "http://localhost:8080/vulnerabilities/sqli/?id=1' UNION SELECT user,password FROM users--&amp;Submit=Submit"</p>
 <p>   ```</p>
-
-<ol>
-  <li>ทดสอบการโจมตี SQL Injection ผ่าน WAF (พอร์ต 8081):</li>
-</ol>
+</li>
+  <li>ทดสอบการโจมตี SQL Injection ผ่าน WAF (พอร์ต 8081):
 <p>   ```bash</p>
 <p>   # ทดสอบ SQL Injection ผ่าน WAF — ควรถูกบล็อก</p>
 <p>   curl -v "http://localhost:8081/vulnerabilities/sqli/?id=1' OR '1'='1"</p>
 
 <p>   # สังเกต HTTP Status Code 403 (Forbidden) หรือ 406 (Not Acceptable)</p>
 <p>   ```</p>
-
-<ol>
-  <li>ทดสอบการโจมตี XSS ผ่าน WAF:</li>
-</ol>
+</li>
+  <li>ทดสอบการโจมตี XSS ผ่าน WAF:
 <p>   ```bash</p>
 <p>   # ทดสอบ XSS — ควรถูกบล็อกโดย ModSecurity</p>
 <p>   curl -v "http://localhost:8081/vulnerabilities/xss_r/?name=&lt;script&gt;alert(1)&lt;/script&gt;"</p>
 <p>   ```</p>
-
-<ol>
-  <li>ตรวจสอบ ModSecurity Audit Log:</li>
-</ol>
+</li>
+  <li>ตรวจสอบ ModSecurity Audit Log:
 <p>   ```bash</p>
 <p>   docker exec modsec cat /var/log/modsec_audit.log</p>
 <p>   # ดูรายละเอียดของ Rule ที่ถูก Trigger</p>
 <p>   ```</p>
+</li>
+</ol>
 
 <p><strong>สิ่งที่ต้องส่ง:</strong></p>
 
@@ -928,8 +902,7 @@ server {
 <p><strong>ขั้นตอน:</strong></p>
 
 <ol>
-  <li>ติดตั้ง Wireshark:</li>
-</ol>
+  <li>ติดตั้ง Wireshark:
 <p>   ```bash</p>
 <p>   # macOS</p>
 <p>   brew install --cask wireshark</p>
@@ -937,25 +910,15 @@ server {
 <p>   # Linux</p>
 <p>   sudo apt-get install wireshark</p>
 <p>   ```</p>
-
-<ol>
-  <li>เริ่มจับ Packet บน Network Interface ที่ใช้งาน (เช่น en0 สำหรับ Wi-Fi):</li>
-</ol>
+</li>
+  <li>เริ่มจับ Packet บน Network Interface ที่ใช้งาน (เช่น en0 สำหรับ Wi-Fi):
 <p>   - เปิด Wireshark</p>
 <p>   - เลือก Network Interface (en0, eth0, หรือ Wi-Fi)</p>
 <p>   - คลิก Start</p>
-
-<ol>
+</li>
   <li>เปิดเว็บเบราว์เซอร์และไปที่ <code>https://example.com</code></li>
-</ol>
-
-<ol>
   <li>หยุดการจับ Packet ใน Wireshark</li>
-</ol>
-
-<ol>
-  <li>วิเคราะห์ Traffic ด้วย Filter ต่าง ๆ:</li>
-</ol>
+  <li>วิเคราะห์ Traffic ด้วย Filter ต่าง ๆ:
 <p>   ```wireshark</p>
 <p>   # กรองเฉพาะ DNS Query</p>
 <p>   dns</p>
@@ -971,21 +934,19 @@ server {
 <p>   tls.handshake.type == 11  # Certificate - ดู Certificate Chain</p>
 <p>   tls.handshake.type == 14  # ServerHello Done</p>
 <p>   ```</p>
-
-<ol>
-  <li>วิเคราะห์ TLS Handshake โดยละเอียด:</li>
-</ol>
+</li>
+  <li>วิเคราะห์ TLS Handshake โดยละเอียด:
 <p>   - ค้นหา ClientHello → ดู TLS Version, Cipher Suites ที่ Client รองรับ</p>
 <p>   - ค้นหา ServerHello → ดู TLS Version และ Cipher Suite ที่ Server เลือก</p>
 <p>   - ค้นหา Certificate → ดู Certificate Chain และ Server Name</p>
-
-<ol>
-  <li>วิเคราะห์ HTTP/HTTPS Traffic:</li>
-</ol>
+</li>
+  <li>วิเคราะห์ HTTP/HTTPS Traffic:
 <p>   ```wireshark</p>
 <p>   # ใช้ Follow TCP Stream เพื่อดูเนื้อหาของ HTTP</p>
 <p>   # คลิกขวาที่ Packet HTTP → Follow → TCP Stream</p>
 <p>   ```</p>
+</li>
+</ol>
 
 <p><strong>สิ่งที่ต้องส่ง:</strong></p>
 
@@ -1010,67 +971,50 @@ server {
 <p><strong>ขั้นตอน (ส่วนที่ 1 — iptables บน Linux VM):</strong></p>
 
 <ol>
-  <li>ตรวจสอบสถานะของ iptables:</li>
-</ol>
+  <li>ตรวจสอบสถานะของ iptables:
 <p>   ```bash</p>
 <p>   sudo iptables -L -n -v</p>
 <p>   ```</p>
-
-<ol>
-  <li>ตั้งค่า Default Policy เป็น DROP:</li>
-</ol>
+</li>
+  <li>ตั้งค่า Default Policy เป็น DROP:
 <p>   ```bash</p>
 <p>   sudo iptables -P INPUT DROP</p>
 <p>   sudo iptables -P FORWARD DROP</p>
 <p>   sudo iptables -P OUTPUT ACCEPT</p>
 <p>   ```</p>
-
-<ol>
-  <li>อนุญาต Local Loopback Traffic:</li>
-</ol>
+</li>
+  <li>อนุญาต Local Loopback Traffic:
 <p>   ```bash</p>
 <p>   sudo iptables -A INPUT -i lo -j ACCEPT</p>
 <p>   ```</p>
-
-<ol>
-  <li>อนุญาต Established Connections (Stateful Firewall):</li>
-</ol>
+</li>
+  <li>อนุญาต Established Connections (Stateful Firewall):
 <p>   ```bash</p>
 <p>   sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT</p>
 <p>   ```</p>
-
-<ol>
-  <li>อนุญาต SSH จาก IP ของผู้ดูแล:</li>
-</ol>
+</li>
+  <li>อนุญาต SSH จาก IP ของผู้ดูแล:
 <p>   ```bash</p>
 <p>   sudo iptables -A INPUT -p tcp --dport 22 -s 203.0.113.0/24 -j ACCEPT</p>
 <p>   ```</p>
-
-<ol>
-  <li>อนุญาต HTTP และ HTTPS จากทุกที่:</li>
-</ol>
+</li>
+  <li>อนุญาต HTTP และ HTTPS จากทุกที่:
 <p>   ```bash</p>
 <p>   sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT</p>
 <p>   sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT</p>
 <p>   ```</p>
-
-<ol>
-  <li>อนุญาต ICMP (Ping) เพื่อการตรวจสอบ:</li>
-</ol>
+</li>
+  <li>อนุญาต ICMP (Ping) เพื่อการตรวจสอบ:
 <p>   ```bash</p>
 <p>   sudo iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT</p>
 <p>   ```</p>
-
-<ol>
-  <li>ตรวจสอบกฎที่ตั้งค่า:</li>
-</ol>
+</li>
+  <li>ตรวจสอบกฎที่ตั้งค่า:
 <p>   ```bash</p>
 <p>   sudo iptables -L -n -v --line-numbers</p>
 <p>   ```</p>
-
-<ol>
-  <li>ทดสอบการเชื่อมต่อ:</li>
-</ol>
+</li>
+  <li>ทดสอบการเชื่อมต่อ:
 <p>   ```bash</p>
 <p>   # ทดสอบจากเครื่องอื่น — ควรเชื่อมต่อ HTTPS ได้</p>
 <p>   curl https://&lt;IP ของ VM&gt;</p>
@@ -1078,19 +1022,18 @@ server {
 <p>   # ทดสอบ Port อื่น — ควรถูกปฏิเสธ</p>
 <p>   curl http://&lt;IP ของ VM&gt;:3306  # MySQL Port — ควรถูกบล็อก</p>
 <p>   ```</p>
-
-<ol>
-  <li>บันทึกกฎ iptables เพื่อให้คงอยู่หลัง Reboot:</li>
-</ol>
+</li>
+  <li>บันทึกกฎ iptables เพื่อให้คงอยู่หลัง Reboot:
 <p>    ```bash</p>
 <p>    sudo iptables-save &gt; /etc/iptables/rules.v4</p>
 <p>    ```</p>
+</li>
+</ol>
 
 <p><strong>ขั้นตอน (ส่วนที่ 2 — AWS Security Group — ถ้ามีสิทธิ์เข้าถึง AWS):</strong></p>
 
 <ol>
-  <li>สร้าง Security Group ใหม่:</li>
-</ol>
+  <li>สร้าง Security Group ใหม่:
 <p>   ```bash</p>
 <p>   # ใช้ AWS CLI</p>
 <p>   aws ec2 create-security-group \</p>
@@ -1098,10 +1041,8 @@ server {
 <p>       --description "Web Server Security Group" \</p>
 <p>       --vpc-id vpc-xxxxx</p>
 <p>   ```</p>
-
-<ol>
-  <li>กำหนดกฎ Inbound:</li>
-</ol>
+</li>
+  <li>กำหนดกฎ Inbound:
 <p>   ```bash</p>
 <p>   # SSH จาก IP ของผู้ดูแล</p>
 <p>   aws ec2 authorize-security-group-ingress \</p>
@@ -1120,13 +1061,13 @@ server {
 <p>       --protocol tcp --port 443 \</p>
 <p>       --cidr 0.0.0.0/0</p>
 <p>   ```</p>
-
-<ol>
-  <li>ตรวจสอบกฎ:</li>
-</ol>
+</li>
+  <li>ตรวจสอบกฎ:
 <p>   ```bash</p>
 <p>   aws ec2 describe-security-groups --group-ids sg-xxxxx</p>
 <p>   ```</p>
+</li>
+</ol>
 
 <p><strong>สิ่งที่ต้องส่ง:</strong></p>
 
@@ -1184,21 +1125,9 @@ server {
 
 <ol>
   <li>โมเดล OSI ในชั้นใดบ้างที่เกี่ยวข้องกับนักพัฒนาซอฟต์แวร์มากที่สุด จงอธิบายความเสี่ยงด้านความปลอดภัยและแนวทางป้องกันในแต่ละชั้น พร้อมยกตัวอย่างช่องโหว่ที่เกิดขึ้นจริง (ระบุ CVE ID และรายละเอียด)</li>
-</ol>
-
-<ol>
   <li>TLS 1.3 แตกต่างจาก TLS 1.2 ในด้าน Handshake (จำนวน RTT), Forward Secrecy, Cipher Suite และ Encrypted Certificate อย่างไร จงอธิบายพร้อมยกตัวอย่างประกอบ จงอธิบายว่าทำไม RC4, 3DES และ Cipher แบบ CBC Mode จึงถูกลบออกจากรายการ Cipher Suite ที่แนะนำ</li>
-</ol>
-
-<ol>
   <li>Network Firewall และ Web Application Firewall (WAF) แตกต่างกันอย่างไรในแง่ของชั้น OSI ที่ทำงาน, การตรวจสอบ, ความสามารถในการป้องกันการโจมตี และบทบาทที่เสริมกัน จงอธิบายพร้อมยกตัวอย่างการใช้ร่วมกัน (Defense in Depth)</li>
-</ol>
-
-<ol>
   <li>DDoS Attack มีกี่ประเภท จงอธิบายแต่ละประเภทพร้อมตัวอย่างการโจมตีและแนวทางป้องกัน อ้างอิงสถิติจากรายงาน Cloudflare Q4 2025 (47.1 ล้านครั้ง, เพิ่มขึ้น 121%) และอธิบายว่า Aisuru-Kimwolf Botnet คืออะไรและมีผลกระทบอย่างไร</li>
-</ol>
-
-<ol>
   <li>Suricata และ Snort แตกต่างกันอย่างไร จงอธิบายข้อดีข้อเสียและให้คำแนะนำสำหรับองค์กรที่ต้องการติดตั้ง IDS/IPS ใหม่ จากนั้นอธิบายความแตกต่างระหว่าง Wireshark กับ Zeek ในแง่ของการใช้งานและการวิเคราะห์ Network Traffic</li>
 </ol>
 
